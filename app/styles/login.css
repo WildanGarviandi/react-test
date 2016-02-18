@@ -1,0 +1,92 @@
+.panel {
+  border: solid 1px #eee;
+  border-radius: 5px;
+  background-color: #fff;
+
+  width: 510px;
+  margin: 0 auto;
+}
+
+.form {
+  max-width: 350px;
+  margin: 0 auto;
+  padding-top: 30px;
+  padding-bottom: 30px;
+
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.header {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.inputText {
+  background-color: transparent;
+  border: 1px solid #dbdbdb;
+  border-radius: 3px;
+
+  width: 100%;
+  height: 34px;
+
+  margin-bottom: 10px;
+  padding: 0;
+
+  color: #222;
+  font-size: 12px;
+  text-indent: 20px;
+}
+
+.checkbox {
+  display: inline-block;
+
+  background-image: url('../img/login-checkbox-unchecked.png');
+  background-position: 0 0;
+  background-repeat: no-repeat;
+
+  height: 20px;
+}
+
+.checkboxChecked {
+  background-image: url('../img/login-checkbox-checked.png');
+}
+
+.checkbox input {
+  opacity: 0;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+}
+
+.checkbox label {
+  position: relative;
+  top: -3px;
+
+  margin-left: 5px;
+}
+
+.forgot {
+  position: relative;
+  top: 3px;
+  color: #ff5a60;
+  float: right;
+}
+
+.submitBtn {
+  display: block;
+  cursor: pointer;
+
+  border: 0;
+  border-radius: 3px;
+  background-color: #FF5A60;
+
+  width: 100%;
+  min-height: 24px;
+
+  padding: 10px;
+  margin-top: 10px;
+
+  color: #fff;
+  font-size: 18px;
+}
