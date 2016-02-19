@@ -1,4 +1,7 @@
 import React from 'react';
+import styles from './styles.css';
+
+var classNames = require('classnames/bind').bind(styles);
 
 const CheckBox = React.createClass({
   handleClick(e) {
@@ -39,4 +42,15 @@ function InputPassword(props) {
   return <Input {...props} type="password" />
 }
 
-export { CheckBox, InputPassword, InputText };
+const ButtonBase = React.createClass({
+  render() {
+    var { children, className } = this.props;
+    var btnClass = classNames('btnBase', className);
+
+    return (
+      <button className={btnClass}>{children}</button>
+    );
+  }
+});
+
+export { ButtonBase, CheckBox, InputPassword, InputText };

@@ -1,3 +1,14 @@
+.page {
+  background: url('../../img/bg-login.jpg') no-repeat center center fixed;
+  -webkit-background-size: cover;
+  background-size: cover;
+
+  height: 100%;
+
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
 .panel {
   border: solid 1px #eee;
   border-radius: 5px;
@@ -5,6 +16,17 @@
 
   width: 510px;
   margin: 0 auto;
+}
+
+.logo {
+  background-image: url('../../img/etobee-hd-logo-plain.png');
+  -webkit-background-size: cover;
+  background-size: cover;
+
+  width: 75px;
+  height: 113px;
+
+  margin: 0 auto 30px;
 }
 
 .form {
@@ -41,7 +63,7 @@
 .checkbox {
   display: inline-block;
 
-  background-image: url('../img/login-checkbox-unchecked.png');
+  background-image: url('../../img/login-checkbox-unchecked.png');
   background-position: 0 0;
   background-repeat: no-repeat;
 
@@ -49,7 +71,7 @@
 }
 
 .checkboxChecked {
-  background-image: url('../img/login-checkbox-checked.png');
+  background-image: url('../../img/login-checkbox-checked.png');
 }
 
 .checkbox input {
@@ -77,16 +99,11 @@
   display: block;
   cursor: pointer;
 
-  border: 0;
-  border-radius: 3px;
-  background-color: #FF5A60;
-
   width: 100%;
   min-height: 24px;
 
   padding: 10px;
   margin-top: 10px;
 
-  color: #fff;
   font-size: 18px;
 }

@@ -1,0 +1,17 @@
+html, body, ul {
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  font-family: "proxima_nova_rgregular", Helvetica, Arial, sans-serif;
+}
+
+a {
+  text-decoration: none;
+}

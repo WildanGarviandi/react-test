@@ -1,26 +1,20 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { LoginPanel } from './component/login';
-import styles from './styles/core.css';
+import { Router, Route, IndexRoute, Link, hashHistory } from 'react-router';
 
-const LoginPage = React.createClass({
-  render() {
-    return (
-      <div className={styles.page} >
-        <Logo />
-        <LoginPanel />
-      </div>
-    );
-  }
-});
+import { DashboardPage } from './modules/dashboard/component';
+import { LoginPage } from './modules/login/component';
+import './main.css';
 
-const Logo = React.createClass({
-  render() {
-    return (
-      <div className={styles.logo} >
-      </div>
-    );
-  }
-});
+function App(props) {
+  return <div style={{height: "100%"}}>{props.children}</div>;
+}
 
-render(<LoginPage />, document.getElementById('root'));
+render((
+  <Router history={hashHistory}>
+    <Route path="/" component={App}>
+      <IndexRoute component={DashboardPage} />
+      <Route path="/login" component={LoginPage} />
+    </Route>
+  </Router>
+), document.getElementById('root'));
