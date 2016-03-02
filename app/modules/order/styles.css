@@ -1,0 +1,71 @@
+.contentTitle {
+  color: #482647;
+  font-size: 18px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.dealWithIt {
+  float: right;
+  width: 70px;
+  height: 30px;
+  font-size: 14px;
+}
+
+.consolidate {
+  float: right;
+  padding: 7px 12px;
+  font-size: 14px;
+}
+
+.dealWithDriver {
+  float: right;
+  width: 100px;
+  height: 30px;
+  font-size: 14px;
+}
+
+.driver {
+  color: #333;
+  text-decoration: none;
+}
+
+.glyphRed {
+  color: #c33;
+  margin-right: 10px;
+  height: 22px;
+  display: inline-block;
+}
+
+.glyphGreen {
+  color: #3c3;
+  margin-right: 10px;
+  height: 22px;
+  display: inline-block;
+}
+
+.driverListItem {
+  cursor: pointer;
+  float: left;
+  display: inline-block;
+  width: 48%;
+  border: solid 1px #333;
+  height: 30px;
+  line-height: 30px;
+  padding-left: 10px;
+}
+
+.assignBtn, .sealBtn {
+  font-size: 14px;
+  height: 33px;
+  float: right;
+  width: 65px;
+}
+
+.dropdown {
+  width: 120px;
+}
+
+.sealBtn {
+  margin-top: 10px;
+}

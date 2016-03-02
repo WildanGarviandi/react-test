@@ -1,12 +1,22 @@
 .panel {
   height: 100%;
+  display: table-row;
+}
+
+.panel > * {
+  display: table-cell;
+}
+
+.content {
+  padding: 20px;
+  padding-left: 260px;
 }
 
 .menuPanel {
   background-color: #222D32;
   width: 240px;
   height: 100%;
-  float: left;
+  position: fixed;
 }
 
 .menuList {
@@ -44,15 +54,40 @@
 }
 
 .button {
-  height: 30px;
+  display: block;
+  height: 40px;
   width: 80%;
   position: relative;
-  left: -12px;
+  font-size: 14px;
+  text-align: center;
+  margin: 10px auto;
 }
 
-.title {
+.menuTitle {
   color: #C0B2A5;
   text-align: center;
   position: relative;
   margin-left: -15px;
+}
+
+.scanLabel {
+  font-size: 14px;
+}
+
+.scanInput {
+  display: inline-block;
+  height: 22px;
+  width: 402px;
+}
+
+.scanBtn {
+  float: right;
+  margin-top: 10px;
+  height: 30px;
+  font-size: 14px;
+  width: 80px;
+}
+
+.link {
+  display: block;
 }

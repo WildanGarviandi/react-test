@@ -1,5 +1,9 @@
 import React from 'react';
-import styles from './styles.css';
+import styles from './index.css';
+import { Dropdown } from './dropdown';
+import { Glyph } from './glyph';
+import { Pagination } from './pagination';
+import { Modal, TableComponent } from './table';
 
 var classNames = require('classnames/bind').bind(styles);
 
@@ -44,13 +48,13 @@ function InputPassword(props) {
 
 const ButtonBase = React.createClass({
   render() {
-    var { children, className } = this.props;
+    var { children, className, onClick } = this.props;
     var btnClass = classNames('btnBase', className);
 
     return (
-      <button className={btnClass}>{children}</button>
+      <button className={btnClass} onClick={onClick}>{children}</button>
     );
   }
 });
 
-export { ButtonBase, CheckBox, InputPassword, InputText };
+export { ButtonBase, CheckBox, Dropdown, Glyph, InputPassword, InputText, Modal, Pagination, TableComponent };
