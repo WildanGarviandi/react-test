@@ -1,7 +1,9 @@
 import React from 'react';
 import _ from 'underscore';
 import {ButtonBase, Dropdown, Glyph, Modal, Pagination} from '../base';
-import {OrderTable} from './component';
+import OrderTable from './tables';
+import HubPage from './hub';
+import MyOrderPage from './myorder';
 import styles from './styles.css';
 
 let orders = [
@@ -89,7 +91,6 @@ const MyOrderComponent = React.createClass({
       <div>
         <ButtonBase className={styles.dealWithDriver} onClick={this.showModal}>Set Driver</ButtonBase>
         <h2 className={styles.contentTitle}>Order List</h2>
-        <OrderTable data={orders}/>
         <Pagination limit={10} totalItem={23} currentPage={1} />
         <Modal show={this.state.showModal} width={"700px"}>
           <div style={{height: "100px"}}>
@@ -136,31 +137,4 @@ const ContainerList = React.createClass({
   }
 });
 
-const HubComponent = React.createClass({
-  getInitialState() {
-    return {showModal: false}
-  },
-  showModal() {
-    this.setState({showModal: true});
-  },
-  hideModal() {
-    this.setState({showModal: false});
-  },
-  render() {
-    return (
-      <div>
-        <ButtonBase className={styles.consolidate} onClick={this.showModal}>Consolidate</ButtonBase>
-        <h2 className={styles.contentTitle}>Order List</h2>
-        <OrderTable data={orders}/>
-        <Pagination limit={10} totalItem={23} currentPage={1} />
-        <Modal show={this.state.showModal} width={"210px"}>
-          <div>
-            <ContainerList hideModal={this.hideModal} />
-          </div>
-        </Modal>
-      </div>
-    );
-  }
-});
-
-export {HubComponent as HubPage, MyOrderComponent as MyOrderPage};
+export {HubPage, MyOrderPage};

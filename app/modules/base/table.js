@@ -2,101 +2,115 @@ import React from 'react';
 import _ from 'underscore';
 import * as utils from './utils';
 import {Glyph} from './glyph';
+import {InputText} from './input';
 
 import styles from './table.css';
 
-function TableComponent(columns, header, dispatcher = {}) {
-  const BaseBodyCell = ({column, obj}) => {
-    return (<td className={styles.td}>{utils.ObjectFieldValue(obj, column).toString()}</td>);
-  }
+const classnaming = require('classnames/bind').bind(styles);
 
-  const BaseHeaderCell = ({column, obj}) => {
+function Tables(columns, customCell = {}, opts = {}) {
+  const HeaderCell = ({val}) => {
     return (
-      <th className={styles.th}>
-        <span>{utils.ObjectFieldValue(obj, column).toString()}</span>
-      </th>
+      <th className={styles.th}>{val.toString()}</th>
     );
   }
 
-  const BaseHeaderRow = () => {
-    let cols = _.map(columns, (column) => {
-      return (<BaseHeaderCell key={column} column={column} obj={header} />);
+  const HeaderRow = ({header}) => {
+    let cells = _.map(columns, (column) => {
+      return <HeaderCell key={column} val={utils.ObjectFieldValue(header, column)} />
     });
 
-    return (<tr>{cols}</tr>);
+    return(
+      <tr>{cells}</tr>
+    );
   }
 
-  const BaseBodyRow = ({obj}) => {
-    let cols = columns.map((column) => {
-      if(column in dispatcher) {
-        let Component = dispatcher[column];
-        return (<Component className={styles.td} key={column} column={column} obj={obj} />);
-      } else {
-        return (<BaseBodyCell key={column} column={column} obj={obj} />);
+  const BodyCell = ({val}) => {
+    return (<td className={styles.td}>{ val ? val.toString() : ''}</td>);
+  }
+
+  const BodyRow = React.createClass({
+    getInitialState() {
+      return {checked: false}
+    },
+    toggleChecked() {
+      this.setState({checked: !this.state.checked});
+
+      let {idx, setSelectedIdx} = this.props;
+      if(setSelectedIdx) {
+        setSelectedIdx(idx);
       }
+    },
+    render() {
+      let {active, datum} = this.props;
+      let cells = _.map(columns, (column) => {
+      if(column in customCell) {
+          let Comps = customCell[column].comps;
+          return <Comps className={styles.td} key={column} val={utils.ObjectFieldValue(datum, column)} active={active} checked={this.state.checked} />
+        } else {
+          return <BodyCell key={column} val={utils.ObjectFieldValue(datum, column)} />
+        }
+      });
+
+      return (
+        <tr className={styles.tr} onClick={this.toggleChecked}>{cells}</tr>
+      );
+    }
+  });
+
+  const SearchRow = ({}) => {
+    let cells = _.map(columns, (column) => {
+      return <td key={column} className={classnaming('td', 'search')}><InputText className={styles.searchInput} /></td>
     });
-
-    return (<tr className={styles.tr}>{cols}</tr>);
-  }
-
-  function TableBody(props) {
-    let { objs } = props;
-    let rows = objs.map((obj) => {
-      return (<BaseBodyRow key={obj.id} obj={obj} />);
-    });
-
-    return (<tbody>{rows}</tbody>);
-  }
-
-  function Table(props) {
-    let {data} = props;
 
     return (
-      <table className={styles.table}>
-        <thead>
-          <BaseHeaderRow />
-        </thead>
-        <TableBody objs={data} />
-      </table>
+      <tr>{cells}</tr>
     );
   }
+
+  const Body = React.createClass({
+    getInitialState() {
+      return {selectedIdx: -1}
+    },
+    setSelectedIdx(x) {
+      this.setState({selectedIdx: x});
+    },
+    render() {
+      let {data} = this.props;
+      let rows = _.map(data, (datum, idx) => {
+        return <BodyRow key={idx} active={idx == this.state.selectedIdx} idx={idx} datum={datum} setSelectedIdx={this.setSelectedIdx} />
+      });
+
+      let searchRows = <SearchRow />
+      if(opts.withoutSearch) {
+        return (<tbody>{rows}</tbody>);
+      }
+
+      return (
+        <tbody>
+          {searchRows}
+          {rows}
+        </tbody>
+      );
+    }
+  });
+
+  const Table = React.createClass({
+    render() {
+      let {data, header} = this.props;
+
+      return (
+        <table className={styles.table}>
+          <thead>
+            <HeaderRow header={header} />
+          </thead>
+          <Body {...this.props} />
+        </table>
+      );
+    }
+  });
 
   return Table;
 }
 
-function Modal(props) {
-  var wrapperStyle = {
-    position: 'absolute',
-    top: '-300px',
-    left: '-100000px',
-    right: '-100000px',
-    bottom: '0',
-    zIndex: '1000',
-    display: (props.show ? "block": "none")
-  };
-  var backdropStyle = {backgroundColor: '#000', opacity:'0.5', width: '100%', height: '100%', top: 0, left: 0, position: 'absolute'};
-  var modalStyle = {
-    borderRadius: '10px',
-    width: '1000px',
-    backgroundColor: '#fff',
-    position: 'absolute',
-    padding: '20px',
-    left: 0,
-    right: 0,
-    top: '200px',
-    margin: '0 auto',
-    marginTop: '180px',
-    width: (props.width ? props.width : "500px")
-  }
-
-  return (
-    <div style={wrapperStyle}>
-      <div style={backdropStyle}></div>
-      <div style={modalStyle}>
-        {props.children}
-      </div>
-    </div>
-  );
-}
-
-export { Modal, TableComponent };
+export { Tables };

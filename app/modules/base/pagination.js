@@ -24,6 +24,7 @@ const LimitSelector = React.createClass({
   },
   setLimit(x) {
     this.props.setLimit(x);
+    this.setState({opened: false});
   },
   toggleOpened() {
     this.setState({opened: !this.state.opened});

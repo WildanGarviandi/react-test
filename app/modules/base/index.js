@@ -2,8 +2,10 @@ import React from 'react';
 import styles from './index.css';
 import { Dropdown } from './dropdown';
 import { Glyph } from './glyph';
+import { InputText, InputPassword } from './input';
 import { Pagination } from './pagination';
-import { Modal, TableComponent } from './table';
+import { Tables, TableComponent } from './table';
+import Modal from './modal';
 
 var classNames = require('classnames/bind').bind(styles);
 
@@ -22,39 +24,15 @@ const CheckBox = React.createClass({
   }
 });
 
-const Input = React.createClass({
-  handleChange(e) {
-    let { onChange } = this.props;
-
-    if(!onChange) return;
-    onChange(e.target.value);
-  },
-  render() {
-    let { className, placeholder, type, value } = this.props;
-
-    return (
-      <input className={className} placeholder={placeholder} type={type} value={value} onChange={this.handleChange} />
-    );
-  }
-});
-
-function InputText(props) {
-  return <Input {...props} type="text" />
-}
-
-function InputPassword(props) {
-  return <Input {...props} type="password" />
-}
-
 const ButtonBase = React.createClass({
   render() {
-    var { children, className, onClick } = this.props;
+    var { children, className, onClick, type } = this.props;
     var btnClass = classNames('btnBase', className);
 
     return (
-      <button className={btnClass} onClick={onClick}>{children}</button>
+      <button className={btnClass} onClick={onClick} type={type}>{children}</button>
     );
   }
 });
 
-export { ButtonBase, CheckBox, Dropdown, Glyph, InputPassword, InputText, Modal, Pagination, TableComponent };
+export { ButtonBase, CheckBox, Dropdown, Glyph, InputPassword, InputText, Modal, Pagination, Tables, TableComponent };

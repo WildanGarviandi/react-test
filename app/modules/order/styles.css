@@ -5,11 +5,12 @@
   text-transform: uppercase;
 }
 
-.dealWithIt {
+.mainBtn {
   float: right;
-  width: 70px;
-  height: 30px;
-  font-size: 14px;
+  font-size: 12px;
+  padding: 8px;
+  position: relative;
+  top: -4px;
 }
 
 .consolidate {
@@ -68,4 +69,24 @@
 
 .sealBtn {
   margin-top: 10px;
+}
+
+.modalInput {
+  display: inline-block;
+  padding: 4px;
+  margin-left: 4px;
+  width: 159px;
+}
+
+.modalBtn {
+  padding: 8px;
+  display: inline-block;
+  margin-left: 4px;
+  float: right;
+  margin-top: 6px;
+}
+
+.addBtn {
+  float: none;
+  margin-bottom: 0.5em;
 }

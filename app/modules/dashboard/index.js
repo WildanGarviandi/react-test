@@ -1,6 +1,6 @@
 import React from 'react';
 import {Link} from 'react-router';
-import {ButtonBase, InputText, Modal} from '../base';
+import {ButtonBase, Glyph, InputText, Modal} from '../base';
 import {HubComponent, MyOrderComponent} from '../order';
 import styles from './styles.css';
 
@@ -64,8 +64,14 @@ const DashboardMenu = ({activeMenuIdx}) => {
     <div className={styles.menuPanel}>
       <h4 className={styles.menuTitle} >Etobee Hub</h4>
       <ul className={styles.menuList}>
-      <MenuItem active={activeMenuIdx == 0} to={'/myOrder'}>My Order</MenuItem>
-      <MenuItem active={activeMenuIdx == 1} to={'/hubOrder'}>Hub Order</MenuItem>
+        <MenuItem active={activeMenuIdx == 0} to={'/myOrder'}>
+          <Glyph className={styles.menuGlyph} name={'list-alt'}/>
+          <span>My Order</span>
+        </MenuItem>
+        <MenuItem active={activeMenuIdx == 1} to={'/hubOrder'}>
+          <Glyph className={styles.menuGlyph} name={'home'}/>
+          <span>Hub Order</span>
+        </MenuItem>
       </ul>
     </div>
   );
