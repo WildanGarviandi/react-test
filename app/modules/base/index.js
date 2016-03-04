@@ -3,6 +3,7 @@ import styles from './index.css';
 import { Dropdown } from './dropdown';
 import { Glyph } from './glyph';
 import { InputText, InputPassword } from './input';
+import { ButtonAtRightTop, PageTitle } from './page';
 import { Pagination } from './pagination';
 import { Tables, TableComponent } from './table';
 import Modal from './modal';
@@ -35,4 +36,4 @@ const ButtonBase = React.createClass({
   }
 });
 
-export { ButtonBase, CheckBox, Dropdown, Glyph, InputPassword, InputText, Modal, Pagination, Tables, TableComponent };
+export { ButtonAtRightTop, ButtonBase, CheckBox, Dropdown, Glyph, InputPassword, InputText, Modal, PageTitle, Pagination, Tables, TableComponent };

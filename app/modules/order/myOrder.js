@@ -1,5 +1,5 @@
 import React from 'react';
-import {ButtonBase, Modal, Pagination} from '../base';
+import {ButtonAtRightTop, ButtonBase, Modal, PageTitle, Pagination} from '../base';
 import {CellWithCheckbox, CellWithNums, CellWithSelected, Tables} from './tables';
 import styles from './styles.css';
 
@@ -81,8 +81,8 @@ const MyOrderContainer = React.createClass({
 
     return (
       <div>
-        <ButtonBase className={styles.mainBtn} onClick={showModal}>Pick Driver</ButtonBase>
-        <h2 className={styles.contentTitle}>Order List</h2>
+        <ButtonAtRightTop val={'Pick Driver'} onClick={showModal} />
+        <PageTitle title={'Order List'} />
         <MyOrderTable data={orders} header={header} />
         <Pagination limit={limit} totalItem={orders.length} currentPage={currentPage} setLimit={changeState('limit')} setCurrentPage={changeState('currentPage')} />
       </div>

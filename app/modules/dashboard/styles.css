@@ -12,11 +12,23 @@
   padding-left: 200px;
 }
 
+.compact .content {
+  padding-left: 80px;
+}
+
 .menuPanel {
   background-color: #222D32;
   width: 180px;
   height: 100%;
   position: fixed;
+
+  -webkit-transition: border 0.5s ease-out;
+  -o-transition: border 0.5s ease-out;
+  transition: border 0.5s ease-out;
+}
+
+.compact .menuPanel {
+  width: 60px;
 }
 
 .menuList {
@@ -69,11 +81,24 @@
   margin: 10px auto;
 }
 
-.menuTitle {
+.menuTitle, .compactTitle {
   color: #C0B2A5;
   text-align: center;
   position: relative;
   margin-left: -15px;
+}
+
+.compact .menuTitle {
+  display: none;
+}
+
+.compactTitle {
+  display: none;
+}
+
+.compact .compactTitle {
+  display: block;
+  margin-left: 0;
 }
 
 .scanLabel {
@@ -96,6 +121,8 @@
 
 .link {
   display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .menuGlyph {
@@ -104,4 +131,46 @@
   margin-top: -10px;
   left: -40px;
   font-size: 20px;
+}
+
+.compact .menuItem span {
+  display: none;
+}
+
+.compact .menuItem .menuGlyph {
+  left: -45px;
+  display: inline-block;
+}
+
+.toggleMenu {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  display: block;
+  height: 30px;
+  width: 100%;
+  background-color: #ff5a60;
+  border: none;
+  border-top: solid 1px #222;
+  color: #fff;
+  cursor: pointer;
+}
+
+.toggleMenu:focus {
+  outline: 0;
+}
+
+.glyphBackward {
+  position: relative;
+  left: -4px;
+}
+
+.glyphBackward, .compact .glyphForward {
+  display: inline-block;
+}
+
+.compact .glyphBackward, .glyphForward {
+  display: none;
 }

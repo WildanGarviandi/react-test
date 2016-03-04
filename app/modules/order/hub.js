@@ -1,5 +1,5 @@
 import React from 'react';
-import {ButtonBase, InputText, Modal, Pagination} from '../base';
+import {ButtonAtRightTop, ButtonBase, InputText, Modal, PageTitle, Pagination} from '../base';
 import {CellForContainer, CellWithLink, CellWithNums, Tables, TableWithoutSearch} from './tables';
 import styles from './styles.css';
 
@@ -101,8 +101,8 @@ const HubContainer = React.createClass({
 
     return (
       <div>
-        <ButtonBase className={styles.mainBtn} onClick={pickContainer}>Pick Container</ButtonBase>
-        <h2 className={styles.contentTitle}>Order List</h2>
+        <ButtonAtRightTop val={'Pick Container'} onClick={pickContainer} />
+        <PageTitle title={'Order List'} />
         <HubOrderTable data={orders} header={header} />
         <Pagination limit={limit} totalItem={orders.length} currentPage={currentPage} setLimit={changeState('limit')} setCurrentPage={changeState('currentPage')} />
       </div>

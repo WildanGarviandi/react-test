@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 
+import ContainerPage from './modules/container';
 import DashboardPage from './modules/dashboard';
 import LoginPage from './modules/login';
 import {HubPage, MyOrderPage} from './modules/order';
@@ -18,6 +19,7 @@ render((
       <Route path="/home" component={DashboardPage}>
         <Route path="/hubOrder" component={HubPage} />
         <Route path="/myOrder" component={MyOrderPage} />
+        <Route path="/container" component={ContainerPage} />
       </Route>
       <Route path="/login" component={LoginPage} />
       <Route path="/*" component={LoginPage} />
