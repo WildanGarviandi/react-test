@@ -9,7 +9,7 @@ export const CellWithLink = ({className, val}) => {
 }
 
 export const CellWithCheckbox = ({checked, className, val}) => {
-  return (<td className={className} style={{color: "#37B494"}}><input type={'checkbox'} checked={checked}/>{val}</td>);
+  return (<td className={className} style={{color: "#37B494", width: '90px'}}><input type={'checkbox'} checked={checked} readOnly/>{val}</td>);
 }
 
 export const CellWithNums = ({className, val}) => {
@@ -18,6 +18,22 @@ export const CellWithNums = ({className, val}) => {
 
 export const CellWithSelected = ({active, className, val}) => {
   return (<td className={className} style={active ? {backgroundColor: '#286090', color: '#fff'} : {}}>{val}</td>);
+}
+
+export const CellWithStatus = ({active, className, val, yeah}) => {
+  let sty = {
+    backgroundColor: 'transparent'
+  };
+
+  if(yeah.status == 'success') {
+    sty.backgroundColor = 'green';
+    sty.color = 'white';
+  } else if(yeah.status == 'failed') {
+    sty.backgroundColor = 'red';
+    sty.color = 'white';
+  }
+
+  return (<td className={className} style={sty}>{val}</td>);
 }
 
 export const CellForContainer = ({className, val}) => {

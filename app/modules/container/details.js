@@ -1,0 +1,91 @@
+import React from 'react';
+import {connect} from 'react-redux';
+import {push} from 'react-router-redux';
+import {containerDetails, selectedOrdersReset} from '../../actions';
+import {ButtonAtRightTop, ButtonBase, PageTitle} from '../base';
+import {OrderTable} from './table';
+
+import styles from './styles.css';
+
+const columns = ['id', 'id2', 'pickup', 'dropoff', 'time', 'action'];
+const headers = [{
+  id: 'Web Order ID', id2: 'User Order Number',
+  pickup: 'Pickup Address', dropoff: 'Dropoff Address',
+  time: 'Pickup Time', action: 'Action'
+}];
+
+const DetailPage = React.createClass({
+  componentDidMount() {
+    this.props.getContainerDetails(this.props.params.id);
+  },
+  goToFillContainer() {
+    const {container} = this.props;
+    this.props.goToFillContainer(container.ContainerID);
+  },
+  render() {
+    const {backToContainer, container, fillAble, isFetching, orders} = this.props;
+
+    return (
+      <div>
+        <a href="javascript:;" onClick={backToContainer}>{'<<'} Back to Container List</a>
+        {
+          isFetching ? 
+          <h3>Fetching Container Details...</h3> :
+          <div>
+            {
+              fillAble ? 
+              <ButtonAtRightTop val={'Fill Container'} onClick={this.goToFillContainer} /> :
+              <span />
+            }
+            <PageTitle title={'Container ' + container.ContainerNumber} />
+            <span>Total {orders.length} items</span>
+            {
+              orders.length > 0 ?
+              <div>
+                <OrderTable columns={columns} headers={headers} items={orders} /> 
+              </div>
+              :
+              <span />
+            }
+          </div>
+        }
+      </div>
+    );
+  }
+});
+
+const mapStateToProps = (state, ownProps) => {
+  const {containerDetails} = state.app;
+  const {container, fillAble, isFetching, orders} = containerDetails;
+  return {
+    container: container,
+    orders: _.map(orders, (order) => ({
+      id: order.WebOrderID,
+      id2: order.UserOrderNumber,
+      pickup: order.PickupAddress.Address1,
+      dropoff: order.DropoffAddress.Address1,
+      time: (new Date(order.PickupTime)).toString(),
+      id3: order.UserOrderID,
+      isDeleting: order.isDeleting
+    })),
+    isFetching: isFetching,
+    fillAble: fillAble
+  }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    backToContainer: function() {
+      dispatch(push('/container'));
+    },
+    getContainerDetails: function(id) {
+      dispatch(containerDetails(id));
+    },
+    goToFillContainer: function(id) {
+      dispatch(selectedOrdersReset());
+      dispatch(push('/container/' + id + '/order'));
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DetailPage);

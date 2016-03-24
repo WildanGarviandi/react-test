@@ -33,14 +33,14 @@ const Dropdown = React.createClass({
     this.mouseIsDownOnDropdown = false;
   },
   render() {
-    let {className, onClick, opened, options, selectVal, val} = this.props;
+    let {className, onClick, opened, options, selectVal, val, width} = this.props;
     let optionsComp = _.map(options, (option) => {
       return <Options key={option} name={option} onClick={selectVal} />
     });
 
     return (
       <span className={styles.dropdownWrapper} onMouseUp={this.mouseUpHandler} onMouseDown={this.mouseDownHandler}>
-        <ButtonBase className={styles.dropdownBase + " " + className} onClick={onClick}>
+        <ButtonBase width={width} className={styles.dropdownBase + " " + className} onClick={onClick}>
           <span className={styles.val}>{val}</span>
           <Glyph name={opened ? "chevron-up" : "chevron-down"} />
         </ButtonBase>

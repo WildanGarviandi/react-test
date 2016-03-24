@@ -31,6 +31,10 @@ module.exports = {
         test: /\.png$/, 
         loader: "url-loader?limit=100000" 
       }, 
+      { 
+        test: /\.gif$/, 
+        loader: "url-loader?limit=100000" 
+      }, 
       {
         test: /\.woff$/,
         loader: 'url?limit=100000'

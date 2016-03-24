@@ -64,7 +64,9 @@ const PaginationControl = React.createClass({
   },
   render() {
     var {pagesCount, currentPage} = this.props;
-    var pages = _.map(_.range(1, pagesCount + 1), (x) => {
+    var minPage = Math.max(1, currentPage - 3);
+    var maxPage = Math.min(pagesCount + 1, currentPage + 4);
+    var pages = _.map(_.range(minPage, maxPage), (x) => {
       return (
         <li key={x} className={ x == currentPage ? styles.paginationActive : ""}>
           <a href="javascript:;" onClick={this.setPage.bind(this, x)}>{x}</a>
@@ -81,7 +83,21 @@ const PaginationControl = React.createClass({
           <li className="page-pre">
             <a href="javascript:;" onClick={this.setPage.bind(this, currentPage - 1)}>‹</a>
           </li>
+          { 
+            minPage > 1 ? 
+            <li>
+              <a href="javascript:;">...</a>
+            </li> :
+            <li></li>
+          }
           {pages}
+          { 
+            maxPage < 1 + pagesCount ? 
+            <li>
+              <a href="javascript:;">...</a>
+            </li> :
+            <li></li>
+          }
           <li className="page-next">
             <a href="javascript:;" onClick={this.setPage.bind(this, currentPage + 1)}>›</a>
           </li>

@@ -6,8 +6,8 @@ const PageTitle = ({title}) => {
   return (<h2 className={styles.contentTitle}>{title}</h2>);
 }
 
-const ButtonAtRightTop = ({onCLick, val}) => {
-  return (<ButtonBase className={styles.mainBtn} onCLick={onCLick}>{val}</ButtonBase>);
+const ButtonAtRightTop = ({onClick, val}) => {
+  return (<ButtonBase className={styles.mainBtn} onClick={onClick}>{val}</ButtonBase>);
 }
 
 export {ButtonAtRightTop, PageTitle};

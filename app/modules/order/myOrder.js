@@ -95,6 +95,7 @@ const MyOrderPage = React.createClass({
     return {isModalShown: false}
   },
   showModal() {
+    console.log(';');
     this.setState({isModalShown: true});
   },
   closeModal() {

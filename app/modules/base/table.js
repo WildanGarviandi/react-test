@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import _ from 'underscore';
 import * as utils from './utils';
 import {Glyph} from './glyph';
@@ -30,15 +31,13 @@ function Tables(columns, customCell = {}, opts = {}) {
   }
 
   const BodyRow = React.createClass({
-    getInitialState() {
-      return {checked: false}
-    },
     toggleChecked() {
-      this.setState({checked: !this.state.checked});
+      // this.setState({checked: !this.state.checked});
 
-      let {idx, setSelectedIdx} = this.props;
+      let {idx, setSelectedIdx, rowClicked} = this.props;
       if(setSelectedIdx) {
         setSelectedIdx(idx);
+        rowClicked(this.props.datum);
       }
     },
     render() {
@@ -46,7 +45,7 @@ function Tables(columns, customCell = {}, opts = {}) {
       let cells = _.map(columns, (column) => {
       if(column in customCell) {
           let Comps = customCell[column].comps;
-          return <Comps className={styles.td} key={column} val={utils.ObjectFieldValue(datum, column)} active={active} checked={this.state.checked} />
+          return <Comps className={styles.td} key={column} val={utils.ObjectFieldValue(datum, column)} active={active} checked={datum.checked} yeah={datum} />
         } else {
           return <BodyCell key={column} val={utils.ObjectFieldValue(datum, column)} />
         }
@@ -76,9 +75,9 @@ function Tables(columns, customCell = {}, opts = {}) {
       this.setState({selectedIdx: x});
     },
     render() {
-      let {data} = this.props;
+      let {data, rowClicked} = this.props;
       let rows = _.map(data, (datum, idx) => {
-        return <BodyRow key={idx} active={idx == this.state.selectedIdx} idx={idx} datum={datum} setSelectedIdx={this.setSelectedIdx} />
+        return <BodyRow key={idx} active={idx == this.state.selectedIdx} idx={idx} datum={datum} setSelectedIdx={this.setSelectedIdx} rowClicked={rowClicked} />
       });
 
       let searchRows = <SearchRow />
@@ -113,4 +112,37 @@ function Tables(columns, customCell = {}, opts = {}) {
   return Table;
 }
 
-export { Tables };
+function Rows(BaseComponent, BaseCell, CustomCell, columns, actionFn, rowClassName) {
+  const RowItem = React.createClass({
+    handleAction(column) {
+      let {item} = this.props;      
+      actionFn(item, column);
+    },
+    render() {
+      let {item} = this.props;
+      let cols = _.map(columns, (column) => {
+        let Cell = (column in CustomCell) ? CustomCell[column] : BaseCell;
+        return <Cell key={column} val={item[column]} item={item} column={column} action={this.handleAction} />
+      });
+
+      return (<tr className={styles.tr + ' ' + rowClassName}>{cols}</tr>);
+    }
+  });
+
+  const Row = React.createClass({
+    render() {
+      let {items} = this.props;
+      let rows = _.map(items, (item, idx) => {
+        return(<RowItem key={idx} item={item}/>)
+      });
+
+      return (
+        <thead>{rows}</thead>
+      );
+    }
+  });
+
+  return Row;
+}
+
+export { Tables, Rows };

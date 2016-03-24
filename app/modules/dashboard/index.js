@@ -1,5 +1,6 @@
 import React from 'react';
 import {Link} from 'react-router';
+import auth from '../../auth';
 import {ButtonBase, Glyph, InputText, Modal} from '../base';
 import {HubComponent, MyOrderComponent} from '../order';
 import styles from './styles.css';
@@ -15,17 +16,17 @@ const MenuItem = ({active, children, to}) => {
   );
 }
 
-const DashboardMenu = ({activeMenuIdx, toggleCompact}) => {
+const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact}) => {
   return (
     <div className={styles.menuPanel}>
       <h4 className={styles.menuTitle}>Etobee Hub</h4>
       <h4 className={styles.compactTitle}>EHub</h4>
       <ul className={styles.menuList}>
-        <MenuItem active={activeMenuIdx == 0} to={'/myOrder'}>
+        <MenuItem active={activeMenuIdx == 1} to={'/myOrder'}>
           <Glyph className={styles.menuGlyph} name={'list-alt'}/>
           <span>My Order</span>
         </MenuItem>
-        <MenuItem active={activeMenuIdx == 1} to={'/hubOrder'}>
+        <MenuItem active={activeMenuIdx == 0} to={'/hubOrder'}>
           <Glyph className={styles.menuGlyph} name={'home'}/>
           <span>Hub Order</span>
         </MenuItem>
@@ -34,6 +35,7 @@ const DashboardMenu = ({activeMenuIdx, toggleCompact}) => {
           <span>Container</span>
         </MenuItem>
       </ul>
+      <ButtonBase className={styles.logoutBtn} onClick={handleLogout}>Logout</ButtonBase>
       <button className={styles.toggleMenu} onClick={toggleCompact}>
         <Glyph className={styles.glyphBackward} name={'backward'}/>
         <Glyph className={styles.glyphForward} name={'forward'}/>
@@ -46,18 +48,26 @@ const DashboardContent = ({children}) => {
   return (<div className={styles.content}>{children}</div>);
 }
 
-const menuPaths = ['/myOrder', '/hubOrder', '/container'];
+const menuPaths = ['/hubOrder', '/myOrder', '/container'];
 function GetActiveMenuIdx(path) {
   let idx = menuPaths.indexOf(path);
   return Math.max(idx, 0);
 }
 
 const DashboardContainer = React.createClass({
+  contextTypes: {
+    router: React.PropTypes.object.isRequired
+  },
   getInitialState() {
     return {isCompact: true};
   },
   toggleCompact() {
     this.setState({isCompact: !this.state.isCompact});
+  },
+  handleLogout() {
+    auth.logout(() => {
+      this.context.router.replace('/login');
+    });
   },
   render() {
     let {routes} = this.props;
@@ -67,7 +77,7 @@ const DashboardContainer = React.createClass({
     return (
       <div style={{display: 'table', width: '100%', minHeight: '100%'}}>
         <div className={panelClass} >
-          <DashboardMenu activeMenuIdx={activeMenuIdx} toggleCompact={this.toggleCompact} />
+          <DashboardMenu activeMenuIdx={activeMenuIdx} handleLogout={this.handleLogout} toggleCompact={this.toggleCompact} />
           <DashboardContent>{this.props.children}</DashboardContent>
         </div>
       </div>

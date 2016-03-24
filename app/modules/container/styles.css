@@ -1,0 +1,28 @@
+.modalBtn {
+  padding: 8px;
+  display: inline-block;
+  margin-left: 4px;
+  float: right;
+  margin-top: 6px;
+}
+
+.checkingStatus, .errorMsg {
+  display: inline-block;
+  float: right;
+  margin-top: 6px;  
+}
+
+.errorMsg {
+  color: red;
+}
+
+.checkbox {
+  background-image: url(../../img/login-checkbox-unchecked.png);
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  -webkit-background-size: cover;
+  background-size: cover;
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+}

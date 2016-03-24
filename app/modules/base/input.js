@@ -11,12 +11,12 @@ const Input = React.createClass({
     onChange(e.target.value);
   },
   render() {
-    let { className, errorMsg, placeholder, type, value } = this.props;
+    let { className, errorMsg, placeholder, required, type, value } = this.props;
     let inputClass = classnaming(className, { hasError: errorMsg });
 
     return (
       <span style={{position: 'relative'}}>
-        <input className={inputClass} placeholder={placeholder} type={type} value={value} onChange={this.handleChange} />
+        <input className={inputClass} placeholder={placeholder} type={type} value={value} onChange={this.handleChange} required={required} />
         <span className={styles.errorMsg}>{errorMsg}</span>
       </span>
     );
