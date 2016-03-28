@@ -42,6 +42,10 @@ function checkFirstVisit(nextState, replace, callback) {
   callback();
 }
 
+function triggerFirstVisit() {
+  firstVisit = false;
+}
+
 export default (
   <Router history={browserHistory}>
     <Route path="/" component={App}>
@@ -49,7 +53,7 @@ export default (
       <Route path="/home" component={DashboardPage} onEnter={requireAuth}>
         <IndexRoute component={ContainerPage} />
         <Route path="/hubOrder" component={HubPage} />
-        <Route path="/container" component={ContainerPage} />
+        <Route path="/container" component={ContainerPage} onEnter={triggerFirstVisit} />
         <Route path="/container/:id" component={ContainerDetailsPage} onEnter={checkFirstVisit} />
         <Route path="/container/:id/order" component={ContainerOrderPage} onEnter={checkFirstVisit} />
         <Route path="/container/:id/fill" component={ContainerFillPage} onEnter={checkFirstVisit} />
