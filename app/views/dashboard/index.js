@@ -1,6 +1,5 @@
 import React from 'react';
 import {Link} from 'react-router';
-import auth from '../../auth';
 import {ButtonBase, Glyph, InputText, Modal} from '../base';
 import {HubComponent, MyOrderComponent} from '../order';
 import styles from './styles.css';
@@ -65,9 +64,6 @@ const DashboardContainer = React.createClass({
     this.setState({isCompact: !this.state.isCompact});
   },
   handleLogout() {
-    auth.logout(() => {
-      this.context.router.replace('/login');
-    });
   },
   render() {
     let {routes} = this.props;

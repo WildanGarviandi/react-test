@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import {loginUser} from '../../actions';
+import Login from '../../modules/auth/actions/login';
 
 import {InputText, InputPassword, CheckBox, ButtonBase} from '../base';
 import styles from './styles.css';
@@ -72,7 +72,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     login: function(email, pass) {
-      dispatch(loginUser(email, pass));
+      dispatch(Login(email, pass));
     }
   }
 }

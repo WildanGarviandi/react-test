@@ -2,7 +2,8 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
 import _ from 'underscore';
-import {selectedOrdersFetch, selectedOrdersToggle} from '../../actions';
+import ordersPrepareFetch from '../../modules/containers/actions/ordersPrepare';
+import {selectedOrdersToggle} from '../../actions';
 import {ButtonBase, PageTitle} from '../base';
 
 const columns = ['id', 'id2', 'pickup', 'dropoff', 'time', 'status'];
@@ -23,7 +24,7 @@ const FetchComponent = React.createClass({
   },
   startFetch() {
     const IDs = _.chain(this.state.IDs.match(/\S+/g)).uniq().value();
-    this.props.selectedOrdersFetch(IDs);
+    this.props.ordersPrepareFetch(IDs);
   },
   render() {
     const {changeIDs, startFetch} = this;
@@ -52,17 +53,16 @@ const FetchComponent = React.createClass({
 });
 
 const FetchState = (state) => {
-  const {isFetching, isValid, error} = state.app.selectedOrders;
+  const {isFetching, isValid, error} = state.app.ordersPrepared;
   return {
     isFetching: isFetching, isValid: isValid, errorMsg: error
   }
 }
 
 const FetchDispatch = (dispatch, ownProps) => {
-  console.log('oo', ownProps);
   return {
-    selectedOrdersFetch: function(ordersID) {
-      dispatch(selectedOrdersFetch(ordersID, ownProps.id));
+    ordersPrepareFetch: function(ordersID) {
+      dispatch(ordersPrepareFetch(ordersID, ownProps.id));
     }  
   }
 }
@@ -85,9 +85,9 @@ const FillPage = React.createClass({
 });
 
 const mapStateToProps = (state, ownProps) => {
-  const {containerDetails, selectedOrders} = state.app;
-  const {container} = containerDetails;
-  const {isFetching, isValid, error, ids} = selectedOrders;
+  const {containers, ordersPrepared} = state.app;
+  const container = _.find(containers.containers, (container) => (container.ContainerID == containers.active));
+  const {isFetching, isValid, error, ids} = ordersPrepared;
   return {
     container: container,
     showFetch: isFetching || !isValid || ids.length == 0

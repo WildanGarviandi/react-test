@@ -1,7 +1,9 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
-import {containersFetch, createContainer, pickContainer} from '../../actions';
+import containerCreate from '../../modules/containers/actions/containerCreate';
+import containersFetch from '../../modules/containers/actions/containersFetch';
+import {pickContainer} from '../../actions';
 import {ButtonAtRightTop, PageTitle, Tables} from '../base';
 import ContainerTable from './table';
 
@@ -13,7 +15,7 @@ const ContainerPage = React.createClass({
     this.props.containersFetch();
   },
   handleCreate() {
-    this.props.createContainer();
+    this.props.containerCreate();
   },
   render() {
     const {containers, isCreateError, isCreating, pickContainer} = this.props;
@@ -61,8 +63,8 @@ const mapDispatchToProps = (dispatch) => {
     pickContainer: function(container) {
       if(container.status == 'Active') dispatch(push('/container/' + container.id));
     },
-    createContainer: function() {
-      dispatch(createContainer());
+    containerCreate: function() {
+      dispatch(containerCreate());
     }
   }
 }

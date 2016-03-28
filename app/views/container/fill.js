@@ -2,7 +2,11 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
 import _ from 'underscore';
-import {districtsFetch, fillContainer, pickDistrict, selectedOrdersFetch, selectedOrdersToggle} from '../../actions';
+import containerFill from '../../modules/containers/actions/containerFill';
+import orderToggle from '../../modules/containers/actions/orderToggle';
+import districtsFetch from '../../modules/districts/actions/districtsFetch';
+import {containerDistrictPick, containerDistrictReset} from '../../modules/containers/constants';
+import {pickDistrict, selectedOrdersFetch} from '../../actions';
 import {ButtonBase, Dropdown, PageTitle} from '../base';
 import {OrderTable2} from './table';
 
@@ -19,11 +23,14 @@ const FillComponent = React.createClass({
   getInitialState() {
     return {opened: false};
   },
-  selectedOrdersToggle(item) {
-    this.props.selectedOrdersToggle(item.id2);
+  orderToggle(item) {
+    this.props.orderToggle(item.id2);
   },
   componentDidMount() {
     this.props.districtsFetch();
+
+    const {container} = this.props;
+    this.props.resetDistrict(container.ContainerID);
   },
   toggleOpened() {
     this.setState({opened: !this.state.opened});
@@ -31,13 +38,12 @@ const FillComponent = React.createClass({
   selectDistrict(val) {
     this.setState({opened: false});
     const selectedDistrict = _.find(this.props.districts, (district) => (district.Name == val));
-    this.props.pickDistrict(selectedDistrict.DistrictID);    
+    const {container} = this.props;
+    this.props.pickDistrict(container.ContainerID, selectedDistrict.DistrictID);    
   },
   fillContainer() {
     const {container, validOrders, activeDistrict} = this.props;
     const orders = _.chain(validOrders).filter((order) => (order.checked)).map((order) => (order.id3)).value();
-
-    console.log('o', orders);
     this.props.fillContainer(container.ContainerNumber, orders, activeDistrict.DistrictID);
   },
   handleBack() {
@@ -45,7 +51,7 @@ const FillComponent = React.createClass({
     this.props.backToContainer(container.ContainerID);
   },
   render() {
-    const {activeDistrict, container, districts, HaveContainerIDs, haveMore, haveTried, haveTrips, InvalidIDs, isFilling, ValidIDs, validOrders} = this.props;
+    const {activeDistrict, container, districts, HaveContainerIDs, haveMore, haveTried, InvalidIDs, isFilling, ValidIDs, validOrders} = this.props;
     const districtsName = _.map(districts, (district) => (district.Name));
 
     return (
@@ -67,14 +73,10 @@ const FillComponent = React.createClass({
           <div>
             <div style={{float: 'right'}}>
               <h4 style={{marginBottom: '10px', display: 'inline-block'}}>District: </h4>
-              {
-                haveTrips ? 
-                <span>{' '}{activeDistrict.Name}</span> :
-                <Dropdown opened={this.state.opened} val={activeDistrict.Name} options={districtsName} onClick={this.toggleOpened} selectVal={this.selectDistrict} width={'150px'} />
-              }
+              <Dropdown opened={this.state.opened} val={activeDistrict.Name} options={districtsName} onClick={this.toggleOpened} selectVal={this.selectDistrict} width={'150px'} />
             </div>
             <h4>Valid Order ({ValidIDs.length} items)</h4>
-            <OrderTable2 headers={headers} columns={columns} items={validOrders} rowClicked={this.selectedOrdersToggle} />
+            <OrderTable2 headers={headers} columns={columns} items={validOrders} rowClicked={this.orderToggle} />
             {
               !isFilling ?
               <div>
@@ -101,40 +103,29 @@ const FillComponent = React.createClass({
   }
 });
 
-function ToMapByID(items) {
-  let result = {};
-  _.each(items, (item) => {
-    result[item.order] = item.container;
-  });
-
-  return result;
-}
-
-function InvalidIDs(ids, containers) {
-  return _.filter(ids, (id) => {
-    return !(id in containers);
-  });
+function InvalidIDs(ids, orders) {
+  return _.filter(ids, (id) => !(_.find(orders, (order) => (order.UserOrderNumber == id))));
 }
 
 function HaveContainer(ids, containers) {
   return _.filter(ids, (id) => {
-    return id in containers && containers[id] != '';
+    return id in containers;
   });
 }
 
-function ValidIDs(ids, containers) {
+function ValidIDs(ids, orders, containers) {
   return _.filter(ids, (id) => {
-    return id in containers && containers[id] == '';
+    return (_.find(orders, (order) => (order.UserOrderNumber == id))) && !(id in containers);
   });
 }
 
 const FillState = (state) => {
-  const {ids, containers, orders} = state.app.selectedOrders;
-  const containersMap = ToMapByID(containers);
-  const validIDs = ValidIDs(ids, containersMap);
-  const {container, trip} = state.app.containerDetails;
+  const {ids, containers, orders} = state.app.ordersPrepared;
+  const validIDs = ValidIDs(ids, orders, containers);
+  const container = _.find(state.app.containers.containers, (container) => (container.ContainerID == state.app.containers.active));
+  const trip = container.trip;
   const {active, districts} = state.app.districts;
-  const isFilling = state.app.fillContainer.isFilling;
+  const isFilling = state.app.ordersPrepared.isFilling;
   const validOrders = _.map(validIDs, (id) => {
     const order = _.find(orders, (order) => (order.UserOrderNumber == id));
     return {
@@ -150,13 +141,12 @@ const FillState = (state) => {
   });
 
   return {
-    InvalidIDs: InvalidIDs(ids, containersMap),
-    HaveContainerIDs: HaveContainer(ids, containersMap),
+    InvalidIDs: InvalidIDs(ids, orders),
+    HaveContainerIDs: HaveContainer(ids, containers),
     ValidIDs: validIDs,
     container: container,
     districts: districts,
-    activeDistrict: _.find(districts, (district) => (district.DistrictID == active)) || {},
-    haveTrips: trip,
+    activeDistrict: _.find(districts, (district) => (district.DistrictID == container.district)) || {},
     haveTried: _.find(orders, (order) => (order.status != '')),
     validOrders: validOrders,
     haveMore: _.filter(validOrders, (order) => {
@@ -171,17 +161,20 @@ const FillDispatch = (dispatch, ownProps) => {
     backToContainer: function(id) {
       dispatch(push('/container/' + id));
     },
-    selectedOrdersToggle: function(id) {
-      dispatch(selectedOrdersToggle(id));
+    orderToggle: function(id) {
+      dispatch(orderToggle(id));
     },
     districtsFetch: function() {
       dispatch(districtsFetch());
     },
-    pickDistrict: function(id) {
-      dispatch(pickDistrict(id));
+    pickDistrict: function(id1, id2) {
+      dispatch(containerDistrictPick(id1, id2));
+    },
+    resetDistrict: function(id) {
+      dispatch(containerDistrictReset(id));
     },
     fillContainer: function(containerNumber, ordersID, districtID) {
-      dispatch(fillContainer(containerNumber, ordersID, districtID));
+      dispatch(containerFill(containerNumber, ordersID, districtID));
     }
   };
 }
@@ -204,9 +197,9 @@ const FillPage = React.createClass({
 });
 
 const mapStateToProps = (state, ownProps) => {
-  const {containerDetails, selectedOrders} = state.app;
-  const {container} = containerDetails;
-  const {isFetching, isValid, error, ids} = selectedOrders;
+  const {containers, ordersPrepared} = state.app;
+  const container = _.find(containers.containers, (container) => (container.ContainerID == containers.active));
+  const {isFetching, isValid, error, ids} = ordersPrepared;
   return {
     container: container
   }

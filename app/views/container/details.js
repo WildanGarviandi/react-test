@@ -1,7 +1,8 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
-import {containerDetails, selectedOrdersReset} from '../../actions';
+import containerDetailsFetch from '../../modules/containers/actions/containerDetailsFetch';
+import {selectedOrdersReset} from '../../actions';
 import {ButtonAtRightTop, ButtonBase, PageTitle} from '../base';
 import {OrderTable} from './table';
 
@@ -16,7 +17,7 @@ const headers = [{
 
 const DetailPage = React.createClass({
   componentDidMount() {
-    this.props.getContainerDetails(this.props.params.id);
+    this.props.containerDetailsFetch(this.props.params.id);
   },
   goToFillContainer() {
     const {container} = this.props;
@@ -55,8 +56,10 @@ const DetailPage = React.createClass({
 });
 
 const mapStateToProps = (state, ownProps) => {
-  const {containerDetails} = state.app;
-  const {container, fillAble, isFetching, orders} = containerDetails;
+  const containerID = ownProps.params.id;
+  const {containers} = state.app.containers;
+  const container = _.find(containers, (container) => (container.ContainerID == containerID));
+  const {fillAble, isFetching, orders} = container;
   return {
     container: container,
     orders: _.map(orders, (order) => ({
@@ -78,8 +81,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     backToContainer: function() {
       dispatch(push('/container'));
     },
-    getContainerDetails: function(id) {
-      dispatch(containerDetails(id));
+    containerDetailsFetch: function(id) {
+      dispatch(containerDetailsFetch(id));
     },
     goToFillContainer: function(id) {
       dispatch(selectedOrdersReset());

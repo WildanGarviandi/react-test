@@ -1,7 +1,8 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {ButtonBase, InputText, Rows} from '../base';
-import {removeOrderFromContainer, toggleContainerActiveStatus} from '../../actions';
+import orderRemove from '../../modules/containers/actions/orderRemove';
+import containerActiveToggle from '../../modules/containers/actions/containerActiveToggle';
 import styles from './table.css';
 
 const classnaming = require('classnames/bind').bind(styles);
@@ -76,8 +77,8 @@ const StatusCell = React.createClass({
 
 const DeleteCell = React.createClass({
   handleDelete() {
-    const {removeOrderFromContainer, item} = this.props;
-    removeOrderFromContainer(item.id3);
+    const {orderRemove, item} = this.props;
+    orderRemove(item.id3);
   },
   render() {
     const {item} = this.props;
@@ -100,8 +101,8 @@ const DeleteCellState = (state) => {
 
 const DeleteCellDispatch = (dispatch) => {
   return {
-    removeOrderFromContainer: function(id) {
-      dispatch(removeOrderFromContainer(id));
+    orderRemove: function(id) {
+      dispatch(orderRemove(id));
     }
   }
 }
@@ -127,8 +128,8 @@ const ContainerTable = React.createClass({
 
 const ActiveCell = React.createClass({
   handleToggle() {
-    const {item, toggleContainerActiveStatus} = this.props;
-    toggleContainerActiveStatus(item.id);
+    const {item, containerActiveToggle} = this.props;
+    containerActiveToggle(item.id);
   },
   render() {
     const {item, val} = this.props;
@@ -145,8 +146,8 @@ const ActiveCellState = (state) => {
 
 const ActiveCellDispatch = (dispatch) => {
   return {
-    toggleContainerActiveStatus: function(id) {
-      dispatch(toggleContainerActiveStatus(id));
+    containerActiveToggle: function(id) {
+      dispatch(containerActiveToggle(id));
     }
   }
 }
