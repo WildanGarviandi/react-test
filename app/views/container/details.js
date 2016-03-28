@@ -2,7 +2,6 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
 import containerDetailsFetch from '../../modules/containers/actions/containerDetailsFetch';
-import {selectedOrdersReset} from '../../actions';
 import {ButtonAtRightTop, ButtonBase, PageTitle} from '../base';
 import {OrderTable} from './table';
 
@@ -85,7 +84,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(containerDetailsFetch(id));
     },
     goToFillContainer: function(id) {
-      dispatch(selectedOrdersReset());
       dispatch(push('/container/' + id + '/order'));
     }
   }

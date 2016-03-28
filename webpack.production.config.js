@@ -5,7 +5,7 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 module.exports = {
   entry: __dirname + "/app/main.js",
   output: {
-    path: __dirname + "/build",
+    path: __dirname + "/public",
     filename: "bundle.js"
   },
 
@@ -45,6 +45,19 @@ module.exports = {
   postcss: [
     require('autoprefixer')
   ],
+
+  resolve: {
+    alias: {
+      react: "react/dist/react.min.js",
+      "react-dom": "react-dom/dist/react-dom.min.js",
+      "react-redux": "react-redux/dist/react-redux.min.js",
+      "react-router": "react-router/umd/ReactRouter.min.js",
+      redux: "redux/dist/redux.min.js",
+      "redux-logger": "redux-logger/dist/index.min.js",
+      "redux-thunk": "redux-thunk/dist/redux-thunk.min.js",
+      underscore: "underscore/underscore-min.js"
+    }
+  },
 
   plugins: [
     new HtmlWebpackPlugin({

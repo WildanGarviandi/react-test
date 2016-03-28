@@ -1,13 +1,21 @@
 # Etobee Hub
 
-## Development Step
+## Configuration
 
-The usual step. Akses server pada port 8080.
+Copy config.json.example to config.json
+Put app configuration there
+
+## Development Step
 
 ```
 git clone git@gitlab.com:etobee-techgroup/etobee-hub.git
 npm install
-npm start
+npm run dev
 ```
 
-Belum ada production configuration untuk saat ini.
+## Production Step
+```
+npm install
+npm run build
+npm run server
+```

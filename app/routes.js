@@ -30,6 +30,18 @@ function requireAuth(nextState, replace, callback) {
   });
 }
 
+var firstVisit = true;
+function checkFirstVisit(nextState, replace, callback) {
+  if(firstVisit) {
+    firstVisit = false;
+    replace({
+      pathname: '/container'
+    })
+  }
+
+  callback();
+}
+
 export default (
   <Router history={browserHistory}>
     <Route path="/" component={App}>
@@ -38,9 +50,9 @@ export default (
         <IndexRoute component={ContainerPage} />
         <Route path="/hubOrder" component={HubPage} />
         <Route path="/container" component={ContainerPage} />
-        <Route path="/container/:id" component={ContainerDetailsPage} />
-        <Route path="/container/:id/order" component={ContainerOrderPage} />
-        <Route path="/container/:id/fill" component={ContainerFillPage} />
+        <Route path="/container/:id" component={ContainerDetailsPage} onEnter={checkFirstVisit} />
+        <Route path="/container/:id/order" component={ContainerOrderPage} onEnter={checkFirstVisit} />
+        <Route path="/container/:id/fill" component={ContainerFillPage} onEnter={checkFirstVisit} />
       </Route>
       <Route path="/login" component={LoginPage} />
       <Route path="/*" component={LoginPage} />
