@@ -6,7 +6,6 @@ import containerFill from '../../modules/containers/actions/containerFill';
 import orderToggle from '../../modules/containers/actions/orderToggle';
 import districtsFetch from '../../modules/districts/actions/districtsFetch';
 import {containerDistrictPick, containerDistrictReset} from '../../modules/containers/constants';
-import {pickDistrict, selectedOrdersFetch} from '../../actions';
 import {ButtonBase, Dropdown, PageTitle} from '../base';
 import {OrderTable2} from './table';
 

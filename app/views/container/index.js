@@ -3,7 +3,6 @@ import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
 import containerCreate from '../../modules/containers/actions/containerCreate';
 import containersFetch from '../../modules/containers/actions/containersFetch';
-import {pickContainer} from '../../actions';
 import {ButtonAtRightTop, PageTitle, Tables} from '../base';
 import ContainerTable from './table';
 

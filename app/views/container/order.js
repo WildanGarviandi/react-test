@@ -3,7 +3,6 @@ import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
 import _ from 'underscore';
 import ordersPrepareFetch from '../../modules/containers/actions/ordersPrepare';
-import {selectedOrdersToggle} from '../../actions';
 import {ButtonBase, PageTitle} from '../base';
 
 const columns = ['id', 'id2', 'pickup', 'dropoff', 'time', 'status'];
