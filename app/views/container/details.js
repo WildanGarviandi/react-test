@@ -42,7 +42,11 @@ const DetailPage = React.createClass({
             {
               orders.length > 0 ?
               <div>
-                <OrderTable columns={columns} headers={headers} items={orders} /> 
+                {
+                  fillAble ?
+                  <OrderTable columns={columns} headers={headers} items={orders} /> :
+                  <OrderTable columns={columns.slice(0,5)} headers={headers} items={orders} />
+                }
               </div>
               :
               <span />
