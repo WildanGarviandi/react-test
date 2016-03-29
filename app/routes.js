@@ -7,7 +7,6 @@ import ContainerFillPage from './views/container/fill';
 import ContainerOrderPage from './views/container/order';
 import DashboardPage from './views/dashboard';
 import LoginPage from './views/login';
-import {HubPage, MyOrderPage} from './views/order';
 import store from './store';
 
 import { createHashHistory } from 'history';
