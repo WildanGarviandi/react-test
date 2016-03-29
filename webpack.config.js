@@ -2,8 +2,6 @@ var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  devtool: "eval-source-map",
-
   entry:  __dirname + "/app/main.js",
   output: {
     path: __dirname + "/build",
@@ -32,6 +30,14 @@ module.exports = {
       { 
         test: /\.png$/, 
         loader: "url-loader?limit=100000" 
+      }, 
+      { 
+        test: /\.gif$/, 
+        loader: "url-loader?limit=100000" 
+      }, 
+      {
+        test: /\.woff$/,
+        loader: 'url?limit=100000'
       }
     ]
   },

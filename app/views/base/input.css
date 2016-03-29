@@ -1,0 +1,10 @@
+.errorMsg {
+  color: #c33;
+  position: absolute;
+  top: 160%;
+  left: 4px;
+}
+
+.hasError {
+  margin-bottom: 16px;
+}

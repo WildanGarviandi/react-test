@@ -10,8 +10,14 @@ html, body {
 body {
   min-height: 100vh;
   font-family: "proxima_nova_rgregular", Helvetica, Arial, sans-serif;
+  font-size: 14px;
 }
 
 a {
   text-decoration: none;
+  color: inherit;
+}
+
+li {
+  list-style-type: none;
 }

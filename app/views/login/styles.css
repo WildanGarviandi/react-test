@@ -95,6 +95,14 @@
   float: right;
 }
 
+.errorMsg {
+  text-align: center;
+  display: block;
+  color: red;
+  position: relative;
+  top: -10px;
+}
+
 .submitBtn {
   display: block;
   cursor: pointer;
@@ -106,4 +114,8 @@
   margin-top: 10px;
 
   font-size: 18px;
+}
+
+.inputError {
+  border: solid 1px red;
 }
