@@ -11,7 +11,7 @@ export default (containerID) => {
     fetch('/container/' + containerID, token).then(function(response) {
       if(response.ok) {
         response.json().then(function(response) {
-          dispatch({type: actionTypes.CONTAINER_DETAILS_FETCH_SUCCESS, container: response.container, orders: response.orders, trip: response.trip, fillAble: response.fillAble});
+          dispatch({type: actionTypes.CONTAINER_DETAILS_FETCH_SUCCESS, ContainerID: containerID, container: response.container, orders: response.orders, trip: response.trip, fillAble: response.fillAble});
           return;
         });
       } else {

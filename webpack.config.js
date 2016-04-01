@@ -2,8 +2,14 @@ var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry:  __dirname + "/app/main.js",
+  entry: [
+      './app/main.js',
+      'webpack/hot/dev-server',
+      'webpack-dev-server/client?http://localhost:8080'
+  ],
+
   output: {
+    publicPath: "http://localhost:8080/assets/",
     path: __dirname + "/build",
     filename: "bundle.js"
   },
@@ -42,19 +48,12 @@ module.exports = {
     ]
   },
 
-  postcss: [
-    require('autoprefixer')
-  ],
-
   plugins: [
-    new webpack.BannerPlugin("Search for Sheena Ringo"),
-    new HtmlWebpackPlugin({
-      template: __dirname + "/app/index.tmpl.html"
-    }),
     new webpack.HotModuleReplacementPlugin()
   ],
 
   devServer: {
+    contentBase: './build',
     colors: true,
     historyApiFallback: true,
     inline: true,

@@ -1,12 +1,11 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import classNaming from 'classnames';
 
-import Login from '../../modules/auth/actions/login';
+import login from '../../modules/auth/actions/login';
 
-import {InputText, InputPassword, CheckBox, ButtonBase} from '../base';
+import {CheckBox, ButtonBase, Input} from '../base';
 import styles from './styles.css';
-
-var classNaming = require('classnames/bind').bind(styles);
 
 const LoginCheckBox = ({checked, onChange}) => {
   var checkboxClass = classNaming({
@@ -22,6 +21,10 @@ const LoginCheckBox = ({checked, onChange}) => {
 }
 
 const LoginPresenter = ({isError, rememberMe, email, password, handleInputChange, handleSubmit}) => {
+  const inputStyles = {
+    input: classNaming(styles.inputText, {[styles.inputError]: isError})
+  };
+
   return (
     <div className={styles.page}>
       <div className={styles.logo}></div>
@@ -29,8 +32,8 @@ const LoginPresenter = ({isError, rememberMe, email, password, handleInputChange
         <form className={styles.form} onSubmit={handleSubmit}>
           <h4 className={styles.header}>LOGIN</h4>
           { isError && <span className={styles.errorMsg}>Bad login information </span>}
-          <InputText className={classNaming(styles.inputText,{inputError: isError})} value={email} placeholder="Email" onChange={handleInputChange('email')} required={true} />
-          <InputPassword className={classNaming(styles.inputText,{inputError: isError})} value={password} placeholder="Password" onChange={handleInputChange('password')}required={true} />
+          <Input styles={inputStyles} value={email} placeholder="Email" onChange={handleInputChange('email')} required={true} type="text" />
+          <Input styles={inputStyles} value={password} placeholder="Password" onChange={handleInputChange('password')} required={true} type="password" />
           <LoginCheckBox checked={rememberMe} onChange={handleInputChange('rememberMe')} />
           <a href="javascript:;" className={styles.forgot}>Forgot password?</a>
           <ButtonBase className={styles.submitBtn} type={'submit'}>LOGIN</ButtonBase>
@@ -65,6 +68,7 @@ const LoginContainer = React.createClass({
 const mapStateToProps = (state) => {
   const {isFetching, isValid} = state.app.userLogged;
   return {
+    isFetching: isFetching,
     isError: (!isFetching && !isValid)
   };
 }
@@ -72,7 +76,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     login: function(email, pass) {
-      dispatch(Login(email, pass));
+      dispatch(login(email, pass));
     }
   }
 }

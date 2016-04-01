@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './index.css';
 import { Dropdown } from './dropdown';
 import { Glyph } from './glyph';
-import { InputText, InputPassword } from './input';
+import { Input } from './input';
 import { ButtonAtRightTop, PageTitle } from './page';
 import { Pagination } from './pagination';
 import { Rows, Tables } from './table';
@@ -39,4 +39,4 @@ const ButtonBase = React.createClass({
   }
 });
 
-export { ButtonAtRightTop, ButtonBase, CheckBox, Dropdown, Glyph, InputPassword, InputText, Modal, PageTitle, Pagination, Rows, Tables };
+export { ButtonAtRightTop, ButtonBase, CheckBox, Dropdown, Glyph, Input, Modal, PageTitle, Pagination, Rows, Tables };

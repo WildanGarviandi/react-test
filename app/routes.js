@@ -9,9 +9,6 @@ import DashboardPage from './views/dashboard';
 import LoginPage from './views/login';
 import store from './store';
 
-import { createHashHistory } from 'history';
-const appHistory = useRouterHistory(createHashHistory)({ queryKey: false });
-
 function App(props) {
   return <div style={{height: "100%"}}>{props.children}</div>;
 }
@@ -52,9 +49,8 @@ export default (
       <Route path="/home" component={DashboardPage} onEnter={requireAuth}>
         <IndexRoute component={ContainerPage} />
         <Route path="/container" component={ContainerPage} onEnter={triggerFirstVisit} />
-        <Route path="/container/:id" component={ContainerDetailsPage} onEnter={checkFirstVisit} />
-        <Route path="/container/:id/order" component={ContainerOrderPage} onEnter={checkFirstVisit} />
-        <Route path="/container/:id/fill" component={ContainerFillPage} onEnter={checkFirstVisit} />
+        <Route path="/container/:id" component={ContainerDetailsPage} />
+        <Route path="/container/:id/fill" component={ContainerFillPage} />
       </Route>
       <Route path="/login" component={LoginPage} />
       <Route path="/*" component={LoginPage} />

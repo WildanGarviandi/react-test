@@ -6,6 +6,7 @@ import districtsReducers from './modules/districts/reducers';
 
 export default combineReducers({ 
   userLogged: authReducers,
+  broadcast: containersReducers.broadcast,
   containers: containersReducers.containers,
   ordersPrepared: containersReducers.ordersPrepared,
   districts: districtsReducers
