@@ -1,11 +1,10 @@
 var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
   entry: __dirname + "/app/main.js",
   output: {
-    path: __dirname + "/public",
+    path: __dirname + "/assets",
     filename: "bundle.js"
   },
 
@@ -42,9 +41,6 @@ module.exports = {
       }
     ]
   },
-  postcss: [
-    require('autoprefixer')
-  ],
 
   resolve: {
     alias: {
@@ -60,9 +56,6 @@ module.exports = {
   },
 
   plugins: [
-    new HtmlWebpackPlugin({
-      template: __dirname + "/app/index.tmpl.html"
-    }),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin(),
     new ExtractTextPlugin("style.css")
