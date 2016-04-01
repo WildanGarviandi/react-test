@@ -1,7 +1,4 @@
 import React from 'react';
-import styles from './input.css';
-
-const classnaming = require('classnames/bind').bind(styles);
 
 const Input = React.createClass({
   handleChange(e) {
@@ -11,24 +8,15 @@ const Input = React.createClass({
     onChange(e.target.value);
   },
   render() {
-    let { className, errorMsg, placeholder, required, type, value } = this.props;
-    let inputClass = classnaming(className, { hasError: errorMsg });
+    let { errorMsg, placeholder, required, styles, type, value } = this.props;
 
     return (
       <span style={{position: 'relative'}}>
-        <input className={inputClass} placeholder={placeholder} type={type} value={value} onChange={this.handleChange} required={required} />
-        <span className={styles.errorMsg}>{errorMsg}</span>
+        <input className={styles.input} placeholder={placeholder} type={type} value={value} onChange={this.handleChange} required={required} />
+        <span className={styles.error}>{errorMsg}</span>
       </span>
     );
   }
 });
 
-function InputText(props) {
-  return <Input {...props} type="text" />
-}
-
-function InputPassword(props) {
-  return <Input {...props} type="password" />
-}
-
-export {InputText, InputPassword};
+export {Input};

@@ -1,9 +1,11 @@
 import * as actionTypes from '../constants';
 
-const initialState = { isFetching: false, isValid: true, containers: {}, orders: [], ids: [] };
+const initialState = { isFetching: false, isValid: true, count: 0, orders: [], checkAll: true, ids: [], limit: 20, currentPage: 1, result: null };
 
 const orderFn = (state = {}, action) => {
   switch(action.type) {
+    case actionTypes.ORDER_PREPARE_TOGGLE_ALL:
+      return _.assign({}, state, {checked: action.status});
     case actionTypes.ORDER_PREPARE_TOGGLE:
       if(state.UserOrderNumber != action.id || state.status == 'Success') return state;
       return _.assign({}, state, {checked: !state.checked});
@@ -39,30 +41,35 @@ const orderFn = (state = {}, action) => {
 export default (state = initialState, action) => {
   switch(action.type) {
     case actionTypes.ORDER_PREPARE_FETCH_START:
-      return _.assign({}, state, {isFetching: true, isValid: false, orders: [], ids: action.ids});
+      return _.assign({}, state, {isFetching: true, isValid: false});
     case actionTypes.ORDER_PREPARE_FETCH_SUCCESS:
       return _.assign({}, state, {
-        isFetching: false, isValid: true, 
-        orders: _.map(action.orders, (order) => (_.assign({}, order, {checked: true, status: ''}))),
-        containers: action.containers
+        isFetching: false, isValid: true, count: action.count,
+        orders: _.map(action.orders, (order) => (_.assign({}, order, {checked: true, status: ''})))
       });
     case actionTypes.ORDER_PREPARE_FETCH_FAILED:
-      return _.assign({}, state, {isFetching: false, isValid: false, error: action.error, orders: [], ids: []});
+      return _.assign({}, state, {isFetching: false, isValid: false, error: action.error});
     case actionTypes.CONTAINER_FILL_START:
-      return _.assign({}, state, {
-        isFilling: true,
-        orders: _.map(state.orders, (order) => (orderFn(order, action)))
-      });
+      return _.assign({}, state, {isFilling: true, results: null});
     case actionTypes.CONTAINER_FILL_SUCCESS:
+      return _.assign({}, state, {isFilling: false, results: action.results});
     case actionTypes.CONTAINER_FILL_FAILED:
-      return _.assign({}, state, {
-        isFilling: false,
-        orders: _.map(state.orders, (order) => (orderFn(order, action)))
-      });
+      return _.assign({}, state, {isFilling: false, results: null});
     case actionTypes.ORDER_PREPARE_TOGGLE:
       return _.assign({}, state, {
         orders: _.map(state.orders, (order) => (orderFn(order, action)))
       });
+    case actionTypes.ORDER_PREPARE_TOGGLE_ALL:
+      return _.assign({}, state, {
+        checkAll: action.status,
+        orders: _.map(state.orders, (order) => (orderFn(order, action)))
+      });
+    case actionTypes.ORDER_PREPARE_SET_IDS:
+      return _.assign({}, state, {ids: action.ids});
+    case actionTypes.ORDER_PREPARE_SET_LIMIT:
+      return _.assign({}, state, {limit: action.limit});
+    case actionTypes.ORDER_PREPARE_SET_CURRENTPAGE:
+      return _.assign({}, state, {currentPage: action.currentPage});
     default: return state;
   }
 }

@@ -1,4 +1,5 @@
 import containers from './containers';
 import ordersPrepared from './ordersPrepared';
+import broadcast from './broadcast';
 
-export default { containers, ordersPrepared }
+export default { broadcast, containers, ordersPrepared }

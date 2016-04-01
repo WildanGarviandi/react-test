@@ -1,8 +1,10 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {ButtonBase, InputText, Rows} from '../base';
+import {ButtonBase, Input, Rows} from '../base';
 import orderRemove from '../../modules/containers/actions/orderRemove';
 import containerActiveToggle from '../../modules/containers/actions/containerActiveToggle';
+import orderToggleAll from '../../modules/containers/actions/orderToggleAll';
+import orderToggle from '../../modules/containers/actions/orderToggle';
 import styles from './table.css';
 
 const classnaming = require('classnames/bind').bind(styles);
@@ -41,7 +43,7 @@ const SearchCell = React.createClass({
   render() {
     return (
       <td className={classnaming('td', 'search')}>
-        <InputText className={styles.searchInput} />
+        <Input styles={{input: styles.searchInput}} type="text" />
       </td>
     );
   }
@@ -57,6 +59,56 @@ const CellWithSelected = React.createClass({
     );
   }
 });
+
+const CellWithOnlySelect = React.createClass({
+  handleClick() {
+    const {item, toggleSelect} = this.props;
+    toggleSelect(item.id2);
+  },
+  render() {
+    const {item, val} = this.props;
+    return (
+      <td className={styles.td} style={{color: "#37B494", width: '10px'}}>
+        <input type={'checkbox'} checked={item.checked} onClick={this.handleClick} readOnly/>
+      </td>
+    );
+  }
+});
+
+const CellWithOnlySelectDispatch = (dispatch) => {
+  return {
+    toggleSelect: function(id) {
+      dispatch(orderToggle(id));
+    }
+  }
+}
+
+const CellWithOnlySelectContainer = connect(undefined, CellWithOnlySelectDispatch)(CellWithOnlySelect);
+
+const HeaderWithOnlySelect = React.createClass({
+  handleClick() {
+    const {item, orderToggleAll} = this.props;
+    orderToggleAll(item.checked);
+  },
+  render() {
+    const {item, val} = this.props;
+    return (
+      <th className={styles.th} style={{color: "#37B494", width: '10px'}}>
+        <input type={'checkbox'} checked={item.checked} readOnly onClick={this.handleClick}/>
+      </th>
+    );
+  }
+});
+
+const HeaderSelectDispatch = (dispatch) => {
+  return {
+    orderToggleAll: function(val) {
+      dispatch(orderToggleAll(val));
+    }
+  }
+}
+
+const HeaderSelectContainer = connect(undefined, HeaderSelectDispatch)(HeaderWithOnlySelect);
 
 const StatusCell = React.createClass({
   render() {
@@ -172,8 +224,8 @@ export const OrderTable = React.createClass({
 export const OrderTable2 = React.createClass({
   render() {
     let {columns, headers, items, rowClicked} = this.props;
-    let Header = Rows(React.DOM.thead, BaseHeader, {}, columns, function() {});
-    let Body = Rows(React.DOM.tbody, BaseCell, {id: CellWithSelected, status: StatusCell}, columns, rowClicked);
+    let Header = Rows(React.DOM.thead, BaseHeader, {check: HeaderSelectContainer}, columns, function() {});
+    let Body = Rows(React.DOM.tbody, BaseCell, {check: CellWithOnlySelectContainer, status: StatusCell}, columns, rowClicked);
 
     return (
       <table className={styles.table}>

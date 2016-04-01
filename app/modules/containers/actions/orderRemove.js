@@ -10,7 +10,7 @@ export default (orderID) => {
     fetch('/hub/order/' + orderID + '/removeContainer', token).then(function(response) {
       if(response.ok) {
         response.json().then(function(response) {
-          dispatch({type: actionTypes.ORDER_REMOVE_SUCCESS, route: response.route});
+          dispatch({type: actionTypes.ORDER_REMOVE_SUCCESS, order: response.order});
         })
       } else {
         response.json().then(function(response) {

@@ -1,22 +1,28 @@
 import {push} from 'react-router-redux';
 import * as actionTypes from '../constants';
 import fetch from '../../fetch/get';
+import toggleAll from './orderToggleAll';
 
-export default (ordersID, containerID) => {
+export default () => {
   return (dispatch, getState) => {
-    const {userLogged} = getState().app;
+    const {userLogged, ordersPrepared} = getState().app;
     const {token, userID} = userLogged;
+    const ordersID = ordersPrepared.ids;
+    const limit = ordersPrepared.limit;
+    const offset = (ordersPrepared.currentPage-1)*limit;
 
     const query = {
-      ordersID: ordersID
+      ordersID: ordersID || [],
+      limit: limit,
+      offset: offset
     }
 
-    dispatch({ type: actionTypes.ORDER_PREPARE_FETCH_START, ids: ordersID });
+    dispatch({ type: actionTypes.ORDER_PREPARE_FETCH_START, ids: ordersID, limit: limit, offset: offset });
     fetch('/hub/ordersByID', token, query).then(function(response) {
       if(response.ok) {
         response.json().then(function(response) {
-          dispatch({ type: actionTypes.ORDER_PREPARE_FETCH_SUCCESS, orders: response.orders, containers: response.containers });
-          dispatch(push('/container/' + containerID + '/fill'));
+          dispatch({ type: actionTypes.ORDER_PREPARE_FETCH_SUCCESS, orders: response.rows, count: response.count });
+          dispatch(toggleAll(false));
           return;
         });
       } else {

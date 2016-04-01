@@ -15,7 +15,7 @@ const headers = [{
 }];
 
 const DetailPage = React.createClass({
-  componentDidMount() {
+  componentWillMount() {
     this.props.containerDetailsFetch(this.props.params.id);
   },
   goToFillContainer() {
@@ -33,7 +33,7 @@ const DetailPage = React.createClass({
           <h3>Fetching Container Details...</h3> :
           <div>
             {
-              fillAble ? 
+              fillAble ?
               <ButtonAtRightTop val={'Fill Container'} onClick={this.goToFillContainer} /> :
               <span />
             }
@@ -61,7 +61,12 @@ const DetailPage = React.createClass({
 const mapStateToProps = (state, ownProps) => {
   const containerID = ownProps.params.id;
   const {containers} = state.app.containers;
-  const container = _.find(containers, (container) => (container.ContainerID == containerID));
+  const container = containers[containerID];
+
+  if(!container) {
+    return {isFetching: true};
+  }
+
   const {fillAble, isFetching, orders} = container;
   return {
     container: container,
@@ -88,7 +93,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(containerDetailsFetch(id));
     },
     goToFillContainer: function(id) {
-      dispatch(push('/container/' + id + '/order'));
+      dispatch(push('/container/' + id + '/fill'));
     }
   }
 }
