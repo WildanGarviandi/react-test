@@ -74,10 +74,11 @@ const Login = ({input, handleInputChange, handleSubmit, loginState}) => {
           <a href="javascript:;" className={styles.forgot}>Forgot password?</a>
           {
             loginState.isFetching ?
-            <ButtonBase {...submitBtnDisabled}>
-              <span className={styles.loading}>LOGGING IN</span>
-            </ButtonBase> :
-            <ButtonBase styles={styles.submitBtn} type={'submit'}>LOGIN</ButtonBase>
+              <ButtonBase {...submitBtnDisabled}>
+                <span className={styles.loading}>LOGGING IN</span>
+              </ButtonBase>
+            :
+              <ButtonBase styles={styles.submitBtn} type={'submit'}>LOGIN</ButtonBase>
           }
         </form>
       </div>
@@ -90,11 +91,9 @@ const LoginPage = React.createClass({
     return { email: '', password: '', rememberMe: false };
   },
   handleInputChange(key) {
-    return function(val) {
-      var state = {};
-      state[key] = val;
-      this.setState(state);
-    }.bind(this);
+    return (val) => {
+      this.setState({[key]: val});
+    };
   },
   handleSubmit(event) {
     event.preventDefault();

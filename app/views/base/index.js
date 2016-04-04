@@ -1,4 +1,5 @@
 import React from 'react';
+import Collection from './collection';
 import { Dropdown } from './dropdown';
 import { Glyph } from './glyph';
 import { CheckBox, Input } from './input';
@@ -20,4 +21,4 @@ const ButtonBase = React.createClass({
   }
 });
 
-export { ButtonAtRightTop, ButtonBase, CheckBox, Dropdown, Glyph, Input, Modal, PageTitle, Pagination, Rows, Tables };
+export { ButtonAtRightTop, ButtonBase, CheckBox, Collection, Dropdown, Glyph, Input, Modal, PageTitle, Pagination, Rows, Tables };
