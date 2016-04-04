@@ -1,40 +1,21 @@
 import React from 'react';
-import styles from './index.css';
 import { Dropdown } from './dropdown';
 import { Glyph } from './glyph';
-import { Input } from './input';
+import { CheckBox, Input } from './input';
 import { ButtonAtRightTop, PageTitle } from './page';
 import { Pagination } from './pagination';
 import { Rows, Tables } from './table';
 import Modal from './modal';
-
-var classNames = require('classnames/bind').bind(styles);
-
-const CheckBox = React.createClass({
-  handleClick(e) {
-    let { onClick } = this.props;
-    if(!onClick) return;
-    onClick(e.target.checked);
-  },
-  render() {
-    let { checked } = this.props;
-
-    return (
-      <span>
-        <input type="checkbox" checked={checked} onClick={this.handleClick} id={'rememberMe'} />
-        <label htmlFor={'rememberMe'}>Keep me logged in</label>
-      </span>
-    );
-  }
-});
+import classNaming from 'classnames';
+import baseStyle from './index.css';
 
 const ButtonBase = React.createClass({
   render() {
-    var { children, className, onClick, type, width } = this.props;
-    var btnClass = classNames('btnBase', className);
+    var { children, disabled, onClick, styles, type, width } = this.props;
+    var btnClass = classNaming(baseStyle.btnBase, styles);
 
     return (
-      <button className={btnClass} onClick={onClick} type={type} style={{width: width}}>{children}</button>
+      <button className={btnClass} onClick={onClick} type={type} style={{width: width}} disabled={disabled}>{children}</button>
     );
   }
 });

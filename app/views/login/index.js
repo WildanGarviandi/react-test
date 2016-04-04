@@ -2,28 +2,64 @@ import React from 'react';
 import {connect} from 'react-redux';
 import classNaming from 'classnames';
 
-import login from '../../modules/auth/actions/login';
-
+import {LoginAction} from '../../modules/';
 import {CheckBox, ButtonBase, Input} from '../base';
 import styles from './styles.css';
 
-const LoginCheckBox = ({checked, onChange}) => {
-  var checkboxClass = classNaming({
-    checkboxChecked: checked,
-    checkbox: true
-  });
+const LoginCheckBox = (props) => {
+  var checkboxStyle = {
+    container: classNaming(styles.checkbox, {[styles.checked]: props.checked}),
+    checkbox: styles.checkboxInput,
+    label: styles.checkboxLabel
+  }
 
   return (
-    <span className={checkboxClass} >
-      <CheckBox onClick={onChange} checked={checked} label={'Keep me logged in'} name={'rememberMe'} />
-    </span>
+    <CheckBox styles={checkboxStyle} {...props} />
   );
 }
 
-const LoginPresenter = ({isError, rememberMe, email, password, handleInputChange, handleSubmit}) => {
-  const inputStyles = {
-    input: classNaming(styles.inputText, {[styles.inputError]: isError})
-  };
+const LoginInput = (props) => {
+  var inputStyles = {
+    container: styles.inputWrapper,
+    input: classNaming(styles.inputText, {[styles.inputError]: props.isError}),
+    notes: styles.inputNotes
+  }
+
+  return (
+    <Input {...props} styles={inputStyles} />
+  );
+}
+
+const Login = ({input, handleInputChange, handleSubmit, loginState}) => {
+  const emailInputProps = {
+    value: input.email,
+    placeholder:"Email",
+    onChange: handleInputChange('email'),
+    required: true,
+    type: "text",
+    isError: loginState.isError
+  }
+
+  const passwordInputProps = {
+    value: input.password,
+    placeholder:"Password",
+    onChange: handleInputChange('password'),
+    required: true,
+    type: "password",
+    isError: loginState.isError
+  }
+
+  const checkboxInputProps = {
+    checked: input.rememberMe,
+    onChange: handleInputChange('rememberMe'),
+    label : 'Keep me logged in',
+    name :'rememberMe'
+  }
+
+  const submitBtnDisabled = {
+    disabled: true,
+    styles: classNaming(styles.submitBtn, styles.submitBtnDisabled)
+  }
 
   return (
     <div className={styles.page}>
@@ -31,19 +67,25 @@ const LoginPresenter = ({isError, rememberMe, email, password, handleInputChange
       <div className={styles.panel}>
         <form className={styles.form} onSubmit={handleSubmit}>
           <h4 className={styles.header}>LOGIN</h4>
-          { isError && <span className={styles.errorMsg}>Bad login information </span>}
-          <Input styles={inputStyles} value={email} placeholder="Email" onChange={handleInputChange('email')} required={true} type="text" />
-          <Input styles={inputStyles} value={password} placeholder="Password" onChange={handleInputChange('password')} required={true} type="password" />
-          <LoginCheckBox checked={rememberMe} onChange={handleInputChange('rememberMe')} />
+          { loginState.isError && <span className={styles.errorMsg}>{loginState.message}</span> }
+          <LoginInput {...emailInputProps} />
+          <LoginInput {...passwordInputProps} />
+          <LoginCheckBox {...checkboxInputProps} />
           <a href="javascript:;" className={styles.forgot}>Forgot password?</a>
-          <ButtonBase className={styles.submitBtn} type={'submit'}>LOGIN</ButtonBase>
+          {
+            loginState.isFetching ?
+            <ButtonBase {...submitBtnDisabled}>
+              <span className={styles.loading}>LOGGING IN</span>
+            </ButtonBase> :
+            <ButtonBase styles={styles.submitBtn} type={'submit'}>LOGIN</ButtonBase>
+          }
         </form>
       </div>
     </div>
   );
 }
 
-const LoginContainer = React.createClass({
+const LoginPage = React.createClass({
   getInitialState() {
     return { email: '', password: '', rememberMe: false };
   },
@@ -59,29 +101,32 @@ const LoginContainer = React.createClass({
     this.props.login(this.state.email, this.state.password);
   },
   render() {
+    const {loginState} = this.props;
+
     return (
-      <LoginPresenter {...this.state} isError={this.props.isError} handleInputChange={this.handleInputChange} handleSubmit={this.handleSubmit} />
+      <Login input={this.state} handleInputChange={this.handleInputChange} handleSubmit={this.handleSubmit} loginState={loginState} />
     );
   }
 });
 
 const mapStateToProps = (state) => {
-  const {isFetching, isValid} = state.app.userLogged;
+  const {isFetching, isValid, message} = state.app.userLogged;
+
   return {
-    isFetching: isFetching,
-    isError: (!isFetching && !isValid)
+    loginState: {
+      isFetching: isFetching,
+      isError: (!isFetching && !isValid),
+      message: message
+    }
   };
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     login: function(email, pass) {
-      dispatch(login(email, pass));
+      dispatch(LoginAction.login(email, pass));
     }
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(LoginContainer);
+export default connect(mapStateToProps,mapDispatchToProps)(LoginPage);
