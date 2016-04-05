@@ -14,8 +14,10 @@ export default (username, password) => {
           dispatch(push('/container'));
         });
       } else {
-        dispatch({ type: actionTypes.LOGIN_FAILED });
+        dispatch({ type: actionTypes.LOGIN_FAILED, message: 'Bad login information' });
       }
+    }).catch(() => {
+        dispatch({ type: actionTypes.LOGIN_FAILED, message: 'Cannot connect to server' });
     });
   }
 }

@@ -122,7 +122,7 @@ function Rows(BaseComponent, BaseCell, CustomCell, columns, actionFn, rowClassNa
       let {item} = this.props;
       let cols = _.map(columns, (column) => {
         let Cell = (column in CustomCell) ? CustomCell[column] : BaseCell;
-        return <Cell key={column} val={item[column]} item={item} column={column} action={this.handleAction} />
+        return <Cell key={column} val={item[column]} item={item} attr={column} action={this.handleAction} />
       });
 
       return (<tr className={styles.tr + ' ' + rowClassName}>{cols}</tr>);

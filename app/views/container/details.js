@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
 import containerDetailsFetch from '../../modules/containers/actions/containerDetailsFetch';
-import {ButtonAtRightTop, ButtonBase, PageTitle} from '../base';
+import {ButtonWithLoading, Page} from '../base';
 import {OrderTable} from './table';
 
 import styles from './styles.css';
@@ -27,17 +27,15 @@ const DetailPage = React.createClass({
 
     return (
       <div>
-        <a href="javascript:;" onClick={backToContainer}>{'<<'} Back to Container List</a>
         {
           isFetching ? 
           <h3>Fetching Container Details...</h3> :
-          <div>
+          <Page title={'Container ' + container.ContainerNumber}>
+            <a href="javascript:;" onClick={backToContainer}>{'<<'} Back to Container List</a>
             {
-              fillAble ?
-              <ButtonAtRightTop val={'Fill Container'} onClick={this.goToFillContainer} /> :
-              <span />
+              fillAble &&
+              <ButtonWithLoading textBase={'Fill Container'} onClick={this.goToFillContainer} />
             }
-            <PageTitle title={'Container ' + container.ContainerNumber} />
             <span>Total {orders.length} items</span>
             {
               orders.length > 0 ?
@@ -51,7 +49,7 @@ const DetailPage = React.createClass({
               :
               <span />
             }
-          </div>
+          </Page>
         }
       </div>
     );

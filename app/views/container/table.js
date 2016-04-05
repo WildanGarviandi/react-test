@@ -2,28 +2,30 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {ButtonBase, Input, Rows} from '../base';
 import orderRemove from '../../modules/containers/actions/orderRemove';
-import containerActiveToggle from '../../modules/containers/actions/containerActiveToggle';
 import orderToggleAll from '../../modules/containers/actions/orderToggleAll';
 import orderToggle from '../../modules/containers/actions/orderToggle';
 import styles from './table.css';
 
 const classnaming = require('classnames/bind').bind(styles);
 
-const BaseHeader = React.createClass({
+export const BaseHeader = React.createClass({
   render() {
-    let {val} = this.props;
-    return (<th className={styles.th}>{val}</th>);
+    let {attr, item} = this.props;
+    return (<th className={styles.th}>{item[attr].toString()}</th>);
   }
 });
 
-const BaseCell = React.createClass({
-  handleAction() {
-    let {action, column} = this.props;
-    action(column);
-  },
+export const BaseCell = React.createClass({
   render() {
-    let {val} = this.props;
-    return (<td className={styles.td} onClick={this.handleAction}>{val}</td>);
+    let {attr, item} = this.props;
+    return (<td className={styles.td}>{item[attr] && item[attr].toString()}</td>);
+  }
+});
+
+export const BaseRow = React.createClass({
+  render() {
+    let {children} = this.props;
+    return (<tr className={styles.tr}>{children}</tr>);
   }
 });
 
@@ -177,34 +179,6 @@ const ContainerTable = React.createClass({
     );
   }
 });
-
-const ActiveCell = React.createClass({
-  handleToggle() {
-    const {item, containerActiveToggle} = this.props;
-    containerActiveToggle(item.id);
-  },
-  render() {
-    const {item, val} = this.props;
-    const name = classnaming('checkbox', val);
-    const tdName = classnaming('td', {'gray': item.status == 'NotActive'});
-
-    return (<td className={tdName} style={{width: '40px', textAlign: 'center'}}><span className={name} onClick={this.handleToggle} /></td>);
-  }
-});
-
-const ActiveCellState = (state) => {
-  return {};
-}
-
-const ActiveCellDispatch = (dispatch) => {
-  return {
-    containerActiveToggle: function(id) {
-      dispatch(containerActiveToggle(id));
-    }
-  }
-}
-
-const ActiveCellContainer = connect(ActiveCellState, ActiveCellDispatch)(ActiveCell);
 
 export const OrderTable = React.createClass({
   render() {

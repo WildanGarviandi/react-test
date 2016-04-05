@@ -26,7 +26,7 @@ export default (state = initialUserState, action) => {
       });
     case actionTypes.LOGIN_FAILED:
       localStorage.clear();
-      return _.assign({}, state, {isFetching: false, isValid: false});
+      return _.assign({}, state, {isFetching: false, isValid: false, message: action.message});
     case actionTypes.AUTH_VALID:
       localStorage.hubID = action.hub.HubID;
       return _.assign({}, state, {hubID: action.hub.HubID});

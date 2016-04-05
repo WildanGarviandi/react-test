@@ -14,14 +14,3 @@
 .errorMsg {
   color: red;
 }
-
-.checkbox {
-  background-image: url(../../img/login-checkbox-unchecked.png);
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
-  -webkit-background-size: cover;
-  background-size: cover;
-  display: inline-block;
-  width: 30px;
-  height: 30px;
-}

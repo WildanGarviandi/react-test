@@ -65,7 +65,6 @@ const Filter = React.createClass({
 const Dispatch = (dispatch) => {
   return {
     ordersPrepareIDs: function(ids) {
-      console.log('save!!');
       dispatch(ordersPrepareIDs(ids));
     },
   }

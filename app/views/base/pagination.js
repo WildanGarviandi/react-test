@@ -41,7 +41,7 @@ const LimitSelector = React.createClass({
         <span className="btn-group dropup">
           <Dropdown opened={this.state.opened} val={this.props.limit} options={[5, 10, 25, 50, 100]} onClick={this.toggleOpened} selectVal={this.setLimit} />
         </span>
-        records per page
+        {' records per page'}
       </span>
     );
   }

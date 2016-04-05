@@ -1,6 +1,6 @@
 import * as actionTypes from '../constants';
 import fetch from '../../fetch/post';
-import push from 'react-router-redux';
+import {push} from 'react-router-redux';
 
 export default () => {
   return (dispatch, getState) => {
@@ -12,7 +12,7 @@ export default () => {
       if(response.ok) {
         response.json().then(function(response) {
           dispatch({type: actionTypes.CONTAINER_CREATE_SUCCESS, container: response.container});
-          dispatch(push('/container' + response.container.ContainerID));
+          dispatch(push('/container/' + response.container.ContainerID));
         });
       } else {
         response.json().then(function(response) {
