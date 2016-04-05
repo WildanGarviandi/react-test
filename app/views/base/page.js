@@ -31,7 +31,6 @@ const ClassifyChildren = (children) => {
     }
   });
 
-  console.log('n', buttons.length);
   return {body, buttons: MoveButtonToTopRight(buttons), backLink};
 }
 
