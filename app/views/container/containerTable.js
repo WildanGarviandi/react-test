@@ -2,8 +2,9 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {ContainersAction} from '../../modules';
 import {Collection, Pagination} from '../base';
-import {BaseCell, BaseHeader, BaseRow} from './table';
+import {BaseCellGray, BaseHeader, BaseRow} from './table';
 import ActiveCell from './activeCell';
+import PickRow from './pickContainerRow';
 
 import styles from './table.css';
 
@@ -33,8 +34,9 @@ const ContainerTable = React.createClass({
     const Header = <Collection item={header} components={HeaderComponent} />
 
     const BodyComponent = _.assign({}, HeaderComponent, {
-      BaseChild: BaseCell,
-      CustomChild: {status: ActiveCell}
+      BaseParent: PickRow,
+      BaseChild: BaseCellGray,
+      CustomChild: {status: ActiveCell},
     });
 
     const Body = _.map(items, (item) => {

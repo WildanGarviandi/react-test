@@ -22,6 +22,7 @@ const ClassifyChildren = (children) => {
   let backLink = [];
 
   React.Children.forEach(children, (child) => {
+    if(!child) return;
     if(child.type.displayName == 'ButtonWithLoading') {
       buttons.push(child);
     } else if(child.type == 'a') {
