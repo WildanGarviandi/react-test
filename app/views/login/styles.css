@@ -117,10 +117,9 @@
 
 .submitBtn {
   display: block;
-  cursor: pointer;
 
   width: 100%;
-  min-height: 24px;
+  height: 40px;
 
   padding: 10px;
   margin-top: 10px;
@@ -128,20 +127,8 @@
   font-size: 18px;
 }
 
-.submitBtnDisabled {
-  display: block;
-  cursor: default;
-  background-color: #aaa;
-}
-
-.submitBtn .loading {
-  background-image: url(../../img/loading.gif);
+.submitBtnSpinner {
   background-position: 25% 50%;
   -webkit-background-size: 20px 20px;
   background-size: 20px 20px;
-  background-repeat: no-repeat;
-
-  display: block;
-  width: 100%;
-  height: 100%;
 }

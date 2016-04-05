@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {ContainerListAction} from '../../modules';
-import {Collection} from '../base';
+import {ContainersAction} from '../../modules';
+import {Collection, Pagination} from '../base';
 import {BaseCell, BaseHeader, BaseRow} from './table';
 import ActiveCell from './activeCell';
 
@@ -11,10 +11,17 @@ const ContainerTable = React.createClass({
   componentDidMount() {
     this.props.fetchContainer();
   },
+  setCurrentPage(x) {
+    this.props.setCurrentPage(x);
+  },
+  setLimit(x) {
+    this.props.setLimit(x);
+  },
   render() {
     const columns = ['ContainerID', 'ContainerNumber', 'Driver', 'status'];
     const header = { ContainerID: 'Container ID', ContainerNumber: 'Container Number', Driver: 'Driver', status: 'Active'};
-    const items = this.props.containers;
+    const {containers, pagination} = this.props;
+    const items = containers;
 
     const HeaderComponent = {
       BaseParent: BaseRow,
@@ -29,30 +36,47 @@ const ContainerTable = React.createClass({
       BaseChild: BaseCell,
       CustomChild: {status: ActiveCell}
     });
+
     const Body = _.map(items, (item) => {
       return <Collection key={item.ContainerID} item={item} components={BodyComponent} />
     });
 
     return (
-      <table className={styles.table}>
-        <thead>{Header}</thead>
-        <tbody>{Body}</tbody>
-      </table>
+      <div>
+        <table className={styles.table}>
+          <thead>{Header}</thead>
+          <tbody>{Body}</tbody>
+        </table>
+        <Pagination {...pagination} setCurrentPage={this.setCurrentPage} setLimit={this.setLimit} />
+      </div>
     );
   }
 });
 
 const stateToProps = (state) => {
-  const {containers} = state.app.containers;
+  const {containers, shown, limit, currentPage, total} = state.app.containers;
   return {
-    containers: _.chain(containers).map((container) => (container)).sortBy((container) => (container.ContainerID)).value()
+    containers: _.chain(containers).map((container) => (container)).filter((container) => {
+      return shown.indexOf(container.ContainerID) > -1;
+    }).sortBy((container) => (container.ContainerID)).value(),
+    pagination: {
+      limit: limit,
+      currentPage: currentPage,
+      totalItem: total
+    }
   }
 }
 
 const dispatchToProps = (dispatch) => {
   return {
     fetchContainer: function() {
-      dispatch(ContainerListAction.fetch());
+      dispatch(ContainersAction.fetch());
+    },
+    setLimit: function(limit) {
+      dispatch(ContainersAction.setLimit(limit));
+    },
+    setCurrentPage: function(page) {
+      dispatch(ContainersAction.setCurrentPage(page));
     }
   }
 }

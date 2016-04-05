@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import classNaming from 'classnames';
 
 import {LoginAction} from '../../modules/';
-import {CheckBox, ButtonBase, Input} from '../base';
+import {ButtonWithLoading, CheckBox, Input} from '../base';
 import styles from './styles.css';
 
 const LoginCheckBox = (props) => {
@@ -32,20 +32,24 @@ const LoginInput = (props) => {
 
 const Login = ({input, handleInputChange, handleSubmit, loginState}) => {
   const emailInputProps = {
-    value: input.email,
-    placeholder:"Email",
+    base: {
+      value: input.email,
+      placeholder:"Email",
+      required: true,
+      type: "text"
+    },
     onChange: handleInputChange('email'),
-    required: true,
-    type: "text",
     isError: loginState.isError
   }
 
   const passwordInputProps = {
-    value: input.password,
-    placeholder:"Password",
+    base: {
+      value: input.password,
+      placeholder:"Password",
+      required: true,
+      type: "password"
+    },
     onChange: handleInputChange('password'),
-    required: true,
-    type: "password",
     isError: loginState.isError
   }
 
@@ -56,9 +60,12 @@ const Login = ({input, handleInputChange, handleSubmit, loginState}) => {
     name :'rememberMe'
   }
 
-  const submitBtnDisabled = {
-    disabled: true,
-    styles: classNaming(styles.submitBtn, styles.submitBtnDisabled)
+  const submitBtnProps = {
+    base: {type: 'submit'},
+    isLoading: loginState.isFetching,
+    styles: {base: styles.submitBtn, spinner: styles.submitBtnSpinner},
+    textBase: 'LOGIN',
+    textLoading: 'LOGGING IN'
   }
 
   return (
@@ -72,14 +79,7 @@ const Login = ({input, handleInputChange, handleSubmit, loginState}) => {
           <LoginInput {...passwordInputProps} />
           <LoginCheckBox {...checkboxInputProps} />
           <a href="javascript:;" className={styles.forgot}>Forgot password?</a>
-          {
-            loginState.isFetching ?
-              <ButtonBase {...submitBtnDisabled}>
-                <span className={styles.loading}>LOGGING IN</span>
-              </ButtonBase>
-            :
-              <ButtonBase styles={styles.submitBtn} type={'submit'}>LOGIN</ButtonBase>
-          }
+          <ButtonWithLoading {...submitBtnProps} />
         </form>
       </div>
     </div>

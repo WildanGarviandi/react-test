@@ -2,7 +2,7 @@ import * as actionTypes from '../constants';
 import containerDetails from './containerDetails';
 import containerStatus from './containerStatus';
 
-const initialState = { isFetching: false, isValid: true, containers: {} };
+const initialState = { isFetching: false, isValid: true, containers: {}, limit: 10, currentPage: 1, total: 0, shown: [] };
 
 export default (state = initialState, action) => {
   switch(action.type) {
@@ -14,6 +14,8 @@ export default (state = initialState, action) => {
       return _.assign({}, state, {
         isFetching: false, 
         isValid: true,
+        total: action.total,
+        shown: _.map(action.containers, (container) => (container.ContainerID)),
         containers: _.reduce(containers, (containers, container) => {
           containers[container.ContainerID] = container;
           return containers;
@@ -22,6 +24,10 @@ export default (state = initialState, action) => {
     }
     case actionTypes.CONTAINERS_FETCH_FAILED:
       return _.assign({}, state, {isFetching: false, isValid: false});
+    case actionTypes.CONTAINERS_SET_LIMIT:
+      return _.assign({}, state, {limit: action.limit});
+    case actionTypes.CONTAINERS_SET_CURRENTPAGE:
+      return _.assign({}, state, {currentPage: action.currentPage});
     case actionTypes.CONTAINER_ACTIVE_TOGGLE_START:
     case actionTypes.CONTAINER_ACTIVE_TOGGLE_SUCCESS:
     case actionTypes.CONTAINER_ACTIVE_TOGGLE_FAILED:

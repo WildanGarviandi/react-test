@@ -1,5 +1,5 @@
 import React from 'react';
-import {ButtonBase} from './';
+import {ButtonWithLoading} from './';
 import styles from './page.css';
 
 const PageTitle = ({title}) => {
@@ -7,7 +7,48 @@ const PageTitle = ({title}) => {
 }
 
 const ButtonAtRightTop = ({onClick, val}) => {
-  return (<ButtonBase styles={styles.mainBtn} onClick={onClick}>{val}</ButtonBase>);
+  return (<ButtonWithLoading styles={{base: styles.mainBtn}} onClick={onClick}>{val}</ButtonWithLoading>);
 }
 
-export {ButtonAtRightTop, PageTitle};
+const MoveButtonToTopRight = (buttons) => {
+  return _.map(buttons, (button) => {
+    return React.cloneElement(button, {key: button.props.textBase, styles: {base: styles.topRightBtn}});
+  })
+}
+
+const ClassifyChildren = (children) => {
+  let buttons = [];
+  let body = [];
+  let backLink = [];
+
+  React.Children.forEach(children, (child) => {
+    if(child.type.displayName == 'ButtonWithLoading') {
+      buttons.push(child);
+    } else if(child.type == 'a') {
+      backLink.push(child);
+    } else {
+      body.push(child);
+    }
+  });
+
+  console.log('n', buttons.length);
+  return {body, buttons: MoveButtonToTopRight(buttons), backLink};
+}
+
+export default React.createClass({
+  render() {
+    const {title, children} = this.props;
+    const {backLink, buttons, body} = ClassifyChildren(children);
+
+    return (
+      <div>
+        {backLink}
+        {buttons}
+        <PageTitle title={title} />
+        {body}
+      </div>
+    );
+  }
+});
+
+export {PageTitle, ButtonAtRightTop};

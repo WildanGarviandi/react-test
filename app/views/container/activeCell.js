@@ -11,7 +11,6 @@ const ActiveCell = React.createClass({
   },
   render() {
     const {item, attr} = this.props;
-    console.log('a', item[attr], this.props);
     const name = classNaming(styles.checkbox, styles[item[attr]]);
     const tdName = classNaming(styles.td, {[styles.gray]: item.status == 'NotActive'});
 
