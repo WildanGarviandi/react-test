@@ -1,11 +1,13 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import classNaming from 'classnames';
-import {ContainerListAction} from '../../modules';
+import {ContainersAction} from '../../modules';
 import styles from './table.css';
 
 const ActiveCell = React.createClass({
-  handleToggle() {
+  handleToggle(e) {
+    e.preventDefault();
+    e.stopPropagation();
     const {item, toggleActive} = this.props;
     toggleActive(item.ContainerID);
   },
@@ -21,7 +23,7 @@ const ActiveCell = React.createClass({
 const ActiveCellDispatch = (dispatch) => {
   return {
     toggleActive: function(id) {
-      dispatch(ContainerListAction.toggleActive(id));
+      dispatch(ContainersAction.toggleActive(id));
     }
   }
 }

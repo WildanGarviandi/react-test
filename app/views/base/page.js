@@ -22,6 +22,7 @@ const ClassifyChildren = (children) => {
   let backLink = [];
 
   React.Children.forEach(children, (child) => {
+    if(!child) return;
     if(child.type.displayName == 'ButtonWithLoading') {
       buttons.push(child);
     } else if(child.type == 'a') {
@@ -31,7 +32,6 @@ const ClassifyChildren = (children) => {
     }
   });
 
-  console.log('n', buttons.length);
   return {body, buttons: MoveButtonToTopRight(buttons), backLink};
 }
 

@@ -7,43 +7,75 @@ import {ButtonBase, ButtonWithLoading, Modal, Page, Tables} from '../base';
 import ContainerTable from './containerTable';
 import styles from './styles.css';
 
+const MessageModal = React.createClass({
+  handleClose() {
+    const {closeModal} = this.props;
+    closeModal();
+  },
+  render() {
+    const {message, show} = this.props;
+
+    return (
+      <Modal show={show} width={250}>
+        {message}
+        <br/>
+        <ButtonBase onClick={this.handleClose} styles={styles.modalBtn}>Close</ButtonBase>
+      </Modal>
+    );
+  }
+});
+
 const ContainerPage = React.createClass({
   getInitialState() {
-    return {showModal: false};
+    return {showModalBroadcast: false, showModalContainer: false};
   },
   handleCreate() {
     this.props.containerCreate();
+    this.setState({showModalContainer: true});
   },
   handleBroadcast() {
     this.props.broadcast();
-    this.setState({showModal: true});
+    this.setState({showModalBroadcast: true});
   },
   closeModal() {
-    this.setState({showModal: false});
+    this.setState({showModalBroadcast: false, showModalContainer: false});
   },
   render() {
-    const {isCreateError, isCreating, pickContainer, isFetching, message} = this.props;
+    const {broadcastState, container} = this.props;
     const createContainerBtnProps = {
       textBase: 'Create Container',
       textLoading: 'Creating Container',
-      isLoading: isCreating,
+      isLoading: container.isCreating,
       onClick: this.handleCreate
+    }
+
+    const broadcastBtnProps = {
+      textBase: 'Broadcast',
+      textLoading: 'Broadcasting',
+      isLoading: broadcastState.isFetching,
+      onClick: this.handleBroadcast
+    }
+
+    const broadcastModalProps = {
+      show: this.state.showModalBroadcast && !broadcastState.isFetching,
+      message: broadcastState.message,
+      closeModal: this.closeModal
+    }
+
+    const containerModalProps = {
+      show: this.state.showModalContainer && !container.isCreating && container.isCreateError,
+      message: container.message,
+      closeModal: this.closeModal
     }
 
     return (
       <div>
         <Page title={'Container List'}>
           <ButtonWithLoading {...createContainerBtnProps} />
-          <ButtonWithLoading textBase={'Broadcast'} onClick={this.handleBroadcast} />
+          <ButtonWithLoading {...broadcastBtnProps} />
           <ContainerTable />
-          <Modal show={this.state.showModal} width={250}>
-            {message}
-            <br/>
-            {
-              !isFetching &&
-              <ButtonBase onClick={this.closeModal} styles={styles.modalBtn}>Close</ButtonBase>
-            }
-          </Modal>
+          <MessageModal {...broadcastModalProps} />
+          <MessageModal {...containerModalProps} />
         </Page>
       </div>
     );
@@ -54,18 +86,20 @@ const mapStateToProps = (state) => {
   const {isCreating, isCreateError} = state.app.containers;
   const {isFetching, message} = state.app.broadcast;
   return {
-    isCreating: isCreating,
-    isCreateError: isCreateError,
-    isFetching: isFetching,
-    message: message
+    broadcastState: {
+      isFetching: isFetching,
+      message: message
+    },
+    container: {
+      isCreating: isCreating,
+      isCreateError: isCreateError,
+      message: 'Create Container Failed'
+    }
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    pickContainer: function(container) {
-      if(container.status == 'Active') dispatch(push('/container/' + container.id));
-    },
     containerCreate: function() {
       dispatch(ContainersAction.create());
     },
