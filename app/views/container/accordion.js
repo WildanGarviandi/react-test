@@ -51,9 +51,9 @@ const Filter = React.createClass({
           </div>
           <div className={styles.bottom}>
             <textarea style={{height: 100, width: '100%'}} value={idsRaw} onChange={this.textChange} />
-            <ButtonBase className={styles.modalBtn} onClick={this.cancelChange}>Cancel</ButtonBase>
-            <ButtonBase className={styles.modalBtn} onClick={this.clearText}>Clear</ButtonBase>
-            <ButtonBase className={styles.modalBtn} onClick={this.processText}>Save Filter</ButtonBase>
+            <ButtonBase styles={styles.modalBtn} onClick={this.cancelChange}>Cancel</ButtonBase>
+            <ButtonBase styles={styles.modalBtn} onClick={this.clearText}>Clear</ButtonBase>
+            <ButtonBase styles={styles.modalBtn} onClick={this.processText}>Save Filter</ButtonBase>
           </div>
         </div>
       }
