@@ -115,15 +115,15 @@ const FillForm = React.createClass({
             <span>Failed to put into container: ({failedRes.length} items)</span>
             <div>{_.map(failedRes, (res) => (res.orderNumber)).join(' ')}</div>
           </div>
-          <ButtonBase className={styles.modalBtn} onClick={this.closeModal}>OK</ButtonBase>
+          <ButtonBase styles={styles.modalBtn} onClick={this.closeModal}>OK</ButtonBase>
         </Modal>
         <Filter limit={limit} />
         {
           isFilling ? 
           <span style={{float: 'right'}}>Filling Container...</span> :
           <span>
-            <ButtonBase className={styles.modalBtn} onClick={this.fillContainer}>{'Fill Container with Selected Orders'}</ButtonBase>
-            <ButtonBase className={styles.modalBtn} onClick={this.putEverything}>{'Put Every Order into Container'}</ButtonBase>
+            <ButtonBase styles={styles.modalBtn} onClick={this.fillContainer}>{'Fill Container with Selected Orders'}</ButtonBase>
+            <ButtonBase styles={styles.modalBtn} onClick={this.putEverything}>{'Put Every Order into Container'}</ButtonBase>
           </span>
         }
         <span>Districts :</span>
