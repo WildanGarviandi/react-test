@@ -22,7 +22,7 @@ export default () => {
       if(response.ok) {
         response.json().then(function(response) {
           dispatch({ type: actionTypes.ORDER_PREPARE_FETCH_SUCCESS, orders: response.rows, count: response.count });
-          dispatch(toggleAll(false));
+          dispatch(toggleAll(true));
           return;
         });
       } else {

@@ -3,8 +3,10 @@ import fetch from '../../fetch/get';
 
 export default () => {
   return (dispatch, getState) => {
-    const {userLogged} = getState().app;
+    const {districts, userLogged} = getState().app;
     const {token} = userLogged;
+
+    if(districts.districts.length > 0) return;
 
     dispatch({ type: actionTypes.DISTRICTS_FETCH_START});
     fetch('/hub/districts', token).then(function(response) {

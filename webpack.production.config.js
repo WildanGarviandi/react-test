@@ -23,18 +23,13 @@ module.exports = {
         test: /\.css$/,
         loader: ExtractTextPlugin.extract('style', 'css?modules!postcss')
       },
-      { 
-        test: /\.jpg$/, 
-        loader: "file-loader" 
+      {
+        test: /\.(jpe?g|png|gif|svg)$/i,
+        loaders: [
+          'file?hash=sha512&digest=hex&name=[hash].[ext]',
+          'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false&progressive=true'
+        ]
       },
-      { 
-        test: /\.png$/, 
-        loader: "file-loader" 
-      }, 
-      { 
-        test: /\.gif$/, 
-        loader: "file-loader" 
-      }, 
       {
         test: /\.woff$/, 
         loader: "file-loader" 

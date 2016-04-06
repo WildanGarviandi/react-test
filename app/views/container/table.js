@@ -5,8 +5,7 @@ import orderRemove from '../../modules/containers/actions/orderRemove';
 import orderToggleAll from '../../modules/containers/actions/orderToggleAll';
 import orderToggle from '../../modules/containers/actions/orderToggle';
 import styles from './table.css';
-
-const classnaming = require('classnames/bind').bind(styles);
+import classNaming from 'classnames';
 
 export const BaseHeader = React.createClass({
   render() {
@@ -29,23 +28,19 @@ export const BaseRow = React.createClass({
   }
 });
 
-const BaseCellGray = React.createClass({
-  handleAction() {
-    let {action, column} = this.props;
-    action(column);
-  },
+export const BaseCellGray = React.createClass({
   render() {
-    let {item, val} = this.props;
-    const name = classnaming('td', {'gray': item.status == 'NotActive'});
-    return (<td className={name} onClick={this.handleAction}>{val}</td>);
+    let {attr, item} = this.props;
+    const name = classNaming(styles.td, {[styles.gray]: item.status == 'NotActive'});
+    return (<td className={name}>{item[attr] && item[attr].toString()}</td>);
   }
 });
 
-const SearchCell = React.createClass({
+export const SearchCell = React.createClass({
   render() {
     return (
-      <td className={classnaming('td', 'search')}>
-        <Input styles={{input: styles.searchInput}} type="text" />
+      <td className={classNaming(styles.td, styles.search)}>
+        <Input styles={{input: styles.searchInput}} base={{type:"text"}} />
       </td>
     );
   }

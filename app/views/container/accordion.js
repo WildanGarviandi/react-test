@@ -18,14 +18,14 @@ const Filter = React.createClass({
     this.setState({idsRaw: e.target.value});
   },
   processText() {
-    const {ordersPrepareIDs, limit} = this.props;
+    const {ordersPrepareIDs} = this.props;
     const IDs = _.chain(this.state.idsRaw.match(/\S+/g)).uniq().value();
     this.setState({ids: IDs});
     this.toggleOpen();
     ordersPrepareIDs(IDs);
   },
   clearText() {
-    const {ordersPrepareIDs, limit} = this.props;
+    const {ordersPrepareIDs} = this.props;
     this.setState({ids: [], idsRaw: ''});
     this.toggleOpen();
     ordersPrepareIDs([]);
@@ -51,9 +51,9 @@ const Filter = React.createClass({
           </div>
           <div className={styles.bottom}>
             <textarea style={{height: 100, width: '100%'}} value={idsRaw} onChange={this.textChange} />
-            <ButtonBase className={styles.modalBtn} onClick={this.cancelChange}>Cancel</ButtonBase>
-            <ButtonBase className={styles.modalBtn} onClick={this.clearText}>Clear</ButtonBase>
-            <ButtonBase className={styles.modalBtn} onClick={this.processText}>Save Filter</ButtonBase>
+            <ButtonBase styles={styles.modalBtn} onClick={this.cancelChange}>Cancel</ButtonBase>
+            <ButtonBase styles={styles.modalBtn} onClick={this.clearText}>Clear</ButtonBase>
+            <ButtonBase styles={styles.modalBtn} onClick={this.processText}>Save Filter</ButtonBase>
           </div>
         </div>
       }
