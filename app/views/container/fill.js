@@ -11,9 +11,7 @@ import ordersPrepare from '../../modules/containers/actions/ordersPrepare';
 import ordersPrepareCurrentPage from '../../modules/containers/actions/ordersPrepareCurrentPage';
 import ordersPrepareIDs from '../../modules/containers/actions/ordersPrepareIDs';
 import ordersPrepareLimit from '../../modules/containers/actions/ordersPrepareLimit';
-import ordersPrepareToggleAll from '../../modules/containers/actions/orderToggleAll';
 import orderToggle from '../../modules/containers/actions/orderToggle';
-import orderToggleAll from '../../modules/containers/actions/orderToggleAll';
 import {containerDistrictPick, containerDistrictReset} from '../../modules/containers/constants';
 import {ButtonBase, Dropdown, Modal, Page, Pagination} from '../base';
 import {OrderTable2} from './table';
@@ -43,10 +41,6 @@ function PrepareOrder(order) {
 }
 
 const FillForm = React.createClass({
-  componentDidMount() {
-    const {limit, currentPage} = this.props.ordersPrepared;
-    this.props.ordersPrepareFetch(limit, (currentPage-1)*limit);
-  },
   getInitialState() {
     return {opened: false, showModal: false};
   },
@@ -123,7 +117,10 @@ const FillForm = React.createClass({
           <span style={{float: 'right'}}>Filling Container...</span> :
           <span>
             <ButtonBase styles={styles.modalBtn} onClick={this.fillContainer}>{'Fill Container with Selected Orders'}</ButtonBase>
-            <ButtonBase styles={styles.modalBtn} onClick={this.putEverything}>{'Put Every Order into Container'}</ButtonBase>
+            {
+              (ordersPrepared.checkAll || ordersPrepared.ids.length > 0) &&
+              <ButtonBase styles={styles.fillBtn} onClick={this.putEverything}>{'Put Every Order into Container'}</ButtonBase>
+            }
           </span>
         }
         <span>Districts :</span>
@@ -149,7 +146,7 @@ const FillComponent = React.createClass({
     this.props.backToContainer(container.ContainerID);
   },
   render() {
-    const {activeDistrict, backToContainer, container, districts, fillContainer, fillEverything, isFetchingContainer, isFetchingOrders, ordersPrepared, ordersPrepareFetch, orderToggle, orderToggleAll, ordersPrepareLimit, ordersPrepareCurrentPage, pickDistrict} = this.props;
+    const {activeDistrict, backToContainer, container, districts, fillContainer, fillEverything, isFetchingContainer, isFetchingOrders, ordersPrepared, ordersPrepareFetch, orderToggle, ordersPrepareLimit, ordersPrepareCurrentPage, pickDistrict} = this.props;
 
     return (
       <div style={{paddingBottom: 200}}>
@@ -158,7 +155,7 @@ const FillComponent = React.createClass({
           <span><br/>Fetching container data...</span> :
           <Page title={'Container ' + container.ContainerNumber}>
             <a href="javascript:;" onClick={backToContainer}>{'<<'} Back to Container Detail</a>
-            <FillForm isFetchingOrders={isFetchingOrders} ordersPrepared={ordersPrepared} ordersPrepareFetch={ordersPrepareFetch} orderToggle={orderToggle} ordersPrepareLimit={ordersPrepareLimit} ordersPrepareCurrentPage={ordersPrepareCurrentPage} activeDistrict={activeDistrict} districts={districts} container={container} pickDistrict={pickDistrict} fillContainer={fillContainer} orderToggleAll={orderToggleAll} fillEverything={fillEverything}/>
+            <FillForm isFetchingOrders={isFetchingOrders} ordersPrepared={ordersPrepared} orderToggle={orderToggle} ordersPrepareLimit={ordersPrepareLimit} ordersPrepareCurrentPage={ordersPrepareCurrentPage} activeDistrict={activeDistrict} districts={districts} container={container} pickDistrict={pickDistrict} fillContainer={fillContainer} fillEverything={fillEverything}/>
           </Page>
         }
       </div>
@@ -190,14 +187,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     containerDetailsFetch: function() {
       dispatch(containerDetailsFetch(ownProps.params.id));
     },
-    ordersPrepareFetch: function(limit, offset) {
-      dispatch(ordersPrepare(limit, offset));
-    },
     orderToggle: function(id) {
       dispatch(orderToggle(id));
-    },
-    orderToggleAll: function(val) {
-      dispatch(orderToggleAll(val));
     },
     ordersPrepareCurrentPage: function(val) {
       dispatch(ordersPrepareCurrentPage(val));

@@ -1,6 +1,6 @@
 import * as actionTypes from '../constants';
 
-const initialState = { isFetching: false, isValid: true, count: 0, orders: [], checkAll: true, ids: [], limit: 20, currentPage: 1, result: null };
+const initialState = { isFetching: false, isValid: true, count: 0, orders: [], checkAll: false, ids: [], limit: 20, currentPage: 1, result: null };
 
 const orderFn = (state = {}, action) => {
   switch(action.type) {
@@ -45,7 +45,7 @@ export default (state = initialState, action) => {
     case actionTypes.ORDER_PREPARE_FETCH_SUCCESS:
       return _.assign({}, state, {
         isFetching: false, isValid: true, count: action.count,
-        orders: _.map(action.orders, (order) => (_.assign({}, order, {checked: true, status: ''})))
+        orders: _.map(action.orders, (order) => (_.assign({}, order, {checked: false, status: ''})))
       });
     case actionTypes.ORDER_PREPARE_FETCH_FAILED:
       return _.assign({}, state, {isFetching: false, isValid: false, error: action.error});

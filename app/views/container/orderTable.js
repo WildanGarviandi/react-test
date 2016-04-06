@@ -1,6 +1,5 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {ContainersAction} from '../../modules';
 import {Collection, Pagination} from '../base';
 import {BaseCell, BaseHeader, BaseRow} from './table';
 
