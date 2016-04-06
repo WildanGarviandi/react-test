@@ -1,11 +1,25 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {ContainersAction} from '../../modules';
-import {Collection, Pagination} from '../base';
+import {Collection, Pagination, ButtonBase} from '../base';
 import {BaseCell, BaseHeader, BaseRow} from './table';
 import ActiveCell from './activeCell';
 
 import styles from './table.css';
+
+const ActionCell = React.createClass({
+  render() {
+    const {item, attr} = this.props;
+    const qrCodeLink = 'container/qrcode/' + item.ContainerNumber;
+    return (
+      <td style={{width: '40px', textAlign: 'center'}}>
+      <a href={qrCodeLink} target='_blank'>
+      <ButtonBase>Print QRCode</ButtonBase>
+      </a>
+      </td>
+    );
+  }
+});
 
 const ContainerTable = React.createClass({
   componentDidMount() {
@@ -18,8 +32,14 @@ const ContainerTable = React.createClass({
     this.props.setLimit(x);
   },
   render() {
-    const columns = ['ContainerID', 'ContainerNumber', 'Driver', 'status'];
-    const header = { ContainerID: 'Container ID', ContainerNumber: 'Container Number', Driver: 'Driver', status: 'Active'};
+    const columns = ['ContainerID', 'ContainerNumber', 'Driver', 'status', 'action'];
+    const header = { 
+      ContainerID: 'Container ID', 
+      ContainerNumber: 'Container Number', 
+      Driver: 'Driver', 
+      status: 'Active', 
+      action: 'Action'
+    };
     const {containers, pagination} = this.props;
     const items = containers;
 
@@ -34,7 +54,10 @@ const ContainerTable = React.createClass({
 
     const BodyComponent = _.assign({}, HeaderComponent, {
       BaseChild: BaseCell,
-      CustomChild: {status: ActiveCell}
+      CustomChild: {
+        status: ActiveCell,
+        action: ActionCell
+      }
     });
 
     const Body = _.map(items, (item) => {

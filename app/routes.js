@@ -8,6 +8,7 @@ import ContainerOrderPage from './views/container/order';
 import DashboardPage from './views/dashboard';
 import LoginPage from './views/login';
 import store from './store';
+import ContainerQRCodePage from './views/container/qrcode';
 
 function App(props) {
   return <div style={{height: "100%"}}>{props.children}</div>;
@@ -52,6 +53,7 @@ export default (
         <Route path="/container/:id" component={ContainerDetailsPage} />
         <Route path="/container/:id/fill" component={ContainerFillPage} />
       </Route>
+      <Route path="/container/qrcode/:id" component={ContainerQRCodePage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/*" component={LoginPage} />
     </Route>
