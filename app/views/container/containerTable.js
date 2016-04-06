@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {ContainersAction} from '../../modules';
-import {Collection, Pagination, ButtonBase} from '../base';
+import {Collection, Pagination, ButtonAction} from '../base';
 import {BaseCell, BaseHeader, BaseRow} from './table';
 import ActiveCell from './activeCell';
 
@@ -14,7 +14,7 @@ const ActionCell = React.createClass({
     return (
       <td style={{width: '40px', textAlign: 'center'}}>
       <a href={qrCodeLink} target='_blank'>
-      <ButtonBase>Print QRCode</ButtonBase>
+      <ButtonAction>Print</ButtonAction>
       </a>
       </td>
     );
