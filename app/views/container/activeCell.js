@@ -16,7 +16,11 @@ const ActiveCell = React.createClass({
     const name = classNaming(styles.checkbox, styles[item[attr]]);
     const tdName = classNaming(styles.td, {[styles.gray]: item.status == 'NotActive'});
 
-    return (<td className={tdName} style={{width: '40px', textAlign: 'center'}}><span className={name} onClick={this.handleToggle} /></td>);
+    return (
+      <td className={tdName} style={{width: '40px', textAlign: 'center'}} onClick={this.handleToggle}>
+        <span className={name} />
+      </td>
+    );
   }
 });
 
