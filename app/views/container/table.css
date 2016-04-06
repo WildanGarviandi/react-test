@@ -48,6 +48,19 @@
     color: #fff;
 }
 
+.tr:nth-of-type(odd) .search {
+    background-color: #fff;
+}
+
+.tr .search {
+    cursor: default;
+}
+
+.tr:hover .search {
+    background-color: #fff;
+    color: inherit;
+}
+
 .tr .td.gray {
     opacity: 0.5;
     background-color: #fff;

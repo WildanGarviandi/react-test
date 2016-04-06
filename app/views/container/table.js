@@ -36,11 +36,11 @@ export const BaseCellGray = React.createClass({
   }
 });
 
-const SearchCell = React.createClass({
+export const SearchCell = React.createClass({
   render() {
     return (
-      <td className={classNaming('td', 'search')}>
-        <Input styles={{input: styles.searchInput}} type="text" />
+      <td className={classNaming(styles.td, styles.search)}>
+        <Input styles={{input: styles.searchInput}} base={{type:"text"}} />
       </td>
     );
   }
