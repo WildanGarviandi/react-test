@@ -1,7 +1,8 @@
 import React from 'react';
 import Collection from './collection';
-import { Dropdown } from './dropdown';
+import { Dropdown, DropdownTypeAhead } from './dropdown';
 import { Glyph } from './glyph';
+import Infograph from './infograph';
 import { CheckBox, Input } from './input';
 import Page, { ButtonAtRightTop, PageTitle } from './page';
 import { Pagination } from './pagination';
@@ -51,4 +52,4 @@ const ButtonWithLoading = React.createClass({
   }
 })
 
-export { ButtonAtRightTop, ButtonBase, ButtonAction, ButtonWithLoading, CheckBox, Collection, Dropdown, Glyph, Input, Modal, Page, PageTitle, Pagination, Rows, Tables };
+export { ButtonAtRightTop, ButtonBase, ButtonAction, ButtonWithLoading, CheckBox, Collection, Dropdown, DropdownTypeAhead, Glyph, Infograph, Input, Modal, Page, PageTitle, Pagination, Rows, Tables };

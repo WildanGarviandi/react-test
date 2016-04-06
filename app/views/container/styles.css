@@ -1,16 +1,11 @@
-.modalBtn {
+.modalBtn, .fillBtn {
   padding: 8px;
   display: inline-block;
   margin-left: 4px;
   float: right;
 }
 
-.checkingStatus, .errorMsg {
-  display: inline-block;
-  float: right;
-  margin-top: 6px;  
-}
-
-.errorMsg {
-  color: red;
+.fillBtn {
+  background-color: #4F4335;
+  color: #fff;
 }

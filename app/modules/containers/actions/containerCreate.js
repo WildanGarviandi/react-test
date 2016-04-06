@@ -19,6 +19,8 @@ export default () => {
           dispatch({type: actionTypes.CONTAINER_CREATE_FAILED, error: response});
         });
       }
-    })
+    }).catch(() => {
+      dispatch({type: actionTypes.CONTAINER_CREATE_FAILED});
+    });
   }
 }

@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import _ from 'underscore';
 import * as utils from './utils';
-import {Glyph} from './glyph';
 import {InputText} from './input';
 
 import styles from './table.css';
@@ -96,7 +95,7 @@ function Tables(columns, customCell = {}, opts = {}) {
 
   const Table = React.createClass({
     render() {
-      let {data, header} = this.props;
+      let {header} = this.props;
 
       return (
         <table className={styles.table}>

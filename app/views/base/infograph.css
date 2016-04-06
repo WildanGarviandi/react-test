@@ -1,0 +1,58 @@
+.container {
+  float: left;
+  display: inline-block;
+  border-radius: 5px;
+  width: 15%;
+  height: 90px;
+  position: relative;
+  color: #fff;
+  background-color: #5cb85c;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  border: solid 1px #fff;
+}
+
+.container:hover {
+  border: solid 1px #337ab7;
+}
+
+.attrAll {
+  background-color: #337ab7;
+}
+
+.attrOpen {
+  background-color: #d9534f;
+}
+
+.attrProcessed {
+  background-color: #f0ad4e;
+}
+
+.attrFinished {
+  background-color: #5cb85c;
+}
+
+.num {
+  font-size: 50px;
+  position: absolute;
+  top: 0;
+  right: 10px;
+}
+
+.attr {
+  font-size: 20px;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+
+.glyph {
+  font-size: 50px;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
