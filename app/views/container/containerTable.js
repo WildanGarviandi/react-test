@@ -21,7 +21,6 @@ const ContainerTable = React.createClass({
   },
   handleFilter(attr) {
     const {pickStatus, category} = this.props;
-    console.log('!', category, attr);
     pickStatus(category[attr]);
   },
   render() {

@@ -14,7 +14,6 @@ const TripStatusSelect = React.createClass({
     pick(nameToID[val]);
   },
   render() {
-    const {item, attr} = this.props;
     return (<td className={classNaming(styles.td, styles.search)} style={{width: 150}}><DropdownTypeAhead options={this.props.statusList} selectVal={this.selectVal} /></td>);
   }
 });

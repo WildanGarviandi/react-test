@@ -7,11 +7,11 @@ import {OrderTable} from './table';
 
 import styles from './styles.css';
 
-const columns = ['id', 'id2', 'pickup', 'dropoff', 'time', 'action'];
+const columns = ['id', 'id2', 'pickup', 'dropoff', 'time', 'status', 'action'];
 const headers = [{
   id: 'Web Order ID', id2: 'User Order Number',
   pickup: 'Pickup Address', dropoff: 'Dropoff Address',
-  time: 'Pickup Time', action: 'Action'
+  time: 'Pickup Time', status: 'Order Status', action: 'Action'
 }];
 
 const DetailPage = React.createClass({
@@ -43,7 +43,7 @@ const DetailPage = React.createClass({
                 {
                   fillAble ?
                   <OrderTable columns={columns} headers={headers} items={orders} /> :
-                  <OrderTable columns={columns.slice(0,5)} headers={headers} items={orders} />
+                  <OrderTable columns={columns.slice(0,6)} headers={headers} items={orders} />
                 }
               </div>
               :
@@ -75,7 +75,8 @@ const mapStateToProps = (state, ownProps) => {
       dropoff: order.DropoffAddress.Address1,
       time: (new Date(order.PickupTime)).toString(),
       id3: order.UserOrderID,
-      isDeleting: order.isDeleting
+      isDeleting: order.isDeleting,
+      status: order.Status
     })),
     isFetching: isFetching,
     fillAble: fillAble

@@ -1,6 +1,5 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {push} from 'react-router-redux';
 
 import {ContainersAction} from '../../modules';
 import {ButtonBase, ButtonWithLoading, Modal, Page, Tables} from '../base';

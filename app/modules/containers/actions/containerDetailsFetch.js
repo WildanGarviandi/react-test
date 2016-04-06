@@ -11,13 +11,24 @@ export default (containerID) => {
     fetch('/container/' + containerID, token).then(function(response) {
       if(response.ok) {
         response.json().then(function(response) {
-          dispatch({type: actionTypes.CONTAINER_DETAILS_FETCH_SUCCESS, ContainerID: containerID, container: response.container, orders: response.orders, trip: response.trip, fillAble: response.fillAble});
-          return;
+          var orders = _.map(response.routes, (route) => {
+            return _.assign({}, route.UserOrder, {
+              Status: route.OrderStatus.OrderStatus
+            });
+          });
+
+          dispatch({
+            type: actionTypes.CONTAINER_DETAILS_FETCH_SUCCESS, 
+            ContainerID: containerID, 
+            container: response.container, 
+            orders: orders, 
+            trip: response.trip, 
+            fillAble: response.fillAble
+          });
         });
       } else {
         response.json().then(function(response) {
           dispatch({type: actionTypes.CONTAINER_DETAILS_FETCH_FAILED, ContainerID: containerID, error: response.errorMessage});
-          return;
         });
       }
     })

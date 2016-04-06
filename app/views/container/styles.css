@@ -1,6 +1,11 @@
-.modalBtn {
+.modalBtn, .fillBtn {
   padding: 8px;
   display: inline-block;
   margin-left: 4px;
   float: right;
+}
+
+.fillBtn {
+  background-color: #4F4335;
+  color: #fff;
 }
