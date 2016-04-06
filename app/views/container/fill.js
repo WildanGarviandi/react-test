@@ -146,7 +146,7 @@ const FillComponent = React.createClass({
     this.props.backToContainer(container.ContainerID);
   },
   render() {
-    const {activeDistrict, backToContainer, container, districts, fillContainer, fillEverything, isFetchingContainer, isFetchingOrders, ordersPrepared, ordersPrepareFetch, orderToggle, ordersPrepareLimit, ordersPrepareCurrentPage, pickDistrict} = this.props;
+    const {fillFormFunction, fillFormState, backToContainer, container, isFetchingContainer} = this.props;
 
     return (
       <div style={{paddingBottom: 200}}>
@@ -155,7 +155,7 @@ const FillComponent = React.createClass({
           <span><br/>Fetching container data...</span> :
           <Page title={'Container ' + container.ContainerNumber}>
             <a href="javascript:;" onClick={backToContainer}>{'<<'} Back to Container Detail</a>
-            <FillForm isFetchingOrders={isFetchingOrders} ordersPrepared={ordersPrepared} orderToggle={orderToggle} ordersPrepareLimit={ordersPrepareLimit} ordersPrepareCurrentPage={ordersPrepareCurrentPage} activeDistrict={activeDistrict} districts={districts} container={container} pickDistrict={pickDistrict} fillContainer={fillContainer} fillEverything={fillEverything}/>
+            <FillForm {...fillFormFunction} {...fillFormState} container={container} />
           </Page>
         }
       </div>
@@ -173,43 +173,50 @@ const mapStateToProps = (state, ownProps) => {
   return {
     container: container,
     isFetchingContainer: container.isFetching,
-    ordersPrepared: ordersPrepared,
-    activeDistrict: _.find(districts, (district) => (district.DistrictID == container.district)) || {},
-    districts: districts
+    fillFormState: {
+      activeDistrict: _.find(districts, (district) => (district.DistrictID == container.district)) || {},
+      districts: districts,
+      ordersPrepared: ordersPrepared
+    }
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
+    fillFormFunction: {
+      orderToggle: function(id) {
+        dispatch(orderToggle(id));
+      },
+      ordersPrepareLimit: function(val) {
+        dispatch(ordersPrepareLimit(val));
+      },
+      ordersPrepareCurrentPage: function(val) {
+        dispatch(ordersPrepareCurrentPage(val));
+      },
+      pickDistrict: function(id1, id2) {
+        dispatch(containerDistrictPick(id1, id2));
+      },
+      fillContainer: function(containerNumber, ordersID, districtID) {
+        dispatch(containerFill(containerNumber, ordersID, districtID));
+      },
+      fillEverything: function(containerNumber, ordersID, districtID) {
+        dispatch(containerFillEverything(containerNumber, ordersID, districtID));
+      },
+      ordersPrepareFetch: function() {
+        dispatch(ordersPrepare());
+      }
+    },
     backToContainer: function() {
       dispatch(push('/container/' + ownProps.params.id));
     },
     containerDetailsFetch: function() {
       dispatch(containerDetailsFetch(ownProps.params.id));
     },
-    orderToggle: function(id) {
-      dispatch(orderToggle(id));
-    },
-    ordersPrepareCurrentPage: function(val) {
-      dispatch(ordersPrepareCurrentPage(val));
-    },
-    ordersPrepareLimit: function(val) {
-      dispatch(ordersPrepareLimit(val));
-    },
-    pickDistrict: function(id1, id2) {
-      dispatch(containerDistrictPick(id1, id2));
-    },
     resetDistrict: function(id) {
       dispatch(containerDistrictReset(id));
     },
     districtsFetch: function() {
       dispatch(districtsFetch());
-    },
-    fillContainer: function(containerNumber, ordersID, districtID) {
-      dispatch(containerFill(containerNumber, ordersID, districtID));
-    },
-    fillEverything: function(containerNumber, ordersID, districtID) {
-      dispatch(containerFillEverything(containerNumber, ordersID, districtID));
     },
     ordersPrepareIDs: function(ids) {
       dispatch(ordersPrepareIDs(ids));

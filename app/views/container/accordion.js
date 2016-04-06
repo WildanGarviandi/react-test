@@ -18,14 +18,14 @@ const Filter = React.createClass({
     this.setState({idsRaw: e.target.value});
   },
   processText() {
-    const {ordersPrepareIDs, limit} = this.props;
+    const {ordersPrepareIDs} = this.props;
     const IDs = _.chain(this.state.idsRaw.match(/\S+/g)).uniq().value();
     this.setState({ids: IDs});
     this.toggleOpen();
     ordersPrepareIDs(IDs);
   },
   clearText() {
-    const {ordersPrepareIDs, limit} = this.props;
+    const {ordersPrepareIDs} = this.props;
     this.setState({ids: [], idsRaw: ''});
     this.toggleOpen();
     ordersPrepareIDs([]);
