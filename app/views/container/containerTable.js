@@ -1,13 +1,27 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {ContainersAction, StatusList} from '../../modules';
-import {Collection, Infograph, Pagination} from '../base';
+import {Collection, Infograph, Pagination, ButtonBase, ButtonAction} from '../base';
 import {BaseCellGray, BaseHeader, BaseRow, SearchCell} from './table';
 import ActiveCell from './activeCell';
 import PickRow from './pickContainerRow';
 import SetStatusCell from './setStatusCell';
 
 import styles from './table.css';
+
+const ActionCell = React.createClass({
+  render() {
+    const {item, attr} = this.props;
+    const qrCodeLink = 'container/qrcode/' + item.ContainerNumber;
+    return (
+      <td style={{width: '40px', textAlign: 'center'}}>
+      <a href={qrCodeLink} target='_blank'>
+      <ButtonAction>Print</ButtonAction>
+      </a>
+      </td>
+    );
+  }
+});
 
 const ContainerTable = React.createClass({
   componentDidMount() {
@@ -24,14 +38,15 @@ const ContainerTable = React.createClass({
     pickStatus(category[attr]);
   },
   render() {
-    const columns = ['ContainerNumber', 'OrderCount', 'ContainerStatus', 'Driver', 'District', 'status'];
+    const columns = ['ContainerNumber', 'OrderCount', 'ContainerStatus', 'Driver', 'District', 'status', 'action'];
     const header = { 
       ContainerNumber: 'Container Number', 
       OrderCount: 'Number of Orders',
       ContainerStatus: 'Status',
       Driver: 'Driver', 
       District: 'District',
-      status: 'Active'
+      status: 'Active', 
+      action: 'Action'
     };
 
     const {containerInfo, containers, isFetching, pagination} = this.props;
@@ -58,7 +73,10 @@ const ContainerTable = React.createClass({
     const BodyComponent = {
       BaseParent: PickRow,
       BaseChild: BaseCellGray,
-      CustomChild: {status: ActiveCell},
+      CustomChild: {
+        status: ActiveCell,
+        action: ActionCell
+      },
       Columns: columns
     };
 
