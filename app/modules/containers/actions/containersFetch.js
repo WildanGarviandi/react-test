@@ -24,12 +24,6 @@ export const setStatus = (status) => {
   };
 };
 
-const ProcessContainerWithTrip = (containersWithTrip) => {
-  return _.map(containersWithTrip, (containerWithTrip) => {
-    return _.assign({}, containerWithTrip.container, {trip: containerWithTrip.trip});
-  });
-}
-
 export const fetchContainers = () => {
   return (dispatch, getState) => {
     const {userLogged, containers} = getState().app;
@@ -47,7 +41,7 @@ export const fetchContainers = () => {
     fetch('/container/', token, query).then(function(response) {
       if(response.ok) {
         response.json().then((response) => {
-          dispatch({ type: actionTypes.CONTAINERS_FETCH_SUCCESS, total: response.count, containers: ProcessContainerWithTrip(response.rows), groups: response.groups });
+          dispatch({ type: actionTypes.CONTAINERS_FETCH_SUCCESS, total: response.count, containers: response.rows, groups: response.groups });
         });
       } else {
         dispatch({ type: actionTypes.CONTAINERS_FETCH_FAILED });        

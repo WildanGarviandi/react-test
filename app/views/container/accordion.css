@@ -21,12 +21,16 @@
   cursor: pointer;
 }
 
-.modalBtn {
+.modalBtn, .modalLink {
   padding: 8px;
   display: inline-block;
   margin-left: 4px;
   margin-top: 5px;
   float: right;
+}
+
+.modalLink:hover {
+  color: #337ab7;
 }
 
 .top2 {

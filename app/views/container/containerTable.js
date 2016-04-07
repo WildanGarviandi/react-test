@@ -89,14 +89,14 @@ const stateToProps = (state) => {
   const {containers, isFetching, shown, limit, currentPage, total, groups, statusCategory} = state.app.containers;
   return {
     containers: _.chain(containers).map((container) => {
-      if(!container.trip) return _.assign({}, container, {
+      if(!container.CurrentTrip) return _.assign({}, container, {
         OrderCount: 0
       });
 
       return _.assign({}, container, {
-        ContainerStatus: container.trip.OrderStatus.OrderStatus,
-        District: container.trip.District.Name,
-        OrderCount: (container.trip.UserOrderRoutes && container.trip.UserOrderRoutes.length) || 0
+        ContainerStatus: container.CurrentTrip.OrderStatus.OrderStatus,
+        District: (container.CurrentTrip.District && container.CurrentTrip.District.Name) || '',
+        OrderCount: (container.CurrentTrip.UserOrderRoutes && container.CurrentTrip.UserOrderRoutes.length) || 0
       });
     }).filter((container) => {
       return shown.indexOf(container.ContainerID) > -1;

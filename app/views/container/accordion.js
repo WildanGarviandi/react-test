@@ -50,10 +50,10 @@ const Filter = React.createClass({
             </h4>
           </div>
           <div className={styles.bottom}>
-            <textarea style={{height: 100, width: '100%'}} value={idsRaw} onChange={this.textChange} />
-            <ButtonBase styles={styles.modalBtn} onClick={this.cancelChange}>Cancel</ButtonBase>
-            <ButtonBase styles={styles.modalBtn} onClick={this.clearText}>Clear</ButtonBase>
-            <ButtonBase styles={styles.modalBtn} onClick={this.processText}>Save Filter</ButtonBase>
+            <textarea style={{height: 100, width: '100%'}} value={idsRaw} onChange={this.textChange} placeholder={'Write/Paste EDS Number or Order ID here, separated with newline'} />
+            <ButtonBase styles={styles.modalBtn} onClick={this.processText}>Filter</ButtonBase>
+            <a href="javascript:;" className={styles.modalLink} onClick={this.cancelChange}>Cancel</a>
+            <a href="javascript:;" className={styles.modalLink} onClick={this.clearText}>Clear</a>
           </div>
         </div>
       }

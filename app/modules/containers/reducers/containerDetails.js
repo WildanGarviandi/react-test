@@ -1,6 +1,6 @@
 import * as actionTypes from '../constants';
 
-const initialState = {isFetching: false, isValid: true, orders: [], fillAble: false};
+const initialState = {isFetching: false, isValid: true, orders: [], fillAble: false, emptying: {isInProcess: false, isSuccess: false, error: ''}};
 
 export default (state = initialState, action) => {
   switch(action.type) {
@@ -12,6 +12,7 @@ export default (state = initialState, action) => {
         orders: action.orders, 
         trip: action.trip, 
         fillAble: action.fillAble,
+        reusable: action.reusable,
         district: action.trip && action.trip.District && action.trip.District.DistrictID
       });
     case actionTypes.CONTAINER_DETAILS_FETCH_FAILED:
@@ -46,6 +47,18 @@ export default (state = initialState, action) => {
     case actionTypes.CONTAINER_DISTRICT_RESET:
       return _.assign({}, state, {
         district: state.trip && state.trip.District && state.trip.District.DistrictID
+      });
+    case actionTypes.CONTAINER_CLEAR_START:
+      return _.assign({}, state, {
+        emptying: {isInProcess: true, isSuccess: false, error: ''}
+      });
+    case actionTypes.CONTAINER_CLEAR_SUCCESS:
+      return _.assign({}, state, {
+        emptying: {isInProcess: false, isSuccess: true, error: ''}
+      });
+    case actionTypes.CONTAINER_CLEAR_FAILED:
+      return _.assign({}, state, {
+        emptying: {isInProcess: false, isSuccess: false, error: action.error}
       });
     default:
       return state;

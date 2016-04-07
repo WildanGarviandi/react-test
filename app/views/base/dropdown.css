@@ -12,6 +12,7 @@
 
 .option {
   display: block;
+  height: 16px; /* this height value related to scroll behaviour of dropdown */
   padding: 5px;
 }
 
@@ -30,6 +31,8 @@
   border: solid 1px #ccc;
   border-radius: 3px;
   z-index: 10;
+  max-height: 143px; /* this height value related to scroll behaviour of dropdown */
+  overflow: scroll;
 }
 
 .dropdownWrapper {
@@ -66,6 +69,7 @@
 
 .typeBox {
   display: block;
+  text-indent: 5px;
 
   border: solid 1px #ccc;
   border-top-left-radius: 3px;

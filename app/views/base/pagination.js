@@ -60,7 +60,7 @@ function PaginationDetail(props) {
 
 const PaginationControl = React.createClass({
   setPage(x) {
-    this.props.setPage(x);
+    if(x != this.props.currentPage) this.props.setPage(x);
   },
   render() {
     var {pagesCount, currentPage} = this.props;
