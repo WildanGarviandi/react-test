@@ -14,7 +14,7 @@ const ActionCell = React.createClass({
     const {item, attr} = this.props;
     const qrCodeLink = 'container/qrcode/' + item.ContainerNumber;
     return (
-      <td style={{width: '40px', textAlign: 'center'}}>
+      <td className={styles.td} style={{width: '40px', textAlign: 'center'}}>
       <a href={qrCodeLink} target='_blank'>
       <ButtonAction>Print</ButtonAction>
       </a>
@@ -99,6 +99,7 @@ const ContainerTable = React.createClass({
             <SearchCell />
             <td className={styles.td} />
             <SetStatusCell />
+            <td className={styles.td} />
             <td className={styles.td} />
             <td className={styles.td} />
             <td className={styles.td} />
