@@ -1,8 +1,8 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
-import containerDetailsFetch from '../../modules/containers/actions/containerDetailsFetch';
-import {ButtonWithLoading, Page} from '../base';
+import {ContainerDetailsActions} from '../../modules';
+import {ButtonBase, ButtonWithLoading, Modal, Page} from '../base';
 import {OrderTable} from './table';
 
 import styles from './styles.css';
@@ -14,7 +14,35 @@ const headers = [{
   time: 'Pickup Time', status: 'Order Status', action: 'Action'
 }];
 
+const MessageModal = React.createClass({
+  handleClose() {
+    const {closeModal} = this.props;
+    closeModal();
+  },
+  render() {
+    const {message, show} = this.props;
+
+    return (
+      <Modal show={show} width={250}>
+        {message}
+        <br/>
+        <ButtonBase onClick={this.handleClose} styles={styles.modalBtn}>Close</ButtonBase>
+      </Modal>
+    );
+  }
+});
+
 const DetailPage = React.createClass({
+  getInitialState() {
+    return {showModal: false};
+  },
+  closeModal() {
+    this.setState({showModal: false});
+  },
+  clearContainer() {
+    this.setState({showModal: true});
+    this.props.clearContainer(this.props.container.ContainerID);
+  },
   componentWillMount() {
     this.props.containerDetailsFetch(this.props.params.id);
   },
@@ -23,7 +51,8 @@ const DetailPage = React.createClass({
     this.props.goToFillContainer(container.ContainerID);
   },
   render() {
-    const {backToContainer, container, fillAble, isFetching, orders} = this.props;
+    const {backToContainer, container, emptying, fillAble, isFetching, orders, reusable} = this.props;
+    const showEmptyingModal = this.state.showModal && !emptying.isInProcess && !emptying.isSuccess && emptying.error;
 
     return (
       <div>
@@ -31,10 +60,15 @@ const DetailPage = React.createClass({
           isFetching ? 
           <h3>Fetching Container Details...</h3> :
           <Page title={'Container ' + container.ContainerNumber}>
+            <MessageModal show={showEmptyingModal} message={emptying.error} closeModal={this.closeModal} />
             <a href="javascript:;" onClick={backToContainer}>{'<<'} Back to Container List</a>
             {
               fillAble &&
               <ButtonWithLoading textBase={'Fill Container'} onClick={this.goToFillContainer} />
+            }
+            {
+              reusable &&
+              <ButtonWithLoading textBase={'Clear and Reuse Container'} textLoading={'Clearing Container'} isLoading={emptying.isInProcess} onClick={this.clearContainer} />
             }
             <span>Total {orders.length} items</span>
             {
@@ -65,7 +99,7 @@ const mapStateToProps = (state, ownProps) => {
     return {isFetching: true};
   }
 
-  const {fillAble, isFetching, orders} = container;
+  const {emptying, fillAble, reusable, isFetching, orders} = container;
   return {
     container: container,
     orders: _.map(orders, (order) => ({
@@ -79,7 +113,9 @@ const mapStateToProps = (state, ownProps) => {
       status: order.Status
     })),
     isFetching: isFetching,
-    fillAble: fillAble
+    fillAble: fillAble,
+    reusable: reusable,
+    emptying: emptying || {}
   }
 }
 
@@ -88,8 +124,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     backToContainer: function() {
       dispatch(push('/container'));
     },
+    clearContainer: function(id) {
+      dispatch(ContainerDetailsActions.clearContainer(id));
+    },
     containerDetailsFetch: function(id) {
-      dispatch(containerDetailsFetch(id));
+      dispatch(ContainerDetailsActions.fetchDetails(id));
     },
     goToFillContainer: function(id) {
       dispatch(push('/container/' + id + '/fill'));

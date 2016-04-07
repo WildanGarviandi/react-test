@@ -23,7 +23,8 @@ export default (containerID) => {
             container: response.container, 
             orders: orders, 
             trip: response.trip, 
-            fillAble: response.fillAble
+            fillAble: response.fillAble,
+            reusable: response.reusable
           });
         });
       } else {

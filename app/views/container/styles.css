@@ -1,4 +1,4 @@
-.modalBtn, .fillBtn {
+.modalBtn, .modalLink, .fillBtn {
   padding: 8px;
   display: inline-block;
   margin-left: 4px;
@@ -8,4 +8,14 @@
 .fillBtn {
   background-color: #4F4335;
   color: #fff;
+}
+
+.fillDriverWrapper {
+  display: inline-block;
+  width: 280px;
+}
+
+.error {
+  border: solid 1px #c33;
+  border-radius: 3px;
 }

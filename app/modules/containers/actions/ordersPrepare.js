@@ -27,10 +27,12 @@ export default () => {
         });
       } else {
         response.json().then(function(response) {
-          dispatch({ type: actionTypes.ORDER_PREPARE_FETCH_FAILED, error: response.errorMessage});
+          dispatch({ type: actionTypes.ORDER_PREPARE_FETCH_FAILED, error: response.error.message});
           return;
         });
       }
+    }).catch(() => {
+      dispatch({ type: actionTypes.ORDER_PREPARE_FETCH_FAILED, error: response.error.message});      
     });
   }
 }

@@ -2,6 +2,9 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
 import _ from 'underscore';
+import classNaming from 'classnames';
+
+import {FillActions} from '../../modules';
 import containerFill from '../../modules/containers/actions/containerFill';
 import containerFillEverything from '../../modules/containers/actions/containerFillEverything';
 // import orderToggle from '../../modules/containers/actions/orderToggle';
@@ -13,7 +16,7 @@ import ordersPrepareIDs from '../../modules/containers/actions/ordersPrepareIDs'
 import ordersPrepareLimit from '../../modules/containers/actions/ordersPrepareLimit';
 import orderToggle from '../../modules/containers/actions/orderToggle';
 import {containerDistrictPick, containerDistrictReset} from '../../modules/containers/constants';
-import {ButtonBase, Dropdown, Modal, Page, Pagination} from '../base';
+import {ButtonBase, ButtonWithLoading, Dropdown, DropdownTypeAhead, Modal, Page, Pagination} from '../base';
 import {OrderTable2} from './table';
 import Filter from './accordion';
 
@@ -27,7 +30,13 @@ const headers = [{
 
 import styles from './styles.css';
 
-function PrepareOrder(order) {
+const camelize = (str) => {
+  return str.replace(/\w\S*/g, (txt) => {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
+}
+
+const PrepareOrder = (order) => {
   return {
     id: order.WebOrderID,
     id2: order.UserOrderNumber,
@@ -40,15 +49,70 @@ function PrepareOrder(order) {
   }
 }
 
+const PrepareDriver = (driver) => {
+  return camelize(driver.Driver.FirstName + ' ' + driver.Driver.LastName + ' (' + driver.Driver.CountryCode + driver.Driver.PhoneNumber + ')');
+}
+
+function isEmpty(obj) {
+  if (obj == null) return true;
+
+  if (obj.length > 0)    return false;
+  if (obj.length === 0)  return true;
+
+  for (var key in obj) {
+      if (hasOwnProperty.call(obj, key)) return false;
+  }
+
+  return true;
+}
+
+const MessageModal = React.createClass({
+  handleClose() {
+    const {closeModal} = this.props;
+    closeModal();
+  },
+  render() {
+    const {message, show} = this.props;
+
+    return (
+      <Modal show={show} width={250}>
+        {message}
+        <br/>
+        <ButtonBase onClick={this.handleClose} styles={styles.modalBtn}>Close</ButtonBase>
+      </Modal>
+    );
+  }
+});
+
+const ResultModal = React.createClass({
+  render() {
+    const {successRes, failedRes} = this.props;
+    return (
+      <div>
+        <h4 style={{marginTop: 0}}>Filling Results</h4>
+        <div style={{marginBottom: 20}}>
+          <span>Successfully put into container: ({successRes.length} items)</span>
+          <div>{_.map(successRes, (res) => (res.orderNumber)).join(' ')}</div>
+        </div>
+        <div>
+          <span>Failed to put into container: ({failedRes.length} items)</span>
+          <div>{_.map(failedRes, (res) => (res.orderNumber)).join(' ')}</div>
+        </div>
+        <ButtonBase styles={styles.modalBtn} onClick={this.props.closeModal}>OK</ButtonBase>
+      </div>
+    );
+  }
+})
+
 const FillForm = React.createClass({
   getInitialState() {
-    return {opened: false, showModal: false};
+    return {opened: false, showModal: false, driverID: 0, districtError: false};
   },
   toggleOpened() {
     this.setState({opened: !this.state.opened});
   },
   selectDistrict(val) {
-    this.setState({opened: false});
+    this.setState({opened: false, districtError: false});
     const selectedDistrict = _.find(this.props.districts, (district) => (district.Name == val));
     const {container} = this.props;
     this.props.pickDistrict(container.ContainerID, selectedDistrict.DistrictID);    
@@ -57,6 +121,9 @@ const FillForm = React.createClass({
     this.setState({showModal: false});
     const {limit, currentPage} = this.props.ordersPrepared;
     this.props.ordersPrepareFetch(limit, (currentPage-1)*limit);
+  },
+  closeModal2() {
+    this.setState({showModal: false});
   },
   setLimit(val) {
     this.props.ordersPrepareLimit(val);
@@ -68,22 +135,40 @@ const FillForm = React.createClass({
     const {orderToggle} = this.props;
     orderToggle(item.id2);
   },
-  putEverything() {
-    confirm('Are you sure you want to put everything?');
-  },
   fillContainer() {
     const {container, activeDistrict, ordersPrepared, fillContainer} = this.props;
+    if(isEmpty(activeDistrict)) {
+      alert('Please choose a district for this container')
+      this.setState({districtError: true});
+      return;
+    }
+
     const orders = _.chain(ordersPrepared.orders).filter((order) => (order.checked)).map((order) => (order.UserOrderID)).value();
-    fillContainer(container.ContainerNumber, orders, activeDistrict.DistrictID);
+    if(orders.length == 0) {
+      alert('No order selected');
+      return;
+    }
+
+    fillContainer(container.ContainerNumber, orders, activeDistrict.DistrictID, this.state.driverID);
     this.setState({showModal: true});
   },
   putEverything() {
     const {container, activeDistrict, ordersPrepared, fillEverything} = this.props;
-    fillEverything(container.ContainerNumber, ordersPrepared.ids, activeDistrict.DistrictID);
+    if(isEmpty(activeDistrict)) {
+      alert('Please choose a district for this container')
+      this.setState({districtError: true});
+      return;
+    }
+    fillEverything(container.ContainerNumber, ordersPrepared.ids, activeDistrict.DistrictID, this.state.driverID);
     this.setState({showModal: true});
   },
+  pickDriver(val) {
+    const driver = _.find(this.props.drivers, (driver) => (val == PrepareDriver(driver)));
+    this.setState({driverID: driver.Driver.UserID});
+    console.log('driver', driver, val);
+  },
   render() {
-    const {activeDistrict, districts, ordersPrepared} = this.props;
+    const {activeDistrict, districts, driversName, ordersPrepared} = this.props;
     const isFetching = ordersPrepared.isFetching;
     const isFilling = ordersPrepared.isFilling;
     const orders = _.map(ordersPrepared.orders, (order) => (PrepareOrder(order)));
@@ -94,24 +179,15 @@ const FillForm = React.createClass({
     if(ordersPrepared.results) {
       successRes = _.filter(ordersPrepared.results.result, (res) => (res.status == 'Success'));
       failedRes = _.filter(ordersPrepared.results.result, (res) => (res.status == 'Failed'));
-      console.log(successRes);
     }
 
     return (
       <div>
-        <Modal show={ordersPrepared.results && this.state.showModal} width={700}>
-          <h4 style={{marginTop: 0}}>Filling Results</h4>
-          <div style={{marginBottom: 20}}>
-            <span>Successfully put into container: ({successRes.length} items)</span>
-            <div>{_.map(successRes, (res) => (res.orderNumber)).join(' ')}</div>
-          </div>
-          <div>
-            <span>Failed to put into container: ({failedRes.length} items)</span>
-            <div>{_.map(failedRes, (res) => (res.orderNumber)).join(' ')}</div>
-          </div>
-          <ButtonBase styles={styles.modalBtn} onClick={this.closeModal}>OK</ButtonBase>
+        <Modal show={!ordersPrepared.isFilling && ordersPrepared.results && this.state.showModal} width={700}>
+          <ResultModal successRes={successRes} failedRes={failedRes} closeModal={this.closeModal} />
         </Modal>
-        <Filter limit={limit} />
+        <MessageModal show={!ordersPrepared.isFilling && !ordersPrepared.results && this.state.showModal} message={ordersPrepared.errorMessage} closeModal={this.closeModal2} />
+        <Filter />
         {
           isFilling ? 
           <span style={{float: 'right'}}>Filling Container...</span> :
@@ -124,7 +200,13 @@ const FillForm = React.createClass({
           </span>
         }
         <span>Districts :</span>
-        <Dropdown opened={this.state.opened} val={activeDistrict.Name} options={districtsName} onClick={this.toggleOpened} selectVal={this.selectDistrict} width={'150px'} />
+        <span className={classNaming(styles.fillDriverWrapper, {[styles.error]: this.state.districtError})}>
+          <DropdownTypeAhead options={districtsName} selectVal={this.selectDistrict} val={activeDistrict.Name} />
+        </span>
+        <span style={{marginLeft: 10}}>Drivers :</span>
+        <span className={styles.fillDriverWrapper}>
+          <DropdownTypeAhead options={driversName} selectVal={this.pickDriver} />
+        </span>
         <div style={{clear: 'both', marginBottom: 10}} />
         <Pagination limit={limit} totalItem={ordersPrepared.count} currentPage={currentPage} setLimit={this.setLimit} setCurrentPage={this.setCurrentPage} />
         <div style={isFetching || isFilling ? {opacity: 0.5} : {}}>
@@ -140,6 +222,21 @@ const FillComponent = React.createClass({
     this.props.containerDetailsFetch();
     this.props.districtsFetch();
     this.props.ordersPrepareIDs([]);
+    this.props.driversFetch();
+  },
+  componentWillReceiveProps(newProps) {
+    if(!newProps.isFetchingContainer && !newProps.container.fillAble) {
+      this.props.backToContainer(newProps.container.ContainerID);
+      return;
+    }
+
+    const {fillFormState} = this.props;
+    if(fillFormState && fillFormState.ordersPrepared && fillFormState.ordersPrepared.results) {
+      const results = fillFormState.ordersPrepared.results;
+      if(results.trip && results.trip.OrderStatus && results.trip.OrderStatus.OrderStatus == 'ACCEPTED') {
+        this.props.backToContainer(this.props.container.ContainerID);
+      }
+    }
   },
   handleBack() {
     const {container} = this.props;
@@ -164,7 +261,7 @@ const FillComponent = React.createClass({
 });
 
 const mapStateToProps = (state, ownProps) => {
-  const {containers, ordersPrepared} = state.app;
+  const {containers, drivers, ordersPrepared} = state.app;
   const container = containers.containers[containers.active];
 
   if(!container) return { isFetchingContainer: true, container: {} };
@@ -176,7 +273,11 @@ const mapStateToProps = (state, ownProps) => {
     fillFormState: {
       activeDistrict: _.find(districts, (district) => (district.DistrictID == container.district)) || {},
       districts: districts,
-      ordersPrepared: ordersPrepared
+      ordersPrepared: ordersPrepared,
+      drivers: drivers.drivers,
+      driversName: _.chain(drivers.drivers).map((driver) => {
+        return PrepareDriver(driver);
+      }).sortBy((driver) => (driver)).value()
     }
   }
 }
@@ -196,11 +297,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       pickDistrict: function(id1, id2) {
         dispatch(containerDistrictPick(id1, id2));
       },
-      fillContainer: function(containerNumber, ordersID, districtID) {
-        dispatch(containerFill(containerNumber, ordersID, districtID));
+      fillContainer: function(containerNumber, ordersID, districtID, driverID) {
+        dispatch(FillActions.fillContainer(containerNumber, ordersID, districtID, driverID));
       },
-      fillEverything: function(containerNumber, ordersID, districtID) {
-        dispatch(containerFillEverything(containerNumber, ordersID, districtID));
+      fillEverything: function(containerNumber, ordersID, districtID, driverID) {
+        dispatch(containerFillEverything(containerNumber, ordersID, districtID, driverID));
       },
       ordersPrepareFetch: function() {
         dispatch(ordersPrepare());
@@ -220,6 +321,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     ordersPrepareIDs: function(ids) {
       dispatch(ordersPrepareIDs(ids));
+    },
+    driversFetch: function() {
+      dispatch(FillActions.fetchDrivers());
     }
   }
 }

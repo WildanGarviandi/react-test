@@ -58,6 +58,9 @@ export default (state = initialState, action) => {
     case actionTypes.CONTAINER_DETAILS_FETCH_START:
     case actionTypes.CONTAINER_DETAILS_FETCH_SUCCESS:
     case actionTypes.CONTAINER_DETAILS_FETCH_FAILED:
+    case actionTypes.CONTAINER_CLEAR_START:
+    case actionTypes.CONTAINER_CLEAR_SUCCESS:
+    case actionTypes.CONTAINER_CLEAR_FAILED:
       const container = state.containers[action.ContainerID];
       return _.assign({}, state, {
         active: parseInt(action.ContainerID),

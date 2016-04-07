@@ -90,7 +90,9 @@ const DropdownTypeAhead = React.createClass({
     this.mouseIsDownOnDropdown = false;
   },
   handleTextChange(e) {
-    this.setState({txt: e.target.value, highlight: 0, opened: true  });
+    this.setState({txt: e.target.value, highlight: 0, opened: true }, () => {
+      this.refs.optionsWrapper.scrollTop = 0;
+    });
   },
   handleKeyDown(e) {
     if(e.keyCode == 38) {
@@ -105,7 +107,8 @@ const DropdownTypeAhead = React.createClass({
     }
   },
   getInitialState() {
-    return {opened: false, txt: '', highlight: 0};
+    const {val} = this.props;
+    return {opened: false, txt: (val ? val : ''), highlight: 0};
   },
   openOption() {
     this.setState({opened: true});
@@ -118,13 +121,22 @@ const DropdownTypeAhead = React.createClass({
   },
   getFilteredOption() {
     const options = this.props.options;
-    return _.filter(options, (option) => {
+    const filtered = _.filter(options, (option) => {
       return option.toLowerCase().indexOf(this.state.txt.toLowerCase()) > -1;
     });
+
+    return filtered;
   },
   setHighlight(x) {
     const filteredOption = this.getFilteredOption();
-    this.setState({highlight: Math.max(0, Math.min(x, filteredOption.length))});
+    const position = Math.max(0, Math.min(x, filteredOption.length-1));
+    this.setState({highlight: position});
+    const top = this.refs.optionsWrapper.scrollTop;
+    if(position * 26 < top) {
+      this.refs.optionsWrapper.scrollTop = position * 26;
+    } else if(top + 104 < position * 26) {
+      this.refs.optionsWrapper.scrollTop = position * 26 - 104;
+    }
   },
   highlightNext() {
     this.setHighlight(this.state.highlight + 1);
@@ -160,7 +172,7 @@ const DropdownTypeAhead = React.createClass({
         </span>
         {
           opened && optionsComp.length > 0 &&
-          <div className={styles.optionsWrapper}>
+          <div className={styles.optionsWrapper} ref="optionsWrapper">
             { optionsComp }
           </div>
         }

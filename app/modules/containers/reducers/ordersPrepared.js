@@ -14,23 +14,8 @@ const orderFn = (state = {}, action) => {
       return _.assign({}, state, {status: 'Processing'});
     case actionTypes.CONTAINER_FILL_SUCCESS:
       let result = _.find(action.results.result, (result) => (result.orderID == state.UserOrderID));
-
       if(!result) return state;
-
-      let containerNumber = 'Failed';
-      let checked = true;
-      if(result.status == 'Success') {
-        let tripx = _.find(action.results.trips, (trip) => (trip.UserOrder.UserOrderID == state.UserOrderID));
-
-        containerNumber = tripx.ContainerNumber;
-        checked = false;
-      }
-
-      return _.assign({}, state, {
-        status: result.status, 
-        containerNumber: containerNumber,
-        checked: checked
-      });
+      return _.assign({}, state, { status: result.status });
     case actionTypes.CONTAINER_FILL_FAILED:
       if(!state.checked) return state;
       return _.assign({}, state, {status: 'Failed'});
@@ -54,7 +39,7 @@ export default (state = initialState, action) => {
     case actionTypes.CONTAINER_FILL_SUCCESS:
       return _.assign({}, state, {isFilling: false, results: action.results});
     case actionTypes.CONTAINER_FILL_FAILED:
-      return _.assign({}, state, {isFilling: false, results: null});
+      return _.assign({}, state, {isFilling: false, results: null, errorMessage: action.error});
     case actionTypes.ORDER_PREPARE_TOGGLE:
       return _.assign({}, state, {
         orders: _.map(state.orders, (order) => (orderFn(order, action)))
