@@ -27,33 +27,17 @@ function requireAuth(nextState, replace, callback) {
   });
 }
 
-var firstVisit = true;
-function checkFirstVisit(nextState, replace, callback) {
-  if(firstVisit) {
-    firstVisit = false;
-    replace({
-      pathname: '/container'
-    })
-  }
-
-  callback();
-}
-
-function triggerFirstVisit() {
-  firstVisit = false;
-}
-
 export default (
   <Router history={browserHistory}>
     <Route path="/" component={App}>
       <IndexRoute component={LoginPage} />
-      <Route path="/container/:id/qrcode" component={ContainerQRCodePage} />
       <Route path="/home" component={DashboardPage} onEnter={requireAuth}>
         <IndexRoute component={ContainerPage} />
-        <Route path="/container" component={ContainerPage} onEnter={triggerFirstVisit} />
+        <Route path="/container" component={ContainerPage} />
         <Route path="/container/:id" component={ContainerDetailsPage} />
         <Route path="/container/:id/fill" component={ContainerFillPage} />
       </Route>
+      <Route path="/qrcode/:id" component={ContainerQRCodePage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/*" component={LoginPage} />
     </Route>

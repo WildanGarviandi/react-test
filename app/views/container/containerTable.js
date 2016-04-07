@@ -13,8 +13,8 @@ import styles from './table.css';
 const ActionCell = React.createClass({
   handleClick(e) {
     const {item} = this.props;
-    const qrCodeLink = '/container/' + item.ContainerID + '/qrcode';
-    this.props.goTo(qrCodeLink);
+    const qrCodeLink = '/qrcode/' + item.ContainerNumber;
+    window.open(qrCodeLink);
     e.preventDefault();
     e.stopPropagation();
   },
@@ -28,16 +28,6 @@ const ActionCell = React.createClass({
     );
   }
 });
-
-const ActionCellDispatch = (dispatch) => {
-  return {
-    goTo: function(address) {
-      dispatch(push(address));
-    }
-  }
-}
-
-const ActionCellComps = connect(undefined, ActionCellDispatch)(ActionCell);
 
 const ContainerTable = React.createClass({
   componentDidMount() {
@@ -91,7 +81,7 @@ const ContainerTable = React.createClass({
       BaseChild: BaseCellGray,
       CustomChild: {
         status: ActiveCell,
-        action: ActionCellComps
+        action: ActionCell
       },
       Columns: columns
     };

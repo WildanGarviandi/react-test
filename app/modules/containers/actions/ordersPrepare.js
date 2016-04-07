@@ -1,4 +1,3 @@
-import {push} from 'react-router-redux';
 import * as actionTypes from '../constants';
 import fetch from '../../fetch/get';
 import toggleAll from './orderToggleAll';
@@ -6,7 +5,7 @@ import toggleAll from './orderToggleAll';
 export default () => {
   return (dispatch, getState) => {
     const {userLogged, ordersPrepared} = getState().app;
-    const {token, userID} = userLogged;
+    const {token} = userLogged;
     const ordersID = ordersPrepared.ids;
     const limit = ordersPrepared.limit;
     const offset = (ordersPrepared.currentPage-1)*limit;
