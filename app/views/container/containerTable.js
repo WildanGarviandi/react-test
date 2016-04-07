@@ -95,7 +95,14 @@ const ContainerTable = React.createClass({
         <Pagination {...pagination} setCurrentPage={this.setCurrentPage} setLimit={this.setLimit} />
         <table className={styles.table} style={isFetching ? {opacity: 0.5} : {}}>
           <thead>{Header}</thead>
-          <tbody>{Search}</tbody>
+          <tbody>
+            <SearchCell />
+            <td className={styles.td} />
+            <SetStatusCell />
+            <td className={styles.td} />
+            <td className={styles.td} />
+            <td className={styles.td} />
+          </tbody>
           <tbody>{Body}</tbody>
         </table>
       </div>
