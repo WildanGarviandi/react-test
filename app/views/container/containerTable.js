@@ -1,5 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import {push} from 'react-router-redux';
 import {ContainersAction, StatusList} from '../../modules';
 import {Collection, Infograph, Pagination, ButtonBase, ButtonAction} from '../base';
 import {BaseCellGray, BaseHeader, BaseRow, SearchCell} from './table';
@@ -10,18 +11,31 @@ import SetStatusCell from './setStatusCell';
 import styles from './table.css';
 
 const ActionCell = React.createClass({
-  render() {
-    const {item, attr} = this.props;
+  handleClick() {
+    const {item} = this.props;
     const qrCodeLink = 'container/qrcode/' + item.ContainerNumber;
+    this.props.goTo(qrCodeLink);
+  },
+  render() {
     return (
       <td className={styles.td} style={{width: '40px', textAlign: 'center'}}>
-      <a href={qrCodeLink} target='_blank'>
-      <ButtonAction>Print</ButtonAction>
-      </a>
+        <a href='javascript:;' onClick={this.handleClick}>
+          <ButtonAction>Print</ButtonAction>
+        </a>
       </td>
     );
   }
 });
+
+const ActionCellDispatch = (dispatch) => {
+  return {
+    goTo: function(address) {
+      dispatch(push(address));
+    }
+  }
+}
+
+const ActionCellComps = connect(undefined, ActionCellDispatch)(ActionCell);
 
 const ContainerTable = React.createClass({
   componentDidMount() {
@@ -75,7 +89,7 @@ const ContainerTable = React.createClass({
       BaseChild: BaseCellGray,
       CustomChild: {
         status: ActiveCell,
-        action: ActionCell
+        action: ActionCellComps
       },
       Columns: columns
     };
