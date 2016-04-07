@@ -47,13 +47,13 @@ export default (
   <Router history={browserHistory}>
     <Route path="/" component={App}>
       <IndexRoute component={LoginPage} />
+      <Route path="/container/:id/qrcode" component={ContainerQRCodePage} />
       <Route path="/home" component={DashboardPage} onEnter={requireAuth}>
         <IndexRoute component={ContainerPage} />
         <Route path="/container" component={ContainerPage} onEnter={triggerFirstVisit} />
         <Route path="/container/:id" component={ContainerDetailsPage} />
         <Route path="/container/:id/fill" component={ContainerFillPage} />
       </Route>
-      <Route path="/container/qrcode/:id" component={ContainerQRCodePage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/*" component={LoginPage} />
     </Route>

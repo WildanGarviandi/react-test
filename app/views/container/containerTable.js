@@ -11,10 +11,12 @@ import SetStatusCell from './setStatusCell';
 import styles from './table.css';
 
 const ActionCell = React.createClass({
-  handleClick() {
+  handleClick(e) {
     const {item} = this.props;
-    const qrCodeLink = 'container/qrcode/' + item.ContainerNumber;
+    const qrCodeLink = '/container/' + item.ContainerID + '/qrcode';
     this.props.goTo(qrCodeLink);
+    e.preventDefault();
+    e.stopPropagation();
   },
   render() {
     return (
@@ -110,13 +112,15 @@ const ContainerTable = React.createClass({
         <table className={styles.table} style={isFetching ? {opacity: 0.5} : {}}>
           <thead>{Header}</thead>
           <tbody>
-            <SearchCell />
-            <td className={styles.td} />
-            <SetStatusCell />
-            <td className={styles.td} />
-            <td className={styles.td} />
-            <td className={styles.td} />
-            <td className={styles.td} />
+            <tr>
+              <SearchCell />
+              <td className={styles.td} />
+              <SetStatusCell />
+              <td className={styles.td} />
+              <td className={styles.td} />
+              <td className={styles.td} />
+              <td className={styles.td} />
+            </tr>
           </tbody>
           <tbody>{Body}</tbody>
         </table>

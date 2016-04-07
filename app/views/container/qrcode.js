@@ -1,5 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import {push} from 'react-router-redux';
 var QRCode = require('qrcode.react');
 
 const qrCode = React.createClass({
@@ -17,5 +18,12 @@ const qrCode = React.createClass({
   }
 });
 
+const dispatchToProps = (dispatch) => {
+  return {
+    backToContainer: function() {
+      dispatch(push('/container'));
+    }
+  }
+}
 
-export default connect(undefined)(qrCode);
+export default connect(undefined, dispatchToProps)(qrCode);
