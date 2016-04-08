@@ -1,5 +1,6 @@
+const config = require('./config.json')
 const express = require('express')
-const port = process.env.PORT || 8080
+const port = process.env.PORT || config.port
 const app = express()
 
 // serve static assets normally
