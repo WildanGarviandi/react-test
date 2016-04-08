@@ -1,6 +1,5 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {push} from 'react-router-redux';
 import {ContainersAction, StatusList} from '../../modules';
 import {Collection, Infograph, Pagination, ButtonBase, ButtonAction} from '../base';
 import {BaseCellGray, BaseHeader, BaseRow, SearchCell} from './table';
@@ -66,15 +65,6 @@ const ContainerTable = React.createClass({
     };
 
     const Header = <Collection item={header} components={HeaderComponent} />
-
-    const SearchComponent = {
-      BaseParent: BaseRow,
-      BaseChild: BaseCellGray,
-      CustomChild: {ContainerNumber: SearchCell, ContainerStatus: SetStatusCell},
-      Columns: columns
-    };
-
-    const Search = <Collection item={{status: 'NotActive'}} components={SearchComponent} />
 
     const BodyComponent = {
       BaseParent: PickRow,

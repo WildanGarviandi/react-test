@@ -7,7 +7,7 @@
 }
 
 .btnBase.loading {
-  display: block;
+  display: inline-block;
   cursor: default;
   background-color: #aaa;
 }
@@ -29,4 +29,5 @@
   color: #000000;
   cursor: pointer;
   padding: 2px;
+  display: inline-block;
 }

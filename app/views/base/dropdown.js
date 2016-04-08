@@ -3,7 +3,6 @@ import React from 'react';
 import _ from 'underscore';
 import {ButtonBase} from './';
 import {Glyph} from './glyph';
-import {Input} from './input';
 import styles from './dropdown.css';
 
 const Options = React.createClass({

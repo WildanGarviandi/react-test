@@ -30,12 +30,6 @@ const LimitSelector = React.createClass({
     this.setState({opened: !this.state.opened});
   },
   render() {
-    var limitRange = _.map([5, 10, 25, 50, 100], (x) => {
-      return (
-        <option key={x} value={x}>{x}</option>
-      );
-    });
-
     return (
       <span className="page-list">
         <span className="btn-group dropup">

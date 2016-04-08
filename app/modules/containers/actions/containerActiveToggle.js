@@ -4,7 +4,7 @@ import fetch from '../../fetch/post';
 export default (containerID) => {
   return (dispatch, getState) => {
     const {userLogged} = getState().app;
-    const {token, hubID} = userLogged;
+    const {token} = userLogged;
 
     dispatch({type: actionTypes.CONTAINER_ACTIVE_TOGGLE_START, id: containerID});
     fetch('/container/' + containerID, token).then(function(response) {

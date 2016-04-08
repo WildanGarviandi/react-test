@@ -4,7 +4,6 @@ import checkAuth from './modules/auth/actions/checkAuth';
 import ContainerPage from './views/container';
 import ContainerDetailsPage from './views/container/details';
 import ContainerFillPage from './views/container/fill';
-import ContainerOrderPage from './views/container/order';
 import DashboardPage from './views/dashboard';
 import LoginPage from './views/login';
 import store from './store';

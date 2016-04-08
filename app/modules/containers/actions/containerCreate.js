@@ -5,7 +5,7 @@ import {push} from 'react-router-redux';
 export default () => {
   return (dispatch, getState) => {
     const {userLogged} = getState().app;
-    const {hubID, token, userID} = userLogged;
+    const {hubID, token} = userLogged;
 
     dispatch({type: actionTypes.CONTAINER_CREATE_START, id: hubID});
     fetch('/container/', token).then(function(response) {

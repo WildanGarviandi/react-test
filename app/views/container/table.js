@@ -63,7 +63,7 @@ const CellWithOnlySelect = React.createClass({
     toggleSelect(item.id2);
   },
   render() {
-    const {item, val} = this.props;
+    const {item} = this.props;
     return (
       <td className={styles.td} style={{color: "#37B494", width: '10px'}}>
         <input type={'checkbox'} checked={item.checked} onClick={this.handleClick} readOnly/>
@@ -88,7 +88,7 @@ const HeaderWithOnlySelect = React.createClass({
     orderToggleAll(item.checked);
   },
   render() {
-    const {item, val} = this.props;
+    const {item} = this.props;
     return (
       <th className={styles.th} style={{color: "#37B494", width: '10px'}}>
         <input type={'checkbox'} checked={item.checked} readOnly onClick={this.handleClick}/>

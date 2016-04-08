@@ -2,7 +2,7 @@ import * as actionTypes from '../constants';
 import fetch from '../../fetch/post';
 import push from 'react-router-redux';
 
-export default (containerNumber, ordersID, districtID, driverID) => {
+export default (containerNumber, ordersID, districtID) => {
   return (dispatch, getState) => {
     const {userLogged} = getState().app;
     const {token} = userLogged;
@@ -10,11 +10,10 @@ export default (containerNumber, ordersID, districtID, driverID) => {
     const params = {
       ContainerNumber: containerNumber,
       OrdersID: ordersID,
-      DistrictID: districtID,
-      DriverID: driverID
+      DistrictID: districtID
     };
 
-    dispatch({ type: actionTypes.CONTAINER_FILL_START, orders: ordersID, containerNumber: containerNumber, districtID: districtID, driverID: driverID });
+    dispatch({ type: actionTypes.CONTAINER_FILL_START, orders: ordersID, containerNumber: containerNumber, districtID: districtID });
     fetch('/container/fill', token, params).then(function(response) {
       if(response.ok) {
         response.json().then(function(response) {

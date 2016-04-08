@@ -16,5 +16,7 @@ export const FillActions = {
 
 export const ContainerDetailsActions = {
   clearContainer: containers.empty,
-  fetchDetails: containers.fetchDetails
+  fetchDetails: containers.fetchDetails,
+  fetchDrivers: drivers.fetch,
+  pickDriver: drivers.pick
 }

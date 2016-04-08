@@ -13,7 +13,7 @@ const orderFn = (state = {}, action) => {
       if(!state.checked) return state;
       return _.assign({}, state, {status: 'Processing'});
     case actionTypes.CONTAINER_FILL_SUCCESS:
-      let result = _.find(action.results.result, (result) => (result.orderID == state.UserOrderID));
+      let result = _.find(action.results, (result) => (result.orderID == state.UserOrderID));
       if(!result) return state;
       return _.assign({}, state, { status: result.status });
     case actionTypes.CONTAINER_FILL_FAILED:

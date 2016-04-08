@@ -49,10 +49,6 @@ const PrepareOrder = (order) => {
   }
 }
 
-const PrepareDriver = (driver) => {
-  return camelize(driver.Driver.FirstName + ' ' + driver.Driver.LastName + ' (' + driver.Driver.CountryCode + driver.Driver.PhoneNumber + ')');
-}
-
 function isEmpty(obj) {
   if (obj == null) return true;
 
@@ -149,7 +145,7 @@ const FillForm = React.createClass({
       return;
     }
 
-    fillContainer(container.ContainerNumber, orders, activeDistrict.DistrictID, this.state.driverID);
+    fillContainer(container.ContainerNumber, orders, activeDistrict.DistrictID);
     this.setState({showModal: true});
   },
   putEverything() {
@@ -159,13 +155,8 @@ const FillForm = React.createClass({
       this.setState({districtError: true});
       return;
     }
-    fillEverything(container.ContainerNumber, ordersPrepared.ids, activeDistrict.DistrictID, this.state.driverID);
+    fillEverything(container.ContainerNumber, ordersPrepared.ids, activeDistrict.DistrictID);
     this.setState({showModal: true});
-  },
-  pickDriver(val) {
-    const driver = _.find(this.props.drivers, (driver) => (val == PrepareDriver(driver)));
-    this.setState({driverID: driver.Driver.UserID});
-    console.log('driver', driver, val);
   },
   render() {
     const {activeDistrict, districts, driversName, ordersPrepared} = this.props;
@@ -177,8 +168,8 @@ const FillForm = React.createClass({
 
     let successRes = [], failedRes = [];
     if(ordersPrepared.results) {
-      successRes = _.filter(ordersPrepared.results.result, (res) => (res.status == 'Success'));
-      failedRes = _.filter(ordersPrepared.results.result, (res) => (res.status == 'Failed'));
+      successRes = _.filter(ordersPrepared.results, (res) => (res.status == 'Success'));
+      failedRes = _.filter(ordersPrepared.results, (res) => (res.status == 'Failed'));
     }
 
     return (
@@ -202,10 +193,6 @@ const FillForm = React.createClass({
         <span>Districts :</span>
         <span className={classNaming(styles.fillDriverWrapper, {[styles.error]: this.state.districtError})}>
           <DropdownTypeAhead options={districtsName} selectVal={this.selectDistrict} val={activeDistrict.Name} />
-        </span>
-        <span style={{marginLeft: 10}}>Drivers :</span>
-        <span className={styles.fillDriverWrapper}>
-          <DropdownTypeAhead options={driversName} selectVal={this.pickDriver} />
         </span>
         <div style={{clear: 'both', marginBottom: 10}} />
         <Pagination limit={limit} totalItem={ordersPrepared.count} currentPage={currentPage} setLimit={this.setLimit} setCurrentPage={this.setCurrentPage} />
@@ -274,10 +261,6 @@ const mapStateToProps = (state, ownProps) => {
       activeDistrict: _.find(districts, (district) => (district.DistrictID == container.district)) || {},
       districts: districts,
       ordersPrepared: ordersPrepared,
-      drivers: drivers.drivers,
-      driversName: _.chain(drivers.drivers).map((driver) => {
-        return PrepareDriver(driver);
-      }).sortBy((driver) => (driver)).value()
     }
   }
 }
@@ -297,11 +280,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       pickDistrict: function(id1, id2) {
         dispatch(containerDistrictPick(id1, id2));
       },
-      fillContainer: function(containerNumber, ordersID, districtID, driverID) {
-        dispatch(FillActions.fillContainer(containerNumber, ordersID, districtID, driverID));
+      fillContainer: function(containerNumber, ordersID, districtID) {
+        dispatch(FillActions.fillContainer(containerNumber, ordersID, districtID));
       },
-      fillEverything: function(containerNumber, ordersID, districtID, driverID) {
-        dispatch(containerFillEverything(containerNumber, ordersID, districtID, driverID));
+      fillEverything: function(containerNumber, ordersID, districtID) {
+        dispatch(containerFillEverything(containerNumber, ordersID, districtID));
       },
       ordersPrepareFetch: function() {
         dispatch(ordersPrepare());

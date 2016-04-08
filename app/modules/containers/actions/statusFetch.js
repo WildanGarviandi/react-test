@@ -4,7 +4,7 @@ import fetch from '../../fetch/get';
 export default () => {
   return (dispatch, getState) => {
     const {userLogged, containers} = getState().app;
-    const {token, hubID} = userLogged;
+    const {token} = userLogged;
     const {statusList} = containers;
 
     if(statusList.length > 0) return;

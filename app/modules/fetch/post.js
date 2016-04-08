@@ -1,7 +1,8 @@
-import fetch from 'isomorphic-fetch';
+import zzz from 'isomorphic-fetch';
 import config from './config';
 
 const PostParams = (token, body) => {
+  console.log('bd', body, JSON.stringify(body));
   return {
     credentials: 'include',
     method: 'post',
@@ -15,5 +16,5 @@ const PostParams = (token, body) => {
 }
 
 export default (url, token, body = {}) => {
-  return fetch(config.baseUrl + url, PostParams(token, body));
+  return zzz(config.baseUrl + url, PostParams(token, body));
 }
