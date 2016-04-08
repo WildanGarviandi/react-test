@@ -10,6 +10,14 @@
   ],
 
   "deploy" : {
+    "live" : {
+      "user" : "ubuntu",
+      "host": "hub.etobee.com",
+      "ref"  : "origin/master",
+      "repo" : "git@gitlab.com:etobee-techgroup/etobee-hub.git",
+      "path" : "/home/ubuntu/hub",
+      "post-deploy" : "npm install ; npm run build; pm2 startOrRestart ecosystem.json --env production"
+    },
     "staging" : {
       "user" : "ubuntu",
       "host": "hub.etobee.com",
