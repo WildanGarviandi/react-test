@@ -1,0 +1,32 @@
+.btnBase {
+  border: 0;
+  border-radius: 5px;
+  background-color: #FF5A60;
+  color: #fff;
+  cursor: pointer;
+}
+
+.btnBase.loading {
+  display: block;
+  cursor: default;
+  background-color: #aaa;
+}
+
+.btnBase.loading .spinner {
+  background-image: url(../../img/loading.gif);
+  background-repeat: no-repeat;
+
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.btnAction {
+  border: 0;
+  border-radius: 5px;
+  border-color: #000000;
+  background-color: #CCCCCC;
+  color: #000000;
+  cursor: pointer;
+  padding: 2px;
+}

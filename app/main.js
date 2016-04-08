@@ -1,20 +1,18 @@
+import 'babel-polyfill';
+import fetch from 'isomorphic-fetch';
 import React from 'react';
 import { render } from 'react-dom';
-import { Router, Route, IndexRoute, Link, hashHistory } from 'react-router';
-
-import { DashboardPage } from './modules/dashboard/component';
-import { LoginPage } from './modules/login/component';
+import { Provider } from 'react-redux';
+import store from './store';
 import './main.css';
+import routes from './routes';
 
-function App(props) {
-  return <div style={{height: "100%"}}>{props.children}</div>;
+const Root = () => {
+  return (
+    <Provider store={store}>
+      {routes}
+    </Provider>
+  );
 }
 
-render((
-  <Router history={hashHistory}>
-    <Route path="/" component={App}>
-      <IndexRoute component={DashboardPage} />
-      <Route path="/login" component={LoginPage} />
-    </Route>
-  </Router>
-), document.getElementById('root'));
+render(<Root />, document.getElementById('root'));
