@@ -1,6 +1,6 @@
 import * as actionTypes from '../constants';
-import fetch from '../../fetch/post';
-import prayItWork from '../../containers/actions/containerDetailsFetch';
+import fetchPost from '../../fetch/post';
+import fetchContainerDetails from '../../containers/actions/containerDetailsFetch';
 
 export default (containerID, driverID) => {
   return (dispatch, getState) => {
@@ -14,14 +14,14 @@ export default (containerID, driverID) => {
     }
 
     dispatch({ type: actionTypes.DRIVERS_PICK_START, containerID: containerID, driverID: driverID});
-    fetch('/container/' + containerID + '/driver', token, params).then(function(response) {
+    fetchPost('/container/' + containerID + '/driver', token, params).then(function(response) {
       if(response.ok) {
         response.json().then((response) => {
           dispatch({
             type: actionTypes.DRIVERS_PICK_SUCCESS, 
             drivers: response
           });
-          dispatch(prayItWork(containerID));
+          dispatch(fetchContainerDetails(containerID));
         });
       } else {
         response.json().then(function(response) {

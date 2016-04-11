@@ -1,5 +1,5 @@
 import * as actionTypes from '../constants';
-import fetch from '../../fetch/get';
+import fetchGet from '../../fetch/get';
 
 export const setLimit = (limit) => {
   return (dispatch) => {
@@ -38,7 +38,7 @@ export const fetchContainers = () => {
     }
 
     dispatch({ type: actionTypes.CONTAINERS_FETCH_START, currentPage: currentPage, limit: limit });
-    fetch('/container/', token, query).then(function(response) {
+    fetchGet('/container/', token, query).then(function(response) {
       if(response.ok) {
         response.json().then((response) => {
           dispatch({ type: actionTypes.CONTAINERS_FETCH_SUCCESS, total: response.count, containers: response.rows, groups: response.groups });

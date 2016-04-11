@@ -1,5 +1,5 @@
 import * as actionTypes from '../constants';
-import fetch from '../../fetch/post';
+import fetchPost from '../../fetch/post';
 import {push} from 'react-router-redux';
 
 export default (containerID) => {
@@ -8,7 +8,7 @@ export default (containerID) => {
     const {token} = userLogged;
 
     dispatch({ type: actionTypes.CONTAINER_CLEAR_START, ContainerID: containerID });
-    fetch('/container/' + containerID + '/clear', token).then(function(response) {
+    fetchPost('/container/' + containerID + '/clear', token).then(function(response) {
       if(response.ok) {
         response.json().then(function(response) {
           dispatch({ type: actionTypes.CONTAINER_CLEAR_SUCCESS, ContainerID: containerID });

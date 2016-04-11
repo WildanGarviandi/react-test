@@ -39,7 +39,7 @@ const camelize = (str) => {
 }
 
 const PrepareDriver = (driver) => {
-  return camelize(driver.FirstName + ' ' + driver.LastName + ' (' + driver.CountryCode + driver.PhoneNumber + ')');
+  return camelize(`${driver.FirstName} ${driver.LastName} (${driver.CountryCode}${driver.PhoneNumber})`);
 }
 
 const DetailPage = React.createClass({
@@ -64,7 +64,6 @@ const DetailPage = React.createClass({
   pickDriver(val) {
     const driver = _.find(this.props.drivers, (driver) => (val == PrepareDriver(driver.Driver)));
     this.setState({driverID: driver.Driver.UserID});
-    console.log('driver', driver, val);
   },
   finalizeDriver() {
     this.setState({showDriver: true});

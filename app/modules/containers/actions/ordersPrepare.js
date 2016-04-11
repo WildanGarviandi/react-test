@@ -1,5 +1,5 @@
 import * as actionTypes from '../constants';
-import fetch from '../../fetch/get';
+import fetchGet from '../../fetch/get';
 import toggleAll from './orderToggleAll';
 
 export default () => {
@@ -17,7 +17,7 @@ export default () => {
     }
 
     dispatch({ type: actionTypes.ORDER_PREPARE_FETCH_START, ids: ordersID, limit: limit, offset: offset });
-    fetch('/hub/ordersByID', token, query).then(function(response) {
+    fetchGet('/hub/ordersByID', token, query).then(function(response) {
       if(response.ok) {
         response.json().then(function(response) {
           dispatch({ type: actionTypes.ORDER_PREPARE_FETCH_SUCCESS, orders: response.rows, count: response.count });

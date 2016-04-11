@@ -1,5 +1,5 @@
 import * as actionTypes from '../constants';
-import fetch from '../../fetch/post';
+import fetchPost from '../../fetch/post';
 
 export default (orderID) => {
   return (dispatch, getState) => {
@@ -7,7 +7,7 @@ export default (orderID) => {
     const {token} = userLogged;
 
     dispatch({type: actionTypes.ORDER_REMOVE_START, orderID: orderID});
-    fetch('/hub/order/' + orderID + '/removeContainer', token).then(function(response) {
+    fetchPost('/hub/order/' + orderID + '/removeContainer', token).then(function(response) {
       if(response.ok) {
         response.json().then(function(response) {
           dispatch({type: actionTypes.ORDER_REMOVE_SUCCESS, order: response.order});
