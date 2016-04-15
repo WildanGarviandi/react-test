@@ -4,10 +4,8 @@ import fetchContainerDetails from '../../containers/actions/containerDetailsFetc
 
 export default (containerID, driverID) => {
   return (dispatch, getState) => {
-    const {drivers, userLogged} = getState().app;
+    const {userLogged} = getState().app;
     const {token} = userLogged;
-
-    console.log('here', containerID, driverID);
 
     const params = {
       driverID: driverID

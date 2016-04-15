@@ -7,14 +7,16 @@ import styles from './table.css';
 
 const TripStatusSelect = React.createClass({
   componentDidMount() {
+    this.props.pick([0], 'SHOW ALL');
     this.props.fetch();
   },
   selectVal(val) {
     const {pick, nameToID} = this.props;
-    pick(nameToID[val]);
+    pick(nameToID[val], val.toUpperCase());
   },
   render() {
-    return (<td className={classNaming(styles.td, styles.search)} style={{width: 150}}><DropdownTypeAhead options={this.props.statusList} selectVal={this.selectVal} /></td>);
+    const {statusName} = this.props;
+    return (<td className={classNaming(styles.td, styles.search)} style={{width: 150}}><DropdownTypeAhead options={this.props.statusList} selectVal={this.selectVal} val={statusName} /></td>);
   }
 });
 
@@ -25,19 +27,20 @@ const stateToProps = (state) => {
     nameToID: _.reduce(statusList, (memo, key, val) => {
       memo[val] = key;
       return memo;
-    }, {})
+    }, {}),
+    statusName: state.app.containers.statusName,
   }
 }
 
 const dispatchToProps = (dispatch) => {
   return {
-    pick: function(val) {
-      dispatch(StatusList.pick([val]));
+    pick: function(val, name) {
+      dispatch(StatusList.pick([val], name));
     },
     fetch: function() {
       dispatch(StatusList.fetch());
-    }
-  }
+    },
+  };
 }
 
 export default connect(stateToProps, dispatchToProps)(TripStatusSelect);

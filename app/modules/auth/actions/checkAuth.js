@@ -1,4 +1,3 @@
-import {push} from 'react-router-redux';
 import * as actionTypes from '../constants';
 import fetchPost from '../../fetch/post';
 

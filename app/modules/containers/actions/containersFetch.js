@@ -16,9 +16,9 @@ export const setCurrentPage = (currentPage) => {
   };
 };
 
-export const setStatus = (status) => {
+export const setStatus = (status, statusName) => {
   return (dispatch) => {
-    dispatch({type: actionTypes.CONTAINERS_SET_STATUS, status: status});
+    dispatch({type: actionTypes.CONTAINERS_SET_STATUS, status: status, name: statusName});
     dispatch({type: actionTypes.CONTAINERS_SET_CURRENTPAGE, currentPage: 1});
     dispatch(fetchContainers());
   };

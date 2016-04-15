@@ -36,22 +36,26 @@ const camelize = (str) => {
   return str.replace(/\w\S*/g, (txt) => {
     return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
   });
-}
+};
 
 const PrepareDriver = (driver) => {
   return camelize(`${driver.FirstName} ${driver.LastName} (${driver.CountryCode}${driver.PhoneNumber})`);
 }
+};
 
 const DetailPage = React.createClass({
   getInitialState() {
-    return {showModal: false, showDriver: false};
+    return {showModal: false, showDriver: false, driver: ''};
   },
   closeModal() {
     this.setState({showModal: false, showDriver: false});
+
   },
   clearContainer() {
-    this.setState({showModal: true});
-    this.props.clearContainer(this.props.container.ContainerID);
+    if(confirm('Are you sure you want to empty and reuse this container?')) {
+      this.setState({showModal: true});
+      this.props.clearContainer(this.props.container.ContainerID);
+    }
   },
   componentWillMount() {
     this.props.containerDetailsFetch(this.props.params.id);
@@ -63,16 +67,26 @@ const DetailPage = React.createClass({
   },
   pickDriver(val) {
     const driver = _.find(this.props.drivers, (driver) => (val == PrepareDriver(driver.Driver)));
-    this.setState({driverID: driver.Driver.UserID});
+    this.setState({driverID: driver.Driver.UserID, driver: val});
   },
   finalizeDriver() {
     this.setState({showDriver: true});
     this.props.driverPick(this.props.container.ContainerID,this.state.driverID);
   },
   render() {
-    const {backToContainer, container, drivers,  driverState, driversName, emptying, fillAble, hasDriver, isFetching, orders, reusable} = this.props;
-    const showEmptyingModal = this.state.showModal && !emptying.isInProcess && !emptying.isSuccess && emptying.error;
-    const showDriverModal = this.state.showDriver && !driverState.isInProcess && !driverState.isSuccess && driverState.error;
+    const {backToContainer, container,  driverState, driversName, emptying, fillAble, hasDriver, isFetching, orders, reusable} = this.props;
+
+    let messages = [];
+    if(this.state.showModal && !emptying.isInProcess && !emptying.isSuccess && emptying.error) {
+      messages.push(emptying.error);
+    }
+
+    if(this.state.showDriver && !driverState.isInProcess && !driverState.isSuccess && driverState.error) {
+      messages.push(driverState.error);
+    }
+
+    const messageModal = messages.length > 0 &&
+      <MessageModal show={true} message={messages[0]} closeModal={this.closeModal} />;
 
     return (
       <div>
@@ -80,8 +94,7 @@ const DetailPage = React.createClass({
           isFetching ? 
           <h3>Fetching Container Details...</h3> :
           <Page title={'Container ' + container.ContainerNumber}>
-            <MessageModal show={showEmptyingModal} message={emptying.error} closeModal={this.closeModal} />
-            <MessageModal show={showDriverModal} message={driverState.error} closeModal={this.closeModal} />
+            {messageModal}
             <a href="javascript:;" onClick={backToContainer}>{'<<'} Back to Container List</a>
             {
               fillAble &&
@@ -100,7 +113,7 @@ const DetailPage = React.createClass({
                     <span>
                       <span>Drivers :</span>
                       <span className={styles.fillDriverWrapper}>
-                        <DropdownTypeAhead options={driversName} selectVal={this.pickDriver} />
+                        <DropdownTypeAhead options={driversName} selectVal={this.pickDriver} val={this.state.driver} />
                       </span>
                       <ButtonWithLoading textBase="Set Driver" textLoading="Setting Driver" onClick={this.finalizeDriver} isLoading={driverState.isPicking} styles={{base: styles.driverBtn}} />
                     </span>
@@ -167,7 +180,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch) => {
   return {
     backToContainer: function() {
       dispatch(push('/container'));
@@ -187,7 +200,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     driverPick: function(containerID, driverID) {
       dispatch(ContainerDetailsActions.pickDriver(containerID, driverID));
     }
-  }
-}
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(DetailPage);

@@ -78,6 +78,10 @@ const DropdownTypeAhead = React.createClass({
   componentWillUnmount() {
     window.removeEventListener('mousedown', this.pageClick, false);
   },
+  componentWillReceiveProps(nextProps) {
+    console.log('next', nextProps);
+    this.setState({txt: nextProps.val});
+  },
   pageClick(e) {
     if(this.mouseIsDownOnDropdown) return;
     if(this.state.opened) this.closeOption();
@@ -89,8 +93,8 @@ const DropdownTypeAhead = React.createClass({
     this.mouseIsDownOnDropdown = false;
   },
   handleTextChange(e) {
-    this.setState({txt: e.target.value, highlight: 0, opened: true }, () => {
-      this.refs.optionsWrapper.scrollTop = 0;
+    this.setState({temp: e.target.value, highlight: 0, opened: true }, () => {
+      if(this.refs.optionsWrapper) this.refs.optionsWrapper.scrollTop = 0;
     });
   },
   handleKeyDown(e) {
@@ -107,21 +111,23 @@ const DropdownTypeAhead = React.createClass({
   },
   getInitialState() {
     const {val} = this.props;
-    return {opened: false, txt: (val ? val : ''), highlight: 0};
+    return {opened: false, txt: (val ? val : ''), temp: '', highlight: 0};
   },
   openOption() {
-    this.setState({opened: true});
+    this.setState({opened: true, temp: ''});
+    this.refs.textInput.focus();
   },
   closeOption() {
     this.setState({opened: false});
   },
   toggleOption() {
-    this.setState({opened: !this.state.opened});
+    if(this.state.opened) this.closeOption();
+    else this.openOption();
   },
   getFilteredOption() {
     const options = this.props.options;
     const filtered = _.filter(options, (option) => {
-      return option.toLowerCase().indexOf(this.state.txt.toLowerCase()) > -1;
+      return option.toLowerCase().indexOf(this.state.temp.toLowerCase()) > -1;
     });
 
     return filtered;
@@ -130,6 +136,7 @@ const DropdownTypeAhead = React.createClass({
     const filteredOption = this.getFilteredOption();
     const position = Math.max(0, Math.min(x, filteredOption.length-1));
     this.setState({highlight: position});
+    if(!this.refs.optionsWrapper) return;
     const top = this.refs.optionsWrapper.scrollTop;
     if(position * 26 < top) {
       this.refs.optionsWrapper.scrollTop = position * 26;
@@ -157,10 +164,11 @@ const DropdownTypeAhead = React.createClass({
 
     const inputProps = {
       onFocus: this.openOption,
-      value: this.state.txt,
+      value: this.state.opened ? this.state.temp : this.state.txt,
       className: styles.typeBox,
       onChange: this.handleTextChange,
-      onKeyDown: this.handleKeyDown
+      onKeyDown: this.handleKeyDown,
+      ref: 'textInput',
     }
 
     return (
