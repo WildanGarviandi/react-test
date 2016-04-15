@@ -1,5 +1,4 @@
 import 'babel-polyfill';
-import fetch from 'isomorphic-fetch';
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
@@ -13,6 +12,6 @@ const Root = () => {
       {routes}
     </Provider>
   );
-}
+};
 
 render(<Root />, document.getElementById('root'));

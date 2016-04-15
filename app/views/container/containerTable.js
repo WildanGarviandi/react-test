@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {ContainersAction, StatusList} from '../../modules';
-import {Collection, Infograph, Pagination, ButtonBase, ButtonAction} from '../base';
+import {ContainersAction} from '../../modules';
+import {Collection, Pagination, ButtonBase, ButtonAction} from '../base';
 import {BaseCellGray, BaseHeader, BaseRow, SearchCell} from './table';
 import ActiveCell from './activeCell';
 import PickRow from './pickContainerRow';
@@ -38,13 +38,9 @@ const ContainerTable = React.createClass({
   setLimit(x) {
     this.props.setLimit(x);
   },
-  handleFilter(attr) {
-    const {pickStatus, category} = this.props;
-    pickStatus(category[attr]);
-  },
   render() {
     const columns = ['ContainerNumber', 'OrderCount', 'ContainerStatus', 'Driver', 'District', 'status', 'action'];
-    const header = { 
+    const header = {
       ContainerNumber: 'Container Number', 
       OrderCount: 'Number of Orders',
       ContainerStatus: 'Status',
@@ -54,7 +50,7 @@ const ContainerTable = React.createClass({
       action: 'Action'
     };
 
-    const {containerInfo, containers, isFetching, pagination} = this.props;
+    const {containers, isFetching, pagination} = this.props;
     const items = containers;
 
     const HeaderComponent = {
@@ -80,14 +76,8 @@ const ContainerTable = React.createClass({
       return <Collection key={item.ContainerID} item={item} components={BodyComponent} />
     });
 
-    const Info = _.map(containerInfo, (val, key) => {
-      return <Infograph key={key} attr={key} val={val} onClick={this.handleFilter} />;
-    });
-
     return (
       <div>
-        {Info}
-        <div style={{clear: 'both'}} />
         <Pagination {...pagination} setCurrentPage={this.setCurrentPage} setLimit={this.setLimit} />
         <table className={styles.table} style={isFetching ? {opacity: 0.5} : {}}>
           <thead>{Header}</thead>
@@ -110,7 +100,7 @@ const ContainerTable = React.createClass({
 });
 
 const stateToProps = (state) => {
-  const {containers, isFetching, shown, limit, currentPage, total, groups, statusCategory} = state.app.containers;
+  const {containers, isFetching, shown, limit, currentPage, total} = state.app.containers;
   return {
     containers: _.chain(containers).map((container) => {
       if(!container.CurrentTrip) return _.assign({}, container, {
@@ -125,14 +115,12 @@ const stateToProps = (state) => {
     }).filter((container) => {
       return shown.indexOf(container.ContainerID) > -1;
     }).sortBy((container) => (container.ContainerID)).value(),
-    containerInfo: groups,
     pagination: {
       limit: limit,
       currentPage: currentPage,
       totalItem: total
     },
     isFetching: isFetching,
-    category: _.assign({}, statusCategory, {booked: [1]})
   }
 }
 
@@ -147,9 +135,6 @@ const dispatchToProps = (dispatch) => {
     setCurrentPage: function(page) {
       dispatch(ContainersAction.setCurrentPage(page));
     },    
-    pickStatus: function(val) {
-      dispatch(StatusList.pick(val));
-    },
   }
 }
 

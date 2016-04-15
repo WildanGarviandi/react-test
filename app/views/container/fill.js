@@ -30,12 +30,6 @@ const headers = [{
 
 import styles from './styles.css';
 
-const camelize = (str) => {
-  return str.replace(/\w\S*/g, (txt) => {
-    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-  });
-}
-
 const PrepareOrder = (order) => {
   return {
     id: order.WebOrderID,
@@ -159,7 +153,7 @@ const FillForm = React.createClass({
     this.setState({showModal: true});
   },
   render() {
-    const {activeDistrict, districts, driversName, ordersPrepared} = this.props;
+    const {activeDistrict, districts, ordersPrepared} = this.props;
     const isFetching = ordersPrepared.isFetching;
     const isFilling = ordersPrepared.isFilling;
     const orders = _.map(ordersPrepared.orders, (order) => (PrepareOrder(order)));
@@ -248,7 +242,7 @@ const FillComponent = React.createClass({
 });
 
 const mapStateToProps = (state, ownProps) => {
-  const {containers, drivers, ordersPrepared} = state.app;
+  const {containers, ordersPrepared} = state.app;
   const container = containers.containers[containers.active];
 
   if(!container) return { isFetchingContainer: true, container: {} };

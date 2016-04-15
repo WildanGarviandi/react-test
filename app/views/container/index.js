@@ -2,11 +2,17 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import {ContainersAction} from '../../modules';
-import {ButtonBase, ButtonWithLoading, Modal, Page, Tables} from '../base';
+import {ButtonBase, ButtonWithLoading, Modal, Page} from '../base';
 import ContainerTable from './containerTable';
+import ContainerInfo from './containerInfographic';
 import styles from './styles.css';
 
 const MessageModal = React.createClass({
+  propTypes: {
+    closeModal: React.PropTypes.func,
+    message: React.PropTypes.string,
+    show: React.PropTypes.bool
+  },
   handleClose() {
     const {closeModal} = this.props;
     closeModal();
@@ -25,6 +31,12 @@ const MessageModal = React.createClass({
 });
 
 const ContainerPage = React.createClass({
+  propTypes: {
+    broadcast: React.PropTypes.func,
+    broadcastState: React.PropTypes.object,
+    container: React.PropTypes.object,
+    containerCreate: React.PropTypes.func
+  },
   getInitialState() {
     return {showModalBroadcast: false, showModalContainer: false};
   },
@@ -46,32 +58,33 @@ const ContainerPage = React.createClass({
       textLoading: 'Creating Container',
       isLoading: container.isCreating,
       onClick: this.handleCreate
-    }
+    };
 
     const broadcastBtnProps = {
       textBase: 'Broadcast',
       textLoading: 'Broadcasting',
       isLoading: broadcastState.isFetching,
       onClick: this.handleBroadcast
-    }
+    };
 
     const broadcastModalProps = {
       show: this.state.showModalBroadcast && !broadcastState.isFetching,
       message: broadcastState.message,
       closeModal: this.closeModal
-    }
+    };
 
     const containerModalProps = {
       show: this.state.showModalContainer && !container.isCreating && container.isCreateError,
       message: container.message,
       closeModal: this.closeModal
-    }
+    };
 
     return (
       <div>
         <Page title={'Container List'}>
           <ButtonWithLoading {...createContainerBtnProps} />
           <ButtonWithLoading {...broadcastBtnProps} />
+          <ContainerInfo />
           <ContainerTable />
           <MessageModal {...broadcastModalProps} />
           <MessageModal {...containerModalProps} />
@@ -94,8 +107,8 @@ const mapStateToProps = (state) => {
       isCreateError: isCreateError,
       message: 'Create Container Failed'
     }
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -105,7 +118,7 @@ const mapDispatchToProps = (dispatch) => {
     broadcast: function() {
       dispatch(ContainersAction.broadcast());
     }
-  }
-}
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContainerPage);

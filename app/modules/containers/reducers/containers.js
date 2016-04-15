@@ -30,7 +30,7 @@ export default (state = initialState, action) => {
     case actionTypes.CONTAINERS_SET_LIMIT:
       return _.assign({}, state, {limit: action.limit});
     case actionTypes.CONTAINERS_SET_STATUS:
-      return _.assign({}, state, {status: action.status});
+      return _.assign({}, state, {status: action.status, statusName: action.name});
     case actionTypes.CONTAINERS_STATUS_SUCCESS:
       return _.assign({}, state, {
         statusList: action.statusList,

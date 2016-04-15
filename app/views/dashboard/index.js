@@ -1,7 +1,6 @@
 import React from 'react';
 import {Link} from 'react-router';
-import {ButtonBase, Glyph, InputText, Modal} from '../base';
-import {HubComponent, MyOrderComponent} from '../order';
+import {Glyph} from '../base';
 import styles from './styles.css';
 import _ from 'underscore';
 
@@ -14,7 +13,7 @@ const MenuItem = ({active, children, to}) => {
       <Link className={styles.link} to={to}>{children}</Link>
     </li>
   );
-}
+};
 
 const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact}) => {
   return (
