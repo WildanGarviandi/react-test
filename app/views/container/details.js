@@ -40,7 +40,6 @@ const camelize = (str) => {
 
 const PrepareDriver = (driver) => {
   return camelize(`${driver.FirstName} ${driver.LastName} (${driver.CountryCode}${driver.PhoneNumber})`);
-}
 };
 
 const DetailPage = React.createClass({
