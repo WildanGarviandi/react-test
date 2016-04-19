@@ -1,5 +1,5 @@
 import * as actionTypes from '../constants';
-import fetch from '../../fetch/post';
+import fetchPost from '../../fetch/post';
 
 export default () => {
   return (dispatch, getState) => {
@@ -7,7 +7,7 @@ export default () => {
     const {token} = userLogged;
 
     dispatch({type: actionTypes.BROADCAST_START});
-    fetch('/hub/broadcast', token).then(function(response) {
+    fetchPost('/hub/broadcast', token).then(function(response) {
       if(response.ok) {
         response.json().then(function(response) {
           dispatch({type: actionTypes.BROADCAST_SUCCESS, message: response.message});

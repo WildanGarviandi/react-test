@@ -1,11 +1,11 @@
 import fetch from 'isomorphic-fetch';
 import config from './config';
 
-const IsArray = (val) => {
+function IsArray(val) {
   return Object.prototype.toString.call(val) === Object.prototype.toString.call([]);
 }
 
-const UrlParam = (key, vals) => {
+function UrlParam(key, vals) {
   if(IsArray(vals)) {
     return _.map(vals, (val) => (key + '=' + val.toString())).join('&');
   } else {
@@ -13,11 +13,11 @@ const UrlParam = (key, vals) => {
   }
 }
 
-const UrlParams = (queries) => {
+function UrlParams(queries) {
   return '?' + _.map(queries, (vals, key) => (UrlParam(key, vals))).join('&');
 }
 
-const GetParams = (token) => {
+function GetParams(token) {
   return {
     method: 'GET',
     headers: {

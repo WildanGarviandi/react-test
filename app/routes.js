@@ -1,10 +1,9 @@
 import React from 'react';
-import { Router, Route, IndexRoute, browserHistory, hashHistory, useRouterHistory } from 'react-router';
+import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 import checkAuth from './modules/auth/actions/checkAuth';
 import ContainerPage from './views/container';
 import ContainerDetailsPage from './views/container/details';
 import ContainerFillPage from './views/container/fill';
-import ContainerOrderPage from './views/container/order';
 import DashboardPage from './views/dashboard';
 import LoginPage from './views/login';
 import store from './store';
@@ -20,7 +19,7 @@ function requireAuth(nextState, replace, callback) {
       replace({
         pathname: '/login',
         state: { nextPathname: nextState.location.pathname }
-      })
+      });
     }
 
     callback();

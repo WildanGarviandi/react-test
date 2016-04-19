@@ -1,8 +1,12 @@
-.modalBtn, .modalLink, .fillBtn {
+.modalBtn, .modalLink, .fillBtn, .driverBtn {
   padding: 8px;
   display: inline-block;
   margin-left: 4px;
   float: right;
+}
+
+.driverBtn {
+  float: none;
 }
 
 .fillBtn {

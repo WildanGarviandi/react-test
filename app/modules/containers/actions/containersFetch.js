@@ -1,5 +1,5 @@
 import * as actionTypes from '../constants';
-import fetch from '../../fetch/get';
+import fetchGet from '../../fetch/get';
 
 export const setLimit = (limit) => {
   return (dispatch) => {
@@ -16,9 +16,9 @@ export const setCurrentPage = (currentPage) => {
   };
 };
 
-export const setStatus = (status) => {
+export const setStatus = (status, statusName) => {
   return (dispatch) => {
-    dispatch({type: actionTypes.CONTAINERS_SET_STATUS, status: status});
+    dispatch({type: actionTypes.CONTAINERS_SET_STATUS, status: status, name: statusName});
     dispatch({type: actionTypes.CONTAINERS_SET_CURRENTPAGE, currentPage: 1});
     dispatch(fetchContainers());
   };
@@ -38,7 +38,7 @@ export const fetchContainers = () => {
     }
 
     dispatch({ type: actionTypes.CONTAINERS_FETCH_START, currentPage: currentPage, limit: limit });
-    fetch('/container/', token, query).then(function(response) {
+    fetchGet('/container/', token, query).then(function(response) {
       if(response.ok) {
         response.json().then((response) => {
           dispatch({ type: actionTypes.CONTAINERS_FETCH_SUCCESS, total: response.count, containers: response.rows, groups: response.groups });

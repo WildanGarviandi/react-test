@@ -1,7 +1,7 @@
 {
   "apps" : [
     {
-      "name"      : "Hub Staging",
+      "name"      : "Hub",
       "script"    : "server.js",
       "env_production" : {
         "NODE_ENV": "production"
@@ -10,12 +10,12 @@
   ],
 
   "deploy" : {
-    "staging" : {
+    "live" : {
       "user" : "ubuntu",
       "host": "hub.etobee.com",
-      "ref"  : "origin/staging",
+      "ref"  : "origin/master",
       "repo" : "git@gitlab.com:etobee-techgroup/etobee-hub.git",
-      "path" : "/home/ubuntu/hub-staging",
+      "path" : "/home/ubuntu/hub",
       "post-deploy" : "npm install ; npm run build; pm2 startOrRestart ecosystem.json --env production"
     }
   }

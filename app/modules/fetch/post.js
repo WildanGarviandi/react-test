@@ -2,6 +2,7 @@ import fetch from 'isomorphic-fetch';
 import config from './config';
 
 const PostParams = (token, body) => {
+  console.log('bd', body, JSON.stringify(body));
   return {
     credentials: 'include',
     method: 'post',
