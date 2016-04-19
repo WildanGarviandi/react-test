@@ -16,7 +16,7 @@
       "ref"  : "origin/master",
       "repo" : "git@gitlab.com:etobee-techgroup/etobee-hub.git",
       "path" : "/home/ubuntu/hub",
-      "post-deploy" : "npm install ; npm run build; pm2 startOrRestart ecosystem.propduction.json --env production"
+      "post-deploy" : "npm install ; npm run build; pm2 startOrRestart ecosystem.production.json --env production"
     }
   }
 }
