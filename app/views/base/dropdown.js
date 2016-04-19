@@ -1,5 +1,6 @@
 import classNaming from 'classnames';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import _ from 'underscore';
 import {ButtonBase} from './';
 import {Glyph} from './glyph';
@@ -75,12 +76,33 @@ const DropdownTypeAhead = React.createClass({
   componentDidMount() {
     window.addEventListener('mousedown', this.pageClick, false);
   },
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.highlight !== prevState.highlight) {
+      this.ensureActiveItemVisible();
+    }
+  },
   componentWillUnmount() {
     window.removeEventListener('mousedown', this.pageClick, false);
   },
   componentWillReceiveProps(nextProps) {
-    console.log('next', nextProps);
     this.setState({txt: nextProps.val});
+  },
+  ensureActiveItemVisible() {
+    var itemComponent = this.refs.activeItem;
+    if (itemComponent) {
+      var domNode = ReactDOM.findDOMNode(itemComponent);
+      this.scrollElementIntoViewIfNeeded(domNode);
+    }
+  },
+  scrollElementIntoViewIfNeeded(domNode) {
+    if(!this.refs.optionsWrapper) return;
+    const top = this.refs.optionsWrapper.scrollTop;
+    const position = domNode.offsetTop;
+    if(position < top) {
+      this.refs.optionsWrapper.scrollTop = position;
+    } else if(top + 104 < position) {
+      this.refs.optionsWrapper.scrollTop = position - 104;
+    }
   },
   pageClick(e) {
     if(this.mouseIsDownOnDropdown) return;
@@ -136,13 +158,6 @@ const DropdownTypeAhead = React.createClass({
     const filteredOption = this.getFilteredOption();
     const position = Math.max(0, Math.min(x, filteredOption.length-1));
     this.setState({highlight: position});
-    if(!this.refs.optionsWrapper) return;
-    const top = this.refs.optionsWrapper.scrollTop;
-    if(position * 26 < top) {
-      this.refs.optionsWrapper.scrollTop = position * 26;
-    } else if(top + 104 < position * 26) {
-      this.refs.optionsWrapper.scrollTop = position * 26 - 104;
-    }
   },
   highlightNext() {
     this.setHighlight(this.state.highlight + 1);
@@ -159,7 +174,20 @@ const DropdownTypeAhead = React.createClass({
   render() {
     const {opened} = this.state;
     const optionsComp = _.map(this.getFilteredOption(), (option, idx) => {
-      return <Options2 key={option} name={option} highlight={idx == this.state.highlight} idx={idx} setHighlight={this.setHighlight} selectVal={this.handleSelect} />
+      let optionProps = {
+        key: option,
+        name: option,
+        highlight: idx == this.state.highlight,
+        idx: idx,
+        selectVal: this.handleSelect,
+        setHighlight: this.setHighlight,
+      };
+
+      if(idx == this.state.highlight) {
+        optionProps.ref = 'activeItem';
+      }
+
+      return <Options2 {...optionProps} />
     });
 
     const inputProps = {

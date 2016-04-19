@@ -12,7 +12,6 @@
 
 .option {
   display: block;
-  height: 16px; /* this height value related to scroll behaviour of dropdown */
   padding: 5px;
 }
 
