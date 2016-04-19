@@ -31,7 +31,8 @@
   border-radius: 3px;
   z-index: 10;
   max-height: 143px; /* this height value related to scroll behaviour of dropdown */
-  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 .dropdownWrapper {
