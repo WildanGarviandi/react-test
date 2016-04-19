@@ -124,7 +124,7 @@ const DetailPage = React.createClass({
                       <span className={styles.fillDriverWrapper}>
                         <DropdownTypeAhead options={driversName} selectVal={this.pickDriver} val={this.state.driver} />
                       </span>
-                      <ButtonWithLoading textBase="Set Driver" textLoading="Setting Driver" onClick={this.finalizeDriver} isLoading={driverState.isPicking} styles={{base: styles.driverBtn + ' ' + styles.normalBtn}} />
+                      <ButtonWithLoading textBase="Set Driver" textLoading="Setting Driver" onClick={this.finalizeDriver} isLoading={driverState.isPicking} styles={{base: styles.driverBtn}} />
                     </span>
                   }
                 </span>
