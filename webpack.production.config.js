@@ -39,6 +39,7 @@ module.exports = {
 
   resolve: {
     alias: {
+      lodash: 'lodash/lodash.min.js',
       react: "react/dist/react.min.js",
       "react-dom": "react-dom/dist/react-dom.min.js",
       "react-redux": "react-redux/dist/react-redux.min.js",
