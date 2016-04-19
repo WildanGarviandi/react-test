@@ -35,6 +35,7 @@
     "express": "^4.13.4",
     "immutable": "^3.7.6",
     "isomorphic-fetch": "^2.2.1",
+    "lodash": "^4.11.1",
     "proxy-middleware": "^0.15.0",
     "qrcode.react": "^0.6.0",
     "react": "^0.14.8",
