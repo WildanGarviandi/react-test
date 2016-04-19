@@ -12,7 +12,10 @@ const ButtonAtRightTop = ({onClick, val}) => {
 
 const MoveButtonToTopRight = (buttons) => {
   return _.map(buttons, (button) => {
-    return React.cloneElement(button, {key: button.props.textBase, styles: {base: styles.topRightBtn}});
+    const baseStyle = button.props.styles ?
+      styles.topRightBtn + ' ' + button.props.styles.base :
+      styles.topRightBtn;
+    return React.cloneElement(button, {key: button.props.textBase, styles: {base: baseStyle}});
   })
 }
 

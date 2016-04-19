@@ -1,3 +1,15 @@
+.normalBtn {
+  color: #333;
+  background-color: #fff;
+  border: solid 1px #ccc;
+}
+
+.normalBtn:hover {
+  color: #333;
+  background-color: #e6e6e6;
+  border-color: #adadad;
+}
+
 .modalBtn, .modalLink, .fillBtn, .driverBtn {
   padding: 8px;
   display: inline-block;

@@ -107,7 +107,7 @@ const DetailPage = React.createClass({
             <a href="javascript:;" onClick={backToContainer}>{'<<'} Back to Container List</a>
             {
               fillAble &&
-              <ButtonWithLoading textBase={'Fill Container'} onClick={this.goToFillContainer} />
+              <ButtonWithLoading textBase={'Fill Container'} onClick={this.goToFillContainer} styles={{base: styles.normalBtn}} />
             }
             {
               reusable &&
@@ -124,16 +124,14 @@ const DetailPage = React.createClass({
                       <span className={styles.fillDriverWrapper}>
                         <DropdownTypeAhead options={driversName} selectVal={this.pickDriver} val={this.state.driver} />
                       </span>
-                      <ButtonWithLoading textBase="Set Driver" textLoading="Setting Driver" onClick={this.finalizeDriver} isLoading={driverState.isPicking} styles={{base: styles.driverBtn}} />
+                      <ButtonWithLoading textBase="Set Driver" textLoading="Setting Driver" onClick={this.finalizeDriver} isLoading={driverState.isPicking} styles={{base: styles.driverBtn + ' ' + styles.normalBtn}} />
                     </span>
                   }
                 </span>
             }
             {
               canDeassignDriver &&
-              <span>
-                <ButtonWithLoading textBase="Deassign Driver" textLoading="Deassigning" onClick={this.deassignDriver} isLoading={driverState.isDeassigning} styles={{base: styles.driverBtn}} />
-              </span>
+              <ButtonWithLoading textBase="Cancel Assignment" textLoading="Deassigning" onClick={this.deassignDriver} isLoading={driverState.isDeassigning} />
             }
             <span style={{display: 'block', marginTop: 10}}>Total {orders.length} items</span>
             {
