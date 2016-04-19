@@ -1,5 +1,5 @@
 import * as actionTypes from '../constants';
-import fetch from '../../fetch/get';
+import fetchGet from '../../fetch/get';
 import push from 'react-router-redux';
 
 export default (containerID) => {
@@ -8,7 +8,7 @@ export default (containerID) => {
     const {token} = userLogged;
 
     dispatch({type: actionTypes.CONTAINER_DETAILS_FETCH_START, ContainerID: containerID});
-    fetch('/container/' + containerID, token).then(function(response) {
+    fetchGet('/container/' + containerID, token).then(function(response) {
       if(response.ok) {
         response.json().then(function(response) {
           var orders = _.map(response.routes, (route) => {

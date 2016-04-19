@@ -1,5 +1,5 @@
 import * as actionTypes from '../constants';
-import fetch from '../../fetch/post';
+import fetchPost from '../../fetch/post';
 import push from 'react-router-redux';
 
 export default (containerNumber, ordersID, districtID) => {
@@ -14,7 +14,7 @@ export default (containerNumber, ordersID, districtID) => {
     };
 
     dispatch({ type: actionTypes.CONTAINER_FILL_START, orders: ordersID, containerNumber: containerNumber, districtID: districtID });
-    fetch('/container/fill', token, params).then(function(response) {
+    fetchPost('/container/fill', token, params).then(function(response) {
       if(response.ok) {
         response.json().then(function(response) {
           dispatch({ type: actionTypes.CONTAINER_FILL_SUCCESS, results: response });

@@ -107,10 +107,14 @@ const stateToProps = (state) => {
         OrderCount: 0
       });
 
+      const Driver = container.CurrentTrip.Driver;
+      const driverName = Driver ? `${Driver.FirstName} ${Driver.LastName}` : '';
+
       return _.assign({}, container, {
         ContainerStatus: container.CurrentTrip.OrderStatus.OrderStatus,
         District: (container.CurrentTrip.District && container.CurrentTrip.District.Name) || '',
-        OrderCount: (container.CurrentTrip.UserOrderRoutes && container.CurrentTrip.UserOrderRoutes.length) || 0
+        OrderCount: (container.CurrentTrip.UserOrderRoutes && container.CurrentTrip.UserOrderRoutes.length) || 0,
+        Driver: driverName,
       });
     }).filter((container) => {
       return shown.indexOf(container.ContainerID) > -1;
