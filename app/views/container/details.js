@@ -72,16 +72,26 @@ const DetailPage = React.createClass({
     this.setState({showDriver: true});
     this.props.driverPick(this.props.container.ContainerID,this.state.driverID);
   },
+  deassignDriver() {
+    if(confirm('Are you sure you want to deassign driver on this container?')) {
+      this.setState({showModal: true});
+      this.props.driverDeassign(this.props.container.ContainerID);
+    }
+  },
   render() {
-    const {backToContainer, container,  driverState, driversName, emptying, fillAble, hasDriver, isFetching, orders, reusable} = this.props;
+    const {backToContainer, canDeassignDriver, container,  driverState, driversName, emptying, fillAble, hasDriver, isFetching, orders, reusable} = this.props;
 
     let messages = [];
-    if(this.state.showModal && !emptying.isInProcess && !emptying.isSuccess && emptying.error) {
+    if(this.state.showModal && emptying && !emptying.isInProcess && !emptying.isSuccess && emptying.error) {
       messages.push(emptying.error);
     }
 
     if(this.state.showDriver && !driverState.isInProcess && !driverState.isSuccess && driverState.error) {
       messages.push(driverState.error);
+    }
+
+    if(this.state.showModal && driverState && !driverState.isDeassigning && !driverState.isDeassigned && driverState.deassignError) {
+      messages.push(driverState.deassignError);
     }
 
     const messageModal = messages.length > 0 &&
@@ -118,6 +128,12 @@ const DetailPage = React.createClass({
                     </span>
                   }
                 </span>
+            }
+            {
+              canDeassignDriver &&
+              <span>
+                <ButtonWithLoading textBase="Deassign Driver" textLoading="Deassigning" onClick={this.deassignDriver} isLoading={driverState.isDeassigning} styles={{base: styles.driverBtn}} />
+              </span>
             }
             <span style={{display: 'block', marginTop: 10}}>Total {orders.length} items</span>
             {
@@ -160,7 +176,7 @@ const mapStateToProps = (state, ownProps) => {
       time: (new Date(order.PickupTime)).toString(),
       id3: order.UserOrderID,
       isDeleting: order.isDeleting,
-      status: order.Status
+      status: order.Status,
     })),
     isFetching: isFetching,
     fillAble: fillAble,
@@ -171,11 +187,15 @@ const mapStateToProps = (state, ownProps) => {
       return PrepareDriver(driver.Driver);
     }).sortBy((driver) => (driver)).value(),
     hasDriver: (container.CurrentTrip && container.CurrentTrip.Driver) || false,
+    canDeassignDriver: (container.CurrentTrip && container.CurrentTrip.Driver && container.CurrentTrip.OrderStatus.OrderStatusID == 2) || false,
     driverState: {
+      isDeassigning: drivers.isDeassigning,
+      isDeassigned: drivers.isDeassigned,
+      deassignError: drivers.deassignError,
       isPicking: drivers.isPicking,
       isPicked: drivers.isPicked,
-      error: drivers.error
-    }
+      error: drivers.error,
+    },
   }
 }
 
@@ -198,7 +218,10 @@ const mapDispatchToProps = (dispatch) => {
     },
     driverPick: function(containerID, driverID) {
       dispatch(ContainerDetailsActions.pickDriver(containerID, driverID));
-    }
+    },
+    driverDeassign: function(containerID) {
+      dispatch(ContainerDetailsActions.deassignDriver(containerID));
+    },
   };
 };
 

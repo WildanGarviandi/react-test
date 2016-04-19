@@ -20,6 +20,12 @@ export default (state = initialState, action) => {
       return _.assign({}, state, {isPicking: false, isPicked: true, error: 'Driver have been set'});
     case actionTypes.DRIVERS_PICK_FAILED:
       return _.assign({}, state, {isPicking: false, isPicked: false, error: action.error});
+    case actionTypes.DRIVER_DEASSIGN_START:
+      return _.assign({}, state, {isDeassigning: true, isDeassigned: false, deassignError: ''});
+    case actionTypes.DRIVER_DEASSIGN_SUCCESS:
+      return _.assign({}, state, {isDeassigning: false, isDeassigned: true, deassignError: ''});
+    case actionTypes.DRIVER_DEASSIGN_FAILED:
+      return _.assign({}, state, {isDeassigning: false, isDeassigned: false, deassignError: action.error});
     default:
       return state;
   }

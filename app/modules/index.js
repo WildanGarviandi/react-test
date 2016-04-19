@@ -3,7 +3,7 @@ import containers, {statusList} from './containers/actions';
 import drivers from './drivers/actions';
 
 export const LoginAction = {
-  login: login
+  login: login,
 };
 
 export const ContainersAction = containers;
@@ -11,12 +11,13 @@ export const StatusList = statusList;
 
 export const FillActions = {
   fetchDrivers: drivers.fetch,
-  fillContainer: containers.fill
+  fillContainer: containers.fill,
 }
 
 export const ContainerDetailsActions = {
   clearContainer: containers.empty,
   fetchDetails: containers.fetchDetails,
   fetchDrivers: drivers.fetch,
-  pickDriver: drivers.pick
+  pickDriver: drivers.pick,
+  deassignDriver: drivers.deassign,
 }

@@ -13,8 +13,6 @@ export default (containerNumber, ordersID, districtID) => {
       DistrictID: districtID
     };
 
-    console.log('p', params);
-
     dispatch({ type: actionTypes.CONTAINER_FILL_START, orders: ordersID });
     fetchPost('/container/fillEverything', token, params).then(function(response) {
       if(response.ok) {
