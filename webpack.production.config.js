@@ -37,19 +37,6 @@ module.exports = {
     ]
   },
 
-  resolve: {
-    alias: {
-      lodash: 'lodash/lodash.min.js',
-      "react-dom": "react-dom/dist/react-dom.min.js",
-      "react-redux": "react-redux/dist/react-redux.min.js",
-      "react-router": "react-router/umd/ReactRouter.min.js",
-      redux: "redux/dist/redux.min.js",
-      "redux-logger": "redux-logger/dist/index.min.js",
-      "redux-thunk": "redux-thunk/dist/redux-thunk.min.js",
-      underscore: "underscore/underscore-min.js"
-    }
-  },
-
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({
