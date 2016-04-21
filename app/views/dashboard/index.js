@@ -1,5 +1,9 @@
 import React from 'react';
+import {connect} from 'react-redux';
 import {Link} from 'react-router';
+
+import {AppLoadedActions} from '../../modules';
+
 import {Glyph} from '../base';
 import styles from './styles.css';
 import _ from 'underscore';
@@ -52,6 +56,10 @@ const DashboardContainer = React.createClass({
   getInitialState() {
     return {isCompact: true};
   },
+  componentWillMount() {
+    this.props.districtsFetch();
+    this.props.driversFetch();
+  },
   toggleCompact() {
     this.setState({isCompact: !this.state.isCompact});
   },
@@ -73,4 +81,15 @@ const DashboardContainer = React.createClass({
   }
 });
 
-export default DashboardContainer;
+function DispatchToProps(dispatch) {
+  return {
+    districtsFetch() {
+      dispatch(AppLoadedActions.districtsFetch());
+    },
+    driversFetch() {
+      dispatch(AppLoadedActions.driversFetch());
+    },
+  }
+}
+
+export default connect(undefined, DispatchToProps)(DashboardContainer);

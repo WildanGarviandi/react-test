@@ -5,11 +5,11 @@ module.exports = {
   entry: [
       './app/main.js',
       'webpack/hot/dev-server',
-      'webpack-dev-server/client?http://localhost:8080'
+      'webpack-dev-server/client?http://localhost:8081'
   ],
 
   output: {
-    publicPath: "http://localhost:8080/assets/",
+    publicPath: "http://localhost:8081/assets/",
     path: __dirname + "/build",
     filename: "bundle.js"
   },

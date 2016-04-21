@@ -1,15 +1,9 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import {AppLoadedActions} from '../modules';
-
 import {ModalMessage} from './base';
 
 const App = React.createClass({
-  componentWillMount() {
-    this.props.districtsFetch();
-    this.props.driversFetch();
-  },
   render() {
     const {haveModal} = this.props;
 
@@ -33,15 +27,4 @@ function StateToProps(state) {
   }
 }
 
-function DispatchToProps(dispatch) {
-  return {
-    districtsFetch() {
-      dispatch(AppLoadedActions.districtsFetch());
-    },
-    driversFetch() {
-      dispatch(AppLoadedActions.driversFetch());
-    },
-  }
-}
-
-export default connect(StateToProps, DispatchToProps)(App);
+export default connect(StateToProps)(App);
