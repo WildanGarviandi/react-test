@@ -1,6 +1,7 @@
 import * as actionTypes from '../constants';
 import fetchPost from '../../fetch/post';
 import {push} from 'react-router-redux';
+import ModalActions from '../../modals/actions';
 
 export default (containerID) => {
   return (dispatch, getState) => {
@@ -18,12 +19,14 @@ export default (containerID) => {
       } else {
         response.json().then(function(response) {
           const error = (response.error && response.error.message) || '';
-          dispatch({ type: actionTypes.CONTAINER_CLEAR_FAILED, ContainerID: containerID, error: error });
+          dispatch({type: actionTypes.CONTAINER_CLEAR_FAILED, ContainerID: containerID});
+          dispatch(ModalActions.addError(error));
           return;
         });
       }
     }).catch(() => { 
-      dispatch({ type: actionTypes.CONTAINER_CLEAR_FAILED, ContainerID: containerID, error: 'Network error' });
+      dispatch({type: actionTypes.CONTAINER_CLEAR_FAILED, ContainerID: containerID});
+      dispatch(ModalActions.addError('Network error'));
     });
   }
 }
