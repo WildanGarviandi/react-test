@@ -1,4 +1,6 @@
+import Update from 'react-addons-update';
 import * as actionTypes from '../constants';
+import {DistrictActions, DriversActions} from '../constants';
 
 const initialState = {isFetching: false, isValid: true, orders: [], fillAble: false, emptying: {isInProcess: false, isSuccess: false, error: ''}};
 
@@ -13,7 +15,7 @@ export default (state = initialState, action) => {
         trip: action.trip, 
         fillAble: action.fillAble,
         reusable: action.reusable,
-        district: action.trip && action.trip.District && action.trip.District.DistrictID
+        district: action.trip && action.trip.District && action.trip.District.DistrictID,
       });
     case actionTypes.CONTAINER_DETAILS_FETCH_FAILED:
       return _.assign({}, state, {isFetching: false, isValid: false});
@@ -60,6 +62,60 @@ export default (state = initialState, action) => {
       return _.assign({}, state, {
         emptying: {isInProcess: false, isSuccess: false, error: action.error}
       });
+
+    case DistrictActions.DISTRICT_SET_START: {
+      return _.assign({}, state, {
+        isSettingDistrict: true,
+      });
+    }
+
+    case DistrictActions.DISTRICT_SET_SUCCESS: {
+      return Update(state, {
+        CurrentTrip: {
+          District: {
+            $set: action.district,
+          },
+        },
+        isSettingDistrict: {
+          $set: false,
+        },
+      });
+    }
+
+    case DistrictActions.DISTRICT_SET_FAILED: {
+      return _.assign({}, state, {
+        isSettingDistrict: false,
+      });
+    }
+
+    case DriversActions.DRIVERS_PICK_START: {
+      return _.assign({}, state, {
+        isSettingDriver: true,
+      });
+    }
+
+    case DriversActions.DRIVERS_PICK_SUCCESS: {
+      const trip = action.trip;
+      const orders = _.map(trip.UserOrderRoutes, (route) => {
+        return _.assign({}, route.UserOrder, {
+          Status:route.OrderStatus.OrderStatus,
+        });
+      });
+
+      return Update(state, {
+        isSettingDriver: {
+          $set: false,
+        },
+      });
+    }
+
+    case DriversActions.DRIVERS_PICK_FAILED: {
+      return _.assign({}, state, {
+        isSettingDriver: false,
+      });
+    }
+
+
     default:
       return state;
   }

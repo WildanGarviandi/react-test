@@ -1,8 +1,11 @@
 import React from 'react';
+import classNaming from 'classnames';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
 import {ContainerDetailsActions} from '../../modules';
+import districtsFetch from '../../modules/districts/actions/districtsFetch';
 import {ButtonBase, ButtonWithLoading, DropdownTypeAhead, Modal, Page} from '../base';
+import DistrictAndDriver from './districtAndDriver';
 import {OrderTable} from './table';
 
 import styles from './styles.css';
@@ -32,23 +35,18 @@ const MessageModal = React.createClass({
   }
 });
 
-const camelize = (str) => {
-  return str.replace(/\w\S*/g, (txt) => {
-    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-  });
-};
-
-const PrepareDriver = (driver) => {
-  return camelize(`${driver.FirstName} ${driver.LastName} (${driver.CountryCode}${driver.PhoneNumber})`);
-};
-
 const DetailPage = React.createClass({
   getInitialState() {
-    return {showModal: false, showDriver: false, driver: ''};
+    return {
+      showModal: false,
+      driver: '', 
+      district: {
+        isChanging: false,
+      },
+    };
   },
   closeModal() {
-    this.setState({showModal: false, showDriver: false});
-
+    this.setState({showModal: false});
   },
   clearContainer() {
     if(confirm('Are you sure you want to empty and reuse this container?')) {
@@ -58,7 +56,6 @@ const DetailPage = React.createClass({
   },
   componentWillMount() {
     this.props.containerDetailsFetch(this.props.params.id);
-    this.props.driversFetch();
   },
   goToFillContainer() {
     const {container} = this.props;
@@ -69,7 +66,6 @@ const DetailPage = React.createClass({
     this.setState({driverID: driver.Driver.UserID, driver: val});
   },
   finalizeDriver() {
-    this.setState({showDriver: true});
     this.props.driverPick(this.props.container.ContainerID,this.state.driverID);
   },
   deassignDriver() {
@@ -79,19 +75,11 @@ const DetailPage = React.createClass({
     }
   },
   render() {
-    const {backToContainer, canDeassignDriver, container,  driverState, driversName, emptying, fillAble, hasDriver, isFetching, orders, reusable} = this.props;
+    const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, emptying, fillAble, hasDriver, isFetching, orders, reusable} = this.props;
 
     let messages = [];
     if(this.state.showModal && emptying && !emptying.isInProcess && !emptying.isSuccess && emptying.error) {
       messages.push(emptying.error);
-    }
-
-    if(this.state.showDriver && !driverState.isInProcess && !driverState.isSuccess && driverState.error) {
-      messages.push(driverState.error);
-    }
-
-    if(this.state.showModal && driverState && !driverState.isDeassigning && !driverState.isDeassigned && driverState.deassignError) {
-      messages.push(driverState.deassignError);
     }
 
     const messageModal = messages.length > 0 &&
@@ -100,8 +88,11 @@ const DetailPage = React.createClass({
     return (
       <div>
         {
-          isFetching ? 
-          <h3>Fetching Container Details...</h3> :
+          isFetching &&
+          <h3>Fetching Container Details...</h3>
+        }
+        {
+          !isFetching &&
           <Page title={'Container ' + container.ContainerNumber}>
             {messageModal}
             <a href="javascript:;" onClick={backToContainer}>{'<<'} Back to Container List</a>
@@ -114,37 +105,16 @@ const DetailPage = React.createClass({
               <ButtonWithLoading textBase={'Clear and Reuse Container'} textLoading={'Clearing Container'} isLoading={emptying.isInProcess} onClick={this.clearContainer} />
             }
             {
-              hasDriver ? 
-              <span>Current Driver: {PrepareDriver(hasDriver)}</span> :
-                <span>
-                  {
-                    orders.length > 0 && 
-                    <span>
-                      <span>Drivers :</span>
-                      <span className={styles.fillDriverWrapper}>
-                        <DropdownTypeAhead options={driversName} selectVal={this.pickDriver} val={this.state.driver} />
-                      </span>
-                      <ButtonWithLoading textBase="Set Driver" textLoading="Setting Driver" onClick={this.finalizeDriver} isLoading={driverState.isPicking} styles={{base: styles.driverBtn}} />
-                    </span>
-                  }
-                </span>
-            }
-            {
               canDeassignDriver &&
               <ButtonWithLoading textBase="Cancel Assignment" textLoading="Deassigning" onClick={this.deassignDriver} isLoading={driverState.isDeassigning} />
             }
-            <span style={{display: 'block', marginTop: 10}}>Total {orders.length} items</span>
+            <DistrictAndDriver containerID={container.ContainerID} show={orders.length > 0} />
+            <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>Total {orders.length} items</span>
             {
-              orders.length > 0 ?
+              orders.length > 0 &&
               <div>
-                {
-                  fillAble ?
-                  <OrderTable columns={columns} headers={headers} items={orders} /> :
-                  <OrderTable columns={columns.slice(0,6)} headers={headers} items={orders} />
-                }
+                <OrderTable columns={fillAble ? columns : columns.slice(0,6)} headers={headers} items={orders} />
               </div>
-              :
-              <span />
             }
           </Page>
         }
@@ -163,7 +133,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   const {emptying, fillAble, reusable, isFetching, orders} = container;
-  const drivers = state.app.drivers;
+  const {drivers} = state.app;
   return {
     container: container,
     orders: _.map(orders, (order) => ({
@@ -180,11 +150,6 @@ const mapStateToProps = (state, ownProps) => {
     fillAble: fillAble,
     reusable: reusable,
     emptying: emptying || {},
-    drivers: drivers.drivers,
-    driversName: _.chain(drivers.drivers).map((driver) => {
-      return PrepareDriver(driver.Driver);
-    }).sortBy((driver) => (driver)).value(),
-    hasDriver: (container.CurrentTrip && container.CurrentTrip.Driver) || false,
     canDeassignDriver: (container.CurrentTrip && container.CurrentTrip.Driver && container.CurrentTrip.OrderStatus.OrderStatusID == 2) || false,
     driverState: {
       isDeassigning: drivers.isDeassigning,
@@ -208,17 +173,11 @@ const mapDispatchToProps = (dispatch) => {
     containerDetailsFetch: function(id) {
       dispatch(ContainerDetailsActions.fetchDetails(id));
     },
-    goToFillContainer: function(id) {
-      dispatch(push('/container/' + id + '/fill'));
-    },
-    driversFetch: function() {
-      dispatch(ContainerDetailsActions.fetchDrivers());
-    },
-    driverPick: function(containerID, driverID) {
-      dispatch(ContainerDetailsActions.pickDriver(containerID, driverID));
-    },
     driverDeassign: function(containerID) {
       dispatch(ContainerDetailsActions.deassignDriver(containerID));
+    },
+    goToFillContainer: function(id) {
+      dispatch(push('/container/' + id + '/fill'));
     },
   };
 };

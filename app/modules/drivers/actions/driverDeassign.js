@@ -1,6 +1,7 @@
 import * as actionTypes from '../constants';
 import fetchDelete from '../../fetch/delete';
 import fetchContainerDetails from '../../containers/actions/containerDetailsFetch';
+import ModalsActions from '../../modals/actions';
 
 export default (containerID) => {
   return (dispatch, getState) => {
@@ -19,11 +20,13 @@ export default (containerID) => {
       } else {
         response.json().then(function(response) {
           const error = (response && response.error && response.error.message);
-          dispatch({ type: actionTypes.DRIVER_DEASSIGN_FAILED, error: error});
+          dispatch({ type: actionTypes.DRIVER_DEASSIGN_FAILED });
+          dispatch(ModalsActions.addError(error));
         });
       }
     }).catch(() => {
-        dispatch({ type: actionTypes.DRIVER_DEASSIGN_FAILED, error: 'Network error' });      
+        dispatch({ type: actionTypes.DRIVER_DEASSIGN_FAILED });      
+        dispatch(ModalsActions.addError('Network error while cancelling assignment'));
     });
   }
 }

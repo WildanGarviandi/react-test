@@ -1,4 +1,5 @@
 import * as actionTypes from '../constants';
+import {DistrictActions, DriversActions} from '../constants';
 import containerDetails from './containerDetails';
 import containerStatus from './containerStatus';
 
@@ -54,6 +55,13 @@ export default (state = initialState, action) => {
       return _.assign({}, state, {isCreating: false, isCreateError: false});
     case actionTypes.CONTAINER_CREATE_FAILED: 
       return _.assign({}, state, {isCreating: false, isCreateError: true});
+
+    case DistrictActions.DISTRICT_SET_START:
+    case DistrictActions.DISTRICT_SET_SUCCESS:
+    case DistrictActions.DISTRICT_SET_FAILED:
+    case DriversActions.DRIVERS_PICK_START:
+    case DriversActions.DRIVERS_PICK_SUCCESS:
+    case DriversActions.DRIVERS_PICK_FAILED:
 
     case actionTypes.CONTAINER_DETAILS_FETCH_START:
     case actionTypes.CONTAINER_DETAILS_FETCH_SUCCESS:

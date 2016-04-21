@@ -6,7 +6,6 @@ import {Infograph} from '../base';
 const Infographic = React.createClass({
   handleFilter(attr) {
     const {pickStatus, category} = this.props;
-    console.log('cag', category);
     pickStatus(category[attr], attr.toUpperCase());
   },
   render() {

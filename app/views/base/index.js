@@ -4,6 +4,7 @@ import { Dropdown, DropdownTypeAhead } from './dropdown';
 import { Glyph } from './glyph';
 import Infograph from './infograph';
 import { CheckBox, Input } from './input';
+import ModalMessage from './modalMessage';
 import Page, { ButtonAtRightTop, PageTitle } from './page';
 import { Pagination } from './pagination';
 import { Rows, Tables } from './table';
@@ -22,16 +23,9 @@ const ButtonBase = React.createClass({
   }
 });
 
-const ButtonAction = React.createClass({
-  render() {
-    var { children, onClick, styles, type, width } = this.props;
-    var btnClass = classNaming(baseStyle.btnAction, styles);
-
-    return (
-      <button className={btnClass} onClick={onClick} type={type} style={{width: width}}>{children}</button>
-    );
-  }
-});
+function ButtonAction(props) {
+  return <ButtonBase {...props} styles={baseStyle.btnAction} />;
+}
 
 const ButtonWithLoading = React.createClass({
   render() {
@@ -52,4 +46,4 @@ const ButtonWithLoading = React.createClass({
   }
 })
 
-export { ButtonAtRightTop, ButtonBase, ButtonAction, ButtonWithLoading, CheckBox, Collection, Dropdown, DropdownTypeAhead, Glyph, Infograph, Input, Modal, Page, PageTitle, Pagination, Rows, Tables };
+export { ButtonAtRightTop, ButtonBase, ButtonAction, ButtonWithLoading, CheckBox, Collection, Dropdown, DropdownTypeAhead, Glyph, Infograph, Input, Modal, ModalMessage, Page, PageTitle, Pagination, Rows, Tables };

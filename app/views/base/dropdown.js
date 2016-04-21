@@ -85,7 +85,7 @@ const DropdownTypeAhead = React.createClass({
     window.removeEventListener('mousedown', this.pageClick, false);
   },
   componentWillReceiveProps(nextProps) {
-    this.setState({txt: nextProps.val});
+    this.setState({txt: nextProps.val || ''});
   },
   ensureActiveItemVisible() {
     var itemComponent = this.refs.activeItem;
@@ -197,6 +197,7 @@ const DropdownTypeAhead = React.createClass({
       onChange: this.handleTextChange,
       onKeyDown: this.handleKeyDown,
       ref: 'textInput',
+      type: 'text',
     }
 
     return (

@@ -1,6 +1,7 @@
 import * as actionTypes from '../constants';
 import fetchPost from '../../fetch/post';
 import push from 'react-router-redux';
+import ModalsActions from '../../modals/actions';
 
 export default (containerNumber, ordersID, districtID) => {
   return (dispatch, getState) => {
@@ -23,12 +24,14 @@ export default (containerNumber, ordersID, districtID) => {
       } else {
         response.json().then(function(response) {
           const error = (response.errorMessage ? response.errorMessage : response.error.message);
-          dispatch({ type: actionTypes.CONTAINER_FILL_FAILED, error: error });
+          dispatch({ type: actionTypes.CONTAINER_FILL_FAILED });
+          dispatch(ModalsActions.addError(error));
           return;
         });
       }
     }).catch(() => { 
-      dispatch({ type: actionTypes.CONTAINER_FILL_FAILED, error: 'Network error' });
+      dispatch({ type: actionTypes.CONTAINER_FILL_FAILED });
+      dispatch(ModalsActions.addError('Network error while filling container'));
     });
   }
 }

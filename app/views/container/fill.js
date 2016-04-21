@@ -8,7 +8,6 @@ import {FillActions} from '../../modules';
 import containerFill from '../../modules/containers/actions/containerFill';
 import containerFillEverything from '../../modules/containers/actions/containerFillEverything';
 // import orderToggle from '../../modules/containers/actions/orderToggle';
-import districtsFetch from '../../modules/districts/actions/districtsFetch';
 import containerDetailsFetch from '../../modules/containers/actions/containerDetailsFetch';
 import ordersPrepare from '../../modules/containers/actions/ordersPrepare';
 import ordersPrepareCurrentPage from '../../modules/containers/actions/ordersPrepareCurrentPage';
@@ -42,37 +41,6 @@ const PrepareOrder = (order) => {
     status: order.status
   }
 }
-
-function isEmpty(obj) {
-  if (obj == null) return true;
-
-  if (obj.length > 0)    return false;
-  if (obj.length === 0)  return true;
-
-  for (var key in obj) {
-      if (hasOwnProperty.call(obj, key)) return false;
-  }
-
-  return true;
-}
-
-const MessageModal = React.createClass({
-  handleClose() {
-    const {closeModal} = this.props;
-    closeModal();
-  },
-  render() {
-    const {message, show} = this.props;
-
-    return (
-      <Modal show={show} width={250}>
-        {message}
-        <br/>
-        <ButtonBase onClick={this.handleClose} styles={styles.modalBtn}>Close</ButtonBase>
-      </Modal>
-    );
-  }
-});
 
 const ResultModal = React.createClass({
   render() {
@@ -126,12 +94,7 @@ const FillForm = React.createClass({
     orderToggle(item.id2);
   },
   fillContainer() {
-    const {container, activeDistrict, ordersPrepared, fillContainer} = this.props;
-    if(isEmpty(activeDistrict)) {
-      alert('Please choose a district for this container')
-      this.setState({districtError: true});
-      return;
-    }
+    const {container, ordersPrepared, fillContainer} = this.props;
 
     const orders = _.chain(ordersPrepared.orders).filter((order) => (order.checked)).map((order) => (order.UserOrderID)).value();
     if(orders.length == 0) {
@@ -139,26 +102,21 @@ const FillForm = React.createClass({
       return;
     }
 
-    fillContainer(container.ContainerNumber, orders, activeDistrict.DistrictID);
+    fillContainer(container.ContainerNumber, orders);
     this.setState({showModal: true});
   },
   putEverything() {
-    const {container, activeDistrict, ordersPrepared, fillEverything} = this.props;
-    if(isEmpty(activeDistrict)) {
-      alert('Please choose a district for this container')
-      this.setState({districtError: true});
-      return;
-    }
-    fillEverything(container.ContainerNumber, ordersPrepared.ids, activeDistrict.DistrictID);
+    const {container, ordersPrepared, fillEverything} = this.props;
+
+    fillEverything(container.ContainerNumber, ordersPrepared.ids);
     this.setState({showModal: true});
   },
   render() {
-    const {activeDistrict, districts, ordersPrepared} = this.props;
+    const {ordersPrepared} = this.props;
     const isFetching = ordersPrepared.isFetching;
     const isFilling = ordersPrepared.isFilling;
     const orders = _.map(ordersPrepared.orders, (order) => (PrepareOrder(order)));
     const {limit, currentPage} = ordersPrepared;
-    const districtsName = _.map(districts, (district) => (district.Name));
 
     let successRes = [], failedRes = [];
     if(ordersPrepared.results) {
@@ -171,23 +129,22 @@ const FillForm = React.createClass({
         <Modal show={!ordersPrepared.isFilling && ordersPrepared.results && this.state.showModal} width={700}>
           <ResultModal successRes={successRes} failedRes={failedRes} closeModal={this.closeModal} />
         </Modal>
-        <MessageModal show={!ordersPrepared.isFilling && !ordersPrepared.results && this.state.showModal} message={ordersPrepared.errorMessage} closeModal={this.closeModal2} />
-        <Filter />
-        {
-          isFilling ? 
-          <span style={{float: 'right'}}>Filling Container...</span> :
-          <span>
+        <span className={styles.topRightBtnWrapper}>
+          {
+            isFilling &&
+            <span style={{float: 'right'}}>Filling Container...</span>
+          }
+          {
+            !isFilling &&
             <ButtonBase styles={styles.modalBtn} onClick={this.fillContainer}>{'Fill Container with Selected Orders'}</ButtonBase>
-            {
-              (ordersPrepared.checkAll || ordersPrepared.ids.length > 0) &&
-              <ButtonBase styles={styles.fillBtn} onClick={this.putEverything}>{'Put Every Order into Container'}</ButtonBase>
-            }
-          </span>
-        }
-        <span>Districts :</span>
-        <span className={classNaming(styles.fillDriverWrapper, {[styles.error]: this.state.districtError})}>
-          <DropdownTypeAhead options={districtsName} selectVal={this.selectDistrict} val={activeDistrict.Name} />
+          }
+          {
+            !isFilling && (ordersPrepared.checkAll || ordersPrepared.ids.length > 0) &&
+            <ButtonBase styles={styles.fillBtn} onClick={this.putEverything}>{'Put Every Order into Container'}</ButtonBase>
+          }
         </span>
+        <div style={{clear: 'both', marginBottom: 10}} />
+        <Filter />
         <div style={{clear: 'both', marginBottom: 10}} />
         <Pagination limit={limit} totalItem={ordersPrepared.count} currentPage={currentPage} setLimit={this.setLimit} setCurrentPage={this.setCurrentPage} />
         <div style={isFetching || isFilling ? {opacity: 0.5} : {}}>
@@ -201,9 +158,7 @@ const FillForm = React.createClass({
 const FillComponent = React.createClass({
   componentDidMount() {
     this.props.containerDetailsFetch();
-    this.props.districtsFetch();
     this.props.ordersPrepareIDs([]);
-    this.props.driversFetch();
   },
   componentWillReceiveProps(newProps) {
     if(!newProps.isFetchingContainer && !newProps.container.fillAble) {
@@ -246,16 +201,13 @@ const mapStateToProps = (state, ownProps) => {
   const container = containers.containers[containers.active];
 
   if(!container) return { isFetchingContainer: true, container: {} };
-  const {districts} = state.app.districts;
 
   return {
     container: container,
     isFetchingContainer: container.isFetching,
     fillFormState: {
-      activeDistrict: _.find(districts, (district) => (district.DistrictID == container.district)) || {},
-      districts: districts,
       ordersPrepared: ordersPrepared,
-    }
+    },
   }
 }
 
@@ -293,15 +245,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     resetDistrict: function(id) {
       dispatch(containerDistrictReset(id));
     },
-    districtsFetch: function() {
-      dispatch(districtsFetch());
-    },
     ordersPrepareIDs: function(ids) {
       dispatch(ordersPrepareIDs(ids));
     },
-    driversFetch: function() {
-      dispatch(FillActions.fetchDrivers());
-    }
   }
 }
 

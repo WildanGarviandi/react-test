@@ -13,8 +13,11 @@ function Modal(props) {
   return (
     <div className={wrapperClass}>
       <div className={styles.backdrop}></div>
-      <div className={styles.modal} style={modalStyle}>
-        {props.children}
+      <div style={{position: 'absolute', width: '100%'}}>
+        <div className={styles.modal} style={modalStyle}>
+          {props.children}
+          <div style={{clear: 'both'}} />
+        </div>
       </div>
     </div>
   );

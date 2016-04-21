@@ -44,7 +44,7 @@ export default React.createClass({
     const {backLink, buttons, body} = ClassifyChildren(children);
 
     return (
-      <div>
+      <div style={{position: 'relative'}}>
         {backLink}
         {buttons}
         <PageTitle title={title} />

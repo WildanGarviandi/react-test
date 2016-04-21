@@ -6,6 +6,11 @@
   cursor: pointer;
 }
 
+.btnBase:hover {
+  background-color: #eF4A50;
+  color: #fff;
+}
+
 .btnBase.loading {
   display: inline-block;
   cursor: default;
