@@ -1,9 +1,9 @@
 import fetch from 'isomorphic-fetch';
 import config from './config';
 
-const PostParams = (token, body) => {
+const DeleteParams = (token, body) => {
   return {
-    method: 'post',
+    method: 'delete',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
@@ -14,5 +14,5 @@ const PostParams = (token, body) => {
 }
 
 export default (url, token, body = {}) => {
-  return fetch(config.baseUrl + url, PostParams(token, body));
+  return fetch(config.baseUrl + url, DeleteParams(token, body));
 }

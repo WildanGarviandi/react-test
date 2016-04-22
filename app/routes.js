@@ -1,6 +1,7 @@
 import React from 'react';
 import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 import checkAuth from './modules/auth/actions/checkAuth';
+import App from './views/app';
 import ContainerPage from './views/container';
 import ContainerDetailsPage from './views/container/details';
 import ContainerFillPage from './views/container/fill';
@@ -8,10 +9,6 @@ import DashboardPage from './views/dashboard';
 import LoginPage from './views/login';
 import store from './store';
 import ContainerQRCodePage from './views/container/qrcode';
-
-function App(props) {
-  return <div style={{height: "100%"}}>{props.children}</div>;
-}
 
 function requireAuth(nextState, replace, callback) {
   checkAuth(store).then(function(result) {

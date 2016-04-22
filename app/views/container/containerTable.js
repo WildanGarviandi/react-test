@@ -9,6 +9,16 @@ import SetStatusCell from './setStatusCell';
 
 import styles from './table.css';
 
+function camelize(str) {
+  return str.replace(/\w\S*/g, (txt) => {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
+};
+
+function DriverFullName(driver) {
+  return camelize(`${driver.FirstName} ${driver.LastName} (${driver.CountryCode}${driver.PhoneNumber})`);
+};
+
 const ActionCell = React.createClass({
   handleClick(e) {
     const {item} = this.props;
@@ -108,7 +118,7 @@ const stateToProps = (state) => {
       });
 
       const Driver = container.CurrentTrip.Driver;
-      const driverName = Driver ? `${Driver.FirstName} ${Driver.LastName}` : '';
+      const driverName = Driver ? DriverFullName(Driver) : '';
 
       return _.assign({}, container, {
         ContainerStatus: container.CurrentTrip.OrderStatus.OrderStatus,

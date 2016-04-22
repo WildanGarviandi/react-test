@@ -50,6 +50,18 @@ export const ORDER_REMOVE_START = 'ORDER_REMOVE_START';
 export const ORDER_REMOVE_SUCCESS = 'ORDER_REMOVE_SUCCESS';
 export const ORDER_REMOVE_FAILED = 'ORDER_REMOVE_FAILED';
 
+export const DistrictActions = {
+  DISTRICT_SET_START: 'DISTRICT_SET_START',
+  DISTRICT_SET_SUCCESS:'DISTRICT_SET_SUCCESS',
+  DISTRICT_SET_FAILED: 'DISTRICT_SET_FAILED',
+};
+
+export const DriversActions = {
+  DRIVERS_PICK_START: 'DRIVERS_PICK_START',
+  DRIVERS_PICK_SUCCESS: 'DRIVERS_PICK_SUCCESS',
+  DRIVERS_PICK_FAILED: 'DRIVERS_PICK_FAILED',
+};
+
 export const containerDistrictPick = (containerID, districtID) => ({type: CONTAINER_DISTRICT_PICK, containerID: containerID, districtID: districtID});
 
 export const containerDistrictReset = (containerID) => ({type: CONTAINER_DISTRICT_RESET, containerID: containerID});

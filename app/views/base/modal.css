@@ -32,7 +32,7 @@
   border-radius: 10px;
   width: 1000px;
   background-color: #fff;
-  position: absolute;
+  position: relative;
   padding: 20px;
   left: 0;
   right: 0;
@@ -40,4 +40,11 @@
   margin: 0 auto;
   width: 500px;
   margin-bottom: 70px;
+}
+
+.modalBtn {
+  padding: 8px;
+  display: inline-block;
+  margin-left: 4px;
+  float: right;
 }

@@ -130,6 +130,7 @@ const Pagination = React.createClass({
           <PaginationDetail limit={limit} total={totalItem} page={currentPage} setLimit={this.setLimit} />
           <PaginationControl pagesCount={totalPages} currentPage={currentPage} setPage={this.setPage} />
         </div>
+        <div style={{clear: 'both'}} />
       </div>
     );
   }

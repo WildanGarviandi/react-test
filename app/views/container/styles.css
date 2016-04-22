@@ -1,3 +1,18 @@
+.normalBtn {
+  color: #333;
+  background-color: #fff;
+  border: solid 1px #ccc;
+  padding: 8px;
+  display: inline-block;
+  margin-left: 4px;
+}
+
+.normalBtn:hover {
+  color: #333;
+  background-color: #e6e6e6;
+  border-color: #adadad;
+}
+
 .modalBtn, .modalLink, .fillBtn, .driverBtn {
   padding: 8px;
   display: inline-block;
@@ -14,12 +29,28 @@
   color: #fff;
 }
 
+.fillBtn:hover {
+  background-color: #3F3325;
+  color: #fff;
+}
+
 .fillDriverWrapper {
   display: inline-block;
   width: 280px;
 }
 
+.districtsWrapper {
+  display: inline-block;
+  width: 200px;
+}
+
 .error {
   border: solid 1px #c33;
   border-radius: 3px;
+}
+
+.topRightBtnWrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
 }

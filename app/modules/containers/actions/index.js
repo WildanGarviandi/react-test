@@ -5,6 +5,8 @@ import containerDetails from './containerDetailsFetch';
 import containerEmpty from './containerEmpty';
 import containerFill from './containerFill';
 import {fetchContainers, setCurrentPage, setLimit, setStatus} from './containersFetch';
+import districtSet from './districtSet';
+import driverSet from './driverSet';
 import fetchStatus from './statusFetch';
 
 export const statusList = {
@@ -22,5 +24,6 @@ export default {
   setCurrentPage: setCurrentPage,
   setLimit: setLimit,
   setStatus: setStatus,
-  toggleActive: containerActiveToggle
+  toggleActive: containerActiveToggle,
+  districtSet, driverSet,
 };
