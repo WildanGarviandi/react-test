@@ -10,7 +10,8 @@ export default () => {
     dispatch({type: actionTypes.CONTAINER_CREATE_START, id: hubID});
     fetchPost('/container/', token).then(function(response) {
       if(response.ok) {
-        response.json().then(function(response) {
+        response.json().then(function(resp) {
+          const response = resp.data;
           dispatch({type: actionTypes.CONTAINER_CREATE_SUCCESS, container: response.container});
           dispatch(push('/container/' + response.container.ContainerID));
         });

@@ -9,7 +9,8 @@ export default (orderID) => {
     dispatch({type: actionTypes.ORDER_REMOVE_START, orderID: orderID});
     fetchPost('/hub/order/' + orderID + '/removeContainer', token).then(function(response) {
       if(response.ok) {
-        response.json().then(function(response) {
+        response.json().then(function(resp) {
+          const response = resp.data;
           dispatch({type: actionTypes.ORDER_REMOVE_SUCCESS, order: response.order});
         })
       } else {

@@ -10,7 +10,8 @@ export default (containerID) => {
     dispatch({type: actionTypes.CONTAINER_DETAILS_FETCH_START, ContainerID: containerID});
     fetchGet('/container/' + containerID, token).then(function(response) {
       if(response.ok) {
-        response.json().then(function(response) {
+        response.json().then(function(resp) {
+          const response = resp.data;
           var orders = _.map(response.routes, (route) => {
             return _.assign({}, route.UserOrder, {
               Status: route.OrderStatus.OrderStatus

@@ -9,7 +9,8 @@ export default () => {
     dispatch({type: actionTypes.BROADCAST_START});
     fetchPost('/hub/broadcast', token).then(function(response) {
       if(response.ok) {
-        response.json().then(function(response) {
+        response.json().then(function(resp) {
+          const response = resp.data;
           dispatch({type: actionTypes.BROADCAST_SUCCESS, message: response.message});
         });
       } else {

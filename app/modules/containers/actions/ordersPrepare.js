@@ -19,7 +19,8 @@ export default () => {
     dispatch({ type: actionTypes.ORDER_PREPARE_FETCH_START, ids: ordersID, limit: limit, offset: offset });
     fetchGet('/hub/ordersByID', token, query).then(function(response) {
       if(response.ok) {
-        response.json().then(function(response) {
+        response.json().then(function(resp) {
+          const response = resp.data;
           dispatch({ type: actionTypes.ORDER_PREPARE_FETCH_SUCCESS, orders: response.rows, count: response.count });
           dispatch(toggleAll(true));
           return;

@@ -19,7 +19,8 @@ function districtSet(containerID, districtID) {
 
     fetch('/container/' + containerID + '/district', token, params).then(function(response) {
       if(response.ok) {
-        response.json().then((response) => {
+        response.json().then(function(resp) {
+          const response = resp.data;
           dispatch({ 
             type: DistrictActions.DISTRICT_SET_SUCCESS,
             ContainerID: containerID,

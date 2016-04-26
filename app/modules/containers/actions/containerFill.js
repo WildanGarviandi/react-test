@@ -17,7 +17,8 @@ export default (containerNumber, ordersID, districtID) => {
     dispatch({ type: actionTypes.CONTAINER_FILL_START, orders: ordersID, containerNumber: containerNumber, districtID: districtID });
     fetchPost('/container/fill', token, params).then(function(response) {
       if(response.ok) {
-        response.json().then(function(response) {
+        response.json().then(function(resp) {
+          const response = resp.data;
           dispatch({ type: actionTypes.CONTAINER_FILL_SUCCESS, results: response });
           return;
         });

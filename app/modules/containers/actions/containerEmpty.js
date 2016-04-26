@@ -11,7 +11,8 @@ export default (containerID) => {
     dispatch({ type: actionTypes.CONTAINER_CLEAR_START, ContainerID: containerID });
     fetchPost('/container/' + containerID + '/clear', token).then(function(response) {
       if(response.ok) {
-        response.json().then(function(response) {
+        response.json().then(function(resp) {
+          const response = resp.data;
           dispatch({ type: actionTypes.CONTAINER_CLEAR_SUCCESS, ContainerID: containerID });
           dispatch(push('/container/' + containerID + '/fill'));
           return;
