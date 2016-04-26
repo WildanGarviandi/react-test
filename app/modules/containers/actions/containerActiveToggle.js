@@ -9,7 +9,8 @@ export default (containerID) => {
     dispatch({type: actionTypes.CONTAINER_ACTIVE_TOGGLE_START, id: containerID});
     fetchPost('/container/' + containerID, token).then(function(response) {
       if(response.ok) {
-        response.json().then(function(response) {
+        response.json().then(function(resp) {
+          const response = resp.data;
           dispatch({type: actionTypes.CONTAINER_ACTIVE_TOGGLE_SUCCESS, container: response.container});
         })
       } else {

@@ -11,7 +11,8 @@ export default (containerID) => {
     dispatch({ type: actionTypes.DRIVER_DEASSIGN_START, containerID: containerID});
     fetchDelete('/container/' + containerID + '/driver', token).then(function(response) {
       if(response.ok) {
-        response.json().then((response) => {
+        response.json().then(function(resp) {
+          const response = resp.data;
           dispatch({
             type: actionTypes.DRIVER_DEASSIGN_SUCCESS,
           });

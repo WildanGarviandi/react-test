@@ -11,7 +11,7 @@ export default () => {
     dispatch({ type: actionTypes.DISTRICTS_FETCH_START});
     fetchGet('/hub/districts', token).then(function(response) {
       if(response.ok) {
-        response.json().then((response) => {
+        response.json().then(function(response) {
           dispatch({ type: actionTypes.DISTRICTS_FETCH_SUCCESS, districts: response.data.districts });
         });
       } else {

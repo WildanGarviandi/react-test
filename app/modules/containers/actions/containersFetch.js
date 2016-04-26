@@ -40,7 +40,8 @@ export const fetchContainers = () => {
     dispatch({ type: actionTypes.CONTAINERS_FETCH_START, currentPage: currentPage, limit: limit });
     fetchGet('/container/', token, query).then(function(response) {
       if(response.ok) {
-        response.json().then((response) => {
+        response.json().then(function(resp) {
+          const response = resp.data;
           dispatch({ type: actionTypes.CONTAINERS_FETCH_SUCCESS, total: response.count, containers: response.rows, groups: response.groups });
         });
       } else {

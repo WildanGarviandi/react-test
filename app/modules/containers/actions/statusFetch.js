@@ -12,7 +12,8 @@ export default () => {
     dispatch({ type: actionTypes.CONTAINERS_STATUS_FETCH });
     fetchGet('/container/status', token).then(function(response) {
       if(response.ok) {
-        response.json().then((response) => {
+        response.json().then(function(resp) {
+          const response = resp.data;
           dispatch({ 
             type: actionTypes.CONTAINERS_STATUS_SUCCESS, 
             statusList: _.assign({}, response.list, {'SHOW ALL': 0}), 
