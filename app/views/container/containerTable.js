@@ -40,7 +40,7 @@ const ActionCell = React.createClass({
 
 const ContainerTable = React.createClass({
   componentDidMount() {
-    this.props.fetchContainer();
+    this.props.setLimit(100);
   },
   setCurrentPage(x) {
     this.props.setCurrentPage(x);
