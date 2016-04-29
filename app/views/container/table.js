@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {ButtonBase, Input, Rows} from '../base';
+import {ButtonBase, DropdownTypeAhead, Input, Rows} from '../base';
 import orderRemove from '../../modules/containers/actions/orderRemove';
 import orderToggleAll from '../../modules/containers/actions/orderToggleAll';
 import orderToggle from '../../modules/containers/actions/orderToggle';
@@ -175,16 +175,49 @@ const ContainerTable = React.createClass({
   }
 });
 
-export const OrderTable = React.createClass({
+const OrderStatusSelect = React.createClass({
+  selectVal(val) {
+    this.props.pickStatus(val);
+  },
   render() {
-    let {columns, headers, items} = this.props;
+    const {statusList, statusName} = this.props;
+    return (
+      <td className={classNaming(styles.td, styles.search)} style={{width: 150}}>
+        <DropdownTypeAhead options={statusList} selectVal={this.selectVal} val={statusName} />
+      </td>
+    );
+  }
+});
+
+export const OrderTable = React.createClass({
+  getInitialState() {
+    return {selectedStatus: "SHOW ALL"};
+  },
+  pickStatus(val) {
+    this.setState({selectedStatus: val});
+  },
+  render() {
+    let {columns, headers, items, statusList} = this.props;
     let Header = Rows(React.DOM.thead, BaseHeader, {}, columns, function() {});
     let Body = Rows(React.DOM.tbody, BaseCell, {action: DeleteCellContainer}, columns, function() {});
+
+    const filteredItems = _.filter(items, (item) => {
+      return item.status == this.state.selectedStatus;
+    })
+
+    const SearchRow = _.map(columns, (column) => {
+      if (column != "status") {
+        return <td key={column} className={styles.td} />;
+      }
+
+      return <OrderStatusSelect key={column} statusList={statusList} statusName={this.state.selectedStatus} pickStatus={this.pickStatus} />
+    });
 
     return (
       <table className={styles.table}>
         <Header items={headers} />
-        <Body items={items} />
+        <tbody><tr>{SearchRow}</tr></tbody>
+        <Body items={this.state.selectedStatus == "SHOW ALL" ? items : filteredItems} />
       </table>
     );
   }
