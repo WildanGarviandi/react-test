@@ -2,7 +2,7 @@ import React from 'react';
 import classNaming from 'classnames';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
-import {ContainerDetailsActions} from '../../modules';
+import {ContainerDetailsActions, StatusList} from '../../modules';
 import districtsFetch from '../../modules/districts/actions/districtsFetch';
 import {ButtonBase, ButtonWithLoading, DropdownTypeAhead, Modal, Page} from '../base';
 import DistrictAndDriver from './districtAndDriver';
@@ -56,6 +56,7 @@ const DetailPage = React.createClass({
   },
   componentWillMount() {
     this.props.containerDetailsFetch(this.props.params.id);
+    this.props.fetchStatusList();
   },
   goToFillContainer() {
     const {container} = this.props;
@@ -75,7 +76,7 @@ const DetailPage = React.createClass({
     }
   },
   render() {
-    const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, emptying, fillAble, hasDriver, isFetching, orders, reusable} = this.props;
+    const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, emptying, fillAble, hasDriver, isFetching, orders, reusable, statusList} = this.props;
 
     let messages = [];
     if(this.state.showModal && emptying && !emptying.isInProcess && !emptying.isSuccess && emptying.error) {
@@ -113,7 +114,7 @@ const DetailPage = React.createClass({
             {
               orders.length > 0 &&
               <div>
-                <OrderTable columns={fillAble ? columns : columns.slice(0,6)} headers={headers} items={orders} />
+                <OrderTable columns={fillAble ? columns : columns.slice(0,6)} headers={headers} items={orders} statusList={statusList} />
               </div>
             }
           </Page>
@@ -125,7 +126,7 @@ const DetailPage = React.createClass({
 
 const mapStateToProps = (state, ownProps) => {
   const containerID = ownProps.params.id;
-  const {containers} = state.app.containers;
+  const {containers, statusList} = state.app.containers;
   const container = containers[containerID];
 
   if(!container) {
@@ -159,6 +160,7 @@ const mapStateToProps = (state, ownProps) => {
       isPicked: drivers.isPicked,
       error: drivers.error,
     },
+    statusList: _.chain(statusList).map((key, val) => [val, key]).sortBy((arr) => (arr[1])).map((arr) => (arr[0])).value(),
   }
 }
 
@@ -178,6 +180,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     goToFillContainer: function(id) {
       dispatch(push('/container/' + id + '/fill'));
+    },
+    fetchStatusList: function() {
+      dispatch(StatusList.fetch());
     },
   };
 };
