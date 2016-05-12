@@ -93,7 +93,7 @@ function StateToProps(state, ownProps) {
   const canChangeDistrict = container && 
     container.CurrentTrip && 
     container.CurrentTrip.OrderStatus && 
-    container.CurrentTrip.OrderStatus.OrderStatus == 'BOOKED';
+    (container.CurrentTrip.OrderStatus.OrderStatus == 'BOOKED' || container.CurrentTrip.OrderStatus.OrderStatus == 'PREBOOKED');
 
   const isSettingDistrict = container && container.isSettingDistrict;
 

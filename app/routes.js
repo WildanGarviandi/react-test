@@ -28,10 +28,10 @@ export default (
     <Route path="/" component={App}>
       <IndexRoute component={LoginPage} />
       <Route path="/home" component={DashboardPage} onEnter={requireAuth}>
-        <IndexRoute component={ContainerPage} />
-        <Route path="/container" component={ContainerPage} />
-        <Route path="/container/:id" component={ContainerDetailsPage} />
-        <Route path="/container/:id/fill" component={ContainerFillPage} />
+        <IndexRoute component={ContainerPage} onEnter={requireAuth}/>
+        <Route path="/container" component={ContainerPage} onEnter={requireAuth}/>
+        <Route path="/container/:id" component={ContainerDetailsPage} onEnter={requireAuth}/>
+        <Route path="/container/:id/fill" component={ContainerFillPage} onEnter={requireAuth}/>
       </Route>
       <Route path="/qrcode/:id" component={ContainerQRCodePage} />
       <Route path="/login" component={LoginPage} />
