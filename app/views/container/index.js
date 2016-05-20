@@ -40,6 +40,9 @@ const ContainerPage = React.createClass({
   getInitialState() {
     return {showModalBroadcast: false, showModalContainer: false};
   },
+  componentWillMount() {
+    this.props.initialLoad();
+  },
   handleCreate() {
     this.props.containerCreate();
     this.setState({showModalContainer: true});
@@ -117,7 +120,10 @@ const mapDispatchToProps = (dispatch) => {
     },
     broadcast: function() {
       dispatch(ContainersAction.broadcast());
-    }
+    },
+    initialLoad: function() {
+      dispatch(setReceived(false));
+    },
   };
 };
 

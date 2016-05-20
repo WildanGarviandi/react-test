@@ -17,10 +17,15 @@ const DistrictAndDriver = React.createClass({
     }
 
     return (
-      <div style={{display: show ? 'block' : 'none'}}>
-        <DistrictSetter containerID={containerID} {...validation} />
-        <div style={{marginBottom: 10}}/>
-        <DriverSetter containerID={containerID} {...validation} />
+      <div>
+      {
+        show &&
+        <div>
+          <DistrictSetter containerID={containerID} {...validation} />
+          <div style={{marginBottom: 10}}/>
+          <DriverSetter containerID={containerID} {...validation} />
+        </div>
+      }
       </div>
     );
   }

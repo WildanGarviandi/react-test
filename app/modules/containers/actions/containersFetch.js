@@ -24,6 +24,14 @@ export const setStatus = (status, statusName) => {
   };
 };
 
+export const initialLoad = () => {
+  return (dispatch) => {
+    dispatch({type: actionTypes.CONTAINERS_SET_STATUS, status: [0], name: 'SHOW ALL'});
+    dispatch({type: actionTypes.CONTAINERS_SET_LIMIT, limit: 100});
+    dispatch(fetchContainers());
+  }
+}
+
 export const fetchContainers = () => {
   return (dispatch, getState) => {
     const {userLogged, containers} = getState().app;
@@ -34,7 +42,7 @@ export const fetchContainers = () => {
       hubID: hubID,
       limit: limit,
       offset: (currentPage-1)*limit,
-      statusID: status
+      statusID: status,
     }
 
     dispatch({ type: actionTypes.CONTAINERS_FETCH_START, currentPage: currentPage, limit: limit });

@@ -93,7 +93,11 @@ const DetailPage = React.createClass({
           <h3>Fetching Container Details...</h3>
         }
         {
-          !isFetching &&
+          this.props.notFound && !isFetching &&
+          <h3>Failed Fetching Container Details</h3>
+        }
+        {
+          !this.props.notFound && !isFetching &&
           <Page title={'Container ' + container.ContainerNumber}>
             {messageModal}
             <a href="javascript:;" onClick={backToContainer}>{'<<'} Back to Container List</a>
@@ -133,8 +137,14 @@ const mapStateToProps = (state, ownProps) => {
     return {isFetching: true};
   }
 
+
   const {emptying, fillAble, reusable, isFetching, orders} = container;
   const {drivers} = state.app;
+
+  if(!container.ContainerNumber) {
+    return {notFound: true, isFetching};
+  }
+
   return {
     container: container,
     orders: _.map(orders, (order) => ({
