@@ -24,6 +24,10 @@ export const setStatus = (status, statusName) => {
   };
 };
 
+export const setReceived = () => {
+  return {type: "RECEIVED"};
+}
+
 export const initialLoad = () => {
   return (dispatch) => {
     dispatch({type: actionTypes.CONTAINERS_SET_STATUS, status: [0], name: 'SHOW ALL'});

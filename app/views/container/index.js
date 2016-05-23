@@ -2,6 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import {ContainersAction} from '../../modules';
+import {setReceived} from '../../modules/containers/actions/containersFetch';
 import {ButtonBase, ButtonWithLoading, Modal, Page} from '../base';
 import ContainerTable from './containerTable';
 import ContainerInfo from './containerInfographic';
