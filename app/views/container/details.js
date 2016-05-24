@@ -76,7 +76,7 @@ const DetailPage = React.createClass({
     }
   },
   render() {
-    const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, emptying, fillAble, hasDriver, isFetching, orders, reusable, statusList} = this.props;
+    const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, emptying, fillAble, hasDriver, isFetching, orders, reusable, statusList, totalDeliveryFee} = this.props;
 
     let messages = [];
     if(this.state.showModal && emptying && !emptying.isInProcess && !emptying.isSuccess && emptying.error) {
@@ -111,6 +111,7 @@ const DetailPage = React.createClass({
             }
             <DistrictAndDriver containerID={container.ContainerID} show={orders.length > 0} />
             <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>Total {orders.length} items</span>
+            <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>Total Delivery Fee Rp {totalDeliveryFee || 0}</span>
             {
               orders.length > 0 &&
               <div>
@@ -161,6 +162,9 @@ const mapStateToProps = (state, ownProps) => {
       error: drivers.error,
     },
     statusList: _.chain(statusList).map((key, val) => [val, key]).sortBy((arr) => (arr[1])).map((arr) => (arr[0])).value(),
+    totalDeliveryFee: container.CurrentTrip && _.reduce(container.CurrentTrip.UserOrderRoutes, (total, route) => {
+      return total + route.DeliveryFee;
+    }, 0),
   }
 }
 
