@@ -140,9 +140,9 @@ const mapStateToProps = (state, ownProps) => {
     orders: _.map(orders, (order) => ({
       id: order.WebOrderID,
       id2: order.UserOrderNumber,
-      pickup: order.PickupAddress.Address1,
-      dropoff: order.DropoffAddress.Address1,
-      time: (new Date(order.PickupTime)).toString(),
+      pickup: order.PickupAddress && order.PickupAddress.Address1,
+      dropoff: order.DropoffAddress && order.DropoffAddress.Address1,
+      time: order.PickupTime && (new Date(order.PickupTime)).toString(),
       id3: order.UserOrderID,
       isDeleting: order.isDeleting,
       status: order.Status,
