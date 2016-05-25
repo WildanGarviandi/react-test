@@ -54,7 +54,13 @@ const ResultModal = React.createClass({
         </div>
         <div>
           <span>Failed to put into container: ({failedRes.length} items)</span>
-          <div>{_.map(failedRes, (res) => (res.orderNumber)).join(' ')}</div>
+          <div>
+          {
+            _.map(failedRes, (res) => {
+              return <div>{res.orderNumber}: {res.error}</div>;
+            })
+          }
+          </div>
         </div>
         <ButtonBase styles={styles.modalBtn} onClick={this.props.closeModal}>OK</ButtonBase>
       </div>

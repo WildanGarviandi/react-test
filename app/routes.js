@@ -27,7 +27,7 @@ export default (
   <Router history={browserHistory}>
     <Route path="/" component={App}>
       <IndexRoute component={LoginPage} />
-      <Route path="/home" component={DashboardPage} onEnter={requireAuth}>
+      <Route path="/home" component={DashboardPage}>
         <IndexRoute component={ContainerPage} onEnter={requireAuth}/>
         <Route path="/container" component={ContainerPage} onEnter={requireAuth}/>
         <Route path="/container/:id" component={ContainerDetailsPage} onEnter={requireAuth}/>
