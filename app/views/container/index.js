@@ -2,6 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import {ContainersAction} from '../../modules';
+import {setReceived} from '../../modules/containers/actions/containersFetch';
 import {ButtonBase, ButtonWithLoading, Modal, Page} from '../base';
 import ContainerTable from './containerTable';
 import ContainerInfo from './containerInfographic';
@@ -39,6 +40,9 @@ const ContainerPage = React.createClass({
   },
   getInitialState() {
     return {showModalBroadcast: false, showModalContainer: false};
+  },
+  componentWillMount() {
+    this.props.initialLoad();
   },
   handleCreate() {
     this.props.containerCreate();
@@ -117,7 +121,10 @@ const mapDispatchToProps = (dispatch) => {
     },
     broadcast: function() {
       dispatch(ContainersAction.broadcast());
-    }
+    },
+    initialLoad: function() {
+      dispatch(setReceived(false));
+    },
   };
 };
 

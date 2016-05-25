@@ -6,10 +6,6 @@ import {Dropdown, DropdownTypeAhead} from '../base';
 import styles from './table.css';
 
 const TripStatusSelect = React.createClass({
-  componentDidMount() {
-    this.props.pick([0], 'SHOW ALL');
-    this.props.fetch();
-  },
   selectVal(val) {
     const {pick, nameToID} = this.props;
     pick(nameToID[val], val.toUpperCase());
@@ -36,9 +32,6 @@ const dispatchToProps = (dispatch) => {
   return {
     pick: function(val, name) {
       dispatch(StatusList.pick([val], name));
-    },
-    fetch: function() {
-      dispatch(StatusList.fetch());
     },
   };
 }

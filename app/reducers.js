@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { combineReducers } from 'redux';
 import authReducers from './modules/auth/reducers';
 import containersReducers from './modules/containers/reducers';
