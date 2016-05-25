@@ -162,8 +162,8 @@ const mapStateToProps = (state, ownProps) => {
       error: drivers.error,
     },
     statusList: _.chain(statusList).map((key, val) => [val, key]).sortBy((arr) => (arr[1])).map((arr) => (arr[0])).value(),
-    totalDeliveryFee: container.CurrentTrip && _.reduce(container.CurrentTrip.UserOrderRoutes, (total, route) => {
-      return total + route.DeliveryFee;
+    totalDeliveryFee: _.reduce(orders, (total, order) => {
+      return total + order.DeliveryFee;
     }, 0),
   }
 }
