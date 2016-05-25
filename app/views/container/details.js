@@ -77,7 +77,7 @@ const DetailPage = React.createClass({
     }
   },
   render() {
-    const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, emptying, fillAble, hasDriver, isFetching, orders, reusable, statusList, TotalCODValue, CODCount} = this.props;
+    const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, emptying, fillAble, hasDriver, isFetching, orders, reusable, statusList, TotalCODValue, CODCount, totalDeliveryFee} = this.props;
 
     let messages = [];
     if(this.state.showModal && emptying && !emptying.isInProcess && !emptying.isSuccess && emptying.error) {
@@ -116,11 +116,12 @@ const DetailPage = React.createClass({
             }
             <DistrictAndDriver containerID={container.ContainerID} show={orders.length > 0} />
             <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>Total {orders.length} items</span>
+            <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>Total Delivery Fee Rp {totalDeliveryFee || 0}</span>
             <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>Total COD Value Rp {TotalCODValue},- ({CODCount} items)</span>
             {
               orders.length > 0 &&
               <div>
-                <OrderTable columns={fillAble ? columns : columns.slice(0,6)} headers={headers} items={orders} statusList={statusList} />
+                <OrderTable columns={fillAble ? columns : columns.slice(0, columns.length - 1)} headers={headers} items={orders} statusList={statusList} />
               </div>
             }
           </Page>
@@ -151,7 +152,8 @@ const mapStateToProps = (state, ownProps) => {
     id3: order.UserOrderID,
     isDeleting: order.isDeleting,
     status: order.Status,
-    CODValue: order.IsCOD ? order.TotalValue : 0
+    CODValue: order.IsCOD ? order.TotalValue : 0,
+    DeliveryFee: order.DeliveryFee
   }));
 
   const CODOrders = _.filter(containerOrders, (order) => order.IsCOD);
@@ -177,6 +179,9 @@ const mapStateToProps = (state, ownProps) => {
       error: drivers.error,
     },
     statusList: _.chain(statusList).map((key, val) => [val, key]).sortBy((arr) => (arr[1])).map((arr) => (arr[0])).value(),
+    totalDeliveryFee: _.reduce(orders, (total, order) => {
+      return total + order.DeliveryFee;
+    }, 0),
     TotalCODValue: _.reduce(CODOrders, (sum, order) => sum + order.TotalValue, 0),
     CODCount: CODOrders.length,
   }
