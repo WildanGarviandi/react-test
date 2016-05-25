@@ -32,7 +32,7 @@ module.exports = {
       },
       {
         test: /\.woff$/, 
-        loader: "file-loader" 
+        loader: "file-loader"
       }
     ]
   },
@@ -40,8 +40,9 @@ module.exports = {
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({
-      mangle: true
+      mangle: true, sourceMap: false,
     }),
+    new webpack.optimize.DedupePlugin(),
     new ExtractTextPlugin("style.css"),
     new webpack.DefinePlugin({
       'process.env': {

@@ -10,11 +10,12 @@ import {OrderTable} from './table';
 
 import styles from './styles.css';
 
-const columns = ['id', 'id2', 'pickup', 'dropoff', 'time', 'status', 'action'];
+const columns = ['id', 'id2', 'pickup', 'dropoff', 'time', 'CODValue', 'status', 'action'];
 const headers = [{
   id: 'Web Order ID', id2: 'User Order Number',
   pickup: 'Pickup Address', dropoff: 'Dropoff Address',
-  time: 'Pickup Time', status: 'Order Status', action: 'Action'
+  time: 'Pickup Time', status: 'Order Status', action: 'Action',
+  CODValue: 'COD Value'
 }];
 
 const MessageModal = React.createClass({
@@ -76,7 +77,7 @@ const DetailPage = React.createClass({
     }
   },
   render() {
-    const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, emptying, fillAble, hasDriver, isFetching, orders, reusable, statusList, totalDeliveryFee} = this.props;
+    const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, emptying, fillAble, hasDriver, isFetching, orders, reusable, statusList, TotalCODValue, CODCount, totalDeliveryFee} = this.props;
 
     let messages = [];
     if(this.state.showModal && emptying && !emptying.isInProcess && !emptying.isSuccess && emptying.error) {
@@ -93,7 +94,11 @@ const DetailPage = React.createClass({
           <h3>Fetching Container Details...</h3>
         }
         {
-          !isFetching &&
+          this.props.notFound && !isFetching &&
+          <h3>Failed Fetching Container Details</h3>
+        }
+        {
+          !this.props.notFound && !isFetching &&
           <Page title={'Container ' + container.ContainerNumber}>
             {messageModal}
             <a href="javascript:;" onClick={backToContainer}>{'<<'} Back to Container List</a>
@@ -112,6 +117,7 @@ const DetailPage = React.createClass({
             <DistrictAndDriver containerID={container.ContainerID} show={orders.length > 0} />
             <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>Total {orders.length} items</span>
             <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>Total Delivery Fee Rp {totalDeliveryFee || 0}</span>
+            <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>Total COD Value Rp {TotalCODValue},- ({CODCount} items)</span>
             {
               orders.length > 0 &&
               <div>
@@ -134,20 +140,31 @@ const mapStateToProps = (state, ownProps) => {
     return {isFetching: true};
   }
 
-  const {emptying, fillAble, reusable, isFetching, orders} = container;
+  const {emptying, fillAble, reusable, isFetching, orders: containerOrders} = container;
   const {drivers} = state.app;
+
+  const orders = _.map(containerOrders, (order) => ({
+    id: order.WebOrderID,
+    id2: order.UserOrderNumber,
+    pickup: order.PickupAddress.Address1,
+    dropoff: order.DropoffAddress.Address1,
+    time: (new Date(order.PickupTime)).toString(),
+    id3: order.UserOrderID,
+    isDeleting: order.isDeleting,
+    status: order.Status,
+    CODValue: order.IsCOD ? order.TotalValue : 0,
+    DeliveryFee: order.DeliveryFee
+  }));
+
+  const CODOrders = _.filter(containerOrders, (order) => order.IsCOD);
+
+  if (!container.ContainerNumber) {
+    return {notFound: true, isFetching};
+  }
+
   return {
+    orders: orders,
     container: container,
-    orders: _.map(orders, (order) => ({
-      id: order.WebOrderID,
-      id2: order.UserOrderNumber,
-      pickup: order.PickupAddress && order.PickupAddress.Address1,
-      dropoff: order.DropoffAddress && order.DropoffAddress.Address1,
-      time: order.PickupTime && (new Date(order.PickupTime)).toString(),
-      id3: order.UserOrderID,
-      isDeleting: order.isDeleting,
-      status: order.Status,
-    })),
     isFetching: isFetching,
     fillAble: fillAble,
     reusable: reusable,
@@ -165,6 +182,8 @@ const mapStateToProps = (state, ownProps) => {
     totalDeliveryFee: _.reduce(orders, (total, order) => {
       return total + order.DeliveryFee;
     }, 0),
+    TotalCODValue: _.reduce(CODOrders, (sum, order) => sum + order.TotalValue, 0),
+    CODCount: CODOrders.length,
   }
 }
 

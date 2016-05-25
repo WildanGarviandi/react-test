@@ -25,12 +25,17 @@ const Input = React.createClass({
     if(!onChange) return;
     onChange(e.target.value);
   },
+  handleEnterKey(e) {
+    if(e.keyCode === 13 && this.props.onEnterKeyPressed) {
+      this.props.onEnterKeyPressed(e.target.value);
+    }
+  },
   render() {
     let { base, notes, styles } = this.props;
 
     return (
       <span className={styles.container}>
-        <input {...base} className={styles.input} onChange={this.handleChange} />
+        <input {...base} className={styles.input} onChange={this.handleChange} onKeyDown={this.handleEnterKey} />
         <span className={styles.notes}>{notes}</span>
       </span>
     );

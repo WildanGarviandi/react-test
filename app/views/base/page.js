@@ -29,7 +29,7 @@ const ClassifyChildren = (children) => {
     if(child.type.displayName == 'ButtonWithLoading') {
       buttons.push(child);
     } else if(child.type == 'a') {
-      backLink.push(child);
+      backLink.push(React.cloneElement(child, {key: backLink.length, style: {marginBottom: 10, display: "inline-block"}}));
     } else {
       body.push(child);
     }
