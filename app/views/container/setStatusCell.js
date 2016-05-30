@@ -7,7 +7,6 @@ import styles from './table.css';
 
 const TripStatusSelect = React.createClass({
   componentDidMount() {
-    this.props.pick([0], 'SHOW ALL');
     this.props.fetch();
   },
   selectVal(val) {
@@ -28,7 +27,7 @@ const stateToProps = (state) => {
       memo[val] = key;
       return memo;
     }, {}),
-    statusName: state.app.containers.statusName,
+    statusName: state.app.containerList.myContainer.statusName,
   }
 }
 

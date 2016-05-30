@@ -3,9 +3,47 @@ import {DistrictActions, DriversActions} from '../constants';
 import containerDetails from './containerDetails';
 import containerStatus from './containerStatus';
 
-const initialState = { isFetching: false, isValid: true, containers: {}, limit: 10, currentPage: 1, total: 0, shown: [], groups: {}, status: [0], statusList: {} };
+const initialListState = {
+  currentPage: 1,
+  limit: 100,
+  status: [0],
+  statusName: "SHOW ALL",
+}
 
-export default (state = initialState, action) => {
+function ListReducer(state, action) {
+  switch(action.type) {
+    case actionTypes.CONTAINERS_SET_CURRENTPAGE:
+      return _.assign({}, state, {currentPage: action.currentPage});
+    case actionTypes.CONTAINERS_SET_LIMIT:
+      return _.assign({}, state, {limit: action.limit});
+    case actionTypes.CONTAINERS_SET_STATUS:
+      return _.assign({}, state, {status: action.status, statusName: action.name});
+
+    default: return state;
+  }
+}
+
+const initialContainerListState = {
+  myContainer: _.assign({}, initialListState),
+}
+
+function ContainerListReducer(state = initialContainerListState, action) {
+  return _.assign({}, state, {
+    myContainer: ListReducer(state.myContainer, action),
+  });
+}
+
+const initialState = {
+  containers: {},
+  groups: {},
+  isFetching: false,
+  isValid: true,
+  shown: [],
+  statusList: {},
+  total: 0,
+};
+
+function ContainersReducer(state = initialState, action) {
   switch(action.type) {
     case actionTypes.CONTAINERS_FETCH_START:
       return _.assign({}, state, {isFetching: true, isValid: false});
@@ -13,25 +51,19 @@ export default (state = initialState, action) => {
     {
       const containers = _.map(action.containers, (container) => (containerStatus(container, action)));
       return _.assign({}, state, {
-        isFetching: false, 
-        isValid: true,
-        total: action.total,
-        shown: _.map(action.containers, (container) => (container.ContainerID)),
-        groups: action.groups,
         containers: _.reduce(containers, (containers, container) => {
           containers[container.ContainerID] = container;
           return containers;
-        }, _.assign({}, state.containers))
+        }, _.assign({}, state.containers)),
+        groups: action.groups,
+        isFetching: false, 
+        isValid: true,
+        shown: _.map(action.containers, (container) => (container.ContainerID)),
+        total: action.total,
       });
     }
     case actionTypes.CONTAINERS_FETCH_FAILED:
       return _.assign({}, state, {isFetching: false, isValid: false});
-    case actionTypes.CONTAINERS_SET_CURRENTPAGE:
-      return _.assign({}, state, {currentPage: action.currentPage});
-    case actionTypes.CONTAINERS_SET_LIMIT:
-      return _.assign({}, state, {limit: action.limit});
-    case actionTypes.CONTAINERS_SET_STATUS:
-      return _.assign({}, state, {status: action.status, statusName: action.name});
     case actionTypes.CONTAINERS_STATUS_SUCCESS:
       return _.assign({}, state, {
         statusList: action.statusList,
@@ -93,4 +125,9 @@ export default (state = initialState, action) => {
     default:
       return state;
   }
+}
+
+export default {
+  containers: ContainersReducer,
+  containerList: ContainerListReducer,
 }

@@ -40,7 +40,7 @@ const ActionCell = React.createClass({
 
 const ContainerTable = React.createClass({
   componentDidMount() {
-    this.props.setLimit(100);
+    this.props.fetchContainer();
   },
   setCurrentPage(x) {
     this.props.setCurrentPage(x);
@@ -110,7 +110,8 @@ const ContainerTable = React.createClass({
 });
 
 const stateToProps = (state) => {
-  const {containers, isFetching, shown, limit, currentPage, total} = state.app.containers;
+  const {containers, isFetching, shown, total} = state.app.containers;
+  const {currentPage, limit} = state.app.containerList.myContainer;
   return {
     containers: _.chain(containers).map((container) => {
       if(!container.CurrentTrip) return _.assign({}, container, {
