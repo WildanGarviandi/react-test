@@ -24,7 +24,7 @@ const stateToProps = (state) => {
       memo[val] = key;
       return memo;
     }, {}),
-    statusName: state.app.containers.statusName,
+    statusName: state.app.containerList.myContainer.statusName,
   }
 }
 

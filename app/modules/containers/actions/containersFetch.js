@@ -38,9 +38,9 @@ export const initialLoad = () => {
 
 export const fetchContainers = () => {
   return (dispatch, getState) => {
-    const {userLogged, containers} = getState().app;
+    const {userLogged, containers, containerList} = getState().app;
     const {token, hubID} = userLogged;
-    const {currentPage, limit, status} = containers;
+    const {currentPage, limit, status} = containerList.myContainer;
 
     const query = {
       hubID: hubID,

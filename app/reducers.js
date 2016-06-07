@@ -8,6 +8,7 @@ import modalsReducer from './modules/modals/reducers';
 export default combineReducers({ 
   userLogged: authReducers,
   broadcast: containersReducers.broadcast,
+  containerList: containersReducers.containerList,
   containers: containersReducers.containers,
   ordersPrepared: containersReducers.ordersPrepared,
   districts: districtsReducers,
