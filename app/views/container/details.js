@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
 import {ContainerDetailsActions, StatusList} from '../../modules';
 import districtsFetch from '../../modules/districts/actions/districtsFetch';
-import {ButtonBase, ButtonWithLoading, DropdownTypeAhead, Modal, Page} from '../base';
+import {ButtonBase, ButtonWithLoading, Modal, Page} from '../base';
 import DistrictAndDriver from './districtAndDriver';
 import {OrderTable} from './table';
 
@@ -171,14 +171,13 @@ const mapStateToProps = (state, ownProps) => {
     emptying: emptying || {},
     canDeassignDriver: (container.CurrentTrip && container.CurrentTrip.Driver && container.CurrentTrip.OrderStatus.OrderStatusID == 2) || false,
     driverState: {
-      isDeassigning: drivers.isDeassigning,
-      isDeassigned: drivers.isDeassigned,
-      deassignError: drivers.deassignError,
-      isPicking: drivers.isPicking,
-      isPicked: drivers.isPicked,
-      error: drivers.error,
+      isDeassigning: state.app.driversStore.driverDeassignment,
+      isPicking: state.app.driversStore.driverList.isLoading,
     },
-    statusList: _.chain(statusList).map((key, val) => [val, key]).sortBy((arr) => (arr[1])).map((arr) => (arr[0])).value(),
+    statusList: _.chain(statusList)
+      .map((key, val) => ({key: key, value: val}))
+      .sortBy((arr) => (arr.key))
+      .value(),
     totalDeliveryFee: _.reduce(orders, (total, order) => {
       return total + order.DeliveryFee;
     }, 0),

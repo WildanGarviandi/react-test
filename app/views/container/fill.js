@@ -15,7 +15,7 @@ import ordersPrepareIDs from '../../modules/containers/actions/ordersPrepareIDs'
 import ordersPrepareLimit from '../../modules/containers/actions/ordersPrepareLimit';
 import orderToggle from '../../modules/containers/actions/orderToggle';
 import {containerDistrictPick, containerDistrictReset} from '../../modules/containers/constants';
-import {ButtonBase, ButtonWithLoading, Dropdown, DropdownTypeAhead, Modal, Page, Pagination} from '../base';
+import {ButtonBase, ButtonWithLoading, Dropdown, Modal, Page, Pagination} from '../base';
 import {OrderTable2} from './table';
 import Filter from './accordion';
 

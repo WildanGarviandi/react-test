@@ -1,26 +1,59 @@
+import lodash from 'lodash';
+import {combineReducers} from 'redux';
+import * as CollHelper from '../../../helper/collection';
 import * as actionTypes from '../constants';
 
-const initialState = { isFetching: false, isValid: true, drivers: [], isPicking: false, isPicked: false, error: '' };
+const FleetListReducer = CollHelper.CollReducer({
+  START: actionTypes.FLEETS_FETCH_START,
+  FAILED: actionTypes.FLEETS_FETCH_FAILED,
+  RECEIVED: actionTypes.FLEETS_FETCH_RECEIVED,
+}, (fleet) => (fleet.UserID));
 
-export default (state = initialState, action) => {
+const DriverListReducer = CollHelper.CollReducer({
+  START: actionTypes.DRIVERS_FETCH_START,
+  FAILED: actionTypes.DRIVERS_FETCH_FAILED,
+  RECEIVED: actionTypes.DRIVERS_FETCH_RECEIVED,
+}, (driver) => (driver.Driver.UserID));
+
+const inititalFleetDriversState = {
+  dict: {},
+  active: 0,
+}
+
+function FleetDriversReducer(state = inititalFleetDriversState, action) {
   switch(action.type) {
-    case actionTypes.DRIVERS_FETCH_START:
-      return _.assign({}, state, {isFetching: true, isValid: false});
-    case actionTypes.DRIVERS_FETCH_SUCCESS:
-      return _.assign({}, state, {
-        isFetching: false, 
-        isValid: true, 
-        drivers: action.drivers
-    });
-    case actionTypes.DRIVERS_FETCH_FAILED:
-      return _.assign({}, state, {isFetching: false, isValid: false});
-    case actionTypes.DRIVER_DEASSIGN_START:
-      return _.assign({}, state, {isDeassigning: true, isDeassigned: false});
-    case actionTypes.DRIVER_DEASSIGN_SUCCESS:
-      return _.assign({}, state, {isDeassigning: false, isDeassigned: true});
-    case actionTypes.DRIVER_DEASSIGN_FAILED:
-      return _.assign({}, state, {isDeassigning: false, isDeassigned: false});
-    default:
-      return state;
+    case actionTypes.FLEET_SET: {
+      return lodash.assign({}, state, {active: action.fleetID});
+    }
+
+    case actionTypes.DRIVERS_FETCH_RECEIVED: {
+      return lodash.assign({}, state, {
+        dict: lodash.assign({}, state.dict, {
+          [action.fleetID]: lodash.map(action.list, (driver) => (driver.Driver.UserID)),
+        }),
+      });
+    }
+
+    default: return state;
   }
 }
+
+function DriverDeassignmentReducer(state = false, action) {
+  switch(action.type) {
+    case actionTypes.DRIVER_DEASSIGN_START:
+      return true;
+
+    case actionTypes.DRIVER_DEASSIGN_SUCCESS:
+    case actionTypes.DRIVER_DEASSIGN_FAILED:
+      return false;
+
+    default: return state;
+  }
+}
+
+export default combineReducers({
+  driverDeassignment: DriverDeassignmentReducer,
+  driverList: DriverListReducer,
+  fleetDrivers: FleetDriversReducer,
+  fleetList: FleetListReducer,
+});
