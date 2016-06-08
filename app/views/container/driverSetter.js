@@ -1,87 +1,142 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
+import * as UtilHelper from '../../helper/utility';
 import {DriversActions} from '../../modules';
+import FleetSet from '../../modules/drivers/actions/fleetSet';
+import FleetsFetch from '../../modules/drivers/actions/fleetsFetch';
 
 import {ButtonWithLoading, DropdownTypeAhead} from '../base';
 import styles from './styles.css';
 
-function camelize(str) {
-  return str.replace(/\w\S*/g, (txt) => {
-    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-  });
-};
-
-function DriverFullName(driver) {
-  return camelize(`${driver.FirstName} ${driver.LastName} (${driver.CountryCode}${driver.PhoneNumber})`);
-};
-
-function FindByFullName(drivers, driverFullName) {
-  return _.find(drivers, (driver) => (DriverFullName(driver.Driver) == driverFullName));
-}
-
 const DriverSetter = React.createClass({
+  componentWillMount() {
+    this.props.FleetsFetch();
+  },
   getInitialState() {
     return {
-      selectedDriver: '',
+      selectedDriver: {value: ''},
     };
   },
   driverSet() {
-    const {drivers} = this.props;
-    const driver = FindByFullName(drivers, this.state.selectedDriver);
-    this.props.driverSet(driver.Driver.UserID);
+    this.props.DriverSet(this.state.selectedDriver.key);
     this.props.validate();
   },
-  driverSelect(val) {
+  driverSelect(driver) {
     this.setState({
-      selectedDriver: val,
+      selectedDriver: driver,
+    });
+  },
+  fleetSelect(fleet) {
+    this.props.FleetSet(fleet.key);
+    this.setState({
+      selectedDriver: {value: ''},
     });
   },
   render() {
-    const {driver, driversName, hasOrder, isSettingDriver} = this.props;
+    const {canPickFleet, driverName, drivers, fleetName, fleets, isFetchingDriver, isFetchingFleet, isSettingDriver} = this.props;
     const {selectedDriver} = this.state;
 
     return (
       <div>
         {
-          driver &&
-          <span>Current Driver: {DriverFullName(driver)}</span>
-        }
-        {
-          !driver &&
-          <span>
-            <span>Drivers : </span>
+          !driverName && canPickFleet &&
+          <span className={styles.line}>
+            <span>Fleets : </span>
             <span className={styles.fillDriverWrapper}>
-              <DropdownTypeAhead options={driversName} selectVal={this.driverSelect} val={selectedDriver} />
+              {
+                isFetchingFleet &&
+                <span>Fetching Fleet List...</span>
+              }
+              {
+                !isFetchingFleet &&
+                <DropdownTypeAhead options={fleets} selectVal={this.fleetSelect} val={fleetName} />
+              }
             </span>
-            <ButtonWithLoading textBase="Set Driver" textLoading="Setting Driver" onClick={this.driverSet} isLoading={isSettingDriver} styles={{base: styles.normalBtn}} />
           </span>
         }
+        <span>
+          <span>Driver : </span>
+          {
+            isFetchingFleet &&
+            <span>Waiting for Fleet Data...</span>
+          }
+          {
+            !isFetchingFleet && isFetchingDriver &&
+            <span>Fetching Driver List...</span>
+          }
+          {
+            !isFetchingFleet && !isFetchingDriver && driverName &&
+            <span>{driverName} / {fleetName}</span>
+          }
+          {
+            !isFetchingFleet && !isFetchingDriver && !driverName &&
+            <span>
+              <span className={styles.fillDriverWrapper}>
+                <DropdownTypeAhead options={drivers} selectVal={this.driverSelect} val={selectedDriver.value} />
+              </span>
+              <ButtonWithLoading textBase="Set Driver" textLoading="Setting Driver" onClick={this.driverSet} isLoading={isSettingDriver} styles={{base: styles.normalBtn}} />
+            </span>
+          }
+        </span>
       </div>
     );
   }
-})
+});
 
 function StateToProps(state, ownProps) {
   const container = state.app.containers.containers[ownProps.containerID];
-  const {drivers}= state.app.drivers;
-  const driversName = _.chain(drivers)
-    .map((driver) => (DriverFullName(driver.Driver)))
-    .sortBy((driver) => (driver)).value();
+  const driversStore = state.app.driversStore;
+  const fleetDrivers = driversStore.fleetDrivers;
+
+  const fleetList = driversStore.fleetList;
+  const isFetchingFleet = fleetList.isLoading;
+  const fleets = _.chain(fleetList.shown)
+    .map((fleetID) => {
+      return {
+        key: fleetID,
+        value: UtilHelper.FleetName(fleetList.dict[fleetID]),
+      }
+    })
+    .value();
+
+  const driverList = driversStore.driverList;
+  const isFetchingDriver = driverList.isLoading;
+  const drivers = _.chain(fleetDrivers.dict[fleetDrivers.active] || [])
+    .map((driverID) => {
+      return {
+        key: driverID,
+        value: UtilHelper.UserFullName(driverList.dict[driverID].Driver),
+      }
+    })
+    .value();
 
   const driver = container && container.CurrentTrip && container.CurrentTrip.Driver;
+  const driverName =  UtilHelper.UserFullName(driver);
+  const fleet = fleetList.dict[fleetDrivers.active];
+  const fleetName = UtilHelper.FleetName(fleet);
   const {isSettingDriver} = container;
 
+  const canPickFleet = state.app.userLogged.isCentralHub;
+
   return {
-    driver, drivers, driversName,
+    canPickFleet,
+    driverName, drivers, fleetName, fleets,
+    isFetchingDriver, isFetchingFleet,
     isSettingDriver,
-  }
+  };
 }
 
 function DispatchToProps(dispatch, ownProps) {
   return {
-    driverSet: function(driverID) {
+    DriverSet(driverID) {
       dispatch(DriversActions.driverSet(ownProps.containerID, driverID));
+    },
+    FleetSet(fleetID) {
+      dispatch(FleetSet(fleetID));
+    },
+    FleetsFetch() {
+      dispatch(FleetsFetch());
     },
   }
 }

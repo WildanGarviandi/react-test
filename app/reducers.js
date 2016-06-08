@@ -12,6 +12,6 @@ export default combineReducers({
   containers: containersReducers.containers,
   ordersPrepared: containersReducers.ordersPrepared,
   districts: districtsReducers,
-  drivers: drivers,
+  driversStore: drivers,
   modals: modalsReducer,
 });

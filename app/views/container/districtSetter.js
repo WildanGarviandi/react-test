@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import classNaming from 'classnames';
 
 import {DistrictsActions} from '../../modules';
+import DistrictsFetch from '../../modules/districts/actions/districtsFetch';
 
 import {ButtonBase, ButtonWithLoading, DropdownTypeAhead} from '../base';
 import styles from './styles.css';
@@ -16,19 +17,23 @@ function FindByName(districts, districtName) {
 }
 
 const DistrictSetter = React.createClass({
+  componentWillMount() {
+    this.props.DistrictsFetch();
+  },
+  componentWillReceiveProps(nextProps) {
+    this.setState({nextDistrict: {value: nextProps.districtName}});
+  },
   getInitialState() {
     return {
       isChanging: false,
-      nextDistrict: this.props.district,
+      nextDistrict: {value: this.props.districtName},
     }
   },
   cancelChanging() {
-    this.setState({isChanging: false, nextDistrict: this.props.district});
+    this.setState({isChanging: false, nextDistrict: {value: this.props.districtName}});
   },
   districtSet() {
-    const {districtSet, districts} = this.props;
-    const district = FindByName(districts, this.state.nextDistrict);
-    this.props.districtSet(district.DistrictID);
+    this.props.DistrictSet(this.state.nextDistrict.key);
     this.setState({isChanging: false});
   },
   selectDistrict(val) {
@@ -38,25 +43,26 @@ const DistrictSetter = React.createClass({
     this.setState({isChanging: true});
   },
   render() {
-    const {canChangeDistrict, district, districtsNames, isSettingDistrict} = this.props;
+    const {canChangeDistrict, districtName, districts, isFetchingDistrict, isSettingDistrict} = this.props;
     const {isChanging, nextDistrict} = this.state;
-    const showDistrictPicker =  isSettingDistrict || (canChangeDistrict && (!district || isChanging));
-    const isError = this.props.inValidation && !district;
+    const showDistrictPicker =  isSettingDistrict || (canChangeDistrict && (!districtName || isChanging));
+    const isError = this.props.inValidation && !districtName;
 
     return (
       <div>
+        <span>Districts : </span>
         {
-          (district || showDistrictPicker) &&
-          <span>Districts : </span>
+          isFetchingDistrict &&
+          <span>Fetching Districts List...</span>
         }
         {
-          !showDistrictPicker &&
-          <span>{district}</span>
+          !isFetchingDistrict && !showDistrictPicker &&
+          <span>{districtName}</span>
         }
         {
-          showDistrictPicker &&
+          !isFetchingDistrict && showDistrictPicker &&
           <span className={classNaming(styles.districtsWrapper, {[styles.error]: isError})}>
-            <DropdownTypeAhead options={districtsNames} selectVal={this.selectDistrict} val={nextDistrict} />
+            <DropdownTypeAhead options={districts} selectVal={this.selectDistrict} val={nextDistrict.value} />
           </span>
         }
         {
@@ -68,7 +74,7 @@ const DistrictSetter = React.createClass({
           <ButtonWithLoading textBase="Set District" textLoading="Setting District" onClick={this.districtSet} isLoading={isSettingDistrict} styles={{base: styles.normalBtn}} />
         }
         {
-          showDistrictPicker && district &&
+          showDistrictPicker && districtName &&
           <ButtonBase onClick={this.cancelChanging} styles={styles.driverBtn}>Cancel</ButtonBase>
         }
       </div>
@@ -80,15 +86,21 @@ function StateToProps(state, ownProps) {
   const containerID = ownProps.containerID;
   const container = state.app.containers.containers[containerID];
 
-  const {districts} = state.app.districts;
-  const districtsNames = _.map(districts, (district) => (district.Name));
+  const districtsList = state.app.districts.districts;
+  const districts = _.map(districtsList, (district) => {
+    return {
+      key: district.DistrictID,
+      value: district.Name
+    }
+  });
 
   const containerDistrictIDMaybe = container && 
     container.CurrentTrip &&
-    container.CurrentTrip.District && 
+    container.CurrentTrip.District &&
     container.CurrentTrip.District.DistrictID;
 
-  const district = FindByDistrictID(districts, containerDistrictIDMaybe) || {};
+  const district = _.find(districtsList, (district) => (district.DistrictID == containerDistrictIDMaybe));
+  const districtName = district ? district.Name : '';
 
   const canChangeDistrict = container && 
     container.CurrentTrip && 
@@ -96,16 +108,20 @@ function StateToProps(state, ownProps) {
     (container.CurrentTrip.OrderStatus.OrderStatus == 'BOOKED' || container.CurrentTrip.OrderStatus.OrderStatus == 'PREBOOKED');
 
   const isSettingDistrict = container && container.isSettingDistrict;
+  const isFetchingDistrict = state.app.districts.isFetching;
 
   return {
-    district: district.Name,
-    canChangeDistrict, districts, districtsNames, isSettingDistrict,
+    districtName,
+    canChangeDistrict, districts, isFetchingDistrict, isSettingDistrict,
   }
 }
 
 function DispatchToProps(dispatch, ownProps) {
   return {
-    districtSet(districtID) {
+    DistrictsFetch() {
+      dispatch(DistrictsFetch());
+    },
+    DistrictSet(districtID) {
       dispatch(DistrictsActions.districtSet(ownProps.containerID, districtID));
     },
   }

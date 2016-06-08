@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {Link} from 'react-router';
 
 import {AppLoadedActions} from '../../modules';
+import FleetsFetch from '../../modules/drivers/actions/fleetsFetch';
 
 import {Glyph} from '../base';
 import styles from './styles.css';
@@ -56,10 +57,6 @@ const DashboardContainer = React.createClass({
   getInitialState() {
     return {isCompact: true};
   },
-  componentWillMount() {
-    this.props.districtsFetch();
-    this.props.driversFetch();
-  },
   toggleCompact() {
     this.setState({isCompact: !this.state.isCompact});
   },
@@ -81,15 +78,4 @@ const DashboardContainer = React.createClass({
   }
 });
 
-function DispatchToProps(dispatch) {
-  return {
-    districtsFetch() {
-      dispatch(AppLoadedActions.districtsFetch());
-    },
-    driversFetch() {
-      dispatch(AppLoadedActions.driversFetch());
-    },
-  }
-}
-
-export default connect(undefined, DispatchToProps)(DashboardContainer);
+export default DashboardContainer;

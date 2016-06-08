@@ -59,7 +59,7 @@ const Dropdown = React.createClass({
 
 const Options2 = React.createClass({
   handleClick() {
-    this.props.selectVal(this.props.name);
+    this.props.selectVal(this.props.option);
   },
   handleEnter() {
     this.props.setHighlight(this.props.idx);
@@ -149,7 +149,7 @@ const DropdownTypeAhead = React.createClass({
   getFilteredOption() {
     const options = this.props.options;
     const filtered = _.filter(options, (option) => {
-      return option.toLowerCase().indexOf(this.state.temp.toLowerCase()) > -1;
+      return option.value.toLowerCase().indexOf(this.state.temp.toLowerCase()) > -1;
     });
 
     return filtered;
@@ -166,8 +166,7 @@ const DropdownTypeAhead = React.createClass({
     this.setHighlight(this.state.highlight - 1);
   },
   handleSelect(val) {
-    const {selectVal} = this.props;
-    selectVal(val);
+    this.props.selectVal(val);
     this.closeOption();
     this.setState({txt: val});
   },
@@ -175,8 +174,9 @@ const DropdownTypeAhead = React.createClass({
     const {opened} = this.state;
     const optionsComp = _.map(this.getFilteredOption(), (option, idx) => {
       let optionProps = {
-        key: option,
-        name: option,
+        key: option.key,
+        option: option,
+        name: option.value,
         highlight: idx == this.state.highlight,
         idx: idx,
         selectVal: this.handleSelect,
