@@ -191,33 +191,41 @@ const OrderStatusSelect = React.createClass({
 
 export const OrderTable = React.createClass({
   getInitialState() {
-    return {selectedStatus: "SHOW ALL"};
+    return {orderStatus: "SHOW ALL", routeStatus: "SHOW ALL"};
   },
-  pickStatus(val) {
-    this.setState({selectedStatus: val.value});
+  pickStatus(key, val) {
+    this.setState({[key]: val});
   },
   render() {
     let {columns, headers, items, statusList} = this.props;
+    let {orderStatus, routeStatus} = this.state;
     let Header = Rows(React.DOM.thead, BaseHeader, {}, columns, function() {});
     let Body = Rows(React.DOM.tbody, BaseCell, {action: DeleteCellContainer}, columns, function() {});
 
     const filteredItems = _.filter(items, (item) => {
-      return item.status == this.state.selectedStatus;
-    })
+      const matchOrderStatus = orderStatus === "SHOW ALL" || orderStatus === item.orderStatus;
+      const matchRouteStatus = routeStatus === "SHOW ALL" || routeStatus === item.routeStatus;
+
+      return matchOrderStatus && matchRouteStatus;
+    });
 
     const SearchRow = _.map(columns, (column) => {
-      if (column != "status") {
-        return <td key={column} className={styles.td} />;
+      if(column === "orderStatus") {
+        return <OrderStatusSelect key={column} statusList={statusList} statusName={this.state.orderStatus} pickStatus={this.pickStatus.bind(null, column)} />;
       }
 
-      return <OrderStatusSelect key={column} statusList={statusList} statusName={this.state.selectedStatus} pickStatus={this.pickStatus} />
+      if(column === "routeStatus") {
+        return <OrderStatusSelect key={column} statusList={statusList} statusName={this.state.routeStatus} pickStatus={this.pickStatus.bind(null, column)} />;
+      }
+
+      return <td key={column} className={styles.td} />;
     });
 
     return (
       <table className={styles.table}>
         <Header items={headers} />
         <tbody><tr>{SearchRow}</tr></tbody>
-        <Body items={this.state.selectedStatus == "SHOW ALL" ? items : filteredItems} />
+        <Body items={filteredItems} />
       </table>
     );
   }

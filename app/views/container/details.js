@@ -10,11 +10,12 @@ import {OrderTable} from './table';
 
 import styles from './styles.css';
 
-const columns = ['id', 'id2', 'pickup', 'dropoff', 'time', 'CODValue', 'status', 'action'];
+const columns = ['id', 'id2', 'pickup', 'dropoff', 'time', 'CODValue', 'orderStatus', 'routeStatus', 'action'];
+const nonFillColumn = columns.slice(0, columns.length - 1);
 const headers = [{
   id: 'Web Order ID', id2: 'User Order Number',
   pickup: 'Pickup Address', dropoff: 'Dropoff Address',
-  time: 'Pickup Time', status: 'Order Status', action: 'Action',
+  time: 'Pickup Time', orderStatus: 'Order Status',routeStatus: 'Route Status', action: 'Action',
   CODValue: 'COD Value'
 }];
 
@@ -121,7 +122,7 @@ const DetailPage = React.createClass({
             {
               orders.length > 0 &&
               <div>
-                <OrderTable columns={fillAble ? columns : columns.slice(0, columns.length - 1)} headers={headers} items={orders} statusList={statusList} />
+                <OrderTable columns={fillAble ? columns : nonFillColumn} headers={headers} items={orders} statusList={statusList} />
               </div>
             }
           </Page>
@@ -151,7 +152,8 @@ const mapStateToProps = (state, ownProps) => {
     time: (new Date(order.PickupTime)).toString(),
     id3: order.UserOrderID,
     isDeleting: order.isDeleting,
-    status: order.Status,
+    orderStatus: order.OrderStatus.OrderStatus,
+    routeStatus: order.Status,
     CODValue: order.IsCOD ? order.TotalValue : 0,
     DeliveryFee: order.DeliveryFee
   }));
