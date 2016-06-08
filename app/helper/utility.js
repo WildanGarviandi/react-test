@@ -12,14 +12,6 @@ export function UserFullName(user) {
   return '';
 };
 
-export function DriverFullData(driver) {
-  if(driver) {
-    // return `${UserFullName(driver)} / ${}`;
-  }
-
-  return 
-}
-
 export function FleetName(fleet) {
   return fleet && fleet.CompanyDetail ? fleet.CompanyDetail.CompanyName : '';
 };
