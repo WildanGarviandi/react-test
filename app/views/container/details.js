@@ -11,6 +11,7 @@ import {OrderTable} from './table';
 import styles from './styles.css';
 
 const columns = ['id', 'id2', 'pickup', 'dropoff', 'time', 'CODValue', 'status', 'action'];
+const nonFillColumn = columns.slice(0, columns.length - 1);
 const headers = [{
   id: 'Web Order ID', id2: 'User Order Number',
   pickup: 'Pickup Address', dropoff: 'Dropoff Address',
@@ -116,7 +117,7 @@ const DetailPage = React.createClass({
             {
               orders.length > 0 &&
               <div>
-                <OrderTable columns={fillAble ? columns : columns.slice(0,6)} headers={headers} items={orders} statusList={statusList} />
+                <OrderTable columns={fillAble ? columns : nonFillColumn} headers={headers} items={orders} statusList={statusList} />
               </div>
             }
           </Page>
