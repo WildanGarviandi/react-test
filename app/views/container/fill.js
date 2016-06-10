@@ -19,12 +19,13 @@ import {ButtonBase, ButtonWithLoading, Dropdown, DropdownTypeAhead, Modal, Page,
 import {OrderTable2} from './table';
 import Filter from './accordion';
 
-const columns = ['check', 'id', 'id2', 'pickup', 'dropoff', 'time'];
+const columns = ['check', 'id', 'id2', 'pickup', 'dropoff', 'time', 'CODValue'];
 const headers = [{
   check: '',
   id: 'Web Order ID', id2: 'User Order Number',
   pickup: 'Pickup Address', dropoff: 'Dropoff Address',
-  time: 'Pickup Time', status: 'Status'
+  time: 'Pickup Time', status: 'Status',
+  CODValue: 'COD Value',
 }];
 
 import styles from './styles.css';
@@ -38,7 +39,8 @@ const PrepareOrder = (order) => {
     dropoff: order.DropoffAddress.Address1,
     time: (new Date(order.PickupTime)).toString(),
     checked: order.checked,
-    status: order.status
+    status: order.status,
+    CODValue: order.IsCOD ? order.TotalValue : 0,
   }
 }
 
