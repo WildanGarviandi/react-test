@@ -194,7 +194,7 @@ export const OrderTable = React.createClass({
     return {orderStatus: "SHOW ALL", routeStatus: "SHOW ALL"};
   },
   pickStatus(key, val) {
-    this.setState({[key]: val});
+    this.setState({[key]: val.value});
   },
   render() {
     let {columns, headers, items, statusList} = this.props;
