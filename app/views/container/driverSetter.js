@@ -34,7 +34,7 @@ const DriverSetter = React.createClass({
     });
   },
   render() {
-    const {canPickFleet, driverName, drivers, fleetName, fleets, isFetchingDriver, isFetchingFleet, isSettingDriver} = this.props;
+    const {canPickFleet, driverName, drivers, driversFleetName, fleetName, fleets, isFetchingDriver, isFetchingFleet, isSettingDriver} = this.props;
     const {selectedDriver} = this.state;
 
     return (
@@ -67,7 +67,7 @@ const DriverSetter = React.createClass({
           }
           {
             !isFetchingFleet && !isFetchingDriver && driverName &&
-            <span>{driverName} / {fleetName}</span>
+            <span>{driverName} / {driversFleetName}</span>
           }
           {
             !isFetchingFleet && !isFetchingDriver && !driverName &&
@@ -115,13 +115,14 @@ function StateToProps(state, ownProps) {
   const driverName =  UtilHelper.UserFullName(driver);
   const fleet = fleetList.dict[fleetDrivers.active];
   const fleetName = UtilHelper.FleetName(fleet);
+  const driversFleetName = container.CurrentTrip.Driver && container.CurrentTrip.Driver.Driver.FleetManager.CompanyDetail.CompanyName;
   const {isSettingDriver} = container;
 
   const canPickFleet = state.app.userLogged.isCentralHub;
 
   return {
     canPickFleet,
-    driverName, drivers, fleetName, fleets,
+    driverName, drivers, driversFleetName, fleetName, fleets,
     isFetchingDriver, isFetchingFleet,
     isSettingDriver,
   };

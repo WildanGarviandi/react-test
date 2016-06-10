@@ -110,8 +110,6 @@ const DashboardContainer = React.createClass({
 function DispatchToProps(dispatch) {
   return {
     initialLoad() {
-      dispatch(AppLoadedActions.districtsFetch());
-      dispatch(AppLoadedActions.driversFetch());
       dispatch(FetchStatusList());
     },
   }
