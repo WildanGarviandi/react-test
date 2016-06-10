@@ -152,7 +152,7 @@ const mapStateToProps = (state, ownProps) => {
     time: (new Date(order.PickupTime)).toString(),
     id3: order.UserOrderID,
     isDeleting: order.isDeleting,
-    orderStatus: order.OrderStatus.OrderStatus,
+    orderStatus: (order.OrderStatus && order.OrderStatus.OrderStatus) || '',
     routeStatus: order.Status,
     CODValue: order.IsCOD ? order.TotalValue : 0,
     DeliveryFee: order.DeliveryFee
