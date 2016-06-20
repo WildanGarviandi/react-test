@@ -6,7 +6,8 @@ const initialUserState = {
   user: {},
   token: localStorage.token,
   userID: localStorage.userID,
-  hubID: localStorage.hubID
+  hubID: localStorage.hubID,
+  isCentralHub: false,
 };
 
 export default (state = initialUserState, action) => {
@@ -30,7 +31,10 @@ export default (state = initialUserState, action) => {
     case actionTypes.AUTH_VALID:
       if(!action.hub) return;
       localStorage.hubID = action.hub.HubID;
-      return _.assign({}, state, {hubID: action.hub.HubID});
+      return _.assign({}, state, {
+        hubID: action.hub.HubID,
+        isCentralHub: "CENTRAL" === action.hub.Type,
+      });
     default:
       return state;
   }

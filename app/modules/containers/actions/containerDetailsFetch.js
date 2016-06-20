@@ -14,7 +14,8 @@ export default (containerID) => {
           const response = resp.data;
           var orders = _.map(response.routes, (route) => {
             return _.assign({}, route.UserOrder, {
-              Status: route.OrderStatus.OrderStatus
+              Status: route.OrderStatus.OrderStatus,
+              DeliveryFee: route.DeliveryFee,
             });
           });
 

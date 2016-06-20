@@ -1,6 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {ContainersAction} from '../../modules';
+import {initialLoad as InitialLoad} from '../../modules/containers/actions/containersFetch';
 import {Collection, Pagination, ButtonBase, ButtonAction} from '../base';
 import {BaseCellGray, BaseHeader, BaseRow, SearchCell} from './table';
 import ActiveCell from './activeCell';
@@ -40,7 +41,7 @@ const ActionCell = React.createClass({
 
 const ContainerTable = React.createClass({
   componentDidMount() {
-    this.props.setLimit(100);
+    this.props.initialLoad();
   },
   setCurrentPage(x) {
     this.props.setCurrentPage(x);
@@ -110,7 +111,8 @@ const ContainerTable = React.createClass({
 });
 
 const stateToProps = (state) => {
-  const {containers, isFetching, shown, limit, currentPage, total} = state.app.containers;
+  const {containers, isFetching, shown, total} = state.app.containers;
+  const {currentPage, limit} = state.app.containerList.myContainer;
   return {
     containers: _.chain(containers).map((container) => {
       if(!container.CurrentTrip) return _.assign({}, container, {
@@ -148,7 +150,10 @@ const dispatchToProps = (dispatch) => {
     },
     setCurrentPage: function(page) {
       dispatch(ContainersAction.setCurrentPage(page));
-    },    
+    },
+    initialLoad: function() {
+      dispatch(InitialLoad());
+    },
   }
 }
 

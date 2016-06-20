@@ -3,8 +3,10 @@ import {connect} from 'react-redux';
 import {Link} from 'react-router';
 
 import {AppLoadedActions} from '../../modules';
+import FetchStatusList from '../../modules/containers/actions/statusFetch';
 
 import {Glyph} from '../base';
+import Accordion from '../base/accordion';
 import styles from './styles.css';
 import _ from 'underscore';
 
@@ -18,6 +20,31 @@ const MenuItem = ({active, children, to}) => {
     </li>
   );
 };
+
+const AccordionMenu = React.createClass({
+  render() {
+    const {accordionAction, accordionState, activeMenuIdx, activeMenuTarget, iconName, iconTitle} = this.props;
+    const isActive = _.includes(activeMenuTarget, activeMenuIdx);
+
+    const chevronStyle = classnaming('menuGlyph', 'chevron');
+    const chevronType = accordionState === 'expanded' ? 'chevron-down' : 'chevron-up';
+    const className = classnaming('menuItem', 'accItem', {active: isActive});
+
+    return (
+      <div className={styles.accWrapper}>
+        <div onClick={accordionAction.toggleView} className={className}>
+          <Glyph className={styles.menuGlyph} name={iconName}/>
+          <Glyph className={chevronStyle} name={chevronType}/>
+          <span>{iconTitle}</span>
+        </div>
+        {
+          accordionState === 'expanded' &&
+          <div className={styles.menuAccordion}>{this.props.children}</div>
+        }
+      </div>
+    );
+  }
+})
 
 const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact}) => {
   return (
@@ -57,8 +84,7 @@ const DashboardContainer = React.createClass({
     return {isCompact: true};
   },
   componentWillMount() {
-    this.props.districtsFetch();
-    this.props.driversFetch();
+    this.props.initialLoad();
   },
   toggleCompact() {
     this.setState({isCompact: !this.state.isCompact});
@@ -83,11 +109,8 @@ const DashboardContainer = React.createClass({
 
 function DispatchToProps(dispatch) {
   return {
-    districtsFetch() {
-      dispatch(AppLoadedActions.districtsFetch());
-    },
-    driversFetch() {
-      dispatch(AppLoadedActions.driversFetch());
+    initialLoad() {
+      dispatch(FetchStatusList());
     },
   }
 }

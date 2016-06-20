@@ -4,18 +4,18 @@ import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
 import {ContainerDetailsActions, StatusList} from '../../modules';
 import districtsFetch from '../../modules/districts/actions/districtsFetch';
-import {ButtonBase, ButtonWithLoading, DropdownTypeAhead, Modal, Page} from '../base';
+import {ButtonBase, ButtonWithLoading, Modal, Page} from '../base';
 import DistrictAndDriver from './districtAndDriver';
 import {OrderTable} from './table';
 
 import styles from './styles.css';
 
-const columns = ['id', 'id2', 'pickup', 'dropoff', 'time', 'CODValue', 'status', 'action'];
+const columns = ['id', 'id2', 'pickup', 'dropoff', 'time', 'CODValue', 'orderStatus', 'routeStatus', 'action'];
 const nonFillColumn = columns.slice(0, columns.length - 1);
 const headers = [{
   id: 'Web Order ID', id2: 'User Order Number',
   pickup: 'Pickup Address', dropoff: 'Dropoff Address',
-  time: 'Pickup Time', status: 'Order Status', action: 'Action',
+  time: 'Pickup Time', orderStatus: 'Order Status',routeStatus: 'Route Status', action: 'Action',
   CODValue: 'COD Value'
 }];
 
@@ -78,7 +78,7 @@ const DetailPage = React.createClass({
     }
   },
   render() {
-    const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, emptying, fillAble, hasDriver, isFetching, orders, reusable, statusList, TotalCODValue, CODCount} = this.props;
+    const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, emptying, fillAble, hasDriver, isFetching, orders, reusable, statusList, TotalCODValue, CODCount, totalDeliveryFee} = this.props;
 
     let messages = [];
     if(this.state.showModal && emptying && !emptying.isInProcess && !emptying.isSuccess && emptying.error) {
@@ -95,7 +95,11 @@ const DetailPage = React.createClass({
           <h3>Fetching Container Details...</h3>
         }
         {
-          !isFetching &&
+          this.props.notFound && !isFetching &&
+          <h3>Failed Fetching Container Details</h3>
+        }
+        {
+          !this.props.notFound && !isFetching &&
           <Page title={'Container ' + container.ContainerNumber}>
             {messageModal}
             <a href="javascript:;" onClick={backToContainer}>{'<<'} Back to Container List</a>
@@ -113,6 +117,7 @@ const DetailPage = React.createClass({
             }
             <DistrictAndDriver containerID={container.ContainerID} show={orders.length > 0} />
             <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>Total {orders.length} items</span>
+            <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>Total Delivery Fee Rp {totalDeliveryFee || 0}</span>
             <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>Total COD Value Rp {TotalCODValue},- ({CODCount} items)</span>
             {
               orders.length > 0 &&
@@ -147,11 +152,17 @@ const mapStateToProps = (state, ownProps) => {
     time: order.PickupTime && (new Date(order.PickupTime)).toString(),
     id3: order.UserOrderID,
     isDeleting: order.isDeleting,
-    status: order.Status,
-    CODValue: order.IsCOD ? order.TotalValue : 0
+    orderStatus: (order.OrderStatus && order.OrderStatus.OrderStatus) || '',
+    routeStatus: order.Status,
+    CODValue: order.IsCOD ? order.TotalValue : 0,
+    DeliveryFee: order.DeliveryFee
   }));
 
   const CODOrders = _.filter(containerOrders, (order) => order.IsCOD);
+
+  if (!container.ContainerNumber) {
+    return {notFound: true, isFetching};
+  }
 
   return {
     orders: orders,
@@ -162,14 +173,16 @@ const mapStateToProps = (state, ownProps) => {
     emptying: emptying || {},
     canDeassignDriver: (container.CurrentTrip && container.CurrentTrip.Driver && container.CurrentTrip.OrderStatus.OrderStatusID == 2) || false,
     driverState: {
-      isDeassigning: drivers.isDeassigning,
-      isDeassigned: drivers.isDeassigned,
-      deassignError: drivers.deassignError,
-      isPicking: drivers.isPicking,
-      isPicked: drivers.isPicked,
-      error: drivers.error,
+      isDeassigning: state.app.driversStore.driverDeassignment,
+      isPicking: state.app.driversStore.driverList.isLoading,
     },
-    statusList: _.chain(statusList).map((key, val) => [val, key]).sortBy((arr) => (arr[1])).map((arr) => (arr[0])).value(),
+    statusList: _.chain(statusList)
+      .map((key, val) => ({key: key, value: val}))
+      .sortBy((arr) => (arr.key))
+      .value(),
+    totalDeliveryFee: _.reduce(orders, (total, order) => {
+      return total + order.DeliveryFee;
+    }, 0),
     TotalCODValue: _.reduce(CODOrders, (sum, order) => sum + order.TotalValue, 0),
     CODCount: CODOrders.length,
   }

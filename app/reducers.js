@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { combineReducers } from 'redux';
 import authReducers from './modules/auth/reducers';
 import containersReducers from './modules/containers/reducers';
@@ -9,9 +8,10 @@ import modalsReducer from './modules/modals/reducers';
 export default combineReducers({ 
   userLogged: authReducers,
   broadcast: containersReducers.broadcast,
+  containerList: containersReducers.containerList,
   containers: containersReducers.containers,
   ordersPrepared: containersReducers.ordersPrepared,
   districts: districtsReducers,
-  drivers: drivers,
+  driversStore: drivers,
   modals: modalsReducer,
 });

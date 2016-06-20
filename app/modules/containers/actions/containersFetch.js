@@ -24,17 +24,29 @@ export const setStatus = (status, statusName) => {
   };
 };
 
+export const setReceived = () => {
+  return {type: "RECEIVED"};
+}
+
+export const initialLoad = () => {
+  return (dispatch) => {
+    dispatch({type: actionTypes.CONTAINERS_SET_STATUS, status: [0], name: 'SHOW ALL'});
+    dispatch({type: actionTypes.CONTAINERS_SET_LIMIT, limit: 100});
+    dispatch(fetchContainers());
+  }
+}
+
 export const fetchContainers = () => {
   return (dispatch, getState) => {
-    const {userLogged, containers} = getState().app;
+    const {userLogged, containers, containerList} = getState().app;
     const {token, hubID} = userLogged;
-    const {currentPage, limit, status} = containers;
+    const {currentPage, limit, status} = containerList.myContainer;
 
     const query = {
       hubID: hubID,
       limit: limit,
       offset: (currentPage-1)*limit,
-      statusID: status
+      statusID: status,
     }
 
     dispatch({ type: actionTypes.CONTAINERS_FETCH_START, currentPage: currentPage, limit: limit });

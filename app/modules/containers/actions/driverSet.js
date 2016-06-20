@@ -13,6 +13,11 @@ export default (containerID, driverID) => {
     }
 
     const container = containers.containers[containerID];
+    if(!driverID) {
+      dispatch(ModalActions.addError('Please pick avalaible driver'));
+      return;
+    }
+
     if(!(container && container.CurrentTrip && container.CurrentTrip.District)) {
       dispatch(ModalActions.addError('Select district first'));
       return;

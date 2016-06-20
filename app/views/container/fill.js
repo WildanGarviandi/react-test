@@ -15,7 +15,7 @@ import ordersPrepareIDs from '../../modules/containers/actions/ordersPrepareIDs'
 import ordersPrepareLimit from '../../modules/containers/actions/ordersPrepareLimit';
 import orderToggle from '../../modules/containers/actions/orderToggle';
 import {containerDistrictPick, containerDistrictReset} from '../../modules/containers/constants';
-import {ButtonBase, ButtonWithLoading, Dropdown, DropdownTypeAhead, Modal, Page, Pagination} from '../base';
+import {ButtonBase, ButtonWithLoading, Dropdown, Modal, Page, Pagination} from '../base';
 import {OrderTable2} from './table';
 import Filter from './accordion';
 
@@ -56,7 +56,13 @@ const ResultModal = React.createClass({
         </div>
         <div>
           <span>Failed to put into container: ({failedRes.length} items)</span>
-          <div>{_.map(failedRes, (res) => (res.orderNumber)).join(' ')}</div>
+          <div>
+          {
+            _.map(failedRes, (res) => {
+              return <div>{res.orderNumber}: {res.error}</div>;
+            })
+          }
+          </div>
         </div>
         <ButtonBase styles={styles.modalBtn} onClick={this.props.closeModal}>OK</ButtonBase>
       </div>
