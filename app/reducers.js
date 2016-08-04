@@ -4,6 +4,7 @@ import containersReducers from './modules/containers/reducers';
 import districtsReducers from './modules/districts/reducers';
 import drivers from './modules/drivers/reducers';
 import modalsReducer from './modules/modals/reducers';
+import orders from './modules/orders/reducers';
 
 export default combineReducers({ 
   userLogged: authReducers,
@@ -14,4 +15,5 @@ export default combineReducers({
   districts: districtsReducers,
   driversStore: drivers,
   modals: modalsReducer,
+  orders,
 });

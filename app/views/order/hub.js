@@ -250,7 +250,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(pagedOrdersLimit(limit));
     },
     setPage: function(page) {
-      console.log('!');
       dispatch(pagedOrdersPage(page));
     },
     getContainers: function() {

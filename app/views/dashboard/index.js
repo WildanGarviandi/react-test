@@ -27,7 +27,7 @@ const AccordionMenu = React.createClass({
     const isActive = _.includes(activeMenuTarget, activeMenuIdx);
 
     const chevronStyle = classnaming('menuGlyph', 'chevron');
-    const chevronType = accordionState === 'expanded' ? 'chevron-down' : 'chevron-up';
+    const chevronType = accordionState === 'expanded' ? 'chevron-up' : 'chevron-down';
     const className = classnaming('menuItem', 'accItem', {active: isActive});
 
     return (
@@ -52,10 +52,30 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact}) => {
       <h4 className={styles.menuTitle}>Etobee Hub</h4>
       <h4 className={styles.compactTitle}>EHub</h4>
       <ul className={styles.menuList}>
-        <MenuItem active={activeMenuIdx == 0} to={'/container'}>
-          <Glyph className={styles.menuGlyph} name={'briefcase'}/>
-          <span>Container</span>
-        </MenuItem>
+        <Accordion initialState={'collapsed'}>
+          <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[0,1]} iconName={'briefcase'} iconTitle={'Container'}>
+            <MenuItem active={activeMenuIdx == 0} to={'/container'}>
+              <Glyph className={styles.menuGlyph} name={'briefcase'}/>
+              <span>My Container</span>
+            </MenuItem>
+            <MenuItem active={activeMenuIdx == 1} to={'/received'}>
+              <Glyph className={styles.menuGlyph} name={'file'}/>
+              <span>Received Container</span>
+            </MenuItem>
+          </AccordionMenu>
+        </Accordion>
+        <Accordion initialState={'collapsed'}>
+          <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[2,3]} iconName={'list-alt'} iconTitle={'Orders'}>
+            <MenuItem active={activeMenuIdx == 2} to={'/pickupOrders'}>
+              <Glyph className={styles.menuGlyph} name={'alert'}/>
+              <span>Pickup Orders</span>
+            </MenuItem>
+            <MenuItem active={activeMenuIdx == 3} to={'/orders'}>
+              <Glyph className={styles.menuGlyph} name={'transfer'}/>
+              <span>Received Orders</span>
+            </MenuItem>
+          </AccordionMenu>
+        </Accordion>
       </ul>
       <button className={styles.toggleMenu} onClick={toggleCompact}>
         <Glyph className={styles.glyphBackward} name={'backward'}/>
@@ -69,7 +89,7 @@ const DashboardContent = ({children}) => {
   return (<div className={styles.content}>{children}</div>);
 }
 
-const menuPaths = ['/container'];
+const menuPaths = ['/container', '/lala', '/pickupOrders'];
 function GetActiveMenuIdx(path) {
   let fpath = _.find(menuPaths, (menu) => (path.indexOf(menu) > -1));
   let idx = menuPaths.indexOf(fpath);

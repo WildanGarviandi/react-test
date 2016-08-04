@@ -217,4 +217,25 @@ const DropdownTypeAhead = React.createClass({
   }
 });
 
-export { Dropdown, DropdownTypeAhead };
+const DropdownWithState = React.createClass({
+  getInitialState() {
+    return {currentVal: this.props.initialValue};
+  },
+  handleSelect(val) {
+    this.setState({
+      currentVal: val.value,
+    }, () => {
+      this.props.handleSelect(val);
+    });
+  },
+  render() {
+    const {options} = this.props;
+    const {currentVal} = this.state;
+
+    return (
+      <DropdownTypeAhead options={options} selectVal={this.handleSelect} val={currentVal} />
+    );
+  }
+});
+
+export { Dropdown, DropdownTypeAhead, DropdownWithState };

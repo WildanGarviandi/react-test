@@ -7,7 +7,7 @@ const CheckBox = React.createClass({
     onChange(e.target.checked);
   },
   render() {
-    let { checked, label, name, styles } = this.props;
+    let { checked, label, name, styles = {} } = this.props;
 
     return (
       <span className={styles.container}>
@@ -42,4 +42,19 @@ const Input = React.createClass({
   }
 });
 
-export {CheckBox, Input};
+const InputWithState = React.createClass({
+  getInitialState() {
+    return {currentText: ""};
+  },
+  setText(val) {
+    this.setState({currentText: val});
+  },
+  handleSelect() {
+    this.props.handleSelect(this.state.currentText);
+  },
+  render() {
+    return <Input {...this.props} onChange={this.setText} onEnterKeyPressed={this.handleSelect} />
+  }
+})
+
+export {CheckBox, Input, InputWithState};
