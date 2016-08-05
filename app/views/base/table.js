@@ -1,6 +1,6 @@
+import lodash from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import _ from 'underscore';
 import * as utils from './utils';
 import {InputText} from './input';
 
@@ -145,3 +145,21 @@ function Rows(BaseComponent, BaseCell, CustomCell, columns, actionFn, rowClassNa
 }
 
 export { Tables, Rows };
+
+export function Headers(conf, columns) {
+  return lodash.map(columns, (column) => {
+    return {keyword: column, type: conf[column].headerType, header: conf[column]};
+  });
+}
+
+export function Filters(conf, columns) {
+  return lodash.map(columns, (column) => {
+    return {keyword: column, type: conf[column].filterType};
+  });
+}
+
+export function Body(conf, columns) {
+  return lodash.map(columns, (column) => {
+    return {keyword: column, type: conf[column].cellType};
+  });
+}

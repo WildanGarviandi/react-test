@@ -9,7 +9,9 @@ import ContainerFillPage from './views/container/fill';
 import ContainerQRCodePage from './views/container/qrcode';
 import DashboardPage from './views/dashboard';
 import LoginPage from './views/login';
+import OrderDetailsPage from './views/order/orderDetails';
 import PickupOrdersPage from './views/order/pickupOrders';
+import ReceivedOrdersPage from './views/order/receivedOrders';
 
 function requireAuth(nextState, replace, callback) {
   checkAuth(store).then(function(result) {
@@ -33,7 +35,9 @@ export default (
         <Route path="/container" component={ContainerPage} onEnter={requireAuth}/>
         <Route path="/container/:id" component={ContainerDetailsPage} onEnter={requireAuth}/>
         <Route path="/container/:id/fill" component={ContainerFillPage} onEnter={requireAuth}/>
+        <Route path="/orderDetails/:id" component={OrderDetailsPage} onEnter={requireAuth}/>
         <Route path="/pickupOrders" component={PickupOrdersPage} onEnter={requireAuth}/>
+        <Route path="/receivedOrders" component={ReceivedOrdersPage} onEnter={requireAuth}/>
       </Route>
       <Route path="/qrcode/:id" component={ContainerQRCodePage} />
       <Route path="/login" component={LoginPage} />

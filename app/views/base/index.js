@@ -29,7 +29,7 @@ function ButtonAction(props) {
 
 const ButtonWithLoading = React.createClass({
   render() {
-    const {textBase, textLoading, isLoading, onClick, styles, base} = this.props;
+    const {textBase, textLoading, isLoading, onClick, styles = {}, base} = this.props;
     const btnClass = classNaming(baseStyle.btnBase, {[baseStyle.loading]: isLoading}, styles.base);
     const spinnerClass = classNaming(baseStyle.spinner, styles.spinner);
 

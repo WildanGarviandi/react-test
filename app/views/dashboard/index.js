@@ -70,7 +70,7 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact}) => {
               <Glyph className={styles.menuGlyph} name={'alert'}/>
               <span>Pickup Orders</span>
             </MenuItem>
-            <MenuItem active={activeMenuIdx == 3} to={'/orders'}>
+            <MenuItem active={activeMenuIdx == 3} to={'/receivedOrders'}>
               <Glyph className={styles.menuGlyph} name={'transfer'}/>
               <span>Received Orders</span>
             </MenuItem>
@@ -89,7 +89,7 @@ const DashboardContent = ({children}) => {
   return (<div className={styles.content}>{children}</div>);
 }
 
-const menuPaths = ['/container', '/lala', '/pickupOrders'];
+const menuPaths = ['/container', '/lala', '/pickupOrders', '/receivedOrders'];
 function GetActiveMenuIdx(path) {
   let fpath = _.find(menuPaths, (menu) => (path.indexOf(menu) > -1));
   let idx = menuPaths.indexOf(fpath);

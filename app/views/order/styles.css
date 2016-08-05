@@ -75,3 +75,56 @@
   float: none;
   margin-bottom: 0.5em;
 }
+
+.finderWrapper {
+  position: absolute;
+  background-color: #4f4335;
+  top: -4px;
+  right: 130px;
+  border-radius: 5px;
+  padding: 6px;
+  color: #fff;
+}
+
+.finderLabel {
+  padding-right: 5px;
+  font-size: 12px;
+}
+
+.itemLabel {
+  display: block;
+  padding: 5px;
+  width: 150px;
+  float: left;
+}
+
+.itemValue {
+  padding: 5px;
+  display: block;
+  margin-left: 150px;
+}
+
+.detailWrapper {
+  border: solid 1px #ccc;
+  border-radius: 5px;
+  width: 48%;
+  padding: 5px;
+  float: left;
+  margin-bottom: 15px;
+}
+
+.detailWrapper.right {
+  float: right;
+}
+
+.detailsPanel {
+  position: relative;
+}
+
+.weightEditBtn {
+  display: inline-block;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 10px;
+}

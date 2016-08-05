@@ -1,8 +1,9 @@
 import lodash from 'lodash';
 import React from 'react';
 import {Body} from '../base/table';
-import {conf, pickupOrdersColumns} from './ordersColumns';
+import {conf, receivedOrdersColumns} from './ordersColumns';
 import BodyRow, {CheckBoxCell, LinkCell, TextCell} from '../base/cells';
+import {ButtonWithLoading} from '../base';
 
 function BodyComponent(type, keyword, item) {
   switch(type) {
@@ -18,6 +19,21 @@ function BodyComponent(type, keyword, item) {
       return <LinkCell text={item[keyword]} onClick={() => (3)} />
     }
 
+    case "Actions": {
+      const missingActions = {
+        textBase: "Set as missing",
+        textLoading: "Consolidating Orders",
+        isLoading: false,
+        onClick: () => null,
+      }
+
+      return (
+        <div style={{textAlign: 'center'}}>
+          <ButtonWithLoading {...missingActions} />
+        </div>
+      );
+    }
+
     default: {
       return null;
     }
@@ -25,7 +41,7 @@ function BodyComponent(type, keyword, item) {
 }
 
 function PickupOrdersBody({items}) {
-  const body = Body(conf, pickupOrdersColumns);
+  const body = Body(conf, receivedOrdersColumns);
   return <BodyRow columns={body} items={items} components={BodyComponent} />
 }
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {conf, pickupOrdersColumns} from './ordersColumns';
+import {conf, receivedOrdersColumns} from './ordersColumns';
 import {Filters} from '../base/table';
 import FiltersRow, {StatusFilter, TextFilter} from '../base/filters';
 import OrdersPickupActions from '../../modules/orders/actions/pickup';
@@ -33,7 +33,7 @@ function FiltersComponents(type, item) {
 }
 
 function PickupOrdersFilter() {
-  const filters = Filters(conf, pickupOrdersColumns);
+  const filters = Filters(conf, receivedOrdersColumns);
   return <FiltersRow items={filters} components={FiltersComponents} />
 }
 

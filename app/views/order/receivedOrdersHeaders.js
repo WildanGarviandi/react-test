@@ -1,5 +1,5 @@
 import React from 'react';
-import {conf, pickupOrdersColumns} from './ordersColumns';
+import {conf, receivedOrdersColumns} from './ordersColumns';
 import {Headers} from '../base/table';
 import HeadersRow from '../base/headers';
 import {CheckBox} from '../base/input';
@@ -17,7 +17,7 @@ function HeaderComponent(type, item) {
 }
 
 function PickupOrdersHeaders() {
-  const headers = Headers(conf, pickupOrdersColumns);
+  const headers = Headers(conf, receivedOrdersColumns);
   return <HeadersRow items={headers} components={HeaderComponent} />
 }
 
