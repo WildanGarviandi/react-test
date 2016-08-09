@@ -8,8 +8,10 @@ export const conf = {
   NextDestination: {filterType: "String", title: "Next Destination", cellType: "String"},
   OrderStatus: {filterType: "StatusDropdown", title: "Order Status", cellType: "String"},
   PickupAddress: {filterType: "String", title: "Pickup Address", cellType: "String"},
-  PickupTime: {filterType:"String", title: "Pickup Time", cellType: "String"},
+  PickupTime: {title: "Pickup Time", cellType: "String"},
   RouteStatus: {filterType: "StatusDropdown", title: "Route Status", cellType: "String"},
+  UserOrderNumber: {filterType: "String", title: "AWB", cellType: "Link"},
+  WebOrderID: {filterType: "String", title: "Web Order ID", cellType: "String"},
   ZipCode: {filterType: "String", title: "Zip Code"},
 }
 

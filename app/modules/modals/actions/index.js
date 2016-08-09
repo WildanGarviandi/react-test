@@ -10,10 +10,14 @@ function addError(errorMessage) {
   });
 }
 
+function addMessage(message) {
+  return addModal({message});
+}
+
 function closeModal() {
   return {type: modalAction.CLOSE_MODAL};
 }
 
 export default {
-  addError, addModal, closeModal,
+  addError, addMessage, addModal, closeModal,
 };

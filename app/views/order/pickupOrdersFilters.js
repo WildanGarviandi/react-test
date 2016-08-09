@@ -3,17 +3,44 @@ import {connect} from 'react-redux';
 import {conf, pickupOrdersColumns} from './ordersColumns';
 import {Filters} from '../base/table';
 import FiltersRow, {StatusFilter, TextFilter} from '../base/filters';
-import OrdersPickupActions from '../../modules/orders/actions/pickup';
+import * as OrdersPickup from '../../modules/orders/actions/pickup';
 
 function mapDispatchToPickupOrders(dispatch) {
   return {
     filterFunc: function(filter) {
-      OrdersPickupActions.updateFilter(filter);
+      let newFilter = {};
+
+      switch(filter.key) {
+        case "UserOrderNumber": {
+          newFilter = {userOrderNumber: filter.val};
+          break;
+        }
+
+        case "PickupAddress": {
+          newFilter = {pickup: filter.val};
+          break;
+        }
+
+        case "ID": {
+          newFilter = {userOrderNumber: filter.val};
+          break;
+        }
+      }
+
+      dispatch(OrdersPickup.setFilter(newFilter));
     }
   }
 }
 
-const PickupOrdersStatusFilter = connect(undefined, mapDispatchToPickupOrders)(StatusFilter);
+function statusDispatch(dispatch) {
+  return {
+    filterFunc: function(filter) {
+      dispatch(OrdersPickup.setFilter({status: filter.val.key}));
+    }
+  }
+}
+
+const PickupOrdersStatusFilter = connect(undefined, statusDispatch)(StatusFilter);
 const PickupOrdersTextFilter = connect(undefined, mapDispatchToPickupOrders)(TextFilter);
 
 function FiltersComponents(type, item) {

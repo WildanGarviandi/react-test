@@ -1,17 +1,29 @@
 import lodash from 'lodash';
 import React from 'react';
+import {connect} from 'react-redux';
 import {Body} from '../base/table';
 import {conf, pickupOrdersColumns} from './ordersColumns';
 import BodyRow, {CheckBoxCell, LinkCell, TextCell} from '../base/cells';
+import * as OrdersPickup from '../../modules/orders/actions/pickup';
 
-function BodyComponent(type, keyword, item) {
+function mapDispatchToCheckBox(dispatch, ownProps) {
+  return {
+    onChange: function(val) {
+      dispatch(OrdersPickup.setSelected([ownProps.index], val));
+    }
+  }
+}
+
+const PickupOrdersCheckBox = connect(undefined, mapDispatchToCheckBox)(CheckBoxCell);
+
+function BodyComponent(type, keyword, item, index) {
   switch(type) {
     case "String": {
       return <TextCell text={item[keyword]} />
     }
 
     case "Checkbox": {
-      return <CheckBoxCell checked={item[keyword]} />
+      return <PickupOrdersCheckBox checked={item[keyword]} index={index} />
     }
 
     case "Link": {

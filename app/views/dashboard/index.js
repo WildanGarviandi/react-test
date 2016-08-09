@@ -53,18 +53,6 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact}) => {
       <h4 className={styles.compactTitle}>EHub</h4>
       <ul className={styles.menuList}>
         <Accordion initialState={'collapsed'}>
-          <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[0,1]} iconName={'briefcase'} iconTitle={'Container'}>
-            <MenuItem active={activeMenuIdx == 0} to={'/container'}>
-              <Glyph className={styles.menuGlyph} name={'briefcase'}/>
-              <span>My Container</span>
-            </MenuItem>
-            <MenuItem active={activeMenuIdx == 1} to={'/received'}>
-              <Glyph className={styles.menuGlyph} name={'file'}/>
-              <span>Received Container</span>
-            </MenuItem>
-          </AccordionMenu>
-        </Accordion>
-        <Accordion initialState={'collapsed'}>
           <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[2,3]} iconName={'list-alt'} iconTitle={'Orders'}>
             <MenuItem active={activeMenuIdx == 2} to={'/pickupOrders'}>
               <Glyph className={styles.menuGlyph} name={'alert'}/>

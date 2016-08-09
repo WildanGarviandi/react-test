@@ -36,7 +36,7 @@ export default (
         <Route path="/container/:id" component={ContainerDetailsPage} onEnter={requireAuth}/>
         <Route path="/container/:id/fill" component={ContainerFillPage} onEnter={requireAuth}/>
         <Route path="/orderDetails/:id" component={OrderDetailsPage} onEnter={requireAuth}/>
-        <Route path="/pickupOrders" component={PickupOrdersPage} onEnter={requireAuth}/>
+        <Route path="/pickupOrders" component={PickupOrdersPage} onEnter={requireAuth} />
         <Route path="/receivedOrders" component={ReceivedOrdersPage} onEnter={requireAuth}/>
       </Route>
       <Route path="/qrcode/:id" component={ContainerQRCodePage} />

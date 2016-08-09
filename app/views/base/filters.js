@@ -5,24 +5,21 @@ import {InputWithState} from './input';
 import StatusDropdown from './statusDropdown';
 import styles from './table.css';
 
-function DropdownFilterFunc(keyword, filterFunc) {
+function HandleFilter(keyword, filterFunc) {
   return (val) => {
-    filterFunc({[keyword]: val.value});
+    filterFunc({
+      key: keyword,
+      val: val
+    });
   };
 }
 
-function TextFilterFunc(keyword, filterFunc) {
-  return (val) => {
-    filterFunc({[keyword]: val});
-  }
-}
-
 export function StatusFilter({keyword, filterFunc}) {
-  return <StatusDropdown handleSelect={DropdownFilterFunc(keyword, filterFunc)} />
+  return <StatusDropdown handleSelect={HandleFilter(keyword, filterFunc)} />
 }
 
 export function TextFilter({keyword, filterFunc}) {
-  return <InputWithState styles={{input: styles.searchInput}} base={{type:"text"}} handleSelect={TextFilterFunc(keyword, filterFunc)} />;
+  return <InputWithState styles={{input: styles.searchInput}} base={{type:"text"}} handleSelect={HandleFilter(keyword, filterFunc)} />;
 }
 
 function Filters({items, components}) {

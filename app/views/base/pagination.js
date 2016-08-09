@@ -106,7 +106,7 @@ const PaginationControl = React.createClass({
 
 const Pagination = React.createClass({
   countPages() {
-    return Math.ceil(this.props.totalItem / this.props.limit);
+    return Math.ceil(this.props.total / this.props.limit);
   },
   setLimit(x) {
     let {setLimit} = this.props;
@@ -121,13 +121,13 @@ const Pagination = React.createClass({
     this.props.setCurrentPage(x);
   },
   render() {
-    var {limit, totalItem, currentPage} = this.props;
+    var {limit, total, currentPage} = this.props;
     var totalPages = this.countPages();
 
     return (
       <div>
         <div className="fixed-table-pagination" style={{display: 'block'}}>
-          <PaginationDetail limit={limit} total={totalItem} page={currentPage} setLimit={this.setLimit} />
+          <PaginationDetail limit={limit} total={total} page={currentPage} setLimit={this.setLimit} />
           <PaginationControl pagesCount={totalPages} currentPage={currentPage} setPage={this.setPage} />
         </div>
         <div style={{clear: 'both'}} />

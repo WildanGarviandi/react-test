@@ -1,28 +1,46 @@
 import lodash from 'lodash';
 import React from 'react';
+import {connect} from 'react-redux';
 import PickupOrdersTable from './pickupOrdersTable';
 import styles from './table.css';
 import {ButtonWithLoading, Page} from '../base';
-import Filter from '../container/accordion';
+import Accordion from './pickupOrdersAccordion';
+import * as OrdersPickup from '../../modules/orders/actions/pickup';
 
 const PickupOrders = React.createClass({
   render() {
-    const {orders} = this.props;
     const groupingOrdersBtnProps = {
       textBase: "Group Orders",
       textLoading: "Grouping Orders",
-      isLoading: false,
-      onClick: () => null,
+      isLoading: this.props.isGrouping,
+      onClick: this.props.GroupOrders,
     }
 
     return (
       <Page title="Pickup Orders">
         <ButtonWithLoading {...groupingOrdersBtnProps} />
-        <Filter />
-        <PickupOrdersTable orders={orders} />
+        <Accordion />
+        <PickupOrdersTable />
       </Page>
     );
   }
 });
 
-export default PickupOrders;
+function mapState(state) {
+  const {pickupOrders} = state.app;
+  const {isGrouping} = pickupOrders;
+
+  return {
+    isGrouping,
+  }
+}
+
+function mapDispatch(dispatch) {
+  return {
+    GroupOrders: () => {
+      dispatch(OrdersPickup.groupOrders());
+    }
+  }
+}
+
+export default connect(mapState, mapDispatch)(PickupOrders);

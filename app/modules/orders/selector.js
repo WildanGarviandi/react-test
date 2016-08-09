@@ -34,6 +34,7 @@ const currencyAttributes = ["OrderCost", "FinalCost", "VAT", "TotalValue", "Driv
 const boolAttributes = ["IncludeInsurance", "UseExtraHelper"];
 
 export function OrderParser(order) {
+  const pickupTime = new Date(order.PickupTime);
   return lodash.assign({}, order, {
     CODValue: order.IsCOD ? order.TotalValue: 0,
     DropoffAddress: order.DropoffAddress ? FullAddress(order.DropoffAddress) : "",
@@ -42,6 +43,7 @@ export function OrderParser(order) {
     NextDestination: (order.CurrentRoute && order.CurrentRoute.DestinationHub && order.CurrentRoute.DestinationHub.Name) || "",
     OrderStatus: (order.OrderStatus && order.OrderStatus.OrderStatus) || "",
     PickupAddress: order.PickupAddress ? FullAddress(order.PickupAddress) : "",
+    PickupTime: pickupTime.toLocaleString(),
     PickupType: PickupType(order.PickupType),
     RouteStatus: (order.CurrentRoute && order.CurrentRoute.OrderStatus && order.CurrentRoute.OrderStatus.OrderStatus) || "",
   }, lodash.reduce(currencyAttributes, (acc, attr) => {

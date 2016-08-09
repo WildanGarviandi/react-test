@@ -17,7 +17,7 @@ export const CheckBoxCell = CheckBox;
 export default function Body({columns, items, components}) {
   const rows = lodash.map(items, (item, idx) => {
     const cells = lodash.map(columns, (column) => {
-      const cell = components(column.type, column.keyword, item);
+      const cell = components(column.type, column.keyword, item, idx);
       const className = classNaming(styles.td, column.keyword);
       return <td key={column.keyword} className={className}>{cell}</td>;
     });
