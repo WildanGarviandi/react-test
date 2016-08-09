@@ -6,6 +6,7 @@ import drivers from './modules/drivers/reducers';
 import modalsReducer from './modules/modals/reducers';
 import orders from './modules/orders/reducers';
 import pickupOrders from './modules/orders/reducers/pickup';
+import receivedOrders from './modules/orders/reducers/received';
 
 export default combineReducers({ 
   userLogged: authReducers,
@@ -18,4 +19,5 @@ export default combineReducers({
   modals: modalsReducer,
   orders,
   pickupOrders,
+  receivedOrders,
 });

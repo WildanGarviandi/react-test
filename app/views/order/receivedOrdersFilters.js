@@ -3,27 +3,46 @@ import {connect} from 'react-redux';
 import {conf, receivedOrdersColumns} from './ordersColumns';
 import {Filters} from '../base/table';
 import FiltersRow, {StatusFilter, TextFilter} from '../base/filters';
-import OrdersPickupActions from '../../modules/orders/actions/pickup';
+import * as OrdersReceived from '../../modules/orders/actions/received';
 
 function mapDispatchToPickupOrders(dispatch) {
   return {
     filterFunc: function(filter) {
-      OrdersPickupActions.updateFilter(filter);
+      let newFilter = {};
+
+      switch(filter.key) {
+        case "UserOrderNumber": {
+          newFilter = {userOrderNumber: filter.val};
+          break;
+        }
+
+        case "PickupAddress": {
+          newFilter = {pickup: filter.val};
+          break;
+        }
+
+        case "ID": {
+          newFilter = {userOrderNumber: filter.val};
+          break;
+        }
+      }
+
+      dispatch(OrdersPickup.setFilter(newFilter));
     }
   }
 }
 
-const PickupOrdersStatusFilter = connect(undefined, mapDispatchToPickupOrders)(StatusFilter);
-const PickupOrdersTextFilter = connect(undefined, mapDispatchToPickupOrders)(TextFilter);
+const ReceivedOrdersStatusFilter = connect(undefined, mapDispatchToPickupOrders)(StatusFilter);
+const ReceivedOrdersTextFilter = connect(undefined, mapDispatchToPickupOrders)(TextFilter);
 
 function FiltersComponents(type, item) {
   switch(type) {
     case "StatusDropdown": {
-      return <PickupOrdersStatusFilter {...item} />
+      return <ReceivedOrdersStatusFilter {...item} />
     }
 
     case "String": {
-      return <PickupOrdersTextFilter {...item} />
+      return <ReceivedOrdersTextFilter {...item} />
     }
 
     default: {

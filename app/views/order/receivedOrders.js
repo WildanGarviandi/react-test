@@ -1,40 +1,46 @@
 import lodash from 'lodash';
 import React from 'react';
+import {connect} from 'react-redux';
 import ReceivedOrdersTable from './receivedOrdersTable';
-import styles from './styles.css';
+import styles from './table.css';
 import {ButtonWithLoading, Page} from '../base';
-import Filter from '../container/accordion';
-
-const OrderFinder = React.createClass({
-  render() {
-    return (
-      <div className={styles.finderWrapper}>
-        <span className={styles.finderLabel}>Jump to Order :</span>
-        <input />
-      </div>
-    );
-  }
-});
+import Accordion from './receivedOrdersAccordion';
+import * as OrdersReceived from '../../modules/orders/actions/received';
 
 const PickupOrders = React.createClass({
   render() {
-    const {orders} = this.props;
     const groupingOrdersBtnProps = {
       textBase: "Consolidate Orders",
-      textLoading: "Consolidating Orders",
-      isLoading: false,
-      onClick: () => null,
+      textLoading: "Consolidate Orders",
+      isLoading: this.props.isGrouping,
+      onClick: this.props.GroupOrders,
     }
 
     return (
       <Page title="Received Orders">
         <ButtonWithLoading {...groupingOrdersBtnProps} />
-        <OrderFinder />
-        <Filter />
-        <ReceivedOrdersTable orders={orders} />
+        <Accordion />
+        <ReceivedOrdersTable />
       </Page>
     );
   }
 });
 
-export default PickupOrders;
+function mapState(state) {
+  const {pickupOrders} = state.app;
+  const {isGrouping} = pickupOrders;
+
+  return {
+    isGrouping,
+  }
+}
+
+function mapDispatch(dispatch) {
+  return {
+    GroupOrders: () => {
+      dispatch(OrdersReceived.groupOrders());
+    }
+  }
+}
+
+export default connect(mapState, mapDispatch)(PickupOrders);
