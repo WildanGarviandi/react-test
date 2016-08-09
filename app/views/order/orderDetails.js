@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import {orderDetails} from './ordersColumns';
 import styles from './styles.css';
 import {ButtonWithLoading, Input, Page} from '../base';
-import {InputWithState} from '../base/input';
+import {InputWithDefault} from '../base/input';
 import * as OrdersDetails from '../../modules/orders/actions/details';
 import OrdersSelector from '../../modules/orders/selector';
 
@@ -80,7 +80,7 @@ const Details = React.createClass({
           <span className={styles.itemLabel}>{row}</span>
           <span className={styles.itemValue}>
             :
-            <InputWithState currentText={order[row]} />
+            <InputWithDefault currentText={order[row]} />
           </span>
         </div>
       );

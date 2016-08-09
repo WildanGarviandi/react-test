@@ -19,7 +19,7 @@ function Currency(x) {
     x = 0;
   }
 
-  return `Rp ${x}`;
+  return `${x}`;
 }
 
 function FullAddress(address) {

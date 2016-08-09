@@ -35,7 +35,7 @@ const Input = React.createClass({
 
     return (
       <span className={styles.container}>
-        <input {...base} className={styles.input} onChange={this.handleChange} onKeyDown={this.handleEnterKey} value={3} />
+        <input {...base} className={styles.input} onChange={this.handleChange} onKeyDown={this.handleEnterKey} />
         <span className={styles.notes}>{notes}</span>
       </span>
     );
@@ -57,4 +57,19 @@ const InputWithState = React.createClass({
   }
 })
 
-export {CheckBox, Input, InputWithState};
+const InputWithDefault = React.createClass({
+  getInitialState() {
+    return {currentText: this.props.currentText || ""};
+  },
+  setText(val) {
+    this.setState({currentText: val});
+  },
+  handleSelect() {
+    this.props.handleSelect(this.state.currentText);
+  },
+  render() {
+    return <Input {...this.props} base={{value: this.state.currentText}} onChange={this.setText} onEnterKeyPressed={this.handleSelect} />
+  }
+});
+
+export {CheckBox, Input, InputWithDefault, InputWithState};
