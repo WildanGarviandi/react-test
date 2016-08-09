@@ -12,11 +12,12 @@ export const conf = {
   RouteStatus: {filterType: "StatusDropdown", title: "Route Status", cellType: "String"},
   UserOrderNumber: {filterType: "String", title: "AWB", cellType: "Link"},
   WebOrderID: {filterType: "String", title: "Web Order ID", cellType: "String"},
+  WebstoreName: {filterType: "String", title: "Webstore Name", cellType: "String"},
   ZipCode: {filterType: "String", title: "Zip Code"},
 }
 
-export const pickupOrdersColumns = ["IsChecked", "ID", "PickupTime", "PickupAddress", "OrderStatus"];
+export const pickupOrdersColumns = ["IsChecked", "ID", "WebstoreName", "PickupTime", "PickupAddress", "OrderStatus"];
 
-export const receivedOrdersColumns = ["IsChecked", "ID", "DropoffAddress", "RouteStatus", "NextDestination"];
+export const receivedOrdersColumns = ["IsChecked", "ID", "WebstoreName", "PickupTime", "DropoffAddress", "RouteStatus", "ZipCode"];
 
 export const orderDetails = ["UserOrderNumber", "WebOrderID", "User", "PickupType", "RouteStatus", "PickupTime", "PickupAddress", "DropoffTime", "DropoffAddress", "PackageWeight", "PackageLength", "PackageWidth", "PackageHeight", "OrderCost", "FinalCost", "VAT", "IncludeInsurance", "TotalValue", "UseExtraHelper", "EtobeeShare", "DriverShare", "LogisticShare"];

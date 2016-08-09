@@ -53,12 +53,12 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact}) => {
       <h4 className={styles.compactTitle}>EHub</h4>
       <ul className={styles.menuList}>
         <Accordion initialState={'collapsed'}>
-          <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[2,3]} iconName={'list-alt'} iconTitle={'Orders'}>
-            <MenuItem active={activeMenuIdx == 2} to={'/pickupOrders'}>
+          <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[0,1,2]} iconName={'list-alt'} iconTitle={'Orders'}>
+            <MenuItem active={activeMenuIdx == 1} to={'/pickupOrders'}>
               <Glyph className={styles.menuGlyph} name={'alert'}/>
               <span>Pickup Orders</span>
             </MenuItem>
-            <MenuItem active={activeMenuIdx == 3} to={'/receivedOrders'}>
+            <MenuItem active={activeMenuIdx == 2} to={'/receivedOrders'}>
               <Glyph className={styles.menuGlyph} name={'transfer'}/>
               <span>Received Orders</span>
             </MenuItem>
@@ -77,7 +77,7 @@ const DashboardContent = ({children}) => {
   return (<div className={styles.content}>{children}</div>);
 }
 
-const menuPaths = ['/container', '/lala', '/pickupOrders', '/receivedOrders'];
+const menuPaths = ['/orders', '/pickupOrders', '/receivedOrders'];
 function GetActiveMenuIdx(path) {
   let fpath = _.find(menuPaths, (menu) => (path.indexOf(menu) > -1));
   let idx = menuPaths.indexOf(fpath);

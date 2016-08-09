@@ -16,6 +16,11 @@ function mapDispatchToPickupOrders(dispatch) {
           break;
         }
 
+        case "WebstoreName": {
+          newFilter = {merchant: filter.val};
+          break;
+        }
+
         case "PickupAddress": {
           newFilter = {pickup: filter.val};
           break;

@@ -88,7 +88,7 @@ export const groupOrders = () => {
     };
 
     dispatch({ type: Constants.RECEIVED_ORDERS_GROUP_START });
-    fetchPost('/trip/firstLeg', token, query).then(function(response) {
+    fetchPost('/trip/outbond', token, query).then(function(response) {
       if(response.ok) {
         response.json().then(function({data}) {
           dispatch({ type: Constants.RECEIVED_ORDERS_GROUP_END });
@@ -96,7 +96,7 @@ export const groupOrders = () => {
         });
       } else {
         dispatch({ type: Constants.RECEIVED_ORDERS_GROUP_END });
-        dispatch(ModalActions.addMessage('Failed to group orders'));
+        dispatch(ModalActions.addMessage('Failed to consolidate orders'));
       }
     }).catch(() => { 
       dispatch({ type: Constants.RECEIVED_ORDERS_GROUP_END });

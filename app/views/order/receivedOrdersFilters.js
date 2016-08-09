@@ -21,13 +21,18 @@ function mapDispatchToPickupOrders(dispatch) {
           break;
         }
 
+        case "DropoffAddress": {
+          newFilter = {dropoff: filter.val};
+          break;
+        }
+
         case "ID": {
           newFilter = {userOrderNumber: filter.val};
           break;
         }
       }
 
-      dispatch(OrdersPickup.setFilter(newFilter));
+      dispatch(OrdersReceived.setFilter(newFilter));
     }
   }
 }

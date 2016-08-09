@@ -1,5 +1,6 @@
 import lodash from 'lodash';
 import React from 'react';
+import {push} from 'react-router-redux';
 import {connect} from 'react-redux';
 import {Body} from '../base/table';
 import {conf, receivedOrdersColumns} from './ordersColumns';
@@ -17,7 +18,17 @@ function mapDispatchToCheckBox(dispatch, ownProps) {
 
 const ReceivedOrdersCheckBox = connect(undefined, mapDispatchToCheckBox)(CheckBoxCell);
 
-function BodyComponent(type, keyword, item) {
+function mapDispatchToLink(dispatch, ownParams) {
+  return {
+    onClick: function() {
+      dispatch(push('/orders/' + ownParams.item.UserOrderID));
+    }
+  }
+}
+
+const PickupOrdersLink = connect(undefined, mapDispatchToLink)(LinkCell);
+
+function BodyComponent(type, keyword, item, index) {
   switch(type) {
     case "String": {
       return <TextCell text={item[keyword]} />
@@ -28,7 +39,7 @@ function BodyComponent(type, keyword, item) {
     }
 
     case "Link": {
-      return <LinkCell text={item[keyword]} onClick={() => (3)} />
+      return <PickupOrdersLink text={item[keyword]} item={item} />
     }
 
     case "Actions": {

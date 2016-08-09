@@ -31,11 +31,11 @@ const Input = React.createClass({
     }
   },
   render() {
-    let { base, notes, styles } = this.props;
+    let { base, notes, styles = {} } = this.props;
 
     return (
       <span className={styles.container}>
-        <input {...base} className={styles.input} onChange={this.handleChange} onKeyDown={this.handleEnterKey} />
+        <input {...base} className={styles.input} onChange={this.handleChange} onKeyDown={this.handleEnterKey} value={3} />
         <span className={styles.notes}>{notes}</span>
       </span>
     );
