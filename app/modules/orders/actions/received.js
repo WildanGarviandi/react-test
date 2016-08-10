@@ -84,15 +84,15 @@ export const groupOrders = () => {
     });
 
     const query = {
-      ordersID: lodash.map(selectedOrders, (order) => (order.UserOrderID)),
+      OrderIDs: lodash.map(selectedOrders, (order) => (order.UserOrderID)),
     };
 
     dispatch({ type: Constants.RECEIVED_ORDERS_GROUP_START });
-    fetchPost('/trip/outbond', token, query).then(function(response) {
+    fetchPost('/trip/outbound', token, query).then(function(response) {
       if(response.ok) {
         response.json().then(function({data}) {
           dispatch({ type: Constants.RECEIVED_ORDERS_GROUP_END });
-          dispatch(push('/inboundTrips/' + data.TripID));
+          dispatch(push('/trips/' + data.TripID));
         });
       } else {
         dispatch({ type: Constants.RECEIVED_ORDERS_GROUP_END });

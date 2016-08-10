@@ -8,6 +8,8 @@ import orders from './modules/orders/reducers';
 import pickupOrders from './modules/orders/reducers/pickup';
 import receivedOrders from './modules/orders/reducers/received';
 import orderDetails from './modules/orders/reducers/details';
+import outboundTrips from './modules/trips/reducers/outbound';
+import tripDetails from './modules/trips/reducers/details';
 
 export default combineReducers({ 
   userLogged: authReducers,
@@ -20,6 +22,8 @@ export default combineReducers({
   modals: modalsReducer,
   orderDetails,
   orders,
+  outboundTrips,
   pickupOrders,
   receivedOrders,
+  tripDetails,
 });

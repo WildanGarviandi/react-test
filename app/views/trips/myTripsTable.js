@@ -1,20 +1,22 @@
+import lodash from 'lodash';
 import ClassName from 'classnames';
 import moment from 'moment';
 import React from 'react';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
-import {TripsFetch, TripsSetCurrentPage, TripsSetFilter, TripsSetLimit} from '../../modules/trips/actions/tripsFetch';
+import * as OutboundTrips from '../../modules/trips/actions/outbound';
 import {DropdownTypeAhead, Input, Pagination} from '../base';
 import DateRangePicker from '../base/dateRangePicker';
 import tableStyles from '../base/table.css';
+import StatusDropdown from '../base/statusDropdown';
 
-const ColumnsOrder = ['tripNumber', 'pickup', 'dropoff', 'pickupTime', 'dropoffTime', 'driver', 'containerNumber', 'district', 'status'];
+const ColumnsOrder = ['containerNumber', 'dropoff', 'driver', 'status'];
 
 const ColumnsTitle = {
   containerNumber: "Container",
   district: "District",
   driver: "Driver",
-  dropoff: "Dropoff Address",
+  dropoff: "Next Destination",
   dropoffTime: "Dropoff Time",
   pickup: "Pickup Address",
   pickupTime: "Pickup Time",
@@ -99,7 +101,7 @@ const TripStatusSelect = React.createClass({
     const {statusList, statusName} = this.props;
     return (
       <td className={ClassName(tableStyles.td, tableStyles.search)} style={{width: 150}}>
-        <DropdownTypeAhead options={statusList} selectVal={this.selectVal} val={statusName} />
+        <StatusDropdown />
       </td>
     );
   }
@@ -128,9 +130,6 @@ const Table = React.createClass({
     const Search = (
       <tr>
         {Filters.slice(0,3)}
-        <DateCell changeFilter={changeFilterAndFetch} attr={'Pickup'} />
-        <DateCell changeFilter={changeFilterAndFetch} attr={'Dropoff'} />
-        {Filters.slice(5,8)}
         <TripStatusSelect {...this.props.statusProps} />
       </tr>
     );
@@ -145,12 +144,27 @@ const Table = React.createClass({
   }
 });
 
+function FullAddress(address) {
+  const Addr = address.Address1 && address.Address2 && (address.Address1.length < address.Address2.length) ? address.Address2 : address.Address1;
+  return lodash.chain([Addr, address.City, address.State, address.ZipCode])
+    .filter((str) => (str && str.length > 0))
+    .value()
+    .join(', ');
+}
+
+function TripDropOff(trip) {
+  const destinationHub = trip.DestinationHub && FullAddress(trip.DestinationHub);
+  const dropoffAddress = trip.DropoffAddress && FullAddress(trip.DropoffAddress);
+
+  return destinationHub || dropoffAddress || "";
+}
+
 function ProcessTrip(trip) {
   return {
     containerNumber: trip.ContainerNumber,
     district: trip.District && trip.District.Name,
     driver: trip.Driver && `${trip.Driver.FirstName} ${trip.Driver.LastName}`,
-    dropoff: trip.DropoffAddress && trip.DropoffAddress.Address1,
+    dropoff: TripDropOff(trip),
     dropoffTime: trip.DropoffTime,
     key: trip.TripID,
     tripNumber: trip.TripNumber,
@@ -209,8 +223,8 @@ const TableStateful = React.createClass({
 
     return (
       <div>
-        <Pagination {...paginationProps} />
         <div style={{opacity: tripsIsFetching ? 0.5 : 1}}>
+          <Pagination {...paginationProps} />
           <Table {...tableProps} />
         </div>
       </div>
@@ -219,27 +233,19 @@ const TableStateful = React.createClass({
 });
 
 function StateToProps(state) {
-  const tripsStore = state.app.trips;
-  const tripsList = tripsStore.list;
-  const tripsState = tripsStore.state;
-  const tripsQuery = tripsStore.query;
-
-  const tripsIsFetching = tripsState.isFetching;
-  const tripsShown = tripsState.shown;
-  const trips = _.map(tripsShown, (idx) => tripsList[idx]);
-
-  const tripPerPage = tripsQuery.limit;
+  const {outboundTrips} = state.app;
+  const {isFetching, limit, total, currentPage, list} = outboundTrips;
 
   const paginationState = {
-    currentPage: tripsQuery.currentPage,
-    limit: tripsQuery.limit,
-    totalItem: tripsState.totalItem,
+    currentPage: currentPage,
+    limit: limit,
+    total: total,
   }
 
   const statusList = state.app.containers.statusList;
 
   return {
-    paginationState, trips, tripsIsFetching,
+    paginationState, trips: list, tripsIsFetching: isFetching,
     statusList: _.chain(statusList).map((key, val) => [val, key]).sortBy((arr) => (arr[1])).map((arr) => (arr[0])).value(),
     nameToID: _.reduce(statusList, (memo, key, val) => {
       memo[val] = key;
@@ -251,21 +257,18 @@ function StateToProps(state) {
 function DispatchToProps(dispatch, ownProps) {
   return {
     initialLoad() {
-      dispatch(TripsFetch());
-    },
-    changeFilter(filters) {
-      dispatch(TripsSetFilter(filters));
+      dispatch(OutboundTrips.fetchList());
     },
     paginationAction: {
       setCurrentPage(pageNum) {
-        dispatch(TripsSetCurrentPage(pageNum));
+        dispatch(OutboundTrips.setCurrentPage(pageNum));
       },
       setLimit(limit) {
-        dispatch(TripsSetLimit(limit));
+        dispatch(OutboundTrips.setLimit(limit));
       },
     },
     tripDetails(id) {
-      dispatch(push('/tripDetails/' + id));
+      dispatch(push('/trips/' + id));
     },
   };
 }

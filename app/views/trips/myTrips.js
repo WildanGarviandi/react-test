@@ -1,20 +1,11 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {TripsSetQueryType} from '../../modules/trips/actions/tripsFetch';
 import {Page} from '../base';
 import MyTripsTable from './myTripsTable';
 
 const ContainerPage = React.createClass({
-  componentWillMount() {
-    this.props.setQueryType(this.props.path);
-  },
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.path !== this.props.path) {
-      this.props.setQueryType(nextProps.path);
-    }
-  },
   render() {
-    const title = this.props.path === "/myTrips" ? "Inbound Trips" : "Outbound Trips";
+    const title = this.props.path === "/myTrips" ? "Outbound Trips" : "<In></In>bound Trips";
     return (
       <div>
         <Page title={title}>
@@ -33,12 +24,4 @@ function StateToProps(state, ownProps) {
   };
 };
 
-function DispatchToProps(dispatch) {
-  return {
-    setQueryType(queryType) {
-      dispatch(TripsSetQueryType(queryType));
-    }
-  };
-};
-
-export default connect(StateToProps, DispatchToProps)(ContainerPage);
+export default connect(StateToProps)(ContainerPage);

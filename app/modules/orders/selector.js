@@ -24,7 +24,7 @@ function Currency(x) {
 
 function FullAddress(address) {
   const Addr = address.Address1 && address.Address2 && (address.Address1.length < address.Address2.length) ? address.Address2 : address.Address1;
-  return lodash.chain([Addr])//, address.City, address.State, address.ZipCode])
+  return lodash.chain([Addr, address.City, address.State, address.ZipCode])
     .filter((str) => (str && str.length > 0))
     .value()
     .join(', ');
@@ -35,10 +35,12 @@ const currencyAttributes = ["OrderCost", "FinalCost", "VAT", "TotalValue", "Driv
 const boolAttributes = ["IncludeInsurance", "UseExtraHelper"];
 
 export function OrderParser(order) {
+  const dropoffTime = new Date(order.DropoffTime);
   const pickupTime = new Date(order.PickupTime);
   return lodash.assign({}, order, {
     CODValue: order.IsCOD ? order.TotalValue: 0,
     DropoffAddress: order.DropoffAddress ? FullAddress(order.DropoffAddress) : "",
+    DropoffTime: dropoffTime.toLocaleString(),
     ID: (order.UserOrderNumber + ' / ' + order.WebOrderID) || "",
     IsChecked: false,
     NextDestination: (order.CurrentRoute && order.CurrentRoute.DestinationHub && order.CurrentRoute.DestinationHub.Name) || "",

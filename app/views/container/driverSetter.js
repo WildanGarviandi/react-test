@@ -11,7 +11,7 @@ import styles from './styles.css';
 
 const DriverSetter = React.createClass({
   componentWillMount() {
-    this.props.FleetsFetch();
+    // this.props.FleetsFetch();
   },
   getInitialState() {
     return {

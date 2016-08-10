@@ -1,6 +1,6 @@
 import {modalAction} from '../constants';
 
-const initialState = { modals: [], showBackdrop: true };
+const initialState = { modals: [], showBackdrop: false };
 
 function addModal(state, action) {
   return [...state, action.modal];

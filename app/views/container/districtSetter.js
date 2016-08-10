@@ -18,7 +18,7 @@ function FindByName(districts, districtName) {
 
 const DistrictSetter = React.createClass({
   componentWillMount() {
-    this.props.DistrictsFetch();
+    // this.props.DistrictsFetch();
   },
   componentWillReceiveProps(nextProps) {
     this.setState({nextDistrict: {value: nextProps.districtName}});
