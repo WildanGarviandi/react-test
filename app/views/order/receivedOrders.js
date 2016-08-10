@@ -24,6 +24,9 @@ const PickupOrders = React.createClass({
       textLoading: "Consolidate Orders",
       isLoading: this.props.isGrouping,
       onClick: this.props.GroupOrders,
+      styles: {
+        base: this.props.isGrouping ? styles.greenBtnLoading : styles.greenBtn,
+      }
     }
 
     return (
