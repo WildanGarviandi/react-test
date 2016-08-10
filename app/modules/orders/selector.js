@@ -23,7 +23,8 @@ function Currency(x) {
 }
 
 function FullAddress(address) {
-  return lodash.chain([address.Address1])//, address.City, address.State, address.ZipCode])
+  const Addr = address.Address1 && address.Address2 && (address.Address1.length < address.Address2.length) ? address.Address2 : address.Address1;
+  return lodash.chain([Addr])//, address.City, address.State, address.ZipCode])
     .filter((str) => (str && str.length > 0))
     .value()
     .join(', ');
@@ -46,8 +47,9 @@ export function OrderParser(order) {
     PickupTime: pickupTime.toLocaleString(),
     PickupType: PickupType(order.PickupType),
     RouteStatus: (order.CurrentRoute && order.CurrentRoute.OrderStatus && order.CurrentRoute.OrderStatus.OrderStatus) || "",
-    User: order.User.FirstName + ' ' + order.User.LastName,
-    WebstoreName: order.User.FirstName + ' ' + order.User.LastName,
+    User: (order.User && (order.User.FirstName + ' ' + order.User.LastName)) || '',
+    WebstoreName: (order.User && (order.User.FirstName + ' ' + order.User.LastName)) || '',
+    ZipCode: order.DropoffAddress && order.DropoffAddress.ZipCode,
   }, lodash.reduce(currencyAttributes, (acc, attr) => {
     return lodash.assign(acc, {[attr]: Currency(order[attr])});
   }, {}), lodash.reduce(boolAttributes, (acc, attr) => {

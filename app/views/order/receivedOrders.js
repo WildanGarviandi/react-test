@@ -27,7 +27,7 @@ const PickupOrders = React.createClass({
     }
 
     return (
-      <Page title="Received Orders">
+      <Page title="Received Orders" additional="Deliver this order to next destination">
         <span className={styles.finderWrapper}>
           <span className={styles.finderLabel}>
             Jump to OrderID :

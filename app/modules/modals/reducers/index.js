@@ -1,6 +1,6 @@
 import {modalAction} from '../constants';
 
-const initialState = { modals: [] };
+const initialState = { modals: [], showBackdrop: true };
 
 function addModal(state, action) {
   return [...state, action.modal];
@@ -21,6 +21,18 @@ function reducer(state = initialState, action) {
     case modalAction.CLOSE_MODAL: {
       return _.assign({}, state, {
         modals: closeModal(state.modals, action)
+      });
+    }
+
+    case modalAction.BACKDROP_SHOW: {
+      return _.assign({}, state, {
+        showBackdrop: true,
+      });
+    }
+
+    case modalAction.BACKDROP_HIDE: {
+      return _.assign({}, state, {
+        showBackdrop: false,
       });
     }
 

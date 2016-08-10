@@ -4,6 +4,7 @@
   font-weight: 400;
   text-transform: uppercase;
   margin-top: 0;
+  display: inline-block;
 }
 
 .topRightBtn {
@@ -13,4 +14,11 @@
   position: relative;
   top: -4px;
   margin-left: 10px;
+}
+
+.additionalTitle {
+  display: inline-block;
+  margin-left: 5px;
+  color: #333;
+  margin-top: 0;
 }

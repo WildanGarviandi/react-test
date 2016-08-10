@@ -107,10 +107,15 @@
 .detailWrapper {
   border: solid 1px #ccc;
   border-radius: 5px;
-  width: 48%;
-  padding: 5px;
+  width: 49%;
+  padding: 0px;
   float: left;
   margin-bottom: 15px;
+  position: relative;
+}
+
+.detailWrapper > * {
+  padding: 5px;
 }
 
 .detailWrapper.right {
@@ -121,31 +126,60 @@
   position: relative;
 }
 
+.detailWrapper input {
+  font-size: 14px;
+  width: 300px;
+  padding: 0;
+  margin-left: 5px;
+}
+
+.btnColls {
+  position: absolute;
+  top: 0px;
+  right: 5px;
+}
+
 .weightEditBtn, .weightSaveBtn, .weightCancelBtn {
   display: inline-block;
-  position: absolute;
-  top: 10px;
-  right: 10px;
   padding: 10px;
   border: solid 1px #333;
 }
 
 .weightSaveBtn {
-  background-color: #4F4335;
   top: 10px;
   right: 70px;
-}
-
-.weightSaveBtn:hover {
-  background-color: #5F5345;
 }
 
 .weightCancelBtn {
   background-color: #fff;
   color: #333;
+  margin-left: 8px;
 }
 
 .weightCancelBtn:hover {
   background-color: #ccc;
   color: #333;
+}
+
+.greenBtn, .weightSaveBtn {
+  background-color: #4cc38e;
+}
+
+.greenBtn:hover {
+  background-color: #5cd39e;
+}
+
+.greenBtnLoading {
+  background-color: #aaa;
+}
+
+.accHeader {
+  background-color: #222D32;
+  color: #eee;
+  text-indent: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 15px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 }

@@ -2,35 +2,56 @@ import classNaming from 'classnames';
 import lodash from 'lodash';
 import React from 'react';
 import {connect} from 'react-redux';
-import {orderDetails} from './ordersColumns';
+import {conf, orderDetails} from './ordersColumns';
 import styles from './styles.css';
+import Accordion from '../base/accordion';
 import {ButtonWithLoading, Input, Page} from '../base';
 import {InputWithDefault} from '../base/input';
 import * as OrdersDetails from '../../modules/orders/actions/details';
 import OrdersSelector from '../../modules/orders/selector';
 
-const Details = React.createClass({
-  getInitialState() {
-    return {isEditing: false};
+const DetailRow = React.createClass({
+  render() {
+    const {isEditing, label, value} = this.props;
+
+    return (
+      <div style={{clear: 'both'}}>
+        <span className={styles.itemLabel}>{label}</span>
+        {
+          !isEditing &&
+          <span className={styles.itemValue}>: {value}</span>
+        }
+        {
+          isEditing &&
+          <span className={styles.itemValue}>
+            :
+            <InputWithDefault currentText={value} onChange={this.props.onChange} type="number" />
+          </span>
+        }
+      </div>
+    );
+  }
+});
+
+const DetailAcc = React.createClass({
+  textChange(key) {
+    return (value) => {
+      this.setState({[key]: value});
+    };
   },
-  toEdit() {
-    this.setState({isEditing: true});
-  },
-  stopEdit() {
-    this.setState({isEditing: false});
-  },
-  componentWillMount() {
-    this.props.GetDetails();
+  submit() {
+    let updatedData = lodash.assign({}, this.state);
+    delete updatedData.isEditing;
+    this.props.UpdateOrder(updatedData);
   },
   render() {
-    const {isFetching, order} = this.props;
-    const {isEditing} = this.state;
+    const {accordionAction, accordionState, height, rows, order, title, topStyle, canEdit, isEditing, isUpdating} = this.props;
 
     const editBtnProps = {
       textBase: "Edit",
       textLoading: "Grouping Orders",
       isLoading: false,
-      onClick: this.toEdit,
+      onClick: this.props.StartEdit,
       styles: {
         base: styles.weightEditBtn,
       },
@@ -38,9 +59,9 @@ const Details = React.createClass({
 
     const saveBtnProps = {
       textBase: "Save",
-      textLoading: "Saving",
-      isLoading: false,
-      onClick: this.stopEdit,
+      textLoading: "Saving Changes",
+      isLoading: isUpdating,
+      onClick: this.submit,
       styles: {
         base: styles.weightSaveBtn,
       },
@@ -50,53 +71,56 @@ const Details = React.createClass({
       textBase: "Cancel",
       textLoading: "Grouping Orders",
       isLoading: false,
-      onClick: this.stopEdit,
+      onClick: this.props.EndEdit,
       styles: {
         base: styles.weightCancelBtn,
       },
     }
 
-    const r1 = lodash.map(orderDetails.slice(0,9), (row) => {
-      return (
-        <div key={row} style={{clear: 'both'}}>
-          <span className={styles.itemLabel}>{row}</span>
-          <span className={styles.itemValue}>: {order[row]}</span>
-        </div>
-      );
+    const colls = lodash.map(rows, (row) => {
+      return <DetailRow key={row} label={conf[row].title} value={order[row]} isEditing={isEditing} onChange={this.textChange(row) } />
     });
 
-    const r2 = lodash.map(orderDetails.slice(9, 14), (row) => {
-      return (
-        <div key={row} style={{clear: 'both'}}>
-          <span className={styles.itemLabel}>{row}</span>
-          <span className={styles.itemValue}>: {order[row]}</span>
+    return (
+      <div className={topStyle || styles.detailWrapper} >
+        <div className={styles.accHeader}>
+          {title}
         </div>
-      );
-    });
+        <div style={{height: height}}>
+          {colls}
+        </div>
+        {
+          canEdit &&
+          <div className={styles.btnColls}>
+            { !isEditing && <ButtonWithLoading {...editBtnProps} /> }
+            { isEditing && <ButtonWithLoading {...saveBtnProps} /> }
+            { isEditing && !isUpdating && <ButtonWithLoading {...cancelBtnProps} /> }
+          </div>
+        }
+      </div>
+    );
+  }
+})
+
+const Details = React.createClass({
+  componentWillMount() {
+    this.props.GetDetails();
+  },
+  render() {
+    const {canEdit, isEditing, isFetching, isUpdating, order, StartEdit, EndEdit, UpdateOrder} = this.props;
 
     const r2Edit = lodash.map(orderDetails.slice(9, 14), (row) => {
       return (
         <div key={row} style={{clear: 'both'}}>
-          <span className={styles.itemLabel}>{row}</span>
-          <span className={styles.itemValue}>
-            :
-            <InputWithDefault currentText={order[row]} />
-          </span>
+          <span className={styles.itemLabel}>{conf[row].title}</span>
         </div>
       );
     });
 
-    const r3 = lodash.map(orderDetails.slice(14), (row) => {
-      return (
-        <div key={row} style={{clear: 'both'}}>
-          <span className={styles.itemLabel}>{row}</span>
-          <span className={styles.itemValue}>: {order[row]}</span>
-        </div>
-      );
-    });
+    const Title = "Order Details " + (order.UserOrderNumber || "");
 
     return (
-      <Page title="Order Details">
+      <Page title={Title}>
         {
           isFetching &&
           <h3>Fetching order details...</h3>
@@ -104,19 +128,15 @@ const Details = React.createClass({
         {
           !isFetching &&
           <div>
-            <div className={styles.detailWrapper} style={{height: 365}}>
-              {r1}
-            </div>
-            <div className={classNaming(styles.detailWrapper, styles.right, styles.detailsPanel)}>
-              { !isEditing && <ButtonWithLoading {...editBtnProps} /> }
-              { !isEditing && r2 }
-              { isEditing && <ButtonWithLoading {...saveBtnProps} /> }
-              { isEditing && <ButtonWithLoading {...cancelBtnProps} /> }
-              { isEditing && r2Edit}
-            </div>
-            <div className={classNaming(styles.detailWrapper, styles.right, styles.detailsPanel)}>
-              {r3}
-            </div>
+            <Accordion initialState="expanded">
+              <DetailAcc rows={orderDetails.slice(0,9)} order={order} title={"Summary"} topStyle={classNaming(styles.detailWrapper, styles.right, styles.detailsPanel)}/>
+            </Accordion>
+            <Accordion initialState="expanded">
+              <DetailAcc rows={orderDetails.slice(9,14)} order={order} title={"Cost and Dimension"}  canEdit={true} isEditing={isEditing} isUpdating={isUpdating} UpdateOrder={UpdateOrder} StartEdit={StartEdit} EndEdit={EndEdit}/>
+            </Accordion>
+            <Accordion initialState="expanded">
+              <DetailAcc rows={orderDetails.slice(14)} order={order} title={"Pricing Details"} />
+            </Accordion>
           </div>
         }
       </Page>
@@ -126,11 +146,13 @@ const Details = React.createClass({
 
 function mapStateToPickupOrders(state) {
   const canEdit = state.userLogged && state.userLogged.isCentralHub;
-  const {isFetching, order} = state.app.orderDetails;
-  console.log('o', order);
+  const {isEditing, isFetching, isUpdating, order} = state.app.orderDetails;
+
   return {
     canEdit,
+    isEditing,
     isFetching,
+    isUpdating,
     order,
   }
 }
@@ -139,6 +161,15 @@ function mapDispatchToPickupOrders(dispatch, ownProps) {
   return {
     GetDetails: () => {
       dispatch(OrdersDetails.fetchDetails(ownProps.params.id));
+    },
+    UpdateOrder: (order) => {
+      dispatch(OrdersDetails.editOrder(ownProps.params.id, order));
+    },
+    StartEdit: () => {
+      dispatch(OrdersDetails.startEditing());
+    },
+    EndEdit: () => {
+      dispatch(OrdersDetails.endEditing());
     }
   }
 }

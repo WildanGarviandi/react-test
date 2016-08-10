@@ -63,12 +63,15 @@ const InputWithDefault = React.createClass({
   },
   setText(val) {
     this.setState({currentText: val});
+    if(this.props.onChange) {
+      this.props.onChange(val);
+    }
   },
   handleSelect() {
     this.props.handleSelect(this.state.currentText);
   },
   render() {
-    return <Input {...this.props} base={{value: this.state.currentText}} onChange={this.setText} onEnterKeyPressed={this.handleSelect} />
+    return <Input {...this.props} base={{value: this.state.currentText, type: this.props.type}} onChange={this.setText} onEnterKeyPressed={this.handleSelect} />
   }
 });
 
