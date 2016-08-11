@@ -83,7 +83,7 @@ const DetailPage = React.createClass({
           <Page title={'Trip Details' + (trip.ContainerNumber && (" of Container " + trip.ContainerNumber))}>
             {
               fillAble &&
-              <ButtonWithLoading textBase={'Fill Container'} onClick={this.goToFillContainer} styles={{base: styles.normalBtn}} />
+              <ButtonWithLoading textBase={'Fill With Orders'} onClick={this.goToFillContainer} styles={{base: styles.normalBtn}} />
             }
             {
               reusable &&

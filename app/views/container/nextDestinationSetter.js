@@ -2,7 +2,7 @@ import classNaming from 'classnames';
 import React from 'react';
 import styles from './setterStyles.css';
 import DistrictSetter from './districtSetter';
-import HubSetter from './HubSetter';
+import HubSetter from './hubSetter';
 
 function HeaderWithDestination({nextDestination}) {
   return (
