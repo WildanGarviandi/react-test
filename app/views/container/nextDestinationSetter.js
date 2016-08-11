@@ -34,12 +34,20 @@ function DstDistrict(trip) {
 }
 
 const FirstSetting = React.createClass({
+  tryToggle() {
+    const {trip} = this.props;
+    if(!trip.Driver) {
+      this.props.accordionAction.toggleView();
+    }
+  },
   render() {
     const {accordionAction, accordionState, trip} = this.props;
     const nextDestination = DstHub(trip) || DstDistrict(trip);
+    const haveSet = trip.Driver;
 
     const headerClass = classNaming(styles.setterHeader, {
       [styles.headerDone]: nextDestination,
+      [styles.haveDriver]: haveSet,
     });
 
     const leftStyle = classNaming(styles.setterLeft, {
@@ -51,7 +59,7 @@ const FirstSetting = React.createClass({
 
     return (
       <div className={styles.setterWrapper}>
-        <div className={headerClass} onClick={accordionAction.toggleView}>
+        <div className={headerClass} onClick={this.tryToggle}>
         {
           nextDestination ?
           <HeaderWithDestination nextDestination={nextDestination} />

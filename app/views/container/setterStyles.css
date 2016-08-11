@@ -87,4 +87,6 @@
 
 .haveDriver {
   cursor: default;
+  background-color: #fff;
+  color: #000;
 }
