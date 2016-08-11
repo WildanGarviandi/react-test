@@ -3,42 +3,35 @@ import {DriversActions} from '../constants';
 import fetchPost from '../../fetch/post';
 import fetchContainerDetails from '../../containers/actions/containerDetailsFetch';
 import {ModalActions} from '../..';
+import {fetchDetails} from '../../trips/actions/details';
 
-export default (containerID, driverID) => {
+export default (tripID, driverID) => {
   return (dispatch, getState) => {
-    const {containers, userLogged} = getState().app;
+    const {containers, userLogged, tripDetails} = getState().app;
     const {token} = userLogged;
     const params = {
-      driverID,
-    }
-
-    const container = containers.containers[containerID];
-    if(!driverID) {
-      dispatch(ModalActions.addError('Please pick avalaible driver'));
-      return;
-    }
-
-    if(!(container && container.CurrentTrip && container.CurrentTrip.District)) {
-      dispatch(ModalActions.addError('Select district first'));
-      return;
+      DriverID: driverID,
     }
 
     dispatch({
       type: DriversActions.DRIVERS_PICK_START,
-      ContainerID: containerID, driverID,
+      driverID,
     });
 
-    fetchPost('/container/' + containerID + '/driver', token, params).then(function(response) {
+    dispatch({
+      type: "PICKDRIVERSTART",
+    });
+
+    fetchPost('/trip/' + tripID + '/driver', token, params).then(function(response) {
       if(response.ok) {
         response.json().then(function(resp) {
           const response = resp.data;
           dispatch({
             type: DriversActions.DRIVERS_PICK_SUCCESS, 
-            ContainerID: containerID,
             trip: response,
           });
 
-          const orders = _.map(response.CurrentTrip.UserOrderRoutes, (route) => {
+          const orders = _.map(tripDetails.trip.UserOrderRoutes, (route) => {
             return _.assign({}, route.UserOrder, {
               Status: route.OrderStatus.OrderStatus,
             });
@@ -46,20 +39,26 @@ export default (containerID, driverID) => {
 
           dispatch({
             type: actionTypes.CONTAINER_DETAILS_FETCH_SUCCESS,
-            ContainerID: containerID,
             container: response,
             trip: response.CurrentTrip,
             orders: orders,
             fillAble: false,
             reusable: false,
-          })
+          });
+
+          dispatch({
+            type: "PICKDRIVEREND",
+          });
+          dispatch(fetchDetails(tripID));
         });
       } else {
         response.json().then(function(response) {
           const error = (response && response.error && response.error.message);
           dispatch({
             type: DriversActions.DRIVERS_PICK_FAILED,
-            ContainerID: containerID,
+          });
+          dispatch({
+            type: "PICKDRIVEREND",
           });
           dispatch(ModalActions.addError(error));
         });
@@ -67,7 +66,9 @@ export default (containerID, driverID) => {
     }).catch(() => {
         dispatch({
           type: DriversActions.DRIVERS_PICK_FAILED,
-          ContainerID: containerID,
+        });
+        dispatch({
+          type: "PICKDRIVEREND",
         });
         dispatch(ModalActions.addError(`Network error while setting driver ${driverID} for container ${containerID}`));
     });

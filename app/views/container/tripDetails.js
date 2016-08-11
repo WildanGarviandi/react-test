@@ -9,6 +9,9 @@ import {ButtonBase, ButtonWithLoading, Modal, Page} from '../base';
 import DistrictAndDriver from './districtAndDriver';
 import {OrderTable} from './table';
 import * as TripDetails from '../../modules/trips/actions/details';
+import Accordion from '../base/accordion';
+import NextDestinationSetter from './nextDestinationSetter';
+import TransportSetter from './secondSetting';
 
 import styles from './styles.css';
 
@@ -20,24 +23,6 @@ const headers = [{
   time: 'Pickup Time', orderStatus: 'Order Status',routeStatus: 'Route Status', action: 'Action',
   CODValue: 'COD Value'
 }];
-
-const MessageModal = React.createClass({
-  handleClose() {
-    const {closeModal} = this.props;
-    closeModal();
-  },
-  render() {
-    const {message, show} = this.props;
-
-    return (
-      <Modal show={show} width={250}>
-        {message}
-        <br/>
-        <ButtonBase onClick={this.handleClose} styles={styles.modalBtn}>Close</ButtonBase>
-      </Modal>
-    );
-  }
-});
 
 const DetailPage = React.createClass({
   getInitialState() {
@@ -75,20 +60,13 @@ const DetailPage = React.createClass({
   },
   deassignDriver() {
     if(confirm('Are you sure you want to deassign driver on this container?')) {
-      this.setState({showModal: true});
-      this.props.driverDeassign(this.props.container.ContainerID);
+      this.props.driverDeassign();
     }
   },
   render() {
-    const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, emptying, fillAble, hasDriver, isFetching, orders, reusable, statusList, TotalCODValue, CODCount, totalDeliveryFee, trip} = this.props;
+    const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, fillAble, hasDriver, isFetching, orders, reusable, statusList, TotalCODValue, CODCount, totalDeliveryFee, trip} = this.props;
 
-    let messages = [];
-    if(this.state.showModal && emptying && !emptying.isInProcess && !emptying.isSuccess && emptying.error) {
-      messages.push(emptying.error);
-    }
-
-    const messageModal = messages.length > 0 &&
-      <MessageModal show={true} message={messages[0]} closeModal={this.closeModal} />;
+    console.log('f', fillAble);
 
     return (
       <div>
@@ -103,7 +81,6 @@ const DetailPage = React.createClass({
         {
           !this.props.notFound && !isFetching &&
           <Page title={'Trip Details' + (trip.ContainerNumber && (" of Container " + trip.ContainerNumber))}>
-            {messageModal}
             {
               fillAble &&
               <ButtonWithLoading textBase={'Fill Container'} onClick={this.goToFillContainer} styles={{base: styles.normalBtn}} />
@@ -116,10 +93,15 @@ const DetailPage = React.createClass({
               canDeassignDriver &&
               <ButtonWithLoading textBase="Cancel Assignment" textLoading="Deassigning" onClick={this.deassignDriver} isLoading={driverState.isDeassigning} />
             }
-            <DistrictAndDriver show={orders.length > 0} />
+            <Accordion initialState="collapsed">
+              <NextDestinationSetter trip={trip} />
+            </Accordion>
+            <Accordion initialState="collapsed">
+              <TransportSetter trip={trip} />
+            </Accordion>
             <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>Total {orders.length} items</span>
             {
-              !trip.DestinationHub &&
+              !trip.DestinationHub && trip.District &&
               <span>
                 <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>Total Delivery Fee Rp {totalDeliveryFee || 0}</span>
                 <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>Total COD Value Rp {TotalCODValue},- ({CODCount} items)</span>
@@ -149,28 +131,35 @@ const mapStateToProps = (state, ownProps) => {
     return {isFetching: true};
   }
 
-  const {emptying, fillAble, reusable} = [false, true, false];
+  if(!trip) {
+    return {notFound: true};
+  }
+
+  const emptying = false;
+  const reusable = false;
+  const fillAble = trip.OrderStatus && (trip.OrderStatus.OrderStatusID === 1 || trip.OrderStatus.OrderStatusID === 9);
   const {drivers} = state.app;
 
   const containerOrders = lodash.map(trip.UserOrderRoutes, (route) => {
-    return route.UserOrder;
+    return route;
   });
 
-  console.log
-
-  const orders = _.map(containerOrders, (order) => ({
-    id: order.WebOrderID,
-    id2: order.UserOrderNumber,
-    pickup: order.PickupAddress && order.PickupAddress.Address1,
-    dropoff: order.DropoffAddress && order.DropoffAddress.Address1,
-    time: order.PickupTime && (new Date(order.PickupTime)).toString(),
-    id3: order.UserOrderID,
-    isDeleting: order.isDeleting,
-    orderStatus: (order.OrderStatus && order.OrderStatus.OrderStatus) || '',
-    routeStatus: order.Status,
-    CODValue: order.IsCOD ? order.TotalValue : 0,
-    DeliveryFee: order.DeliveryFee
-  }));
+  const orders = _.map(containerOrders, (route) => {
+    const order = route.UserOrder;
+    return {
+      id: order.WebOrderID,
+      id2: order.UserOrderNumber,
+      pickup: order.PickupAddress && order.PickupAddress.Address1,
+      dropoff: order.DropoffAddress && order.DropoffAddress.Address1,
+      time: order.PickupTime && (new Date(order.PickupTime)).toString(),
+      id3: order.UserOrderID,
+      isDeleting: order.isDeleting,
+      orderStatus: (order.OrderStatus && order.OrderStatus.OrderStatus) || '',
+      routeStatus: route.OrderStatus && route.OrderStatus.OrderStatus,
+      CODValue: order.IsCOD ? order.TotalValue : 0,
+      DeliveryFee: order.DeliveryFee,
+    }
+  });
 
   const CODOrders = _.filter(containerOrders, (order) => order.IsCOD);
 
@@ -203,7 +192,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     backToContainer: function() {
       dispatch(push('/container'));
@@ -214,8 +203,8 @@ const mapDispatchToProps = (dispatch) => {
     containerDetailsFetch: function(id) {
       dispatch(TripDetails.fetchDetails(id));
     },
-    driverDeassign: function(containerID) {
-      dispatch(ContainerDetailsActions.deassignDriver(containerID));
+    driverDeassign: function() {
+      dispatch(ContainerDetailsActions.deassignDriver(ownProps.params.id));
     },
     goToFillContainer: function(id) {
       dispatch(push('/container/' + id + '/fill'));

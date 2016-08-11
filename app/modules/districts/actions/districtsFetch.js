@@ -15,7 +15,7 @@ export default () => {
           dispatch({ type: actionTypes.DISTRICTS_FETCH_SUCCESS, districts: response.data.districts.rows });
         });
       } else {
-        dispatch({ type: actionTypes.DISTRICTS_FETCH_FAILED });        
+        dispatch({ type: actionTypes.DISTRICTS_FETCH_FAILED });
       }
     });
   }

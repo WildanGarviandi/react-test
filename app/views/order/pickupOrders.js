@@ -6,6 +6,7 @@ import styles from './styles.css';
 import {ButtonWithLoading, Page} from '../base';
 import Accordion from './pickupOrdersAccordion';
 import * as OrdersPickup from '../../modules/orders/actions/pickup';
+import Infographic from './infoGraphic';
 
 const PickupOrders = React.createClass({
   render() {
@@ -22,6 +23,7 @@ const PickupOrders = React.createClass({
     return (
       <Page title="Pickup Orders" additional="Get this order from merchant">
         <ButtonWithLoading {...groupingOrdersBtnProps} />
+        <Infographic />
         <Accordion />
         <PickupOrdersTable />
       </Page>

@@ -11,7 +11,7 @@ import styles from './styles.css';
 
 const DriverSetter = React.createClass({
   componentWillMount() {
-    // this.props.FleetsFetch();
+    this.props.FleetsFetch();
   },
   getInitialState() {
     return {
@@ -20,7 +20,6 @@ const DriverSetter = React.createClass({
   },
   driverSet() {
     this.props.DriverSet(this.state.selectedDriver.key);
-    this.props.validate();
   },
   driverSelect(driver) {
     this.setState({
@@ -67,7 +66,7 @@ const DriverSetter = React.createClass({
           }
           {
             !isFetchingFleet && !isFetchingDriver && driverName &&
-            <span>{driverName} / {driversFleetName}</span>
+            <span>{driverName} {driversFleetName}</span>
           }
           {
             !isFetchingFleet && !isFetchingDriver && !driverName &&
@@ -79,13 +78,16 @@ const DriverSetter = React.createClass({
             </span>
           }
         </span>
+        <span style={{clear: 'both'}} />
       </div>
     );
   }
 });
 
 function StateToProps(state, ownProps) {
-  const container = state.app.containers.containers[ownProps.containerID];
+  // const container = state.app.containers.containers[ownProps.containerID];
+  const {tripDetails} = state.app;
+  const container = {CurrentTrip: tripDetails.trip};
   const driversStore = state.app.driversStore;
   const fleetDrivers = driversStore.fleetDrivers;
 
@@ -115,7 +117,7 @@ function StateToProps(state, ownProps) {
   const driverName =  UtilHelper.UserFullName(driver);
   const fleet = fleetList.dict[fleetDrivers.active];
   const fleetName = UtilHelper.FleetName(fleet);
-  const driversFleetName = container.CurrentTrip.Driver && container.CurrentTrip.Driver.Driver.FleetManager.CompanyDetail.CompanyName;
+  const driversFleetName = container.CurrentTrip.Driver && "";
   const {isSettingDriver} = container;
 
   const canPickFleet = state.app.userLogged.isCentralHub;
@@ -124,14 +126,15 @@ function StateToProps(state, ownProps) {
     canPickFleet,
     driverName, drivers, driversFleetName, fleetName, fleets,
     isFetchingDriver, isFetchingFleet,
-    isSettingDriver,
+    isSettingDriver: tripDetails.isDriver,
   };
 }
 
 function DispatchToProps(dispatch, ownProps) {
+  console.log('owp', ownProps);
   return {
     DriverSet(driverID) {
-      dispatch(DriversActions.driverSet(ownProps.containerID, driverID));
+      dispatch(DriversActions.driverSet(ownProps.trip.TripID, driverID));
     },
     FleetSet(fleetID) {
       dispatch(FleetSet(fleetID));

@@ -11,7 +11,7 @@ export default (username, password) => {
       if(response.ok) {
         response.json().then((response) => {
           dispatch({ type: actionTypes.LOGIN_SUCCESS, user: response.data.SignIn });
-          dispatch(push('/pickupOrders'));
+          dispatch(push('/orders/pickup'));
         });
       } else {
         dispatch({ type: actionTypes.LOGIN_FAILED, message: 'Bad login information' });

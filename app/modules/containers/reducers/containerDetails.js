@@ -70,6 +70,7 @@ export default (state = initialState, action) => {
     }
 
     case DistrictActions.DISTRICT_SET_SUCCESS: {
+      return state;
       return Update(state, {
         CurrentTrip: {
           District: {

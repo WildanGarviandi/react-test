@@ -134,7 +134,7 @@ const stateToProps = (state) => {
     pagination: {
       limit: limit,
       currentPage: currentPage,
-      totalItem: total
+      total: total
     },
     isFetching: isFetching,
   }

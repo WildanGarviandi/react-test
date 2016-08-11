@@ -153,7 +153,7 @@ function FullAddress(address) {
 }
 
 function TripDropOff(trip) {
-  const destinationHub = trip.DestinationHub && FullAddress(trip.DestinationHub);
+  const destinationHub = trip.DestinationHub && ("Hub " + trip.DestinationHub.Name + " -- " + FullAddress(trip.DestinationHub));
   const dropoffAddress = trip.DropoffAddress && FullAddress(trip.DropoffAddress);
 
   return destinationHub || dropoffAddress || "";

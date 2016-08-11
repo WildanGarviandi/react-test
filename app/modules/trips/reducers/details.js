@@ -20,6 +20,14 @@ export default (state = initialState, action) => {
       return lodash.assign({}, state, {trip: action.trip});
     }
 
+    case "PICKDRIVERSTART": {
+      return lodash.assign({}, state, {isDriver: true});
+    }
+
+    case "PICKDRIVEREND": {
+      return lodash.assign({}, state, {isDriver: false});
+    }
+
     default: return state;
   }
 }

@@ -122,7 +122,7 @@ const DetailPage = React.createClass({
             {
               orders.length > 0 &&
               <div>
-                <OrderTable columns={fillAble ? columns : nonFillColumn} headers={headers} items={orders} statusList={statusList} />
+                <OrderTable columns={columns} headers={headers} items={orders} statusList={statusList} />
               </div>
             }
           </Page>

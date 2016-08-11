@@ -131,7 +131,7 @@ export const fetchList = () => {
         });
       } else {
         dispatch({ type: Constants.RECEIVED_ORDERS_FETCH_END });
-        dispatch(ModalActions.addMessage('Failed to fetch pickup orders'));
+        dispatch(ModalActions.addMessage('Failed to fetch received orders'));
       }
     }).catch(() => { 
       dispatch({ type: Constants.RECEIVED_ORDERS_FETCH_END });

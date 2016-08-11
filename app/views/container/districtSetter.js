@@ -18,7 +18,7 @@ function FindByName(districts, districtName) {
 
 const DistrictSetter = React.createClass({
   componentWillMount() {
-    // this.props.DistrictsFetch();
+    this.props.DistrictsFetch();
   },
   componentWillReceiveProps(nextProps) {
     this.setState({nextDistrict: {value: nextProps.districtName}});
@@ -83,8 +83,10 @@ const DistrictSetter = React.createClass({
 });
 
 function StateToProps(state, ownProps) {
-  const containerID = ownProps.containerID;
-  const container = state.app.containers.containers[containerID];
+  // const containerID = ownProps.containerID;
+  // const container = state.app.containers.containers[containerID];
+  const {tripDetails} = state.app;
+  const container = {CurrentTrip: tripDetails.trip};
 
   const districtsList = state.app.districts.districts;
   const districts = _.map(districtsList, (district) => {
@@ -122,7 +124,7 @@ function DispatchToProps(dispatch, ownProps) {
       dispatch(DistrictsFetch());
     },
     DistrictSet(districtID) {
-      dispatch(DistrictsActions.districtSet(ownProps.containerID, districtID));
+      dispatch(DistrictsActions.districtSet(ownProps.tripID, districtID));
     },
   }
 }

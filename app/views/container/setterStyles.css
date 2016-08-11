@@ -1,0 +1,90 @@
+.setterHeader {
+  background-color: #df3a40;
+  color: #fff;
+  text-indent: 10px;
+  font-size: 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.setterHeader.open {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.headerDone {
+  background-color: #1A2226;
+}
+
+.setterWrapper {
+  border: solid 1px #ccc;
+  border-radius: 5px;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.setterBody {
+  padding: 15px;
+}
+
+.setterLeft,
+.setterRight {
+  border: solid 1px #ccc;
+  border-radius: 5px;
+  background-color: #fafafa;
+  min-height: 53px;
+  width: 49%;
+  position: relative;
+}
+
+.setterLeft {
+  float: left;
+}
+
+.disabled .shadow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  opacity: 0.8;
+  padding-top: 0;
+  left: -30px;
+}
+
+.setterRight {
+  float: right;
+}
+
+.setterLeft > *,
+.setterRight > * {
+  padding-top: 15px;
+  margin-left: 30px;
+}
+
+.setterOR {
+  font-size: 20px;
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  background-color: #fff;
+  border: solid 1px #ccc;
+  border-radius: 25px;
+  position: absolute;
+  top: 82px;
+  left: 0;
+  right: 0;
+  margin: -25px auto 0;
+}
+
+.grayHeader {
+  background-color: #ccc;
+  cursor: default;
+}
+
+.haveDriver {
+  cursor: default;
+}

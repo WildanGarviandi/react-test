@@ -5,7 +5,7 @@ import MyTripsTable from './myTripsTable';
 
 const ContainerPage = React.createClass({
   render() {
-    const title = this.props.path === "/myTrips" ? "Outbound Trips" : "<In></In>bound Trips";
+    const title = this.props.path === "/inbound" ? "Inbound Trips" : "Outbound Trips";
     return (
       <div>
         <Page title={title}>

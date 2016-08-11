@@ -54,13 +54,25 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact}) => {
       <ul className={styles.menuList}>
         <Accordion initialState={'collapsed'}>
           <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[0,1,2]} iconName={'list-alt'} iconTitle={'Orders'}>
-            <MenuItem active={activeMenuIdx == 1} to={'/pickupOrders'}>
+            <MenuItem active={activeMenuIdx == 1} to={'/orders/pickup'}>
               <Glyph className={styles.menuGlyph} name={'alert'}/>
               <span>Pickup Orders</span>
             </MenuItem>
-            <MenuItem active={activeMenuIdx == 2} to={'/receivedOrders'}>
+            <MenuItem active={activeMenuIdx == 2} to={'/orders/received'}>
               <Glyph className={styles.menuGlyph} name={'transfer'}/>
               <span>Received Orders</span>
+            </MenuItem>
+          </AccordionMenu>
+        </Accordion>
+        <Accordion initialState={'collapsed'}>
+          <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[3,4,5]} iconName={'barcode'} iconTitle={'Trips'}>
+            <MenuItem active={activeMenuIdx == 1} to={'/trips/inbound'}>
+              <Glyph className={styles.menuGlyph} name={'tasks'}/>
+              <span>Inbound</span>
+            </MenuItem>
+            <MenuItem active={activeMenuIdx == 2} to={'/trips/outbound'}>
+              <Glyph className={styles.menuGlyph} name={'road'}/>
+              <span>Outbound</span>
             </MenuItem>
           </AccordionMenu>
         </Accordion>
@@ -77,7 +89,7 @@ const DashboardContent = ({children}) => {
   return (<div className={styles.content}>{children}</div>);
 }
 
-const menuPaths = ['/orders', '/pickupOrders', '/receivedOrders'];
+const menuPaths = ['/orders/pickup', '/orders/received', '/orders', '/trips/inbound', '/trips/outbound', '/trips'];
 function GetActiveMenuIdx(path) {
   let fpath = _.find(menuPaths, (menu) => (path.indexOf(menu) > -1));
   let idx = menuPaths.indexOf(fpath);

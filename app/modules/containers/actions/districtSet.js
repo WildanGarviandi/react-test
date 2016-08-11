@@ -2,37 +2,34 @@ import {DistrictActions} from '../constants';
 import ModalActions from '../../modals/actions';
 import fetch from '../../fetch/post';
 
-function districtSet(containerID, districtID) {
+function districtSet(tripID, districtID) {
   return (dispatch, getState) => {
     const {userLogged} = getState().app;
     const {token} = userLogged;
 
     const params = {
-      districtID,
+      DistrictID: districtID,
     };
 
     dispatch({
       type: DistrictActions.DISTRICT_SET_START,
-      ContainerID: containerID,
       districtID,
     });
 
-    fetch('/container/' + containerID + '/district', token, params).then(function(response) {
+    fetch('/trip/' + tripID + '/setdestination', token, params).then(function(response) {
       if(response.ok) {
         response.json().then(function(resp) {
           const response = resp.data;
-          dispatch({ 
+          dispatch({
             type: DistrictActions.DISTRICT_SET_SUCCESS,
-            ContainerID: containerID,
-            district: response,
+            districtID,
           });
         });
       } else {
         response.json().then(function(response) {
           const error = (response && response.error && response.error.message);
-          dispatch({ 
+          dispatch({
             type: DistrictActions.DISTRICT_SET_FAILED,
-            ContainerID: containerID,
           });
           dispatch(ModalActions.addError(error));
         });
@@ -40,9 +37,8 @@ function districtSet(containerID, districtID) {
     }).catch(() => {
       dispatch({
         type: DistrictActions.DISTRICT_SET_FAILED,
-        ContainerID: containerID,
       });
-      dispatch(ModalActions.addError('Network error while setting district ' + districtID + ' for container ' + containerID));
+      dispatch(ModalActions.addError('Network error while setting district '));
     });
   }
 }
