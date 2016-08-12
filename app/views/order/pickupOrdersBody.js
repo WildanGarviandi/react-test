@@ -38,7 +38,7 @@ function BodyComponent(type, keyword, item, index) {
     }
 
     case "Link": {
-      return <PickupOrdersLink text={item[keyword]} item={item} to={'/order/' + item.UserOrderID}/>
+      return <PickupOrdersLink text={item[keyword]} item={item} to={'/orders/' + item.UserOrderID}/>
     }
 
     default: {
