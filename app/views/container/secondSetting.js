@@ -2,7 +2,6 @@ import classNaming from 'classnames';
 import React from 'react';
 import styles from './setterStyles.css';
 import DriverSetter from './driverSetter';
-import HubSetter from './HubSetter';
 import * as UtilHelper from '../../helper/utility';
 
 function HeaderWithDestination({nextDestination}) {
