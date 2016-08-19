@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Page} from '../base';
 import MyTripsTable from './myTripsTable';
-import InboundTable from './InboundTable';
+import InboundTable from './inboundTable';
 
 const ContainerPage = React.createClass({
   render() {
