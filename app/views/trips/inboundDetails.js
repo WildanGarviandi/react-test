@@ -6,13 +6,13 @@ import {push} from 'react-router-redux';
 import {ContainerDetailsActions, StatusList} from '../../modules';
 import districtsFetch from '../../modules/districts/actions/districtsFetch';
 import {ButtonBase, ButtonWithLoading, Modal, Page} from '../base';
-import DistrictAndDriver from './districtAndDriver';
-import {OrderTable} from './table';
+import DistrictAndDriver from '../container/districtAndDriver';
+import {OrderTable} from '../container/table';
 import * as TripDetails from '../../modules/trips/actions/details';
 import * as TripDetailsTrue from '../../modules/inboundTripDetails';
 import Accordion from '../base/accordion';
-import NextDestinationSetter from './nextDestinationSetter';
-import TransportSetter from './secondSetting';
+import NextDestinationSetter from '../container/nextDestinationSetter';
+import TransportSetter from '../container/secondSetting';
 
 import styles from './styles.css';
 
@@ -67,6 +67,8 @@ const DetailPage = React.createClass({
   render() {
     const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, fillAble, hasDriver, isFetching, isInbound, orders, reusable, statusList, TotalCODValue, CODCount, totalDeliveryFee, trip} = this.props;
 
+    const {isDeassigning} = this.props;
+
     return (
       <div>
         {
@@ -90,16 +92,10 @@ const DetailPage = React.createClass({
             }
             {
               canDeassignDriver &&
-              <ButtonWithLoading textBase="Cancel Assignment" textLoading="Deassigning" onClick={this.deassignDriver} isLoading={driverState.isDeassigning} />
-            }
-            {
-              !isInbound &&
-              <Accordion initialState="collapsed">
-                <NextDestinationSetter trip={trip} />
-              </Accordion>
+              <ButtonWithLoading textBase="Cancel Assignment" textLoading="Deassigning" onClick={this.deassignDriver} isLoading={isDeassigning} />
             }
             <Accordion initialState="collapsed">
-              <TransportSetter trip={trip} isInbound={isInbound} />
+              <TransportSetter trip={trip} isInbound={true} />
             </Accordion>
             <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>Total {orders.length} items</span>
             {
@@ -124,7 +120,7 @@ const DetailPage = React.createClass({
 
 const mapStateToProps = (state, ownProps) => {
   const {inboundTripDetails} = state.app;
-  const {isFetching, trip} = inboundTripDetails;
+  const {isDeassigning, isFetching, orders: rawOrders, trip} = inboundTripDetails;
   const containerID = ownProps.params.id;
   const {containers, statusList} = state.app.containers;
   const container = containers[containerID];
@@ -146,8 +142,10 @@ const mapStateToProps = (state, ownProps) => {
     return route;
   });
 
-  const orders = _.map(containerOrders, (route) => {
-    const order = route.UserOrder;
+  // const orders = _.map(containerOrders, (order) => {
+    // const order = route.UserOrder;
+
+  const orders = _.map(rawOrders, (order) => {
     return {
       id: order.WebOrderID,
       id2: order.UserOrderNumber,
@@ -155,11 +153,12 @@ const mapStateToProps = (state, ownProps) => {
       dropoff: order.DropoffAddress && order.DropoffAddress.Address1,
       time: order.PickupTime && (new Date(order.PickupTime)).toString(),
       id3: order.UserOrderID,
-      isDeleting: order.isDeleting,
+      isDeleting: order.isRemoving,
       orderStatus: (order.OrderStatus && order.OrderStatus.OrderStatus) || '',
-      routeStatus: route.OrderStatus && route.OrderStatus.OrderStatus,
+      routeStatus: order.Status,
       CODValue: order.IsCOD ? order.TotalValue : 0,
       DeliveryFee: order.DeliveryFee,
+      tripID: trip.TripID,
     }
   });
 
@@ -169,7 +168,6 @@ const mapStateToProps = (state, ownProps) => {
   //   return {notFound: true, isFetching};
   // }
 
-  console.log('ownProps', ownProps.routes);
   const routes = ownProps.routes;
   const paths = routes[2].path.split('/');
   const isInbound = paths[2] === 'inbound';
@@ -197,6 +195,8 @@ const mapStateToProps = (state, ownProps) => {
     TotalCODValue: _.reduce(CODOrders, (sum, order) => sum + order.TotalValue, 0),
     CODCount: CODOrders.length,
     isInbound,
+
+    isDeassigning,
   }
 }
 
@@ -218,11 +218,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(TripDetailsTrue.Deassign(ownProps.params.id));
     },
     goToFillContainer: function(id) {
-      if(path.indexOf('/inbound') < 0) {
-        dispatch(push('/trips/' + id + '/fillReceived'));
-      } else {
-        dispatch(push('/trips/' + id + '/fillPickup'));
-      }
+      dispatch(push('/trips/' + id + '/fillPickup'));
     },
     fetchStatusList: function() {
       dispatch(StatusList.fetch());

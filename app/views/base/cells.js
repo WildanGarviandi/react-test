@@ -10,7 +10,6 @@ export function TextCell({text}) {
 }
 
 export function LinkCell({onClick, text, to}) {
-  console.log('to', to);
   return <Link to={to} className={styles.link}>{text}</Link>;
 }
 

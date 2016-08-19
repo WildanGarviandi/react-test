@@ -21,6 +21,12 @@ export default (state = initialState, action) => {
       return lodash.assign({}, state, {isFetching: false});
     }
 
+    case Constants.OUTBOUND_TRIPS_SET_FILTER: {
+      return lodash.assign({}, state, {
+        filter: lodash.assign({}, state.filter, action.filter),
+      });
+    }
+
     case Constants.OUTBOUND_TRIPS_SET_LIST: {
       return lodash.assign({}, state, {
         list: action.list,

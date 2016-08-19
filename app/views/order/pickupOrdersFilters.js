@@ -4,6 +4,7 @@ import {conf, pickupOrdersColumns} from './ordersColumns';
 import {Filters} from '../base/table';
 import FiltersRow, {StatusFilter, TextFilter} from '../base/filters';
 import * as OrdersPickup from '../../modules/orders/actions/pickup';
+import * as PickupOrders from '../../modules/pickupOrders';
 
 function mapDispatchToPickupOrders(dispatch) {
   return {
@@ -32,7 +33,7 @@ function mapDispatchToPickupOrders(dispatch) {
         }
       }
 
-      dispatch(OrdersPickup.setFilter(newFilter));
+      dispatch(PickupOrders.AddFilters(newFilter));
     }
   }
 }
@@ -40,12 +41,19 @@ function mapDispatchToPickupOrders(dispatch) {
 function statusDispatch(dispatch) {
   return {
     filterFunc: function(filter) {
-      dispatch(OrdersPickup.setFilter({status: filter.val.key}));
+      console.log('ff', filter);
+      dispatch(PickupOrders.SetStatus(filter.val.value));
     }
   }
 }
 
-const PickupOrdersStatusFilter = connect(undefined, statusDispatch)(StatusFilter);
+function stateToStatus(state) {
+  return {
+    val: state.app.pickupOrders.filterStatus,
+  }
+}
+
+const PickupOrdersStatusFilter = connect(stateToStatus, statusDispatch)(StatusFilter);
 const PickupOrdersTextFilter = connect(undefined, mapDispatchToPickupOrders)(TextFilter);
 
 function FiltersComponents(type, item) {

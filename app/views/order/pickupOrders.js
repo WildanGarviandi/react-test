@@ -3,16 +3,16 @@ import React from 'react';
 import {connect} from 'react-redux';
 import PickupOrdersTable from './pickupOrdersTable';
 import styles from './styles.css';
-import {ButtonWithLoading, Page} from '../base';
+import {ButtonWithLoading, Input, Page} from '../base';
 import Accordion from './pickupOrdersAccordion';
-import * as OrdersPickup from '../../modules/orders/actions/pickup';
+import * as PickupOrders from '../../modules/pickupOrders';
 import Infographic from './infoGraphic';
 
-const PickupOrders = React.createClass({
+const PickupOrdersPage = React.createClass({
   render() {
     const groupingOrdersBtnProps = {
       textBase: "Group Orders",
-      textLoading: "Grouping Orders",
+      textLoading: "Group Orders",
       isLoading: this.props.isGrouping,
       onClick: this.props.GroupOrders,
       styles: {
@@ -43,9 +43,9 @@ function mapState(state) {
 function mapDispatch(dispatch) {
   return {
     GroupOrders: () => {
-      dispatch(OrdersPickup.groupOrders());
+      dispatch(PickupOrders.GroupOrders());
     }
   }
 }
 
-export default connect(mapState, mapDispatch)(PickupOrders);
+export default connect(mapState, mapDispatch)(PickupOrdersPage);

@@ -2,11 +2,11 @@ import lodash from 'lodash';
 import React from 'react';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
-import ReceivedOrdersTable from './receivedOrdersTable';
+import PickupOrdersTable from './pickupOrdersTable';
 import styles from './styles.css';
 import {ButtonWithLoading, Input, Page} from '../base';
 import Accordion from './receivedOrdersAccordion';
-import * as ReceivedOrders from '../../modules/receivedOrders';
+import * as OrdersPickup from '../../modules/orders/actions/pickup';
 
 const PickupOrders = React.createClass({
   getInitialState() {
@@ -20,8 +20,8 @@ const PickupOrders = React.createClass({
   },
   render() {
     const groupingOrdersBtnProps = {
-      textBase: "Consolidate Orders",
-      textLoading: "Consolidate Orders",
+      textBase: "Add Orders",
+      textLoading: "Adding Orders",
       isLoading: this.props.isGrouping,
       onClick: this.props.GroupOrders,
       styles: {
@@ -30,16 +30,10 @@ const PickupOrders = React.createClass({
     }
 
     return (
-      <Page title="Received Orders" additional="Deliver this order to next destination">
-        <span className={styles.finderWrapper}>
-          <span className={styles.finderLabel} onKeyDown={this.jumpTo}>
-            Jump to Order with AWB :
-          </span>
-          <Input onChange={this.onChange} onEnterKeyPressed={this.onEnterKeyPressed} />
-        </span>
+      <Page title="Add Orders to Trip">
         <ButtonWithLoading {...groupingOrdersBtnProps} />
         <Accordion />
-        <ReceivedOrdersTable />
+        <PickupOrdersTable isFill={true} />
       </Page>
     );
   }
@@ -54,16 +48,15 @@ function mapState(state) {
   }
 }
 
-function mapDispatch(dispatch) {
+function mapDispatch(dispatch, ownParams) {
+  const tripID = ownParams.params.tripID;
+
   return {
     Goto: (id) => {
       dispatch(push('/orders/' + id));
     },
     GroupOrders: () => {
-      dispatch(ReceivedOrders.ConsolidateOrders());
-    },
-    FindID: (id) => {
-      dispatch(ReceivedOrders.GoToDetails(id));
+      dispatch(OrdersPickup.fillTrip(tripID));
     },
   }
 }

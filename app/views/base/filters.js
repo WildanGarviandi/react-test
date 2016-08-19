@@ -14,8 +14,8 @@ function HandleFilter(keyword, filterFunc) {
   };
 }
 
-export function StatusFilter({keyword, filterFunc}) {
-  return <StatusDropdown handleSelect={HandleFilter(keyword, filterFunc)} />
+export function StatusFilter({keyword, filterFunc, val}) {
+  return <StatusDropdown handleSelect={HandleFilter(keyword, filterFunc)} val={val} />
 }
 
 export function TextFilter({keyword, filterFunc}) {

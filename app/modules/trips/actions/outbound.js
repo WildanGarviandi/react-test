@@ -30,7 +30,17 @@ export const setCurrentPage = (currentPage) => {
   };
 };
 
-export const fetchList = () => {
+export const setFilter = (filter) => {
+  return (dispatch) => {
+    dispatch({
+      type: Constants.OUTBOUND_TRIPS_SET_FILTER,
+      filter: filter,
+    });
+    dispatch(fetchList());
+  };
+};
+
+export const fetchList = (isInbound) => {
   return (dispatch, getState) => {
     const {userLogged, outboundTrips} = getState().app;
     const {token, hubID} = userLogged;
@@ -40,10 +50,12 @@ export const fetchList = () => {
       hubID: hubID,
       limit: limit,
       offset: (currentPage-1)*limit,
+      nonDelivered: true,
+      statusIDs: JSON.stringify([1,4,5]),
     });
 
     dispatch({ type: Constants.OUTBOUND_TRIPS_FETCH_START, query: query });
-    fetchGet('/trip/outbound', token, query).then(function(response) {
+    fetchGet(`/trip/${isInbound ? 'inbound': 'outbound'}`, token, query).then(function(response) {
       if(response.ok) {
         response.json().then(function({data}) {
           dispatch({

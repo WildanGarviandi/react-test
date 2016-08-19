@@ -1,12 +1,12 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import Accordion from '../base/filterAccordion';
-import * as OrdersPickup from '../../modules/orders/actions/pickup';
+import * as OrdersPickup from '../../modules/pickupOrders';
 
 function mapDispatchToPickupOrders(dispatch) {
   return {
     filterAction: (ids) => {
-      dispatch(OrdersPickup.setFilter({
+      dispatch(OrdersPickup.AddFilters({
         userOrderNumbers: JSON.stringify(ids),
       }));
     }

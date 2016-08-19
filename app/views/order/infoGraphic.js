@@ -1,17 +1,20 @@
+import lodash from 'lodash';
 import React from 'react';
 import {connect} from 'react-redux';
 import {StatusList} from '../../modules';
 import {Infograph} from '../base';
+import * as PickupOrders from '../../modules/pickupOrders';
 
 const Infographic = React.createClass({
+  componentWillMount() {
+    this.props.fetchCount();
+  },
   handleFilter(attr) {
-    const {pickStatus, category} = this.props;
-    // pickStatus(category[attr], attr.toUpperCase());
+    this.props.pickStatus(attr);
   },
   render() {
-    // const {containerInfo} = this.props;
-    const containerInfo = {notAssigned: 10, booked: 3};
-    const Info = _.map(containerInfo, (val, key) => {
+    const {infographicData} = this.props;
+    const Info = _.map(infographicData, ({val, key}) => {
       return <Infograph key={key} attr={key} val={val} onClick={this.handleFilter} />;
     });
 
@@ -24,22 +27,29 @@ const Infographic = React.createClass({
   }
 });
 
-export default Infographic;
+const stateToProps = (state) => {
+  const {infographicCount, infographicStatus} = state.app.pickupOrders;
+  const infographicData = lodash.map(infographicStatus, (status) => {
+    return {
+      key: status,
+      val: infographicCount[status],
+    }
+  });
 
-// const stateToProps = (state) => {
-//   const {groups: containerInfo, statusCategory} = state.app.containers;
-//   return {
-//     containerInfo,
-//     category: _.assign({}, statusCategory, {booked: [1]}),
-//   }
-// }
+  return {
+    infographicData,
+  }
+}
 
-// const dispatchToProps = (dispatch) => {
-//   return {
-//     pickStatus: function(val, name) {
-//       dispatch(StatusList.pick(val, name));
-//     },    
-//   }
-// }
+const dispatchToProps = (dispatch) => {
+  return {
+    fetchCount: () => {
+      dispatch(PickupOrders.FetchInfographic());
+    },
+    pickStatus: function(keyword) {
+      dispatch(PickupOrders.FilterByKeyword(keyword));
+    },
+  }
+}
 
-// export default connect(stateToProps, dispatchToProps)(Infographic);
+export default connect(stateToProps, dispatchToProps)(Infographic);

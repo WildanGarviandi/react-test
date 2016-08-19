@@ -6,6 +6,7 @@ import orderToggleAll from '../../modules/containers/actions/orderToggleAll';
 import orderToggle from '../../modules/containers/actions/orderToggle';
 import styles from './table.css';
 import classNaming from 'classnames';
+import * as TripDetails from '../../modules/inboundTripDetails';
 
 export const BaseHeader = React.createClass({
   render() {
@@ -126,8 +127,8 @@ const StatusCell = React.createClass({
 
 const DeleteCell = React.createClass({
   handleDelete() {
-    const {orderRemove, item} = this.props;
-    orderRemove(item.id3);
+    const {orderRemove, item, tripID} = this.props;
+    orderRemove(item.tripID, item.id3);
   },
   render() {
     const {item} = this.props;
@@ -150,8 +151,8 @@ const DeleteCellState = (state) => {
 
 const DeleteCellDispatch = (dispatch) => {
   return {
-    orderRemove: function(id) {
-      dispatch(orderRemove(id));
+    orderRemove: function(tripID, orderID) {
+      dispatch(TripDetails.OrderRemove(tripID, orderID));
     }
   }
 }

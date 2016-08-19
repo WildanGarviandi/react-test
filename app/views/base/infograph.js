@@ -8,7 +8,7 @@ const BoxState = {
     styles: styles.attrAll,
     name: 'list-alt'
   },
-  booked: {
+  BOOKED: {
     styles: styles.attrProcessed,
     name: 'tags',
     title: "Soon available",
@@ -21,7 +21,7 @@ const BoxState = {
     styles: styles.attrFinished,
     name: 'check'
   },
-  notAssigned: {
+  NOTASSIGNED: {
     styles: styles.attrOpen,
     name: 'map-marker',
     title: "Pick up now",

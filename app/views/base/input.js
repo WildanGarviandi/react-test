@@ -11,7 +11,7 @@ const CheckBox = React.createClass({
 
     return (
       <span className={styles.container}>
-        <input type="checkbox" checked={checked} onClick={this.handleClick} id={name} className={styles.checkbox} />
+        <input type="checkbox" checked={checked} onChange={this.handleClick} id={name} className={styles.checkbox} />
         <label htmlFor={name} className={styles.label}>{label}</label>
       </span>
     );

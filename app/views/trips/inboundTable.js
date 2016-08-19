@@ -4,15 +4,15 @@ import moment from 'moment';
 import React from 'react';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
-// import * as OutboundTrips from '../../modules/trips/actions/outbound';
-import * as OutboundTrips from '../../modules/outboundTrips';
+import * as OutboundTrips from '../../modules/trips/actions/outbound';
+import * as InboundTrips from '../../modules/inboundTrips';
 import {DropdownTypeAhead, Input, Pagination} from '../base';
 import DateRangePicker from '../base/dateRangePicker';
 import tableStyles from '../base/table.css';
 import StatusDropdown from '../base/statusDropdown';
 import {TripParser} from '../../modules/trips';
 
-const ColumnsOrder = ['driver', 'webstoreNames', 'dropoff', 'containerNumber', 'status'];
+const ColumnsOrder = ['driver', 'webstoreNames', 'pickup', 'containerNumber', 'status'];
 
 const ColumnsTitle = {
   containerNumber: "Container",
@@ -96,15 +96,22 @@ const DateCell = React.createClass({
   }
 });
 
+function StateToStatus(state) {
+  const statusName = state.app.inboundTrips.filtersStatus;
+  return {
+    val: statusName,
+  }
+}
+
 function SelectDispatch(dispatch) {
   return {
     handleSelect: (val) => {
-      dispatch(OutboundTrips.SetFiltersStatus(val.value));
+      dispatch(InboundTrips.SetFiltersStatus(val.value));
     }
   }
 }
 
-const TrueSelect = connect(undefined, SelectDispatch)(StatusDropdown);
+const TrueSelect = connect(StateToStatus, SelectDispatch)(StatusDropdown);
 
 const TripStatusSelect = React.createClass({
   selectVal(val) {
@@ -249,8 +256,8 @@ const TableStateful = React.createClass({
 });
 
 function StateToProps(state) {
-  const {outboundTrips} = state.app;
-  const {isFetching, limit, total, currentPage, trips} = outboundTrips;
+  const {inboundTrips} = state.app;
+  const {isFetching, limit, total, currentPage, trips} = inboundTrips;
 
   const paginationState = {
     currentPage: currentPage,
@@ -273,19 +280,18 @@ function StateToProps(state) {
 function DispatchToProps(dispatch, ownProps) {
   return {
     initialLoad() {
-      dispatch(OutboundTrips.FetchList());
+      dispatch(InboundTrips.FetchList());
     },
     paginationAction: {
       setCurrentPage(pageNum) {
-        dispatch(OutboundTrips.SetCurrentPage(pageNum));
+        dispatch(InboundTrips.SetCurrentPage(pageNum));
       },
       setLimit(limit) {
-        dispatch(OutboundTrips.SetLimit(limit));
+        dispatch(InboundTrips.SetLimit(limit));
       },
     },
     tripDetails(id) {
-      console.log('qq', ownProps.routes);
-      dispatch(push(`/trips/${id}`));
+      dispatch(push(`/trips/${id}/`));
     },
   };
 }

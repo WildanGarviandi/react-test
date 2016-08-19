@@ -6,11 +6,12 @@ import {Body} from '../base/table';
 import {conf, pickupOrdersColumns} from './ordersColumns';
 import BodyRow, {CheckBoxCell, LinkCell, TextCell} from '../base/cells';
 import * as OrdersPickup from '../../modules/orders/actions/pickup';
+import * as PickupOrders from '../../modules/pickupOrders';
 
 function mapDispatchToCheckBox(dispatch, ownProps) {
   return {
     onChange: function(val) {
-      dispatch(OrdersPickup.setSelected([ownProps.index], val));
+      dispatch(PickupOrders.ToggleSelectOne(ownProps.item.UserOrderID));
     }
   }
 }
@@ -34,7 +35,7 @@ function BodyComponent(type, keyword, item, index) {
     }
 
     case "Checkbox": {
-      return <PickupOrdersCheckBox checked={item[keyword]} index={index} />
+      return <PickupOrdersCheckBox checked={item[keyword]} item={item} />
     }
 
     case "Link": {

@@ -6,38 +6,44 @@ import PickupOrdersBody from './pickupOrdersBody';
 import PickupOrdersFilters from './pickupOrdersFilters';
 import PickupOrdersHeaders from './pickupOrdersHeaders';
 import * as OrdersPickup from '../../modules/orders/actions/pickup';
+import * as PickupOrders from '../../modules/pickupOrders';
 import OrdersSelector from '../../modules/orders/selector';
 
 function mapStateToPickupOrders(state) {
   const {pickupOrders} = state.app;
-  const {currentPage, isFetching, limit, list, selected, total} = pickupOrders;
-  const orders = lodash.map(list, (order, index) => {
-    return lodash.assign(order, {IsChecked: selected[index]});
-  });
+  const {currentPage, isFetching, limit, orders, selected, total} = pickupOrders;
+  // const orders = lodash.map(list, (order, index) => {
+  //   return lodash.assign(order, {IsChecked: selected[index]});
+  // });
 
   return {
     Headers: PickupOrdersHeaders,
     Filters: PickupOrdersFilters,
     Body: PickupOrdersBody,
     isFetching: isFetching,
-    items: list,
+    items: orders,
     pagination: {
       currentPage, limit, total,
     }
   }
 }
 
-function mapDispatchToPickupOrders(dispatch) {
+function mapDispatchToPickupOrders(dispatch, ownProps) {
   return {
     GetList: () => {
-      dispatch(OrdersPickup.fetchList());
+      console.log('please', ownProps.isFill, ownProps);
+      if(ownProps.isFill) {
+        dispatch(PickupOrders.FetchNotAssignedList());
+      } else {
+        dispatch(PickupOrders.FetchList());
+      }
     },
     PaginationActions: {
       setCurrentPage: (currentPage) => {
-        dispatch(OrdersPickup.setCurrentPage(currentPage));
+        dispatch(PickupOrders.SetCurrentPage(currentPage));
       },
       setLimit: (limit) => {
-        dispatch(OrdersPickup.setLimit(limit));
+        dispatch(PickupOrders.SetLimit(limit));
       },
     }
   }

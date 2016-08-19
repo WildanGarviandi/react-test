@@ -4,17 +4,24 @@ import {conf, pickupOrdersColumns} from './ordersColumns';
 import {Headers} from '../base/table';
 import HeadersRow from '../base/headers';
 import {CheckBox} from '../base/input';
-import * as OrdersPickup from '../../modules/orders/actions/pickup';
+import * as PickupOrders from '../../modules/pickupOrders';
+
+function stateToCheckbox(state) {
+  const checkedAll = state.app.pickupOrders.checkedAll;
+  return {
+    checked: checkedAll,
+  }
+}
 
 function mapDispatchToCheckBox(dispatch) {
   return {
-    onChange: function(val) {
-      dispatch(OrdersPickup.setSelectedAll(val));
+    onChange: function() {
+      dispatch(PickupOrders.ToggleSelectAll());
     }
   }
 }
 
-const PickupOrdersCheckBox = connect(undefined, mapDispatchToCheckBox)(CheckBox);
+const PickupOrdersCheckBox = connect(stateToCheckbox, mapDispatchToCheckBox)(CheckBox);
 
 function HeaderComponent(type, item) {
   switch(type) {

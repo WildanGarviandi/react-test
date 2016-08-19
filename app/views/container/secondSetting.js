@@ -24,11 +24,17 @@ const SecondSetting = React.createClass({
     }
   },
   render() {
-    const {accordionAction, accordionState, nextDestination, transportMethod, trip} = this.props;
+    const {accordionAction, accordionState, isInbound, nextDestination, transportMethod, trip} = this.props;
     const leftStyle = classNaming(styles.setterLeft);
 
     const canSet = trip.DestinationHub || trip.District;
     const haveSet = trip.Driver;
+
+    if(isInbound) {
+      return (
+        <DriverSetter trip={trip} />
+      );
+    }
 
     return (
       <div className={styles.setterWrapper}>

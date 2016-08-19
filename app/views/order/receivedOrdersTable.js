@@ -6,21 +6,18 @@ import ReceivedOrdersFilters from './receivedOrdersFilters';
 import ReceivedOrdersBody from './receivedOrdersBody';
 import ReceivedOrdersHeaders from './receivedOrdersHeaders';
 import OrdersSelector from '../../modules/orders/selector';
-import * as OrdersPickup from '../../modules/orders/actions/received';
+import * as ReceivedOrders from '../../modules/receivedOrders';
 
 function mapStateToPickupOrders(state) {
   const {receivedOrders} = state.app;
-  const {currentPage, isFetching, limit, list, selected, total} = receivedOrders;
-  const orders = lodash.map(list, (order, index) => {
-    return lodash.assign(order, {IsChecked: selected[index]});
-  });
+  const {currentPage, isFetching, limit, orders, selected, total} = receivedOrders;
 
   return {
     Headers: ReceivedOrdersHeaders,
     Filters: ReceivedOrdersFilters,
     Body: ReceivedOrdersBody,
     isFetching: isFetching,
-    items: list,
+    items: orders,
     pagination: {
       currentPage, limit, total,
     }
@@ -30,14 +27,14 @@ function mapStateToPickupOrders(state) {
 function mapDispatchToPickupOrders(dispatch) {
   return {
     GetList: () => {
-      dispatch(OrdersPickup.fetchList());
+      dispatch(ReceivedOrders.FetchList());
     },
     PaginationActions: {
       setCurrentPage: (currentPage) => {
-        dispatch(OrdersPickup.setCurrentPage(currentPage));
+        dispatch(ReceivedOrders.SetCurrentPage(currentPage));
       },
       setLimit: (limit) => {
-        dispatch(OrdersPickup.setLimit(limit));
+        dispatch(ReceivedOrders.SetLimit(limit));
       },
     }
   }

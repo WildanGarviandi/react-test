@@ -28,6 +28,63 @@ export default (state = initialState, action) => {
       return lodash.assign({}, state, {isDriver: false});
     }
 
+    case "ORDER_REMOVE_SUCCESS": {
+      const routes = state.trip.UserOrderRoutes;
+      const newRoutes = lodash.filter(routes, (route) => {
+        return route.UserOrder.UserOrderID !== action.orderID;
+      });
+
+      return lodash.assign({}, state, {
+        trip: lodash.assign({}, state.trip, {
+          UserOrderRoutes: newRoutes,
+        }),
+      });
+    }
+
+    case "ORDER_REMOVE_START": {
+      const newRoutes = lodash.reduce(state.trip.UserOrderRoutes, (acc, route) => {
+        if(route.UserOrder.UserOrderID === action.orderID) {
+          acc.push(lodash.assign({}, route, {
+            UserOrder: lodash.assign({}, route.UserOrder, {
+              isDeleting: true,
+            }),
+          }));
+        } else {
+          acc.push(route);
+        }
+
+        return acc;
+      }, []);
+
+      return lodash.assign({}, state, {
+        trip: lodash.assign({}, state.trip, {
+          UserOrderRoutes: newRoutes,
+        }),
+      });
+    }
+
+    case "ORDER_REMOVE_FAILED": {
+      const newRoutes = lodash.reduce(state.trip.UserOrderRoutes, (acc, route) => {
+        if(route.UserOrder.UserOrderID === action.orderID) {
+          acc.push(lodash.assign({}, route, {
+            UserOrder: lodash.assign({}, route.UserOrder, {
+              isDeleting: false,
+            }),
+          }));
+        } else {
+          acc.push(route);
+        }
+
+        return acc;
+      }, []);
+
+      return lodash.assign({}, state, {
+        trip: lodash.assign({}, state.trip, {
+          UserOrderRoutes: newRoutes,
+        }),
+      });
+    }
+
     default: return state;
   }
 }

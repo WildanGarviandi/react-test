@@ -5,6 +5,7 @@ import fetchGet from '../../fetch/get';
 import fetchPost from '../../fetch/post';
 import ModalActions from '../../modals/actions';
 import {push} from 'react-router-redux';
+import {modalAction} from '../../modals/constants';
 
 export const setLimit = (limit) => {
   return (dispatch) => {
@@ -92,7 +93,7 @@ export const groupOrders = () => {
       if(response.ok) {
         response.json().then(function({data}) {
           dispatch({ type: Constants.PICKUP_ORDERS_GROUP_END });
-          dispatch(push('/inboundTrips/' + data.TripID));
+          dispatch(push('/trips/inbound/' + data.TripID));
         });
       } else {
         dispatch({ type: Constants.PICKUP_ORDERS_GROUP_END });
@@ -105,7 +106,7 @@ export const groupOrders = () => {
   }
 }
 
-export const fetchList = () => {
+export const fetchList = (isFill) => {
   return (dispatch, getState) => {
     const {userLogged, pickupOrders} = getState().app;
     const {token, hubID} = userLogged;
@@ -116,6 +117,10 @@ export const fetchList = () => {
       limit: limit,
       offset: (currentPage-1)*limit,
     });
+
+    if (isFill) {
+      query['status'] = 6;
+    }
 
     dispatch({ type: Constants.PICKUP_ORDERS_FETCH_START, query: query });
     fetchGet('/order/pickup', token, query).then(function(response) {
@@ -135,6 +140,44 @@ export const fetchList = () => {
       }
     }).catch(() => { 
       dispatch({ type: Constants.PICKUP_ORDERS_FETCH_END });
+      dispatch(ModalActions.addMessage('Network error'));
+    });
+  }
+}
+
+export const fillTrip = (tripID) => {
+  return (dispatch, getState) => {
+    const {userLogged, pickupOrders} = getState().app;
+    const {orders, selected} = pickupOrders;
+    const {token} = userLogged;
+
+    const checkedOrdersID = lodash.chain(orders)
+      .filter((order) => {
+        return order.IsChecked;
+      })
+      .map((order) => (order.UserOrderID))
+      .value();
+
+    const body = {
+      ordersID: checkedOrdersID,
+    }
+
+    dispatch({type: modalAction.BACKDROP_SHOW});
+    dispatch({ type: Constants.RECEIVED_ORDERS_GROUP_START });
+    fetchPost(`/trip/${tripID}/orders`, token, body).then(function(response) {
+      dispatch({type: modalAction.BACKDROP_HIDE});
+      if(response.ok) {
+        response.json().then(function({data}) {
+          dispatch({ type: Constants.RECEIVED_ORDERS_GROUP_END });
+          dispatch(push('/trips/' + tripID));
+        });
+      } else {
+        dispatch({ type: Constants.RECEIVED_ORDERS_GROUP_END });
+        dispatch(ModalActions.addMessage('Failed to add orders'));
+      }
+    }).catch(() => { 
+      dispatch({type: modalAction.BACKDROP_HIDE});
+      dispatch({ type: Constants.RECEIVED_ORDERS_GROUP_END });
       dispatch(ModalActions.addMessage('Network error'));
     });
   }

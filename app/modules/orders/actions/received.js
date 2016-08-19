@@ -92,7 +92,7 @@ export const groupOrders = () => {
       if(response.ok) {
         response.json().then(function({data}) {
           dispatch({ type: Constants.RECEIVED_ORDERS_GROUP_END });
-          dispatch(push('/trips/' + data.TripID));
+          dispatch(push('/trips/outbound/' + data.TripID));
         });
       } else {
         dispatch({ type: Constants.RECEIVED_ORDERS_GROUP_END });
@@ -135,6 +135,74 @@ export const fetchList = () => {
       }
     }).catch(() => { 
       dispatch({ type: Constants.RECEIVED_ORDERS_FETCH_END });
+      dispatch(ModalActions.addMessage('Network error'));
+    });
+  }
+}
+
+export const goToDetails = (orderID) => {
+  return (dispatch, getState) => {
+    const {userLogged, receivedOrders} = getState().app;
+    const {token, hubID} = userLogged;
+    const {currentPage, limit, filter} = receivedOrders;
+
+    const query = lodash.assign({}, {
+      hubID: hubID,
+      limit: 1,
+      offset: 0,
+      userOrderNumber: orderID,
+    });
+
+    dispatch({ type: Constants.RECEIVED_ORDERS_FETCH_START, query: query });
+    fetchGet('/order/received', token, query).then(function(response) {
+      if(response.ok) {
+        response.json().then(function({data}) {
+          dispatch({ type: Constants.RECEIVED_ORDERS_FETCH_END });
+
+          if(data && data.rows && data.rows.length < 1) {
+            dispatch(ModalActions.addMessage(`Order ${orderID} not found`));
+          } else {
+            dispatch(push(`/orders/${data.rows[0].UserOrderID}`));
+          }
+        });
+      } else {
+        dispatch({ type: Constants.RECEIVED_ORDERS_FETCH_END });
+        dispatch(ModalActions.addMessage('Failed to fetch received orders'));
+      }
+    }).catch(() => { 
+      dispatch({ type: Constants.RECEIVED_ORDERS_FETCH_END });
+      dispatch(ModalActions.addMessage('Network error'));
+    });
+  }
+}
+
+export const fillTrip = (tripID) => {
+  return (dispatch, getState) => {
+    const {userLogged, pickupOrders} = getState().app;
+    const {list, selected} = pickupOrders;
+    const {token} = userLogged;
+
+    const selectedOrders = lodash.filter(list, (order, index) => {
+      return selected[index];
+    });
+
+    const query = {
+      OrderIDs: lodash.map(selectedOrders, (order) => (order.UserOrderID)),
+    };
+
+    dispatch({ type: Constants.RECEIVED_ORDERS_GROUP_START });
+    fetchPost(`/trip/${tripID}/orders`, token, query).then(function(response) {
+      if(response.ok) {
+        response.json().then(function({data}) {
+          dispatch({ type: Constants.RECEIVED_ORDERS_GROUP_END });
+          dispatch(push('/trips/' + data.TripID));
+        });
+      } else {
+        dispatch({ type: Constants.RECEIVED_ORDERS_GROUP_END });
+        dispatch(ModalActions.addMessage('Failed to consolidate orders'));
+      }
+    }).catch(() => { 
+      dispatch({ type: Constants.RECEIVED_ORDERS_GROUP_END });
       dispatch(ModalActions.addMessage('Network error'));
     });
   }
