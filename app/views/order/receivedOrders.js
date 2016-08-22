@@ -46,8 +46,8 @@ const PickupOrders = React.createClass({
 });
 
 function mapState(state) {
-  const {pickupOrders} = state.app;
-  const {isGrouping} = pickupOrders;
+  const {receivedOrders} = state.app;
+  const {isGrouping} = receivedOrders;
 
   return {
     isGrouping,

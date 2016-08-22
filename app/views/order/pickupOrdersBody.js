@@ -34,6 +34,20 @@ function BodyComponent(type, keyword, item, index) {
       return <TextCell text={item[keyword]} />
     }
 
+    case "Status": {
+      let color;
+
+      if(item["OrderStatus"] === "NOTASSIGNED") {
+        color = "#C33"
+      } else if(item["OrderStatus"] === "BOOKED") {
+        color = "#f0ad4e";
+      } else {
+        color = "#000";
+      }
+
+      return <span style={{color: color}}><TextCell text={item[keyword]} /></span>
+    }
+
     case "Checkbox": {
       return <PickupOrdersCheckBox checked={item[keyword]} item={item} />
     }

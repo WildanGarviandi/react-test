@@ -85,8 +85,8 @@ const DistrictSetter = React.createClass({
 function StateToProps(state, ownProps) {
   // const containerID = ownProps.containerID;
   // const container = state.app.containers.containers[containerID];
-  const {tripDetails} = state.app;
-  const container = {CurrentTrip: tripDetails.trip};
+  const {inboundTripDetails} = state.app;
+  const container = {CurrentTrip: inboundTripDetails.trip};
 
   const districtsList = state.app.districts.districts;
   const districts = _.map(districtsList, (district) => {

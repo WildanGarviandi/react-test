@@ -45,17 +45,19 @@ export function CanMarkTripDelivered(trip, orders) {
   return ['ACCEPTED', 'PICKUP', 'IN-TRANSIT'].indexOf(trip.OrderStatus.OrderStatus) > -1;
 }
 
-function GetTripType(trip) {
-  if(!trip.OriginHub) {
+export function GetTripType(trip, hubID) {
+  if(!trip) return "FETCH";
+
+  if(!trip.OriginHub && trip.DestinationHub && trip.DestinationHub.HubID === hubID) {
     return TripType.FIRSTLEG;
   }
 
   if(trip.OriginHub && trip.OriginHub.HubID === hubID) {
-    return TripType.INBOUND;
+    return TripType.OUTBOUND;
   }
 
   if(trip.DestinationHub && trip.DestinationHub.HubID === hubID) {
-    return TripType.OUTBOUND;
+    return TripType.INBOUND;
   }
 
   return "";

@@ -41,7 +41,6 @@ function mapDispatchToPickupOrders(dispatch) {
 function statusDispatch(dispatch) {
   return {
     filterFunc: function(filter) {
-      console.log('ff', filter);
       dispatch(PickupOrders.SetStatus(filter.val.value));
     }
   }

@@ -7,11 +7,12 @@ import {conf, receivedOrdersColumns} from './ordersColumns';
 import BodyRow, {CheckBoxCell, LinkCell, TextCell} from '../base/cells';
 import {ButtonWithLoading} from '../base';
 import * as OrdersReceived from '../../modules/orders/actions/received';
+import * as ReceivedOrders from '../../modules/receivedOrders';
 
 function mapDispatchToCheckBox(dispatch, ownProps) {
   return {
     onChange: function(val) {
-      dispatch(OrdersReceived.setSelected([ownProps.index], val));
+      dispatch(ReceivedOrders.ToggleSelectOne(ownProps.item.UserOrderID));
     }
   }
 }
@@ -34,8 +35,22 @@ function BodyComponent(type, keyword, item, index) {
       return <TextCell text={item[keyword]} />
     }
 
+    case "Status": {
+      let color;
+
+      if(item["OrderStatus"] === "NOTASSIGNED") {
+        color = "#C33"
+      } else if(item["OrderStatus"] === "BOOKED") {
+        color = "#f0ad4e";
+      } else {
+        color = "#000";
+      }
+
+      return <span style={{color: color}}><TextCell text={item[keyword]} /></span>
+    }
+
     case "Checkbox": {
-      return <ReceivedOrdersCheckBox checked={item[keyword]} index={index} />
+      return <ReceivedOrdersCheckBox checked={item[keyword]} item={item} />
     }
 
     case "Link": {

@@ -10,6 +10,9 @@ import {modalAction} from './modals/constants';
 const Constants = {
   TRIPS_INBOUND_DETAILS_DEASSIGN_END: "inbound/details/deassign/end",
   TRIPS_INBOUND_DETAILS_DEASSIGN_START: "inbound/details/deassign/start",
+  TRIPS_INBOUND_DETAILS_DISTRICT_END: "inbound/details/district/end",
+  TRIPS_INBOUND_DETAILS_DISTRICT_SET: "inbound/details/district/set",
+  TRIPS_INBOUND_DETAILS_DISTRICT_START: "inbound/details/district/start",
   TRIPS_INBOUND_DETAILS_DRIVER_END: "inbound/details/driver/end",
   TRIPS_INBOUND_DETAILS_DRIVER_SET: "inbound/details/driver/set",
   TRIPS_INBOUND_DETAILS_DRIVER_START: "inbound/details/driver/start",
@@ -53,6 +56,18 @@ export function Reducer(state = initialState, action) {
 
     case Constants.TRIPS_INBOUND_DETAILS_DEASSIGN_START: {
       return lodash.assign({}, state, {isDeassigning: true});
+    }
+
+    case Constants.TRIPS_INBOUND_DETAILS_DISTRICT_END: {
+      return lodash.assign({}, state, {isSetDistrict: false});
+    }
+
+    case Constants.TRIPS_INBOUND_DETAILS_DISTRICT_SET: {
+      return lodash.assign({}, state, {district: action.district});
+    }
+
+    case Constants.TRIPS_INBOUND_DETAILS_DISTRICT_START: {
+      return lodash.assign({}, state, {isSetDistrict: true});
     }
 
     case Constants.TRIPS_INBOUND_DETAILS_DRIVER_END: {
@@ -265,7 +280,7 @@ export function Deassign(tripID) {
         type: Constants.TRIPS_INBOUND_DETAILS_DEASSIGN_END,
       });
 
-      window.location.reload(false); 
+      window.location.reload(false);
     }).catch((e) => {
       const message = (e && e.message) || "Failed to deassign";
       dispatch({
@@ -384,6 +399,52 @@ export function AssignDriver(tripID, driverID) {
   }
 }
 
+export function SetTrip(trip, haveDone) {
+  return (dispatch, getState) => {
+    let orders, driver, fleet;
+
+    if(haveDone) {
+      orders = getState().app.inboundTripDetails.orders;
+      driver = getState().app.inboundTripDetails.driver;
+      fleet = getState().app.inboundTripDetails.fleet;
+    } else {
+      orders = _.map(trip.UserOrderRoutes, (route) => {
+        return _.assign({}, route.UserOrder, {
+          Status: route.OrderStatus.OrderStatus,
+          DeliveryFee: route.DeliveryFee,
+        });
+      });
+
+      driver = trip.Driver;
+      fleet = trip.fleet;
+    }
+
+    dispatch({ type: Constants.TRIPS_INBOUND_DETAILS_FETCH_END });
+
+    dispatch({
+      type: Constants.TRIPS_INBOUND_DETAILS_TRIP_SET,
+      driver: trip.Driver,
+      fleet: trip.FleetManager,
+      orders: orders,
+      trip: lodash.assign({}, getState().app.inboundTripDetails.trip, trip),
+    });
+
+    if(trip.FleetManager) {
+      dispatch(FetchDrivers(trip.FleetManager.UserID));
+    }
+
+    dispatch({
+      type: "CONTAINER_DETAILS_FETCH_SUCCESS",
+      ContainerID: trip.ContainerNumber,
+      container: {CurrentTrip: trip},
+      orders: orders,
+      trip: trip,
+      fillAble: trip.OrderStatus === 1 || trip.OrderStatus === 9,
+      reusable: false
+    });
+  }
+}
+
 export function FetchDetails(tripID) {
   return (dispatch, getState) => {
     const {userLogged} = getState().app;
@@ -396,36 +457,7 @@ export function FetchDetails(tripID) {
       }
 
       response.json().then(function({data}) {
-        var orders = _.map(data.UserOrderRoutes, (route) => {
-          return _.assign({}, route.UserOrder, {
-            Status: route.OrderStatus.OrderStatus,
-            DeliveryFee: route.DeliveryFee,
-          });
-        });
-
-        dispatch({ type: Constants.TRIPS_INBOUND_DETAILS_FETCH_END });
-
-        dispatch({
-          type: Constants.TRIPS_INBOUND_DETAILS_TRIP_SET,
-          driver: data.Driver,
-          fleet: data.FleetManager,
-          orders: orders,
-          trip: data,
-        });
-
-        if(data.FleetManager) {
-          dispatch(FetchDrivers(data.FleetManager.UserID));
-        }
-
-        dispatch({
-          type: "CONTAINER_DETAILS_FETCH_SUCCESS",
-          ContainerID: data.ContainerNumber,
-          container: {CurrentTrip: data},
-          orders: orders,
-          trip: data,
-          fillAble: data.OrderStatus === 1 || data.OrderStatus === 9,
-          reusable: false
-        });
+        dispatch(SetTrip(data));
       });
     }).catch(() => { 
       dispatch({ type: Constants.TRIPS_INBOUND_DETAILS_FETCH_END });

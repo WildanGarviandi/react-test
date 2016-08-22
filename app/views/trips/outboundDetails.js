@@ -119,7 +119,10 @@ const DetailPage = React.createClass({
               <ButtonWithLoading textBase="Cancel Assignment" textLoading="Deassigning" onClick={this.deassignDriver} isLoading={isDeassigning} />
             }
             <Accordion initialState="collapsed">
-              <TransportSetter trip={trip} isInbound={true} />
+              <NextDestinationSetter trip={trip} />
+            </Accordion>
+            <Accordion initialState="collapsed">
+              <TransportSetter trip={trip} isInbound={false} />
             </Accordion>
             <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>Total {orders.length} items</span>
             {
@@ -263,7 +266,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(TripDetailsTrue.Deassign(ownProps.params.id));
     },
     goToFillContainer: function(id) {
-      dispatch(push('/trips/' + id + '/fillPickup'));
+      dispatch(push('/trips/' + id + '/fillReceived'));
     },
     fetchStatusList: function() {
       dispatch(StatusList.fetch());

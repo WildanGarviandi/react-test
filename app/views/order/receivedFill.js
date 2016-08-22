@@ -33,7 +33,7 @@ const PickupOrders = React.createClass({
       <Page title="Add Orders to Trip">
         <ButtonWithLoading {...groupingOrdersBtnProps} />
         <Accordion />
-        <ReceivedOrdersTable />
+        <ReceivedOrdersTable isFill={true}/>
       </Page>
     );
   }

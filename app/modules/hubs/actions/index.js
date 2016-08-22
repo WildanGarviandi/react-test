@@ -2,13 +2,18 @@ import Constants from '../constants';
 import ModalActions from '../../modals/actions';
 import fetchGet from '../../fetch/get';
 import fetchPost from '../../fetch/post';
-
+import {SetTrip} from '../../inboundTripDetails';
+import {modalAction} from '../../modals/constants';
 export function startEdit() {
-  return {type: Constants.HUB_EDIT_START};
+  return (dispatch) => {
+    dispatch({type: Constants.HUB_EDIT_START});
+  }
 }
 
 export function endEdit() {
-  return {type: Constants.HUB_EDIT_END};
+  return (dispatch) => {
+    dispatch({type: Constants.HUB_EDIT_END});
+  }
 }
 
 export function setHub(tripID, hubID) {
@@ -20,19 +25,24 @@ export function setHub(tripID, hubID) {
       DestinationHubID: hubID,
     }
 
+    dispatch({type: modalAction.BACKDROP_SHOW});
     dispatch({type: Constants.HUB_UPDATE_START});
     fetchPost(`/trip/${tripID}/setdestination`, token, query).then((response) => {
       if(response.ok) {
         response.json().then(({data}) => {
           dispatch({type: Constants.HUB_PICK, hub: hubID});
           dispatch({type: Constants.HUB_UPDATE_END});
+          dispatch({type: modalAction.BACKDROP_HIDE});
+          dispatch(SetTrip(data));
         });
       } else {
+        dispatch({type: modalAction.BACKDROP_HIDE});
         dispatch({type: Constants.HUB_UPDATE_END});
         dispatch(ModalActions.addMessage(`Failed to set next destination`));
       }
     }).catch(() => {
       dispatch({type: Constants.HUB_UPDATE_END});
+      dispatch({type: modalAction.BACKDROP_HIDE});
       dispatch(ModalActions.addMessage(`Network error while setting destination`));
     });
   }

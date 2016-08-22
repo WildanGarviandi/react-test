@@ -24,10 +24,14 @@ function mapStateToPickupOrders(state) {
   }
 }
 
-function mapDispatchToPickupOrders(dispatch) {
+function mapDispatchToPickupOrders(dispatch, ownProps) {
   return {
     GetList: () => {
-      dispatch(ReceivedOrders.FetchList());
+      if(ownProps.isFill) {
+        dispatch(ReceivedOrders.FetchNotAssignedList());
+      } else {
+        dispatch(ReceivedOrders.FetchList());
+      }
     },
     PaginationActions: {
       setCurrentPage: (currentPage) => {

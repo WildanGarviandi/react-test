@@ -4,6 +4,7 @@ import FetchGet from './fetch/get';
 import FetchPost from './fetch/post';
 import ModalActions from './modals/actions';
 import {OrderParser} from './orders';
+import OrderStatusSelector from './orderStatus/selector';
 
 const Constants = {
   ORDERS_PICKUP_CURRENT_PAGE_SET: "pickup/currentPage/set",
@@ -18,11 +19,6 @@ const Constants = {
   ORDERS_PICKUP_SELECT_TOGGLE_ALL: "pickup/select/toggleAll",
   ORDERS_PICKUP_SELECT_TOGGLE_ONE: "pickup/select/toggleOne",
   ORDERS_PICKUP_SET: "pickup/set",
-}
-
-const orderStatus = {
-  BOOKED: 1,
-  NOTASSIGNED: 6,
 }
 
 //
@@ -152,6 +148,11 @@ export function AddFilters(newFilters) {
 
 export function FetchInfographic() {
   return (dispatch, getState) => {
+    const options = OrderStatusSelector.GetList(getState());
+    const orderStatus = {
+      BOOKED: 1,
+      NOTASSIGNED: 6,
+    };
     const {token} = getState().app.userLogged;
 
     lodash.each(infographicStatus, (status) => {
@@ -177,6 +178,12 @@ export function FetchInfographic() {
 
 export function FetchNotAssignedList() {
   return (dispatch, getState) => {
+    const options = OrderStatusSelector.GetList(getState());
+    const orderStatus = lodash.reduce(options, (results, status) => {
+      results[status.value] = status.key;
+      return results;
+    }, {});
+
     const {pickupOrders, userLogged} = getState().app;
     const {token} = userLogged;
     const {currentPage, filters, limit} = pickupOrders;
@@ -259,7 +266,13 @@ export function FetchList() {
 }
 
 export function FilterByKeyword(keyword) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const options = OrderStatusSelector.GetList(getState());
+    const orderStatus = lodash.reduce(options, (results, status) => {
+      results[status.value] = status.key;
+      return results;
+    }, {});
+
     const newFilters = {
       status: orderStatus[keyword],
     };
@@ -345,6 +358,12 @@ export function SetLimit(limit) {
 
 export function SetStatus(keyword) {
   return (dispatch, getState) => {
+    const options = OrderStatusSelector.GetList(getState());
+    const orderStatus = lodash.reduce(options, (results, status) => {
+      results[status.value] = status.key;
+      return results;
+    }, {});
+
     const {pickupOrders} = getState().app;
     const {filters} = pickupOrders;
     const newFilters = {

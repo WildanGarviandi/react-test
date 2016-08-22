@@ -5,6 +5,7 @@ import FetchPost from './fetch/post';
 import ModalActions from './modals/actions';
 import {modalAction} from './modals/constants';
 import {OrderParser} from './orders';
+import OrderStatusSelector from './orderStatus/selector';
 
 const Constants = {
   ORDERS_RECEIVED_CONSOLIDATE_END: "received/consolidate/end",
@@ -18,11 +19,6 @@ const Constants = {
   ORDERS_RECEIVED_SELECT_TOGGLE_ALL: "received/select/toggleAll",
   ORDERS_RECEIVED_SELECT_TOGGLE_ONE: "received/select/toggleOne",
   ORDERS_RECEIVED_SET: "received/set",
-}
-
-const orderStatus = {
-  BOOKED: 1,
-  NOTASSIGNED: 6,
 }
 
 //
@@ -148,7 +144,7 @@ export function ConsolidateOrders() {
       .value();
 
     const body = {
-      ordersID: checkedOrdersID,
+      OrderIDs: checkedOrdersID,
     }
 
     dispatch({
@@ -165,7 +161,7 @@ export function ConsolidateOrders() {
       });
 
       response.json().then(({data}) => {
-        dispatch(push('/trips/outbound/' + data.TripID));
+        dispatch(push('/trips/' + data.trip.TripID));
       });
     }).catch(() => {
       dispatch({
@@ -231,7 +227,7 @@ export function GoToDetails(orderNumber) {
       type: modalAction.BACKDROP_SHOW,
     });
 
-    FetchGet('/order/pickup', token, query).then((response) => {
+    FetchGet('/order/received', token, query).then((response) => {
       if(!response.ok) {
         throw new Error();
       }
@@ -291,6 +287,12 @@ export function SetLimit(limit) {
 
 export function SetStatus(keyword) {
   return (dispatch, getState) => {
+    const options = OrderStatusSelector.GetList(getState());
+    const orderStatus = lodash.reduce(options, (results, status) => {
+      results[status.value] = status.key;
+      return results;
+    }, {});
+
     const {receivedOrders} = getState().app;
     const {filters} = receivedOrders;
     const newFilters = {
@@ -327,3 +329,52 @@ export function ToggleSelectOne(orderID) {
     });
   }
 }
+
+export function FetchNotAssignedList() {
+  return (dispatch, getState) => {
+    const options = OrderStatusSelector.GetList(getState());
+    const orderStatus = lodash.reduce(options, (results, status) => {
+      results[status.value] = status.key;
+      return results;
+    }, {});
+
+    const {receivedOrders, userLogged} = getState().app;
+    const {token} = userLogged;
+    const {currentPage, filters, limit} = receivedOrders;
+
+    const query = lodash.assign({}, filters, {
+      limit: limit,
+      offset: (currentPage-1)*limit,
+      status: orderStatus.NOTASSIGNED,
+    });
+
+    dispatch({
+      type: Constants.ORDERS_RECEIVED_FETCH_START,
+    });
+
+    FetchGet('/order/received', token, query).then((response) => {
+      if(!response.ok) {
+        throw new Error();
+      }
+
+      dispatch({
+        type: Constants.ORDERS_RECEIVED_FETCH_END,
+      });
+
+      response.json().then(({data}) => {
+        dispatch({
+          type: Constants.ORDERS_RECEIVED_SET,
+          orders: lodash.map(data.rows, OrderParser),
+          total: data.count,
+        });
+      });
+    }).catch(() => {
+      dispatch({
+        type: Constants.ORDERS_RECEIVED_FETCH_END,
+      });
+
+      dispatch(ModalActions.addMessage("Failed to fetch received orders"));
+    });
+  }
+}
+

@@ -12,9 +12,6 @@ import OrdersSelector from '../../modules/orders/selector';
 function mapStateToPickupOrders(state) {
   const {pickupOrders} = state.app;
   const {currentPage, isFetching, limit, orders, selected, total} = pickupOrders;
-  // const orders = lodash.map(list, (order, index) => {
-  //   return lodash.assign(order, {IsChecked: selected[index]});
-  // });
 
   return {
     Headers: PickupOrdersHeaders,
@@ -31,7 +28,6 @@ function mapStateToPickupOrders(state) {
 function mapDispatchToPickupOrders(dispatch, ownProps) {
   return {
     GetList: () => {
-      console.log('please', ownProps.isFill, ownProps);
       if(ownProps.isFill) {
         dispatch(PickupOrders.FetchNotAssignedList());
       } else {

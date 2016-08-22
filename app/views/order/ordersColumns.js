@@ -13,7 +13,7 @@ export const conf = {
   LogisticShare: {title: "Logistic Share"},
   NextDestination: {filterType: "String", title: "Next Destination", cellType: "String"},
   OrderCost: {title: "Order Cost"},
-  OrderStatus: {filterType: "StatusDropdown", title: "Order Status", cellType: "String"},
+  OrderStatus: {filterType: "StatusDropdown", title: "Order Status", cellType: "Status"},
   PackageHeight: {title: "Package Height"},
   PackageLength: {title: "Package Length"},
   PackageWeight: {title: "Package Weight"},

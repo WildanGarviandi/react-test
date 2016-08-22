@@ -4,6 +4,7 @@ import {conf, receivedOrdersColumns} from './ordersColumns';
 import {Filters} from '../base/table';
 import FiltersRow, {StatusFilter, TextFilter} from '../base/filters';
 import * as OrdersReceived from '../../modules/orders/actions/received';
+import * as ReceivedOrders from '../../modules/receivedOrders';
 
 function mapDispatchToPickupOrders(dispatch) {
   return {
@@ -37,7 +38,21 @@ function mapDispatchToPickupOrders(dispatch) {
   }
 }
 
-const ReceivedOrdersStatusFilter = connect(undefined, mapDispatchToPickupOrders)(StatusFilter);
+function statusDispatch(dispatch) {
+  return {
+    filterFunc: function(filter) {
+      dispatch(ReceivedOrders.SetStatus(filter.val.value));
+    }
+  }
+}
+
+function stateToStatus(state) {
+  return {
+    val: state.app.receivedOrders.filterStatus,
+  }
+}
+
+const ReceivedOrdersStatusFilter = connect(stateToStatus, statusDispatch)(StatusFilter);
 const ReceivedOrdersTextFilter = connect(undefined, mapDispatchToPickupOrders)(TextFilter);
 
 function FiltersComponents(type, item) {
