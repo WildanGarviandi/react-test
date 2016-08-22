@@ -511,13 +511,18 @@ export function OrderReceived(scannedID) {
   }
 }
 
-export function TripDeliver(tripID) {
+export function TripDeliver(tripID, reuse) {
   return (dispatch, getState) => {
     const {inboundTripDetails, userLogged} = getState().app;
     const {token} = userLogged;
 
     dispatch({type: modalAction.BACKDROP_SHOW});
-    FetchPost(`/trip/${tripID}/markdeliver`, token).then((response) => {
+
+    const query = {
+      reusePackage: reuse ? true : false,
+    }
+
+    FetchPost(`/trip/${tripID}/markdeliver`, token, query).then((response) => {
       if(!response.ok) {
         throw new Error();
       }

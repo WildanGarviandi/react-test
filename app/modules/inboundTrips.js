@@ -173,3 +173,10 @@ export function SetLimit(limit) {
     dispatch(SetCurrentPage(1));
   }
 }
+
+export function GoToContainer(containerNumber) {
+  return (dispatch, getState) => {
+    const {userLogged} = getState().app;
+    const {hubID, token} = userLogged;
+  }
+}

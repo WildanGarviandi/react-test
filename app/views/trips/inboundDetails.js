@@ -11,11 +11,12 @@ import DistrictAndDriver from '../container/districtAndDriver';
 import {OrderTable} from '../container/table';
 import * as TripDetails from '../../modules/trips/actions/details';
 import * as TripDetailsTrue from '../../modules/inboundTripDetails';
+import ModalActions from '../../modules/modals/actions';
 import Accordion from '../base/accordion';
 import NextDestinationSetter from '../container/nextDestinationSetter';
 import TransportSetter from '../container/secondSetting';
 import styles from './styles.css';
-import {CanMarkOrderReceived, CanMarkTripDelivered} from '../../modules/trips';
+import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered} from '../../modules/trips';
 
 const columns = ['id', 'id2', 'pickup', 'dropoff', 'time', 'CODValue', 'orderStatus', 'routeStatus', 'action'];
 const nonFillColumn = columns.slice(0, columns.length - 1);
@@ -78,12 +79,20 @@ const DetailPage = React.createClass({
     });
   },
   deliverTrip() {
-    this.props.deliverTrip(this.props.trip.TripID);
+    if(this.props.canMarkTripDelivered) {
+      this.props.deliverTrip(this.props.trip.TripID);
+    } else {
+      this.props.askReuse({
+        message: "Do you want to reuse the container?",
+        action: this.props.reuse.bind(null, this.props.trip.TripID),
+        cancel: this.props.deliverTrip.bind(null, this.props.trip.TripID),
+      });
+    }
   },
   render() {
     const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, fillAble, hasDriver, isFetching, isInbound, orders, reusable, statusList, TotalCODValue, CODCount, totalDeliveryFee, trip} = this.props;
 
-    const {canMarkOrderReceived, canMarkTripDelivered, isDeassigning} = this.props;
+    const {canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, isDeassigning} = this.props;
 
     return (
       <div>
@@ -134,7 +143,7 @@ const DetailPage = React.createClass({
                   </span>
                 }
                 {
-                  canMarkTripDelivered &&
+                  (canMarkTripDelivered || canMarkContainer) &&
                   <span className={styles.finderWrapper2}>
                     <ButtonWithLoading textBase={'Mark Trip As Delivered'} textLoading={'Clearing Container'} isLoading={false} onClick={this.deliverTrip} />
                   </span>
@@ -150,7 +159,8 @@ const DetailPage = React.createClass({
 });
 
 const mapStateToProps = (state, ownProps) => {
-  const {inboundTripDetails} = state.app;
+  const {inboundTripDetails, userLogged} = state.app;
+  const {hubID} = userLogged;
   const {isDeassigning, isFetching, orders: rawOrders, trip} = inboundTripDetails;
   const containerID = ownProps.params.id;
   const {containers, statusList} = state.app.containers;
@@ -203,6 +213,8 @@ const mapStateToProps = (state, ownProps) => {
   const paths = routes[2].path.split('/');
   const isInbound = paths[2] === 'inbound';
 
+  console.log('mark', CanMarkTripDelivered(trip, rawOrders), CanMarkContainer(trip, hubID));
+
   return {
     trip: trip,
     orders: orders,
@@ -230,6 +242,7 @@ const mapStateToProps = (state, ownProps) => {
     isDeassigning,
     canMarkOrderReceived: CanMarkOrderReceived(trip, rawOrders),
     canMarkTripDelivered: CanMarkTripDelivered(trip, rawOrders),
+    canMarkContainer: CanMarkContainer(trip, hubID),
   }
 }
 
@@ -261,7 +274,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     deliverTrip: function(tripID) {
       dispatch(TripDetailsTrue.TripDeliver(tripID));
-    }
+    },
+    askReuse: function(modal) {
+      dispatch(ModalActions.addConfirmation(modal));
+    },
+    reuse: function(tripID) {
+      dispatch(TripDetailsTrue.TripDeliver(tripID, true));
+    },
   };
 };
 

@@ -13,6 +13,14 @@ export function CanAssignFleet(trip) {
   return ['BOOKED'].indexOf(trip.OrderStatus.OrderStatus) > -1;
 }
 
+export function CanMarkContainer(trip, hubID) {
+  if(!trip || !trip.OrderStatus || !trip.OriginHub || !trip.DestinationHub) return false;
+
+  if(trip.DestinationHub.HubID !== hubID) return false;
+
+  return ['IN-TRANSIT'].indexOf(trip.OrderStatus.OrderStatus) > -1;
+}
+
 export function CanMarkOrderReceived(trip, orders) {
   if(!trip || !trip.OrderStatus || trip.OriginHub) return false;
 

@@ -1,10 +1,15 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {Page} from '../base';
+import {Input, Page} from '../base';
+import * as InboundTrips from '../../modules/inboundTrips';
 import MyTripsTable from './myTripsTable';
 import InboundTable from './inboundTable';
+import styles from './styles.css';
 
 const ContainerPage = React.createClass({
+  gotoContainer(containerNumber) {
+    this.props.gotoContainer(containerNumber);
+  },
   render() {
     const isInbound = this.props.isInbound;
     const title = isInbound ? "Inbound Trips" : "Outbound Trips";
@@ -13,7 +18,15 @@ const ContainerPage = React.createClass({
         <Page title={title}>
         {
           isInbound &&
-          <InboundTable key={this.props.lastPath} lastPath={this.props.lastPath} isInbound={this.props.isInbound} />
+          <div>
+            <span className={styles.finderWrapper} style={{top: -10}}>
+              <span className={styles.finderLabel} onKeyDown={this.jumpTo}>
+                Jump to Container :
+              </span>
+              <Input onChange={this.onChange} onEnterKeyPressed={this.onEnterKeyPressed} />
+            </span>
+            <InboundTable key={this.props.lastPath} lastPath={this.props.lastPath} isInbound={this.props.isInbound} />
+          </div>
         }
         {
           !isInbound &&
@@ -36,5 +49,13 @@ function StateToProps(state, ownProps) {
     isInbound,
   };
 };
+
+function DispatchToPage(dispatch) {
+  return {
+    gotoContainer: (containerNumber) => {
+      dispatch(InboundTrips.GoToContainer(containerNumber));
+    }
+  }
+}
 
 export default connect(StateToProps)(ContainerPage);
