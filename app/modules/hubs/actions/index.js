@@ -33,7 +33,7 @@ export function setHub(tripID, hubID) {
           dispatch({type: Constants.HUB_PICK, hub: hubID});
           dispatch({type: Constants.HUB_UPDATE_END});
           dispatch({type: modalAction.BACKDROP_HIDE});
-          dispatch(SetTrip(data));
+          dispatch(SetTrip(data, true));
         });
       } else {
         dispatch({type: modalAction.BACKDROP_HIDE});
