@@ -10,7 +10,31 @@ export const TripType = {
 export function CanAssignFleet(trip) {
   if(!trip || !trip.OrderStatus) return false;
 
-  return ['BOOKED', 'ACCEPTED'].indexOf(trip.OrderStatus.OrderStatus) > -1;
+  return ['BOOKED'].indexOf(trip.OrderStatus.OrderStatus) > -1;
+}
+
+export function CanMarkOrderReceived(trip, orders) {
+  if(!trip || !trip.OrderStatus || trip.OriginHub) return false;
+
+  if(!lodash.some(orders, (order) => {
+    return order.Status !== "DELIVERED";
+  })) {
+    return false;
+  };
+
+  return ['ACCEPTED', 'PICKUP', 'IN-TRANSIT'].indexOf(trip.OrderStatus.OrderStatus) > -1;
+}
+
+export function CanMarkTripDelivered(trip, orders) {
+  if(!trip || !trip.OrderStatus || trip.OriginHub) return false;
+
+  if(lodash.some(orders, (order) => {
+    return order.Status !== "DELIVERED";
+  })) {
+    return false;
+  };
+
+  return ['ACCEPTED', 'PICKUP', 'IN-TRANSIT'].indexOf(trip.OrderStatus.OrderStatus) > -1;
 }
 
 function GetTripType(trip) {
@@ -50,7 +74,6 @@ export function TripParser(trip, hubID) {
     return OrderParser(route.UserOrder);
   });
 
-  console.log("OO", orders);
   const WebstoreNames = JoinAttr(orders, 'WebstoreName');
 
   return lodash.assign({}, trip, {

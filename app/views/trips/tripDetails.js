@@ -2,7 +2,7 @@ import React from 'react';
 import InboundDetails from './inboundDetails';
 
 function ThisPage(props) {
-  return <InboundDetails {...props} params={props.params} />
+  return <InboundDetails {...props} />
 }
 
 export default ThisPage;

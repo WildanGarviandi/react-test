@@ -1,11 +1,12 @@
 import lodash from 'lodash';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import classNaming from 'classnames';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
 import {ContainerDetailsActions, StatusList} from '../../modules';
 import districtsFetch from '../../modules/districts/actions/districtsFetch';
-import {ButtonBase, ButtonWithLoading, Modal, Page} from '../base';
+import {ButtonBase, ButtonWithLoading, Input, Modal, Page} from '../base';
 import DistrictAndDriver from '../container/districtAndDriver';
 import {OrderTable} from '../container/table';
 import * as TripDetails from '../../modules/trips/actions/details';
@@ -13,8 +14,8 @@ import * as TripDetailsTrue from '../../modules/inboundTripDetails';
 import Accordion from '../base/accordion';
 import NextDestinationSetter from '../container/nextDestinationSetter';
 import TransportSetter from '../container/secondSetting';
-
 import styles from './styles.css';
+import {CanMarkOrderReceived, CanMarkTripDelivered} from '../../modules/trips';
 
 const columns = ['id', 'id2', 'pickup', 'dropoff', 'time', 'CODValue', 'orderStatus', 'routeStatus', 'action'];
 const nonFillColumn = columns.slice(0, columns.length - 1);
@@ -33,6 +34,7 @@ const DetailPage = React.createClass({
       district: {
         isChanging: false,
       },
+      orderMarked: "",
     };
   },
   closeModal() {
@@ -64,10 +66,24 @@ const DetailPage = React.createClass({
       this.props.driverDeassign();
     }
   },
+  changeMark(val) {
+    this.setState({
+      orderMarked: val,
+    })
+  },
+  markReceived(val) {
+    this.props.markReceived(val);
+    this.setState({
+      orderMarked: "",
+    });
+  },
+  deliverTrip() {
+    this.props.deliverTrip(this.props.trip.TripID);
+  },
   render() {
     const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, fillAble, hasDriver, isFetching, isInbound, orders, reusable, statusList, TotalCODValue, CODCount, totalDeliveryFee, trip} = this.props;
 
-    const {isDeassigning} = this.props;
+    const {canMarkOrderReceived, canMarkTripDelivered, isDeassigning} = this.props;
 
     return (
       <div>
@@ -107,7 +123,22 @@ const DetailPage = React.createClass({
             }
             {
               orders.length > 0 &&
-              <div>
+              <div style={{position: 'relative'}}>
+                {
+                  canMarkOrderReceived &&
+                  <span className={styles.finderWrapper}>
+                    <span className={styles.finderLabel} onKeyDown={this.jumpTo}>
+                      Mark Order As Received From Driver :
+                    </span>
+                    <Input onChange={this.changeMark} onEnterKeyPressed={this.markReceived} ref="markReceived" base={{value:this.state.orderMarked}} />
+                  </span>
+                }
+                {
+                  canMarkTripDelivered &&
+                  <span className={styles.finderWrapper2}>
+                    <ButtonWithLoading textBase={'Mark Trip As Delivered'} textLoading={'Clearing Container'} isLoading={false} onClick={this.deliverTrip} />
+                  </span>
+                }
                 <OrderTable columns={fillAble ? columns : nonFillColumn} headers={headers} items={orders} statusList={statusList} />
               </div>
             }
@@ -197,6 +228,8 @@ const mapStateToProps = (state, ownProps) => {
     isInbound,
 
     isDeassigning,
+    canMarkOrderReceived: CanMarkOrderReceived(trip, rawOrders),
+    canMarkTripDelivered: CanMarkTripDelivered(trip, rawOrders),
   }
 }
 
@@ -223,6 +256,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     fetchStatusList: function() {
       dispatch(StatusList.fetch());
     },
+    markReceived: function(scannedID) {
+      dispatch(TripDetailsTrue.OrderReceived(scannedID));
+    },
+    deliverTrip: function(tripID) {
+      dispatch(TripDetailsTrue.TripDeliver(tripID));
+    }
   };
 };
 

@@ -5,6 +5,7 @@ import FetchDelete from './fetch/delete';
 import FetchGet from './fetch/get';
 import FetchPost from './fetch/post';
 import ModalActions from './modals/actions';
+import {modalAction} from './modals/constants';
 
 const Constants = {
   TRIPS_INBOUND_DETAILS_DEASSIGN_END: "inbound/details/deassign/end",
@@ -101,6 +102,18 @@ export function Reducer(state = initialState, action) {
         }
 
         return lodash.assign({}, order, {isReceiving: false});
+      });
+
+      return lodash.assign({}, state, {orders: newOrders});
+    }
+
+    case Constants.TRIPS_INBOUND_DETAILS_ORDER_RECEIVED_SET: {
+      const newOrders = lodash.map(state.orders, (order) => {
+        if(order.UserOrderID !== action.orderID) {
+          return order;
+        }
+
+        return lodash.assign({}, order, {Status: "DELIVERED"});
       });
 
       return lodash.assign({}, state, {orders: newOrders});
@@ -458,6 +471,76 @@ export function OrderRemove(tripID, orderID) {
       });
 
       dispatch(ModalActions.addMessage('Failed to remove order'));
+    });
+  }
+}
+
+export function OrderReceived(scannedID) {
+  return (dispatch, getState) => {
+    const {inboundTripDetails, userLogged} = getState().app;
+    const {token} = userLogged;
+    const {orders} = inboundTripDetails;
+
+    const scannedOrder = lodash.find(orders, (order) => {
+      return order.OrderStatus.OrderStatus !== 5 &&
+        (order.UserOrderNumber === scannedID || order.WebOrderID === scannedID);
+    });
+
+    dispatch({type: modalAction.BACKDROP_SHOW});
+    dispatch({
+      type: Constants.TRIPS_INBOUND_DETAILS_ORDER_RECEIVED_START,
+    });
+
+    FetchPost(`/order/${scannedOrder.UserOrderID}/markdeliver`, token).then((response) => {
+      if(!response.ok) {
+        throw new Error();
+      }
+
+      dispatch({type: modalAction.BACKDROP_HIDE});
+      dispatch({ type: Constants.TRIPS_INBOUND_DETAILS_ORDER_RECEIVED_END });
+      dispatch(ModalActions.addMessage(`Order ${scannedID} has been received`));
+      dispatch({
+        type: Constants.TRIPS_INBOUND_DETAILS_ORDER_RECEIVED_SET,
+        orderID: scannedOrder.UserOrderID,
+      });
+    }).catch(() => {
+      dispatch({type: modalAction.BACKDROP_HIDE});
+      dispatch({ type: Constants.TRIPS_INBOUND_DETAILS_ORDER_RECEIVED_END });
+      dispatch(ModalActions.addMessage('Failed to mark order as received'));
+    });
+  }
+}
+
+export function TripDeliver(tripID) {
+  return (dispatch, getState) => {
+    const {inboundTripDetails, userLogged} = getState().app;
+    const {token} = userLogged;
+
+    dispatch({type: modalAction.BACKDROP_SHOW});
+    FetchPost(`/trip/${tripID}/markdeliver`, token).then((response) => {
+      if(!response.ok) {
+        throw new Error();
+      }
+
+      dispatch({type: modalAction.BACKDROP_HIDE});
+      dispatch(ModalActions.addMessage('Trip marked as delivered'));
+
+      const newTrip = lodash.assign({}, inboundTripDetails.trip, {
+        OrderStatus: {
+          OrderStatus: "DELIVERED",
+        },
+      });
+
+      dispatch({
+        type: Constants.TRIPS_INBOUND_DETAILS_TRIP_SET,
+        driver: inboundTripDetails.driver,
+        fleet: inboundTripDetails.fleet,
+        orders: inboundTripDetails.orders,
+        trip: newTrip,
+      });
+    }).catch(() => {
+      dispatch({type: modalAction.BACKDROP_HIDE});
+      dispatch(ModalActions.addMessage('Failed to mark trip as delivered'));
     });
   }
 }
