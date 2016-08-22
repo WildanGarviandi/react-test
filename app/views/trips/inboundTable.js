@@ -12,7 +12,7 @@ import tableStyles from '../base/table.css';
 import StatusDropdown from '../base/statusDropdown';
 import {TripParser} from '../../modules/trips';
 
-const ColumnsOrder = ['driver', 'webstoreNames', 'pickup', 'containerNumber', 'status'];
+const ColumnsOrder = ['fleetName', 'driver', 'webstoreNames', 'pickup', 'containerNumber', 'status'];
 
 const ColumnsTitle = {
   containerNumber: "Container",
@@ -20,12 +20,15 @@ const ColumnsTitle = {
   driver: "Driver",
   dropoff: "Next Destination",
   dropoffTime: "Dropoff Time",
+  fleetName: "Fleet",
   pickup: "Pickup Address",
   pickupTime: "Pickup Time",
   status: "Status",
   tripNumber: "Trip Number",
   webstoreNames: "Webstore",
 }
+
+let fleetList;
 
 const SearchCell = React.createClass({
   render() {
@@ -194,6 +197,7 @@ function ProcessTrip(trip) {
     pickupTime: trip.PickupTime,
     status: trip.OrderStatus && trip.OrderStatus.OrderStatus,
     webstoreNames: parsedTrip.WebstoreNames,
+    fleetName: trip.FleetManager ? fleetList[trip.FleetManager.UserID].CompanyDetail.CompanyName : '',
   }
 }
 
@@ -256,8 +260,10 @@ const TableStateful = React.createClass({
 });
 
 function StateToProps(state) {
-  const {inboundTrips} = state.app;
+  const {inboundTrips, driversStore} = state.app;
   const {isFetching, limit, total, currentPage, trips} = inboundTrips;
+
+  fleetList = driversStore.fleetList.dict;
 
   const paginationState = {
     currentPage: currentPage,

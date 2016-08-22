@@ -4,9 +4,13 @@ import {Input, Page} from '../base';
 import * as InboundTrips from '../../modules/inboundTrips';
 import MyTripsTable from './myTripsTable';
 import InboundTable from './inboundTable';
+import FleetsFetch from '../../modules/drivers/actions/fleetsFetch';
 import styles from './styles.css';
 
 const ContainerPage = React.createClass({
+  componentWillMount() {
+    this.props.fleetsFetch();
+  },
   gotoContainer(containerNumber) {
     this.props.gotoContainer(containerNumber);
   },
@@ -54,8 +58,11 @@ function DispatchToPage(dispatch) {
   return {
     gotoContainer: (containerNumber) => {
       dispatch(InboundTrips.GoToContainer(containerNumber));
+    },
+    fleetsFetch: () => {
+      dispatch(FleetsFetch());
     }
   }
 }
 
-export default connect(StateToProps)(ContainerPage);
+export default connect(StateToProps, DispatchToPage)(ContainerPage);
