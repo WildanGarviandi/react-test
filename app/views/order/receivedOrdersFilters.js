@@ -33,7 +33,7 @@ function mapDispatchToPickupOrders(dispatch) {
         }
       }
 
-      dispatch(OrdersReceived.setFilter(newFilter));
+      dispatch(ReceivedOrders.AddFilters(newFilter));
     }
   }
 }
