@@ -160,7 +160,8 @@ const DetailPage = React.createClass({
 const mapStateToProps = (state, ownProps) => {
   const {inboundTripDetails, userLogged} = state.app;
   const {hubID} = userLogged;
-  const {isDeassigning, isFetching, orders: rawOrders, trip} = inboundTripDetails;
+  const {isDeassigning, isFetching, orders: rawOrders} = inboundTripDetails;
+  const trip = ownProps.trip;
   const containerID = ownProps.params.id;
   const {containers, statusList} = state.app.containers;
   const container = containers[containerID];

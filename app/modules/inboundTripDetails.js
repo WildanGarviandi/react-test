@@ -575,6 +575,12 @@ export function TripDeliver(tripID, reuse) {
         orders: inboundTripDetails.orders,
         trip: newTrip,
       });
+
+      if(reuse) {
+        response.json().then(({data}) => {
+          dispatch(push(`/trips/${data.NextTrip.TripID}`));
+        });
+      }
     }).catch(() => {
       dispatch({type: modalAction.BACKDROP_HIDE});
       dispatch(ModalActions.addMessage('Failed to mark trip as delivered'));

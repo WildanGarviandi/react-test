@@ -118,7 +118,7 @@ const DetailPage = React.createClass({
               canDeassignDriver &&
               <ButtonWithLoading textBase="Cancel Assignment" textLoading="Deassigning" onClick={this.deassignDriver} isLoading={isDeassigning} />
             }
-            <Accordion initialState="expanded">
+            <Accordion initialState={trip.DestinationHub || trip.District ? "collapsed" : "expanded"}>
               <NextDestinationSetter trip={trip} />
             </Accordion>
             <Accordion initialState="collapsed">
@@ -163,7 +163,8 @@ const DetailPage = React.createClass({
 const mapStateToProps = (state, ownProps) => {
   const {inboundTripDetails, userLogged} = state.app;
   const {hubID} = userLogged;
-  const {isDeassigning, isFetching, orders: rawOrders, trip} = inboundTripDetails;
+  const {isDeassigning, isFetching, orders: rawOrders} = inboundTripDetails;
+  const trip = ownProps.trip;
   const containerID = ownProps.params.id;
   const {containers, statusList} = state.app.containers;
   const container = containers[containerID];

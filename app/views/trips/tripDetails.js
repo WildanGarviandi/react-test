@@ -9,6 +9,11 @@ const ThisPage = React.createClass({
   componentWillMount() {
     this.props.detailsFetch(this.props.params.id);
   },
+  componentWillReceiveProps(nextProps) {
+    if(this.props.params.id !== nextProps.params.id) {
+      this.props.detailsFetch(nextProps.params.id);
+    }
+  },
   render() {
     const {tripType} = this.props;
     console.log('TYPE!!', tripType);
@@ -33,6 +38,7 @@ function StateToProps(store) {
 
   return {
     tripType,
+    trip,
   }
 }
 

@@ -53,3 +53,18 @@
 .modalBtnY {
   background-color: #4cc38e !important;
 }
+
+.closeBtn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 16px;
+  border: solid 1px #c33;
+  border-radius: 5px;
+  display: inline-block;
+  height: 20px;
+  line-height: 23px;
+  width: 20px;
+  text-align: center;
+  cursor: pointer;
+}

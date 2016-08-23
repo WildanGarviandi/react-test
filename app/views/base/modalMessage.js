@@ -23,6 +23,7 @@ const ModalMessage = React.createClass({
     return (
       <Modal show={modal} width={width || 300}>
         {message}
+        <span className={styles.closeBtn} onClick={this.handleClose}>X</span>
         <div style={{clear: 'both'}} />
         {
           onConfirm ?
