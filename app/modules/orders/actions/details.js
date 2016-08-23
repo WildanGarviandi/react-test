@@ -36,7 +36,7 @@ export const editOrder = (id, order) => {
         });
       } else {
         dispatch({ type: Constants.UPDATE_ORDERS_END });
-        dispatch(ModalActions.addMessage('Failed to fetch order details'));
+        dispatch(ModalActions.addMessage('Failed to edit order details'));
       }
     }).catch(() => { 
       dispatch({ type: Constants.UPDATE_ORDERS_END });
