@@ -4,6 +4,8 @@ export const conf = {
   Actions: {title: "Actions", cellType: "Actions"},
   DriverShare: {title: "Driver Share"},
   DropoffAddress: {filterType: "String", title: "Dropoff Address", cellType: "String"},
+  DropoffCity: {filterType: "String", title: "City", cellType: "String"},
+  DropoffState: {filterType: "String", title: "State", cellType: "String"},
   DropoffTime: {title: "Dropoff Time"},
   EtobeeShare: {title: "Etobee Share"},
   FinalCost: {title: "Final Cost"},
@@ -36,6 +38,6 @@ export const conf = {
 
 export const pickupOrdersColumns = ["IsChecked", "ID", "WebstoreName", "PickupTime", "PickupAddress", "PickupCity", "PickupState", "OrderStatus"];
 
-export const receivedOrdersColumns = ["IsChecked", "ID", "WebstoreName", "PickupTime", "DropoffAddress", "RouteStatus", "ZipCode"];
+export const receivedOrdersColumns = ["IsChecked", "ID", "WebstoreName", "DropoffAddress", "DropoffCity", "DropoffState", "ZipCode", "RouteStatus"];
 
 export const orderDetails = ["UserOrderNumber", "WebOrderID", "User", "PickupType", "RouteStatus", "PickupTime", "PickupAddress", "DropoffTime", "DropoffAddress", "PackageWeight", "PackageLength", "PackageWidth", "PackageHeight", "OrderCost", "FinalCost", "VAT", "IncludeInsurance", "TotalValue", "UseExtraHelper", "EtobeeShare", "DriverShare", "LogisticShare"];

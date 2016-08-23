@@ -132,7 +132,7 @@ const Details = React.createClass({
               <DetailAcc rows={orderDetails.slice(0,9)} order={order} title={"Summary"} topStyle={classNaming(styles.detailWrapper, styles.right, styles.detailsPanel)}/>
             </Accordion>
             <Accordion initialState="expanded">
-              <DetailAcc rows={orderDetails.slice(9,14)} order={order} title={"Cost and Dimension"}  canEdit={true} isEditing={isEditing} isUpdating={isUpdating} UpdateOrder={UpdateOrder} StartEdit={StartEdit} EndEdit={EndEdit}/>
+              <DetailAcc rows={orderDetails.slice(9,14)} order={order} title={"Cost and Dimension"}  canEdit={canEdit} isEditing={isEditing} isUpdating={isUpdating} UpdateOrder={UpdateOrder} StartEdit={StartEdit} EndEdit={EndEdit}/>
             </Accordion>
             <Accordion initialState="expanded">
               <DetailAcc rows={orderDetails.slice(14)} order={order} title={"Pricing Details"} />

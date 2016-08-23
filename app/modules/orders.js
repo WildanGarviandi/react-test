@@ -41,6 +41,8 @@ export function OrderParser(order) {
   return lodash.assign({}, order, {
     CODValue: order.IsCOD ? order.TotalValue: 0,
     DropoffAddress: order.DropoffAddress ? FullAddress(order.DropoffAddress) : "",
+    DropoffCity: order.DropoffAddress ? order.DropoffAddress.City : "",
+    DropoffState: order.DropoffAddress ? order.DropoffAddress.State : "",
     DropoffTime: dropoffTime.toLocaleString(),
     ID: (order.UserOrderNumber + ' / ' + order.WebOrderID) || "",
     IsChecked: false,
