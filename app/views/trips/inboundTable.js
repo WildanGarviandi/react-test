@@ -152,7 +152,7 @@ const Table = React.createClass({
     const changeFilterAndFetch = this.props.filteringAction.changeFilterAndFetch;
     const Search = (
       <tr>
-        {Filters.slice(0,4)}
+        {Filters.slice(0,5)}
         <TripStatusSelect {...this.props.statusProps} />
       </tr>
     );

@@ -24,10 +24,11 @@ function Currency(x) {
 
 function FullAddress(address) {
   const Addr = address.Address1 && address.Address2 && (address.Address1.length < address.Address2.length) ? address.Address2 : address.Address1;
-  return lodash.chain([Addr, address.City, address.State, address.ZipCode])
-    .filter((str) => (str && str.length > 0))
-    .value()
-    .join(', ');
+  // return lodash.chain([Addr, address.City, address.State, address.ZipCode])
+  //   .filter((str) => (str && str.length > 0))
+  //   .value()
+  //   .join(', ');
+  return Addr;
 }
 
 const currencyAttributes = ["OrderCost", "FinalCost", "VAT", "TotalValue", "DriverShare", "EtobeeShare", "LogisticShare"];
@@ -46,6 +47,8 @@ export function OrderParser(order) {
     NextDestination: (order.CurrentRoute && order.CurrentRoute.DestinationHub && order.CurrentRoute.DestinationHub.Name) || "",
     OrderStatus: (order.OrderStatus && order.OrderStatus.OrderStatus) || "",
     PickupAddress: order.PickupAddress ? FullAddress(order.PickupAddress) : "",
+    PickupCity: order.PickupAddress ? order.PickupAddress.City : "",
+    PickupState: order.PickupAddress ? order.PickupAddress.State : "",
     PickupTime: pickupTime.toLocaleString(),
     PickupType: PickupType(order.PickupType),
     RouteStatus: (order.CurrentRoute && order.CurrentRoute.OrderStatus && order.CurrentRoute.OrderStatus.OrderStatus) || "",

@@ -118,7 +118,7 @@ const DetailPage = React.createClass({
               canDeassignDriver &&
               <ButtonWithLoading textBase="Cancel Assignment" textLoading="Deassigning" onClick={this.deassignDriver} isLoading={isDeassigning} />
             }
-            <Accordion initialState="collapsed">
+            <Accordion initialState="expanded">
               <NextDestinationSetter trip={trip} />
             </Accordion>
             <Accordion initialState="collapsed">

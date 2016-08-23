@@ -144,7 +144,7 @@ const DetailPage = React.createClass({
                 {
                   (canMarkTripDelivered || canMarkContainer) &&
                   <span className={styles.finderWrapper2}>
-                    <ButtonWithLoading textBase={'Mark Trip As Delivered'} textLoading={'Clearing Container'} isLoading={false} onClick={this.deliverTrip} />
+                    <ButtonWithLoading styles={{base: styles.greenBtn}} textBase={'Mark Trip As Delivered'} textLoading={'Clearing Container'} isLoading={false} onClick={this.deliverTrip} />
                   </span>
                 }
                 <OrderTable columns={fillAble ? columns : nonFillColumn} headers={headers} items={orders} statusList={statusList} />

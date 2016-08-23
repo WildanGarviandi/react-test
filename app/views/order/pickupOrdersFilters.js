@@ -27,6 +27,16 @@ function mapDispatchToPickupOrders(dispatch) {
           break;
         }
 
+        case "PickupCity": {
+          newFilter = {pickup: filter.val};
+          break;
+        }
+
+        case "PickupState": {
+          newFilter = {pickup: filter.val};
+          break;
+        }
+
         case "ID": {
           newFilter = {userOrderNumber: filter.val};
           break;

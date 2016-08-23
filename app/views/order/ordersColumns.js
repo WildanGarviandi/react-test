@@ -19,6 +19,8 @@ export const conf = {
   PackageWeight: {title: "Package Weight"},
   PackageWidth: {title: "Package Width"},
   PickupAddress: {filterType: "String", title: "Pickup Address", cellType: "String"},
+  PickupCity: {filterType: "String", title: "City", cellType: "String"},
+  PickupState: {filterType: "String", title: "State", cellType: "String"},
   PickupTime: {title: "Pickup Time", cellType: "String"},
   PickupType: {title: "Pickup Type"},
   RouteStatus: {filterType: "StatusDropdown", title: "Route Status", cellType: "String"},
@@ -32,7 +34,7 @@ export const conf = {
   ZipCode: {filterType: "String", title: "Zip Code", cellType: "String"},
 }
 
-export const pickupOrdersColumns = ["IsChecked", "ID", "WebstoreName", "PickupTime", "PickupAddress", "OrderStatus"];
+export const pickupOrdersColumns = ["IsChecked", "ID", "WebstoreName", "PickupTime", "PickupAddress", "PickupCity", "PickupState", "OrderStatus"];
 
 export const receivedOrdersColumns = ["IsChecked", "ID", "WebstoreName", "PickupTime", "DropoffAddress", "RouteStatus", "ZipCode"];
 

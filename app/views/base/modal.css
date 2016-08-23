@@ -42,9 +42,14 @@
   margin-bottom: 70px;
 }
 
-.modalBtn {
+.modalBtn,
+.modalBtnY {
   padding: 8px;
   display: inline-block;
   margin-left: 4px;
   float: right;
+}
+
+.modalBtnY {
+  background-color: #4cc38e !important;
 }

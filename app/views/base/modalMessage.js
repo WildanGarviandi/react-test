@@ -27,8 +27,8 @@ const ModalMessage = React.createClass({
         {
           onConfirm ?
           <span>
-            <ButtonBase onClick={this.doConfirm} styles={styles.modalBtn}>Yes</ButtonBase>
             <ButtonBase onClick={this.doCancel} styles={styles.modalBtn}>No</ButtonBase>
+            <ButtonBase onClick={this.doConfirm} styles={styles.modalBtnY}>Yes</ButtonBase>
           </span>
           :
           <ButtonBase onClick={this.handleClose} styles={styles.modalBtn}>Close</ButtonBase>

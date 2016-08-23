@@ -138,7 +138,7 @@ const DeleteCell = React.createClass({
         {
           isDeleting ? 
           <span>Deleting...</span> :
-          <ButtonBase onClick={this.handleDelete}>Delete</ButtonBase>
+          <ButtonBase onClick={this.handleDelete}>Remove</ButtonBase>
         }
       </td>
     );

@@ -18,6 +18,7 @@ const Table = React.createClass({
           <Filters /> 
           <Body items={items} />
         </table>
+        <Pagination {...pagination} {...PaginationActions} />
       </div>
     );
   }
