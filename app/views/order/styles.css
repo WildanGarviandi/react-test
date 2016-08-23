@@ -77,18 +77,24 @@
 }
 
 .finderWrapper {
-  position: absolute;
+  /*position: absolute;*/
   background-color: #4f4335;
-  top: -4px;
-  right: 130px;
+  /*top: -4px;*/
+  /*right: 130px;*/
   border-radius: 5px;
   padding: 6px;
   color: #fff;
+  font-size: 14px;
+  padding: 9px;
+  margin-left: 10px;
+}
+
+.finderWrapper input {
+  font-size: 14px;
 }
 
 .finderLabel {
   padding-right: 5px;
-  font-size: 12px;
 }
 
 .itemLabel {
@@ -159,6 +165,12 @@
 .weightCancelBtn:hover {
   background-color: #ccc;
   color: #333;
+}
+
+.groupBtn {
+  padding: 8px;
+  font-size: 14px;
+  margin-bottom: 10px;
 }
 
 .greenBtn, .weightSaveBtn {

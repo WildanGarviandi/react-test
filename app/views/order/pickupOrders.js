@@ -10,19 +10,8 @@ import Infographic from './infoGraphic';
 
 const PickupOrdersPage = React.createClass({
   render() {
-    const groupingOrdersBtnProps = {
-      textBase: "Group Orders",
-      textLoading: "Group Orders",
-      isLoading: this.props.isGrouping,
-      onClick: this.props.GroupOrders,
-      styles: {
-        base: this.props.isGrouping ? styles.greenBtnLoading : styles.greenBtn,
-      }
-    }
-
     return (
       <Page title="Pickup Orders" additional="Get this order from merchant">
-        <ButtonWithLoading {...groupingOrdersBtnProps} />
         <Infographic />
         <Accordion />
         <PickupOrdersTable />

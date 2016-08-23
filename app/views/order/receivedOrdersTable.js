@@ -10,17 +10,19 @@ import * as ReceivedOrders from '../../modules/receivedOrders';
 
 function mapStateToPickupOrders(state) {
   const {receivedOrders} = state.app;
-  const {currentPage, isFetching, limit, orders, selected, total} = receivedOrders;
+  const {currentPage, isFetching, isGrouping, limit, orders, selected, total} = receivedOrders;
 
   return {
     Headers: ReceivedOrdersHeaders,
     Filters: ReceivedOrdersFilters,
     Body: ReceivedOrdersBody,
     isFetching: isFetching,
+    isGrouping: isGrouping,
     items: orders,
     pagination: {
       currentPage, limit, total,
-    }
+    },
+    isPickup: false,
   }
 }
 
@@ -40,7 +42,13 @@ function mapDispatchToPickupOrders(dispatch, ownProps) {
       setLimit: (limit) => {
         dispatch(ReceivedOrders.SetLimit(limit));
       },
-    }
+    },
+    GroupOrders: () => {
+      dispatch(ReceivedOrders.ConsolidateOrders());
+    },
+    FindID: (id) => {
+      dispatch(ReceivedOrders.GoToDetails(id));
+    },
   }
 }
 
