@@ -453,15 +453,19 @@ export function FetchDetails(tripID) {
     dispatch({ type: Constants.TRIPS_INBOUND_DETAILS_FETCH_START });
     FetchGet('/trip/' + tripID, token).then((response) => {
       if(!response.ok) {
+        if(response.status == 403) {
+          throw new Error("This trip doesn't belong to this hub");
+        }
         throw new Error();
       }
 
       response.json().then(function({data}) {
         dispatch(SetTrip(data));
       });
-    }).catch(() => { 
+    }).catch((e) => {
+      const message = (e && e.message) ? e.message : "Failed to fetch trip details";
       dispatch({ type: Constants.TRIPS_INBOUND_DETAILS_FETCH_END });
-      dispatch(ModalActions.addMessage('Failed to fetch trip details'));
+      dispatch(ModalActions.addMessage(message));
     });
   }
 }
