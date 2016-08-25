@@ -23,7 +23,8 @@
     border-top: 0;
     border-bottom-width: 2px;
     border: solid 1px #ddd;
-    background-color: #1A2226;
+    /*background-color: #1A2226;*/
+    background-color: #371e38;
     vertical-align: middle;
     text-align: left;
 
@@ -37,6 +38,7 @@
 .tr {
     cursor: pointer;
     color: #333;
+    border: solid 1px #ddd;
 }
 
 .tr:nth-of-type(odd) .td {
@@ -72,7 +74,6 @@
     height: 20px;
     font-size: 12px;
     padding: 8px;
-    border: solid 1px #ddd;
 }
 
 .td.search {

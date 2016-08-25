@@ -12,7 +12,7 @@ function Headers({items, components}) {
 
   return (
     <thead>
-      <tr>
+      <tr className={styles.tr}>
         {cells}
       </tr>
     </thead>

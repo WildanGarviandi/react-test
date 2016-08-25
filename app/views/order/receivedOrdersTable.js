@@ -10,14 +10,14 @@ import * as ReceivedOrders from '../../modules/receivedOrders';
 
 function mapStateToPickupOrders(state) {
   const {receivedOrders} = state.app;
-  const {currentPage, isFetching, isGrouping, limit, orders, selected, total} = receivedOrders;
+  const {currentPage, isFetching, isConsolidating, limit, orders, selected, total} = receivedOrders;
 
   return {
     Headers: ReceivedOrdersHeaders,
     Filters: ReceivedOrdersFilters,
     Body: ReceivedOrdersBody,
     isFetching: isFetching,
-    isGrouping: isGrouping,
+    isGrouping: isConsolidating,
     items: orders,
     pagination: {
       currentPage, limit, total,

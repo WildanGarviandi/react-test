@@ -26,4 +26,4 @@ var server = new WebpackDevServer(webpack(config), {
 
 server.listen(8081, "localhost", function() {});
 app.listen(8080);
-console.log('listen to 8081');
+console.log('listen to 8080');

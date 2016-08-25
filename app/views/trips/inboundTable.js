@@ -28,13 +28,28 @@ const ColumnsTitle = {
   webstoreNames: "Webstore",
 }
 
-let fleetList;
+let fleetList = {};
+
+function FindFilter(filters, attr) {
+  console.log('ff', filters, attr);
+  switch(attr) {
+    case 'fleetName':
+      return filters['fleet'];
+
+    case 'webstoreNames':
+      return filters['merchant'];
+
+    default:
+      return filters[attr];
+  }
+}
 
 const SearchCell = React.createClass({
   render() {
+    console.log('f', this.props.filter);
     return (
       <td className={ClassName(tableStyles.td, tableStyles.search)}>
-        <Input styles={{input: tableStyles.searchInput}} base={{type:"text"}} onChange={this.props.onChange} onEnterKeyPressed={this.props.onEnterKeyPressed} />
+        <Input styles={{input: tableStyles.searchInput}} base={{type:"text"}} onChange={this.props.onChange} onEnterKeyPressed={this.props.onEnterKeyPressed} base={{value: this.props.filter}} />
       </td>
     );
   }
@@ -146,7 +161,7 @@ const Table = React.createClass({
 
     const changeFilter = this.props.filteringAction.changeFilter;
     const Filters = _.map(ColumnsOrder, (columnKey) => {
-      return <SearchCell key={columnKey} attr={columnKey} onChange={changeFilter.bind(null, columnKey)} onEnterKeyPressed={this.props.filteringAction.fetchTrips} />
+      return <SearchCell key={columnKey} attr={columnKey} onChange={changeFilter.bind(null, columnKey)} onEnterKeyPressed={this.props.filteringAction.fetchTrips} filter={FindFilter(this.props.filters, columnKey)} />
     });
 
     const changeFilterAndFetch = this.props.filteringAction.changeFilterAndFetch;
@@ -184,6 +199,8 @@ function TripDropOff(trip) {
 
 function ProcessTrip(trip) {
   const parsedTrip = TripParser(trip);
+  const fleet = trip.FleetManager && fleetList[trip.FleetManager.UserID];
+  const fleetName = fleet && fleet.CompanyDetail && fleet.CompanyDetail.CompanyName;
 
   return {
     containerNumber: trip.ContainerNumber,
@@ -197,7 +214,7 @@ function ProcessTrip(trip) {
     pickupTime: trip.PickupTime,
     status: trip.OrderStatus && trip.OrderStatus.OrderStatus,
     webstoreNames: parsedTrip.WebstoreNames,
-    fleetName: trip.FleetManager ? fleetList[trip.FleetManager.UserID].CompanyDetail.CompanyName : '',
+    fleetName: fleetName || '',
   }
 }
 
@@ -206,7 +223,7 @@ const TableStateful = React.createClass({
     this.props.initialLoad();
   },
   getInitialState() {
-    return {statusName: 'SHOW ALL'};
+    return this.props.filters;
   },
   fetchTrips() {
     this.props.changeFilter(this.state);
@@ -217,7 +234,21 @@ const TableStateful = React.createClass({
     });
   },
   changeFilter(attr, val) {
-    this.setState({[attr]: val});
+    let attrName;
+    switch(attr) {
+      case 'fleetName':
+        attrName = 'fleet';
+        break;
+
+      case 'webstoreNames':
+        attrName = 'merchant';
+        break;
+
+      default:
+        attrName = attr;
+    }
+
+    this.setState({[attrName]: val});
   },
   changeFilterAndFetch(filters) {
     this.setState(filters, () => {
@@ -225,7 +256,7 @@ const TableStateful = React.createClass({
     });
   },
   render() {
-    const {paginationAction, paginationState, statusParams, tripDetails, tripsIsFetching} = this.props;
+    const {filters, paginationAction, paginationState, statusParams, tripDetails, tripsIsFetching} = this.props;
 
     const paginationProps = _.assign({}, paginationAction, paginationState);
 
@@ -246,6 +277,7 @@ const TableStateful = React.createClass({
       items: trips,
       toDetails: tripDetails,
       filteringAction, statusProps,
+      filters: this.state,
     }
 
     return (
@@ -261,7 +293,7 @@ const TableStateful = React.createClass({
 
 function StateToProps(state) {
   const {inboundTrips, driversStore} = state.app;
-  const {isFetching, limit, total, currentPage, trips} = inboundTrips;
+  const {isFetching, limit, total, currentPage, trips, filters} = inboundTrips;
 
   fleetList = driversStore.fleetList.dict;
 
@@ -280,6 +312,7 @@ function StateToProps(state) {
       memo[val] = key;
       return memo;
     }, {}),
+    filters,
   };
 }
 
@@ -287,6 +320,9 @@ function DispatchToProps(dispatch, ownProps) {
   return {
     initialLoad() {
       dispatch(InboundTrips.FetchList());
+    },
+    changeFilter: (filters) => {
+      dispatch(InboundTrips.AddFilters(filters));
     },
     paginationAction: {
       setCurrentPage(pageNum) {
