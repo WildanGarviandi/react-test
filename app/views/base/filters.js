@@ -31,7 +31,7 @@ function Filters({items, components}) {
 
   return (
     <tbody>
-      <tr>
+      <tr className={styles.tr}>
         {cells}
       </tr>
     </tbody>

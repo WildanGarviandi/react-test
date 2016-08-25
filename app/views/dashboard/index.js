@@ -53,26 +53,26 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact}) => {
       <h4 className={styles.compactTitle}>EHub</h4>
       <ul className={styles.menuList}>
         <Accordion initialState={'collapsed'}>
-          <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[0,1,2]} iconName={'list-alt'} iconTitle={'Orders'}>
+          <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[0,1,2]} iconName={'list-alt'} iconTitle={'Inbound'}>
             <MenuItem active={activeMenuIdx == 1} to={'/orders/pickup'}>
               <Glyph className={styles.menuGlyph} name={'alert'}/>
               <span>Pickup Orders</span>
             </MenuItem>
-            <MenuItem active={activeMenuIdx == 2} to={'/orders/received'}>
-              <Glyph className={styles.menuGlyph} name={'transfer'}/>
-              <span>Received Orders</span>
+            <MenuItem active={activeMenuIdx == 1} to={'/trips/inbound'}>
+              <Glyph className={styles.menuGlyph} name={'tasks'}/>
+              <span>Inbound Trips</span>
             </MenuItem>
           </AccordionMenu>
         </Accordion>
         <Accordion initialState={'collapsed'}>
-          <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[3,4,5]} iconName={'barcode'} iconTitle={'Trips'}>
-            <MenuItem active={activeMenuIdx == 1} to={'/trips/inbound'}>
-              <Glyph className={styles.menuGlyph} name={'tasks'}/>
-              <span>Inbound</span>
+          <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[3,4,5]} iconName={'barcode'} iconTitle={'Outbound'}>
+            <MenuItem active={activeMenuIdx == 2} to={'/orders/received'}>
+              <Glyph className={styles.menuGlyph} name={'transfer'}/>
+              <span>Received Orders</span>
             </MenuItem>
             <MenuItem active={activeMenuIdx == 2} to={'/trips/outbound'}>
               <Glyph className={styles.menuGlyph} name={'road'}/>
-              <span>Outbound</span>
+              <span>Outbound Trips</span>
             </MenuItem>
           </AccordionMenu>
         </Accordion>

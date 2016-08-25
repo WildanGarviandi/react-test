@@ -46,7 +46,6 @@ const FirstSetting = React.createClass({
     const haveSet = trip.Driver;
 
     const headerClass = classNaming(styles.setterHeader, {
-      [styles.headerDone]: nextDestination,
       [styles.haveDriver]: haveSet,
     });
 
@@ -59,7 +58,7 @@ const FirstSetting = React.createClass({
 
     return (
       <div className={styles.setterWrapper}>
-        <div className={headerClass} onClick={this.tryToggle}>
+        <div className={headerClass}>
         {
           nextDestination ?
           <HeaderWithDestination nextDestination={nextDestination} />

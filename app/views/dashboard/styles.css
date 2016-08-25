@@ -17,12 +17,13 @@
 }
 
 .menuPanel {
-  background-color: #222D32;
+  background-color: #371e38;
   width: 190px;
   height: 100%;
   position: fixed;
   top: 0;
-
+  color: #fff;
+  
   -webkit-transition: border 0.5s ease-out;
   -o-transition: border 0.5s ease-out;
   transition: border 0.5s ease-out;
@@ -69,7 +70,8 @@
 }
 
 .menuItem.active {
-  background-color: #1E282C;
+  /*background-color: #1E282C;*/
+  background-color: #472e48;
 }
 
 .button {
@@ -201,7 +203,8 @@
 }
 
 .menuAccordion {
-  background-color: #0E181C;
+  /*background-color: #0E181C;*/
+  background-color: #270e28;
 }
 
 .menuAccordion .menuItem {

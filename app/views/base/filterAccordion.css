@@ -13,7 +13,8 @@
 }
 
 .top {
-  background-color: #222D32;
+  /*background-color: #222D32;*/
+  background-color: #371e38;
   color: #ccc;
   text-indent: 10px;
   border-top-left-radius: 5px;
@@ -34,7 +35,8 @@
 }
 
 .top2 {
-  background-color: #222D32;
+  /*background-color: #222D32;*/
+  background-color: #371e38;
   color: #ccc;
   text-indent: 10px;
   border-radius: 5px;

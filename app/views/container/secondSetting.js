@@ -38,7 +38,7 @@ const SecondSetting = React.createClass({
 
     return (
       <div className={styles.setterWrapper}>
-        <div className={classNaming(styles.setterHeader, {[styles.grayHeader]: !canSet, [styles.headerDone]: haveSet, [styles.haveDriver]: haveSet})} onClick={this.tryToggle}>
+        <div className={classNaming(styles.setterHeader, {[styles.grayHeader]: !canSet, [styles.headerDone]: haveSet, [styles.haveDriver]: haveSet})}>
         {
           haveSet ?
           <HeaderWithDestination nextDestination={UtilHelper.UserFullName(haveSet)} />
