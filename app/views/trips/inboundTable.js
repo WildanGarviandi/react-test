@@ -31,7 +31,6 @@ const ColumnsTitle = {
 let fleetList = {};
 
 function FindFilter(filters, attr) {
-  console.log('ff', filters, attr);
   switch(attr) {
     case 'fleetName':
       return filters['fleet'];
@@ -46,7 +45,6 @@ function FindFilter(filters, attr) {
 
 const SearchCell = React.createClass({
   render() {
-    console.log('f', this.props.filter);
     return (
       <td className={ClassName(tableStyles.td, tableStyles.search)}>
         <Input styles={{input: tableStyles.searchInput}} base={{type:"text"}} onChange={this.props.onChange} onEnterKeyPressed={this.props.onEnterKeyPressed} base={{value: this.props.filter}} />

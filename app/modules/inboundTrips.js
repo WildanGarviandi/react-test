@@ -1,8 +1,10 @@
 import lodash from 'lodash';
+import {push} from 'react-router-redux';
 import FetchGet from './fetch/get';
 import ModalActions from './modals/actions';
 import {TripParser} from './trips';
 import OrderStatusSelector from './orderStatus/selector';
+import {modalAction} from './modals/constants';
 
 const Constants = {
   TRIPS_INBOUND_CURRENTPAGE_SET: "inbound/currentPage/set",
@@ -178,5 +180,29 @@ export function GoToContainer(containerNumber) {
   return (dispatch, getState) => {
     const {userLogged} = getState().app;
     const {hubID, token} = userLogged;
+
+    const query = {
+      containerNumber: containerNumber,
+    };
+
+    dispatch({type: modalAction.BACKDROP_SHOW});
+    FetchGet('/trip/inbound', token, query).then((response) => {
+      if(!response.ok) {
+        throw new Error('Container not found');
+      }
+
+      return response.json().then(({data}) => {
+        if(data.count < 1) {
+          throw new Error('Container not found');
+        }
+
+        dispatch({type: modalAction.BACKDROP_HIDE});
+        dispatch(push(`/trips/${data.rows[0].TripID}`));
+      })
+    }).catch((e) => {
+      const message = (e && e.message) ? e.message : "Failed to get container details";
+    dispatch({type: modalAction.BACKDROP_HIDE});
+      dispatch(ModalActions.addMessage(message));
+    });
   }
 }

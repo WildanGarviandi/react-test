@@ -27,7 +27,7 @@ const ContainerPage = React.createClass({
               <span className={styles.finderLabel} onKeyDown={this.jumpTo}>
                 Jump to Container :
               </span>
-              <Input onChange={this.onChange} onEnterKeyPressed={this.onEnterKeyPressed} />
+              <Input onChange={this.onChange} onEnterKeyPressed={this.gotoContainer} />
             </span>
             <InboundTable key={this.props.lastPath} lastPath={this.props.lastPath} isInbound={this.props.isInbound} />
           </div>
