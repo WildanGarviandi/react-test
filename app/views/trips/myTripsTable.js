@@ -27,11 +27,24 @@ const ColumnsTitle = {
   webstoreNames: "Webstore",
 }
 
+function FindFilter(filters, attr) {
+  switch(attr) {
+    case 'fleetName':
+      return filters['fleet'];
+
+    case 'webstoreNames':
+      return filters['merchant'];
+
+    default:
+      return filters[attr];
+  }
+}
+
 const SearchCell = React.createClass({
   render() {
     return (
       <td className={ClassName(tableStyles.td, tableStyles.search)}>
-        <Input styles={{input: tableStyles.searchInput}} base={{type:"text"}} onChange={this.props.onChange} onEnterKeyPressed={this.props.onEnterKeyPressed} />
+        <Input styles={{input: tableStyles.searchInput}} base={{type:"text"}} onChange={this.props.onChange} onEnterKeyPressed={this.props.onEnterKeyPressed} base={{value:this.props.filter}} />
       </td>
     );
   }
@@ -136,7 +149,7 @@ const Table = React.createClass({
 
     const changeFilter = this.props.filteringAction.changeFilter;
     const Filters = _.map(ColumnsOrder, (columnKey) => {
-      return <SearchCell key={columnKey} attr={columnKey} onChange={changeFilter.bind(null, columnKey)} onEnterKeyPressed={this.props.filteringAction.fetchTrips} />
+      return <SearchCell key={columnKey} attr={columnKey} onChange={changeFilter.bind(null, columnKey)} onEnterKeyPressed={this.props.filteringAction.fetchTrips} filter={FindFilter(this.props.filters, columnKey)} />
     });
 
     const changeFilterAndFetch = this.props.filteringAction.changeFilterAndFetch;
@@ -206,7 +219,21 @@ const TableStateful = React.createClass({
     });
   },
   changeFilter(attr, val) {
-    this.setState({[attr]: val});
+    let attrName;
+    switch(attr) {
+      case 'fleetName':
+        attrName = 'fleet';
+        break;
+
+      case 'webstoreNames':
+        attrName = 'merchant';
+        break;
+
+      default:
+        attrName = attr;
+    }
+
+    this.setState({[attrName]: val});
   },
   changeFilterAndFetch(filters) {
     this.setState(filters, () => {
@@ -214,7 +241,7 @@ const TableStateful = React.createClass({
     });
   },
   render() {
-    const {paginationAction, paginationState, statusParams, tripDetails, tripsIsFetching} = this.props;
+    const {filters, paginationAction, paginationState, statusParams, tripDetails, tripsIsFetching} = this.props;
 
     const paginationProps = _.assign({}, paginationAction, paginationState);
 
@@ -235,6 +262,7 @@ const TableStateful = React.createClass({
       items: trips,
       toDetails: tripDetails,
       filteringAction, statusProps,
+      filters: filters,
     }
 
     return (
@@ -250,7 +278,7 @@ const TableStateful = React.createClass({
 
 function StateToProps(state) {
   const {outboundTrips} = state.app;
-  const {isFetching, limit, total, currentPage, trips} = outboundTrips;
+  const {isFetching, limit, total, currentPage, trips, filters} = outboundTrips;
 
   const paginationState = {
     currentPage: currentPage,
@@ -267,6 +295,7 @@ function StateToProps(state) {
       memo[val] = key;
       return memo;
     }, {}),
+    filters,
   };
 }
 
@@ -282,6 +311,9 @@ function DispatchToProps(dispatch, ownProps) {
       setLimit(limit) {
         dispatch(OutboundTrips.SetLimit(limit));
       },
+    },
+    changeFilter: (filters) => {
+      dispatch(OutboundTrips.AddFilters(filters));
     },
     tripDetails(id) {
       console.log('qq', ownProps.routes);

@@ -67,8 +67,8 @@ export function Reducer(state = initialState, action) {
 
 export function AddFilters(newFilters) {
   return (dispatch, getState) => {
-    const {inboundTrips} = getState().app;
-    const {filters} = inboundTrips;
+    const {outboundTrips} = getState().app;
+    const {filters} = outboundTrips;
 
     dispatch({
       type: Constants.TRIPS_OUTBOUND_FILTERS_SET,
@@ -81,9 +81,9 @@ export function AddFilters(newFilters) {
 
 export function FetchList() {
   return (dispatch, getState) => {
-    const {inboundTrips, userLogged} = getState().app;
+    const {outboundTrips, userLogged} = getState().app;
     const {token} = userLogged;
-    const {currentPage, filters, limit} = inboundTrips;
+    const {currentPage, filters, limit} = outboundTrips;
 
     const query = lodash.assign({}, filters, {
       limit: limit,
