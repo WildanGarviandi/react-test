@@ -102,15 +102,15 @@ export function FetchList() {
         throw new Error();
       }
 
-      dispatch({
-        type: Constants.TRIPS_INBOUND_FETCH_END,
-      });
-
       response.json().then(({data}) => {
         dispatch({
           type: Constants.TRIPS_INBOUND_SET,
           trips: lodash.map(data.rows, TripParser),
           total: data.count,
+        });
+
+        dispatch({
+          type: Constants.TRIPS_INBOUND_FETCH_END,
         });
       });
     }).catch(() => {
