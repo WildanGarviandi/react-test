@@ -109,6 +109,13 @@ const DateCell = React.createClass({
   }
 });
 
+function StateToStatus(state) {
+  const statusName = state.app.outboundTrips.filtersStatus;
+  return {
+    val: statusName,
+  }
+}
+
 function SelectDispatch(dispatch) {
   return {
     handleSelect: (val) => {
@@ -117,7 +124,7 @@ function SelectDispatch(dispatch) {
   }
 }
 
-const TrueSelect = connect(undefined, SelectDispatch)(StatusDropdown);
+const TrueSelect = connect(StateToStatus, SelectDispatch)(StatusDropdown);
 
 const TripStatusSelect = React.createClass({
   selectVal(val) {
@@ -208,7 +215,7 @@ const TableStateful = React.createClass({
     this.props.initialLoad();
   },
   getInitialState() {
-    return {statusName: 'SHOW ALL'};
+    return this.props.filters;
   },
   fetchTrips() {
     this.props.changeFilter(this.state);
@@ -262,7 +269,7 @@ const TableStateful = React.createClass({
       items: trips,
       toDetails: tripDetails,
       filteringAction, statusProps,
-      filters: filters,
+      filters: this.state,
     }
 
     return (
