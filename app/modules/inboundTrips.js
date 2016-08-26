@@ -142,12 +142,10 @@ export function SetFiltersStatus(keyword) {
       return results;
     }, {});
 
-    console.log('os', orderStatus);
-
     const {inboundTrips} = getState().app;
     const {filters} = inboundTrips;
 
-    const newFilters = !orderStatus[keyword] ? {} : {
+    const newFilters = !orderStatus[keyword] ? {statusIDs: []} : {
       statusIDs: JSON.stringify([orderStatus[keyword]]),
     };
 
