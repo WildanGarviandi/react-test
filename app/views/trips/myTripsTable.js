@@ -187,13 +187,15 @@ function FullAddress(address) {
 
 function TripDropOff(trip) {
   const destinationHub = trip.DestinationHub && ("Hub " + trip.DestinationHub.Name + " -- " + FullAddress(trip.DestinationHub));
+  const destinationDistrict = trip.District && ("District " + trip.District.Name + " - " + trip.District.City + ' - ' + trip.District.Province);
   const dropoffAddress = trip.DropoffAddress && FullAddress(trip.DropoffAddress);
 
-  return destinationHub || dropoffAddress || "";
+  return destinationHub || destinationDistrict || dropoffAddress || "";
 }
 
 function ProcessTrip(trip) {
   const parsedTrip = TripParser(trip);
+  console.log('T', trip, TripDropOff(trip));
 
   return {
     containerNumber: trip.ContainerNumber,
