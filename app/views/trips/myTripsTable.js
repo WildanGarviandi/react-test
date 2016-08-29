@@ -7,23 +7,27 @@ import {push} from 'react-router-redux';
 // import * as OutboundTrips from '../../modules/trips/actions/outbound';
 import * as OutboundTrips from '../../modules/outboundTrips';
 import {DropdownTypeAhead, Input, Pagination} from '../base';
+import {DropdownWithState2} from '../base/dropdown';
 import DateRangePicker from '../base/dateRangePicker';
 import tableStyles from '../base/table.css';
 import StatusDropdown from '../base/statusDropdown';
 import {TripParser} from '../../modules/trips';
 
-const ColumnsOrder = ['driver', 'webstoreNames', 'dropoff', 'containerNumber', 'status'];
+const ColumnsOrder = ['driver', 'webstoreNames', 'tripType', 'dropoff', 'dropoffCity', 'dropoffState', 'containerNumber', 'status'];
 
 const ColumnsTitle = {
   containerNumber: "Container",
   district: "District",
   driver: "Driver",
   dropoff: "Next Destination",
+  dropoffCity: "City",
+  dropoffState: "State",
   dropoffTime: "Dropoff Time",
   pickup: "Pickup Address",
   pickupTime: "Pickup Time",
   status: "Status",
   tripNumber: "Trip Number",
+  tripType: "Type",
   webstoreNames: "Webstore",
 }
 
@@ -126,6 +130,42 @@ function SelectDispatch(dispatch) {
 
 const TrueSelect = connect(StateToStatus, SelectDispatch)(StatusDropdown);
 
+const TripTypeDropDown = React.createClass({
+  handleSelect(val) {
+    this.props.setType(val.key);
+  },
+  render() {
+    const options = [
+      { key: 0, value: "All"},
+      { key: 1, value: "Last Leg"},
+      { key: 2, value: "Inter Hub"},
+    ];
+    const val = options[this.props.val].value;
+
+    return (
+      <td className={ClassName(tableStyles.td, tableStyles.search)} style={{width: 90}}>
+        <DropdownWithState2 val={val} options={options} handleSelect={this.handleSelect} />
+      </td>
+    );
+  }
+});
+
+function TripTypeDropDownDispatch(dispatch) {
+  return {
+    setType: (type) => {
+      dispatch(OutboundTrips.AddFilters({'tripType': type}));
+    }
+  }
+}
+
+function TripTypeDropDownState(state) {
+  return {
+    val: state.app.outboundTrips.filters.tripType,
+  }
+}
+
+const TripTypeDropDownWithState = connect(TripTypeDropDownState, TripTypeDropDownDispatch)(TripTypeDropDown);
+
 const TripStatusSelect = React.createClass({
   selectVal(val) {
     this.props.pickStatus(val);
@@ -162,7 +202,9 @@ const Table = React.createClass({
     const changeFilterAndFetch = this.props.filteringAction.changeFilterAndFetch;
     const Search = (
       <tr>
-        {Filters.slice(0,4)}
+        {Filters.slice(0,2)}
+        <TripTypeDropDownWithState />
+        {Filters.slice(3,7)}
         <TripStatusSelect {...this.props.statusProps} />
       </tr>
     );
@@ -186,28 +228,36 @@ function FullAddress(address) {
 }
 
 function TripDropOff(trip) {
-  const destinationHub = trip.DestinationHub && ("Hub " + trip.DestinationHub.Name + " -- " + FullAddress(trip.DestinationHub));
+  const destinationHub = trip.DestinationHub && (FullAddress(trip.DestinationHub));
   const destinationDistrict = trip.District && ("District " + trip.District.Name + " - " + trip.District.City + ' - ' + trip.District.Province);
   const dropoffAddress = trip.DropoffAddress && FullAddress(trip.DropoffAddress);
 
-  return destinationHub || destinationDistrict || dropoffAddress || "";
+  return {
+    address: destinationHub || dropoffAddress || "[Multiple Dropoff]",
+    city: (trip.DropoffAddress && trip.DropoffAddress.City) || (trip.District && trip.District.City) || "",
+    state: (trip.DropoffAddress && trip.DropoffAddress.State) || (trip.District && trip.District.Province) || "",
+  };
 }
 
 function ProcessTrip(trip) {
   const parsedTrip = TripParser(trip);
-  console.log('T', trip, TripDropOff(trip));
+  const dropoff = TripDropOff(trip);
+  const isLastLeg = trip && trip.District;
 
   return {
     containerNumber: trip.ContainerNumber,
     district: trip.District && trip.District.Name,
     driver: trip.Driver && `${trip.Driver.FirstName} ${trip.Driver.LastName}`,
-    dropoff: TripDropOff(trip),
+    dropoff: dropoff.address,
+    dropoffCity: dropoff.city,
+    dropoffState: dropoff.state,
     dropoffTime: trip.DropoffTime,
     key: trip.TripID,
-    tripNumber: trip.TripNumber,
     pickup: trip.PickupAddress && trip.PickupAddress.Address1,
     pickupTime: trip.PickupTime,
     status: trip.OrderStatus && trip.OrderStatus.OrderStatus,
+    tripNumber: trip.TripNumber,
+    tripType: isLastLeg ? "Last Leg" : "Inter Hub",
     webstoreNames: parsedTrip.WebstoreNames,
   }
 }
@@ -325,7 +375,6 @@ function DispatchToProps(dispatch, ownProps) {
       dispatch(OutboundTrips.AddFilters(filters));
     },
     tripDetails(id) {
-      console.log('qq', ownProps.routes);
       dispatch(push(`/trips/${id}`));
     },
   };

@@ -12,7 +12,7 @@ import tableStyles from '../base/table.css';
 import StatusDropdown from '../base/statusDropdown';
 import {TripParser} from '../../modules/trips';
 
-const ColumnsOrder = ['fleetName', 'driver', 'webstoreNames', 'pickup', 'containerNumber', 'status'];
+const ColumnsOrder = ['fleetName', 'driver', 'webstoreNames', 'pickup', 'pickupCity', 'pickupState', 'containerNumber', 'status'];
 
 const ColumnsTitle = {
   containerNumber: "Container",
@@ -22,6 +22,8 @@ const ColumnsTitle = {
   dropoffTime: "Dropoff Time",
   fleetName: "Fleet",
   pickup: "Pickup Address",
+  pickupCity: "City",
+  pickupState: "State",
   pickupTime: "Pickup Time",
   status: "Status",
   tripNumber: "Trip Number",
@@ -165,7 +167,7 @@ const Table = React.createClass({
     const changeFilterAndFetch = this.props.filteringAction.changeFilterAndFetch;
     const Search = (
       <tr>
-        {Filters.slice(0,5)}
+        {Filters.slice(0,7)}
         <TripStatusSelect {...this.props.statusProps} />
       </tr>
     );
@@ -209,6 +211,8 @@ function ProcessTrip(trip) {
     key: trip.TripID,
     tripNumber: trip.TripNumber,
     pickup: trip.PickupAddress && trip.PickupAddress.Address1,
+    pickupCity: trip.PickupAddress && trip.PickupAddress.City,
+    pickupState: trip.PickupAddress && trip.PickupAddress.State,
     pickupTime: trip.PickupTime,
     status: trip.OrderStatus && trip.OrderStatus.OrderStatus,
     webstoreNames: parsedTrip.WebstoreNames,

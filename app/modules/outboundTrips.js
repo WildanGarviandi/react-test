@@ -16,7 +16,9 @@ const Constants = {
 
 const initialState = {
   currentPage: 1,
-  filters: {},
+  filters: {
+    tripType: 0,
+  },
   filtersStatus: "SHOW ALL",
   isFetching: false,
   limit: 100,
