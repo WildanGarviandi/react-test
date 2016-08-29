@@ -50,10 +50,10 @@ const FirstSetting = React.createClass({
     });
 
     const leftStyle = classNaming(styles.setterLeft, {
-      [styles.disabled]: nextDestination && nextDestination.substr(0,3) !== "Hub"
+      [styles.disabled]: false
     });
     const rightStyle = classNaming(styles.setterRight, {
-      [styles.disabled]: nextDestination && nextDestination.substr(0,3) !== "Dis"
+      [styles.disabled]: false
     });
 
     return (
