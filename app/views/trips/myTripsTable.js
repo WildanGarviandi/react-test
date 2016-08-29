@@ -139,6 +139,7 @@ const TripTypeDropDown = React.createClass({
       { key: 0, value: "All"},
       { key: 1, value: "Last Leg"},
       { key: 2, value: "Inter Hub"},
+      { key: 3, value: "No Destination Yet"},
     ];
     const val = options[this.props.val].value;
 
@@ -221,7 +222,7 @@ const Table = React.createClass({
 
 function FullAddress(address) {
   const Addr = address.Address1 && address.Address2 && (address.Address1.length < address.Address2.length) ? address.Address2 : address.Address1;
-  return lodash.chain([Addr, address.City, address.State, address.ZipCode])
+  return lodash.chain([Addr])
     .filter((str) => (str && str.length > 0))
     .value()
     .join(', ');
@@ -233,7 +234,7 @@ function TripDropOff(trip) {
   const dropoffAddress = trip.DropoffAddress && FullAddress(trip.DropoffAddress);
 
   return {
-    address: destinationHub || dropoffAddress || "[Multiple Dropoff]",
+    address: destinationHub || dropoffAddress || "",
     city: (trip.DropoffAddress && trip.DropoffAddress.City) || (trip.District && trip.District.City) || "",
     state: (trip.DropoffAddress && trip.DropoffAddress.State) || (trip.District && trip.District.Province) || "",
   };
@@ -242,13 +243,21 @@ function TripDropOff(trip) {
 function ProcessTrip(trip) {
   const parsedTrip = TripParser(trip);
   const dropoff = TripDropOff(trip);
-  const isLastLeg = trip && trip.District;
+  let tripType;
+
+  if(trip.District) {
+    tripType = "Last Leg";
+  } else if(trip.DestinationHub) {
+    tripType = "Inter Hub";
+  } else {
+    tripType = "No Destination Yet";
+  }
 
   return {
     containerNumber: trip.ContainerNumber,
     district: trip.District && trip.District.Name,
     driver: trip.Driver && `${trip.Driver.FirstName} ${trip.Driver.LastName}`,
-    dropoff: dropoff.address,
+    dropoff: tripType === "Last Leg" ? "[Multiple Dropoff]" : dropoff.address,
     dropoffCity: dropoff.city,
     dropoffState: dropoff.state,
     dropoffTime: trip.DropoffTime,
@@ -257,7 +266,7 @@ function ProcessTrip(trip) {
     pickupTime: trip.PickupTime,
     status: trip.OrderStatus && trip.OrderStatus.OrderStatus,
     tripNumber: trip.TripNumber,
-    tripType: isLastLeg ? "Last Leg" : "Inter Hub",
+    tripType: tripType,
     webstoreNames: parsedTrip.WebstoreNames,
   }
 }
