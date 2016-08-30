@@ -16,6 +16,11 @@ const Constants = {
   TRIPS_INBOUND_DETAILS_DRIVER_END: "inbound/details/driver/end",
   TRIPS_INBOUND_DETAILS_DRIVER_SET: "inbound/details/driver/set",
   TRIPS_INBOUND_DETAILS_DRIVER_START: "inbound/details/driver/start",
+  TRIPS_INBOUND_DETAILS_EXTERNALTRIP_CANCEL: "inbound/details/externalTrip/cancel",
+  TRIPS_INBOUND_DETAILS_EXTERNALTRIP_EDIT: "inbound/details/externalTrip/edit",
+  TRIPS_INBOUND_DETAILS_EXTERNALTRIP_END: "inbound/details/externalTrip/end",
+  TRIPS_INBOUND_DETAILS_EXTERNALTRIP_SET: "inbound/details/externalTrip/set",
+  TRIPS_INBOUND_DETAILS_EXTERNALTRIP_START: "inbound/details/externalTrip/start",
   TRIPS_INBOUND_DETAILS_FETCH_END: "inbound/details/fetch/end",
   TRIPS_INBOUND_DETAILS_FETCH_START: "inbound/details/fetch/start",
   TRIPS_INBOUND_DETAILS_FLEET_CHANGED: "inbound/details/fleet/changed",
@@ -37,11 +42,14 @@ const Constants = {
 
 const initialState = {
   driver: null,
+  externalTrip: null,
   fleet: null,
   isChangingFleet: false,
   isDeassigning: false,
   isDelivering: false,
+  isEditing3PL: false,
   isFetching: false,
+  isSaving3PL: false,
   isSetDriver: false,
   isSetFleet: false,
   orders: [],
@@ -80,6 +88,32 @@ export function Reducer(state = initialState, action) {
 
     case Constants.TRIPS_INBOUND_DETAILS_DRIVER_START: {
       return lodash.assign({}, state, {isSetDriver: true});
+    }
+
+    case Constants.TRIPS_INBOUND_DETAILS_EXTERNALTRIP_CANCEL: {
+      return lodash.assign({}, state, {isEditing3PL: false});
+    }
+
+    case Constants.TRIPS_INBOUND_DETAILS_EXTERNALTRIP_EDIT: {
+      return lodash.assign({}, state, {isEditing3PL: true});
+    }
+
+    case Constants.TRIPS_INBOUND_DETAILS_EXTERNALTRIP_END: {
+      return lodash.assign({}, state, {isSaving3PL: false});
+    }
+
+    case Constants.TRIPS_INBOUND_DETAILS_EXTERNALTRIP_SET: {
+      return lodash.assign({}, state, {
+        externalTrip: action.externalTrip,
+      });
+    }
+
+    case Constants.TRIPS_INBOUND_DETAILS_EXTERNALTRIP_START: {
+      return lodash.assign({}, state, {isSaving3PL: true});
+    }
+
+    case Constants.TRIPS_INBOUND_DETAILS_FLEET_CHANGED: {
+      return lodash.assign({}, state, {isChangingFleet: false});
     }
 
     case Constants.TRIPS_INBOUND_DETAILS_FETCH_END: {
@@ -187,6 +221,7 @@ export function Reducer(state = initialState, action) {
     case Constants.TRIPS_INBOUND_DETAILS_TRIP_SET: {
       return lodash.assign({}, state, {
         driver: action.driver,
+        externalTrip: action.externalTrip,
         fleet: action.fleet,
         orders: action.orders,
         trip: action.trip,
@@ -225,7 +260,9 @@ export function DeassignFleet(tripID) {
 
     return FetchDelete(`/trip/${tripID}/fleetmanager`, token).then((response) => {
       if(!response.ok) {
-        throw new Error();
+        return response.json().then(({error}) => {
+          throw error;
+        });
       }
 
       dispatch({
@@ -237,11 +274,12 @@ export function DeassignFleet(tripID) {
         type: Constants.TRIPS_INBOUND_DETAILS_DEASSIGN_END,
       });
     }).catch((e) => {
+      const message = (e && e.message) ? e.message : "Failed to deassign fleet";
       dispatch({
         type: Constants.TRIPS_INBOUND_DETAILS_DEASSIGN_END,
       });
 
-      dispatch(ModalActions.addMessage('Failed to deassign fleet'));
+      dispatch(ModalActions.addMessage(message));
     });
   }
 }
@@ -257,7 +295,9 @@ export function Deassign(tripID) {
 
     FetchDelete(`/trip/${tripID}/driver`, token).then((response) => {
       if(!response.ok) {
-        throw new Error('Failed to deassign driver');
+        return response.json().then(({error}) => {
+          throw error;
+        });
       }
 
       dispatch({
@@ -268,7 +308,9 @@ export function Deassign(tripID) {
       return FetchDelete(`/trip/${tripID}/fleetmanager`, token);
     }).then((response) => {
       if(!response.ok) {
-        throw new Error('Failed to deassign fleet');
+        return response.json().then(({error}) => {
+          throw error;
+        });
       }
 
       dispatch({
@@ -309,13 +351,17 @@ export function AssignFleet(tripID, fleetManagerID) {
     if(fleet) {
       FetchDelete(`/trip/${tripID}/fleetmanager`, token).then((response) => {
         if(!response.ok) {
-          throw new Error();
+          return response.json().then(({error}) => {
+            throw error;
+          });
         }
 
         return FetchPost(`/trip/${tripID}/fleetmanager`, token, body);
       }).then((response) => {
         if(!response.ok) {
-          throw new Error();
+          return response.json().then(({error}) => {
+            throw error;
+          });
         }
 
         response.json().then(({data}) => {
@@ -332,16 +378,19 @@ export function AssignFleet(tripID, fleetManagerID) {
           dispatch(ChangeFleetEnd());
         });
       }).catch((e) => {
+        const message = (e && e.message) ? e.message : "Failed to assign fleet";
         dispatch({
           type: Constants.TRIPS_INBOUND_DETAILS_FLEET_END,
         });
 
-        dispatch(ModalActions.addMessage("Failed to assign fleet"));
+        dispatch(ModalActions.addMessage(message));
       });
     } else {
       FetchPost(`/trip/${tripID}/fleetmanager`, token, body).then((response) => {
         if(!response.ok) {
-          throw new Error();
+          return response.json().then(({error}) => {
+            throw error;
+          });
         }
 
         response.json().then(({data}) => {
@@ -358,11 +407,12 @@ export function AssignFleet(tripID, fleetManagerID) {
           dispatch(ChangeFleetEnd());
         });
       }).catch((e) => {
+        const message = (e && e.message) ? e.message : "Failed to assign fleet";
         dispatch({
           type: Constants.TRIPS_INBOUND_DETAILS_FLEET_END,
         });
 
-        dispatch(ModalActions.addMessage("Failed to assign fleet"));
+        dispatch(ModalActions.addMessage(message));
       });
     }
   }
@@ -380,7 +430,9 @@ export function AssignDriver(tripID, driverID) {
     dispatch({ type: Constants.TRIPS_INBOUND_DETAILS_DRIVER_START });
     FetchPost(`/trip/${tripID}/driver`, token, body).then((response) => {
       if(!response.ok) {
-        throw new Error();
+        return response.json().then(({error}) => {
+          throw error;
+        });
       }
 
       dispatch({ type: Constants.TRIPS_INBOUND_DETAILS_DRIVER_END });
@@ -392,20 +444,22 @@ export function AssignDriver(tripID, driverID) {
 
         window.location.reload(false); 
       });
-    }).catch(() => { 
+    }).catch((e) => {
+      const message = (e && e.message) ? e.message : "Failed to set driver";
       dispatch({ type: Constants.TRIPS_INBOUND_DETAILS_DRIVER_END });
-      dispatch(ModalActions.addMessage('Failed to set driver'));
+      dispatch(ModalActions.addMessage(message));
     });
   }
 }
 
 export function SetTrip(trip, haveDone) {
   return (dispatch, getState) => {
-    let orders, driver, fleet;
+    let orders, driver, externalTrip, fleet;
 
     if(haveDone) {
       orders = getState().app.inboundTripDetails.orders;
       driver = getState().app.inboundTripDetails.driver;
+      externalTrip = getState().app.inboundTripDetails.externalTrip;
       fleet = getState().app.inboundTripDetails.fleet;
     } else {
       orders = _.map(trip.UserOrderRoutes, (route) => {
@@ -417,6 +471,7 @@ export function SetTrip(trip, haveDone) {
 
       driver = trip.Driver;
       fleet = trip.fleet;
+      externalTrip = trip.ExternalTrip;
     }
 
     dispatch({ type: Constants.TRIPS_INBOUND_DETAILS_FETCH_END });
@@ -424,6 +479,7 @@ export function SetTrip(trip, haveDone) {
     dispatch({
       type: Constants.TRIPS_INBOUND_DETAILS_TRIP_SET,
       driver: trip.Driver,
+      externalTrip: externalTrip,
       fleet: trip.FleetManager,
       orders: orders,
       trip: lodash.assign({}, getState().app.inboundTripDetails.trip, trip),
@@ -456,7 +512,10 @@ export function FetchDetails(tripID) {
         if(response.status == 403) {
           throw new Error("This trip doesn't belong to this hub");
         }
-        throw new Error();
+
+        return response.json().then(({error}) => {
+          throw error;
+        });
       }
 
       response.json().then(function({data}) {
@@ -486,7 +545,9 @@ export function OrderRemove(tripID, orderID) {
 
     FetchDelete(`/trip/${tripID}/orders`, token, body).then((response) => {
       if(!response.ok) {
-        throw new Error();
+        return response.json().then(({error}) => {
+          throw error;
+        });
       }
 
       dispatch({
@@ -500,13 +561,14 @@ export function OrderRemove(tripID, orderID) {
           orderID: orderID,
         });
       });
-    }).catch(() => { 
+    }).catch((e) => {
+      const message = (e && e.message) ? e.message : "Failed to remove order";
       dispatch({
         type: Constants.TRIPS_INBOUND_DETAILS_ORDER_REMOVE_END,
         orderID: orderID,
       });
 
-      dispatch(ModalActions.addMessage('Failed to remove order'));
+      dispatch(ModalActions.addMessage(message));
     });
   }
 }
@@ -522,6 +584,11 @@ export function OrderReceived(scannedID) {
         (order.UserOrderNumber === scannedID || order.WebOrderID === scannedID);
     });
 
+    if(!scannedOrder) {
+      dispatch(ModalActions.addMessage('Order not found'));
+      return;
+    }
+
     dispatch({type: modalAction.BACKDROP_SHOW});
     dispatch({
       type: Constants.TRIPS_INBOUND_DETAILS_ORDER_RECEIVED_START,
@@ -529,7 +596,9 @@ export function OrderReceived(scannedID) {
 
     FetchPost(`/order/${scannedOrder.UserOrderID}/markdeliver`, token).then((response) => {
       if(!response.ok) {
-        throw new Error();
+        return response.json().then(({error}) => {
+          throw error;
+        });
       }
 
       dispatch({type: modalAction.BACKDROP_HIDE});
@@ -539,10 +608,11 @@ export function OrderReceived(scannedID) {
         type: Constants.TRIPS_INBOUND_DETAILS_ORDER_RECEIVED_SET,
         orderID: scannedOrder.UserOrderID,
       });
-    }).catch(() => {
+    }).catch((e) => {
+      const message = (e && e.message) ? e.message : "Failed to mark order as received";
       dispatch({type: modalAction.BACKDROP_HIDE});
       dispatch({ type: Constants.TRIPS_INBOUND_DETAILS_ORDER_RECEIVED_END });
-      dispatch(ModalActions.addMessage('Failed to mark order as received'));
+      dispatch(ModalActions.addMessage(message));
     });
   }
 }
@@ -560,7 +630,9 @@ export function TripDeliver(tripID, reuse) {
 
     FetchPost(`/trip/${tripID}/markdeliver`, token, query).then((response) => {
       if(!response.ok) {
-        throw new Error();
+        return response.json().then(({error}) => {
+          throw error;
+        });
       }
 
       dispatch({type: modalAction.BACKDROP_HIDE});
@@ -585,9 +657,93 @@ export function TripDeliver(tripID, reuse) {
           dispatch(push(`/trips/${data.NextTrip.TripID}`));
         });
       }
-    }).catch(() => {
+    }).catch((e) => {
+      const message = (e && e.message) ? e.message : "Failed to mark trip as delivered";
       dispatch({type: modalAction.BACKDROP_HIDE});
-      dispatch(ModalActions.addMessage('Failed to mark trip as delivered'));
+      dispatch(ModalActions.addMessage(message));
     });
   }
+}
+
+export function SetExternalTrip(externalTrip) {
+  return (dispatch) => {
+    dispatch({
+      type: Constants.TRIPS_INBOUND_DETAILS_EXTERNALTRIP_SET,
+      externalTrip: externalTrip
+    });
+  }
+}
+
+export function UpdateExternalTrip(newExternalTrip) {
+  return (dispatch, getState) => {
+    const {externalTrip} = getState().app.inboundTripDetails;
+
+    if(!externalTrip) {
+      dispatch(SetExternalTrip(newExternalTrip));
+    } else {
+      dispatch(SetExternalTrip(lodash.assign({}, externalTrip, newExternalTrip)));
+    }
+  }
+}
+
+export function CreateExternalTrip(tripID) {
+  return (dispatch, getState) => {
+    const {inboundTripDetails, userLogged} = getState().app;
+    const {token} = userLogged;
+    const {externalTrip} = inboundTripDetails;
+
+    if(!externalTrip) {
+      dispatch(ModalActions.addMessage("Can't create external trip without any information"));
+      return;
+    }
+
+    if(!externalTrip.Fee) {
+      dispatch(ModalActions.addMessage("Can't create external trip. Missing fee information."));
+      return;
+    }
+
+    if(!externalTrip.Transportation) {
+      dispatch(ModalActions.addMessage("Can't create external trip. Missing transportation information."));
+      return;
+    }
+
+    if(!externalTrip.DepartureTime) {
+      dispatch(ModalActions.addMessage("Can't create external trip. Missing departure time information."));
+      return;
+    }
+
+    if(!externalTrip.ArrivalTime) {
+      dispatch(ModalActions.addMessage("Can't create external trip. Missing arrival time information."));
+      return;
+    }
+
+    const body = lodash.assign({}, externalTrip, {
+      ArrivalTime: externalTrip.ArrivalTime.utc(),
+      DepartureTime: externalTrip.DepartureTime.utc(),
+      TripID: tripID,
+    });
+
+    dispatch({type:modalAction.BACKDROP_SHOW});
+    FetchPost(`/external-trip`, token, body).then((response) => {
+      if(!response.ok) {
+        return response.json().then(({error}) => {
+          throw error;
+        });
+      }
+
+      // window.location.reload(false);
+    }).catch((e) => {
+      const message = (e && e.message) ? e.message : 'Failed to mark trip as delivered';
+      dispatch({type: modalAction.BACKDROP_HIDE});
+      dispatch(ModalActions.addMessage(message));
+    });
+  }
+}
+
+function StartEdit3PL() {
+  return {type: TRIPS_INBOUND_DETAILS_EXTERNALTRIP_EDIT};
+}
+
+function StopEdit3PL() {
+  return {type: TRIPS_INBOUND_DETAILS_EXTERNALTRIP_CANCEL};
 }
