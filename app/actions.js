@@ -1,6 +1,5 @@
 import fetch from 'isomorphic-fetch';
 import {push} from 'react-router-redux';
-import _ from 'underscore';
 
 export const PAGED_ORDERS_FETCH = 'PAGED_ORDERS_FETCH';
 export const PAGED_ORDERS_RECEIVED = 'PAGED_ORDERS_RECEIVED';

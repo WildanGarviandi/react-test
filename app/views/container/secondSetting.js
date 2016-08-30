@@ -2,6 +2,7 @@ import classNaming from 'classnames';
 import React from 'react';
 import styles from './setterStyles.css';
 import DriverSetter from './driverSetter';
+import ThirdPartySetter from './thirdPartySetter';
 import * as UtilHelper from '../../helper/utility';
 
 function HeaderWithDestination({nextDestination}) {
@@ -24,11 +25,13 @@ const SecondSetting = React.createClass({
     }
   },
   render() {
-    const {accordionAction, accordionState, isInbound, nextDestination, transportMethod, trip} = this.props;
+    const {accordionAction, accordionState, isInbound, transportMethod, trip} = this.props;
     const leftStyle = classNaming(styles.setterLeft);
 
     const canSet = trip.DestinationHub || trip.District;
-    const haveSet = trip.Driver;
+    const haveSet = trip.Driver || trip.ExternalTrip;
+
+    const nextDestination = UtilHelper.UserFullName(haveSet);
 
     if(isInbound) {
       return (
@@ -41,7 +44,16 @@ const SecondSetting = React.createClass({
         <div className={classNaming(styles.setterHeader, {[styles.grayHeader]: !canSet, [styles.headerDone]: haveSet, [styles.haveDriver]: haveSet})}>
         {
           haveSet ?
-          <HeaderWithDestination nextDestination={UtilHelper.UserFullName(haveSet)} />
+          <div>
+            {
+              trip.Driver &&
+              <HeaderWithDestination nextDestination={nextDestination} />
+            }
+            {
+              trip.ExternalTrip &&
+              <ThirdPartySetter trip={trip} />
+            }
+          </div>
           :
           <HeaderWithoutDestination />
         }
@@ -50,6 +62,7 @@ const SecondSetting = React.createClass({
           accordionState === "expanded" &&
           <div className={styles.setterBody}>
             <div className={leftStyle}>
+              <ThirdPartySetter trip={trip} />
               <div className={styles.shadow}></div>
             </div>
             <div className={styles.setterRight}>
