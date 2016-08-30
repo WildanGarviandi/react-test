@@ -1,4 +1,5 @@
 import lodash from 'lodash';
+import moment from 'moment';
 import {push} from 'react-router-redux';
 import FetchDrivers from './drivers/actions/driversFetch';
 import FetchDelete from './fetch/delete';
@@ -472,6 +473,11 @@ export function SetTrip(trip, haveDone) {
       driver = trip.Driver;
       fleet = trip.fleet;
       externalTrip = trip.ExternalTrip;
+
+      if(externalTrip) {
+        externalTrip.ArrivalTime = new Date(externalTrip.ArrivalTime);
+        externalTrip.DepartureTime = new Date(externalTrip.DepartureTime);
+      }
     }
 
     dispatch({ type: Constants.TRIPS_INBOUND_DETAILS_FETCH_END });
@@ -731,7 +737,7 @@ export function CreateExternalTrip(tripID) {
         });
       }
 
-      // window.location.reload(false);
+      window.location.reload(false);
     }).catch((e) => {
       const message = (e && e.message) ? e.message : 'Failed to mark trip as delivered';
       dispatch({type: modalAction.BACKDROP_HIDE});
@@ -740,10 +746,49 @@ export function CreateExternalTrip(tripID) {
   }
 }
 
-function StartEdit3PL() {
-  return {type: TRIPS_INBOUND_DETAILS_EXTERNALTRIP_EDIT};
+export function SaveEdit3PL(tripID) {
+  return (dispatch, getState) => {
+    const {inboundTripDetails, userLogged} = getState().app;
+    const {token} = userLogged;
+    const {externalTrip} = inboundTripDetails;
+
+    const body = lodash.assign({}, externalTrip, {
+      ArrivalTime: new moment(externalTrip.ArrivalTime).utc(),
+      DepartureTime: new moment(externalTrip.DepartureTime).utc(),
+      TripID: tripID,
+    });
+
+    dispatch({type:modalAction.BACKDROP_SHOW});
+    FetchPost(`/external-trip/${externalTrip.ExternalTripID}`, token, body).then((response) => {
+      if(!response.ok) {
+        return response.json().then(({error}) => {
+          throw error;
+        });
+      }
+
+      return response.json().then(({data}) => {
+        dispatch({type: modalAction.BACKDROP_HIDE});
+        dispatch(StopEdit3PL());
+        dispatch({
+          type: Constants.TRIPS_INBOUND_DETAILS_EXTERNALTRIP_SET,
+          externalTrip: lodash.assign(data.ExternalTrip, {
+            ArrivalTime: new Date(data.ExternalTrip.ArrivalTime),
+            DepartureTime: new Date(data.ExternalTrip.DepartureTime),
+          })
+        });
+      });
+    }).catch((e) => {
+      const message = (e && e.message) ? e.message : 'Failed to mark trip as delivered';
+      dispatch({type: modalAction.BACKDROP_HIDE});
+      dispatch(ModalActions.addMessage(message));
+    });
+  }
 }
 
-function StopEdit3PL() {
-  return {type: TRIPS_INBOUND_DETAILS_EXTERNALTRIP_CANCEL};
+export function StartEdit3PL() {
+  return {type: Constants.TRIPS_INBOUND_DETAILS_EXTERNALTRIP_EDIT};
+}
+
+export function StopEdit3PL() {
+  return {type: Constants.TRIPS_INBOUND_DETAILS_EXTERNALTRIP_CANCEL};
 }

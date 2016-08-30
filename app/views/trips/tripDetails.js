@@ -16,7 +16,6 @@ const ThisPage = React.createClass({
   },
   render() {
     const {tripType} = this.props;
-    console.log('TYPE!!', tripType);
 
     if(tripType === "FIRSTLEG" || tripType === "INBOUND") {
       return <InboundDetails {...this.props} />

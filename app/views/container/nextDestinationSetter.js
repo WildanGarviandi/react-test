@@ -43,7 +43,7 @@ const FirstSetting = React.createClass({
   render() {
     const {accordionAction, accordionState, trip} = this.props;
     const nextDestination = DstHub(trip) || DstDistrict(trip);
-    const haveSet = trip.Driver;
+    const haveSet = trip.Driver || trip.ExternalTrip;
 
     const headerClass = classNaming(styles.setterHeader, {
       [styles.haveDriver]: haveSet,

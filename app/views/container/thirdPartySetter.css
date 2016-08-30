@@ -1,0 +1,29 @@
+.itemLabel {
+  display: block;
+  padding: 5px;
+  width: 120px;
+  float: left;
+  line-height: 32px;
+}
+
+.itemValue {
+  padding: 5px;
+  display: block;
+  line-height: 32px;
+  text-indent: 0;
+}
+
+.itemValue input {
+  border-radius: 3px;
+  border: solid 1px #ccc;
+  display: inline-block;
+  height: 28px;
+  width: 280px;
+  position: relative;
+  left: 10px;
+  text-indent: 10px;
+}
+
+.datetimeWrapper {
+  position: relative;
+}
