@@ -6,7 +6,7 @@ import {conf, orderDetails} from './ordersColumns';
 import styles from './styles.css';
 import Accordion from '../base/accordion';
 import {ButtonWithLoading, Input, Page} from '../base';
-import {InputWithDefault} from '../base/input';
+import {InputWithDefault, CheckBox} from '../base/input';
 import * as OrdersDetails from '../../modules/orders/actions/details';
 import OrdersSelector from '../../modules/orders/selector';
 
@@ -22,10 +22,17 @@ const DetailRow = React.createClass({
           <span className={styles.itemValue}>: {value}</span>
         }
         {
-          isEditing &&
+          isEditing && !(value === 'Yes' || value === 'No') &&
           <span className={styles.itemValue}>
             :
             <InputWithDefault currentText={value} onChange={this.props.onChange} type="number" />
+          </span>
+        }
+        {
+          isEditing && (value === 'Yes' || value === 'No') &&
+          <span className={styles.itemValue}>
+            :
+            <CheckBox styles={styles} checked={value === 'Yes'} onChange={this.props.onChange} />
           </span>
         }
       </div>
@@ -109,7 +116,7 @@ const Details = React.createClass({
   render() {
     const {canEdit, isEditing, isFetching, isUpdating, order, StartEdit, EndEdit, UpdateOrder} = this.props;
 
-    const r2Edit = lodash.map(orderDetails.slice(9, 14), (row) => {
+    const r2Edit = lodash.map(orderDetails.slice(9, 16), (row) => {
       return (
         <div key={row} style={{clear: 'both'}}>
           <span className={styles.itemLabel}>{conf[row].title}</span>
@@ -132,10 +139,10 @@ const Details = React.createClass({
               <DetailAcc rows={orderDetails.slice(0,9)} order={order} title={"Summary"} topStyle={classNaming(styles.detailWrapper, styles.right, styles.detailsPanel)}/>
             </Accordion>
             <Accordion initialState="expanded">
-              <DetailAcc rows={orderDetails.slice(9,14)} order={order} title={"Cost and Dimension"} canEdit={canEdit} isEditing={isEditing} isUpdating={isUpdating} UpdateOrder={UpdateOrder} StartEdit={StartEdit} EndEdit={EndEdit}/>
+              <DetailAcc rows={orderDetails.slice(9,16)} order={order} title={"Cost and Dimension"} canEdit={canEdit} isEditing={isEditing} isUpdating={isUpdating} UpdateOrder={UpdateOrder} StartEdit={StartEdit} EndEdit={EndEdit}/>
             </Accordion>
             <Accordion initialState="expanded">
-              <DetailAcc rows={orderDetails.slice(14)} order={order} title={"Pricing Details"} />
+              <DetailAcc rows={orderDetails.slice(16)} order={order} title={"Pricing Details"} />
             </Accordion>
           </div>
         }

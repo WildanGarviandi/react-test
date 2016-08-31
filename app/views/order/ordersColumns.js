@@ -34,10 +34,11 @@ export const conf = {
   WebOrderID: {filterType: "String", title: "Web Order ID", cellType: "String"},
   WebstoreName: {filterType: "String", title: "Webstore Name", cellType: "String"},
   ZipCode: {filterType: "String", title: "Zip Code", cellType: "String"},
+  IsCOD: {title: "COD Order"},
 }
 
 export const pickupOrdersColumns = ["IsChecked", "ID", "WebstoreName", "PickupTime", "PickupAddress", "PickupCity", "PickupState", "OrderStatus"];
 
 export const receivedOrdersColumns = ["IsChecked", "ID", "WebstoreName", "DropoffAddress", "DropoffCity", "DropoffState", "ZipCode", "RouteStatus"];
 
-export const orderDetails = ["UserOrderNumber", "WebOrderID", "User", "PickupType", "RouteStatus", "PickupTime", "PickupAddress", "DropoffTime", "DropoffAddress", "PackageWeight", "PackageLength", "PackageWidth", "PackageHeight", "OrderCost", "FinalCost", "VAT", "IncludeInsurance", "TotalValue", "UseExtraHelper", "EtobeeShare", "DriverShare", "LogisticShare"];
+export const orderDetails = ["UserOrderNumber", "WebOrderID", "User", "PickupType", "RouteStatus", "PickupTime", "PickupAddress", "DropoffTime", "DropoffAddress", "PackageWeight", "PackageLength", "PackageWidth", "PackageHeight", "OrderCost", "TotalValue", "IsCOD", "FinalCost", "VAT", "IncludeInsurance", "UseExtraHelper", "EtobeeShare", "DriverShare", "LogisticShare"];
