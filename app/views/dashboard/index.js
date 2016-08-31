@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Link} from 'react-router';
 
-import {AppLoadedActions} from '../../modules';
+import {AppLoadedActions, LogoutAction} from '../../modules';
 import FetchStatusList from '../../modules/containers/actions/statusFetch';
 
 import {Glyph} from '../base';
@@ -76,6 +76,10 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact}) => {
             </MenuItem>
           </AccordionMenu>
         </Accordion>
+          <button className={styles.logoutBtn} onClick={handleLogout}>
+            <Glyph className={styles.glyphBackward} name={'log-out'}/>
+            <span>Logout</span>
+          </button>
       </ul>
       <button className={styles.toggleMenu} onClick={toggleCompact}>
         <Glyph className={styles.glyphBackward} name={'backward'}/>
@@ -110,6 +114,7 @@ const DashboardContainer = React.createClass({
     this.setState({isCompact: !this.state.isCompact});
   },
   handleLogout() {
+    this.props.logout();
   },
   render() {
     let {routes} = this.props;
@@ -132,6 +137,9 @@ function DispatchToProps(dispatch) {
     initialLoad() {
       dispatch(FetchStatusList());
     },
+    logout: function() {
+      dispatch(LogoutAction.logout());
+    }
   }
 }
 
