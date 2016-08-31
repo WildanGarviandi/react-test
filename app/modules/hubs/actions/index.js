@@ -32,6 +32,7 @@ export function setHub(tripID, hubID) {
         response.json().then(({data}) => {
           dispatch({type: Constants.HUB_PICK, hub: hubID});
           dispatch({type: Constants.HUB_UPDATE_END});
+          dispatch({type: Constants.HUB_EDIT_END});
           dispatch({type: modalAction.BACKDROP_HIDE});
           dispatch(SetTrip(data, true));
         });
