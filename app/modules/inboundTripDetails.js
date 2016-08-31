@@ -483,8 +483,6 @@ export function SetTrip(trip, haveDone) {
       if(externalTrip) {
         externalTrip.ArrivalTime = new Date(externalTrip.ArrivalTime);
         externalTrip.DepartureTime = new Date(externalTrip.DepartureTime);
-      } else {
-        dispatch({type: Constants.TRIPS_INBOUND_DETAILS_EXTERNALTRIP_EDIT});
       }
     }
 
