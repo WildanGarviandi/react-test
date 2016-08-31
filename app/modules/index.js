@@ -1,4 +1,5 @@
 import login from './auth/actions/login';
+import logout from './auth/actions/logout';
 import containers, {statusList} from './containers/actions';
 import districts from './districts/actions';
 import drivers from './drivers/actions';
@@ -6,6 +7,10 @@ import modals from './modals/actions';
 
 export const LoginAction = {
   login: login,
+};
+
+export const LogoutAction = {
+  logout: logout,
 };
 
 export const ContainersAction = containers;
