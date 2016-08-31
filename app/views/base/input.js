@@ -2,7 +2,6 @@ import React from 'react';
 
 const CheckBox = React.createClass({
   getInitialState() {
-    console.log(this.props.styles)
     return {checked: this.props.checked || false};
   },
   handleClick(e) {
