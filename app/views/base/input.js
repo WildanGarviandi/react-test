@@ -1,17 +1,21 @@
 import React from 'react';
 
 const CheckBox = React.createClass({
+  getInitialState() {
+    return {checked: this.props.checked || false};
+  },
   handleClick(e) {
     let { onChange } = this.props;
     if(!onChange) return;
     onChange(e.target.checked);
+    this.setState({checked: !this.state.checked});
   },
   render() {
     let { checked, label, name, styles = {} } = this.props;
 
     return (
       <span className={styles.container}>
-        <input type="checkbox" checked={checked} onChange={this.handleClick} id={name} className={styles.checkbox} />
+        <input type="checkbox" checked={this.state.checked} onChange={this.handleClick} id={name} className={styles.checkbox} />
         <label htmlFor={name} className={styles.label}>{label}</label>
       </span>
     );

@@ -32,7 +32,7 @@ function FullAddress(address) {
 
 const currencyAttributes = ["OrderCost", "FinalCost", "VAT", "TotalValue", "DriverShare", "EtobeeShare", "LogisticShare"];
 
-const boolAttributes = ["IncludeInsurance", "UseExtraHelper"];
+const boolAttributes = ["IncludeInsurance", "UseExtraHelper", "IsCOD"];
 
 export function OrderParser(order) {
   const dropoffTime = new Date(order.DropoffTime);
