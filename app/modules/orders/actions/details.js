@@ -52,22 +52,23 @@ export const fetchDetails = (id) => {
 
     dispatch({ type: Constants.DETAILS_FETCH_START });
     fetchGet('/order/' + id, token).then(function(response) {
-      if(response.ok) {
-        response.json().then(function({data}) {
-          console.log('data', data);
-          dispatch({
-            type: Constants.DETAILS_SET,
-            order: OrderParser(data),
-          });
-          dispatch({ type: Constants.DETAILS_FETCH_END });
+      if(!response.ok) {
+        return response.json().then(({error}) => {
+          throw error;
         });
-      } else {
-        dispatch({ type: Constants.DETAILS_FETCH_END });
-        dispatch(ModalActions.addMessage('Failed to fetch order details'));
       }
-    }).catch(() => { 
+
+      response.json().then(function({data}) {
+        dispatch({
+          type: Constants.DETAILS_SET,
+          order: OrderParser(data),
+        });
+        dispatch({ type: Constants.DETAILS_FETCH_END });
+      });
+    }).catch((e) => {
+      const message = (e && e.message) ? e.message : "Failed to fetch order details";
       dispatch({ type: Constants.DETAILS_FETCH_END });
-      dispatch(ModalActions.addMessage('Network error'));
+      dispatch(ModalActions.addMessage(message));
     });
   }
 }

@@ -3,9 +3,6 @@ import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 import checkAuth from './modules/auth/actions/checkAuth';
 import store from './store';
 import App from './views/app';
-import ContainerPage from './views/container';
-import ContainerDetailsPage from './views/container/details';
-import ContainerFillPage from './views/container/fill';
 import ContainerQRCodePage from './views/container/qrcode';
 import DashboardPage from './views/dashboard';
 import LoginPage from './views/login';
@@ -35,7 +32,7 @@ export default (
     <Route path="/" component={App}>
       <IndexRoute component={LoginPage} />
       <Route path="/home" component={DashboardPage}>
-        <IndexRoute component={ContainerPage} onEnter={requireAuth}/>
+        <IndexRoute component={PickupOrdersPage} onEnter={requireAuth}/>
         <Route path="/orders/pickup" component={PickupOrdersPage} onEnter={requireAuth} />
         <Route path="/orders/received" component={ReceivedOrdersPage} onEnter={requireAuth}/>
         <Route path="/orders/:id" component={OrderDetailsPage} onEnter={requireAuth}/>
@@ -44,9 +41,6 @@ export default (
         <Route path="/trips/:id" component={TripDetailsPage} onEnter={requireAuth}/>
         <Route path="/trips/:tripID/fillReceived" component={ReceivedFillPage} onEnter={requireAuth}/>
         <Route path="/trips/:tripID/fillPickup" component={PickupFillPage} onEnter={requireAuth}/>
-        <Route path="/container" component={ContainerPage} onEnter={requireAuth}/>
-        <Route path="/container/:id" component={ContainerDetailsPage} onEnter={requireAuth}/>
-        <Route path="/container/:id/fill" component={ContainerFillPage} onEnter={requireAuth}/>
       </Route>
       <Route path="/qrcode/:id" component={ContainerQRCodePage} />
       <Route path="/login" component={LoginPage} />
