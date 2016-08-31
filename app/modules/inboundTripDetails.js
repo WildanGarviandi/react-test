@@ -92,11 +92,17 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.TRIPS_INBOUND_DETAILS_EXTERNALTRIP_CANCEL: {
-      return lodash.assign({}, state, {isEditing3PL: false});
+      return lodash.assign({}, state, {
+        isEditing3PL: false,
+        externalTrip: lodash.assign({}, state.prev3PL),
+      });
     }
 
     case Constants.TRIPS_INBOUND_DETAILS_EXTERNALTRIP_EDIT: {
-      return lodash.assign({}, state, {isEditing3PL: true});
+      return lodash.assign({}, state, {
+        isEditing3PL: true,
+        prev3PL: lodash.assign({}, state.externalTrip),
+      });
     }
 
     case Constants.TRIPS_INBOUND_DETAILS_EXTERNALTRIP_END: {
@@ -477,6 +483,8 @@ export function SetTrip(trip, haveDone) {
       if(externalTrip) {
         externalTrip.ArrivalTime = new Date(externalTrip.ArrivalTime);
         externalTrip.DepartureTime = new Date(externalTrip.DepartureTime);
+      } else {
+        dispatch({type: Constants.TRIPS_INBOUND_DETAILS_EXTERNALTRIP_EDIT});
       }
     }
 

@@ -89,11 +89,11 @@ const DashboardContent = ({children}) => {
   return (<div className={styles.content}>{children}</div>);
 }
 
-const menuPaths = ['/orders/pickup', '/trips/inbound', '/orders/received', '/trips/outbound', '/orders', '/trips'];
+const menuPaths = ['/orders/pickup', '/trips/inbound', '/orders/received', '/trips/outbound'];
 function GetActiveMenuIdx(path) {
   let fpath = _.find(menuPaths, (menu) => (path.indexOf(menu) > -1));
   let idx = menuPaths.indexOf(fpath);
-  return Math.max(idx, 0);
+  return idx;
 }
 
 const DashboardContainer = React.createClass({
@@ -101,7 +101,7 @@ const DashboardContainer = React.createClass({
     router: React.PropTypes.object.isRequired
   },
   getInitialState() {
-    return {isCompact: true};
+    return {isCompact: false};
   },
   componentWillMount() {
     this.props.initialLoad();
