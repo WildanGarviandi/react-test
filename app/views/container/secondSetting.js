@@ -59,15 +59,19 @@ const SecondSetting = React.createClass({
         }
         </div>
         {
-          accordionState === "expanded" &&
+          accordionState === "expanded" && trip.District &&
+          <div className={styles.setterBody}>
+            <DriverSetter trip={trip} />
+          </div>
+        }
+        {
+          accordionState === "expanded" && !trip.District &&
           <div className={styles.setterBody}>
             <div className={leftStyle}>
               <ThirdPartySetter trip={trip} isInbound={isInbound} />
-              <div className={styles.shadow}></div>
             </div>
             <div className={styles.setterRight}>
               <DriverSetter trip={trip} />
-              <div className={styles.shadow}></div>
             </div>
             <div className={styles.setterOR}>OR</div>
             <div style={{clear: 'both'}}></div>
