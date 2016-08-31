@@ -71,7 +71,7 @@ const ThirdParty = React.createClass({
     const arrivalTimeLabel = isInbound ? "Arrival Time" : "ETA";
 
     return (
-      <div>
+      <div style={{marginBottom: 15}}>
       {
         (isEditing3PL || !externalTripRaw) &&
         <div>

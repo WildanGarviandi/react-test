@@ -29,11 +29,7 @@ function mapStateToPickupOrders(state) {
 function mapDispatchToPickupOrders(dispatch, ownProps) {
   return {
     GetList: () => {
-      if(ownProps.isFill) {
-        dispatch(ReceivedOrders.FetchNotAssignedList());
-      } else {
-        dispatch(ReceivedOrders.FetchList());
-      }
+      dispatch(ReceivedOrders.FetchList());
     },
     PaginationActions: {
       setCurrentPage: (currentPage) => {
