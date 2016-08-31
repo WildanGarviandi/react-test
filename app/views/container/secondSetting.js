@@ -33,7 +33,7 @@ const SecondSetting = React.createClass({
 
     const nextDestination = UtilHelper.UserFullName(haveSet);
 
-    if(isInbound) {
+    if(isInbound && !trip.ExternalTrip) {
       return (
         <DriverSetter trip={trip} />
       );
@@ -51,7 +51,7 @@ const SecondSetting = React.createClass({
             }
             {
               trip.ExternalTrip &&
-              <ThirdPartySetter trip={trip} />
+              <ThirdPartySetter trip={trip} isInbound={isInbound} />
             }
           </div>
           :
@@ -62,7 +62,7 @@ const SecondSetting = React.createClass({
           accordionState === "expanded" &&
           <div className={styles.setterBody}>
             <div className={leftStyle}>
-              <ThirdPartySetter trip={trip} />
+              <ThirdPartySetter trip={trip} isInbound={isInbound} />
               <div className={styles.shadow}></div>
             </div>
             <div className={styles.setterRight}>

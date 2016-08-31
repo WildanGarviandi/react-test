@@ -54,7 +54,7 @@ const DriverSetter = React.createClass({
     const {canPickFleet, driverName, drivers, driversFleetName, fleetName, fleets, isFetchingDriver, isFetchingFleet, isSettingDriver} = this.props;
     const {selectedDriver} = this.state;
 
-    const {assignedFleet, canAssignFleet, isChangingFleet, isSetFleet} = this.props;
+    const {assignedFleet, canAssignFleet, fleet, isChangingFleet, isSetFleet} = this.props;
 
     return (
       <div>
@@ -93,30 +93,33 @@ const DriverSetter = React.createClass({
             </span>
           }
         </span>
-        <span>
-          <span>Driver : </span>
-          {
-            isFetchingFleet &&
-            <span>Waiting for Fleet Data...</span>
-          }
-          {
-            !isFetchingFleet && isFetchingDriver &&
-            <span>Fetching Driver List...</span>
-          }
-          {
-            !isFetchingFleet && !isFetchingDriver && driverName &&
-            <span>{driverName} {driversFleetName}</span>
-          }
-          {
-            !isFetchingFleet && !isFetchingDriver && !driverName &&
-            <span>
-              <span className={styles.fillDriverWrapper}>
-                <DropdownTypeAhead options={drivers} selectVal={this.driverSelect} val={selectedDriver.value} />
+        {
+          fleet &&
+          <span>
+            <span>Driver : </span>
+            {
+              isFetchingFleet &&
+              <span>Waiting for Fleet Data...</span>
+            }
+            {
+              !isFetchingFleet && isFetchingDriver &&
+              <span>Fetching Driver List...</span>
+            }
+            {
+              !isFetchingFleet && !isFetchingDriver && driverName &&
+              <span>{driverName} {driversFleetName}</span>
+            }
+            {
+              !isFetchingFleet && !isFetchingDriver && !driverName &&
+              <span>
+                <span className={styles.fillDriverWrapper}>
+                  <DropdownTypeAhead options={drivers} selectVal={this.driverSelect} val={selectedDriver.value} />
+                </span>
+                <ButtonWithLoading textBase="Set Driver" textLoading="Setting Driver" onClick={this.driverSet} isLoading={isSettingDriver} styles={{base: styles.normalBtn}} />
               </span>
-              <ButtonWithLoading textBase="Set Driver" textLoading="Setting Driver" onClick={this.driverSet} isLoading={isSettingDriver} styles={{base: styles.normalBtn}} />
-            </span>
-          }
-        </span>
+            }
+          </span>
+        }
         <span style={{clear: 'both'}} />
       </div>
     );

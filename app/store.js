@@ -8,12 +8,24 @@ import rootReducer from './reducers';
 
 const loggerMiddleware = createLogger();
 
-const store = createStore(
-  combineReducers({
-    app: rootReducer,
-    routing: routerReducer
-  }),
-  applyMiddleware(routerMiddleware(browserHistory), thunkMiddleware, loggerMiddleware)
-);
+let store;
+
+if(process.env && process.env.NODE_ENV === "production") {
+  store = createStore(
+    combineReducers({
+      app: rootReducer,
+      routing: routerReducer
+    }),
+    applyMiddleware(routerMiddleware(browserHistory), thunkMiddleware)
+  );
+} else {
+  store = createStore(
+    combineReducers({
+      app: rootReducer,
+      routing: routerReducer
+    }),
+    applyMiddleware(routerMiddleware(browserHistory), thunkMiddleware, loggerMiddleware)
+  );
+}
 
 export default store;

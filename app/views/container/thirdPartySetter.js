@@ -12,7 +12,6 @@ import {CreateExternalTrip, SaveEdit3PL, SetExternalTrip, StartEdit3PL, StopEdit
 const DetailRow = React.createClass({
   render() {
     const {isEditing, label, type, value} = this.props;
-    console.log('va', label, value);
 
     return (
       <div style={{clear: 'both'}}>
@@ -61,15 +60,15 @@ const ThirdParty = React.createClass({
     this.props.stopEdit();
   },
   render() {
-    const {externalTrip: externalTripRaw, isEditing3PL, isSaving3PL, trip} = this.props;
+    const {externalTrip: externalTripRaw, isEditing3PL, isInbound, isSaving3PL, trip} = this.props;
     const calendarProps = {
       pickDate: this.pickDate,
       toPrevMonth: this.toPrevMonth,
       toNextMonth: this.toNextMonth,
     };
 
-    console.log('e', externalTripRaw);
     const externalTrip = externalTripRaw ? externalTripRaw : {};
+    const arrivalTimeLabel = isInbound ? "Arrival Time" : "ETA";
 
     return (
       <div>
@@ -80,10 +79,10 @@ const ThirdParty = React.createClass({
           <DetailRow label="Fee" value={externalTrip.Fee} isEditing={true} type="number" onChange={this.onChange('Fee')} />
           <DetailRow label="Transportation" value={externalTrip.Transportation} isEditing={true} type="text" onChange={this.onChange('Transportation')} />
           <DetailRow label="Departure Time" value={externalTrip.DepartureTime} isEditing={true} type="datetime" onChange={this.onChange('DepartureTime')} />
-          <DetailRow label="Arrival Time" value={externalTrip.ArrivalTime} isEditing={true} type="datetime" onChange={this.onChange('ArrivalTime')} />
+          <DetailRow label={arrivalTimeLabel} value={externalTrip.ArrivalTime} isEditing={true} type="datetime" onChange={this.onChange('ArrivalTime')} />
           {
             (trip && trip.OrderStatus && trip.OrderStatus.OrderStatus === "BOOKED") ?
-            <div>
+            <div style={{clear: 'both'}}>
               <ButtonWithLoading textBase="Save & Start Trip" textLoading="Saving" onClick={this.save} isLoading={false} styles={{base: styles2.normalBtn}} />
             </div>
             :
@@ -101,7 +100,7 @@ const ThirdParty = React.createClass({
           <DetailRow label="Fee" value={externalTrip.Fee} isEditing={false} />
           <DetailRow label="Transportation" value={externalTrip.Transportation} isEditing={false} />
           <DetailRow label="Departure Time" value={externalTrip.DepartureTime && externalTrip.DepartureTime.toLocaleString()} isEditing={false} />
-          <DetailRow label="Arrival Time" value={externalTrip.ArrivalTime && externalTrip.ArrivalTime.toLocaleString()} isEditing={false} />
+          <DetailRow label={arrivalTimeLabel} value={externalTrip.ArrivalTime && externalTrip.ArrivalTime.toLocaleString()} isEditing={false} />
           <div style={{clear: 'both'}}>
             <ButtonWithLoading textBase="Edit" textLoading="Saving" onClick={this.startEdit} isLoading={false} styles={{base: styles2.normalBtn}} />
           </div>
