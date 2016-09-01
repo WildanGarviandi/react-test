@@ -56,6 +56,7 @@ const DetailAcc = React.createClass({
     updatedDataBoolean.forEach(function(key) {
       updatedData[key] = updatedData[key] ? 'Yes' : 'No';
     });
+    this.props.GetDetails();
   },
   render() {
     const {accordionAction, accordionState, height, rows, order, title, topStyle, canEdit, isEditing, isUpdating} = this.props;
@@ -120,7 +121,7 @@ const Details = React.createClass({
     this.props.GetDetails();
   },
   render() {
-    const {canEdit, isEditing, isFetching, isUpdating, order, StartEdit, EndEdit, UpdateOrder} = this.props;
+    const {canEdit, isEditing, isFetching, isUpdating, order, StartEdit, EndEdit, UpdateOrder, GetDetails} = this.props;
 
     const r2Edit = lodash.map(orderDetails.slice(9, 16), (row) => {
       return (
@@ -145,7 +146,7 @@ const Details = React.createClass({
               <DetailAcc rows={orderDetails.slice(0,9)} order={order} title={"Summary"} topStyle={classNaming(styles.detailWrapper, styles.right, styles.detailsPanel)}/>
             </Accordion>
             <Accordion initialState="expanded">
-              <DetailAcc rows={orderDetails.slice(9,16)} order={order} title={"Cost and Dimension"} canEdit={canEdit} isEditing={isEditing} isUpdating={isUpdating} UpdateOrder={UpdateOrder} StartEdit={StartEdit} EndEdit={EndEdit}/>
+              <DetailAcc rows={orderDetails.slice(9,16)} order={order} title={"Cost and Dimension"} canEdit={canEdit} isEditing={isEditing} isUpdating={isUpdating} UpdateOrder={UpdateOrder} GetDetails={GetDetails} StartEdit={StartEdit} EndEdit={EndEdit}/>
             </Accordion>
             <Accordion initialState="expanded">
               <DetailAcc rows={orderDetails.slice(16)} order={order} title={"Pricing Details"} />
