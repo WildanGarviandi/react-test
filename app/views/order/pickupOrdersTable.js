@@ -9,7 +9,7 @@ import * as OrdersPickup from '../../modules/orders/actions/pickup';
 import * as PickupOrders from '../../modules/pickupOrders';
 import OrdersSelector from '../../modules/orders/selector';
 
-function mapStateToPickupOrders(state) {
+function mapStateToPickupOrders(state, ownProps) {
   const {pickupOrders} = state.app;
   const {currentPage, isFetching, isGrouping, limit, orders, selected, total} = pickupOrders;
 
@@ -24,6 +24,7 @@ function mapStateToPickupOrders(state) {
       currentPage, limit, total,
     },
     isPickup: true,
+    isFill: ownProps.isFill,
   }
 }
 
@@ -44,7 +45,7 @@ function mapDispatchToPickupOrders(dispatch, ownProps) {
         dispatch(PickupOrders.SetLimit(limit));
       },
     },
-    GroupOrders: () => {
+    GroupOrders: ownProps.GroupOrders ? ownProps.GroupOrders : () => {
       dispatch(PickupOrders.GroupOrders());
     }
   }

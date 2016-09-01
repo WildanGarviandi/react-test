@@ -17,11 +17,20 @@ const Table = React.createClass({
     this.props.GetList();
   },
   render() {
-    const {Headers, Filters, Body, PaginationActions, isFetching, isPickup, items, pagination} = this.props;
+    const {Headers, Filters, Body, PaginationActions, isFetching, isFill, isPickup, items, pagination} = this.props;
     const style = isFetching ? {opacity: 0.5} : {};
+
+    let btnText = isPickup ? "Group Orders" : "Consolidate Orders";
+    let btnLoadingText = isPickup ? "Grouping Orders" : "Consolidating Orders";
+
+    if(isFill) {
+      btnText = "Add Orders";
+      btnLoadingText = "Adding Orders";
+    }
+
     const groupingOrdersBtnProps = {
-      textBase: isPickup ? "Group Orders" : "Consolidate Orders",
-      textLoading: isPickup ? "Grouping Orders" : "Consolidating Orders",
+      textBase: btnText,
+      textLoading: btnLoadingText,
       isLoading: this.props.isGrouping,
       onClick: this.props.GroupOrders,
       styles: {
@@ -34,7 +43,7 @@ const Table = React.createClass({
         <Pagination {...pagination} {...PaginationActions} />
         <ButtonWithLoading {...groupingOrdersBtnProps} />
         {
-          !isPickup &&
+          !isPickup && !isFill &&
           <span className={styles2.finderWrapper}>
             <span className={styles2.finderLabel}>
               Jump to Order with AWB :

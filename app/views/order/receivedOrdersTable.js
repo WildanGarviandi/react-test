@@ -8,7 +8,7 @@ import ReceivedOrdersHeaders from './receivedOrdersHeaders';
 import OrdersSelector from '../../modules/orders/selector';
 import * as ReceivedOrders from '../../modules/receivedOrders';
 
-function mapStateToPickupOrders(state) {
+function mapStateToPickupOrders(state, ownProps) {
   const {receivedOrders} = state.app;
   const {currentPage, isFetching, isConsolidating, limit, orders, selected, total} = receivedOrders;
 
@@ -23,6 +23,7 @@ function mapStateToPickupOrders(state) {
       currentPage, limit, total,
     },
     isPickup: false,
+    isFill: ownProps.isFill,
   }
 }
 
@@ -39,7 +40,7 @@ function mapDispatchToPickupOrders(dispatch, ownProps) {
         dispatch(ReceivedOrders.SetLimit(limit));
       },
     },
-    GroupOrders: () => {
+    GroupOrders: ownProps.GroupOrders ? ownProps.GroupOrders : () => {
       dispatch(ReceivedOrders.ConsolidateOrders());
     },
     FindID: (id) => {
