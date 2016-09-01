@@ -31,9 +31,8 @@ const PickupOrders = React.createClass({
 
     return (
       <Page title="Add Orders to Trip">
-        <ButtonWithLoading {...groupingOrdersBtnProps} />
         <Accordion />
-        <ReceivedOrdersTable isFill={true}/>
+        <ReceivedOrdersTable isFill={true} GroupOrders={this.props.GroupOrders}/>
       </Page>
     );
   }

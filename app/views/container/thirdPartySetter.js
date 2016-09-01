@@ -60,7 +60,7 @@ const ThirdParty = React.createClass({
     this.props.stopEdit();
   },
   render() {
-    const {externalTrip: externalTripRaw, isEditing3PL, isInbound, isSaving3PL, trip} = this.props;
+    const {externalTrip: externalTripRaw, isEditing3PL, isInbound, isSaving3PL, prev3PL, trip} = this.props;
     const calendarProps = {
       pickDate: this.pickDate,
       toPrevMonth: this.toPrevMonth,
@@ -73,7 +73,7 @@ const ThirdParty = React.createClass({
     return (
       <div style={{marginBottom: 15}}>
       {
-        (isEditing3PL || !externalTripRaw) &&
+        (isEditing3PL || !externalTripRaw || !prev3PL) &&
         <div>
           <h4 style={{marginTop: 0, marginBottom: 10, fontWeight: 'normal'}}>Third Party Logistic Details:</h4>
           <DetailRow label="Fee" value={externalTrip.Fee} isEditing={true} type="number" onChange={this.onChange('Fee')} />
@@ -94,7 +94,7 @@ const ThirdParty = React.createClass({
         </div>
       }
       {
-        !isEditing3PL && externalTripRaw &&
+        !isEditing3PL && externalTripRaw && prev3PL &&
         <div>
           <h4 style={{marginTop: 0, marginBottom: 10, fontWeight: 'normal'}}>Third Party Logistic Details:</h4>
           <DetailRow label="Fee" value={externalTrip.Fee} isEditing={false} />
@@ -102,7 +102,10 @@ const ThirdParty = React.createClass({
           <DetailRow label="Departure Time" value={externalTrip.DepartureTime && externalTrip.DepartureTime.toLocaleString()} isEditing={false} />
           <DetailRow label={arrivalTimeLabel} value={externalTrip.ArrivalTime && externalTrip.ArrivalTime.toLocaleString()} isEditing={false} />
           <div style={{clear: 'both'}}>
+          {
+            !isInbound &&
             <ButtonWithLoading textBase="Edit" textLoading="Saving" onClick={this.startEdit} isLoading={false} styles={{base: styles2.normalBtn}} />
+          }
           </div>
         </div>
       }
@@ -112,10 +115,10 @@ const ThirdParty = React.createClass({
 });
 
 function ThirdPartyState(state) {
-  const {externalTrip, isEditing3PL, isSaving3PL} = state.app.inboundTripDetails;
+  const {externalTrip, isEditing3PL, isSaving3PL, prev3PL} = state.app.inboundTripDetails;
 
   return {
-    externalTrip, isEditing3PL, isSaving3PL,
+    externalTrip, isEditing3PL, isSaving3PL, prev3PL,
   }
 }
 
