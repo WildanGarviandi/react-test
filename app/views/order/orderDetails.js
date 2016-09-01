@@ -56,7 +56,7 @@ const DetailAcc = React.createClass({
     updatedDataBoolean.forEach(function(key) {
       updatedData[key] = updatedData[key] ? 'Yes' : 'No';
     });
-    this.props.GetDetails();
+    setTimeout(() => {this.props.GetDetails()}, 500);
   },
   render() {
     const {accordionAction, accordionState, height, rows, order, title, topStyle, canEdit, isEditing, isUpdating} = this.props;
