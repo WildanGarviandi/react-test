@@ -231,6 +231,7 @@ export function Reducer(state = initialState, action) {
         externalTrip: action.externalTrip,
         fleet: action.fleet,
         orders: action.orders,
+        prev3PL: action.externalTrip,
         trip: action.trip,
       });
     }
