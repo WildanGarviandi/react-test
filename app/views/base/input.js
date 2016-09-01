@@ -66,7 +66,6 @@ const InputWithDefault = React.createClass({
     return {currentText: this.props.currentText || ""};
   },
   componentWillReceiveProps(nextProps) {
-    console.log('np', nextProps);
     if(this.props.currentText !== nextProps.currentText) {
       this.setState({currentText: nextProps.currentText});
     }
