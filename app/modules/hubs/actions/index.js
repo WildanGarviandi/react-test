@@ -57,12 +57,12 @@ export function fetchList() {
     if(hubs.list.length > 0) return;
 
     dispatch({ type: Constants.HUB_FETCH_START});
-    fetchGet('/hub/', token).then(function(response) {
+    fetchGet('/hub/nextDestinationOption', token).then(function(response) {
       if(response.ok) {
         response.json().then(function({data}) {
           dispatch({
             type: Constants.HUB_SET_LIST,
-            list: data.Hubs.rows
+            list: data
           });
           dispatch({ type: Constants.HUB_FETCH_END});
         });
