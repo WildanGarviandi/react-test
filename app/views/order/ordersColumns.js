@@ -15,6 +15,7 @@ export const conf = {
   LogisticShare: {title: "Logistic Share"},
   NextDestination: {filterType: "String", title: "Next Destination", cellType: "String"},
   OrderCost: {title: "Order Cost"},
+  DeliveryFee: {title: "Delivery Fee"},
   OrderStatus: {filterType: "StatusDropdown", title: "Order Status", cellType: "Status"},
   PackageHeight: {title: "Package Height"},
   PackageLength: {title: "Package Length"},
@@ -41,4 +42,4 @@ export const pickupOrdersColumns = ["IsChecked", "ID", "WebstoreName", "PickupTi
 
 export const receivedOrdersColumns = ["IsChecked", "ID", "WebstoreName", "DropoffAddress", "DropoffCity", "DropoffState", "ZipCode", "RouteStatus"];
 
-export const orderDetails = ["UserOrderNumber", "WebOrderID", "User", "PickupType", "RouteStatus", "PickupTime", "PickupAddress", "DropoffTime", "DropoffAddress", "PackageWeight", "PackageLength", "PackageWidth", "PackageHeight", "OrderCost", "TotalValue", "IsCOD", "FinalCost", "VAT", "IncludeInsurance", "UseExtraHelper", "EtobeeShare", "DriverShare", "LogisticShare"];
+export const orderDetails = ["UserOrderNumber", "WebOrderID", "User", "PickupType", "RouteStatus", "PickupTime", "PickupAddress", "DropoffTime", "DropoffAddress", "PackageWeight", "PackageLength", "PackageWidth", "PackageHeight", "DeliveryFee", "TotalValue", "IsCOD", "FinalCost", "VAT", "IncludeInsurance", "UseExtraHelper", "EtobeeShare", "DriverShare", "LogisticShare"];

@@ -30,13 +30,14 @@ function FullAddress(address) {
     .join(', ');
 }
 
-const currencyAttributes = ["OrderCost", "FinalCost", "VAT", "TotalValue", "DriverShare", "EtobeeShare", "LogisticShare"];
+const currencyAttributes = ["OrderCost", "DeliveryFee", "FinalCost", "VAT", "TotalValue", "DriverShare", "EtobeeShare", "LogisticShare"];
 
 const boolAttributes = ["IncludeInsurance", "UseExtraHelper", "IsCOD"];
 
 export function OrderParser(order) {
   const dropoffTime = new Date(order.DropoffTime);
   const pickupTime = new Date(order.PickupTime);
+  order.DeliveryFee = order.OrderCost;
   return lodash.assign({}, order, {
     CODValue: order.IsCOD ? order.TotalValue: 0,
     DropoffAddress: order.DropoffAddress ? FullAddress(order.DropoffAddress) : "",

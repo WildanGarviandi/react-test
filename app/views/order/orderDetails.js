@@ -10,6 +10,8 @@ import {InputWithDefault, CheckBox} from '../base/input';
 import * as OrdersDetails from '../../modules/orders/actions/details';
 import OrdersSelector from '../../modules/orders/selector';
 
+const boolAttributes = ["IncludeInsurance", "UseExtraHelper", "IsCOD"];
+
 const DetailRow = React.createClass({
   render() {
     const {isEditing, label, value} = this.props;
@@ -50,6 +52,10 @@ const DetailAcc = React.createClass({
     let updatedData = lodash.assign({}, this.state);
     delete updatedData.isEditing;
     this.props.UpdateOrder(updatedData);
+    let updatedDataBoolean = lodash.intersection(lodash.keys(updatedData), boolAttributes);
+    updatedDataBoolean.forEach(function(key) {
+      updatedData[key] = updatedData[key] ? 'Yes' : 'No';
+    });
   },
   render() {
     const {accordionAction, accordionState, height, rows, order, title, topStyle, canEdit, isEditing, isUpdating} = this.props;
