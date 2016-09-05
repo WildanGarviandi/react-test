@@ -4,6 +4,11 @@ const CheckBox = React.createClass({
   getInitialState() {
     return {checked: this.props.checked || false};
   },
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.checked !== this.props.checked) {
+      this.setState({checked: nextProps.checked});
+    }
+  },
   handleClick(e) {
     let { onChange } = this.props;
     if(!onChange) return;
