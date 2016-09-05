@@ -1,5 +1,6 @@
 import classNaming from 'classnames';
 import React from 'react';
+import {connect} from 'react-redux';
 import styles from './setterStyles.css';
 import DriverSetter from './driverSetter';
 import ThirdPartySetter from './thirdPartySetter';
@@ -25,7 +26,7 @@ const SecondSetting = React.createClass({
     }
   },
   render() {
-    const {accordionAction, accordionState, isInbound, transportMethod, trip} = this.props;
+    const {accordionAction, accordionState, isCentralHub, isInbound, transportMethod, trip} = this.props;
     const leftStyle = classNaming(styles.setterLeft);
 
     const canSet = trip.DestinationHub || trip.District;
@@ -59,13 +60,13 @@ const SecondSetting = React.createClass({
         }
         </div>
         {
-          accordionState === "expanded" && trip.District &&
+          accordionState === "expanded" && (trip.District || !isCentralHub) &&
           <div className={styles.setterBody}>
             <DriverSetter trip={trip} />
           </div>
         }
         {
-          accordionState === "expanded" && !trip.District &&
+          accordionState === "expanded" && !trip.District && isCentralHub &&
           <div className={styles.setterBody}>
             <div className={leftStyle}>
               <DriverSetter trip={trip} />
@@ -82,4 +83,10 @@ const SecondSetting = React.createClass({
   }
 });
 
-export default SecondSetting;
+function StoreToSetting(store) {
+  return {
+    isCentralHub: store.app.userLogged.isCentralHub,
+  }
+}
+
+export default connect(StoreToSetting)(SecondSetting);
