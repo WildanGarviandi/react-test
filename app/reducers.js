@@ -19,7 +19,6 @@ import hubs from './modules/hubs/reducers';
 
 export default combineReducers({ 
   userLogged: authReducers,
-  broadcast: containersReducers.broadcast,
   containerList: containersReducers.containerList,
   containers: containersReducers.containers,
   ordersPrepared: containersReducers.ordersPrepared,
