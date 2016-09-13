@@ -200,6 +200,7 @@
   display: block;
   width: 90%;
   margin: 10px auto;
+  color: #000;
 }
 
 .menuAccordion {
@@ -214,4 +215,8 @@
 
 .menuAccordion .menuItem.active {
   background-color: #0E181C;
+}
+
+a:focus, a:hover {
+  color: #fff;
 }
