@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'underscore';
-import {Dropdown} from './';
+import {Dropdown} from './form';
 import styles from './pagination.css';
 
 function PaginationInfo(props) {

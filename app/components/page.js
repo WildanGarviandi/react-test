@@ -1,5 +1,5 @@
 import React from 'react';
-import {ButtonWithLoading} from './';
+import {ButtonWithLoading} from './button';
 import styles from './page.css';
 
 const PageTitle = ({additional, title}) => {
@@ -43,7 +43,7 @@ const ClassifyChildren = (children) => {
   return {body, buttons: MoveButtonToTopRight(buttons), backLink};
 }
 
-export default React.createClass({
+const Page = React.createClass({
   render() {
     const {title, children, additional} = this.props;
     const {backLink, buttons, body} = ClassifyChildren(children);
@@ -59,4 +59,4 @@ export default React.createClass({
   }
 });
 
-export {PageTitle, ButtonAtRightTop};
+export {Page, PageTitle, ButtonAtRightTop};

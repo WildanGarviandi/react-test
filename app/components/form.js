@@ -1,6 +1,7 @@
 import React, {PropTypes} from 'react';
 import styles from './form.css';
 import {Glyph} from '../views/base/glyph';
+import {ButtonBase} from './button';
 import classNaming from 'classnames';
 
 const Form = React.createClass({
