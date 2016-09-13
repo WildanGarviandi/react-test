@@ -4,6 +4,7 @@ const port = process.env.PORT || config.port
 const app = express()
 
 // serve static assets normally
+app.use('/css', express.static(__dirname + '/css'));
 app.use('/assets', express.static(__dirname + '/assets'));
 
 // handle every other route with index.html.

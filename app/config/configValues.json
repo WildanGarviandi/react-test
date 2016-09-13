@@ -1,0 +1,13 @@
+{
+    "vehicle": [{
+        "key": 1, "value": "Motorcycle"
+    }, {
+        "key": 2, "value": "Minivan"
+    }, {
+        "key": 3, "value": "Small Truck"
+    }, {
+        "key": 4, "value": "Big Truck"
+    }, {
+        "key": 5, "value": "Bicycle"
+    }]
+}
