@@ -16,6 +16,7 @@ import orderDetails from './modules/orders/reducers/details';
 // import outboundTrips from './modules/trips/reducers/outbound';
 import tripDetails from './modules/trips/reducers/details';
 import hubs from './modules/hubs/reducers';
+import myOrders from './orders/orderService';
 
 export default combineReducers({ 
   userLogged: authReducers,
@@ -35,4 +36,5 @@ export default combineReducers({
   pickupOrders,
   receivedOrders,
   tripDetails,
+  myOrders,
 });

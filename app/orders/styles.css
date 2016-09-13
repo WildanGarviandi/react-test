@@ -1,0 +1,50 @@
+.itemLabel {
+  display: block;
+  padding: 5px;
+  width: 150px;
+  float: left;
+}
+
+.itemValue {
+  padding: 5px;
+  display: block;
+  margin-left: 160px;
+  max-width: 350px;
+  text-indent: 0px;
+}
+
+.orderDetailsHeader {
+    background-color: #222D32;
+    color: #eee;
+    text-indent: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 15px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    clear: both;
+}
+
+.orderDetailsInformation {
+    background-color: #eee;
+    color: #000;
+    text-indent: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 15px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    clear: both;
+    padding-bottom: 30px;
+    margin-bottom: 20px;
+}
+
+.orderDetailsBoxLeft {
+    float: left;
+    width: 48%;
+}
+
+.orderDetailsBoxRight {
+    float: right;
+    width: 48%;
+}
