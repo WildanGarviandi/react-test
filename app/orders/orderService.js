@@ -264,3 +264,27 @@ export function fetchDetails(id) {
         });
     }
 }
+
+export function AssignOrder(orderID, driverID) {
+    return (dispatch, getState) => {
+        const {userLogged} = getState().app;
+        const {token} = userLogged;
+        let params = {
+            driverID: driverID
+        };
+
+        dispatch({type: modalAction.BACKDROP_SHOW});
+        FetchPost('/order/'+orderID+'/driver', token, params).then((response) => {
+        if(response.ok) {
+            dispatch(ModalActions.addMessage('Assign Order Success' + orderID));
+            dispatch({type: modalAction.BACKDROP_HIDE});
+        } else {
+            dispatch({type: modalAction.BACKDROP_HIDE});
+            dispatch(ModalActions.addMessage('Failed to edit order details'));
+        }
+        }).catch(() => { 
+            dispatch({type: modalAction.BACKDROP_HIDE});
+            dispatch(ModalActions.addMessage('Network error'));
+        });
+    }
+}
