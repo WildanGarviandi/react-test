@@ -39,8 +39,11 @@ const OrderPage = React.createClass({
     render() {
         const {paginationState, PaginationAction, orders, drivers, userLogged} = this.props;
         const assignOrderButton = {
-             textBase: 'Assign Order',
-             onClick: this.assignOrder,
+            textBase: 'Assign Order',
+            onClick: this.assignOrder,
+            styles: {
+                base: styles.assignOrderButton,
+            }
         };
         return (
             <Page title="My Order">

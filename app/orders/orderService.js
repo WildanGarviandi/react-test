@@ -276,7 +276,7 @@ export function AssignOrder(orders, driverID) {
         };
 
         let promises = [];
-        let assignMessage = [];
+        let assignMessage = '';
 
         function assignSingleOrder(token, order, params) {
             return new Promise(function(resolve, reject) {
@@ -304,13 +304,12 @@ export function AssignOrder(orders, driverID) {
         Promise.all(promises).then(function(responses) {
             responses.forEach(function(response) {
                 if (response.code === 200) {            
-                    assignMessage.push(response.order.UserOrderNumber + ': success assigned');
+                    assignMessage += response.order.UserOrderNumber + ': success assigned \n';
                 } else {
-                    assignMessage.push(response.order.UserOrderNumber + ': ' + response.message);
+                    assignMessage += response.order.UserOrderNumber + ': ' + response.message + '\n';
                 }
             })
-            const message = assignMessage.join();
-            dispatch(ModalActions.addMessage(message));
+            alert(assignMessage);
             dispatch({type: modalAction.BACKDROP_HIDE});
         });
         
