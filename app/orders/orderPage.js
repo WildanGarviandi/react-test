@@ -1,28 +1,22 @@
 import lodash from 'lodash';
 import React from 'react';
 import {connect} from 'react-redux';
+import {Link} from 'react-router';
 import {Page} from '../components/page';
 import {Pagination} from '../components/pagination';
 import {ButtonWithLoading} from '../components/button';
 import Table from './orderTable';
-import * as OrderService from './orderService'
+import * as OrderService from './orderService';
+import styles from './styles.css';
 
 const OrderPage = React.createClass({
     componentWillMount() {
         this.props.FetchList()
     },
-    goToAddOrder() {
-        window.location = '/myorders/add';
-    },
     render() {
         const {paginationState, PaginationAction, orders} = this.props;
-        const addOrderButton = {
-            textBase: 'Add Order',
-            onClick: this.goToAddOrder,
-        }
         return (
             <Page title="My Order">
-                <ButtonWithLoading {...addOrderButton} />
                 <Pagination {...paginationState} {...PaginationAction} />
                 <Table orders={orders} />
                 <Pagination {...paginationState} {...PaginationAction} />
