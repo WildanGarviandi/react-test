@@ -166,7 +166,7 @@ const CheckboxRow = connect(undefined, CheckboxDispatch)(Table.CheckBoxCell);
 
 function OrderParser(order) {
     function getAssignment(order) {
-        var assignment = 'Unassigned';
+        var assignment = 'UNASSIGNED';
         if ((order.CurrentRoute && order.CurrentRoute.Trip && order.CurrentRoute.Trip.Driver) || (order.Driver)) {
             assignment = 'ASSIGNED';
         }

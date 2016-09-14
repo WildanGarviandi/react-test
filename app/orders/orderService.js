@@ -13,7 +13,8 @@ const Constants = {
     ADD_ORDERS: "myorder/orders/add",
     FETCH_ORDER_DETAILS: "myorder/orders/details",
     ORDER_DETAILS_SET: "myorder/orders/details/set",
-    FETCHING_PAGE: "myorder/orders/fetching"
+    FETCHING_PAGE: "myorder/orders/fetching",
+    FETCHING_PAGE_STOP: "myorder/orders/details/failed",
 }
 
 const initialStore = {
@@ -87,6 +88,13 @@ export default function Reducer(store = initialStore, action) {
             });
         }
 
+        case Constants.FETCHING_PAGE_STOP: {
+            return lodash.assign({}, store, {
+                order: {},
+                isFetching: false
+            });
+        }
+
         default: {
             return store;
         }
@@ -156,6 +164,7 @@ export function UpdateAndFetch(filters) {
         dispatch(FetchList());
     }
 }
+
 export function ToggleChecked(orderID) {
     return {
         type: Constants.TOGGLE_SELECT_ORDER,
@@ -184,7 +193,7 @@ export function FetchList() {
         }
 
         dispatch({type: modalAction.BACKDROP_SHOW});
-        FetchGet('/order/pickup', token, params).then((response) => {
+        FetchGet('/order/assigned', token, params).then((response) => {
             if(!response.ok) {
                 return response.json().then(({error}) => {
                     throw error;
@@ -246,7 +255,7 @@ export function fetchDetails(id) {
         FetchGet('/order/' + id, token).then(function(response) {
             if(!response.ok) {
                 return response.json().then(({error}) => {
-                throw error;
+                    throw error;
                 });
             }
 
@@ -258,9 +267,16 @@ export function fetchDetails(id) {
                 dispatch({type: modalAction.BACKDROP_HIDE});
             });
         }).catch((e) => {
+            window.history.back();
             const message = (e && e.message) ? e.message : "Failed to fetch order details";
             dispatch(ModalActions.addMessage(message));
             dispatch({type: modalAction.BACKDROP_HIDE});
         });
+    }
+}
+
+export function resetManageOrder() {
+    return (dispatch) => {
+        dispatch({type: Constants.FETCHING_PAGE_STOP});
     }
 }

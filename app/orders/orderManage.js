@@ -59,17 +59,19 @@ const DatetimeRow = React.createClass({
 
 const ManagePage = React.createClass({
     getInitialState() {
-        return ({isShowingModal: false});
+        return ({showContactModal: false});
     },
     openModal() {
-        this.setState({isShowingModal: true});
+        this.setState({showContactModal: true});
     },
     closeModal() {
-        this.setState({isShowingModal: false});
+        this.setState({showContactModal: false});
     },
     componentWillMount() {
         if (this.props.params.id) {
             this.props.GetDetails();
+        } else {
+            this.props.ResetManageOrder();
         }
     },
     stateChange(key) {
@@ -85,12 +87,14 @@ const ManagePage = React.createClass({
     },
     submit() {
         let updatedData = lodash.assign({}, this.state);
+        delete updatedData.showContactModal;
         this.props.AddOrder(updatedData);
         console.log(updatedData);
     },
     render() {
-        const {isEditing, statusList, order, isFetching} = this.props;
+        const {isEditing, statusList, isFetching} = this.props;
         const Title = this.props.params.id ? "Edit Order" : "Add Order";
+        const order = this.props.params.id ? this.props.order : {};
         const vehicleOptions = configValues.vehicle;
 
         const statusOptions = lodash.chain(statusList)
@@ -144,7 +148,7 @@ const ManagePage = React.createClass({
                         <span onClick={this.openModal}>
                           { <ButtonWithLoading {...addShipperButton} /> }
                           {
-                            this.state.isShowingModal &&
+                            this.state.showContactModal &&
                             <ModalContainer onClose={this.closeModal}>
                               <ModalDialog onClose={this.closeModal}>
                                 <h1>Add New Contact</h1>
@@ -212,6 +216,9 @@ function StoreToOrdersPage(store) {
 
 function mapDispatchToOrders(dispatch, ownProps) {
   return {
+    ResetManageOrder: () => {
+      dispatch(OrderService.resetManageOrder());
+    },
     GetDetails: () => {
       dispatch(OrderService.fetchDetails(ownProps.params.id));
     },
