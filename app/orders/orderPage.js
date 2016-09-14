@@ -21,7 +21,7 @@ const OrderPage = React.createClass({
         this.props.FetchDrivers(this.props.userLogged.userID);
     },
     selectDriver(e) {
-        this.setState({driverID: e.key})
+        this.setState({driverID: e.key});
     },
     assignOrder() {
         let selectedOrders = lodash.filter(this.props.orders, ['IsChecked', true]);
@@ -34,9 +34,7 @@ const OrderPage = React.createClass({
             return;
         }
         var orderPage = this;
-        selectedOrders.forEach(function(order) {
-            orderPage.props.AssignOrder(order.UserOrderID, orderPage.state.driverID);
-        })
+        orderPage.props.AssignOrder(selectedOrders, orderPage.state.driverID);
     },
     render() {
         const {paginationState, PaginationAction, orders, drivers, userLogged} = this.props;
@@ -59,7 +57,7 @@ const OrderPage = React.createClass({
 });
 
 function StoreToOrdersPage(store) {
-    const {currentPage, limit, total, orders} = store.app.myOrders;
+    const {currentPage, limit, total, orders, orderAssignSuccess, orderAssignFailed} = store.app.myOrders;
     const userLogged = store.app.userLogged;
     const driversStore = store.app.driversStore;
     const driverList = driversStore.driverList;
@@ -72,6 +70,8 @@ function StoreToOrdersPage(store) {
     }).sortBy((arr) => (arr.value)).value();
     return {
         orders: orders,
+        orderAssignSuccess: orderAssignSuccess,
+        orderAssignFailed: orderAssignFailed,
         drivers: drivers,
         userLogged: userLogged,
         paginationState: {
@@ -88,8 +88,11 @@ function DispatchToOrdersPage(dispatch) {
         FetchDrivers: (fleetID) => {
             dispatch(driversFetch(fleetID));
         },
-        AssignOrder: (orderID, driverID) => {
-            dispatch(OrderService.AssignOrder(orderID, driverID));
+        AssignOrder: (orders, driverID) => {
+            dispatch(OrderService.AssignOrder(orders, driverID));
+        },
+        ResetAssignedOrder: () => {
+            dispatch(OrderService.ResetAssignedOrder());
         },
         PaginationAction: {
             setCurrentPage: (currentPage) => {

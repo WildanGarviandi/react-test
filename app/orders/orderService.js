@@ -4,6 +4,7 @@ import FetchPost from '../modules/fetch/post';
 import ModalActions from '../modules/modals/actions';
 import {modalAction} from '../modules/modals/constants';
 import moment from 'moment';
+import Promise from 'bluebird';
 
 const Constants = {
     BASE: "myorder/defaultSet/",
@@ -156,6 +157,7 @@ export function UpdateAndFetch(filters) {
         dispatch(FetchList());
     }
 }
+
 export function ToggleChecked(orderID) {
     return {
         type: Constants.TOGGLE_SELECT_ORDER,
@@ -246,7 +248,7 @@ export function fetchDetails(id) {
         FetchGet('/order/' + id, token).then(function(response) {
             if(!response.ok) {
                 return response.json().then(({error}) => {
-                throw error;
+                    throw error;
                 });
             }
 
@@ -265,26 +267,52 @@ export function fetchDetails(id) {
     }
 }
 
-export function AssignOrder(orderID, driverID) {
+export function AssignOrder(orders, driverID) {
     return (dispatch, getState) => {
-        const {userLogged} = getState().app;
+        const {userLogged, myOrders} = getState().app;
         const {token} = userLogged;
         let params = {
             driverID: driverID
         };
 
-        dispatch({type: modalAction.BACKDROP_SHOW});
-        FetchPost('/order/'+orderID+'/driver', token, params).then((response) => {
-        if(response.ok) {
-            dispatch(ModalActions.addMessage('Assign Order Success' + orderID));
-            dispatch({type: modalAction.BACKDROP_HIDE});
-        } else {
-            dispatch({type: modalAction.BACKDROP_HIDE});
-            dispatch(ModalActions.addMessage('Failed to edit order details'));
+        let promises = [];
+        let assignMessage = [];
+
+        function assignSingleOrder(token, order, params) {
+            return new Promise(function(resolve, reject) {
+                FetchPost('/order/' + order.UserOrderID + '/driver', token, params)
+                .then(function(response) {
+                    if (!response.ok) {            
+                        return response.json().then(({error}) => {
+                            error.order = order;
+                            return resolve(error);
+                        });
+                    } 
+                    return response.json().then(({data}) => {
+                        data.order = order;
+                        return resolve(data);
+                    });
+                });
+            });
         }
-        }).catch(() => { 
-            dispatch({type: modalAction.BACKDROP_HIDE});
-            dispatch(ModalActions.addMessage('Network error'));
+
+        dispatch({type: modalAction.BACKDROP_SHOW});
+        orders.forEach(function(order) {
+            promises.push(assignSingleOrder(token, order, params));
         });
+
+        Promise.all(promises).then(function(responses) {
+            responses.forEach(function(response) {
+                if (response.code === 200) {            
+                    assignMessage.push(response.order.UserOrderNumber + ': success assigned');
+                } else {
+                    assignMessage.push(response.order.UserOrderNumber + ': ' + response.message);
+                }
+            })
+            const message = assignMessage.join();
+            dispatch(ModalActions.addMessage(message));
+            dispatch({type: modalAction.BACKDROP_HIDE});
+        });
+        
     }
 }
