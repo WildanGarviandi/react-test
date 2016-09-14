@@ -233,7 +233,7 @@ function OrderRow({order}) {
             <CheckboxRow checked={order.IsChecked} orderID={order.UserOrderID} />
             <Table.LinkCell to={'/myorders/edit/' + order.UserOrderID} text={order.WebOrderID} />
             <Table.TextCell text={order.UserOrderNumber} />
-            <Table.TextCell text={order.FleetManager.FirstName} />
+            <Table.TextCell text={order.PickupAddress.Address1} />
             <Table.TextCell text={order.DropoffAddress.Address1} />
             <Table.TextCell text={order.Status} />
             <Table.TextCell text={order.OrderType} />

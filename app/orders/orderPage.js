@@ -26,7 +26,7 @@ const OrderPage = React.createClass({
     assignOrder() {
         let selectedOrders = lodash.filter(this.props.orders, ['IsChecked', true]);
         if (selectedOrders.length < 1) {
-            alert('Must be selected one or more orders');
+            alert('Must selected one or more orders');
             return;
         }
         if (!this.state.driverID) {
@@ -57,7 +57,7 @@ const OrderPage = React.createClass({
 });
 
 function StoreToOrdersPage(store) {
-    const {currentPage, limit, total, orders, orderAssignSuccess, orderAssignFailed} = store.app.myOrders;
+    const {currentPage, limit, total, orders} = store.app.myOrders;
     const userLogged = store.app.userLogged;
     const driversStore = store.app.driversStore;
     const driverList = driversStore.driverList;
@@ -70,8 +70,6 @@ function StoreToOrdersPage(store) {
     }).sortBy((arr) => (arr.value)).value();
     return {
         orders: orders,
-        orderAssignSuccess: orderAssignSuccess,
-        orderAssignFailed: orderAssignFailed,
         drivers: drivers,
         userLogged: userLogged,
         paginationState: {
@@ -90,9 +88,6 @@ function DispatchToOrdersPage(dispatch) {
         },
         AssignOrder: (orders, driverID) => {
             dispatch(OrderService.AssignOrder(orders, driverID));
-        },
-        ResetAssignedOrder: () => {
-            dispatch(OrderService.ResetAssignedOrder());
         },
         PaginationAction: {
             setCurrentPage: (currentPage) => {
