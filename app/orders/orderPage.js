@@ -18,6 +18,9 @@ const OrderPage = React.createClass({
         return (
             <Page title="My Order">
                 <Pagination {...paginationState} {...PaginationAction} />
+                <p>
+                    <Link to={'/myorders/add'} className={styles.addOrderButton}>Add Order</Link>
+                </p>
                 <Table orders={orders} />
                 <Pagination {...paginationState} {...PaginationAction} />
             </Page>
