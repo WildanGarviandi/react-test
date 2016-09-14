@@ -6,9 +6,9 @@ import moment from 'moment';
 
 const Constants = {
     BASE: "mytrip/defaultSet/",
-    SET_TRIPS: "mytrip/orders/set",
+    SET_TRIPS: "mytrip/trips/set",
     TOGGLE_SELECT_ORDER: "mytrip/trips/select",
-    TOGGLE_SELECT_ALL: "mytrip/selectedAll/toggle",
+    TOGGLE_SELECT_ALL: "mytrip/trips/selectAll",
 }
 
 const initialStore = {
