@@ -7,6 +7,8 @@ import moment from 'moment';
 const Constants = {
     BASE: "mytrip/defaultSet/",
     SET_TRIPS: "mytrip/orders/set",
+    TOGGLE_SELECT_ORDER: "mytrip/trips/select",
+    TOGGLE_SELECT_ALL: "mytrip/selectedAll/toggle",
 }
 
 const initialStore = {
@@ -16,6 +18,7 @@ const initialStore = {
     statusName: "SHOW ALL",
     total: 0,
     trips: [],
+    selectedAll: false,
 }
 
 export default function Reducer(store = initialStore, action) {
@@ -31,6 +34,32 @@ export default function Reducer(store = initialStore, action) {
                 total: action.total,
                 trips: action.trips,
             });
+        }
+
+        case Constants.TOGGLE_SELECT_ORDER: {
+            const newTrips= lodash.map(store.trips, (trip) => {
+                if(trip.TripID !== action.tripID) {
+                    return trip;
+                }
+ 
+                return lodash.assign({}, trip, {IsChecked: !trip.IsChecked});
+            });
+ 
+            return lodash.assign({}, store, {
+                trips: newTrips,
+            });
+        }
+ 
+        case Constants.TOGGLE_SELECT_ALL: {
+            const {trips, selectedAll} = store;
+            const newTrips = lodash.map(trips, (trip) => {
+                return lodash.assign({}, trip, {IsChecked: !selectedAll});
+            });
+ 
+            return lodash.assign({}, store, {
+                selectedAll: !selectedAll,
+                trips: newTrips,
+            })
         }
 
         default: {
@@ -85,11 +114,22 @@ export function SetLimit(limit) {
     }
 }
 
- export function UpdateAndFetch(filters) {
+export function UpdateAndFetch(filters) {
      return (dispatch) => {
          dispatch(UpdateFilters(filters));
          dispatch(FetchList());
      }
+}
+
+export function ToggleChecked(tripID) {
+    return {
+        type: Constants.TOGGLE_SELECT_ORDER,
+        tripID: tripID
+    }
+}
+ 
+export function ToggleCheckedAll() {
+    return { type: Constants.TOGGLE_SELECT_ALL };
 }
 
 export function FetchList() {

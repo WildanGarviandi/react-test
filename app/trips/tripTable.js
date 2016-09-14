@@ -73,6 +73,28 @@ function DropdownDispatchBuilder(filterKeyword) {
     }
 }
 
+function CheckboxDispatch(dispatch, props) {
+    return {
+        onChange: () => {
+            dispatch(TripService.ToggleChecked(props.tripID));
+        }
+    }
+}
+ 
+function CheckboxHeaderStore(store) {
+    return {
+        value: store.app.myTrips.selectedAll,
+    }
+}
+ 
+function CheckboxHeaderDispatch(dispatch) {
+    return {
+        onChange: () => {
+            dispatch(TripService.ToggleCheckedAll());
+        }
+    }
+}
+
 function DateRangeBuilder(keyword) {
     return (store) => {
         const {filters} = store.app.myTrips;
@@ -112,10 +134,13 @@ const PickupFilter = ConnectBuilder('pickup')(Table.InputCell);
 const DropoffFilter = ConnectBuilder('dropoff')(Table.InputCell);
 const StatusFilter = ConnectDropdownBuilder('statusName')(Table.FilterDropdown);
 const CreatedDateFilter = connect(DateRangeBuilder('Created'), DateRangeDispatch('Created'))(Table.FilterDateTimeRangeCell);
+const CheckboxHeader = connect(CheckboxHeaderStore, CheckboxHeaderDispatch)(Table.CheckBoxHeader);
+const CheckboxRow = connect(undefined, CheckboxDispatch)(Table.CheckBoxCell);
 
 function TripHeader() {
     return (
         <tr className={styles.tr}>
+            <CheckboxHeader />
             <Table.TextHeader text="Container Number" />
             <Table.TextHeader text="Driver" />
             <Table.TextHeader text="Merchant" />
@@ -125,20 +150,6 @@ function TripHeader() {
             <Table.TextHeader text="Created Date" />
         </tr>
     );
-}
-
-function TripFilter() {
-    return (
-        <tr className={styles.tr}>
-            <ContainerNumberFilter />
-            <DriverFilter />
-            <MerchantFilter />
-            <PickupFilter />
-            <DropoffFilter />
-            <StatusFilter />
-            <CreatedDateFilter />
-        </tr>
-    )
 }
 
 function TripParser(trip) {
@@ -167,13 +178,30 @@ function TripParser(trip) {
 
     return lodash.assign({}, trip, {
         TripDriver: getDriverName(trip),
-        TripMerchant: merchantNames
+        TripMerchant: merchantNames,
+        IsChecked: ('IsChecked' in trip) ? trip.IsChecked : false,
     })
+}
+
+function TripFilter() {
+    return (
+        <tr className={styles.tr}>
+            <Table.EmptyCell />
+            <ContainerNumberFilter />
+            <DriverFilter />
+            <MerchantFilter />
+            <PickupFilter />
+            <DropoffFilter />
+            <StatusFilter />
+            <CreatedDateFilter />
+        </tr>
+    )
 }
 
 function TripRow({trip}) {
     return (
         <tr className={styles.tr}>
+            <CheckboxRow checked={trip.IsChecked} tripID={trip.TripID} />
             <Table.TextCell text={trip.ContainerNumber} />
             <Table.TextCell text={trip.Driver && trip.TripDriver } />
             <Table.TextCell text={trip.TripMerchant } />
