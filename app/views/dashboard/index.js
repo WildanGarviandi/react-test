@@ -76,6 +76,10 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact}) => {
             </MenuItem>
           </AccordionMenu>
         </Accordion>
+        <MenuItem active={activeMenuIdx == 6} to={'/mydrivers'}>
+          <Glyph className={styles.menuGlyph} name={'sunglasses'}/>
+          <span>My Drivers</span>
+        </MenuItem>
           <button className={styles.logoutBtn} onClick={handleLogout}>
             <Glyph className={styles.glyphBackward} name={'log-out'}/>
             <span>Logout</span>
