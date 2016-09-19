@@ -7,7 +7,7 @@ import moment from 'moment';
 
 const Constants = {
     BASE: "mydriver/defaultSet/",
-    SET_DRIVERS: "mydriver/orders/set",
+    SET_DRIVERS: "mydriver/drivers/set",
     TOGGLE_SELECT_DRIVER: "mydriver/drivers/select",
     TOGGLE_SELECT_ALL: "mydriver/selectedAll/toggle"
 }
@@ -40,7 +40,7 @@ export default function Reducer(store = initialStore, action) {
             });
         }
 
-        case Constants.TOGGLE_SELECT_ORDER: {
+        case Constants.TOGGLE_SELECT_DRIVER: {
             const newDrivers = lodash.map(store.drivers, (driver) => {
                 if(driver.UserID !== action.driverID) {
                     return driver;
@@ -82,7 +82,7 @@ export function SetFilters(filters) {
 
 export function UpdateFilters(filters) {
     return (dispatch, getState) => {
-        const prevFilters = getState().app.myOrders.filters;
+        const prevFilters = getState().app.myDrivers.filters;
         const nextFilter = lodash.assign({}, prevFilters, filters);
         dispatch(SetFilters(nextFilter));
     }
@@ -159,8 +159,8 @@ export function FetchList() {
                 dispatch({type: modalAction.BACKDROP_HIDE});
                 dispatch({
                     type: Constants.SET_DRIVERS,
-                    drivers: data,
-                    total: data.length,
+                    drivers: data.rows,
+                    total: data.count,
                 })
             });
         }).catch((e) => {

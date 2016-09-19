@@ -162,7 +162,7 @@ function DriverFilter() {
             <Table.EmptyCell />
             <NameFilter />
             <PhoneFilter />
-            <Table.EmptyCell/>
+            <EmailFilter/>
         </tr>
     )
 }
