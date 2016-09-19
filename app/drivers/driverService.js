@@ -7,9 +7,10 @@ import moment from 'moment';
 
 const Constants = {
     BASE: "mydriver/defaultSet/",
-    SET_DRIVERS: "mydriver/orders/set",
+    SET_DRIVERS: "mydriver/drivers/set",
     TOGGLE_SELECT_DRIVER: "mydriver/drivers/select",
-    TOGGLE_SELECT_ALL: "mydriver/selectedAll/toggle"
+    TOGGLE_SELECT_ALL: "mydriver/selectedAll/toggle",
+    SET_DRIVERS_ORDERS: "mydriver/drivers/orders"
 }
 
 const initialStore = {
@@ -22,7 +23,11 @@ const initialStore = {
     selectedAll: false,
     driver: {},
     isEditing: false,
-    isFetching: false
+    isFetching: false,
+    orders: [],
+    currentPageOrders: 1,
+    totalOrders: 0,
+    limitOrders: 100
 }
 
 export default function Reducer(store = initialStore, action) {
@@ -64,6 +69,13 @@ export default function Reducer(store = initialStore, action) {
                 selectedAll: !selectedAll,
                 drivers: newDrivers,
             })
+        }
+
+        case Constants.SET_DRIVERS_ORDERS: {
+            return lodash.assign({}, store, {
+                totalOrders: action.total,
+                orders: action.orders,
+            });
         }
 
         default: {
@@ -161,6 +173,53 @@ export function FetchList() {
                     type: Constants.SET_DRIVERS,
                     drivers: data,
                     total: data.length,
+                })
+            });
+        }).catch((e) => {
+            dispatch({type: modalAction.BACKDROP_HIDE});
+            dispatch(ModalActions.addMessage(e.message));
+        });
+    }
+}
+
+export function SetCurrentPageOrders(currentPage) {
+    return (dispatch, getState) => {
+        dispatch(StoreSetter("currentPageOrders", currentPage));
+        dispatch(FetchListOrders());
+    }
+}
+
+export function SetLimitOrders(limit) {
+    return (dispatch, getState) => {
+        dispatch(StoreSetter("limitOrders", limit));
+        dispatch(SetCurrentPageOrders(1));
+    }
+}
+
+export function FetchListOrders(id) {
+    return (dispatch, getState) => {
+        const {myDrivers, userLogged} = getState().app;
+        const {currentPageOrders, limitOrders} = myDrivers;
+        const {token} = userLogged;
+        let params = lodash.assign({}, {
+            limit: limitOrders,
+            offset: (currentPageOrders - 1) * limitOrders
+        })
+
+        dispatch({type: modalAction.BACKDROP_SHOW});
+        FetchGet('/driver/' + id + '/orders', token, params).then((response) => {
+            if(!response.ok) {
+                return response.json().then(({error}) => {
+                    throw error;
+                })
+            }
+
+            return response.json().then(({data}) => {
+                dispatch({type: modalAction.BACKDROP_HIDE});
+                dispatch({
+                    type: Constants.SET_DRIVERS_ORDERS,
+                    orders: data.rows,
+                    total: data.count,
                 })
             });
         }).catch((e) => {
