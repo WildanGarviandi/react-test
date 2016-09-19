@@ -148,3 +148,8 @@ tbody:last-child .tr:nth-of-type(odd) .td {
 .createdDate {
     width: 140px;
 }
+
+.linkMenu {
+    color: #33c;
+    padding: 3px;
+}

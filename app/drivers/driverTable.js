@@ -7,6 +7,8 @@ import * as Table from '../components/table';
 import styles from '../components/table.css';
 import * as DriverService from './driverService';
 import OrderStatusSelector from '../modules/orderStatus/selector';
+import {Glyph} from '../views/base';
+import {Link} from 'react-router';
 
 function StoreBuilder(keyword) {
     return (store) => {
@@ -126,18 +128,9 @@ function ConnectDropdownBuilder(keyword) {
     return connect(DropdownStoreBuilder(keyword), DropdownDispatchBuilder(keyword));
 }
 
-const DriverIDFilter = ConnectBuilder('driverID')(Table.InputCell);
 const NameFilter = ConnectBuilder('name')(Table.InputCell);
 const PhoneFilter = ConnectBuilder('phone')(Table.InputCell);
 const EmailFilter = ConnectBuilder('email')(Table.InputCell);
-/*const UserOrderNumberFilter = ConnectBuilder('userOrderNumber')(Table.InputCell);
-const PickupFilter = ConnectBuilder('pickup')(Table.InputCell);
-const DropoffFilter = ConnectBuilder('dropoff')(Table.InputCell);
-const StatusFilter = ConnectDropdownBuilder('statusName')(Table.FilterDropdown);
-const OrderTypeFilter = ConnectDropdownBuilder('orderType')(Table.FilterDropdown);
-const OrderOwnerFilter = ConnectDropdownBuilder('orderOwner')(Table.FilterDropdown);
-const AssignmentFilter = ConnectDropdownBuilder('assignment')(Table.FilterDropdown);
-const CreatedDateFilter = connect(DateRangeBuilder('Created'), DateRangeDispatch('Created'))(Table.FilterDateTimeRangeCell);*/
 const CheckboxHeader = connect(CheckboxHeaderStore, CheckboxHeaderDispatch)(Table.CheckBoxHeader);
 const CheckboxRow = connect(undefined, CheckboxDispatch)(Table.CheckBoxCell);
 
@@ -145,8 +138,8 @@ function DriverParser(driver) {
 
     return lodash.assign({}, driver, {
         IsChecked: ('IsChecked' in driver) ? driver.IsChecked : false,
-        Name: driver.Driver.FirstName + ' ' + driver.Driver.LastName,
-        Mobile: driver.Driver.CountryCode + driver.Driver.PhoneNumber
+        Name: driver.FirstName + ' ' + driver.LastName,
+        Mobile: driver.CountryCode + driver.PhoneNumber
     })
 }
 
@@ -154,7 +147,7 @@ function DriverHeader() {
     return (
         <tr className={styles.tr}>
             <CheckboxHeader />
-            <Table.TextHeader text="User ID" />
+            <Table.TextHeader />
             <Table.TextHeader text="Name" />
             <Table.TextHeader text="Mobile" />
             <Table.TextHeader text="Email" />
@@ -166,10 +159,10 @@ function DriverFilter() {
     return (
         <tr className={styles.tr}>
             <Table.EmptyCell />
-            <DriverIDFilter />
+            <Table.EmptyCell />
             <NameFilter />
             <PhoneFilter />
-            <EmailFilter />
+            <Table.EmptyCell/>
         </tr>
     )
 }
@@ -178,10 +171,17 @@ function DriverRow({driver}) {
     return (
         <tr className={styles.tr}>
             <CheckboxRow checked={driver.IsChecked} driverID={driver.Driver.UserID} />
-            <Table.LinkCell to={'/mydrivers/edit/' + driver.Driver.UserID} text={driver.Driver.UserID} />
+            <td>
+                <Link title='View Details' to={'/mydrivers/edit/' + driver.UserID} className={styles.linkMenu}>
+                    {<Glyph name={'search'}/>}
+                </Link>
+                <Link title='View Orders' to={'/mydrivers/orders/' + driver.UserID} className={styles.linkMenu}>
+                    {<Glyph name={'list-alt'}/>}
+                </Link>
+            </td>
             <Table.TextCell text={driver.Name} />
             <Table.TextCell text={driver.Mobile} />
-            <Table.TextCell text={driver.Driver.Email} />
+            <Table.TextCell text={driver.Email} />
         </tr>
     );
 }
