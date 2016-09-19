@@ -14,7 +14,7 @@ const Constants = {
     FETCH_ORDER_DETAILS: "myorder/orders/details",
     ORDER_DETAILS_SET: "myorder/orders/details/set",
     FETCHING_PAGE: "myorder/orders/fetching",
-    FETCHING_PAGE_STOP: "myorder/orders/details/failed",
+    FETCHING_PAGE_STOP: "myorder/orders/fetchingStop",
 }
 
 const initialStore = {
@@ -91,7 +91,8 @@ export default function Reducer(store = initialStore, action) {
         case Constants.FETCHING_PAGE_STOP: {
             return lodash.assign({}, store, {
                 order: {},
-                isFetching: false
+                isFetching: false,
+                isEditing: false
             });
         }
 

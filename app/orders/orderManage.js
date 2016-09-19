@@ -92,12 +92,12 @@ const ManagePage = React.createClass({
         console.log(updatedData);
     },
     render() {
-        const {isEditing, statusList, isFetching} = this.props;
+        const {isEditing, contactList, isFetching} = this.props;
         const Title = this.props.params.id ? "Edit Order" : "Add Order";
         const order = this.props.params.id ? this.props.order : {};
         const vehicleOptions = configValues.vehicle;
 
-        const statusOptions = lodash.chain(statusList)
+        const contactOptions = lodash.chain(contactList)
             .map((key, val) => ({key:key, value: val.toUpperCase()}))
             .sortBy((arr) => (arr.key))
             .value();
@@ -140,35 +140,44 @@ const ManagePage = React.createClass({
         } else {
             return (
                 <Page title={Title}>
-                    <div className={styles.orderDetailsHeader}>
-                        Contact Information
-                    </div>
-                    <div className={styles.orderDetailsInformation}>
-                        <DropdownRow label={'Shipper'} value={order.OrderStatus && order.OrderStatus.OrderStatus} options={statusOptions} handleSelect={this.stateChange('Status')} />
-                        <span onClick={this.openModal}>
-                          { <ButtonWithLoading {...addShipperButton} /> }
-                          {
-                            this.state.showContactModal &&
-                            <ModalContainer onClose={this.closeModal}>
-                              <ModalDialog onClose={this.closeModal}>
-                                <h1>Add New Contact</h1>
-                                <InputRow label={'Name'} type={'text'} onChange={this.stateChange('Name') } />
-                                <InputRow label={'Mobile'} type={'text'} onChange={this.stateChange('Mobile') } />
-                                <InputRow label={'Email'} type={'text'} onChange={this.stateChange('Email') } />
-                                <InputRow label={'Address'} type={'text'} onChange={this.stateChange('Address') } />
-                                <InputRow label={'State'} type={'text'} onChange={this.stateChange('State') } />
-                                <InputRow label={'City'} type={'text'} onChange={this.stateChange('City') } />
-                                <InputRow label={'Zip'} type={'text'} onChange={this.stateChange('Zip') } />
-                                <div style={{clear: 'both'}}>
-                                    { <ButtonWithLoading {...saveBtnContact} /> }
-                                </div>
-                              </ModalDialog>
-                            </ModalContainer>
-                          }
-                        </span>
-                        <DropdownRow label={'Pickup'} value={order.OrderStatus && order.OrderStatus.OrderStatus} options={statusOptions} handleSelect={this.stateChange('Status')} />
-                        <DropdownRow label={'Dropoff'} value={order.OrderStatus && order.OrderStatus.OrderStatus} options={statusOptions} handleSelect={this.stateChange('Status')} />
-                    </div>
+                    { !isEditing &&
+                        <div className={styles.orderDetailsHeader}>
+                            Contact Information
+                        </div>
+                    }
+                    { !isEditing &&
+                        <div className={styles.orderDetailsInformation}>
+                            <DropdownRow label={'Shipper'} options={contactOptions} handleSelect={this.stateChange('ShipperID')} />
+                            <span onClick={this.openModal}>
+                              { <ButtonWithLoading {...addShipperButton} /> }
+                              {
+                                this.state.showContactModal &&
+                                <ModalContainer onClose={this.closeModal}>
+                                  <ModalDialog onClose={this.closeModal}>
+                                    <h1>Add New Contact</h1>
+                                    <InputRow label={'Name'} type={'text'} onChange={this.stateChange('Name') } />
+                                    <InputRow label={'Mobile'} type={'text'} onChange={this.stateChange('Mobile') } />
+                                    <InputRow label={'Email'} type={'text'} onChange={this.stateChange('Email') } />
+                                    <InputRow label={'Address'} type={'text'} onChange={this.stateChange('Address') } />
+                                    <InputRow label={'State'} type={'text'} onChange={this.stateChange('State') } />
+                                    <InputRow label={'City'} type={'text'} onChange={this.stateChange('City') } />
+                                    <InputRow label={'Zip'} type={'text'} onChange={this.stateChange('Zip') } />
+                                    <div style={{clear: 'both'}}>
+                                        { <ButtonWithLoading {...saveBtnContact} /> }
+                                    </div>
+                                  </ModalDialog>
+                                </ModalContainer>
+                              }
+                            </span>
+                            <DropdownRow label={'Pickup'} options={contactOptions} handleSelect={this.stateChange('PickupAddress')} />
+                            <DropdownRow label={'Dropoff'} options={contactOptions} handleSelect={this.stateChange('DropoffAddress')} />
+                        </div>
+                    }
+                    { isEditing &&
+                        <div className={styles.editOrderHeaders}>
+                            Edit Order Information
+                        </div>
+                    }
                     <div className={styles.orderDetailsBoxLeft}>
                         <div className={styles.orderDetailsHeader}>
                             Order Details
@@ -205,9 +214,13 @@ const ManagePage = React.createClass({
 
 function StoreToOrdersPage(store) {
     const {isEditing, order, isFetching} = store.app.myOrders;
-    const {statusList} = store.app.containers;
+    const {contacts} = store.app.myContacts;
+    let contactList = {}; 
+    contacts.forEach(function(contact) {
+        contactList[contact.FirstName + ' ' + contact.LastName] = contact.ContactID;
+    });
     return {
-        statusList,
+        contactList,
         order,
         isEditing,
         isFetching
