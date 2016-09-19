@@ -18,6 +18,9 @@ const DriverPage = React.createClass({
         return (
             <Page title="My Driver">
                 <Pagination {...paginationState} {...PaginationAction} />
+                <p>
+                    <Link to={'/mydrivers/add'} className={styles.addDriverButton}>Add Driver</Link>
+                </p>
                 <Table drivers={drivers} />
                 <Pagination {...paginationState} {...PaginationAction} />
             </Page>

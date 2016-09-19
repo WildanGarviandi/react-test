@@ -14,6 +14,7 @@ import ReceivedOrdersPage from './views/order/receivedOrders';
 import MyTripsPage from './views/trips/myTrips';
 import TripDetailsPage from './views/trips/tripDetails';
 import MyDriverPage from './drivers/driverPage';
+import ManageDriversPage from './drivers/driverManagePage';
 
 function requireAuth(nextState, replace, callback) {
   checkAuth(store).then(function(result) {
@@ -43,6 +44,8 @@ export default (
         <Route path="/trips/:tripID/fillReceived" component={ReceivedFillPage} onEnter={requireAuth}/>
         <Route path="/trips/:tripID/fillPickup" component={PickupFillPage} onEnter={requireAuth}/>
         <Route path="/mydrivers" component={MyDriverPage} onEnter={requireAuth}/>
+        <Route path="/mydrivers/add" component={ManageDriversPage} onEnter={requireAuth} />
+        <Route path="/mydrivers/edit/:id" component={ManageDriversPage} onEnter={requireAuth} />
       </Route>
       <Route path="/qrcode/:id" component={ContainerQRCodePage} />
       <Route path="/login" component={LoginPage} />
