@@ -4,6 +4,8 @@ import {Link} from 'react-router';
 
 import {AppLoadedActions, LogoutAction} from '../../modules';
 import FetchStatusList from '../../modules/containers/actions/statusFetch';
+import * as CityService from '../../cities/cityService';
+import * as StateService from '../../states/stateService';
 
 import {Glyph} from '../base';
 import Accordion from '../base/accordion';
@@ -140,6 +142,8 @@ function DispatchToProps(dispatch) {
   return {
     initialLoad() {
       dispatch(FetchStatusList());
+      dispatch(CityService.FetchList());
+      dispatch(StateService.FetchList());
     },
     logout: function() {
       dispatch(LogoutAction.logout());

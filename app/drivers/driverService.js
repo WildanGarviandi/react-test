@@ -214,7 +214,7 @@ export function editDriver(id, updateData) {
             dispatch(ModalActions.addMessage('Update driver success'));
         } else {
             dispatch({type: modalAction.BACKDROP_HIDE});
-            dispatch(ModalActions.addMessage('Failed to edit order details'));
+            dispatch(ModalActions.addMessage('Failed to edit driver details'));
         }
         }).catch(() => { 
             dispatch({type: modalAction.BACKDROP_HIDE});
@@ -256,5 +256,33 @@ export function fetchDetails(id) {
 export function resetManageDriver() {
     return (dispatch) => {
         dispatch({type: Constants.FETCHING_PAGE_STOP});
+    }
+}
+
+export function addDriver(driverData) {
+    return (dispatch, getState) => {
+        const {myDrivers, userLogged} = getState().app;
+        const {driver} = myDrivers;
+        const {token} = userLogged;
+
+        dispatch({type: modalAction.BACKDROP_SHOW});
+        FetchPost('/driver', token, driverData).then((response) => {
+        if(response.ok) {
+            response.json().then(function({data}) {
+                dispatch({
+                    type: Constants.DRIVER_DETAILS_SET,
+                    driver: lodash.assign({}, driverData, driver),
+                });
+            });
+            dispatch({type: modalAction.BACKDROP_HIDE});
+            dispatch(ModalActions.addMessage('Add driver success'));
+        } else {
+            dispatch({type: modalAction.BACKDROP_HIDE});
+            dispatch(ModalActions.addMessage('Failed to add driver'));
+        }
+        }).catch(() => { 
+            dispatch({type: modalAction.BACKDROP_HIDE});
+            dispatch(ModalActions.addMessage('Network error'));
+        });
     }
 }

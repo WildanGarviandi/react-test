@@ -17,6 +17,8 @@ import orderDetails from './modules/orders/reducers/details';
 import tripDetails from './modules/trips/reducers/details';
 import hubs from './modules/hubs/reducers';
 import myDrivers from './drivers/driverService';
+import cityList from './cities/cityService';
+import stateList from './states/stateService';
 
 export default combineReducers({ 
   userLogged: authReducers,
@@ -36,5 +38,7 @@ export default combineReducers({
   pickupOrders,
   receivedOrders,
   tripDetails,
-  myDrivers
+  myDrivers,
+  cityList,
+  stateList
 });
