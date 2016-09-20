@@ -212,7 +212,7 @@ function TripRow({trip}) {
             <Table.TextCell text={trip.PickupAddress && trip.PickupAddress.Address1} />
             <Table.TextCell text={trip.DropoffAddress && trip.DropoffAddress.Address1} />
             <Table.TextCell text={trip.OrderStatus && trip.OrderStatus.OrderStatus} />
-            <Table.TextCell text={moment(trip.CreatedDate).format('MM/DD/YYYY h:mm:ss a')} />
+            <Table.TextCell text={moment(trip.CreatedDate).format('MM/DD/YYYY h:mm:ss A')} />
         </tr>
     );
 }
