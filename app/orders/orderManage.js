@@ -5,6 +5,7 @@ import {Page} from '../components/page';
 import {ButtonWithLoading} from '../components/button';
 import * as Form from '../components/form';
 import * as OrderService from './orderService';
+import * as ContactService from '../contacts/contactService';
 import styles from './styles.css';
 import configValues from '../config/configValues.json';
 import DateTime from 'react-datetime';
@@ -59,7 +60,40 @@ const DatetimeRow = React.createClass({
 
 const ManagePage = React.createClass({
     getInitialState() {
-        return ({showContactModal: false});
+        return ({
+            showContactModal: false,
+            PickupName: '',
+            PickupCity: '',
+            PickupState: '',
+            PickupZip: '',
+            PickupMobile: '',
+            PickupAddress: '',
+            PickupAddressDetail: '',
+            DropoffName: '',
+            DropoffCity: '',
+            DropoffState: '',
+            DropoffZip: '',
+            DropoffMobile: '',
+            DropoffAddress: '',
+            DropoffAddressDetail: '',
+            HasShipper: false,
+            ShipperName: '',
+            ShipperCity: '',
+            ShipperState: '',
+            ShipperZip: '',
+            ShipperMobile: '',
+            ShipperAddress: '',
+            ShipperAddressDetail: '',
+            PickupTime: new Date(),
+            PackageSize: 1,
+            DeliveryFee: 0,
+            PackageWeight: 0,
+            PackageVolume: 0,
+            WebOrderID: '',
+            PackageWidth: 0,
+            PackageHeight: 0,
+            PackageLength: 0
+        });
     },
     openModal() {
         this.setState({showContactModal: true});
@@ -85,10 +119,57 @@ const ManagePage = React.createClass({
             }
         };
     },
+    componentWillReceiveProps(nextProps) {
+        if (nextProps['pickup']) {
+            this.setState({
+                PickupName: nextProps['pickup'].FirstName + ' ' + nextProps['pickup'].LastName,
+                PickupEmail: nextProps['pickup'].Email,
+                PickupCity: nextProps['pickup'].City,
+                PickupState: nextProps['pickup'].State && nextProps['pickup'].State.Name,
+                PickupZip: nextProps['pickup'].ZipCode,
+                PickupMobile: nextProps['pickup'].Phone,
+                PickupAddress: nextProps['pickup'].Street,
+                PickupAddressDetail: nextProps['pickup'].Street
+            });
+        }
+
+        if (nextProps['dropoff']) {
+            this.setState({                
+                DropoffName: nextProps['dropoff'].FirstName + ' ' + nextProps['dropoff'].LastName,
+                DropoffEmail: nextProps['dropoff'].Email,
+                DropoffCity: nextProps['dropoff'].City,
+                DropoffState: nextProps['dropoff'].State && nextProps['dropoff'].State.Name,
+                DropoffZip: nextProps['dropoff'].ZipCode,
+                DropoffMobile: nextProps['dropoff'].Phone,
+                DropoffAddress: nextProps['dropoff'].Street,
+                DropoffAddressDetail: nextProps['dropoff'].Street
+            });
+        } 
+
+        if (nextProps['shipper']) {
+            this.setState({         
+                HasShipper: true,
+                ShipperName: nextProps['shipper'].FirstName + ' ' + nextProps['shipper'].LastName,
+                ShipperEmail: nextProps['shipper'].Email,
+                ShipperCity: nextProps['shipper'].City,
+                ShipperState: nextProps['shipper'].State && nextProps['shipper'].State.Name,
+                ShipperZip: nextProps['shipper'].ZipCode,
+                ShipperMobile: nextProps['shipper'].Phone,
+                ShipperAddress: nextProps['shipper'].Street,
+                ShipperAddressDetail: nextProps['shipper'].Street
+            })
+        }
+        
+    },
+    selectContact(key) {
+        return (value) => {
+            this.props.GetContactDetails(value.key, key);
+        }
+    },
     submit() {
         let updatedData = lodash.assign({}, this.state);
         delete updatedData.showContactModal;
-        this.props.AddOrder(updatedData);
+        this.props.params.id ? this.props.EditOrder(updatedData) : this.props.AddOrder(updatedData);
         console.log(updatedData);
     },
     render() {
@@ -147,7 +228,7 @@ const ManagePage = React.createClass({
                     }
                     { !isEditing &&
                         <div className={styles.orderDetailsInformation}>
-                            <DropdownRow label={'Shipper'} options={contactOptions} handleSelect={this.stateChange('ShipperID')} />
+                            <DropdownRow label={'Shipper'} options={contactOptions} handleSelect={this.selectContact('shipper')} />
                             <span onClick={this.openModal}>
                               { <ButtonWithLoading {...addShipperButton} /> }
                               {
@@ -169,8 +250,8 @@ const ManagePage = React.createClass({
                                 </ModalContainer>
                               }
                             </span>
-                            <DropdownRow label={'Pickup'} options={contactOptions} handleSelect={this.stateChange('PickupAddress')} />
-                            <DropdownRow label={'Dropoff'} options={contactOptions} handleSelect={this.stateChange('DropoffAddress')} />
+                            <DropdownRow label={'Pickup'} options={contactOptions} handleSelect={this.selectContact('pickup')} />
+                            <DropdownRow label={'Dropoff'} options={contactOptions} handleSelect={this.selectContact('dropoff')} />
                         </div>
                     }
                     { isEditing &&
@@ -184,7 +265,7 @@ const ManagePage = React.createClass({
                         </div>
                         <div className={styles.orderDetailsInformation}>
                             <InputRow label={'WebOrderID'} value={order.WebOrderID} type={'text'} onChange={this.stateChange('WebOrderID') } />
-                            <DropdownRow label={'Vehicle'} value={order.Vehicle && order.Vehicle.Name} options={vehicleOptions} handleSelect={this.stateChange('Vehicle')} />
+                            <DropdownRow label={'Vehicle'} value={order.Vehicle && order.Vehicle.Name} options={vehicleOptions} handleSelect={this.stateChange('PackageSize')} />
                             <InputRow label={'PackageDetails'} value={order.OrderMessage} type={'text'} onChange={this.stateChange('PackageDetails') } />
                             <InputRow label={'DeliveryInstructions'} value={order.DeliveryInstructions} type={'text'} onChange={this.stateChange('DeliveryInstructions') } />
                             <DatetimeRow label={'PickupTime'} value={order.PickupTime} onChange={this.stateChange('PickupTime') } />
@@ -214,14 +295,17 @@ const ManagePage = React.createClass({
 
 function StoreToOrdersPage(store) {
     const {isEditing, order, isFetching} = store.app.myOrders;
-    const {contacts} = store.app.myContacts;
+    const {contacts, shipper, pickup, dropoff} = store.app.myContacts;
     let contactList = {}; 
-    contacts.forEach(function(contact) {
-        contactList[contact.FirstName + ' ' + contact.LastName] = contact.ContactID;
+    contacts.forEach(function(c) {
+        contactList[c.FirstName + ' ' + c.LastName] = c.ContactID;
     });
     return {
         contactList,
         order,
+        shipper, 
+        pickup, 
+        dropoff,
         isEditing,
         isFetching
     }
@@ -235,8 +319,14 @@ function mapDispatchToOrders(dispatch, ownProps) {
     GetDetails: () => {
       dispatch(OrderService.fetchDetails(ownProps.params.id));
     },
+    GetContactDetails: (id, contactType) => {
+      dispatch(ContactService.fetchDetails(id, contactType));
+    },
     AddOrder: (order) => {
       dispatch(OrderService.addOrder(order));
+    },
+    EditOrder: (order) => {
+      dispatch(OrderService.editOrder(ownProps.params.id, order));
     }
   }
 }

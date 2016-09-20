@@ -8,12 +8,17 @@ import moment from 'moment';
 const Constants = {
     BASE: "mycontact/defaultSet/",
     SET_CONTACTS: "mycontact/contacts/set",
+    CONTACT_DETAILS_SET: "mycontact/details/set",
 }
 
 const initialStore = {
     currentPage: 1,
     limit: 100,
     contacts: [],
+    contact: {},
+    shipper: {},
+    pickup: {},
+    dropoff: {}
 }
 
 export default function Reducer(store = initialStore, action) {
@@ -29,6 +34,34 @@ export default function Reducer(store = initialStore, action) {
                 total: action.total,
                 contacts: action.contacts,
             });
+        }
+
+        case Constants.CONTACT_DETAILS_SET: {
+            switch (action.contactType) {
+                case 'pickup':  {
+                    return lodash.assign({}, store, {
+                        pickup: action.contact
+                    });
+                }
+
+                case 'dropoff':  {
+                    return lodash.assign({}, store, {
+                        dropoff: action.contact
+                    });
+                }
+
+                case 'shipper':  {
+                    return lodash.assign({}, store, {
+                        shipper: action.contact
+                    });
+                }
+
+                default: {
+                    return lodash.assign({}, store, {
+                        contact: action.contact
+                    });
+                }
+            }
         }
 
         default: {
@@ -66,6 +99,36 @@ export function FetchList() {
         }).catch((e) => {
             dispatch({type: modalAction.BACKDROP_HIDE});
             dispatch(ModalActions.addMessage(e.message));
+        });
+    }
+}
+
+// contactType can be contact, shipper, pickup, dropoff or null
+export function fetchDetails(id, contactType) {
+    return (dispatch, getState) => {
+        const {userLogged} = getState().app;
+        const {token} = userLogged;
+
+        dispatch({type: modalAction.BACKDROP_SHOW});
+        FetchGet('/contact/' + id, token).then(function(response) {
+            if(!response.ok) {
+                return response.json().then(({error}) => {
+                    throw error;
+                });
+            }
+
+            response.json().then(function({data}) {
+                dispatch({
+                    type: Constants.CONTACT_DETAILS_SET,
+                    contact: data,
+                    contactType: contactType
+                });
+                dispatch({type: modalAction.BACKDROP_HIDE});
+            });
+        }).catch((e) => {
+            const message = (e && e.message) ? e.message : "Failed to fetch contact details";
+            dispatch(ModalActions.addMessage(message));
+            dispatch({type: modalAction.BACKDROP_HIDE});
         });
     }
 }

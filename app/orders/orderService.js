@@ -221,23 +221,59 @@ export function addOrder(order) {
         const {userLogged} = getState().app;
         const {token} = userLogged;
 
-        const postBody = {
-            UpdateData: order,
-        }
-
         dispatch({type: modalAction.BACKDROP_SHOW});
-        FetchPost('/order/add', token, postBody).then((response) => {
+        FetchPost('/order/company', token, order).then((response) => {
         if(response.ok) {
             response.json().then(function({data}) {
                 dispatch({
                     type: Constants.ORDER_DETAILS_SET,
-                    order: lodash.assign({}, orderDetails.order, order),
+                    order: lodash.assign({}, order),
                 });
             });
+            dispatch(ModalActions.addMessage('Add Order Success'));
             dispatch({type: modalAction.BACKDROP_HIDE});
         } else {
+            response.json().then(function({error}) {
+                var message = '';
+                error.message.forEach(function(m) {
+                    message += m + '\n';
+                });
+                alert(message);
+                dispatch({type: modalAction.BACKDROP_HIDE});
+            });
+        }
+        }).catch(() => { 
             dispatch({type: modalAction.BACKDROP_HIDE});
-            dispatch(ModalActions.addMessage('Failed to edit order details'));
+            dispatch(ModalActions.addMessage('Network error'));
+        });
+    }
+}
+
+export function editOrder(id, order) {
+    return (dispatch, getState) => {
+        const {userLogged} = getState().app;
+        const {token} = userLogged;
+
+        dispatch({type: modalAction.BACKDROP_SHOW});
+        FetchPost('/order/company/' + id, token, order).then((response) => {
+        if(response.ok) {
+            response.json().then(function({data}) {
+                dispatch({
+                    type: Constants.ORDER_DETAILS_SET,
+                    order: lodash.assign({}, order),
+                });
+            });
+            dispatch(ModalActions.addMessage('Add Order Success'));
+            dispatch({type: modalAction.BACKDROP_HIDE});
+        } else {
+            response.json().then(function({error}) {
+                var message = '';
+                error.message.forEach(function(m) {
+                    message += m + '\n';
+                });
+                alert(message);
+                dispatch({type: modalAction.BACKDROP_HIDE});
+            });
         }
         }).catch(() => { 
             dispatch({type: modalAction.BACKDROP_HIDE});
