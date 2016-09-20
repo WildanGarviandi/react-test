@@ -71,3 +71,8 @@
     cursor: pointer;
     padding: 5px;
 }
+
+.orderDetailsContact {
+    float: left;
+    width: 33.33%;
+}

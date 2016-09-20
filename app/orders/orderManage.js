@@ -221,11 +221,9 @@ const ManagePage = React.createClass({
         } else {
             return (
                 <Page title={Title}>
-                    { !isEditing &&
-                        <div className={styles.orderDetailsHeader}>
-                            Contact Information
-                        </div>
-                    }
+                    <div className={styles.orderDetailsHeader}>
+                        Contact Information
+                    </div>
                     { !isEditing &&
                         <div className={styles.orderDetailsInformation}>
                             <DropdownRow label={'Shipper'} options={contactOptions} handleSelect={this.selectContact('shipper')} />
@@ -255,10 +253,49 @@ const ManagePage = React.createClass({
                         </div>
                     }
                     { isEditing &&
-                        <div className={styles.editOrderHeaders}>
-                            Edit Order Information
+                        <div className={styles.orderDetailsContact}>
+                            <div className={styles.orderDetailsInformation}>
+                                <InputRow label={'PickupName'} value={order.PickupAddress.FirstName} type={'text'} onChange={this.stateChange('PickupName') } />
+                                <InputRow label={'PickupMobile'} value={order.PickupAddress.MobileNumber} type={'text'} onChange={this.stateChange('PickupMobile') } />
+                                <InputRow label={'PickupEmail'} value={order.PickupAddress.Email} type={'text'} onChange={this.stateChange('PickupEmail') } />
+                                <InputRow label={'PickupAddress'} value={order.PickupAddress.Address1} type={'text'} onChange={this.stateChange('PickupAddress') } />
+                                <InputRow label={'PickupAddressDetail'} value={order.PickupAddress.Address2} type={'text'} onChange={this.stateChange('PickupAddressDetail') } />
+                                <InputRow label={'PickupCity'} value={order.PickupAddress.City} type={'text'} onChange={this.stateChange('PickupCity') } />
+                                <InputRow label={'PickupState'} value={order.PickupAddress.State} type={'text'} onChange={this.stateChange('PickupState') } />
+                                <InputRow label={'PickupZip'} value={order.PickupAddress.ZipCode} type={'text'} onChange={this.stateChange('PickupZip') } />
+                            </div>
+                        </div> 
+                    }
+                    { isEditing &&
+                        <div className={styles.orderDetailsContact}>
+                            <div className={styles.orderDetailsInformation}>
+                                <InputRow label={'PickupName'} value={order.PickupAddress.FirstName} type={'text'} onChange={this.stateChange('PickupName') } />
+                                <InputRow label={'PickupMobile'} value={order.PickupAddress.MobileNumber} type={'text'} onChange={this.stateChange('PickupMobile') } />
+                                <InputRow label={'PickupEmail'} value={order.PickupAddress.Email} type={'text'} onChange={this.stateChange('PickupEmail') } />
+                                <InputRow label={'PickupAddress'} value={order.PickupAddress.Address1} type={'text'} onChange={this.stateChange('PickupAddress') } />
+                                <InputRow label={'PickupAddressDetail'} value={order.PickupAddress.Address2} type={'text'} onChange={this.stateChange('PickupAddressDetail') } />
+                                <InputRow label={'PickupCity'} value={order.PickupAddress.City} type={'text'} onChange={this.stateChange('PickupCity') } />
+                                <InputRow label={'PickupState'} value={order.PickupAddress.State} type={'text'} onChange={this.stateChange('PickupState') } />
+                                <InputRow label={'PickupZip'} value={order.PickupAddress.ZipCode} type={'text'} onChange={this.stateChange('PickupZip') } />
+                            </div>
                         </div>
                     }
+                    { isEditing &&
+                        <div className={styles.orderDetailsContact}>
+                            <div className={styles.orderDetailsInformation}>
+                                <InputRow label={'PickupName'} value={order.PickupAddress.FirstName} type={'text'} onChange={this.stateChange('PickupName') } />
+                                <InputRow label={'PickupMobile'} value={order.PickupAddress.MobileNumber} type={'text'} onChange={this.stateChange('PickupMobile') } />
+                                <InputRow label={'PickupEmail'} value={order.PickupAddress.Email} type={'text'} onChange={this.stateChange('PickupEmail') } />
+                                <InputRow label={'PickupAddress'} value={order.PickupAddress.Address1} type={'text'} onChange={this.stateChange('PickupAddress') } />
+                                <InputRow label={'PickupAddressDetail'} value={order.PickupAddress.Address2} type={'text'} onChange={this.stateChange('PickupAddressDetail') } />
+                                <InputRow label={'PickupCity'} value={order.PickupAddress.City} type={'text'} onChange={this.stateChange('PickupCity') } />
+                                <InputRow label={'PickupState'} value={order.PickupAddress.State} type={'text'} onChange={this.stateChange('PickupState') } />
+                                <InputRow label={'PickupZip'} value={order.PickupAddress.ZipCode} type={'text'} onChange={this.stateChange('PickupZip') } />
+                            </div>
+                        </div>
+                    }
+                    <div style={{clear: 'both'}}>
+                    </div>
                     <div className={styles.orderDetailsBoxLeft}>
                         <div className={styles.orderDetailsHeader}>
                             Order Details
@@ -268,7 +305,7 @@ const ManagePage = React.createClass({
                             <DropdownRow label={'Vehicle'} value={order.Vehicle && order.Vehicle.Name} options={vehicleOptions} handleSelect={this.stateChange('PackageSize')} />
                             <InputRow label={'PackageDetails'} value={order.OrderMessage} type={'text'} onChange={this.stateChange('PackageDetails') } />
                             <InputRow label={'DeliveryInstructions'} value={order.DeliveryInstructions} type={'text'} onChange={this.stateChange('DeliveryInstructions') } />
-                            <DatetimeRow label={'PickupTime'} value={order.PickupTime} onChange={this.stateChange('PickupTime') } />
+                            <DatetimeRow label={'PickupTime'} value={moment(order.PickupTime).format('MM/DD/YYYY hh:mm A')} onChange={this.stateChange('PickupTime') } />
                         </div>
                     </div> 
                     <div className={styles.orderDetailsBoxRight}>
