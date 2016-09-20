@@ -61,38 +61,7 @@ const DatetimeRow = React.createClass({
 const ManagePage = React.createClass({
     getInitialState() {
         return ({
-            showContactModal: false,
-            PickupName: '',
-            PickupCity: '',
-            PickupState: '',
-            PickupZip: '',
-            PickupMobile: '',
-            PickupAddress: '',
-            PickupAddressDetail: '',
-            DropoffName: '',
-            DropoffCity: '',
-            DropoffState: '',
-            DropoffZip: '',
-            DropoffMobile: '',
-            DropoffAddress: '',
-            DropoffAddressDetail: '',
-            HasShipper: false,
-            ShipperName: '',
-            ShipperCity: '',
-            ShipperState: '',
-            ShipperZip: '',
-            ShipperMobile: '',
-            ShipperAddress: '',
-            ShipperAddressDetail: '',
-            PickupTime: new Date(),
-            PackageSize: 1,
-            DeliveryFee: 0,
-            PackageWeight: 0,
-            PackageVolume: 0,
-            WebOrderID: '',
-            PackageWidth: 0,
-            PackageHeight: 0,
-            PackageLength: 0
+            showContactModal: false
         });
     },
     openModal() {
@@ -120,7 +89,7 @@ const ManagePage = React.createClass({
         };
     },
     componentWillReceiveProps(nextProps) {
-        if (nextProps['pickup']) {
+        if (!lodash.isEmpty(nextProps['pickup'])) {
             this.setState({
                 PickupName: nextProps['pickup'].FirstName + ' ' + nextProps['pickup'].LastName,
                 PickupEmail: nextProps['pickup'].Email,
@@ -133,7 +102,7 @@ const ManagePage = React.createClass({
             });
         }
 
-        if (nextProps['dropoff']) {
+        if (!lodash.isEmpty(nextProps['dropoff'])) {
             this.setState({                
                 DropoffName: nextProps['dropoff'].FirstName + ' ' + nextProps['dropoff'].LastName,
                 DropoffEmail: nextProps['dropoff'].Email,
@@ -146,7 +115,7 @@ const ManagePage = React.createClass({
             });
         } 
 
-        if (nextProps['shipper']) {
+        if (!lodash.isEmpty(nextProps['shipper'])) {
             this.setState({         
                 HasShipper: true,
                 ShipperName: nextProps['shipper'].FirstName + ' ' + nextProps['shipper'].LastName,
@@ -158,6 +127,39 @@ const ManagePage = React.createClass({
                 ShipperAddress: nextProps['shipper'].Street,
                 ShipperAddressDetail: nextProps['shipper'].Street
             })
+        }
+
+        if (!lodash.isEmpty(nextProps['order'])) {
+            this.setState({
+                PickupName: nextProps['order'].PickupAddress.FirstName,
+                PickupEmail: nextProps['order'].PickupAddress.EmailID,
+                PickupCity: nextProps['order'].PickupAddress.City,
+                PickupState: nextProps['order'].PickupAddress.State,
+                PickupZip: nextProps['order'].PickupAddress.ZipCode,
+                PickupMobile: nextProps['order'].PickupAddress.MobileNumber,
+                PickupAddress: nextProps['order'].PickupAddress.Address1,
+                PickupAddressDetail: nextProps['order'].PickupAddress.Address2,
+                DropoffName: nextProps['order'].DropoffAddress.FirstName,
+                DropoffEmail: nextProps['order'].DropoffAddress.EmailID,
+                DropoffCity: nextProps['order'].DropoffAddress.City,
+                DropoffState: nextProps['order'].DropoffAddress.State,
+                DropoffZip: nextProps['order'].DropoffAddress.ZipCode,
+                DropoffMobile: nextProps['order'].DropoffAddress.MobileNumber,
+                DropoffAddress: nextProps['order'].DropoffAddress.Address1,
+                DropoffAddressDetail: nextProps['order'].DropoffAddress.Address2,
+                HasShipper: false,
+                WebOrderID: nextProps['order'].WebOrderID,
+                DeliveryInstructions: nextProps['order'].DeliveryInstructions,
+                PackageDetails: nextProps['order'].OrderMessage,
+                PackageSize: nextProps['order'].Vehicle && nextProps['order'].Vehicle.VehicleID,
+                PickupTime: nextProps['order'].PickupTime,
+                DeliveryFee: nextProps['order'].OrderCost,
+                PackageWeight: nextProps['order'].PackageWeight,
+                PackageVolume: nextProps['order'].PackageVolume,
+                PackageHeight: nextProps['order'].PackageHeight,
+                PackageLength: nextProps['order'].PackageLength,
+                PackageWidth: nextProps['order'].PackageWidth,
+            });
         }
         
     },
@@ -257,7 +259,7 @@ const ManagePage = React.createClass({
                             <div className={styles.orderDetailsInformation}>
                                 <InputRow label={'PickupName'} value={order.PickupAddress.FirstName} type={'text'} onChange={this.stateChange('PickupName') } />
                                 <InputRow label={'PickupMobile'} value={order.PickupAddress.MobileNumber} type={'text'} onChange={this.stateChange('PickupMobile') } />
-                                <InputRow label={'PickupEmail'} value={order.PickupAddress.Email} type={'text'} onChange={this.stateChange('PickupEmail') } />
+                                <InputRow label={'PickupEmail'} value={order.PickupAddress.EmailID} type={'text'} onChange={this.stateChange('PickupEmail') } />
                                 <InputRow label={'PickupAddress'} value={order.PickupAddress.Address1} type={'text'} onChange={this.stateChange('PickupAddress') } />
                                 <InputRow label={'PickupAddressDetail'} value={order.PickupAddress.Address2} type={'text'} onChange={this.stateChange('PickupAddressDetail') } />
                                 <InputRow label={'PickupCity'} value={order.PickupAddress.City} type={'text'} onChange={this.stateChange('PickupCity') } />
@@ -269,28 +271,14 @@ const ManagePage = React.createClass({
                     { isEditing &&
                         <div className={styles.orderDetailsContact}>
                             <div className={styles.orderDetailsInformation}>
-                                <InputRow label={'PickupName'} value={order.PickupAddress.FirstName} type={'text'} onChange={this.stateChange('PickupName') } />
-                                <InputRow label={'PickupMobile'} value={order.PickupAddress.MobileNumber} type={'text'} onChange={this.stateChange('PickupMobile') } />
-                                <InputRow label={'PickupEmail'} value={order.PickupAddress.Email} type={'text'} onChange={this.stateChange('PickupEmail') } />
-                                <InputRow label={'PickupAddress'} value={order.PickupAddress.Address1} type={'text'} onChange={this.stateChange('PickupAddress') } />
-                                <InputRow label={'PickupAddressDetail'} value={order.PickupAddress.Address2} type={'text'} onChange={this.stateChange('PickupAddressDetail') } />
-                                <InputRow label={'PickupCity'} value={order.PickupAddress.City} type={'text'} onChange={this.stateChange('PickupCity') } />
-                                <InputRow label={'PickupState'} value={order.PickupAddress.State} type={'text'} onChange={this.stateChange('PickupState') } />
-                                <InputRow label={'PickupZip'} value={order.PickupAddress.ZipCode} type={'text'} onChange={this.stateChange('PickupZip') } />
-                            </div>
-                        </div>
-                    }
-                    { isEditing &&
-                        <div className={styles.orderDetailsContact}>
-                            <div className={styles.orderDetailsInformation}>
-                                <InputRow label={'PickupName'} value={order.PickupAddress.FirstName} type={'text'} onChange={this.stateChange('PickupName') } />
-                                <InputRow label={'PickupMobile'} value={order.PickupAddress.MobileNumber} type={'text'} onChange={this.stateChange('PickupMobile') } />
-                                <InputRow label={'PickupEmail'} value={order.PickupAddress.Email} type={'text'} onChange={this.stateChange('PickupEmail') } />
-                                <InputRow label={'PickupAddress'} value={order.PickupAddress.Address1} type={'text'} onChange={this.stateChange('PickupAddress') } />
-                                <InputRow label={'PickupAddressDetail'} value={order.PickupAddress.Address2} type={'text'} onChange={this.stateChange('PickupAddressDetail') } />
-                                <InputRow label={'PickupCity'} value={order.PickupAddress.City} type={'text'} onChange={this.stateChange('PickupCity') } />
-                                <InputRow label={'PickupState'} value={order.PickupAddress.State} type={'text'} onChange={this.stateChange('PickupState') } />
-                                <InputRow label={'PickupZip'} value={order.PickupAddress.ZipCode} type={'text'} onChange={this.stateChange('PickupZip') } />
+                                <InputRow label={'DropoffName'} value={order.DropoffAddress.FirstName} type={'text'} onChange={this.stateChange('DropoffName') } />
+                                <InputRow label={'DropoffMobile'} value={order.DropoffAddress.MobileNumber} type={'text'} onChange={this.stateChange('DropoffMobile') } />
+                                <InputRow label={'DropoffEmail'} value={order.DropoffAddress.EmailID} type={'text'} onChange={this.stateChange('DropoffEmail') } />
+                                <InputRow label={'DropoffAddress'} value={order.DropoffAddress.Address1} type={'text'} onChange={this.stateChange('DropoffAddress') } />
+                                <InputRow label={'DropoffAddressDetail'} value={order.DropoffAddress.Address2} type={'text'} onChange={this.stateChange('DropoffAddressDetail') } />
+                                <InputRow label={'DropoffCity'} value={order.DropoffAddress.City} type={'text'} onChange={this.stateChange('DropoffCity') } />
+                                <InputRow label={'DropoffState'} value={order.DropoffAddress.State} type={'text'} onChange={this.stateChange('DropoffState') } />
+                                <InputRow label={'DropoffZip'} value={order.DropoffAddress.ZipCode} type={'text'} onChange={this.stateChange('DropoffZip') } />
                             </div>
                         </div>
                     }
