@@ -1,8 +1,10 @@
 import lodash from 'lodash';
 import FetchGet from '../modules/fetch/get';
+import FetchPost from '../modules/fetch/post';
 import ModalActions from '../modules/modals/actions';
 import {modalAction} from '../modules/modals/constants';
 import moment from 'moment';
+import Promise from 'bluebird';
 
 const Constants = {
     BASE: "mytrip/defaultSet/",
@@ -171,5 +173,54 @@ export function FetchList() {
             dispatch({type: modalAction.BACKDROP_HIDE});
             dispatch(ModalActions.addMessage(e.message));
         });
+    }
+}
+
+export function AssignTrip(trips, driverID) {
+    return (dispatch, getState) => {
+        const {userLogged, myOrders} = getState().app;
+        const {token} = userLogged;
+        let params = {
+            DriverID: driverID
+        };
+
+        let promises = [];
+        let assignMessage = '';
+
+        function assignSingleTrip(token, trip, params) {
+            return new Promise(function(resolve, reject) {
+                FetchPost('/trip/' + trip.TripID + '/driver', token, params)
+                .then(function(response) {
+                    if (!response.ok) {            
+                        return response.json().then(({error}) => {
+                            error.trip = trip;
+                            return resolve(error);
+                        });
+                    } 
+                    return response.json().then(({data}) => {
+                        data.trip = trip;
+                        return resolve(data);
+                    });
+                });
+            });
+        }
+
+        dispatch({type: modalAction.BACKDROP_SHOW});
+        trips.forEach(function(trip) {
+            promises.push(assignSingleTrip(token, trip, params));
+        });
+
+        Promise.all(promises).then(function(responses) {
+            responses.forEach(function(response) {
+                if (response.code === 200) {            
+                    assignMessage += 'Trip ' + response.trip.ContainerNumber + ': success assigned \n';
+                } else {
+                    assignMessage += 'Trip ' + response.trip.ContainerNumber + ': ' + response.message + '\n';
+                }
+            })
+            alert(assignMessage);
+            dispatch({type: modalAction.BACKDROP_HIDE});
+        });
+        
     }
 }

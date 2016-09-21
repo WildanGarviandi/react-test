@@ -1,0 +1,13 @@
+.assignTripButton {
+    border: 0;
+    border-radius: 5px;
+    background-color: #FF5A60;
+    color: #fff;
+    cursor: pointer;
+    padding: 5px;
+    margin-left: 5px;
+}
+
+.selectDriver { 
+    width: 300px;
+}
