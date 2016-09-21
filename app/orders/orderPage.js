@@ -68,7 +68,7 @@ function StoreToOrdersPage(store) {
     const drivers = lodash.chain(fleetDrivers.dict[userLogged.userID] || []).map((driverID) => {
         return {
             key: driverID,
-            value: UtilHelper.UserFullName(driverList.dict[driverID].Driver),
+            value: UtilHelper.UserFullName(driverList.dict[driverID]),
         }
     }).sortBy((arr) => (arr.value)).value();
     return {

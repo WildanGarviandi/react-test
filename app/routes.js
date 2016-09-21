@@ -15,7 +15,6 @@ import MyTripsPage from './views/trips/myTrips';
 import TripDetailsPage from './views/trips/tripDetails';
 import MyOrdersPage from './orders/orderPage';
 import MyAssignedTripsPage from './trips/tripPage';
->>>>>>> feature/TMSDASH-149
 
 function requireAuth(nextState, replace, callback) {
   checkAuth(store).then(function(result) {
