@@ -229,9 +229,10 @@ export function addOrder(order) {
                     type: Constants.ORDER_DETAILS_SET,
                     order: lodash.assign({}, order),
                 });
+                alert('Add Order Success');
+                dispatch({type: modalAction.BACKDROP_HIDE});
+                window.location.href='/myorders/edit/' + data.UserOrderID;
             });
-            dispatch(ModalActions.addMessage('Add Order Success'));
-            dispatch({type: modalAction.BACKDROP_HIDE});
         } else {
             response.json().then(function({error}) {
                 var message = '';
@@ -261,10 +262,11 @@ export function editOrder(id, order) {
                 dispatch({
                     type: Constants.ORDER_DETAILS_SET,
                     order: lodash.assign({}, order),
-                });
+                });                
+                alert('Edit Order Success');
+                dispatch({type: modalAction.BACKDROP_HIDE});
+                dispatch(fetchDetails(data.UserOrderID));
             });
-            dispatch(ModalActions.addMessage('Add Order Success'));
-            dispatch({type: modalAction.BACKDROP_HIDE});
         } else {
             response.json().then(function({error}) {
                 var message = '';
