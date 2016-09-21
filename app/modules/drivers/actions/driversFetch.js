@@ -2,8 +2,6 @@ import * as actionTypes from '../constants';
 import fetchGet from '../../fetch/get';
 import ModalActions from '../../modals/actions';
 
-const defaultLimitDriver = 100000;
-
 function FetchDrivers(fleetID) {
   return (dispatch, getState) => {
     const {driversStore, userLogged} = getState().app;
@@ -13,12 +11,8 @@ function FetchDrivers(fleetID) {
       return;
     }
 
-    let params = {
-      limit: defaultLimitDriver
-    }
-
     dispatch({ type: actionTypes.DRIVERS_FETCH_START, fleetID });
-    fetchGet(`/driver`, token, params).then(function(response) {
+    fetchGet(`/fleet/${fleetID}/drivers`, token).then(function(response) {
       if(response.ok) {
         response.json().then(function(resp) {
           const response = resp.data;
