@@ -13,7 +13,7 @@ const DriverListReducer = CollHelper.CollReducer({
   START: actionTypes.DRIVERS_FETCH_START,
   FAILED: actionTypes.DRIVERS_FETCH_FAILED,
   RECEIVED: actionTypes.DRIVERS_FETCH_RECEIVED,
-}, (driver) => (driver.Driver.UserID));
+}, (driver) => (driver.UserID));
 
 const inititalFleetDriversState = {
   dict: {},
@@ -29,7 +29,7 @@ function FleetDriversReducer(state = inititalFleetDriversState, action) {
     case actionTypes.DRIVERS_FETCH_RECEIVED: {
       return lodash.assign({}, state, {
         dict: lodash.assign({}, state.dict, {
-          [action.fleetID]: lodash.map(action.list, (driver) => (driver.Driver.UserID)),
+          [action.fleetID]: lodash.map(action.list, (driver) => (driver.UserID)),
         }),
       });
     }

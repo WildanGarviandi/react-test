@@ -80,6 +80,10 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact}) => {
            <Glyph className={styles.menuGlyph} name={'transfer'}/>
            <span>My Orders</span>
         </MenuItem>
+        <MenuItem active={activeMenuIdx == 5} to={'/mytrips'}>
+           <Glyph className={styles.menuGlyph} name={'tent'}/>
+           <span>My Trips</span>
+        </MenuItem>
           <button className={styles.logoutBtn} onClick={handleLogout}>
             <Glyph className={styles.glyphBackward} name={'log-out'}/>
             <span>Logout</span>
