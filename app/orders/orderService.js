@@ -264,3 +264,35 @@ export function fetchDetails(id) {
         });
     }
 }
+
+export function ExportOrder() {
+    return (dispatch, getState) => {
+        const {myOrders, userLogged} = getState().app;
+        const {currentPage, limit, filters} = myOrders;
+        const {token} = userLogged;
+        let params = lodash.assign({}, filters, {
+            limit: limit,
+            offset: (currentPage - 1) * limit
+        })
+
+        if (filters.startCreated && filters.endCreated) {
+            params.startCreated = moment(filters.startCreated).format('MM-DD-YYYY')
+            params.endCreated = moment(filters.endCreated).format('MM-DD-YYYY')
+        }
+
+        dispatch({type: modalAction.BACKDROP_SHOW});
+        FetchGet('/order/export', token, params).then((response) => {
+            if(!response.ok) {
+                return response.json().then(({error}) => {
+                    throw error;
+                })
+            }
+
+            dispatch({type: modalAction.BACKDROP_HIDE});
+            dispatch(ModalActions.addMessage('Export Success'));
+        }).catch((e) => {
+            dispatch({type: modalAction.BACKDROP_HIDE});
+            dispatch(ModalActions.addMessage(e.message));
+        });
+    }
+}

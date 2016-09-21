@@ -11,13 +11,27 @@ import styles from './styles.css';
 
 const OrderPage = React.createClass({
     componentWillMount() {
-        this.props.FetchList()
+        this.props.FetchList();
+    },
+    exportOrder() {
+        this.props.ExportOrder();
     },
     render() {
         const {paginationState, PaginationAction, orders} = this.props;
+
+        const exportOrderButton = {
+            textBase: 'Export Order',
+            onClick: this.exportOrder,
+            styles: {
+                base: styles.exportOrderButton,
+            }
+        };
         return (
             <Page title="My Order">
                 <Pagination {...paginationState} {...PaginationAction} />
+                <p>
+                    <ButtonWithLoading {...exportOrderButton} />
+                </p>
                 <Table orders={orders} />
                 <Pagination {...paginationState} {...PaginationAction} />
             </Page>
@@ -39,6 +53,9 @@ function DispatchToOrdersPage(dispatch) {
     return {
         FetchList: () => {
             dispatch(OrderService.FetchList());
+        },
+        ExportOrder: () => {
+            dispatch(OrderService.ExportOrder());
         },
         PaginationAction: {
             setCurrentPage: (currentPage) => {
