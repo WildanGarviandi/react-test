@@ -96,8 +96,18 @@ const AddContact = React.createClass({
             }
         };
     },
+    saveContact() {
+        let addedData = lodash.assign({}, this.state);
+        delete addedData.showContactModal;
+        this.props.AddContact(addedData, this.props.contactType);
+    },
     render() {
-        const addShipperButton = {
+        const stateOptions = lodash.chain(this.props.stateList)
+              .map((key, val) => ({key:key, value: val.toUpperCase()}))
+              .sortBy((arr) => (arr.key))
+              .value();
+
+        const addContactButton = {
             textBase: 'Add New',
             onClick: this.openModal,
             styles: {
@@ -116,19 +126,21 @@ const AddContact = React.createClass({
 
         return (
             <span onClick={this.openModal}>
-              { <ButtonWithLoading {...addShipperButton} /> }
+              { <ButtonWithLoading {...addContactButton} /> }
               {
                 this.state.showContactModal &&
                 <ModalContainer onClose={this.closeModal}>
                   <ModalDialog onClose={this.closeModal}>
                     <h1>Add New Contact</h1>
-                    <InputRow label={'Name'} type={'text'} onChange={this.stateChange('Name') } />
-                    <InputRow label={'Mobile'} type={'text'} onChange={this.stateChange('Mobile') } />
+                    <InputRow label={'FirstName'} type={'text'} onChange={this.stateChange('FirstName') } />
+                    <InputRow label={'LastName'} type={'text'} onChange={this.stateChange('LastName') } />
+                    <InputRow label={'Phone'} type={'text'} onChange={this.stateChange('Phone') } />
                     <InputRow label={'Email'} type={'text'} onChange={this.stateChange('Email') } />
-                    <InputRow label={'Address'} type={'text'} onChange={this.stateChange('Address') } />
-                    <InputRow label={'State'} type={'text'} onChange={this.stateChange('State') } />
+                    <InputRow label={'Street'} type={'text'} onChange={this.stateChange('Street') } />
+                    <DropdownRow label={'State'} options={stateOptions} handleSelect={this.stateChange('StateID')} />
                     <InputRow label={'City'} type={'text'} onChange={this.stateChange('City') } />
-                    <InputRow label={'Zip'} type={'text'} onChange={this.stateChange('Zip') } />
+                    <InputRow label={'ZipCode'} type={'text'} onChange={this.stateChange('ZipCode') } />
+                    <InputRow label={'CompanyName'} type={'text'} onChange={this.stateChange('CompanyName') } />
                     <div style={{clear: 'both'}}>
                         { <ButtonWithLoading {...saveBtnContact} /> }
                     </div>
@@ -142,7 +154,9 @@ const AddContact = React.createClass({
 
 const ManagePage = React.createClass({
     getInitialState() {
-        return ({});
+        return ({
+            PickupTime: new Date()
+        });
     },
     componentWillMount() {
         if (this.props.params.id) {
@@ -286,6 +300,7 @@ const ManagePage = React.createClass({
                     { !isEditing &&
                         <div className={styles.orderDetailsInformation, styles.contactDetailsBox}>
                             <div className={styles.contactDetails}>
+                                <AddContact AddContact={this.props.AddContact} stateList={this.props.stateList} contactType={'shipper'} />
                                 <DropdownRow label={'Shipper'} options={contactOptions} handleSelect={this.selectContact('shipper')} />
                                 { this.state.ShipperName &&
                                     <div>
@@ -301,6 +316,7 @@ const ManagePage = React.createClass({
                                 }
                             </div>
                             <div className={styles.contactDetails}>
+                                <AddContact AddContact={this.props.AddContact} stateList={this.props.stateList} contactType={'pickup'} />
                                 <DropdownRow label={'Pickup'} options={contactOptions} handleSelect={this.selectContact('pickup')} />
                                 { this.state.PickupName &&
                                     <div>
@@ -316,6 +332,7 @@ const ManagePage = React.createClass({
                                 }
                             </div>
                             <div className={styles.contactDetails}>
+                                <AddContact AddContact={this.props.AddContact} stateList={this.props.stateList} contactType={'dropoff'} />
                                 <DropdownRow label={'Dropoff'} options={contactOptions} handleSelect={this.selectContact('dropoff')} />
                                 { this.state.DropoffName &&
                                     <div>
@@ -399,12 +416,19 @@ const ManagePage = React.createClass({
 function StoreToOrdersPage(store) {
     const {isEditing, order, isFetching} = store.app.myOrders;
     const {contacts, shipper, pickup, dropoff} = store.app.myContacts;
+    const {states} = store.app.stateList;
     let contactList = {}; 
     contacts.forEach(function(c) {
         contactList[c.FirstName + ' ' + c.LastName] = c.ContactID;
     });
+    let stateList = {}; 
+    states.forEach(function(state) {
+        stateList[state.Name] = state.StateID;
+    });
+
     return {
         contactList,
+        stateList,
         order,
         shipper, 
         pickup, 
@@ -424,6 +448,9 @@ function mapDispatchToOrders(dispatch, ownProps) {
     },
     GetContactDetails: (id, contactType) => {
       dispatch(ContactService.fetchDetails(id, contactType));
+    },
+    AddContact: (contact, contactType) => {
+      dispatch(ContactService.addContact(contact, contactType));
     },
     AddOrder: (order) => {
       dispatch(OrderService.addOrder(order));

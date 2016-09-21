@@ -132,3 +132,35 @@ export function fetchDetails(id, contactType) {
         });
     }
 }
+
+
+export function addContact(contact, contactType) {
+    return (dispatch, getState) => {
+        const {userLogged} = getState().app;
+        const {token} = userLogged;
+
+        dispatch({type: modalAction.BACKDROP_SHOW});
+        FetchPost('/contact', token, contact).then((response) => {
+        if(response.ok) {
+            dispatch(FetchList());
+            response.json().then(function({data}) {
+                dispatch({
+                    type: Constants.CONTACT_DETAILS_SET,
+                    contact: lodash.assign({}, contact),
+                    contactType: contactType
+                });
+            });
+            dispatch(ModalActions.addMessage('Add Contact Success'));
+            dispatch({type: modalAction.BACKDROP_HIDE});
+        } else {
+            response.json().then(function({error}) {
+                alert(error.message);
+                dispatch({type: modalAction.BACKDROP_HIDE});
+            });
+        }
+        }).catch(() => { 
+            dispatch({type: modalAction.BACKDROP_HIDE});
+            dispatch(ModalActions.addMessage('Network error'));
+        });
+    }
+}
