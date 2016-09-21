@@ -76,3 +76,18 @@
     float: left;
     width: 50%;
 }
+
+.contactDetails {
+    float: left;
+    width: 33.33%;
+}
+
+.contactDetailsBox {
+    min-height: 360px;
+    padding: 15px;
+    background-color: #eee;
+    color: #000;
+    clear: both;
+    padding-bottom: 30px;
+    margin-bottom: 20px;
+}
