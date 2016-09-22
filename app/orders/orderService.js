@@ -316,6 +316,7 @@ export function AssignOrder(orders, driverID) {
             })
             alert(assignMessage);
             dispatch({type: modalAction.BACKDROP_HIDE});
+            dispatch(FetchList());
         });
         
     }
