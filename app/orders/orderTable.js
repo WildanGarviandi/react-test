@@ -30,6 +30,7 @@ function DispatchBuilder(keyword) {
                 return;
             }
 
+            dispatch(OrderService.StoreSetter("currentPage", 1));
             dispatch(OrderService.FetchList());
         }
 

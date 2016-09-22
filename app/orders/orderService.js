@@ -43,7 +43,7 @@ export default function Reducer(store = initialStore, action) {
         case Constants.SET_ORDERS: {
             return lodash.assign({}, store, {
                 total: action.total,
-                orders: action.orders,
+                orders: action.orders
             });
         }
 
@@ -122,6 +122,7 @@ export function SetDropDownFilter(keyword) {
 
         return (dispatch, getState) => {
             dispatch(StoreSetter(keyword, selectedOption.value));
+            dispatch(StoreSetter("currentPage", 1));
             dispatch(UpdateFilters({[filterName]: selectedOption.key}));
             dispatch(FetchList());
         }
@@ -152,6 +153,7 @@ export function SetCreatedDate(date) {
 
 export function UpdateAndFetch(filters) {
     return (dispatch) => {
+        dispatch(StoreSetter("currentPage", 1));
         dispatch(UpdateFilters(filters));
         dispatch(FetchList());
     }
@@ -171,7 +173,7 @@ export function ToggleCheckedAll() {
 export function FetchList() {
     return (dispatch, getState) => {
         const {myOrders, userLogged} = getState().app;
-        const {currentPage, limit, filters} = myOrders;
+        const {currentPage, limit, total, filters} = myOrders;
         const {token} = userLogged;
         let params = lodash.assign({}, filters, {
             limit: limit,
@@ -192,6 +194,9 @@ export function FetchList() {
             }
 
             return response.json().then(({data}) => {
+                if (data.count < total) {
+                    dispatch(SetCurrentPage(1));
+                }
                 dispatch({type: modalAction.BACKDROP_HIDE});
                 dispatch({
                     type: Constants.SET_ORDERS,
