@@ -32,6 +32,7 @@ function DispatchBuilder(keyword) {
                 return;
             }
 
+            dispatch(DriverService.SetCurrentPage(1));
             dispatch(DriverService.FetchList());
         }
 
@@ -69,6 +70,7 @@ function DropdownDispatchBuilder(filterKeyword) {
         return {
             handleSelect: (selectedOption) => {
                 const SetFn = DriverService.SetDropDownFilter(filterKeyword);
+                dispatch(DriverService.SetCurrentPage(1));
                 dispatch(SetFn(selectedOption));
             }
         }
@@ -115,6 +117,7 @@ function DateRangeDispatch(keyword) {
                     ['start' + keyword]: picker.startDate,
                     ['end' + keyword]: picker.endDate
                 }
+                dispatch(DriverService.SetCurrentPage(1));
                 dispatch(DriverService.UpdateAndFetch(newFilters))
             }
         }
