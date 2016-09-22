@@ -264,6 +264,11 @@ export function editOrder(id, order) {
         FetchPost('/order/company/' + id, token, order).then((response) => {
         if(response.ok) {
             response.json().then(function({data}) {
+                if (!data.UserOrderID) {
+                    alert(data.message || 'Can\'t update order');
+                    dispatch({type: modalAction.BACKDROP_HIDE});
+                    return;
+                }
                 dispatch({
                     type: Constants.ORDER_DETAILS_SET,
                     order: lodash.assign({}, order),
