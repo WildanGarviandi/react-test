@@ -144,11 +144,7 @@ export function addContact(contact, contactType) {
         if(response.ok) {
             dispatch(FetchList());
             response.json().then(function({data}) {
-                dispatch({
-                    type: Constants.CONTACT_DETAILS_SET,
-                    contact: lodash.assign({}, contact),
-                    contactType: contactType
-                });
+                dispatch(fetchDetails(data.contact.ContactID, contactType));
             });
             dispatch(ModalActions.addMessage('Add Contact Success'));
             dispatch({type: modalAction.BACKDROP_HIDE});

@@ -97,6 +97,13 @@ const AddContact = React.createClass({
         };
     },
     saveContact() {
+        const mandatoryFields = ['FirstName', 'LastName', 'Phone', 'Email', 'Street', 'StateID', 'City', 'ZipCode'];
+        const filledFields = Object.keys(this.state);
+        const unfilledFields = lodash.difference(mandatoryFields, filledFields);
+        if (unfilledFields.length > 0) {
+            alert('Missing ' + unfilledFields.join())
+            return;
+        }
         let addedData = lodash.assign({}, this.state);
         delete addedData.showContactModal;
         this.props.AddContact(addedData, this.props.contactType);
