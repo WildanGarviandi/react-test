@@ -13,6 +13,8 @@ import ReceivedFillPage from './views/order/receivedFill';
 import ReceivedOrdersPage from './views/order/receivedOrders';
 import MyTripsPage from './views/trips/myTrips';
 import TripDetailsPage from './views/trips/tripDetails';
+import TripHistoryList from './tripHistory/listPage';
+import TripHistoryDetails from './tripHistory/detailsPage';
 
 function requireAuth(nextState, replace, callback) {
   checkAuth(store).then(function(result) {
@@ -41,6 +43,8 @@ export default (
         <Route path="/trips/:id" component={TripDetailsPage} onEnter={requireAuth}/>
         <Route path="/trips/:tripID/fillReceived" component={ReceivedFillPage} onEnter={requireAuth}/>
         <Route path="/trips/:tripID/fillPickup" component={PickupFillPage} onEnter={requireAuth}/>
+        <Route path="/history" component={TripHistoryList} onEnter={requireAuth}/>
+        <Route path="/history/:id" component={TripHistoryDetails} onEnter={requireAuth}/>
       </Route>
       <Route path="/qrcode/:id" component={ContainerQRCodePage} />
       <Route path="/login" component={LoginPage} />
