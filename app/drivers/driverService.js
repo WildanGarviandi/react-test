@@ -209,9 +209,10 @@ export function editDriver(id, updateData) {
                     type: Constants.DRIVER_DETAILS_SET,
                     driver: lodash.assign({}, updateData, driver),
                 });
+                alert('Edit Driver Success');
+                dispatch({type: modalAction.BACKDROP_HIDE});
+                dispatch(fetchDetails(id));
             });
-            dispatch({type: modalAction.BACKDROP_HIDE});
-            dispatch(ModalActions.addMessage('Update driver success'));
         } else {
             dispatch({type: modalAction.BACKDROP_HIDE});
             dispatch(ModalActions.addMessage('Failed to edit driver details'));
@@ -273,9 +274,10 @@ export function addDriver(driverData) {
                     type: Constants.DRIVER_DETAILS_SET,
                     driver: lodash.assign({}, driverData, driver),
                 });
+                alert('Add Driver Success');
+                dispatch({type: modalAction.BACKDROP_HIDE});
+                window.location.href='/mydrivers/edit/' + data.UserID;
             });
-            dispatch({type: modalAction.BACKDROP_HIDE});
-            dispatch(ModalActions.addMessage('Add driver success'));
         } else {
             dispatch({type: modalAction.BACKDROP_HIDE});
             dispatch(ModalActions.addMessage('Failed to add driver'));

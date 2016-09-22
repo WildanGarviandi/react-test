@@ -79,6 +79,13 @@ const ManagePage = React.createClass({
         };
     },
     submit() {
+        const mandatoryFields = ['FirstName', 'LastName', 'PhoneNumber', 'Email', 'Location', 'StateID', 'CityID', 'ZipCode', 'PackageSizeID'];
+        const filledFields = Object.keys(this.state);
+        const unfilledFields = lodash.difference(mandatoryFields, filledFields);
+        if (unfilledFields.length > 0 && !this.props.params.id) {
+            alert('Missing ' + unfilledFields.join())
+            return;
+        }
         let updatedData = lodash.assign({}, this.state);
         this.props.params.id ? this.props.EditDriver(updatedData) : this.props.AddDriver(updatedData);
         console.log(updatedData);
@@ -87,8 +94,10 @@ const ManagePage = React.createClass({
         const {isEditing, isFetching, stateList, cityList} = this.props;
         const Title = this.props.params.id ? "Edit Driver" : "Add Driver";
         const driver = this.props.params.id ? this.props.driver : {};
-
         const vehicleOptions = configValues.vehicle;
+        const vehicleValue = this.props.params.id ? 
+            lodash.find(vehicleOptions, { 'key': driver.PackageSizeMaster && driver.PackageSizeMaster.PackageSizeID }) : '';
+
         const cityOptions = lodash.chain(cityList)
              .map((key, val) => ({key:key, value: val.toUpperCase()}))
              .sortBy((arr) => (arr.key))
@@ -117,7 +126,6 @@ const ManagePage = React.createClass({
                 </Page>
             );
         } else {
-            const vehicleValue = lodash.find(vehicleOptions, { 'key': this.props.driver.PackageSizeMaster && this.props.driver.PackageSizeMaster.PackageSizeID });
             return (
                 <Page title={Title}>
                     <div className={styles.driverDetailsHeader}>
