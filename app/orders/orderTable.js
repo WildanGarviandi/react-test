@@ -30,6 +30,7 @@ function DispatchBuilder(keyword) {
                 return;
             }
 
+            dispatch(OrderService.StoreSetter("currentPage", 1));
             dispatch(OrderService.FetchList());
         }
 
@@ -197,8 +198,8 @@ function OrderHeader() {
     return (
         <tr className={styles.tr}>
             <CheckboxHeader />
-            <Table.TextHeader text="Web Order ID" />
             <Table.TextHeader text="User Order Number" />
+            <Table.TextHeader text="Web Order ID" />
             <Table.TextHeader text="Pickup" />
             <Table.TextHeader text="Dropoff" />
             <Table.TextHeader text="Status" />
@@ -214,15 +215,15 @@ function OrderFilter() {
     return (
         <tr className={styles.tr}>
             <Table.EmptyCell />
-            <WebOrderIDFilter />
             <UserOrderNumberFilter />
+            <Table.EmptyCell />
             <PickupFilter />
             <DropoffFilter />
             <StatusFilter />
-            <OrderTypeFilter />
-            <OrderOwnerFilter />
-            <AssignmentFilter />
-            <CreatedDateFilter />
+            <Table.EmptyCell />
+            <Table.EmptyCell />
+            <Table.EmptyCell />
+            <Table.EmptyCell />
         </tr>
     )
 }
@@ -231,8 +232,8 @@ function OrderRow({order}) {
     return (
         <tr className={styles.tr}>
             <CheckboxRow checked={order.IsChecked} orderID={order.UserOrderID} />
-            <Table.LinkCell to={'/myorders/edit/' + order.UserOrderID} text={order.WebOrderID} />
-            <Table.TextCell text={order.UserOrderNumber} />
+            <Table.LinkCell to={'/myorders/edit/' + order.UserOrderID} text={order.UserOrderNumber} />
+            <Table.TextCell text={order.WebOrderID} />
             <Table.TextCell text={order.PickupAddress.Address1} />
             <Table.TextCell text={order.DropoffAddress.Address1} />
             <Table.TextCell text={order.Status} />
