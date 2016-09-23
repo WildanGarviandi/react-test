@@ -44,7 +44,7 @@ function DispatchToDriverOrdersPage(dispatch, ownProps) {
         },
         PaginationAction: {
             setCurrentPage: (currentPage) => {
-                dispatch(DriverService.SetCurrentPageOrders(currentPage));
+                dispatch(DriverService.SetCurrentPageOrders(currentPage, ownProps.params.id));
             },
             setLimit: (limit) => {
                 dispatch(DriverService.SetLimitOrders(limit));
