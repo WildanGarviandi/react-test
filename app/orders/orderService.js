@@ -285,6 +285,7 @@ export function editOrder(id, order) {
                 });
                 alert(message);
                 dispatch({type: modalAction.BACKDROP_HIDE});
+                dispatch(fetchDetails(id));
             });
         }
         }).catch(() => { 
