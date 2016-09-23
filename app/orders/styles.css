@@ -1,0 +1,93 @@
+.itemLabel {
+  display: block;
+  padding: 5px;
+  width: 150px;
+  float: left;
+}
+
+.itemValue {
+  padding: 5px;
+  display: block;
+  margin-left: 160px;
+  max-width: 350px;
+  text-indent: 0px;
+}
+
+.orderDetailsHeader {
+    background-color: #222D32;
+    color: #eee;
+    text-indent: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 15px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    clear: both;
+}
+
+.orderDetailsInformation {
+    background-color: #eee;
+    color: #000;
+    text-indent: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 15px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    clear: both;
+    padding-bottom: 30px;
+    margin-bottom: 20px;
+}
+
+.orderDetailsBoxLeft {
+    float: left;
+    width: 48%;
+}
+
+.orderDetailsBoxRight {
+    float: right;
+    width: 48%;
+}
+
+.editOrderHeaders {
+    margin-bottom: 10px;
+    background-color: #eee;
+    color: #000;
+    font-weight: bold;
+    text-indent: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 15px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    clear: both;
+}
+
+.addOrderButton {
+    border: 0;
+    border-radius: 5px;
+    background-color: #FF5A60;
+    color: #fff;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.orderDetailsContact {
+    float: left;
+    width: 50%;
+}
+
+.contactDetails {
+    float: left;
+    width: 33.33%;
+}
+
+.contactDetailsBox {
+    min-height: 360px;
+    padding: 15px;
+    background-color: #eee;
+    color: #000;
+    clear: both;
+    padding-bottom: 30px;
+    margin-bottom: 20px;
+}
