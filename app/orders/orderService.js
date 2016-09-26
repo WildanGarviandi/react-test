@@ -4,6 +4,7 @@ import FetchPost from '../modules/fetch/post';
 import ModalActions from '../modules/modals/actions';
 import {modalAction} from '../modules/modals/constants';
 import moment from 'moment';
+import config from '../../config.json'
 
 const Constants = {
     BASE: "myorder/defaultSet/",
@@ -265,20 +266,14 @@ export function fetchDetails(id) {
     }
 }
 
-export function ExportOrder() {
+export function ExportOrder(startDate, endDate) {
     return (dispatch, getState) => {
         const {myOrders, userLogged} = getState().app;
-        const {currentPage, limit, filters} = myOrders;
         const {token} = userLogged;
-        let params = lodash.assign({}, filters, {
-            limit: limit,
-            offset: (currentPage - 1) * limit
+        let params = lodash.assign({}, {
+            startDate: moment(startDate).format('MM-DD-YYYY'),
+            endDate: moment(endDate).format('MM-DD-YYYY')
         })
-
-        if (filters.startCreated && filters.endCreated) {
-            params.startCreated = moment(filters.startCreated).format('MM-DD-YYYY')
-            params.endCreated = moment(filters.endCreated).format('MM-DD-YYYY')
-        }
 
         dispatch({type: modalAction.BACKDROP_SHOW});
         FetchGet('/order/export', token, params).then((response) => {
@@ -288,8 +283,11 @@ export function ExportOrder() {
                 })
             }
 
-            dispatch({type: modalAction.BACKDROP_HIDE});
             dispatch(ModalActions.addMessage('Export Success'));
+            dispatch({type: modalAction.BACKDROP_HIDE});
+            return response.json().then(({data}) => {
+                window.location = config.baseAPI + '/order/download/' + data.hash;
+            });
         }).catch((e) => {
             dispatch({type: modalAction.BACKDROP_HIDE});
             dispatch(ModalActions.addMessage(e.message));
