@@ -29,6 +29,7 @@ const initialStore = {
     currentPageOrders: 1,
     totalOrders: 0,
     statusNameOrders: "SHOW ALL",
+    orderOwner: "ALL",
     limitOrders: 100,
     filtersOrders: {}
 }
@@ -204,7 +205,8 @@ export function UpdateFiltersOrders(filters) {
 
 export function SetDropDownFilterOrders(keyword) {
     const filterNames = {
-        "statusName": "status"
+        "statusName": "status",
+        "orderOwner": "isTrunkeyOrder",
     };
 
     return (selectedOption) => {
@@ -254,8 +256,12 @@ export function FetchListOrders(id) {
         }
 
         if (filtersOrders.startPickup && filtersOrders.endPickup) {
-             params.startPickup = moment(filtersOrders.startPickup).format('MM-DD-YYYY')
-             params.endPickup = moment(filtersOrders.endPickup).format('MM-DD-YYYY')
+            params.startPickup = moment(filtersOrders.startPickup).format('MM-DD-YYYY');
+            params.endPickup = moment(filtersOrders.endPickup).format('MM-DD-YYYY');
+        }
+
+        if (params.isTrunkeyOrder === 'All') {
+            delete params.isTrunkeyOrder;
         }
 
         let driverID = parseInt(id) || parseInt(driverOrdersIDActive);

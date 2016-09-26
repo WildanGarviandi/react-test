@@ -45,9 +45,17 @@ function DispatchBuilder(keyword) {
 
 function DropdownStoreBuilder(name) {
     return (store) => {
+        const orderOwnerOptions = [{
+            key: 'All', value: "All", 
+        }, {
+            key: 0, value: 'Company Order',
+        }, {
+            key: 1, value: 'Etobee Order',
+        }];
 
         const options = {
-            "statusName": OrderStatusSelector.GetList(store)
+            "statusName": OrderStatusSelector.GetList(store),
+            "orderOwner": orderOwnerOptions,
         }
 
         return {
@@ -105,12 +113,13 @@ const UserOrderNumberFilter = ConnectBuilder('userOrderNumber')(Table.InputCell)
 const PickupFilter = ConnectBuilder('pickup')(Table.InputCell);
 const DropoffFilter = ConnectBuilder('dropoff')(Table.InputCell);
 const StatusFilter = ConnectDropdownBuilder('statusName')(Table.FilterDropdown);
+const OrderOwnerFilter = ConnectDropdownBuilder('orderOwner')(Table.FilterDropdown);
 const PickupTimeFilter = connect(DateRangeBuilder('Pickup'), DateRangeDispatch('Pickup'))(Table.FilterDateTimeRangeCell);
 
 function OrderParser(order) {
 
     return lodash.assign({}, order, {
-        
+        OrderOwner: order.IsTrunkeyOrder ? "Etobee Order" : "Company Order"
     })
 }
 
@@ -122,6 +131,7 @@ function OrderHeader() {
             <Table.TextHeader text="Pickup" />
             <Table.TextHeader text="Dropoff" />
             <Table.TextHeader text="Status" />
+            <Table.TextHeader text="Order Owner" />
             <Table.TextHeader text="Pickup Time" />
         </tr>
     );
@@ -135,6 +145,7 @@ function OrderFilter() {
             <PickupFilter />
             <DropoffFilter />
             <StatusFilter />
+            <OrderOwnerFilter />
             <PickupTimeFilter />
         </tr>
     )
@@ -148,6 +159,7 @@ function OrderRow({order}) {
             <Table.TextCell text={order.PickupAddress && order.PickupAddress.Address1} />
             <Table.TextCell text={order.DropoffAddress && order.DropoffAddress.Address1} />
             <Table.TextCell text={order.OrderStatus && order.OrderStatus.OrderStatus} />
+            <Table.TextCell text={order.OrderOwner} />
             <Table.TextCell text={moment(order.PickupTime).format('MM-DD-YYYY hh:mm:ss a')} />
         </tr>
     );
