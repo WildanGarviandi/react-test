@@ -11,6 +11,7 @@ import DateTime from 'react-datetime';
 import moment from 'moment';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import {Link} from 'react-router';
+import Accordion from '../views/base/accordion';
 
 const InputStaticRow = React.createClass({
   render() {
@@ -27,9 +28,54 @@ const InputStaticRow = React.createClass({
   }
 });
 
+const InputStaticRowImage = React.createClass({
+  render() {
+    const {isEditing, label, value, onChange, type} = this.props;
+
+    return (
+      <div style={{clear: 'both'}}>
+        <span className={styles.itemLabel}>{label}</span>
+          <img src={value} className={styles.itemImage}>
+          </img>
+      </div>
+    );
+  }
+});
+
+const FailedAttempt = React.createClass({
+    render: function() {
+        var attemptComponents = this.props.attempts.map(function(attempt, idx) {
+            return (
+                <div>
+                    <div className={styles.attemptInformationHeader}>
+                        Failed Attempt {idx}
+                    </div>
+                    <InputStaticRow label={'Driver'} value={attempt.Driver && `${attempt.Driver.FirstName} ${attempt.Driver.LastName}`} />
+                    <InputStaticRow label={'Reason'} value={attempt.ReasonReturn && `${attempt.ReasonReturn.ReasonName}`} />
+                    <InputStaticRow label={'Date'} value={moment(attempt.CreatedDate).format('MM/DD/YYYY hh:mm')} />
+                    <InputStaticRowImage label={'Proof of Failed'} value={attempt.ProofOfAttemptURL} />
+                </div>
+            );
+        });
+        return <div>{attemptComponents}</div>;
+    }
+});
+
 const DetailPage = React.createClass({
+    getInitialState() {
+        return ({
+            showPOD: false,
+            showAttempt: false
+        })
+    },
     componentWillMount() {
         this.props.GetDetails();
+    },
+    changePODVisible() {
+        this.setState({showPOD: !this.state.showPOD});
+    },
+    changeAttemptVisible() {
+        this.setState({showAttempt: !this.state.showAttempt});
     },
     render() {
         const {order, isFetching} = this.props;
@@ -46,37 +92,6 @@ const DetailPage = React.createClass({
         } else {
             return (
                 <Page title={Title}>
-                    <div className={styles.orderDetailsHeader}>
-                        Contact Information
-                    </div>
-                    { order.PickupAddress &&
-                        <div className={styles.orderDetailsContact}>
-                            <div className={styles.orderDetailsInformation}>
-                                <InputStaticRow label={'PickupName'} value={order.PickupAddress.FirstName} />
-                                <InputStaticRow label={'PickupMobile'} value={order.PickupAddress.MobileNumber} />
-                                <InputStaticRow label={'PickupEmail'} value={order.PickupAddress.EmailID} />
-                                <InputStaticRow label={'PickupAddress'} value={order.PickupAddress.Address1} />
-                                <InputStaticRow label={'PickupAddressDetail'} value={order.PickupAddress.Address2} />
-                                <InputStaticRow label={'PickupCity'} value={order.PickupAddress.City} />
-                                <InputStaticRow label={'PickupState'} value={order.PickupAddress.State} />
-                                <InputStaticRow label={'PickupZip'} value={order.PickupAddress.ZipCode} />
-                            </div>
-                        </div> 
-                    }
-                    { order.DropoffAddress &&
-                        <div className={styles.orderDetailsContact}>
-                            <div className={styles.orderDetailsInformation}>
-                                <InputStaticRow label={'DropoffName'} value={order.DropoffAddress.FirstName} />
-                                <InputStaticRow label={'DropoffMobile'} value={order.DropoffAddress.MobileNumber} />
-                                <InputStaticRow label={'DropoffEmail'} value={order.DropoffAddress.EmailID} />
-                                <InputStaticRow label={'DropoffAddress'} value={order.DropoffAddress.Address1} />
-                                <InputStaticRow label={'DropoffAddressDetail'} value={order.DropoffAddress.Address2} />
-                                <InputStaticRow label={'DropoffCity'} value={order.DropoffAddress.City} />
-                                <InputStaticRow label={'DropoffState'} value={order.DropoffAddress.State} />
-                                <InputStaticRow label={'DropoffZip'} value={order.DropoffAddress.ZipCode} />
-                            </div>
-                        </div>
-                    }
                     <div style={{clear: 'both'}}>
                     </div>
                     <div className={styles.orderDetailsBoxLeft}>
@@ -84,26 +99,68 @@ const DetailPage = React.createClass({
                             Order Details
                         </div>
                         <div className={styles.orderDetailsInformation}>
-                            <InputStaticRow label={'WebOrderID'} value={order.WebOrderID} />
+                            <InputStaticRow label={'Airway Bill'} value={order.UserOrderNumber} />
+                            <InputStaticRow label={'Web Order ID'} value={order.WebOrderID} />
+                            <InputStaticRow label={'User'} value={order.User && `${order.User.FirstName} ${order.User.LastName} / ${order.User.Email} / ${order.User.CountryCode}${order.User.PhoneNumber}` } />
+                            <InputStaticRow label={'Driver'} value={order.Driver && `${order.Driver.FirstName} ${order.Driver.LastName} / ${order.Driver.CountryCode}${order.Driver.PhoneNumber}` } />
                             <InputStaticRow label={'Vehicle'} value={order.Vehicle && order.Vehicle.Name} />
-                            <InputStaticRow label={'PackageDetails'} value={order.OrderMessage} />
-                            <InputStaticRow label={'DeliveryInstructions'} value={order.DeliveryInstructions} />
-                            <InputStaticRow label={'PickupTime'} value={moment(order.PickupTime).format('MM/DD/YYYY hh:mm A')} />
+                            <InputStaticRow label={'Status'} value={order.OrderStatus && order.OrderStatus.OrderStatus} />
+                            <InputStaticRow label={'Package Details'} value={order.OrderMessage} />
+                            <InputStaticRow label={'Delivery Instructions'} value={order.DeliveryInstructions} />
+                            <InputStaticRow label={'Pickup Time'} value={moment(order.PickupTime).format('MM/DD/YYYY hh:mm A')} />
+                            <InputStaticRow label={'Pickup Information'} 
+                                value={ order.PickupAddress && `${order.PickupAddress.FirstName} ${order.PickupAddress.LastName} / 
+                                    ${order.PickupAddress.CountryCode}${order.PickupAddress.MobileNumber} / ${order.PickupAddress.Address1}`} />
+                            <InputStaticRow label={'Dropoff Information'} 
+                                value={ order.DropoffAddress && `${order.DropoffAddress.FirstName} ${order.DropoffAddress.LastName} / 
+                                    ${order.DropoffAddress.CountryCode}${order.DropoffAddress.MobileNumber} / ${order.DropoffAddress.Address1}`} />
                         </div>
                     </div> 
                     <div className={styles.orderDetailsBoxRight}>
                         <div className={styles.orderDetailsHeader}>
-                            Order Dimension and Cost
+                            Order Dimension
                         </div>
                         <div className={styles.orderDetailsInformation}>
-                            <InputStaticRow label={'DeliveryFee'} value={order.OrderCost} />
-                            <InputStaticRow label={'PackageWeight'} value={order.PackageWeight} />
-                            <InputStaticRow label={'PackageVolume'} value={order.PackageVolume} />
-                            <InputStaticRow label={'PackageWidth'} value={order.PackageWidth} />
-                            <InputStaticRow label={'PackageHeight'} value={order.PackageHeight} />
-                            <InputStaticRow label={'PackageLength'} value={order.PackageLength} />
+                            <InputStaticRow label={'Package Weight'} value={order.PackageWeight} />
+                            <InputStaticRow label={'Package Volume'} value={order.PackageVolume} />
+                            <InputStaticRow label={'Package Width'} value={order.PackageWidth} />
+                            <InputStaticRow label={'Package Height'} value={order.PackageHeight} />
+                            <InputStaticRow label={'Package Length'} value={order.PackageLength} />
                         </div> 
                     </div>
+                    <div style={{clear: 'both'}}>
+                    </div>
+                    { order.RecipientName &&
+                        <div>
+                            <div onClick={this.changePODVisible} className={styles.orderDetailsHeader}>
+                                POD Information
+                            </div>
+                            {   this.state.showPOD &&
+                                <div className={styles.orderDetailsFullWidth}>
+                                    <div className={styles.orderDetailsInformation}> 
+                                        <InputStaticRow label={'Recipient Name'} value={order.RecipientName} />
+                                        <InputStaticRow label={'Recipient Phone'} value={order.RecipientPhone} />
+                                        <InputStaticRowImage label={'Recipient Signature'} value={order.RecipientSignature} />
+                                        <InputStaticRowImage label={'Recipient Photo'} value={order.RecipientPhoto} />
+                                    </div>
+                                </div>
+                            }
+                        </div> 
+                    }
+                    {  order.UserOrderAttempts && order.UserOrderAttempts.length > 0 &&
+                        <div>
+                            <div onClick={this.changeAttemptVisible} className={styles.orderDetailsHeader}>
+                                Attempt Information
+                            </div>
+                            {   this.state.showAttempt &&
+                                <div className={styles.orderDetailsFullWidth}>
+                                    <div className={styles.orderDetailsInformation}>
+                                        <FailedAttempt attempts={order.UserOrderAttempts} />
+                                    </div>
+                                </div>
+                            }
+                        </div> 
+                    }
                 </Page>
             );
         }
