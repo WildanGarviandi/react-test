@@ -246,7 +246,7 @@ export function addOrder(order) {
                 });
                 alert('Add Order Success');
                 dispatch({type: modalAction.BACKDROP_HIDE});
-                window.location.href='/myorders/edit/' + data.UserOrderID;
+                window.location.href='/myorders/details/' + data.UserOrderID;
             });
         } else {
             response.json().then(function({error}) {

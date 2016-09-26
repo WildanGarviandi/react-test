@@ -77,6 +77,10 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact}) => {
             </MenuItem>
           </AccordionMenu>
         </Accordion>
+        <MenuItem active={activeMenuIdx == 5} to={'/mytrips'}>
+           <Glyph className={styles.menuGlyph} name={'tent'}/>
+           <span>My Trips</span>
+        </MenuItem>
         <MenuItem active={activeMenuIdx == 4} to={'/myorders'}>
            <Glyph className={styles.menuGlyph} name={'transfer'}/>
            <span>My Orders</span>

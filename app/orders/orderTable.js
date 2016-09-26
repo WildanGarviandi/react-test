@@ -5,8 +5,11 @@ import {connect} from 'react-redux';
 import moment from 'moment';
 import * as Table from '../components/table';
 import styles from '../components/table.css';
+import stylesOrders from './styles.css';
 import * as OrderService from './orderService';
 import OrderStatusSelector from '../modules/orderStatus/selector';
+import {Glyph} from '../views/base';
+import {Link} from 'react-router';
 
 function StoreBuilder(keyword) {
     return (store) => {
@@ -213,6 +216,7 @@ function OrderHeader() {
     return (
         <tr className={styles.tr}>
             <CheckboxHeader />
+            <Table.TextHeader />
             <Table.TextHeader text="User Order Number" />
             <Table.TextHeader text="Web Order ID" />
             <Table.TextHeader text="Pickup" />
@@ -230,6 +234,7 @@ function OrderHeader() {
 function OrderFilter() {
     return (
         <tr className={styles.tr}>
+            <Table.EmptyCell />
             <Table.EmptyCell />
             <UserOrderNumberFilter />
             <Table.EmptyCell />
@@ -249,7 +254,15 @@ function OrderRow({order}) {
     return (
         <tr className={styles.tr}>
             <CheckboxRow checked={order.IsChecked} orderID={order.UserOrderID} />
-            <Table.LinkCell to={'/myorders/edit/' + order.UserOrderID} text={order.UserOrderNumber} />
+            <td className={stylesOrders.detailsTableColumn}>
+                <Link title='View Details' to={'/myorders/edit/' + order.UserOrderID} className={styles.linkMenu}>
+                    {<Glyph name={'search'}/>}
+                </Link>
+                <Link title='View Orders' to={'/myorders/details/' + order.UserOrderID} className={styles.linkMenu}>
+                    {<Glyph name={'list-alt'}/>}
+                </Link>
+            </td>
+            <Table.TextCell text={order.UserOrderNumber} />
             <Table.TextCell text={order.WebOrderID} />
             <Table.TextCell text={order.PickupAddress.Address1} />
             <Table.TextCell text={order.DropoffAddress.Address1} />

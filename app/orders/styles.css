@@ -91,3 +91,33 @@
     padding-bottom: 30px;
     margin-bottom: 20px;
 }
+
+.detailsTableColumn {
+    min-width: 40px;
+}
+
+.attemptInformationHeader {
+    background-color: #222D32;
+    color: #eee;
+    text-indent: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 15px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    clear: both;
+}
+
+.itemImage {
+    padding: 5px;
+    display: block;
+    margin-left: 160px;
+    max-width: 150px;
+    max-height: 200px;
+    text-indent: 0px;
+}
+
+.orderDetailsFullWidth {
+    float: left;
+    width: 100%;
+}
