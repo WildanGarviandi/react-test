@@ -396,6 +396,9 @@ const ManagePage = React.createClass({
                             <InputRow label={'PackageDetails'} value={order.OrderMessage} type={'text'} onChange={this.stateChange('PackageComments') } />
                             <InputRow label={'DeliveryInstructions'} value={order.DeliveryInstructions} type={'text'} onChange={this.stateChange('DeliveryInstructions') } />
                             <DatetimeRow label={'PickupTime'} value={moment(order.PickupTime).format('MM/DD/YYYY hh:mm A')} onChange={this.stateChange('PickupTime') } />
+                            { isEditing &&
+                                <DatetimeRow label={'DueTime'} value={moment(order.PickupTime).format('MM/DD/YYYY hh:mm A')} onChange={this.stateChange('DueTime') } />
+                            }
                         </div>
                     </div> 
                     <div className={styles.orderDetailsBoxRight}>
