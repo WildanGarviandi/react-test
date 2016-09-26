@@ -255,10 +255,10 @@ function OrderRow({order}) {
         <tr className={styles.tr}>
             <CheckboxRow checked={order.IsChecked} orderID={order.UserOrderID} />
             <td className={stylesOrders.detailsTableColumn}>
-                <Link title='View Details' to={'/myorders/edit/' + order.UserOrderID} className={styles.linkMenu}>
+                <Link title='Edit' to={'/myorders/edit/' + order.UserOrderID} className={styles.linkMenu}>
                     {<Glyph name={'search'}/>}
                 </Link>
-                <Link title='View Orders' to={'/myorders/details/' + order.UserOrderID} className={styles.linkMenu}>
+                <Link title='View Details' to={'/myorders/details/' + order.UserOrderID} className={styles.linkMenu}>
                     {<Glyph name={'list-alt'}/>}
                 </Link>
             </td>
