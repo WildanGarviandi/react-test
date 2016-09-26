@@ -94,6 +94,7 @@ export function SetDropDownFilter(keyword) {
 
         return (dispatch, getState) => {
             dispatch(StoreSetter(keyword, selectedOption.value));
+            dispatch(StoreSetter("currentPage", 1));
             dispatch(UpdateFilters({[filterName]: selectedOption.key}));
             dispatch(FetchList());
         }
@@ -115,10 +116,11 @@ export function SetLimit(limit) {
 }
 
 export function UpdateAndFetch(filters) {
-     return (dispatch) => {
-         dispatch(UpdateFilters(filters));
-         dispatch(FetchList());
-     }
+    return (dispatch) => {
+        dispatch(StoreSetter("currentPage", 1));
+        dispatch(UpdateFilters(filters));
+        dispatch(FetchList());
+    }
 }
 
 export function ToggleChecked(tripID) {
@@ -135,7 +137,7 @@ export function ToggleCheckedAll() {
 export function FetchList() {
     return (dispatch, getState) => {
         const {myTrips, userLogged} = getState().app;
-        const {currentPage, limit, filters} = myTrips;
+        const {currentPage, limit, total, filters} = myTrips;
         const {token} = userLogged;
         const params = lodash.assign({}, filters, {
             limit: limit,
@@ -160,6 +162,9 @@ export function FetchList() {
             }
 
             return response.json().then(({data}) => {
+                if (data.count < total) {
+                    dispatch(SetCurrentPage(1));
+                }
                 dispatch({type: modalAction.BACKDROP_HIDE});
                 dispatch({
                     type: Constants.SET_TRIPS,

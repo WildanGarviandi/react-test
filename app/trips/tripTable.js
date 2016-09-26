@@ -30,6 +30,7 @@ function DispatchBuilder(keyword) {
                 return;
             }
 
+            dispatch(TripService.StoreSetter("currentPage", 1));
             dispatch(TripService.FetchList());
         }
 
