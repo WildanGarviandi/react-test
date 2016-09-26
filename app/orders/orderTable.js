@@ -60,11 +60,11 @@ function DropdownStoreBuilder(name) {
         }];
 
         const ownerOptions = [{
-            key: 0, value: "ALL", 
+            key: 'All', value: "All", 
         }, {
-            key: 1, value: 'ETOBEE',
+            key: 0, value: 'Company',
         }, {
-            key: 2, value: 'COMPANY',
+            key: 1, value: 'Etobee',
         }];
 
         const assignmentOptions = [{
@@ -75,11 +75,20 @@ function DropdownStoreBuilder(name) {
             key: 2, value: 'UNASSIGNED',
         }];
 
+        const codOptions = [{
+            key: 'All', value: "All", 
+        }, {
+            key: 0, value: 'No',
+        }, {
+            key: 1, value: 'Yes',
+        }];
+
         const options = {
             "orderType": orderTypeOptions,
             "statusName": OrderStatusSelector.GetList(store),
             "orderOwner": ownerOptions,
             "assignment": assignmentOptions,
+            "isCOD": codOptions,
         }
 
         return {
@@ -157,10 +166,12 @@ const WebOrderIDFilter = ConnectBuilder('webOrderID')(Table.InputCell);
 const UserOrderNumberFilter = ConnectBuilder('userOrderNumber')(Table.InputCell);
 const PickupFilter = ConnectBuilder('pickup')(Table.InputCell);
 const DropoffFilter = ConnectBuilder('dropoff')(Table.InputCell);
+const DriverFilter = ConnectBuilder('driver')(Table.InputCell);
 const StatusFilter = ConnectDropdownBuilder('statusName')(Table.FilterDropdown);
 const OrderTypeFilter = ConnectDropdownBuilder('orderType')(Table.FilterDropdown);
 const OrderOwnerFilter = ConnectDropdownBuilder('orderOwner')(Table.FilterDropdown);
 const AssignmentFilter = ConnectDropdownBuilder('assignment')(Table.FilterDropdown);
+const CODFilter = ConnectDropdownBuilder('isCOD')(Table.FilterDropdown);
 const CreatedDateFilter = connect(DateRangeBuilder('Created'), DateRangeDispatch('Created'))(Table.FilterDateTimeRangeCell);
 const CheckboxHeader = connect(CheckboxHeaderStore, CheckboxHeaderDispatch)(Table.CheckBoxHeader);
 const CheckboxRow = connect(undefined, CheckboxDispatch)(Table.CheckBoxCell);
@@ -169,7 +180,7 @@ function OrderParser(order) {
     function getAssignment(order) {
         var assignment = 'Unassigned';
         if ((order.CurrentRoute && order.CurrentRoute.Trip && order.CurrentRoute.Trip.Driver) || (order.Driver)) {
-            assignment = 'ASSIGNED';
+            assignment = 'Assigned';
         }
         return assignment;
     }
@@ -188,8 +199,12 @@ function OrderParser(order) {
     return lodash.assign({}, order, {
         OrderType: order.CurrentRoute && order.CurrentRoute.Trip ? "Trip Order" : "Single Order",
         OrderOwner: order.IsTrunkeyOrder ? "Etobee" : "Company",
+        IsCOD: order.IsCOD ? "Yes" : "No",
         OrderAssignment: getAssignment(order),
+        Driver: order.Driver && `${order.Driver.FirstName} ${order.Driver.LastName}`,
         Status: getStatus(order),
+        DueTime: order.DueTime ? moment(order.DueTime).format('MM/DD/YYYY h:mm:ss a') : '-',
+        CreatedDate: order.CreatedDate ? moment(order.CreatedDate).format('MM/DD/YYYY h:mm:ss a') : '-',
         IsChecked: ('IsChecked' in order) ? order.IsChecked : false,
     })
 }
@@ -202,11 +217,12 @@ function OrderHeader() {
             <Table.TextHeader text="Web Order ID" />
             <Table.TextHeader text="Pickup" />
             <Table.TextHeader text="Dropoff" />
+            <Table.TextHeader text="Driver" />
             <Table.TextHeader text="Status" />
-            <Table.TextHeader text="Order Type" />
             <Table.TextHeader text="Order Owner" />
-            <Table.TextHeader text="Assignment" />
+            <Table.TextHeader text="Is COD" />
             <Table.TextHeader text="Created Date" />
+            <Table.TextHeader text="Deadline" />
         </tr>
     );
 }
@@ -219,9 +235,10 @@ function OrderFilter() {
             <Table.EmptyCell />
             <PickupFilter />
             <DropoffFilter />
+            <DriverFilter />
             <StatusFilter />
-            <Table.EmptyCell />
-            <Table.EmptyCell />
+            <OrderOwnerFilter />
+            <CODFilter />
             <Table.EmptyCell />
             <Table.EmptyCell />
         </tr>
@@ -236,11 +253,12 @@ function OrderRow({order}) {
             <Table.TextCell text={order.WebOrderID} />
             <Table.TextCell text={order.PickupAddress.Address1} />
             <Table.TextCell text={order.DropoffAddress.Address1} />
+            <Table.TextCell text={order.Driver} />
             <Table.TextCell text={order.Status} />
-            <Table.TextCell text={order.OrderType} />
             <Table.TextCell text={order.OrderOwner} />
-            <Table.TextCell text={order.OrderAssignment} />
-            <Table.TextCell text={moment(order.CreatedDate).format('MM/DD/YYYY h:mm:ss a')} />
+            <Table.TextCell text={order.IsCOD} />
+            <Table.TextCell text={order.CreatedDate} />
+            <Table.TextCell text={order.DueTime} />
         </tr>
     );
 }

@@ -21,9 +21,10 @@ const initialStore = {
     filters: {},
     limit: 100,
     statusName: "SHOW ALL",
-    orderType: "ALL",
-    orderOwner: "ALL",
-    assignment: "ALL",
+    orderType: "All",
+    orderOwner: "All",
+    assignment: "All",
+    isCOD: "All",
     total: 0,
     orders: [],
     selectedAll: false,
@@ -112,7 +113,8 @@ export function UpdateFilters(filters) {
 export function SetDropDownFilter(keyword) {
     const filterNames = {
         "statusName": "status",
-        "orderOwner": "owner",
+        "orderOwner": "isTrunkeyOrder",
+        "isCOD": "isCOD",
         "orderType": "orderType",
         "assignment": "assignment",
     };
@@ -181,8 +183,16 @@ export function FetchList() {
         })
 
         if (filters.startCreated && filters.endCreated) {
-            params.startCreated = moment(filters.startCreated).format('MM-DD-YYYY')
-            params.endCreated = moment(filters.endCreated).format('MM-DD-YYYY')
+            params.startCreated = moment(filters.startCreated).format('MM-DD-YYYY');
+            params.endCreated = moment(filters.endCreated).format('MM-DD-YYYY');
+        }
+
+        if (filters.isTrunkeyOrder === 'All') {
+            delete params.isTrunkeyOrder;
+        }
+
+        if (filters.isCOD === 'All') {
+            delete params.isCOD;
         }
 
         dispatch({type: modalAction.BACKDROP_SHOW});
