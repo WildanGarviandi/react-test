@@ -111,7 +111,7 @@ const OrderPage = React.createClass({
             textBase: 'Assign Order',
             onClick: this.assignOrder,
             styles: {
-                base: styles.assignOrderButton,
+                base: stylesButton.greenButton,
             }
         };
         const exportOrderButton = {
@@ -125,11 +125,11 @@ const OrderPage = React.createClass({
             <Page title="My Order">
                 <Pagination {...paginationState} {...PaginationAction} />
                 <p>
+                    <ButtonWithLoading {...assignOrderButton} />
                     <Link to={'/myorders/add'}>
                         <button className={stylesButton.greenButton}>Add Orders</button> 
                     </Link>
                     <ExportOrder ExportOrder={this.props.ExportOrder} />
-                    <ButtonWithLoading {...assignOrderButton} />
                     <Form.DropdownWithState options={drivers} handleSelect={this.selectDriver} />
                 </p>
                 <Table orders={orders} />

@@ -9,6 +9,7 @@ import Table from './tripTable';
 import * as TripService from './tripService';
 import driversFetch from '../modules/drivers/actions/driversFetch';
 import styles from './styles.css';
+import stylesButton from '../components/button.css';
 import * as UtilHelper from '../helper/utility';
 
 const TripPage = React.createClass({
@@ -41,7 +42,7 @@ const TripPage = React.createClass({
             textBase: 'Assign Trip',
             onClick: this.assignTrip,
             styles: {
-                base: styles.assignTripButton,
+                base: stylesButton.greenButton,
             }
         };
         return (
