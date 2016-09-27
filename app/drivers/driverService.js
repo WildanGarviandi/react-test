@@ -276,7 +276,7 @@ export function addDriver(driverData) {
                 });
                 alert('Add Driver Success');
                 dispatch({type: modalAction.BACKDROP_HIDE});
-                window.location.href='/mydrivers/edit/' + data.UserID;
+                window.location.href='/mydrivers/edit/' + data.driver.UserID;
             });
         } else {
             dispatch({type: modalAction.BACKDROP_HIDE});
