@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import {Link} from 'react-router';
 import {Page} from '../components/page';
 import {Pagination} from '../components/pagination';
-import {ButtonWithLoading} from '../components/button';
+import {ButtonWithLoading, ButtonBase} from '../components/button';
 import Table from './orderTable';
 import * as Form from '../components/form';
 import * as OrderService from './orderService';
@@ -15,6 +15,7 @@ import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import moment from 'moment';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import * as UtilHelper from '../helper/utility';
+import {Glyph} from '../views/base';
 
 const ExportOrder = React.createClass({
     getInitialState() {
@@ -83,7 +84,38 @@ const ExportOrder = React.createClass({
 
 const OrderPage = React.createClass({
     getInitialState() {
-        return ({driverID: null, orders: []})
+        return ({opened: true, idsRaw: '', ids: [], idsStart: '', driverID: null, orders: []})
+    },
+    toggleOpen() {
+        this.setState({opened: !this.state.opened, idsStart: this.state.idsRaw});
+    },
+    cancelChange() {
+        this.setState({opened: true, idsRaw: this.state.idsStart});
+    },
+    textChange(e) {
+        this.setState({idsRaw: e.target.value});
+    },
+    textChange(e) {
+        this.setState({idsRaw: e.target.value});
+    },
+    processText() {
+        const {filterAction} = this.props;
+        const IDs = _.chain(this.state.idsRaw.match(/\S+/g)).uniq().value();
+        this.setState({ids: IDs});
+        this.toggleOpen();
+        const newFilters = {['userOrderNumbers']: JSON.stringify(IDs)};
+        this.props.UpdateFilters(newFilters);
+        this.props.StoreSetter("currentPage", 1);
+        this.props.FetchList();
+    },
+    clearText() {
+        const {filterAction} = this.props;
+        this.setState({ids: [], idsRaw: ''});
+        this.toggleOpen();
+        const newFilters = {['userOrderNumbers']: []};
+        this.props.UpdateFilters(newFilters);
+        this.props.StoreSetter("currentPage", 1);
+        this.props.FetchList();
     },
     componentWillMount() {
         this.props.FetchList();
@@ -123,6 +155,31 @@ const OrderPage = React.createClass({
         };
         return (
             <Page title="My Order">
+            <div style={{marginBottom: 15}}>
+              {
+                this.state.opened ? 
+                <div className={styles.top2} onClick={this.toggleOpen}>
+                  <h4 className={styles.title}>
+                    <Glyph name='chevron-down' className={styles.glyph} />
+                    {'Filter Order (' + this.state.ids.length + ' keywords)'}
+                  </h4>
+                </div> :
+                <div className={styles.panel}>
+                  <div className={styles.top} onClick={this.toggleOpen}>
+                    <h4 className={styles.title}>
+                      <Glyph name='chevron-up' className={styles.glyph} />
+                      {'Web Order ID or User Order Number:'}
+                    </h4>
+                  </div>
+                  <div className={styles.bottom}>
+                    <textarea style={{height: 100, width: '100%'}} value={this.state.idsRaw} onChange={this.textChange} placeholder={'Write/Paste EDS Number or Order ID here, separated with newline'} />
+                    <ButtonBase styles={styles.modalBtn} onClick={this.processText}>Filter</ButtonBase>
+                    <a href="javascript:;" className={styles.modalLink} onClick={this.cancelChange}>Cancel</a>
+                    <a href="javascript:;" className={styles.modalLink} onClick={this.clearText}>Clear</a>
+                  </div>
+                </div>
+              }
+              </div>
                 <Pagination {...paginationState} {...PaginationAction} />
                 <p>
                     <ButtonWithLoading {...assignOrderButton} />
@@ -165,6 +222,12 @@ function DispatchToOrdersPage(dispatch) {
     return {
         FetchList: () => {
             dispatch(OrderService.FetchList());
+        },
+        UpdateFilters: (newFilters) => {
+            dispatch(OrderService.UpdateFilters(newFilters));
+        },
+        StoreSetter: (name, value) => {
+            dispatch(OrderService.StoreSetter(name, value));
         },
         ExportOrder: (startDate, endDate) => {
             dispatch(OrderService.ExportOrder(startDate, endDate));
