@@ -49,7 +49,7 @@ const FailedAttempt = React.createClass({
             return (
                 <div>
                     <div className={styles.attemptInformationHeader}>
-                        Failed Attempt {idx}
+                        Failed Attempt {idx+1}
                     </div>
                     <InputStaticRow label={'Driver'} value={attempt.Driver && `${attempt.Driver.FirstName} ${attempt.Driver.LastName}`} />
                     <InputStaticRow label={'Reason'} value={attempt.ReasonReturn && `${attempt.ReasonReturn.ReasonName}`} />
@@ -68,7 +68,7 @@ const Returned = React.createClass({
             return (
                 <div>
                     <div className={styles.attemptInformationHeader}>
-                        Returned {idx}
+                        Returned {idx+1}
                     </div>
                     <InputStaticRow label={'Recipient Name'} value={returned.RecipientName} />
                     <InputStaticRow label={'Date'} value={moment(returned.CreatedDate).format('MM/DD/YYYY hh:mm')} />
