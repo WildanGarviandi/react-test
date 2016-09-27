@@ -121,3 +121,7 @@
     float: left;
     width: 100%;
 }
+
+.arrowDown {
+    float: right;
+}

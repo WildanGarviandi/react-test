@@ -12,6 +12,7 @@ import moment from 'moment';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import {Link} from 'react-router';
 import Accordion from '../views/base/accordion';
+import {Glyph} from '../views/base';
 
 const InputStaticRow = React.createClass({
   render() {
@@ -65,7 +66,9 @@ const DetailPage = React.createClass({
     getInitialState() {
         return ({
             showPOD: false,
-            showAttempt: false
+            iconPOD: 'chevron-down',
+            showAttempt: false,
+            iconAttempt: 'chevron-down',
         })
     },
     componentWillMount() {
@@ -73,9 +76,11 @@ const DetailPage = React.createClass({
     },
     changePODVisible() {
         this.setState({showPOD: !this.state.showPOD});
+        this.setState({iconPOD: this.state.iconPOD === 'chevron-down' ? 'chevron-up' : 'chevron-down'});
     },
     changeAttemptVisible() {
         this.setState({showAttempt: !this.state.showAttempt});
+        this.setState({iconAttempt: this.state.iconAttempt === 'chevron-down' ? 'chevron-up' : 'chevron-down'});
     },
     render() {
         const {order, isFetching} = this.props;
@@ -134,6 +139,9 @@ const DetailPage = React.createClass({
                         <div>
                             <div onClick={this.changePODVisible} className={styles.orderDetailsHeader}>
                                 POD Information
+                                <span className={styles.arrowDown}>
+                                    <Glyph name={this.state.iconPOD}/>
+                                </span>
                             </div>
                             {   this.state.showPOD &&
                                 <div className={styles.orderDetailsFullWidth}>
@@ -151,6 +159,9 @@ const DetailPage = React.createClass({
                         <div>
                             <div onClick={this.changeAttemptVisible} className={styles.orderDetailsHeader}>
                                 Attempt Information
+                                <span className={styles.arrowDown}>
+                                    <Glyph name={this.state.iconAttempt}/>
+                                </span>
                             </div>
                             {   this.state.showAttempt &&
                                 <div className={styles.orderDetailsFullWidth}>
