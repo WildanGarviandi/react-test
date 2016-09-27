@@ -38,11 +38,17 @@ const ExportOrder = React.createClass({
     render() {
         const addExportButton = {
             textBase: 'Export Orders',
-            onClick: this.openModal
+            onClick: this.openModal,
+            styles: {
+                base: stylesButton.greenButton,
+            }
         };
         const proceedExportBtn = {
             textBase: "Export",
-            onClick: this.exportOrder
+            onClick: this.exportOrder,
+            styles: {
+                base: stylesButton.greenButton,
+            }
         };
         const startDateFormatted = moment(this.state.startDate).format('MM-DD-YYYY');
         const endDateFormatted = moment(this.state.endDate).format('MM-DD-YYYY');
@@ -83,14 +89,16 @@ const OrderPage = React.createClass({
             textBase: 'Export Order',
             onClick: this.exportOrder,
             styles: {
-                base: styles.exportOrderButton,
+                base: stylesButton.greenButton,
             }
         };
         return (
             <Page title="My Order">
                 <Pagination {...paginationState} {...PaginationAction} />
                 <p>
-                    <Link to={'/myorders/add'} className={stylesButton.greenButton}>Add Order</Link>
+                    <Link to={'/myorders/add'}>
+                        <button className={stylesButton.greenButton}>Add Orders</button> 
+                    </Link>
                     <ExportOrder ExportOrder={this.props.ExportOrder} />
                 </p>
                 <Table orders={orders} />

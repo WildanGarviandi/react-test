@@ -7,8 +7,8 @@
 }
 
 .btnBase:hover {
-  background-color: #eF4A50;
   color: #fff;
+  text-decoration: underline;
 }
 
 .btnBase.loading {
@@ -43,7 +43,8 @@
     background-color: #4cc38e;
     color: #fff;
     cursor: pointer;
-    padding: 8px;
+    min-width: 120px;
+    min-height: 30px;
     margin-left: 5px;
 }
 
@@ -53,6 +54,7 @@
     background-color: #4cc38e;
     color: #fff;
     cursor: pointer;
-    padding: 8px;
+    min-width: 120px;
+    min-height: 30px;
     margin-left: 5px;
 }
