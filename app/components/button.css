@@ -36,3 +36,23 @@
   padding: 2px;
   display: inline-block;
 }
+
+.greenButton {
+    border: 0;
+    border-radius: 5px;
+    background-color: #4cc38e;
+    color: #fff;
+    cursor: pointer;
+    padding: 8px;
+    margin-left: 5px;
+}
+
+.redButton {
+    border: 0;
+    border-radius: 5px;
+    background-color: #4cc38e;
+    color: #fff;
+    cursor: pointer;
+    padding: 8px;
+    margin-left: 5px;
+}

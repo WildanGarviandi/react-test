@@ -8,6 +8,7 @@ import {ButtonWithLoading} from '../components/button';
 import Table from './orderTable';
 import * as OrderService from './orderService';
 import styles from './styles.css';
+import stylesButton from '../components/button.css';
 
 const OrderPage = React.createClass({
     componentWillMount() {
@@ -19,7 +20,7 @@ const OrderPage = React.createClass({
             <Page title="My Order">
                 <Pagination {...paginationState} {...PaginationAction} />
                 <p>
-                    <Link to={'/myorders/add'} className={styles.addOrderButton}>Add Order</Link>
+                    <Link to={'/myorders/add'} className={stylesButton.greenButton}>Add Order</Link>
                 </p>
                 <Table orders={orders} />
                 <Pagination {...paginationState} {...PaginationAction} />

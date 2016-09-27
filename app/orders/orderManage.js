@@ -12,6 +12,7 @@ import DateTime from 'react-datetime';
 import moment from 'moment';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import {Link} from 'react-router';
+import stylesButton from '../components/button.css';
 
 const InputRow = React.createClass({
   render() {
@@ -118,7 +119,7 @@ const AddContact = React.createClass({
             textBase: 'Add New',
             onClick: this.openModal,
             styles: {
-                base: styles.weightSaveBtn
+                base: stylesButton.greenButton
             }
         };
 
@@ -127,7 +128,7 @@ const AddContact = React.createClass({
             textLoading: "Saving Changes",
             onClick: this.saveContact,
             styles: {
-                base: styles.weightSaveBtn,
+                base: stylesButton.greenButton,
             },
         };
 
@@ -285,7 +286,7 @@ const ManagePage = React.createClass({
             textLoading: "Saving Changes",
             onClick: this.submit,
             styles: {
-                base: styles.weightSaveBtn,
+                base: stylesButton.greenButton,
             },
         };
 
