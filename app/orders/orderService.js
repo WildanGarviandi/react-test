@@ -5,6 +5,7 @@ import ModalActions from '../modules/modals/actions';
 import {modalAction} from '../modules/modals/constants';
 import moment from 'moment';
 import config from '../../config.json'
+import Promise from 'bluebird';
 
 const Constants = {
     BASE: "myorder/defaultSet/",
@@ -367,6 +368,55 @@ export function ExportOrder(startDate, endDate) {
         }).catch((e) => {
             dispatch({type: modalAction.BACKDROP_HIDE});
             dispatch(ModalActions.addMessage(e.message));
+        });
+    }
+}
+
+export function AssignOrder(orders, driverID) {
+    return (dispatch, getState) => {
+        const {userLogged, myOrders} = getState().app;
+        const {token} = userLogged;
+        let params = {
+            driverID: driverID
+        };
+
+        let promises = [];
+        let assignMessage = '';
+
+        function assignSingleOrder(token, order, params) {
+            return new Promise(function(resolve, reject) {
+                FetchPost('/order/' + order.UserOrderID + '/driver', token, params)
+                .then(function(response) {
+                    if (!response.ok) {            
+                        return response.json().then(({error}) => {
+                            error.order = order;
+                            return resolve(error);
+                        });
+                    } 
+                    return response.json().then(({data}) => {
+                        data.order = order;
+                        return resolve(data);
+                    });
+                });
+            });
+        }
+
+        dispatch({type: modalAction.BACKDROP_SHOW});
+        orders.forEach(function(order) {
+            promises.push(assignSingleOrder(token, order, params));
+        });
+
+        Promise.all(promises).then(function(responses) {
+            responses.forEach(function(response) {
+                if (response.code === 200) {            
+                    assignMessage += response.order.UserOrderNumber + ': success assigned \n';
+                } else {
+                    assignMessage += response.order.UserOrderNumber + ': ' + response.message + '\n';
+                }
+            })
+            alert(assignMessage);
+            dispatch({type: modalAction.BACKDROP_HIDE});
+            dispatch(FetchList());
         });
     }
 }

@@ -19,7 +19,7 @@ function FetchDrivers(fleetID) {
           dispatch({
             fleetID,
             type: actionTypes.DRIVERS_FETCH_RECEIVED,
-            list: response
+            list: response.rows
           });
         });
       } else {
