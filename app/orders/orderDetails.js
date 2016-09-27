@@ -62,6 +62,25 @@ const FailedAttempt = React.createClass({
     }
 });
 
+const Returned = React.createClass({
+    render: function() {
+        var returnedComponents = this.props.returneds.map(function(returned, idx) {
+            return (
+                <div>
+                    <div className={styles.attemptInformationHeader}>
+                        Returned {idx}
+                    </div>
+                    <InputStaticRow label={'Recipient Name'} value={returned.RecipientName} />
+                    <InputStaticRow label={'Date'} value={moment(returned.CreatedDate).format('MM/DD/YYYY hh:mm')} />
+                    <InputStaticRowImage label={'Proof of Return'} value={returned.ProofOfReturnURL} />
+                    <InputStaticRowImage label={'Signature'} value={returned.SignatureURL} />
+                </div>
+            );
+        });
+        return <div>{returnedComponents}</div>;
+    }
+});
+
 const DetailPage = React.createClass({
     getInitialState() {
         return ({
@@ -69,6 +88,8 @@ const DetailPage = React.createClass({
             iconPOD: 'chevron-down',
             showAttempt: false,
             iconAttempt: 'chevron-down',
+            showReturned: false,
+            iconReturned: 'chevron-down',
         })
     },
     componentWillMount() {
@@ -77,6 +98,10 @@ const DetailPage = React.createClass({
     changePODVisible() {
         this.setState({showPOD: !this.state.showPOD});
         this.setState({iconPOD: this.state.iconPOD === 'chevron-down' ? 'chevron-up' : 'chevron-down'});
+    },
+    changeReturnedVisible() {
+        this.setState({showReturned: !this.state.showReturned});
+        this.setState({iconReturned: this.state.iconReturned === 'chevron-down' ? 'chevron-up' : 'chevron-down'});
     },
     changeAttemptVisible() {
         this.setState({showAttempt: !this.state.showAttempt});
@@ -150,6 +175,23 @@ const DetailPage = React.createClass({
                                         <InputStaticRow label={'Recipient Phone'} value={order.RecipientPhone} />
                                         <InputStaticRowImage label={'Recipient Signature'} value={order.RecipientSignature} />
                                         <InputStaticRowImage label={'Recipient Photo'} value={order.RecipientPhoto} />
+                                    </div>
+                                </div>
+                            }
+                        </div> 
+                    }
+                    {  order.UserOrderReturneds && order.UserOrderReturneds.length > 0 &&
+                        <div>
+                            <div onClick={this.changeReturnedVisible} className={styles.orderDetailsHeader}>
+                                POD Returned
+                                <span className={styles.arrowDown}>
+                                    <Glyph name={this.state.iconReturned}/>
+                                </span>
+                            </div>
+                            {   this.state.showReturned &&
+                                <div className={styles.orderDetailsFullWidth}>
+                                    <div className={styles.orderDetailsInformation}>
+                                        <Returned returneds={order.UserOrderReturneds} />
                                     </div>
                                 </div>
                             }
