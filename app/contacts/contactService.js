@@ -9,7 +9,11 @@ const Constants = {
     BASE: "mycontact/defaultSet/",
     SET_CONTACTS: "mycontact/contacts/set",
     TOGGLE_SELECT_CONTACT: "mycontact/contacts/select",
-    TOGGLE_SELECT_ALL: "mycontact/selectedAll/toggle"
+    TOGGLE_SELECT_ALL: "mycontact/selectedAll/toggle",
+    EDIT_CONTACTS: "mycontact/contacts/edit",
+    CONTACT_DETAILS_SET: "mycontact/contacts/details",
+    FETCHING_PAGE: "mycontact/contacts/fetching",
+    FETCHING_PAGE_STOP: "mycontact/contacts/fetchingStop",
 }
 
 const initialStore = {
@@ -64,6 +68,27 @@ export default function Reducer(store = initialStore, action) {
                 selectedAll: !selectedAll,
                 contacts: newContacts,
             })
+        }
+
+        case Constants.FETCHING_PAGE: {
+            return lodash.assign({}, store, {
+                isFetching: true
+            });
+        }
+
+        case Constants.CONTACT_DETAILS_SET: {
+            return lodash.assign({}, store, {
+                contact: action.contact,
+                isEditing: true,
+                isFetching: false
+            });
+        }
+
+        case Constants.FETCHING_PAGE_STOP: {
+            return lodash.assign({}, store, {
+                contact: {},
+                isFetching: false
+            });
         }
 
         default: {
@@ -166,6 +191,102 @@ export function FetchList() {
         }).catch((e) => {
             dispatch({type: modalAction.BACKDROP_HIDE});
             dispatch(ModalActions.addMessage(e.message));
+        });
+    }
+}
+
+export function editContact(id, updateData) {
+    return (dispatch, getState) => {
+        const {myContacts, userLogged} = getState().app;
+        const {contact} = myContacts;
+        const {token} = userLogged;
+
+        dispatch({type: modalAction.BACKDROP_SHOW});
+        FetchPost('/contact/' + id, token, updateData).then((response) => {
+        if(response.ok) {
+            response.json().then(function({data}) {
+                dispatch({
+                    type: Constants.CONTACT_DETAILS_SET,
+                    contact: lodash.assign({}, updateData, contact),
+                });
+                alert('Edit Contact Success');
+                dispatch({type: modalAction.BACKDROP_HIDE});
+                dispatch(fetchDetails(id));
+            });
+        } else {
+            dispatch({type: modalAction.BACKDROP_HIDE});
+            dispatch(ModalActions.addMessage('Failed to edit contact details'));
+        }
+        }).catch(() => { 
+            dispatch({type: modalAction.BACKDROP_HIDE});
+            dispatch(ModalActions.addMessage('Network error'));
+        });
+    }
+}
+
+export function fetchDetails(id) {
+    return (dispatch, getState) => {
+        const {userLogged} = getState().app;
+        const {token} = userLogged;
+
+        dispatch({type: modalAction.BACKDROP_SHOW});
+        dispatch({type: Constants.FETCHING_PAGE});
+        FetchGet('/contact/' + id, token).then(function(response) {
+            if(!response.ok) {
+                return response.json().then(({error}) => {
+                    throw error;
+                });
+            }
+
+            response.json().then(function({data}) {
+                dispatch({
+                    type: Constants.CONTACT_DETAILS_SET,
+                    contact: data,
+                });
+                dispatch({type: modalAction.BACKDROP_HIDE});
+            });
+        }).catch((e) => {
+            window.history.back();
+            const message = (e && e.message) ? e.message : "Failed to fetch contact details";
+            dispatch(ModalActions.addMessage(message));
+            dispatch({type: modalAction.BACKDROP_HIDE});
+        });
+    }
+}
+
+export function resetManageContact() {
+    return (dispatch) => {
+   
+        dispatch({type: Constants.FETCHING_PAGE_STOP});
+    }
+}
+
+export function addContact(contactData) {
+    return (dispatch, getState) => {
+        const {myContacts, userLogged} = getState().app;
+        const {contact} = myContacts;
+        const {token} = userLogged;
+
+        dispatch({type: modalAction.BACKDROP_SHOW});
+        FetchPost('/contact', token, contactData).then((response) => {
+        if(response.ok) {
+            response.json().then(function({data}) {
+                dispatch({
+                    type: Constants.CONTACT_DETAILS_SET,
+                    contact: lodash.assign({}, contactData, contact),
+                });
+                alert('Add Contact Success');
+                dispatch({type: modalAction.BACKDROP_HIDE});
+                window.location.href='/mycontacts/edit/' + data.contact.ContactID;
+            });
+        } else {
+            dispatch({type: modalAction.BACKDROP_HIDE});
+            dispatch(ModalActions.addMessage('Failed to add contact'));
+        }
+        }).catch(() => { 
+            dispatch({type: modalAction.BACKDROP_HIDE});
+            dispatch(ModalActions.addMessage('Network error'));
+   
         });
     }
 }

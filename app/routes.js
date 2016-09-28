@@ -15,6 +15,7 @@ import MyTripsPage from './views/trips/myTrips';
 import TripDetailsPage from './views/trips/tripDetails';
 import MyAssignedTripsPage from './trips/tripPage';
 import MyContactPage from './contacts/contactPage';
+import ManageContactsPage from './contacts/contactManagePage';
 
 function requireAuth(nextState, replace, callback) {
   checkAuth(store).then(function(result) {
@@ -45,6 +46,8 @@ export default (
         <Route path="/trips/:tripID/fillPickup" component={PickupFillPage} onEnter={requireAuth}/>
         <Route path="/mytrips" component={MyAssignedTripsPage} onEnter={requireAuth} />
         <Route path="/mycontacts" component={MyContactPage} onEnter={requireAuth} />
+        <Route path="/mycontacts/add" component={ManageContactsPage} onEnter={requireAuth} />
+        <Route path="/mycontacts/edit/:id" component={ManageContactsPage} onEnter={requireAuth} />
       </Route>
       <Route path="/qrcode/:id" component={ContainerQRCodePage} />
       <Route path="/login" component={LoginPage} />

@@ -18,6 +18,9 @@ const ContactPage = React.createClass({
         return (
             <Page title="My Contact">
                 <Pagination {...paginationState} {...PaginationAction} />
+                <p>
+                    <Link to={'/mycontacts/add'} className={styles.addContactButton}>Add Contact</Link>
+                </p>
                 <Table contacts={contacts} />
                 <Pagination {...paginationState} {...PaginationAction} />
             </Page>
