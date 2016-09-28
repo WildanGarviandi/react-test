@@ -108,6 +108,7 @@ const AddContact = React.createClass({
         let addedData = lodash.assign({}, this.state);
         delete addedData.showContactModal;
         this.props.AddContact(addedData, this.props.contactType);
+        this.props.contactClick();
     },
     render() {
         const stateOptions = lodash.chain(this.props.stateList)
@@ -261,6 +262,7 @@ const ManagePage = React.createClass({
     selectContact(key) {
         return (value) => {
             this.props.GetContactDetails(value.key, key);
+            this.setState({['activeContact']: key});
         }
     },
     submit() {
@@ -330,7 +332,7 @@ const ManagePage = React.createClass({
                         <div className={styles.orderDetailsInformation, styles.contactDetailsBox}>
                             <div className={styles.contactDetails}>
                                 <DropdownRow label={'Pickup'} options={contactOptions} handleSelect={this.selectContact('pickup')} />
-                                <AddContact AddContact={this.props.AddContact} stateList={this.props.stateList} contactType={'pickup'} />
+                                <AddContact contactClick={this.contactClick('pickup')} AddContact={this.props.AddContact} stateList={this.props.stateList} contactType={'pickup'} />
                                 { this.state.PickupName && this.state.activeContact !== 'pickup' &&
                                     <div className={styles.contactAddress} onClick={this.contactClick('pickup')}>
                                         Pickup : {`${this.state.PickupName} - ${this.state.PickupAddress}`}
@@ -348,7 +350,7 @@ const ManagePage = React.createClass({
                                     </div>
                                 }
                                 <DropdownRow label={'Dropoff'} options={contactOptions} handleSelect={this.selectContact('dropoff')} />
-                                <AddContact AddContact={this.props.AddContact} stateList={this.props.stateList} contactType={'dropoff'} />
+                                <AddContact contactClick={this.contactClick('dropoff')} AddContact={this.props.AddContact} stateList={this.props.stateList} contactType={'dropoff'} />
                                 { this.state.DropoffName && this.state.activeContact !== 'dropoff' &&
                                     <div className={styles.contactAddress}  onClick={this.contactClick('dropoff')}>
                                         Dropoff : {`${this.state.DropoffName} - ${this.state.DropoffAddress}`}
@@ -383,7 +385,7 @@ const ManagePage = React.createClass({
                                 { this.state.HasShipper &&
                                     <div>
                                         <DropdownRow label={'Shipper'} options={contactOptions} handleSelect={this.selectContact('shipper')} />
-                                        <AddContact AddContact={this.props.AddContact} stateList={this.props.stateList} contactType={'shipper'} />
+                                        <AddContact contactClick={this.contactClick('shipper')} AddContact={this.props.AddContact} stateList={this.props.stateList} contactType={'shipper'} />
                                     </div>
                                 }
                                 { this.state.HasShipper && this.state.ShipperName && this.state.activeContact !== 'shipper' &&
