@@ -238,12 +238,6 @@ function OrderHeader() {
             <CheckboxHeader />
             <Table.TextHeader />
             <Table.TextHeader text="AWB / Order ID" />
-            <Table.TextHeader text="Pickup" />
-            <Table.TextHeader text="Dropoff" />
-            <Table.TextHeader text="Driver" />
-            <Table.TextHeader text="Status" />
-            <Table.TextHeader text="Order Owner" />
-            <Table.TextHeader text="Is COD" />
             <th className={styles.th}>
                 Created Date
                 <CreatedDateASC glyphName='chevron-down' />
@@ -254,6 +248,12 @@ function OrderHeader() {
                 <DueTimeASC glyphName='chevron-down' />
                 <DueTimeDESC glyphName='chevron-up' />
             </th>
+            <Table.TextHeader text="Pickup" />
+            <Table.TextHeader text="Dropoff" />
+            <Table.TextHeader text="Driver" />
+            <Table.TextHeader text="Status" />
+            <Table.TextHeader text="Order Owner" />
+            <Table.TextHeader text="Is COD" />
         </tr>
     );
 }
@@ -264,14 +264,14 @@ function OrderFilter() {
             <Table.EmptyCell />
             <Table.EmptyCell />
             <UserOrderNumberFilter />
+            <CreatedDateFilter />
+            <DueDateFilter />
             <PickupFilter />
             <DropoffFilter />
             <DriverFilter />
             <StatusFilter />
             <OrderOwnerFilter />
             <CODFilter />
-            <CreatedDateFilter />
-            <DueDateFilter />
         </tr>
     )
 }
@@ -289,14 +289,14 @@ function OrderRow({order}) {
                 </Link>
             </td>
             <Table.TextCell text={`${order.UserOrderNumber} / ${order.WebOrderID}`} />
+            <Table.TextCell text={order.CreatedDate} />
+            <Table.TextCell text={order.DueTime} />
             <Table.TextCell text={order.PickupAddress.Address1} />
             <Table.TextCell text={order.DropoffAddress.Address1} />
             <Table.TextCell text={order.Driver} />
             <Table.TextCell text={order.Status} />
             <Table.TextCell text={order.OrderOwner} />
             <Table.TextCell text={order.IsCOD} />
-            <Table.TextCell text={order.CreatedDate} />
-            <Table.TextCell text={order.DueTime} />
         </tr>
     );
 }

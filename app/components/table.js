@@ -55,7 +55,7 @@ export function FilterStatusCell({value, handleSelect}) {
 
 export  function FilterDropdown({value, options, handleSelect}) {
     return (
-        <td className={styles.td}>
+        <td className={styles.dropdownColumn}>
             <DropdownWithState2 val={value} options={options} handleSelect={handleSelect} />
         </td>
     );
