@@ -284,6 +284,7 @@ const ManagePage = React.createClass({
                 delete this.state.ShipperCity;
                 delete this.state.ShipperState;
                 delete this.state.ShipperZip;
+                delete this.state.activeContact;
             }
             this.setState({['HasShipper']: !this.state.HasShipper});
         };        
@@ -328,8 +329,16 @@ const ManagePage = React.createClass({
                             <div className={styles.contactDetails}>
                                 <DropdownRow label={'Pickup'} options={contactOptions} handleSelect={this.selectContact('pickup')} />
                                 <AddContact AddContact={this.props.AddContact} stateList={this.props.stateList} contactType={'pickup'} />
-                                { this.state.PickupName &&
-                                    <div className={styles.contactAddress}  onClick={this.contactClick('pickup')}>
+                                { this.state.PickupName && this.state.activeContact !== 'pickup' &&
+                                    <div className={styles.contactAddress} onClick={this.contactClick('pickup')}>
+                                        Pickup : {`${this.state.PickupName} - ${this.state.PickupAddress}`}
+                                        <span className={styles.arrowRight}>
+                                            <Glyph name={'chevron-right'}/>
+                                        </span>
+                                    </div>
+                                }
+                                { this.state.PickupName && this.state.activeContact === 'pickup' &&
+                                    <div className={styles.activeContactButton} onClick={this.contactClick('pickup')}>
                                         Pickup : {`${this.state.PickupName} - ${this.state.PickupAddress}`}
                                         <span className={styles.arrowRight}>
                                             <Glyph name={'chevron-right'}/>
@@ -338,8 +347,16 @@ const ManagePage = React.createClass({
                                 }
                                 <DropdownRow label={'Dropoff'} options={contactOptions} handleSelect={this.selectContact('dropoff')} />
                                 <AddContact AddContact={this.props.AddContact} stateList={this.props.stateList} contactType={'dropoff'} />
-                                { this.state.DropoffName &&
+                                { this.state.DropoffName && this.state.activeContact !== 'dropoff' &&
                                     <div className={styles.contactAddress}  onClick={this.contactClick('dropoff')}>
+                                        Dropoff : {`${this.state.DropoffName} - ${this.state.DropoffAddress}`}
+                                        <span className={styles.arrowRight}>
+                                            <Glyph name={'chevron-right'}/>
+                                        </span>
+                                    </div>
+                                }
+                                { this.state.DropoffName && this.state.activeContact === 'dropoff' &&
+                                    <div className={styles.activeContactButton}  onClick={this.contactClick('dropoff')}>
                                         Dropoff : {`${this.state.DropoffName} - ${this.state.DropoffAddress}`}
                                         <span className={styles.arrowRight}>
                                             <Glyph name={'chevron-right'}/>
@@ -348,17 +365,35 @@ const ManagePage = React.createClass({
                                 }
                                 <div style={{clear: 'both'}}>
                                 </div>
-                                <button className={styles.contactAddress} onClick={this.hasShipper()}> 
-                                    Has Shipper? 
-                                </button>
+                                { !this.state.HasShipper &&
+                                    <span>
+                                        <button className={styles.contactAddress} onClick={this.hasShipper()}> 
+                                            Add Shipper
+                                        </button>
+                                        (only select if different than pickup)
+                                    </span>
+                                }
+                                { this.state.HasShipper &&
+                                    <button className={styles.removeShipperButton} onClick={this.hasShipper()}> 
+                                        Delete Shipper
+                                    </button>
+                                }
                                 { this.state.HasShipper &&
                                     <div>
                                         <DropdownRow label={'Shipper'} options={contactOptions} handleSelect={this.selectContact('shipper')} />
                                         <AddContact AddContact={this.props.AddContact} stateList={this.props.stateList} contactType={'shipper'} />
                                     </div>
                                 }
-                                { this.state.HasShipper && this.state.ShipperName &&
+                                { this.state.HasShipper && this.state.ShipperName && this.state.activeContact !== 'shipper' &&
                                     <div className={styles.contactAddress}  onClick={this.contactClick('shipper')}>
+                                        Shipper : {`${this.state.ShipperName} - ${this.state.ShipperAddress}`}
+                                        <span className={styles.arrowRight}>
+                                            <Glyph name={'chevron-right'}/>
+                                        </span>
+                                    </div>
+                                }
+                                { this.state.HasShipper && this.state.ShipperName && this.state.activeContact === 'shipper' &&
+                                    <div className={styles.activeContactButton}  onClick={this.contactClick('shipper')}>
                                         Shipper : {`${this.state.ShipperName} - ${this.state.ShipperAddress}`}
                                         <span className={styles.arrowRight}>
                                             <Glyph name={'chevron-right'}/>
@@ -369,6 +404,9 @@ const ManagePage = React.createClass({
                             <div className={styles.contactDetails}>
                                 { this.state.activeContact === 'shipper' &&
                                     <div>
+                                        <h4>
+                                            Address Details
+                                        </h4>
                                         <InputStaticRow label={'Shipper Name'} value={this.state.ShipperName} type={'text'} />
                                         <InputStaticRow label={'Shipper Mobile'} value={this.state.ShipperMobile} type={'text'} />
                                         <InputStaticRow label={'Shipper Email'} value={this.state.ShipperEmail} type={'text'} />
@@ -381,6 +419,9 @@ const ManagePage = React.createClass({
                                 }
                                 { this.state.activeContact === 'pickup' &&
                                     <div>
+                                        <h4>
+                                            Address Details
+                                        </h4>
                                         <InputStaticRow label={'Pickup Name'} value={this.state.PickupName} type={'text'} />
                                         <InputStaticRow label={'Pickup Mobile'} value={this.state.PickupMobile} type={'text'} />
                                         <InputStaticRow label={'Pickup Email'} value={this.state.PickupEmail} type={'text'} />
@@ -393,6 +434,9 @@ const ManagePage = React.createClass({
                                 }                                
                                 { this.state.activeContact === 'dropoff' &&
                                     <div>
+                                        <h4>
+                                            Address Details
+                                        </h4>
                                         <InputStaticRow label={'Dropoff Name'} value={this.state.DropoffName} type={'text'} />
                                         <InputStaticRow label={'Dropoff Mobile'} value={this.state.DropoffMobile} type={'text'} />
                                         <InputStaticRow label={'Dropoff Email'} value={this.state.DropoffEmail} type={'text'} />

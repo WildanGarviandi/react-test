@@ -79,8 +79,9 @@
 
 .contactDetails {
     float: left;
-    width: 40%;
+    width: 45%;
     margin-left: 15px;
+    margin-right: 25px;
 }
 
 .contactDetailsBox {
@@ -111,4 +112,28 @@
 
 .arrowRight {
     float: right;
+}
+
+.removeShipperButton {
+    background-color: #FF5A60;
+    color: #eee;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 8px;
+    clear: both;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    font-size: 12px;
+}
+
+.activeContactButton {
+    background-color: #4cc370;
+    color: #eee;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 8px;
+    clear: both;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    font-size: 12px;
 }
