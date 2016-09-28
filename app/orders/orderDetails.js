@@ -30,16 +30,35 @@ const InputStaticRow = React.createClass({
 });
 
 const InputStaticRowImage = React.createClass({
-  render() {
-    const {isEditing, label, value, onChange, type} = this.props;
-
-    return (
-      <div style={{clear: 'both'}}>
-        <span className={styles.itemLabel}>{label}</span>
-          <img src={value} className={styles.itemImage}>
-          </img>
-      </div>
-    );
+    getInitialState() {
+        return ({
+            showImageModal: false
+        });
+    },
+    openModal() {
+        this.setState({showImageModal: true});
+    },
+    closeModal() {
+        this.setState({showImageModal: false});
+    },
+    render() {
+        const {label, value} = this.props;
+        return (
+          <div style={{clear: 'both'}}>
+            <span className={styles.itemLabel}>{label}</span>
+              <img onClick={this.openModal} src={value} className={styles.itemImage} />
+              {
+                this.state.showImageModal &&
+                <div>
+                    <ModalContainer onClose={this.closeModal}>
+                      <ModalDialog onClose={this.closeModal}>
+                        <img src={value} />
+                      </ModalDialog>
+                    </ModalContainer>
+                </div>
+              }
+          </div>
+        );
   }
 });
 
