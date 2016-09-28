@@ -466,7 +466,7 @@ const ManagePage = React.createClass({
                             <InputRow label={'Package Length'} value={order.PackageLength} type={'number'} onChange={this.stateChange('PackageLength') } />
                         </div> 
                     </div>
-                    <div style={{clear: 'both'}}>
+                    <div style={{clear: 'both', float: 'right'}}>
                         { <ButtonWithLoading {...saveBtnProps} /> }
                     </div>
                 </Page>
