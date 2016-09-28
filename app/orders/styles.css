@@ -79,7 +79,8 @@
 
 .contactDetails {
     float: left;
-    width: 33.33%;
+    width: 40%;
+    margin-left: 15px;
 }
 
 .contactDetailsBox {
@@ -90,4 +91,24 @@
     clear: both;
     padding-bottom: 30px;
     margin-bottom: 20px;
+}
+
+.addContactButton {
+    margin-left: 5px;
+}
+
+.contactAddress {
+    background-color: #4cc38e;
+    color: #eee;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 8px;
+    clear: both;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    font-size: 12px;
+}
+
+.arrowRight {
+    float: right;
 }
