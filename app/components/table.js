@@ -85,3 +85,10 @@ export function FilterDateTimeRangeCell({startDate, endDate, onChange}) {
     );
 }
 
+export function SortCriteria({onClick, glyphName}) {
+    return (
+        <span onClick={onClick} className={styles.glyphRight}>
+            <Glyph name={glyphName} />
+        </span>
+    );
+}

@@ -157,6 +157,21 @@ function DateRangeDispatch(keyword) {
         }
     }
 }
+
+function HeaderDispatch(keyword, sortCriteria) {
+    return (dispatch) => {
+        return {
+            onClick: () => {
+                const newFilters = {
+                    ['sortBy']: keyword,
+                    ['sortCriteria']: sortCriteria
+                }
+                dispatch(OrderService.UpdateAndFetch(newFilters))
+            }
+        }
+    }
+}
+
 function ConnectBuilder(keyword) {
     return connect(StoreBuilder(keyword), DispatchBuilder(keyword));
 }
@@ -165,7 +180,7 @@ function ConnectDropdownBuilder(keyword) {
     return connect(DropdownStoreBuilder(keyword), DropdownDispatchBuilder(keyword));
 }
 
-const WebOrderIDFilter = ConnectBuilder('webOrderID')(Table.InputCell);
+const WebOrderIDFilter = ConnectBuilder('userOrderNumber')(Table.InputCell);
 const UserOrderNumberFilter = ConnectBuilder('userOrderNumber')(Table.InputCell);
 const PickupFilter = ConnectBuilder('pickup')(Table.InputCell);
 const DropoffFilter = ConnectBuilder('dropoff')(Table.InputCell);
@@ -176,6 +191,11 @@ const OrderOwnerFilter = ConnectDropdownBuilder('orderOwner')(Table.FilterDropdo
 const AssignmentFilter = ConnectDropdownBuilder('assignment')(Table.FilterDropdown);
 const CODFilter = ConnectDropdownBuilder('isCOD')(Table.FilterDropdown);
 const CreatedDateFilter = connect(DateRangeBuilder('Created'), DateRangeDispatch('Created'))(Table.FilterDateTimeRangeCell);
+const DueDateFilter = connect(DateRangeBuilder('DueDate'), DateRangeDispatch('DueDate'))(Table.FilterDateTimeRangeCell);
+const CreatedDateASC = connect(undefined, HeaderDispatch('CreatedDate', 'ASC'))(Table.SortCriteria);
+const CreatedDateDESC = connect(undefined, HeaderDispatch('CreatedDate', 'DESC'))(Table.SortCriteria);
+const DueTimeASC = connect(undefined, HeaderDispatch('DueTime', 'ASC'))(Table.SortCriteria);
+const DueTimeDESC = connect(undefined, HeaderDispatch('DueTime', 'DESC'))(Table.SortCriteria);
 const CheckboxHeader = connect(CheckboxHeaderStore, CheckboxHeaderDispatch)(Table.CheckBoxHeader);
 const CheckboxRow = connect(undefined, CheckboxDispatch)(Table.CheckBoxCell);
 
@@ -217,16 +237,23 @@ function OrderHeader() {
         <tr className={styles.tr}>
             <CheckboxHeader />
             <Table.TextHeader />
-            <Table.TextHeader text="User Order Number" />
-            <Table.TextHeader text="Web Order ID" />
+            <Table.TextHeader text="AWB / Order ID" />
             <Table.TextHeader text="Pickup" />
             <Table.TextHeader text="Dropoff" />
             <Table.TextHeader text="Driver" />
             <Table.TextHeader text="Status" />
             <Table.TextHeader text="Order Owner" />
             <Table.TextHeader text="Is COD" />
-            <Table.TextHeader text="Created Date" />
-            <Table.TextHeader text="Deadline" />
+            <th className={styles.th}>
+                Created Date
+                <CreatedDateASC glyphName='chevron-down' />
+                <CreatedDateDESC glyphName='chevron-up' />
+            </th>
+            <th className={styles.th}>
+                Deadline
+                <DueTimeASC glyphName='chevron-down' />
+                <DueTimeDESC glyphName='chevron-up' />
+            </th>
         </tr>
     );
 }
@@ -237,15 +264,14 @@ function OrderFilter() {
             <Table.EmptyCell />
             <Table.EmptyCell />
             <UserOrderNumberFilter />
-            <Table.EmptyCell />
             <PickupFilter />
             <DropoffFilter />
             <DriverFilter />
             <StatusFilter />
             <OrderOwnerFilter />
             <CODFilter />
-            <Table.EmptyCell />
-            <Table.EmptyCell />
+            <CreatedDateFilter />
+            <DueDateFilter />
         </tr>
     )
 }
@@ -256,14 +282,13 @@ function OrderRow({order}) {
             <CheckboxRow checked={order.IsChecked} orderID={order.UserOrderID} />
             <td className={stylesOrders.detailsTableColumn}>
                 <Link title='Edit' to={'/myorders/edit/' + order.UserOrderID} className={styles.linkMenu}>
-                    {<Glyph name={'search'}/>}
+                    {<Glyph name={'pencil'}/>}
                 </Link>
                 <Link title='View Details' to={'/myorders/details/' + order.UserOrderID} className={styles.linkMenu}>
                     {<Glyph name={'list-alt'}/>}
                 </Link>
             </td>
-            <Table.TextCell text={order.UserOrderNumber} />
-            <Table.TextCell text={order.WebOrderID} />
+            <Table.TextCell text={`${order.UserOrderNumber} / ${order.WebOrderID}`} />
             <Table.TextCell text={order.PickupAddress.Address1} />
             <Table.TextCell text={order.DropoffAddress.Address1} />
             <Table.TextCell text={order.Driver} />

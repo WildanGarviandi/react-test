@@ -148,3 +148,7 @@ tbody:last-child .tr:nth-of-type(odd) .td {
 .createdDate {
     width: 140px;
 }
+
+.glyphRight {
+    float: right;
+}
