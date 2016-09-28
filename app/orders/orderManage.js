@@ -284,7 +284,9 @@ const ManagePage = React.createClass({
                 delete this.state.ShipperCity;
                 delete this.state.ShipperState;
                 delete this.state.ShipperZip;
-                delete this.state.activeContact;
+                if (this.state.activeContact === 'shipper') {
+                    delete this.state.activeContact;  
+                } 
             }
             this.setState({['HasShipper']: !this.state.HasShipper});
         };        
