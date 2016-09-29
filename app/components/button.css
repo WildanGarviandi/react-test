@@ -36,3 +36,14 @@
   padding: 2px;
   display: inline-block;
 }
+
+.greenButton {
+    border: 0;
+    border-radius: 5px;
+    background-color: #4cc38e;
+    color: #fff;
+    cursor: pointer;
+    min-width: 120px;
+    min-height: 30px;
+    margin-left: 5px;
+}

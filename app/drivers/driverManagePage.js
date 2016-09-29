@@ -12,6 +12,7 @@ import DateTime from 'react-datetime';
 import moment from 'moment';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import {Link} from 'react-router';
+import stylesButton from '../components/button.css';
 
 const InputRow = React.createClass({
   render() {
@@ -79,7 +80,7 @@ const ManagePage = React.createClass({
         };
     },
     submit() {
-        const mandatoryFields = ['FirstName', 'LastName', 'PhoneNumber', 'Email', 'Location', 'StateID', 'CityID', 'ZipCode', 'PackageSizeID'];
+        const mandatoryFields = ['FirstName', 'LastName', 'PhoneNumber', 'Email', 'Location', 'StateID', 'ZipCode', 'PackageSizeID'];
         const filledFields = Object.keys(this.state);
         const unfilledFields = lodash.difference(mandatoryFields, filledFields);
         if (unfilledFields.length > 0 && !this.props.params.id) {
@@ -113,7 +114,7 @@ const ManagePage = React.createClass({
             textLoading: "Saving Changes",
             onClick: this.submit,
             styles: {
-                base: styles.weightSaveBtn,
+                base: stylesButton.greenButton,
             },
         };
 
@@ -138,7 +139,6 @@ const ManagePage = React.createClass({
                         <InputRow label={'Email'} value={driver.Email} type={'text'} onChange={this.stateChange('Email') } />
                         <InputRow label={'Location'} value={driver.Location} type={'text'} onChange={this.stateChange('Location') } />
                         <DropdownRow label={'State'} value={driver.State && driver.State.Name} options={stateOptions} handleSelect={this.stateChange('StateID')} />
-                        <DropdownRow label={'City'} value={driver.City && driver.City.Name} options={cityOptions} handleSelect={this.stateChange('CityID')} />
                         <InputRow label={'Zip Code'} value={driver.ZipCode} type={'text'} onChange={this.stateChange('ZipCode') } />
                         <DropdownRow label={'Vehicle'} value={vehicleValue && vehicleValue.value} options={vehicleOptions} handleSelect={this.stateChange('PackageSizeID')} />
                         <InputRow label={'Driving License ID'} value={driver.DrivingLicenseID} type={'text'} onChange={this.stateChange('DrivingLicenseID') } />

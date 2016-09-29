@@ -4,6 +4,7 @@ import FetchPost from '../modules/fetch/post';
 import ModalActions from '../modules/modals/actions';
 import {modalAction} from '../modules/modals/constants';
 import moment from 'moment';
+import config from '../../config.json';
 
 const Constants = {
     BASE: "stateList/defaultSet/",
@@ -44,7 +45,8 @@ export function FetchList() {
         const {token} = userLogged;
         let params = lodash.assign({}, {
             limit: limit,
-            offset: (currentPage - 1) * limit
+            offset: (currentPage - 1) * limit,
+            countryID: config.defaultCountryID
         })
 
         dispatch({type: modalAction.BACKDROP_SHOW});
