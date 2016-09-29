@@ -190,5 +190,6 @@ export function addContact(contact, contactType) {
 export function resetFilter() {
     return (dispatch) => {
         dispatch({type: Constants.RESET_FILTER});
+        dispatch(FetchList());
     }
 }
