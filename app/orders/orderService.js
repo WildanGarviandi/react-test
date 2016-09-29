@@ -199,9 +199,9 @@ export function FetchList() {
             params.endCreated = moment(filters.endCreated).format('MM-DD-YYYY');
         }
 
-        if (filters.startDueDate && filters.endDueDate) {
-            params.startDueDate = moment(filters.startDueDate).format('MM-DD-YYYY');
-            params.endDueDate = moment(filters.endDueDate).format('MM-DD-YYYY');
+        if (filters.startDueTime && filters.endDueTime) {
+            params.startDueTime = moment(filters.startDueTime).format('MM-DD-YYYY');
+            params.endDueTime = moment(filters.endDueTime).format('MM-DD-YYYY');
         }
 
         if (filters.isTrunkeyOrder === 'All') {

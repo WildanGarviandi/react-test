@@ -191,7 +191,7 @@ const OrderOwnerFilter = ConnectDropdownBuilder('orderOwner')(Table.FilterDropdo
 const AssignmentFilter = ConnectDropdownBuilder('assignment')(Table.FilterDropdown);
 const CODFilter = ConnectDropdownBuilder('isCOD')(Table.FilterDropdown);
 const CreatedDateFilter = connect(DateRangeBuilder('Created'), DateRangeDispatch('Created'))(Table.FilterDateTimeRangeCell);
-const DueDateFilter = connect(DateRangeBuilder('DueDate'), DateRangeDispatch('DueDate'))(Table.FilterDateTimeRangeCell);
+const DueTimeFilter = connect(DateRangeBuilder('DueTime'), DateRangeDispatch('DueTime'))(Table.FilterDateTimeRangeCell);
 const CreatedDateASC = connect(undefined, HeaderDispatch('CreatedDate', 'ASC'))(Table.SortCriteria);
 const CreatedDateDESC = connect(undefined, HeaderDispatch('CreatedDate', 'DESC'))(Table.SortCriteria);
 const DueTimeASC = connect(undefined, HeaderDispatch('DueTime', 'ASC'))(Table.SortCriteria);
@@ -265,7 +265,7 @@ function OrderFilter() {
             <Table.EmptyCell />
             <UserOrderNumberFilter />
             <CreatedDateFilter />
-            <DueDateFilter />
+            <DueTimeFilter />
             <PickupFilter />
             <DropoffFilter />
             <DriverFilter />
