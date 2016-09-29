@@ -294,7 +294,7 @@ const ManagePage = React.createClass({
         };        
     },
     render() {
-        const {isEditing, contactList, isFetching} = this.props;
+        const {isEditing, contactList, isFetching, isFetchingContact} = this.props;
         const Title = this.props.params.id ? "Edit Order" : "Add Order";
         const order = this.props.params.id ? this.props.order : {};
         const vehicleOptions = configValues.vehicle;
@@ -314,7 +314,7 @@ const ManagePage = React.createClass({
         };
 
 
-        if (isFetching) {
+        if (isFetching || isFetchingContact) {
             return (
                 <Page title={Title}>
                     <div>
@@ -331,7 +331,7 @@ const ManagePage = React.createClass({
                     { !isEditing &&
                         <div className={styles.orderDetailsInformation, styles.contactDetailsBox}>
                             <div className={styles.contactDetails}>
-                                <DropdownRow label={'Pickup'} options={contactOptions} handleSelect={this.selectContact('pickup')} />
+                                <DropdownRow label={'Pickup'} value={this.state.PickupName} options={contactOptions} handleSelect={this.selectContact('pickup')} />
                                 <AddContact contactClick={this.contactClick('pickup')} AddContact={this.props.AddContact} stateList={this.props.stateList} contactType={'pickup'} />
                                 { this.state.PickupName && this.state.activeContact !== 'pickup' &&
                                     <div className={styles.contactAddress} onClick={this.contactClick('pickup')}>
@@ -349,7 +349,7 @@ const ManagePage = React.createClass({
                                         </span>
                                     </div>
                                 }
-                                <DropdownRow label={'Dropoff'} options={contactOptions} handleSelect={this.selectContact('dropoff')} />
+                                <DropdownRow label={'Dropoff'} value={this.state.DropoffName} options={contactOptions} handleSelect={this.selectContact('dropoff')} />
                                 <AddContact contactClick={this.contactClick('dropoff')} AddContact={this.props.AddContact} stateList={this.props.stateList} contactType={'dropoff'} />
                                 { this.state.DropoffName && this.state.activeContact !== 'dropoff' &&
                                     <div className={styles.contactAddress}  onClick={this.contactClick('dropoff')}>
@@ -384,7 +384,7 @@ const ManagePage = React.createClass({
                                 }
                                 { this.state.HasShipper &&
                                     <div>
-                                        <DropdownRow label={'Shipper'} options={contactOptions} handleSelect={this.selectContact('shipper')} />
+                                        <DropdownRow label={'Shipper'} value={this.state.ShipperName} options={contactOptions} handleSelect={this.selectContact('shipper')} />
                                         <AddContact contactClick={this.contactClick('shipper')} AddContact={this.props.AddContact} stateList={this.props.stateList} contactType={'shipper'} />
                                     </div>
                                 }
@@ -529,7 +529,7 @@ function StoreToOrdersPage(store) {
     const {states} = store.app.stateList;
     let contactList = {}; 
     contacts.forEach(function(c) {
-        contactList[c.FirstName + ' ' + c.LastName] = c.ContactID;
+        contactList[`${c.FirstName} ${c.LastName}`] = c.ContactID;
     });
     let stateList = {}; 
     states.forEach(function(state) {
@@ -537,14 +537,15 @@ function StoreToOrdersPage(store) {
     });
 
     return {
-        contactList,
-        stateList,
-        order,
-        shipper, 
-        pickup, 
-        dropoff,
-        isEditing,
-        isFetching
+        contactList: contactList,
+        stateList: stateList,
+        order: order,
+        shipper: shipper, 
+        pickup: pickup, 
+        dropoff: dropoff,
+        isEditing: isEditing,
+        isFetching: isFetching,
+        isFetchingContact: store.app.myContacts.isFetching
     }
 }
 

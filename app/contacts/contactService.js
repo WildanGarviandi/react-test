@@ -9,6 +9,8 @@ const Constants = {
     BASE: "mycontact/defaultSet/",
     SET_CONTACTS: "mycontact/contacts/set",
     CONTACT_DETAILS_SET: "mycontact/details/set",
+    FETCHING_PAGE: "mycontact/contacts/fetching",
+    FETCHING_PAGE_STOP: "mycontact/contacts/fetchingStop",
 }
 
 const initialStore = {
@@ -18,7 +20,8 @@ const initialStore = {
     contact: {},
     shipper: {},
     pickup: {},
-    dropoff: {}
+    dropoff: {},
+    isFetching: false
 }
 
 export default function Reducer(store = initialStore, action) {
@@ -33,6 +36,19 @@ export default function Reducer(store = initialStore, action) {
             return lodash.assign({}, store, {
                 total: action.total,
                 contacts: action.contacts,
+            });
+        }
+
+        case Constants.FETCHING_PAGE: {
+            return lodash.assign({}, store, {
+                isFetching: true
+            });
+        }
+
+        case Constants.FETCHING_PAGE_STOP: {
+            return lodash.assign({}, store, {
+                order: {},
+                isFetching: false
             });
         }
 
@@ -110,6 +126,7 @@ export function fetchDetails(id, contactType) {
         const {token} = userLogged;
 
         dispatch({type: modalAction.BACKDROP_SHOW});
+        dispatch({type: Constants.FETCHING_PAGE});
         FetchGet('/contact/' + id, token).then(function(response) {
             if(!response.ok) {
                 return response.json().then(({error}) => {
@@ -124,6 +141,7 @@ export function fetchDetails(id, contactType) {
                     contactType: contactType
                 });
                 dispatch({type: modalAction.BACKDROP_HIDE});
+                dispatch({type: Constants.FETCHING_PAGE_STOP});
             });
         }).catch((e) => {
             const message = (e && e.message) ? e.message : "Failed to fetch contact details";
