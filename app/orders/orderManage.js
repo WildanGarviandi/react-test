@@ -174,6 +174,7 @@ const ManagePage = React.createClass({
             this.props.GetDetails();
         } else {
             this.props.ResetManageOrder();
+            this.props.ResetFilter();
         }
     },
     stateChange(key) {
@@ -562,6 +563,9 @@ function mapDispatchToOrders(dispatch, ownProps) {
     },
     AddContact: (contact, contactType) => {
       dispatch(ContactService.addContact(contact, contactType));
+    },
+    ResetFilter: () => {
+      dispatch(ContactService.resetFilter());
     },
     AddOrder: (order) => {
       dispatch(OrderService.addOrder(order));

@@ -11,6 +11,7 @@ const Constants = {
     CONTACT_DETAILS_SET: "mycontact/details/set",
     FETCHING_PAGE: "mycontact/contacts/fetching",
     FETCHING_PAGE_STOP: "mycontact/contacts/fetchingStop",
+    RESET_FILTER: "mycontact/contacts/reset"
 }
 
 const initialStore = {
@@ -21,6 +22,7 @@ const initialStore = {
     shipper: {},
     pickup: {},
     dropoff: {},
+    filters: {},
     isFetching: false
 }
 
@@ -78,6 +80,12 @@ export default function Reducer(store = initialStore, action) {
                     });
                 }
             }
+        }
+
+        case Constants.RESET_FILTER: {
+            return lodash.assign({}, store, {
+                filters: {}
+            });
         }
 
         default: {
@@ -176,5 +184,11 @@ export function addContact(contact, contactType) {
             dispatch({type: modalAction.BACKDROP_HIDE});
             dispatch(ModalActions.addMessage('Network error'));
         });
+    }
+}
+
+export function resetFilter() {
+    return (dispatch) => {
+        dispatch({type: Constants.RESET_FILTER});
     }
 }
