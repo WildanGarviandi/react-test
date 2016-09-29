@@ -45,9 +45,12 @@ export function FetchList() {
         const {token} = userLogged;
         let params = lodash.assign({}, {
             limit: limit,
-            offset: (currentPage - 1) * limit,
-            countryID: config.defaultCountryID
-        })
+            offset: (currentPage - 1) * limit
+        });
+
+        if (config.defaultCountryID) {
+            params.countryID = config.defaultCountryID;
+        }
 
         dispatch({type: modalAction.BACKDROP_SHOW});
         FetchGet('/state', token, params).then((response) => {

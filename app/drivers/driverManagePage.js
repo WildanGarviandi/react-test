@@ -81,6 +81,9 @@ const ManagePage = React.createClass({
     },
     submit() {
         const mandatoryFields = ['FirstName', 'LastName', 'PhoneNumber', 'Email', 'Location', 'StateID', 'ZipCode', 'PackageSizeID'];
+        if (!this.props.params.id) {
+            mandatoryFields.push('Password');
+        }
         const filledFields = Object.keys(this.state);
         const unfilledFields = lodash.difference(mandatoryFields, filledFields);
         if (unfilledFields.length > 0 && !this.props.params.id) {
