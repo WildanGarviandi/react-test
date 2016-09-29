@@ -197,8 +197,7 @@ const ManagePage = React.createClass({
                 PickupState: nextProps['pickup'].State && nextProps['pickup'].State.Name,
                 PickupZip: nextProps['pickup'].ZipCode,
                 PickupMobile: nextProps['pickup'].Phone,
-                PickupAddress: nextProps['pickup'].Street,
-                PickupAddressDetail: nextProps['pickup'].Street
+                PickupAddress: nextProps['pickup'].Street
             });
         }
 
@@ -210,8 +209,7 @@ const ManagePage = React.createClass({
                 DropoffState: nextProps['dropoff'].State && nextProps['dropoff'].State.Name,
                 DropoffZip: nextProps['dropoff'].ZipCode,
                 DropoffMobile: nextProps['dropoff'].Phone,
-                DropoffAddress: nextProps['dropoff'].Street,
-                DropoffAddressDetail: nextProps['dropoff'].Street
+                DropoffAddress: nextProps['dropoff'].Street
             });
         } 
 
@@ -223,8 +221,7 @@ const ManagePage = React.createClass({
                 ShipperState: nextProps['shipper'].State && nextProps['shipper'].State.Name,
                 ShipperZip: nextProps['shipper'].ZipCode,
                 ShipperMobile: nextProps['shipper'].Phone,
-                ShipperAddress: nextProps['shipper'].Street,
-                ShipperAddressDetail: nextProps['shipper'].Street
+                ShipperAddress: nextProps['shipper'].Street
             })
         }
 
@@ -416,7 +413,6 @@ const ManagePage = React.createClass({
                                         <InputStaticRow label={'Shipper Mobile'} value={this.state.ShipperMobile} type={'text'} />
                                         <InputStaticRow label={'Shipper Email'} value={this.state.ShipperEmail} type={'text'} />
                                         <InputStaticRow label={'Shipper Address'} value={this.state.ShipperAddress} type={'text'} />
-                                        <InputStaticRow label={'Shipper Address Detail'} value={this.state.ShipperAddressDetail} type={'text'} />
                                         <InputStaticRow label={'Shipper City'} value={this.state.ShipperCity} type={'text'} />
                                         <InputStaticRow label={'Shipper State'} value={this.state.ShipperState} type={'text'} />
                                         <InputStaticRow label={'Shipper Zip'} value={this.state.ShipperZip} type={'text'} />
@@ -431,7 +427,6 @@ const ManagePage = React.createClass({
                                         <InputStaticRow label={'Pickup Mobile'} value={this.state.PickupMobile} type={'text'} />
                                         <InputStaticRow label={'Pickup Email'} value={this.state.PickupEmail} type={'text'} />
                                         <InputStaticRow label={'Pickup Address'} value={this.state.PickupAddress} type={'text'} />
-                                        <InputStaticRow label={'Pickup Address Detail'} value={this.state.PickupAddressDetail} type={'text'} />
                                         <InputStaticRow label={'Pickup City'} value={this.state.PickupCity} type={'text'} />
                                         <InputStaticRow label={'Pickup State'} value={this.state.PickupState} type={'text'} />
                                         <InputStaticRow label={'Pickup Zip'} value={this.state.PickupZip} type={'text'} />
@@ -446,7 +441,6 @@ const ManagePage = React.createClass({
                                         <InputStaticRow label={'Dropoff Mobile'} value={this.state.DropoffMobile} type={'text'} />
                                         <InputStaticRow label={'Dropoff Email'} value={this.state.DropoffEmail} type={'text'} />
                                         <InputStaticRow label={'Dropoff Address'} value={this.state.DropoffAddress} type={'text'} />
-                                        <InputStaticRow label={'Dropoff Address Detail'} value={this.state.DropoffAddressDetail} type={'text'} />
                                         <InputStaticRow label={'Dropoff City'} value={this.state.DropoffCity} type={'text'} />
                                         <InputStaticRow label={'Dropoff State'} value={this.state.DropoffState} type={'text'}  />
                                         <InputStaticRow label={'Dropoff Zip'} value={this.state.DropoffZip} type={'text'} />
