@@ -1,0 +1,39 @@
+.panel {
+    border: solid 1px #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+.panel .title {
+    background-color: #222D32;
+    color: #f2f2f2;
+    cursor: pointer;
+    margin: 0;
+    padding: 10px;
+}
+.subtitle {
+    text-indent: 10px;
+}
+.body {
+    background-color: #f2f2f2;
+}
+.row {
+    display: block;
+    padding: 10px;
+}
+.row:nth-of-type(odd) {
+    background-color: #f9f9f9;
+}
+.label {
+    display: inline-block;
+    position: absolute;
+    width: 150px;
+}
+.value {
+    display: inline-block;
+    margin-left: 150px;
+}
+.detail {
+    border: solid 1px #eee;
+    margin-bottom: 10px;
+}

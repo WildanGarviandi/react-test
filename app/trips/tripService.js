@@ -9,6 +9,8 @@ const Constants = {
     SET_TRIPS: "mytrip/trips/set",
     TOGGLE_SELECT_ORDER: "mytrip/trips/select",
     TOGGLE_SELECT_ALL: "mytrip/trips/selectAll",
+    TRIP_DETAILS_SET: "mytrip/trips/details",
+    FETCHING_PAGE: "mytrip/trips/fetchingStart"
 }
 
 const initialStore = {
@@ -19,6 +21,8 @@ const initialStore = {
     total: 0,
     trips: [],
     selectedAll: false,
+    isFetching: false,
+    trip: {}
 }
 
 export default function Reducer(store = initialStore, action) {
@@ -60,6 +64,26 @@ export default function Reducer(store = initialStore, action) {
                 selectedAll: !selectedAll,
                 trips: newTrips,
             })
+        }
+
+        case Constants.FETCHING_PAGE: {
+            return lodash.assign({}, store, {
+                isFetching: true
+            });
+        }
+
+        case Constants.TRIP_DETAILS_SET: {
+            return lodash.assign({}, store, {
+                trip: action.trip,
+                isFetching: false
+            });
+        }
+
+        case Constants.FETCHING_PAGE_STOP: {
+            return lodash.assign({}, store, {
+                trip: {},
+                isFetching: false
+            });
         }
 
         default: {
@@ -175,6 +199,38 @@ export function FetchList() {
         }).catch((e) => {
             dispatch({type: modalAction.BACKDROP_HIDE});
             dispatch(ModalActions.addMessage(e.message));
+        });
+    }
+}
+
+export function fetchDetails(id) {
+    return (dispatch, getState) => {
+        const {userLogged} = getState().app;
+        const {token} = userLogged;
+
+        console.log('id', id)
+
+        dispatch({type: modalAction.BACKDROP_SHOW});
+        dispatch({type: Constants.FETCHING_PAGE});
+        FetchGet('/trip/' + id, token).then(function(response) {
+            if(!response.ok) {
+                return response.json().then(({error}) => {
+                    throw error;
+                });
+            }
+
+            response.json().then(function({data}) {
+                dispatch({
+                    type: Constants.TRIP_DETAILS_SET,
+                    trip: data,
+                });
+                dispatch({type: modalAction.BACKDROP_HIDE});
+            });
+        }).catch((e) => {
+            window.history.back();
+            const message = (e && e.message) ? e.message : "Failed to fetch trip details";
+            dispatch(ModalActions.addMessage(message));
+            dispatch({type: modalAction.BACKDROP_HIDE});
         });
     }
 }

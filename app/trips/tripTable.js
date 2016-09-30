@@ -7,6 +7,7 @@ import * as Table from '../components/table';
 import styles from '../components/table.css';
 import * as TripService from './tripService';
 import OrderStatusSelector from '../modules/orderStatus/selector';
+import {Glyph} from '../views/base';
 
 function StoreBuilder(keyword) {
     return (store) => {
@@ -142,6 +143,7 @@ function TripHeader() {
     return (
         <tr className={styles.tr}>
             <CheckboxHeader />
+            <Table.TextHeader />
             <Table.TextHeader text="Container Number" />
             <Table.TextHeader text="Driver" />
             <Table.TextHeader text="Merchant" />
@@ -188,6 +190,7 @@ function TripFilter() {
     return (
         <tr className={styles.tr}>
             <Table.EmptyCell />
+            <Table.EmptyCell />
             <ContainerNumberFilter />
             <DriverFilter />
             <MerchantFilter />
@@ -203,13 +206,14 @@ function TripRow({trip}) {
     return (
         <tr className={styles.tr}>
             <CheckboxRow checked={trip.IsChecked} tripID={trip.TripID} />
+            <Table.LinkCell to={'/mytrips/detail/' + trip.TripID} text={<Glyph name={'search'}/>} />
             <Table.TextCell text={trip.ContainerNumber} />
             <Table.TextCell text={trip.Driver && trip.TripDriver } />
             <Table.TextCell text={trip.TripMerchant } />
             <Table.TextCell text={trip.PickupAddress && trip.PickupAddress.Address1} />
             <Table.TextCell text={trip.DropoffAddress && trip.DropoffAddress.Address1} />
             <Table.TextCell text={trip.OrderStatus && trip.OrderStatus.OrderStatus} />
-            <Table.TextCell text={moment(trip.CreatedDate).format('MM/DD/YYYY h:mm:ss a')} />
+            <Table.TextCell text={moment(trip.CreatedDate).format('MM/DD/YYYY h:mm:ss A')} />
         </tr>
     );
 }
