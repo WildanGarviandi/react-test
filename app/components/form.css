@@ -29,7 +29,7 @@
   right: 0;
   border: solid 1px #ccc;
   border-radius: 3px;
-  z-index: 10;
+  z-index: 1;
   max-height: 143px; /* this height value related to scroll behaviour of dropdown */
   overflow-x: hidden;
   overflow-y: scroll;

@@ -181,6 +181,13 @@ const OrderPage = React.createClass({
               }
               </div>
                 <Pagination {...paginationState} {...PaginationAction} />
+                <p>
+                    <ButtonWithLoading {...assignOrderButton} />
+                    <Link to={'/myorders/add'}>
+                        <button className={stylesButton.greenButton}>Add Orders</button> 
+                    </Link>
+                    <Form.DropdownWithState options={drivers} handleSelect={this.selectDriver} />
+                </p>
                 <Table orders={orders} />
                 <Pagination {...paginationState} {...PaginationAction} />
             </Page>
