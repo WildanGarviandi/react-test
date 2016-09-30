@@ -141,15 +141,15 @@ const AddContact = React.createClass({
                 <ModalContainer onClose={this.closeModal}>
                   <ModalDialog onClose={this.closeModal}>
                     <h1>Add New Contact</h1>
-                    <InputRow label={'FirstName'} type={'text'} onChange={this.stateChange('FirstName') } />
-                    <InputRow label={'LastName'} type={'text'} onChange={this.stateChange('LastName') } />
+                    <InputRow label={'First Name'} type={'text'} onChange={this.stateChange('FirstName') } />
+                    <InputRow label={'Last Name'} type={'text'} onChange={this.stateChange('LastName') } />
                     <InputRow label={'Phone'} type={'text'} onChange={this.stateChange('Phone') } />
                     <InputRow label={'Email'} type={'text'} onChange={this.stateChange('Email') } />
-                    <InputRow label={'Street'} type={'text'} onChange={this.stateChange('Street') } />
+                    <InputRow label={'Address'} type={'text'} onChange={this.stateChange('Street') } />
                     <DropdownRow label={'State'} options={stateOptions} handleSelect={this.stateChange('StateID')} />
                     <InputRow label={'City'} type={'text'} onChange={this.stateChange('City') } />
-                    <InputRow label={'ZipCode'} type={'text'} onChange={this.stateChange('ZipCode') } />
-                    <InputRow label={'CompanyName'} type={'text'} onChange={this.stateChange('CompanyName') } />
+                    <InputRow label={'Zip Code'} type={'text'} onChange={this.stateChange('ZipCode') } />
+                    <InputRow label={'Company Name'} type={'text'} onChange={this.stateChange('CompanyName') } />
                     <div style={{clear: 'both'}}>
                         { <ButtonWithLoading {...saveBtnContact} /> }
                     </div>
@@ -312,7 +312,7 @@ const ManagePage = React.createClass({
         };
 
 
-        if (isFetching || isFetchingContact) {
+        if (isFetching) {
             return (
                 <Page title={Title}>
                     <div>
@@ -326,7 +326,7 @@ const ManagePage = React.createClass({
                     <div className={styles.orderDetailsHeader}>
                         Contact Information
                     </div>
-                    { !isEditing &&
+                    { !isEditing && !isFetchingContact &&
                         <div className={styles.orderDetailsInformation, styles.contactDetailsBox}>
                             <div className={styles.contactDetails}>
                                 <DropdownRow label={'Pickup'} value={this.state.PickupName} options={contactOptions} handleSelect={this.selectContact('pickup')} />
