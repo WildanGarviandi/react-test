@@ -54,7 +54,7 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact}) => {
       <h4 className={styles.compactTitle}>EHub</h4>
       <ul className={styles.menuList}>
         <Accordion initialState={'collapsed'}>
-          <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[0,1,4]} iconName={'list-alt'} iconTitle={'Inbound'}>
+          <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[0,1]} iconName={'list-alt'} iconTitle={'Inbound'}>
             <MenuItem active={activeMenuIdx == 0} to={'/orders/pickup'}>
               <Glyph className={styles.menuGlyph} name={'alert'}/>
               <span>Pickup Orders</span>
@@ -66,7 +66,7 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact}) => {
           </AccordionMenu>
         </Accordion>
         <Accordion initialState={'collapsed'}>
-          <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[2,3,5]} iconName={'barcode'} iconTitle={'Outbound'}>
+          <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[2,3]} iconName={'barcode'} iconTitle={'Outbound'}>
             <MenuItem active={activeMenuIdx == 2} to={'/orders/received'}>
               <Glyph className={styles.menuGlyph} name={'transfer'}/>
               <span>Received Orders</span>
@@ -77,6 +77,10 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact}) => {
             </MenuItem>
           </AccordionMenu>
         </Accordion>
+        <MenuItem active={activeMenuIdx == 4} to={'/history'}>
+          <Glyph className={styles.menuGlyph} name={'folder-open'}/>
+          <span>Trips History</span>
+        </MenuItem>
         <MenuItem active={activeMenuIdx == 5} to={'/mytrips'}>
            <Glyph className={styles.menuGlyph} name={'tent'}/>
            <span>My Trips</span>
@@ -102,7 +106,7 @@ const DashboardContent = ({children}) => {
   return (<div className={styles.content}>{children}</div>);
 }
 
-const menuPaths = ['/orders/pickup', '/trips/inbound', '/orders/received', '/trips/outbound'];
+const menuPaths = ['/orders/pickup', '/trips/inbound', '/orders/received', '/trips/outbound', '/history'];
 function GetActiveMenuIdx(path) {
   let fpath = _.find(menuPaths, (menu) => (path.indexOf(menu) > -1));
   let idx = menuPaths.indexOf(fpath);

@@ -69,7 +69,7 @@ export function LinkCell({onClick, text, to}) {
   return <td><Link to={to} className={styles.link}>{text}</Link></td>;
 }
 
-export function FilterDateTimeRangeCell({startDate, endDate, onChange}) {
+export function FilterDateTimeRangeCell({startDate, endDate, onChange, onInputKeyDown}) {
     const startDateFormatted = moment(startDate).format('MM-DD-YYYY');
     const endDateFormatted = moment(endDate).format('MM-DD-YYYY');
     let dateValue = startDateFormatted + ' - ' + endDateFormatted;
@@ -79,7 +79,7 @@ export function FilterDateTimeRangeCell({startDate, endDate, onChange}) {
     return (
         <td className={styles.td}>
             <DateRangePicker startDate={startDateFormatted} endDate={endDateFormatted} onApply={onChange} parentEl="#bootstrapPlaceholder" >
-                <input className={styles.searchInput + " " + styles.createdDate} type="text" value={dateValue} />
+                <input className={styles.searchInput + " " + styles.createdDate} type="text" value={dateValue} onKeyDown={onInputKeyDown} />
             </DateRangePicker>
         </td>
     );

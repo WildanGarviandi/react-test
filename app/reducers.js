@@ -20,6 +20,7 @@ import myTrips from './trips/tripService';
 import myOrders from './orders/orderService';
 import myContacts from './contacts/contactService';
 import stateList from './states/stateService';
+import tripsHistory from './tripHistory/service';
 
 export default combineReducers({ 
   userLogged: authReducers,
@@ -42,5 +43,6 @@ export default combineReducers({
   myTrips,
   myOrders,
   myContacts,
-  stateList
+  stateList,
+  tripsHistory
 });

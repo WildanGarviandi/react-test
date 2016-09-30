@@ -1,9 +1,21 @@
+:global(.createdDate) :global(.rdt) {
+    width: 100%;
+}
+
+:global(.createdDate) :global(.rdtPicker) {
+  right: 0;
+  left: auto;
+}
+
 .table {
     border-image-source: initial;
     border-image-slice: initial;
     border-image-width: initial;
     border-image-outset: initial;
     border-image-repeat: initial;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(221, 221, 221);
 
     width: 100%;
     max-width: 100%;
@@ -19,6 +31,7 @@
 .th {
     border-top: 0;
     border-bottom-width: 2px;
+    border: solid 1px #ddd;
     background-color: #1A2226;
     vertical-align: middle;
     text-align: left;
@@ -33,10 +46,16 @@
 .tr {
     cursor: pointer;
     color: #333;
+    border: solid 1px #ddd;
 }
 
-tbody:last-child .tr:nth-of-type(odd) .td {
+.tr:nth-of-type(odd) .td {
     background-color: #f9f9f9;
+}
+
+.tr:hover .td {
+    background-color: #222D32;
+    color: #fff;
 }
 
 .tr:nth-of-type(odd) .search {
@@ -73,6 +92,7 @@ tbody:last-child .tr:nth-of-type(odd) .td {
     text-align: right;
 }
 
+:global(.createdDate) input,
 .searchInput {
     display: block;
     left: 0;
@@ -85,11 +105,6 @@ tbody:last-child .tr:nth-of-type(odd) .td {
 
     width: 100%;
     height: 28px;
-}
-
-.tr input {
-    border-radius: 3px;
-    border: solid 1px #ccc;
 }
 
 .checkbox {
@@ -119,49 +134,4 @@ tbody:last-child .tr:nth-of-type(odd) .td {
     display: inline-block;
     padding: 3px;
     margin-right: 3px;
-}
-
-.table .td:first-child {
-    border-left: solid 1px #ccc;
-}
-
-.table .td:last-child {
-    border-right: solid 1px #ccc;
-}
-
-.table tbody:last-child .tr:last-child {
-    border-bottom: solid 1px #ccc;
-}
-
-.table .th:first-child {
-    border-top-left-radius: 5px;
-}
-
-.table .th:last-child {
-    border-top-right-radius: 5px;
-}
-
-.link {
-    color: #33c;
-}
-
-.createdDate {
-    width: 100px;
-}
-
-.glyphRight {
-    float: right;
-}
-
-.dropdownColumn {
-    min-width: 80px;
-    height: 20px;
-    font-size: 12px;
-    padding: 8px;
-    width: 140px;
-}
-
-.linkMenu {
-    color: #33c;
-    padding: 3px;
 }
