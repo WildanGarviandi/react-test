@@ -279,8 +279,10 @@ export function addDriver(driverData) {
                 window.location.href='/mydrivers/edit/' + data.driver.UserID;
             });
         } else {
-            dispatch({type: modalAction.BACKDROP_HIDE});
-            dispatch(ModalActions.addMessage('Failed to add driver'));
+            response.json().then(function({error}) {
+                dispatch(ModalActions.addMessage('Failed to add driver: ' + error.message));
+                dispatch({type: modalAction.BACKDROP_HIDE});
+            });
         }
         }).catch(() => { 
             dispatch({type: modalAction.BACKDROP_HIDE});
