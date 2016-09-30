@@ -12,6 +12,7 @@ import moment from 'moment';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import {Link} from 'react-router';
 import Accordion from '../views/base/accordion';
+import {Glyph} from '../views/base';
 
 const InputStaticRow = React.createClass({
   render() {
@@ -29,16 +30,35 @@ const InputStaticRow = React.createClass({
 });
 
 const InputStaticRowImage = React.createClass({
-  render() {
-    const {isEditing, label, value, onChange, type} = this.props;
-
-    return (
-      <div style={{clear: 'both'}}>
-        <span className={styles.itemLabel}>{label}</span>
-          <img src={value} className={styles.itemImage}>
-          </img>
-      </div>
-    );
+    getInitialState() {
+        return ({
+            showImageModal: false
+        });
+    },
+    openModal() {
+        this.setState({showImageModal: true});
+    },
+    closeModal() {
+        this.setState({showImageModal: false});
+    },
+    render() {
+        const {label, value} = this.props;
+        return (
+          <div style={{clear: 'both'}}>
+            <span className={styles.itemLabel}>{label}</span>
+              <img onClick={this.openModal} src={value} className={styles.itemImage} />
+              {
+                this.state.showImageModal &&
+                <div>
+                    <ModalContainer onClose={this.closeModal}>
+                      <ModalDialog onClose={this.closeModal}>
+                        <img src={value} />
+                      </ModalDialog>
+                    </ModalContainer>
+                </div>
+              }
+          </div>
+        );
   }
 });
 
@@ -48,7 +68,7 @@ const FailedAttempt = React.createClass({
             return (
                 <div>
                     <div className={styles.attemptInformationHeader}>
-                        Failed Attempt {idx}
+                        Failed Attempt {idx+1}
                     </div>
                     <InputStaticRow label={'Driver'} value={attempt.Driver && `${attempt.Driver.FirstName} ${attempt.Driver.LastName}`} />
                     <InputStaticRow label={'Reason'} value={attempt.ReasonReturn && `${attempt.ReasonReturn.ReasonName}`} />
@@ -61,11 +81,34 @@ const FailedAttempt = React.createClass({
     }
 });
 
+const Returned = React.createClass({
+    render: function() {
+        var returnedComponents = this.props.returneds.map(function(returned, idx) {
+            return (
+                <div>
+                    <div className={styles.attemptInformationHeader}>
+                        Returned {idx+1}
+                    </div>
+                    <InputStaticRow label={'Recipient Name'} value={returned.RecipientName} />
+                    <InputStaticRow label={'Date'} value={moment(returned.CreatedDate).format('MM/DD/YYYY hh:mm')} />
+                    <InputStaticRowImage label={'Proof of Return'} value={returned.ProofOfReturnURL} />
+                    <InputStaticRowImage label={'Signature'} value={returned.SignatureURL} />
+                </div>
+            );
+        });
+        return <div>{returnedComponents}</div>;
+    }
+});
+
 const DetailPage = React.createClass({
     getInitialState() {
         return ({
             showPOD: false,
-            showAttempt: false
+            iconPOD: 'chevron-down',
+            showAttempt: false,
+            iconAttempt: 'chevron-down',
+            showReturned: false,
+            iconReturned: 'chevron-down',
         })
     },
     componentWillMount() {
@@ -73,9 +116,15 @@ const DetailPage = React.createClass({
     },
     changePODVisible() {
         this.setState({showPOD: !this.state.showPOD});
+        this.setState({iconPOD: this.state.iconPOD === 'chevron-down' ? 'chevron-up' : 'chevron-down'});
+    },
+    changeReturnedVisible() {
+        this.setState({showReturned: !this.state.showReturned});
+        this.setState({iconReturned: this.state.iconReturned === 'chevron-down' ? 'chevron-up' : 'chevron-down'});
     },
     changeAttemptVisible() {
         this.setState({showAttempt: !this.state.showAttempt});
+        this.setState({iconAttempt: this.state.iconAttempt === 'chevron-down' ? 'chevron-up' : 'chevron-down'});
     },
     render() {
         const {order, isFetching} = this.props;
@@ -134,6 +183,9 @@ const DetailPage = React.createClass({
                         <div>
                             <div onClick={this.changePODVisible} className={styles.orderDetailsHeader}>
                                 POD Information
+                                <span className={styles.arrowDown}>
+                                    <Glyph name={this.state.iconPOD}/>
+                                </span>
                             </div>
                             {   this.state.showPOD &&
                                 <div className={styles.orderDetailsFullWidth}>
@@ -147,10 +199,30 @@ const DetailPage = React.createClass({
                             }
                         </div> 
                     }
+                    {  order.UserOrderReturneds && order.UserOrderReturneds.length > 0 &&
+                        <div>
+                            <div onClick={this.changeReturnedVisible} className={styles.orderDetailsHeader}>
+                                POD Returned
+                                <span className={styles.arrowDown}>
+                                    <Glyph name={this.state.iconReturned}/>
+                                </span>
+                            </div>
+                            {   this.state.showReturned &&
+                                <div className={styles.orderDetailsFullWidth}>
+                                    <div className={styles.orderDetailsInformation}>
+                                        <Returned returneds={order.UserOrderReturneds} />
+                                    </div>
+                                </div>
+                            }
+                        </div> 
+                    }
                     {  order.UserOrderAttempts && order.UserOrderAttempts.length > 0 &&
                         <div>
                             <div onClick={this.changeAttemptVisible} className={styles.orderDetailsHeader}>
                                 Attempt Information
+                                <span className={styles.arrowDown}>
+                                    <Glyph name={this.state.iconAttempt}/>
+                                </span>
                             </div>
                             {   this.state.showAttempt &&
                                 <div className={styles.orderDetailsFullWidth}>

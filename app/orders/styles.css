@@ -183,3 +183,7 @@
     position: relative;
     left: -13px;
 }
+
+.arrowDown {
+    float: left;
+}
