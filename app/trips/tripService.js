@@ -1,8 +1,10 @@
 import lodash from 'lodash';
 import FetchGet from '../modules/fetch/get';
+import FetchPost from '../modules/fetch/post';
 import ModalActions from '../modules/modals/actions';
 import {modalAction} from '../modules/modals/constants';
 import moment from 'moment';
+import Promise from 'bluebird';
 
 const Constants = {
     BASE: "mytrip/defaultSet/",

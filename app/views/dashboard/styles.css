@@ -23,6 +23,7 @@
   position: fixed;
   top: 0;
   color: #fff;
+  z-index: 999;
   
   -webkit-transition: border 0.5s ease-out;
   -o-transition: border 0.5s ease-out;

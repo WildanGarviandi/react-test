@@ -4,7 +4,8 @@ import {Link} from 'react-router';
 
 import {AppLoadedActions, LogoutAction} from '../../modules';
 import FetchStatusList from '../../modules/containers/actions/statusFetch';
-
+import * as ContactService from '../../contacts/contactService';
+import * as StateService from '../../states/stateService';
 import {Glyph} from '../base';
 import Accordion from '../base/accordion';
 import styles from './styles.css';
@@ -80,6 +81,10 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact}) => {
            <Glyph className={styles.menuGlyph} name={'tent'}/>
            <span>My Trips</span>
         </MenuItem>
+        <MenuItem active={activeMenuIdx == 4} to={'/myorders'}>
+           <Glyph className={styles.menuGlyph} name={'transfer'}/>
+           <span>My Orders</span>
+        </MenuItem>
           <button className={styles.logoutBtn} onClick={handleLogout}>
             <Glyph className={styles.glyphBackward} name={'log-out'}/>
             <span>Logout</span>
@@ -140,6 +145,8 @@ function DispatchToProps(dispatch) {
   return {
     initialLoad() {
       dispatch(FetchStatusList());
+      dispatch(ContactService.FetchList());
+      dispatch(StateService.FetchList());
     },
     logout: function() {
       dispatch(LogoutAction.logout());

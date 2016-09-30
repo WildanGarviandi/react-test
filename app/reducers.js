@@ -17,6 +17,9 @@ import orderDetails from './modules/orders/reducers/details';
 import tripDetails from './modules/trips/reducers/details';
 import hubs from './modules/hubs/reducers';
 import myTrips from './trips/tripService';
+import myOrders from './orders/orderService';
+import myContacts from './contacts/contactService';
+import stateList from './states/stateService';
 
 export default combineReducers({ 
   userLogged: authReducers,
@@ -37,4 +40,7 @@ export default combineReducers({
   receivedOrders,
   tripDetails,
   myTrips,
+  myOrders,
+  myContacts,
+  stateList
 });
