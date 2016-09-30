@@ -78,7 +78,7 @@ export function FilterDateTimeRangeCell({startDate, endDate, onChange}) {
     }
     return (
         <td className={styles.td}>
-            <DateRangePicker startDate={startDateFormatted} endDate={endDateFormatted} onApply={onChange} >
+            <DateRangePicker startDate={startDateFormatted} endDate={endDateFormatted} onApply={onChange} parentEl="#bootstrapPlaceholder" >
                 <input className={styles.searchInput + " " + styles.createdDate} type="text" value={dateValue} />
             </DateRangePicker>
         </td>
