@@ -155,7 +155,7 @@ function StateToProps(state, ownProps) {
     .map((driverID) => {
       return {
         key: driverID,
-        value: UtilHelper.UserFullName(driverList.dict[driverID].Driver),
+        value: UtilHelper.UserFullName(driverList.dict[driverID]),
       }
     })
     .value();
