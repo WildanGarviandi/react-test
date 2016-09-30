@@ -53,7 +53,7 @@ export function FetchList() {
         }
 
         dispatch({type: modalAction.BACKDROP_SHOW});
-        FetchGet('/state', token, params).then((response) => {
+        FetchGet('/oldstate', token, params).then((response) => {
             if(!response.ok) {
                 return response.json().then(({error}) => {
                     throw error;
