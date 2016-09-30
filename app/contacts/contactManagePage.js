@@ -28,7 +28,23 @@ const InputRow = React.createClass({
     );
   }
 });
- 
+
+const TextareaRow = React.createClass({
+  render() {
+    const {isEditing, label, value, onChange, type} = this.props;
+
+    return (
+      <div style={{clear: 'both'}}>
+        <span className={styles.itemLabel}>{label}</span>
+          <span className={styles.itemValue}>
+            {this.props.unitLabel}
+            <Form.TextareaWithDefault currentText={value} onChange={this.props.onChange} type={type} />
+          </span>
+      </div>
+    );
+  }
+});
+
 const DropdownRow = React.createClass({
   render() {
     const {isEditing, label, value, onChange, type, options, handleSelect} = this.props;
@@ -142,7 +158,7 @@ const ManagePage = React.createClass({
                         <InputRow label={'Last Name'} value={contact.LastName} type={'text'} onChange={this.stateChange('LastName') } />
                         <InputRow label={'Phone Number'} value={contact.Phone} type={'text'} onChange={this.stateChange('Phone') } />
                         <InputRow label={'Email'} value={contact.Email} type={'text'} onChange={this.stateChange('Email') } />
-                        <InputRow label={'Street'} value={contact.Street} type={'text'} onChange={this.stateChange('Street') } />
+                        <TextareaRow label={'Address'} value={contact.Street} type={'text'} onChange={this.stateChange('Street') } />
                         <DropdownRow label={'State'} value={contact.State && contact.State.Name} options={stateOptions} handleSelect={this.stateChange('StateID')} />
                         <InputRow label={'City'} value={contact.City} type={'text'} onChange={this.stateChange('City') } />
                         <InputRow label={'Zip Code'} value={contact.ZipCode} type={'text'} onChange={this.stateChange('ZipCode') } />
