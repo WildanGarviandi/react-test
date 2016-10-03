@@ -11,7 +11,9 @@ const Constants = {
     CONTACT_DETAILS_SET: "mycontact/details/set",
     FETCHING_PAGE: "mycontact/contacts/fetching",
     FETCHING_PAGE_STOP: "mycontact/contacts/fetchingStop",
-    RESET_FILTER: "mycontact/contacts/reset"
+    RESET_FILTER: "mycontact/contacts/reset",
+    TOGGLE_SELECT_CONTACT: "mycontact/contacts/select",
+    TOGGLE_SELECT_ALL: "mycontact/selectedAll/toggle"
 }
 
 const initialStore = {
@@ -23,6 +25,11 @@ const initialStore = {
     pickup: {},
     dropoff: {},
     filters: {},
+    limit: 100,
+    statusName: "SHOW ALL",
+    total: 0,
+    selectedAll: false,
+    isEditing: false,
     isFetching: false
 }
 
@@ -88,18 +95,108 @@ export default function Reducer(store = initialStore, action) {
             });
         }
 
+        case Constants.TOGGLE_SELECT_CONTACT: {
+            const newContacts = lodash.map(store.contacts, (contact) => {
+                if(contact.ContactID !== action.contactID) {
+                    return contact;
+                }
+
+                return lodash.assign({}, contact, {IsChecked: !contact.IsChecked});
+            });
+
+            return lodash.assign({}, store, {
+                contacts: newContacts,
+            });
+        }
+
+        case Constants.TOGGLE_SELECT_ALL: {
+            const {contacts, selectedAll} = store;
+            const newContacts = lodash.map(contacts, (contact) => {
+                return lodash.assign({}, contact, {IsChecked: !selectedAll});
+            });
+
+            return lodash.assign({}, store, {
+                selectedAll: !selectedAll,
+                contacts: newContacts,
+            })
+        }
+
         default: {
             return store;
         }
     }
 }
 
+export function StoreSetter(keyword, value) {
+    return {type: Constants.BASE + keyword, [keyword]: value};
+}
+
+export function SetFilters(filters) {
+    return StoreSetter("filters", filters);
+}
+
+export function UpdateFilters(filters) {
+    return (dispatch, getState) => {
+        const prevFilters = getState().app.myContacts.filters;
+        const nextFilter = lodash.assign({}, prevFilters, filters);
+        dispatch(SetFilters(nextFilter));
+    }
+}
+
+export function SetDropDownFilter(keyword) {
+    const filterNames = {
+        "statusName": "status"
+    };
+
+    return (selectedOption) => {
+        const filterName = filterNames[keyword];
+
+        return (dispatch, getState) => {
+            dispatch(StoreSetter(keyword, selectedOption.value));
+            dispatch(UpdateFilters({[filterName]: selectedOption.key}));
+            dispatch(FetchList());
+        }
+    }
+}
+
+export function SetCurrentPage(currentPage) {
+    return (dispatch, getState) => {
+        dispatch(StoreSetter("currentPage", currentPage));
+        dispatch(FetchList());
+    }
+}
+
+export function SetLimit(limit) {
+    return (dispatch, getState) => {
+        dispatch(StoreSetter("limit", limit));
+        dispatch(SetCurrentPage(1));
+    }
+}
+
+export function UpdateAndFetch(filters) {
+    return (dispatch) => {
+        dispatch(UpdateFilters(filters));
+        dispatch(FetchList());
+    }
+}
+
+export function ToggleChecked(contactID) {
+    return {
+        type: Constants.TOGGLE_SELECT_CONTACT,
+        contactID: contactID
+    }
+}
+
+export function ToggleCheckedAll() {
+    return { type: Constants.TOGGLE_SELECT_ALL };
+}
+
 export function FetchList() {
     return (dispatch, getState) => {
         const {myContacts, userLogged} = getState().app;
-        const {currentPage, limit} = myContacts;
+        const {currentPage, limit, filters} = myContacts;
         const {token} = userLogged;
-        let params = lodash.assign({}, {
+        let params = lodash.assign({}, filters, {
             limit: limit,
             offset: (currentPage - 1) * limit
         })
