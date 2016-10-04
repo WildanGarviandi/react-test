@@ -12,6 +12,7 @@ import DateTime from 'react-datetime';
 import moment from 'moment';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import {Link} from 'react-router';
+import stylesButton from '../components/button.css';
 
 const InputRow = React.createClass({
   render() {
@@ -135,7 +136,7 @@ const ManagePage = React.createClass({
             textLoading: "Saving Changes",
             onClick: this.submit,
             styles: {
-                base: styles.weightSaveBtn,
+                base: stylesButton.greenButton,
             },
         };
 
@@ -154,14 +155,14 @@ const ManagePage = React.createClass({
                         Contact Information
                     </div>
                     <div className={styles.contactDetailsInformation}>
-                        <InputRow label={'First Name'} value={contact.FirstName} type={'text'} onChange={this.stateChange('FirstName') } />
-                        <InputRow label={'Last Name'} value={contact.LastName} type={'text'} onChange={this.stateChange('LastName') } />
-                        <InputRow label={'Phone Number'} value={contact.Phone} type={'text'} onChange={this.stateChange('Phone') } />
-                        <InputRow label={'Email'} value={contact.Email} type={'text'} onChange={this.stateChange('Email') } />
-                        <TextareaRow label={'Address'} value={contact.Street} type={'text'} onChange={this.stateChange('Street') } />
+                        <InputRow label={'First Name'} value={this.state.FirstName} type={'text'} onChange={this.stateChange('FirstName') } />
+                        <InputRow label={'Last Name'} value={this.state.LastName} type={'text'} onChange={this.stateChange('LastName') } />
+                        <InputRow label={'Phone Number'} value={this.state.Phone} type={'text'} onChange={this.stateChange('Phone') } />
+                        <InputRow label={'Email'} value={this.state.Email} type={'text'} onChange={this.stateChange('Email') } />
+                        <TextareaRow label={'Address'} value={this.state.Street} type={'text'} onChange={this.stateChange('Street') } />
                         <DropdownRow label={'State'} value={contact.State && contact.State.Name} options={stateOptions} handleSelect={this.stateChange('StateID')} />
-                        <InputRow label={'City'} value={contact.City} type={'text'} onChange={this.stateChange('City') } />
-                        <InputRow label={'Zip Code'} value={contact.ZipCode} type={'text'} onChange={this.stateChange('ZipCode') } />
+                        <InputRow label={'City'} value={this.state.City} type={'text'} onChange={this.stateChange('City') } />
+                        <InputRow label={'Zip Code'} value={this.state.ZipCode} type={'text'} onChange={this.stateChange('ZipCode') } />
                     </div>
                     <div style={{clear: 'both'}}>
                         { <ButtonWithLoading {...saveBtnProps} /> }
