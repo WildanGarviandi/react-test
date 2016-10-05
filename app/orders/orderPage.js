@@ -137,6 +137,15 @@ const OrderPage = React.createClass({
         var orderPage = this;
         orderPage.props.AssignOrder(selectedOrders, orderPage.state.driverID);
     },
+    cancelOrder() {
+        let selectedOrders = lodash.filter(this.props.orders, ['IsChecked', true]);
+        if (selectedOrders.length < 1) {
+            alert('Must selected one or more orders');
+            return;
+        }
+        var orderPage = this;
+        orderPage.props.CancelOrder(selectedOrders);
+    },
     render() {
         const {paginationState, PaginationAction, orders, drivers, userLogged} = this.props;
         const assignOrderButton = {
@@ -149,6 +158,13 @@ const OrderPage = React.createClass({
         const exportOrderButton = {
             textBase: 'Export Order',
             onClick: this.exportOrder,
+            styles: {
+                base: stylesButton.greenButton,
+            }
+        };
+        const cancelOrderButton = {
+            textBase: 'Cancel Order',
+            onClick: this.cancelOrder,
             styles: {
                 base: stylesButton.greenButton,
             }
@@ -183,6 +199,7 @@ const OrderPage = React.createClass({
                 <Pagination {...paginationState} {...PaginationAction} />
                 <p>
                     <ButtonWithLoading {...assignOrderButton} />
+                    <ButtonWithLoading {...cancelOrderButton} />
                     <Link to={'/myorders/add'}>
                         <button className={stylesButton.greenButton}>Add Orders</button> 
                     </Link>
@@ -236,6 +253,9 @@ function DispatchToOrdersPage(dispatch) {
         },
         AssignOrder: (orders, driverID) => {
             dispatch(OrderService.AssignOrder(orders, driverID));
+        },
+        CancelOrder: (orders) => {
+            dispatch(OrderService.CancelOrder(orders));
         },
         PaginationAction: {
             setCurrentPage: (currentPage) => {

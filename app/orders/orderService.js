@@ -425,3 +425,48 @@ export function AssignOrder(orders, driverID) {
         });
     }
 }
+
+export function CancelOrder(orders) {
+    return (dispatch, getState) => {
+        const {userLogged, myOrders} = getState().app;
+        const {token} = userLogged;
+        let promises = [];
+        let cancelMessage = '';
+
+        function cancelSingleOrder(token, order) {
+            return new Promise(function(resolve, reject) {
+                FetchPost('/order/company/' + order.UserOrderID + '/cancel', token)
+                .then(function(response) {
+                    if (!response.ok) {            
+                        return response.json().then(({error}) => {
+                            error.order = order;
+                            return resolve(error);
+                        });
+                    } 
+                    return response.json().then(({data}) => {
+                        data.order = order;
+                        return resolve(data);
+                    });
+                });
+            });
+        }
+
+        dispatch({type: modalAction.BACKDROP_SHOW});
+        orders.forEach(function(order) {
+            promises.push(cancelSingleOrder(token, order));
+        });
+
+        Promise.all(promises).then(function(responses) {
+            responses.forEach(function(response) {
+                if (response.code === 400) {            
+                    cancelMessage += response.order.UserOrderNumber + ': ' + response.message + '\n';
+                } else {
+                    cancelMessage += response.order.UserOrderNumber + ': Success cancelled \n';
+                }
+            })
+            alert(cancelMessage);
+            dispatch({type: modalAction.BACKDROP_HIDE});
+            dispatch(FetchList());
+        });
+    }
+}
