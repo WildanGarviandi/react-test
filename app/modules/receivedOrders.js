@@ -245,7 +245,7 @@ export function GoToDetails(orderNumber) {
           throw new Error("No order with specified EDS Number is found");
         }
 
-        dispatch(push('/orders/' + data.rows[0].UserOrderID));
+        window.open('/orders/' + data.rows[0].UserOrderID);
       });
     }).catch((e) => {
       const message = e.message || "Failed to fetch order details";
