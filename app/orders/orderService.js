@@ -10,6 +10,7 @@ import Promise from 'bluebird';
 const Constants = {
     BASE: "myorder/defaultSet/",
     SET_ORDERS: "myorder/orders/set",
+    SET_COUNT_ORDERS: "myorder/orders/setCount",
     TOGGLE_SELECT_ORDER: "myorder/orders/select",
     TOGGLE_SELECT_ALL: "myorder/selectedAll/toggle",
     ADD_ORDERS: "myorder/orders/add",
@@ -33,7 +34,10 @@ const initialStore = {
     selectedAll: false,
     order: {},
     isEditing: false,
-    isFetching: false
+    isFetching: false,
+    countOpen: '',
+    countInProgress: '',
+    countFinished: ''
 }
 
 export default function Reducer(store = initialStore, action) {
@@ -96,6 +100,14 @@ export default function Reducer(store = initialStore, action) {
                 order: {},
                 isFetching: false,
                 isEditing: false
+            });
+        }
+
+        case Constants.SET_COUNT_ORDERS: {
+            return lodash.assign({}, store, {
+                countOpen: action.countOpen,
+                countInProgress: action.countInProgress,
+                countFinished: action.countFinished
             });
         }
 
@@ -213,24 +225,35 @@ export function FetchList() {
         }
 
         dispatch({type: modalAction.BACKDROP_SHOW});
-        FetchGet('/order/assigned', token, params).then((response) => {
+        FetchGet('/order/assigned', token, params)
+        .then((response) => {
             if(!response.ok) {
                 return response.json().then(({error}) => {
                     throw error;
                 })
             }
 
-            return response.json().then(({data}) => {
+            response.json().then(({data}) => {
                 if (data.count < total) {
                     dispatch(SetCurrentPage(1));
                 }
-                dispatch({type: modalAction.BACKDROP_HIDE});
                 dispatch({
                     type: Constants.SET_ORDERS,
                     orders: data.rows,
                     total: data.count,
                 })
-            });
+            })
+            FetchGet('/order/assignedCount', token, params).then((response) => {
+                return response.json().then(({data}) => {
+                    dispatch({
+                        type: Constants.SET_COUNT_ORDERS,
+                        countOpen: data.open,
+                        countInProgress: data.inProgress,
+                        countFinished: data.finished,
+                    })
+                    dispatch({type: modalAction.BACKDROP_HIDE});
+                });
+            })
         }).catch((e) => {
             dispatch({type: modalAction.BACKDROP_HIDE});
             dispatch(ModalActions.addMessage(e.message));

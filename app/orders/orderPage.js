@@ -16,6 +16,7 @@ import moment from 'moment';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import * as UtilHelper from '../helper/utility';
 import {Glyph} from '../views/base';
+import classNaming from 'classnames';
 
 const ExportOrder = React.createClass({
     getInitialState() {
@@ -138,7 +139,7 @@ const OrderPage = React.createClass({
         orderPage.props.AssignOrder(selectedOrders, orderPage.state.driverID);
     },
     render() {
-        const {paginationState, PaginationAction, orders, drivers, userLogged} = this.props;
+        const {paginationState, PaginationAction, orders, drivers, userLogged, countOpen, countInProgress, countFinished} = this.props;
         const assignOrderButton = {
             textBase: 'Assign Order',
             onClick: this.assignOrder,
@@ -155,31 +156,48 @@ const OrderPage = React.createClass({
         };
         return (
             <Page title="My Order">
-            <div style={{marginBottom: 15}}>
-              {
-                this.state.opened ? 
-                <div className={styles.top2} onClick={this.toggleOpen}>
-                  <h4 className={styles.title}>
-                    <Glyph name='chevron-down' className={styles.glyph} />
-                    {'Filter Order (' + this.state.ids.length + ' keywords)'}
-                  </h4>
-                </div> :
-                <div className={styles.panel}>
-                  <div className={styles.top} onClick={this.toggleOpen}>
-                    <h4 className={styles.title}>
-                      <Glyph name='chevron-up' className={styles.glyph} />
-                      {'Web Order ID or User Order Number:'}
-                    </h4>
-                  </div>
-                  <div className={styles.bottom}>
-                    <textarea style={{height: 100, width: '100%'}} value={this.state.idsRaw} onChange={this.textChange} placeholder={'Write/Paste EDS Number or Order ID here, separated with newline'} />
-                    <ButtonBase styles={styles.modalBtn} onClick={this.processText}>Filter</ButtonBase>
-                    <a href="javascript:;" className={styles.modalLink} onClick={this.cancelChange}>Cancel</a>
-                    <a href="javascript:;" className={styles.modalLink} onClick={this.clearText}>Clear</a>
-                  </div>
+                <div style={{clear: 'both'}} />
+                <div className={classNaming(styles.container, styles.attrOpen)}>
+                    <Glyph name={'tags'} className={styles.glyph} />
+                    <span className={styles.num}>{countOpen}</span>
+                    <span className={styles.attr}>Open Orders</span>
                 </div>
-              }
-              </div>
+                <div className={classNaming(styles.container, styles.attrProcessed)}>
+                    <Glyph name={'tags'} className={styles.glyph} />
+                    <span className={styles.num}>{countInProgress}</span>
+                    <span className={styles.attr}>Processed</span>
+                </div>
+                <div className={classNaming(styles.container, styles.attrFinished)}>
+                    <Glyph name={'tags'} className={styles.glyph} />
+                    <span className={styles.num}>{countFinished}</span>
+                    <span className={styles.attr}>Finished</span>
+                </div>
+                <div style={{clear: 'both'}} />
+                <div style={{marginBottom: 15}}>
+                  {
+                    this.state.opened ? 
+                    <div className={styles.top2} onClick={this.toggleOpen}>
+                      <h4 className={styles.title}>
+                        <Glyph name='chevron-down' className={styles.glyphFilter} />
+                        {'Filter Order (' + this.state.ids.length + ' keywords)'}
+                      </h4>
+                    </div> :
+                    <div className={styles.panel}>
+                      <div className={styles.top} onClick={this.toggleOpen}>
+                        <h4 className={styles.title}>
+                          <Glyph name='chevron-up' className={styles.glyphFilter} />
+                          {'Web Order ID or User Order Number:'}
+                        </h4>
+                      </div>
+                      <div className={styles.bottom}>
+                        <textarea style={{height: 100, width: '100%'}} value={this.state.idsRaw} onChange={this.textChange} placeholder={'Write/Paste EDS Number or Order ID here, separated with newline'} />
+                        <ButtonBase styles={styles.modalBtn} onClick={this.processText}>Filter</ButtonBase>
+                        <a href="javascript:;" className={styles.modalLink} onClick={this.cancelChange}>Cancel</a>
+                        <a href="javascript:;" className={styles.modalLink} onClick={this.clearText}>Clear</a>
+                      </div>
+                    </div>
+                  }
+                </div>
                 <Pagination {...paginationState} {...PaginationAction} />
                 <p>
                     <ButtonWithLoading {...assignOrderButton} />
@@ -196,7 +214,7 @@ const OrderPage = React.createClass({
 });
 
 function StoreToOrdersPage(store) {
-    const {currentPage, limit, total, orders} = store.app.myOrders;
+    const {currentPage, limit, total, orders, countOpen, countInProgress, countFinished} = store.app.myOrders;
     const userLogged = store.app.userLogged;
     const driversStore = store.app.driversStore;
     const driverList = driversStore.driverList;
@@ -214,6 +232,9 @@ function StoreToOrdersPage(store) {
         paginationState: {
             currentPage, limit, total,
         },
+        countOpen: countOpen,
+        countInProgress: countInProgress,
+        countFinished: countFinished
     }
 }
 
