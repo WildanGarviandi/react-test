@@ -12,7 +12,7 @@ import tableStyles from '../base/table.css';
 import StatusDropdown from '../base/statusDropdown';
 import {TripParser} from '../../modules/trips';
 
-const ColumnsOrder = ['fleetName', 'driver', 'webstoreNames', 'pickup', 'pickupCity', 'pickupState', 'containerNumber', 'status'];
+const ColumnsOrder = ['fleetName', 'driver', 'webstoreNames', 'pickup', 'pickupCity', 'pickupState', 'containerNumber', 'status', 'numberPackages'];
 
 const ColumnsTitle = {
   containerNumber: "Container",
@@ -28,6 +28,7 @@ const ColumnsTitle = {
   status: "Status",
   tripNumber: "Trip Number",
   webstoreNames: "Webstore",
+  numberPackages: "Number of Packages"
 }
 
 let fleetList = {};
@@ -217,6 +218,7 @@ function ProcessTrip(trip) {
     status: trip.OrderStatus && trip.OrderStatus.OrderStatus,
     webstoreNames: parsedTrip.WebstoreNames,
     fleetName: fleetName || '',
+    numberPackages: trip.UserOrderRoutes.length
   }
 }
 

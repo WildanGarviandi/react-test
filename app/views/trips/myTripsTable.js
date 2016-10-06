@@ -13,7 +13,7 @@ import tableStyles from '../base/table.css';
 import StatusDropdown from '../base/statusDropdown';
 import {TripParser} from '../../modules/trips';
 
-const ColumnsOrder = ['driver', 'webstoreNames', 'tripType', 'dropoff', 'dropoffCity', 'dropoffState', 'containerNumber', 'status'];
+const ColumnsOrder = ['driver', 'webstoreNames', 'tripType', 'dropoff', 'dropoffCity', 'dropoffState', 'containerNumber', 'status', 'numberPackages'];
 
 const ColumnsTitle = {
   containerNumber: "Container",
@@ -29,6 +29,7 @@ const ColumnsTitle = {
   tripNumber: "Trip Number",
   tripType: "Type",
   webstoreNames: "Webstore",
+  numberPackages: "Number of Packages"
 }
 
 function FindFilter(filters, attr) {
@@ -268,6 +269,7 @@ function ProcessTrip(trip) {
     tripNumber: trip.TripNumber,
     tripType: tripType,
     webstoreNames: parsedTrip.WebstoreNames,
+    numberPackages: trip.UserOrderRoutes.length
   }
 }
 
