@@ -458,10 +458,10 @@ export function CancelOrder(orders) {
 
         Promise.all(promises).then(function(responses) {
             responses.forEach(function(response) {
-                if (response.code === 400) {            
-                    cancelMessage += response.order.UserOrderNumber + ': ' + response.message + '\n';
-                } else {
+                if (response.code === 200) {            
                     cancelMessage += response.order.UserOrderNumber + ': Success cancelled \n';
+                } else {
+                    cancelMessage += response.order.UserOrderNumber + ': ' + response.message + '\n';
                 }
             })
             alert(cancelMessage);
