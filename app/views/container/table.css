@@ -116,3 +116,10 @@
 .checkbox.Loading {
     background-image: url(../../img/loading.gif);
 }
+
+.tick{
+    background-image: url('../../img/tick.png');
+    background-size: 40px 40px;
+    background-position: center; 
+    background-repeat: no-repeat;
+}
