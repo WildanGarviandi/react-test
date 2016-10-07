@@ -86,11 +86,11 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID}) => {
           </div>
         }
         <MenuItem active={activeMenuIdx == 5} to={'/myorders'}>
-           <Glyph className={styles.menuGlyph} name={'transfer'}/>
+           <Glyph className={styles.menuGlyph} name={'shopping-cart'}/>
            <span>My Orders</span>
         </MenuItem>
         <MenuItem active={activeMenuIdx == 6} to={'/mytrips'}>
-         <Glyph className={styles.menuGlyph} name={'tent'}/>
+         <Glyph className={styles.menuGlyph} name={'briefcase'}/>
          <span>My Trips</span>
         </MenuItem>
         <MenuItem active={activeMenuIdx == 7} to={'/mycontacts'}>
@@ -98,7 +98,7 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID}) => {
            <span>My Contacts</span>
         </MenuItem>
         <MenuItem active={activeMenuIdx == 6} to={'/mydrivers'}>
-          <Glyph className={styles.menuGlyph} name={'sunglasses'}/>
+          <Glyph className={styles.menuGlyph} name={'user'}/>
           <span>My Drivers</span>
         </MenuItem>
         <button className={styles.logoutBtn} onClick={handleLogout}>
@@ -118,7 +118,7 @@ const DashboardContent = ({children}) => {
   return (<div className={styles.content}>{children}</div>);
 }
 
-const menuPaths = ['/orders/pickup', '/trips/inbound', '/orders/received', '/trips/outbound', '/history', '/myorders', '/mytrips', '/mycontacts'];
+const menuPaths = ['/orders/pickup', '/trips/inbound', '/orders/received', '/trips/outbound', '/history', '/myorders', '/mytrips', '/mycontacts', 'mydrivers'];
 function GetActiveMenuIdx(path) {
   let fpath = _.find(menuPaths, (menu) => (path.indexOf(menu) > -1));
   let idx = menuPaths.indexOf(fpath);
