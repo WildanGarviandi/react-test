@@ -458,7 +458,7 @@ export function CancelOrder(orders) {
 
         Promise.all(promises).then(function(responses) {
             responses.forEach(function(response) {
-                if (response.code === 200) {            
+                if (!response.code) {            
                     cancelMessage += response.order.UserOrderNumber + ': Success cancelled \n';
                 } else {
                     cancelMessage += response.order.UserOrderNumber + ': ' + response.message + '\n';
