@@ -30,10 +30,10 @@ export default (state = initialUserState, action) => {
       return _.assign({}, state, {isFetching: false, isValid: false, message: action.message});
     case actionTypes.AUTH_VALID:
       if(!action.hub) return;
-      localStorage.hubID = action.hub.HubID;
+      localStorage.hubID = action.hub && action.hub.HubID;
       return _.assign({}, state, {
-        hubID: action.hub.HubID,
-        isCentralHub: "CENTRAL" === action.hub.Type,
+        hubID: action.hub && action.hub.HubID,
+        isCentralHub: action.hub && ("CENTRAL" === action.hub.Type),
       });
     default:
       return state;
