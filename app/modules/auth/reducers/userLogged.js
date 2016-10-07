@@ -29,7 +29,6 @@ export default (state = initialUserState, action) => {
       localStorage.clear();
       return _.assign({}, state, {isFetching: false, isValid: false, message: action.message});
     case actionTypes.AUTH_VALID:
-      if(!action.hub) return;
       localStorage.hubID = action.hub && action.hub.HubID;
       return _.assign({}, state, {
         hubID: action.hub && action.hub.HubID,
