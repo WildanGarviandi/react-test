@@ -135,7 +135,7 @@
 .detailWrapper input {
   font-size: 14px;
   width: 300px;
-  padding: 0;
+  padding-left: 10px;
   margin-left: 5px;
 }
 

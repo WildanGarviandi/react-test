@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './table.css';
 import styles2 from './styles.css';
 import {ButtonWithLoading, Input, Pagination} from '../base';
+import classNaming from 'classnames';
 
 const Table = React.createClass({
   getInitialState() {
@@ -38,19 +39,42 @@ const Table = React.createClass({
       }
     }
 
+    var orderWrapClasses = classNaming(
+      styles2.finderWrapper,
+      {'pull-right': true}
+    );
+
+    var orderLblClasses = classNaming(
+      styles2.finderLabel,
+      {'col-xs-6': true}
+    );
+
+    var consoleBtnClasses = classNaming(
+      this.props.className,
+      {'col-xs-6': true}
+    );
+
     return (
       <div style={style}>
         <Pagination {...pagination} {...PaginationActions} />
-        <ButtonWithLoading {...groupingOrdersBtnProps} />
-        {
-          !isPickup && !isFill &&
-          <span className={styles2.finderWrapper}>
-            <span className={styles2.finderLabel}>
-              Jump to Order with AWB :
-            </span>
-            <Input onChange={this.onChange} onEnterKeyPressed={this.onEnterKeyPressed} base={{placeholder: "Insert AWB Here"}} />
-          </span>
-        }
+        <div className={'row'}>
+          <div className={'col-xs-6'}>
+            <ButtonWithLoading {...groupingOrdersBtnProps} className={consoleBtnClasses} />
+          </div>
+          {
+            !isPickup && !isFill &&
+            <div className={'col-xs-6'}>
+              <span className={orderWrapClasses}>
+                <span className={orderLblClasses}>
+                  Jump to Order with AWB :
+                </span>
+                <span className={'col-xs-6'}>
+                  <Input onChange={this.onChange} onEnterKeyPressed={this.onEnterKeyPressed} base={{placeholder: "Insert AWB Here"}} />
+                </span>
+              </span>
+            </div>
+          }
+        </div>
         <table className={styles.table}>
           <Headers />
           <Filters /> 

@@ -6,6 +6,7 @@ import MyTripsTable from './myTripsTable';
 import InboundTable from './inboundTable';
 import FleetsFetch from '../../modules/drivers/actions/fleetsFetch';
 import styles from './styles.css';
+import formStyles from '../../components/form.css';
 
 const ContainerPage = React.createClass({
   componentWillMount() {
@@ -23,11 +24,13 @@ const ContainerPage = React.createClass({
         {
           isInbound &&
           <div>
-            <span className={styles.finderWrapper} style={{top: -10}}>
-              <span className={styles.finderLabel} onKeyDown={this.jumpTo}>
+            <span className={'row ' + styles.finderWrapper} style={{top: -10}}>
+              <span className={'col-xs-6 ' + styles.finderLabel} onKeyDown={this.jumpTo}>
                 Jump to Container :
               </span>
-              <Input onChange={this.onChange} onEnterKeyPressed={this.gotoContainer} />
+              <span className={'col-xs-6'}>
+                <Input className={formStyles.inputSmall} onChange={this.onChange} onEnterKeyPressed={this.gotoContainer} />
+              </span>
             </span>
             <InboundTable key={this.props.lastPath} lastPath={this.props.lastPath} isInbound={this.props.isInbound} />
           </div>

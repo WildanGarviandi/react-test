@@ -1,4 +1,6 @@
 import React from 'react';
+import classNaming from 'classnames';
+import styles from '../../components/form.css';
 
 const CheckBox = React.createClass({
   getInitialState() {
@@ -18,9 +20,17 @@ const CheckBox = React.createClass({
   render() {
     let { checked, label, name, styles = {} } = this.props;
 
+    var classes = classNaming(
+      this.props.className,
+      styles.checkbox,
+      {
+        'form-control': true,
+      }
+    );
+
     return (
       <span className={styles.container}>
-        <input type="checkbox" checked={this.state.checked} onChange={this.handleClick} id={name} className={styles.checkbox} />
+        <input type="checkbox" checked={this.state.checked} onChange={this.handleClick} id={name} className={classes} />
         <label htmlFor={name} className={styles.label}>{label}</label>
       </span>
     );
@@ -42,9 +52,17 @@ const Input = React.createClass({
   render() {
     let { base, notes, styles = {} } = this.props;
 
+    var classes = classNaming(
+      this.props.className,
+      styles.input,
+      {
+        'form-control': true,
+      }
+    );
+
     return (
       <span className={styles.container}>
-        <input {...base} className={styles.input} onChange={this.handleChange} onKeyDown={this.handleEnterKey} />
+        <input {...base} className={classes} onChange={this.handleChange} onKeyDown={this.handleEnterKey} />
         <span className={styles.notes}>{notes}</span>
       </span>
     );
