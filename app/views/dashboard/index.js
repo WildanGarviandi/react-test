@@ -50,8 +50,8 @@ const AccordionMenu = React.createClass({
 const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID}) => {
   return (
     <div className={styles.menuPanel}>
-      <h4 className={styles.menuTitle}>Etobee Hub</h4>
-      <h4 className={styles.compactTitle}>EHub</h4>
+      <h4 className={styles.menuTitle}>Etobee TMS</h4>
+      <h4 className={styles.compactTitle}>ETMS</h4>
       <ul className={styles.menuList}>
         { hubID &&
           <div>
