@@ -21,6 +21,7 @@ import MyOrdersDetailsPage from './orders/orderDetails';
 import TripHistoryList from './tripHistory/listPage';
 import TripHistoryDetails from './tripHistory/detailsPage';
 import MyContactPage from './contacts/contactPage';
+import MyDriverPage from './drivers/driverPage';
 
 function requireAuth(nextState, replace, callback) {
   checkAuth(store).then(function(result) {
@@ -58,6 +59,7 @@ export default (
         <Route path="/history" component={TripHistoryList} onEnter={requireAuth}/>
         <Route path="/history/:id" component={TripHistoryDetails} onEnter={requireAuth}/>
         <Route path="/mycontacts" component={MyContactPage} onEnter={requireAuth} />
+        <Route path="/mydrivers" component={MyDriverPage} onEnter={requireAuth}/>
       </Route>
       <Route path="/qrcode/:id" component={ContainerQRCodePage} />
       <Route path="/login" component={LoginPage} />
