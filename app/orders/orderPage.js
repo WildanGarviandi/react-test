@@ -17,71 +17,6 @@ import DateRangePicker from 'react-bootstrap-daterangepicker';
 import * as UtilHelper from '../helper/utility';
 import {Glyph} from '../views/base';
 
-const ExportOrder = React.createClass({
-    getInitialState() {
-        return ({
-            showExportModal: false,
-            startDate: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() - 7),
-            endDate: new Date(),
-        });
-    },
-    openModal() {
-        this.setState({showExportModal: true});
-    },
-    closeModal() {
-        this.setState({showExportModal: false});
-    },
-    pickDate(event, picker) {
-        this.setState({['startDate']: picker.startDate});
-        this.setState({['endDate']: picker.endDate});
-        this.setState({showExportModal: true});
-    },
-    exportOrder() {
-        this.props.ExportOrder(this.state.startDate, this.state.endDate);
-    },
-    render() {
-        const addExportButton = {
-            textBase: 'Export Orders',
-            onClick: this.openModal,
-            styles: {
-                base: stylesButton.greenButton,
-            }
-        };
-        const proceedExportBtn = {
-            textBase: "Export",
-            onClick: this.exportOrder,
-            styles: {
-                base: stylesButton.greenButton,
-            }
-        };
-        const startDateFormatted = moment(this.state.startDate).format('MM-DD-YYYY');
-        const endDateFormatted = moment(this.state.endDate).format('MM-DD-YYYY');
-        let dateValue = startDateFormatted + ' - ' + endDateFormatted;
-
-        return (
-            <span onClick={this.openModal}>
-              { <ButtonWithLoading {...addExportButton} /> }
-              {
-                this.state.showExportModal &&
-                <ModalContainer onClose={this.closeModal}>
-                  <ModalDialog onClose={this.closeModal}>
-                    <h4>
-                        Select Date:
-                    </h4>
-                    <DateRangePicker startDate={startDateFormatted} endDate={endDateFormatted} onApply={this.pickDate} >
-                        <input type="text" value={dateValue} />
-                    </DateRangePicker>   
-                    <div style={{clear: 'both'}}>
-                        { <ButtonWithLoading {...proceedExportBtn} /> }
-                    </div>
-                  </ModalDialog>
-                </ModalContainer>
-              }
-            </span>
-        );
-    }
-})
-
 const OrderPage = React.createClass({
     getInitialState() {
         return ({opened: true, idsRaw: '', ids: [], idsStart: '', driverID: null, orders: []})
@@ -137,6 +72,9 @@ const OrderPage = React.createClass({
         var orderPage = this;
         orderPage.props.AssignOrder(selectedOrders, orderPage.state.driverID);
     },
+    exportOrder() {
+        this.props.ExportOrder();
+    },
     render() {
         const {paginationState, PaginationAction, orders, drivers, userLogged} = this.props;
         const assignOrderButton = {
@@ -186,6 +124,7 @@ const OrderPage = React.createClass({
                     <Link to={'/myorders/add'}>
                         <button className={stylesButton.greenButton}>Add Orders</button> 
                     </Link>
+                    <ButtonWithLoading {...exportOrderButton} />
                     <Form.DropdownWithState options={drivers} handleSelect={this.selectDriver} />
                 </p>
                 <Table orders={orders} />
@@ -228,8 +167,8 @@ function DispatchToOrdersPage(dispatch) {
         StoreSetter: (name, value) => {
             dispatch(OrderService.StoreSetter(name, value));
         },
-        ExportOrder: (startDate, endDate) => {
-            dispatch(OrderService.ExportOrder(startDate, endDate));
+        ExportOrder: () => {
+            dispatch(OrderService.ExportOrder());
         },
         FetchDrivers: (fleetID) => {
             dispatch(driversFetch(fleetID));

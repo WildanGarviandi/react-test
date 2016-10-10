@@ -351,11 +351,14 @@ export function resetManageOrder() {
 export function ExportOrder(startDate, endDate) {
     return (dispatch, getState) => {
         const {myOrders, userLogged} = getState().app;
+        const {filters} = myOrders;
         const {token} = userLogged;
-        let params = lodash.assign({}, {
-            startDate: moment(startDate).format('MM-DD-YYYY'),
-            endDate: moment(endDate).format('MM-DD-YYYY')
-        })
+        let params = lodash.assign({}, filters, {});
+
+        if (filters.startCreated && filters.endCreated) {
+            params.startCreated = moment(filters.startCreated).format('MM-DD-YYYY')
+            params.endCreated = moment(filters.endCreated).format('MM-DD-YYYY')
+        }
 
         dispatch({type: modalAction.BACKDROP_SHOW});
         FetchGet('/order/export', token, params).then((response) => {
