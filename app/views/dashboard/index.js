@@ -97,7 +97,7 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID}) => {
            <Glyph className={styles.menuGlyph} name={'book'}/>
            <span>My Contacts</span>
         </MenuItem>
-        <MenuItem active={activeMenuIdx == 6} to={'/mydrivers'}>
+        <MenuItem active={activeMenuIdx == 8} to={'/mydrivers'}>
           <Glyph className={styles.menuGlyph} name={'user'}/>
           <span>My Drivers</span>
         </MenuItem>
@@ -118,7 +118,7 @@ const DashboardContent = ({children}) => {
   return (<div className={styles.content}>{children}</div>);
 }
 
-const menuPaths = ['/orders/pickup', '/trips/inbound', '/orders/received', '/trips/outbound', '/history', '/myorders', '/mytrips', '/mycontacts', 'mydrivers'];
+const menuPaths = ['/orders/pickup', '/trips/inbound', '/orders/received', '/trips/outbound', '/history', '/myorders', '/mytrips', '/mycontacts', '/mydrivers'];
 function GetActiveMenuIdx(path) {
   let fpath = _.find(menuPaths, (menu) => (path.indexOf(menu) > -1));
   let idx = menuPaths.indexOf(fpath);
