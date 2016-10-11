@@ -36,6 +36,19 @@ function requireAuth(nextState, replace, callback) {
   });
 }
 
+function requireHubAuth(nextState, replace, callback) {
+  checkAuth(store).then(function(result) {
+    if(!result.ok || !result.data.hub) {
+      replace({
+        pathname: '/login',
+        state: { nextPathname: nextState.location.pathname }
+      });
+    }
+
+    callback();
+  });
+}
+
 export default (
   <Router history={browserHistory}>
     <Route path="/" component={App}>
@@ -43,13 +56,13 @@ export default (
       <Route path="/home" component={DashboardPage}>
         <IndexRoute component={PickupOrdersPage} onEnter={requireAuth}/>
         <Route path="/orders/pickup" component={PickupOrdersPage} onEnter={requireAuth} />
-        <Route path="/orders/received" component={ReceivedOrdersPage} onEnter={requireAuth}/>
-        <Route path="/orders/:id" component={OrderDetailsPage} onEnter={requireAuth}/>
-        <Route path="/trips/inbound" component={MyTripsPage} onEnter={requireAuth}/>
-        <Route path="/trips/outbound" component={MyTripsPage} onEnter={requireAuth}/>
-        <Route path="/trips/:id" component={TripDetailsPage} onEnter={requireAuth}/>
-        <Route path="/trips/:tripID/fillReceived" component={ReceivedFillPage} onEnter={requireAuth}/>
-        <Route path="/trips/:tripID/fillPickup" component={PickupFillPage} onEnter={requireAuth}/>
+        <Route path="/orders/received" component={ReceivedOrdersPage} onEnter={requireHubAuth}/>
+        <Route path="/orders/:id" component={OrderDetailsPage} onEnter={requireHubAuth}/>
+        <Route path="/trips/inbound" component={MyTripsPage} onEnter={requireHubAuth}/>
+        <Route path="/trips/outbound" component={MyTripsPage} onEnter={requireHubAuth}/>
+        <Route path="/trips/:id" component={TripDetailsPage} onEnter={requireHubAuth}/>
+        <Route path="/trips/:tripID/fillReceived" component={ReceivedFillPage} onEnter={requireHubAuth}/>
+        <Route path="/trips/:tripID/fillPickup" component={PickupFillPage} onEnter={requireHubAuth}/>
         <Route path="/mytrips" component={MyAssignedTripsPage} onEnter={requireAuth} />
         <Route path="/mytrips/detail/:tripID" component={MyAssignedTripsDetailPage} onEnter={requireAuth} />
         <Route path="/myorders" component={MyOrdersPage} onEnter={requireAuth} />
