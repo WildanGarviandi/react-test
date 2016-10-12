@@ -360,23 +360,31 @@ export function ExportOrder(startDate, endDate) {
             params.endCreated = moment(filters.endCreated).format('MM-DD-YYYY')
         }
 
-        dispatch({type: modalAction.BACKDROP_SHOW});
-        FetchGet('/order/export', token, params).then((response) => {
-            if(!response.ok) {
-                return response.json().then(({error}) => {
-                    throw error;
+        function formatParams(params){
+            return "?" + Object
+                .keys(params)
+                .map(function(key){
+                  return key+"="+params[key]
                 })
-            }
+                .join("&");
+        }
 
+        dispatch({type: modalAction.BACKDROP_SHOW});
+        var oReq = new XMLHttpRequest();
+        oReq.open("GET", "http://localhost:3001/v2/fleet/order/export/"+ formatParams(params), true);
+        oReq.responseType = "arraybuffer";
+        oReq.setRequestHeader("LoginSessionKey", token);
+        oReq.setRequestHeader("Content-type", 'application/json');
+        oReq.setRequestHeader("Accept", 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+        oReq.onload = function (oEvent) {
+            var blob = new Blob([oReq.response], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
             dispatch(ModalActions.addMessage('Export Success'));
             dispatch({type: modalAction.BACKDROP_HIDE});
-            return response.json().then(({data}) => {
-                window.location = config.baseAPI + '/order/download/' + data.hash;
-            });
-        }).catch((e) => {
-            dispatch({type: modalAction.BACKDROP_HIDE});
-            dispatch(ModalActions.addMessage(e.message));
-        });
+            window.open(window.URL.createObjectURL(blob));
+        };
+
+        oReq.send(null);
     }
 }
 
