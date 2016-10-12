@@ -7,6 +7,8 @@ const initialUserState = {
   token: localStorage.token,
   userID: localStorage.userID,
   hubID: localStorage.hubID,
+  hubName: localStorage.hubName,
+  fleetName: localStorage.fleetName,
   isCentralHub: false,
 };
 
@@ -30,8 +32,12 @@ export default (state = initialUserState, action) => {
       return _.assign({}, state, {isFetching: false, isValid: false, message: action.message});
     case actionTypes.AUTH_VALID:
       localStorage.hubID = action.hub && action.hub.HubID;
+      localStorage.hubName = action.hub && action.hub.Name;
+      localStorage.fleetName = action.user && action.user.User && action.user.User.FirstName + ' ' + action.user.User.LastName;
       return _.assign({}, state, {
         hubID: action.hub && action.hub.HubID,
+        hubName: action.hub && action.hub.Name,
+        fleetName: action.user && action.user.User && action.user.User.FirstName + ' ' + action.user.User.LastName,
         isCentralHub: action.hub && ("CENTRAL" === action.hub.Type),
       });
     default:

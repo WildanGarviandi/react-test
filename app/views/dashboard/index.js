@@ -47,10 +47,11 @@ const AccordionMenu = React.createClass({
   }
 })
 
-const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID}) => {
+const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, loggedName}) => {
   return (
     <div className={styles.menuPanel}>
       <h4 className={styles.menuTitle}>Etobee TMS</h4>
+      <h5 className={styles.menuTitle}>{loggedName}</h5>
       <h4 className={styles.compactTitle}>ETMS</h4>
       <ul className={styles.menuList}>
         { hubID &&
@@ -142,14 +143,16 @@ const DashboardContainer = React.createClass({
     this.props.logout();
   },
   render() {
-    let {routes} = this.props;
+    let {routes, userLogged} = this.props;
+    let {hubID, hubName, fleetName} = userLogged;
     let activeMenuIdx = GetActiveMenuIdx(routes[routes.length-1].path);
     let panelClass = classnaming('panel', {compact: this.state.isCompact});
+    const loggedName = hubID ? `${hubName} - ${fleetName}` : `${fleetName}`;
 
     return (
       <div style={{display: 'table', width: '100%', minHeight: '100%'}}>
         <div className={panelClass} >
-          <DashboardMenu activeMenuIdx={activeMenuIdx} handleLogout={this.handleLogout} toggleCompact={this.toggleCompact} hubID={this.props.userLogged.hubID} />
+          <DashboardMenu activeMenuIdx={activeMenuIdx} handleLogout={this.handleLogout} toggleCompact={this.toggleCompact} hubID={hubID} loggedName={loggedName} />
           <DashboardContent>{this.props.children}</DashboardContent>
         </div>
       </div>
