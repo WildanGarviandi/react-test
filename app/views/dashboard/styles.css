@@ -86,10 +86,9 @@
 }
 
 .menuTitle, .compactTitle {
-  color: #C0B2A5;
+  color: #FFFFFF;
   text-align: center;
   position: relative;
-  margin-left: -15px;
 }
 
 .compact .menuTitle {
