@@ -13,6 +13,7 @@ import ReceivedFillPage from './views/order/receivedFill';
 import ReceivedOrdersPage from './views/order/receivedOrders';
 import MyTripsPage from './views/trips/myTrips';
 import TripDetailsPage from './views/trips/tripDetails';
+import TripManifestPage from './views/trips/tripManifest';
 import MyAssignedTripsPage from './trips/tripPage';
 import MyAssignedTripsDetailPage from './trips/tripDetails';
 import MyOrdersPage from './orders/orderPage';
@@ -59,6 +60,7 @@ export default (
         <Route path="/history/:id" component={TripHistoryDetails} onEnter={requireAuth}/>
         <Route path="/mycontacts" component={MyContactPage} onEnter={requireAuth} />
       </Route>
+      <Route path="/trips/:tripID/manifest" component={TripManifestPage} onEnter={requireAuth} />
       <Route path="/qrcode/:id" component={ContainerQRCodePage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/*" component={LoginPage} />
