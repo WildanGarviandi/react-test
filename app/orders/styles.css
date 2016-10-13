@@ -1,16 +1,16 @@
 .itemLabel {
-  display: block;
-  padding: 5px;
-  width: 150px;
-  float: left;
+    display: block;
+    padding: 5px;
+    width: 150px;
+    float: left;
 }
 
 .itemValue {
-  padding: 5px;
-  display: block;
-  margin-left: 160px;
-  max-width: 350px;
-  text-indent: 0px;
+    padding: 5px;
+    display: block;
+    margin-left: 160px;
+    max-width: 350px;
+    text-indent: 0px;
 }
 
 .orderDetailsHeader {
@@ -181,7 +181,7 @@
     cursor: pointer;
 }
 
-.glyph {
+.glyphFilter {
     position: relative;
     left: -13px;
 }
@@ -232,4 +232,62 @@
     margin-top: 8px;
     margin-bottom: 8px;
     font-size: 12px;
+}
+
+.container {
+    float: left;
+    display: inline-block;
+    border-radius: 5px;
+    width: 15%;
+    height: 110px;
+    position: relative;
+    color: #fff;
+    background-color: #5cb85c;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    border: solid 1px #fff;
+}
+
+.num {
+    font-size: 35px;
+    position: absolute;
+    top: 0;
+    right: 10px;
+}
+
+.attr {
+    font-size: 20px;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+.glyph {
+    font-size: 50px;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+.container:hover {
+    border: solid 1px #337ab7;
+}
+
+.attrAll {
+    background-color: #337ab7;
+}
+
+.attrOpen {
+    background-color: #d9534f;
+}
+
+.attrProcessed {
+    background-color: #f0ad4e;
+}
+
+.attrFinished {
+    background-color: #5cb85c;
 }
