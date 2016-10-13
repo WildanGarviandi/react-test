@@ -357,10 +357,31 @@ export function ExportOrder(startDate, endDate) {
         const acceptHeader = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
         const responseType = 'arraybuffer';
         let params = lodash.assign({}, filters, {});
+        let isProceed;
+
+        if (Object.keys(params).length === 0) {
+            isProceed = confirm('You are about to export ' + total + ' orders. Do you want to continue ?');
+            if (!isProceed) {
+                return;
+            }
+        }
 
         if (filters.startCreated && filters.endCreated) {
             params.startCreated = moment(filters.startCreated).format('MM-DD-YYYY')
             params.endCreated = moment(filters.endCreated).format('MM-DD-YYYY')
+        }
+
+        if (filters.startDueTime && filters.endDueTime) {
+            params.startDueTime = moment(filters.startDueTime).format('MM-DD-YYYY');
+            params.endDueTime = moment(filters.endDueTime).format('MM-DD-YYYY');
+        }
+
+        if (filters.isTrunkeyOrder === 'All') {
+            delete params.isTrunkeyOrder;
+        }
+
+        if (filters.isCOD === 'All') {
+            delete params.isCOD;
         }
 
         var output ='<p style="text-align: center">'+
