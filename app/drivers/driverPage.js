@@ -8,6 +8,7 @@ import {ButtonWithLoading} from '../components/button';
 import Table from './driverTable';
 import * as DriverService from './driverService';
 import styles from './styles.css';
+import stylesButton from '../components/button.css';
 
 const DriverPage = React.createClass({
     componentWillMount() {
@@ -18,6 +19,11 @@ const DriverPage = React.createClass({
         return (
             <Page title="My Driver">
                 <Pagination {...paginationState} {...PaginationAction} />
+                <p>
+                    <Link to={'/mydrivers/add'}>
+                        <button className={stylesButton.greenButton}>Add Driver</button> 
+                    </Link>
+                </p>
                 <Table drivers={drivers} />
                 <Pagination {...paginationState} {...PaginationAction} />
             </Page>

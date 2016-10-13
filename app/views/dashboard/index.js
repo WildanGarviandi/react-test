@@ -6,6 +6,7 @@ import {AppLoadedActions, LogoutAction} from '../../modules';
 import FetchStatusList from '../../modules/containers/actions/statusFetch';
 import * as ContactService from '../../contacts/contactService';
 import * as StateService from '../../states/stateService';
+import * as CityService from '../../cities/cityService';
 import {Glyph} from '../base';
 import Accordion from '../base/accordion';
 import styles from './styles.css';
@@ -158,6 +159,7 @@ function DispatchToProps(dispatch) {
     initialLoad() {
       dispatch(FetchStatusList());
       dispatch(ContactService.FetchList());
+      dispatch(CityService.FetchList());
       dispatch(StateService.FetchList());
     },
     logout: function() {

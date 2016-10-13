@@ -22,6 +22,7 @@ import myContacts from './contacts/contactService';
 import stateList from './states/stateService';
 import tripsHistory from './tripHistory/service';
 import myDrivers from './drivers/driverService';
+import cityList from './cities/cityService';
 
 export default combineReducers({ 
   userLogged: authReducers,
@@ -46,5 +47,6 @@ export default combineReducers({
   myContacts,
   stateList,
   tripsHistory,
-  myDrivers
+  myDrivers,
+  cityList,
 });

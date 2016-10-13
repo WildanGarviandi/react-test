@@ -9,7 +9,11 @@ const Constants = {
     BASE: "mydriver/defaultSet/",
     SET_DRIVERS: "mydriver/drivers/set",
     TOGGLE_SELECT_DRIVER: "mydriver/drivers/select",
-    TOGGLE_SELECT_ALL: "mydriver/selectedAll/toggle"
+    TOGGLE_SELECT_ALL: "mydriver/selectedAll/toggle",
+    EDIT_DRIVERS: "mydriver/drivers/edit",
+    DRIVER_DETAILS_SET: "mydriver/drivers/details",
+    FETCHING_PAGE: "mydriver/drivers/fetching",
+    FETCHING_PAGE_STOP: "mydriver/drivers/fetchingStop",
 }
 
 const initialStore = {
@@ -64,6 +68,27 @@ export default function Reducer(store = initialStore, action) {
                 selectedAll: !selectedAll,
                 drivers: newDrivers,
             })
+        }
+
+        case Constants.FETCHING_PAGE: {
+            return lodash.assign({}, store, {
+                isFetching: true
+            });
+        }
+
+        case Constants.DRIVER_DETAILS_SET: {
+            return lodash.assign({}, store, {
+                driver: action.driver,
+                isEditing: true,
+                isFetching: false
+            });
+        }
+
+        case Constants.FETCHING_PAGE_STOP: {
+            return lodash.assign({}, store, {
+                driver: {},
+                isFetching: false
+            });
         }
 
         default: {
@@ -166,6 +191,102 @@ export function FetchList() {
         }).catch((e) => {
             dispatch({type: modalAction.BACKDROP_HIDE});
             dispatch(ModalActions.addMessage(e.message));
+        });
+    }
+}
+
+export function editDriver(id, updateData) {
+    return (dispatch, getState) => {
+        const {myDrivers, userLogged} = getState().app;
+        const {driver} = myDrivers;
+        const {token} = userLogged;
+
+        dispatch({type: modalAction.BACKDROP_SHOW});
+        FetchPost('/driver/' + id, token, updateData).then((response) => {
+        if(response.ok) {
+            response.json().then(function({data}) {
+                dispatch({
+                    type: Constants.DRIVER_DETAILS_SET,
+                    driver: lodash.assign({}, updateData, driver),
+                });
+                alert('Edit Driver Success');
+                dispatch({type: modalAction.BACKDROP_HIDE});
+                dispatch(fetchDetails(id));
+            });
+        } else {
+            dispatch({type: modalAction.BACKDROP_HIDE});
+            dispatch(ModalActions.addMessage('Failed to edit driver details'));
+        }
+        }).catch(() => { 
+            dispatch({type: modalAction.BACKDROP_HIDE});
+            dispatch(ModalActions.addMessage('Network error'));
+        });
+    }
+}
+
+export function fetchDetails(id) {
+    return (dispatch, getState) => {
+        const {userLogged} = getState().app;
+        const {token} = userLogged;
+
+        dispatch({type: modalAction.BACKDROP_SHOW});
+        dispatch({type: Constants.FETCHING_PAGE});
+        FetchGet('/driver/' + id, token).then(function(response) {
+            if(!response.ok) {
+                return response.json().then(({error}) => {
+                    throw error;
+                });
+            }
+
+            response.json().then(function({data}) {
+                dispatch({
+                    type: Constants.DRIVER_DETAILS_SET,
+                    driver: data,
+                });
+                dispatch({type: modalAction.BACKDROP_HIDE});
+            });
+        }).catch((e) => {
+            window.history.back();
+            const message = (e && e.message) ? e.message : "Failed to fetch driver details";
+            dispatch(ModalActions.addMessage(message));
+            dispatch({type: modalAction.BACKDROP_HIDE});
+        });
+    }
+}
+
+export function resetManageDriver() {
+    return (dispatch) => {
+        dispatch({type: Constants.FETCHING_PAGE_STOP});
+    }
+}
+
+export function addDriver(driverData) {
+    return (dispatch, getState) => {
+        const {myDrivers, userLogged} = getState().app;
+        const {driver} = myDrivers;
+        const {token} = userLogged;
+
+        dispatch({type: modalAction.BACKDROP_SHOW});
+        FetchPost('/driver', token, driverData).then((response) => {
+        if(response.ok) {
+            response.json().then(function({data}) {
+                dispatch({
+                    type: Constants.DRIVER_DETAILS_SET,
+                    driver: lodash.assign({}, driverData, driver),
+                });
+                alert('Add Driver Success');
+                dispatch({type: modalAction.BACKDROP_HIDE});
+                window.location.href='/mydrivers/edit/' + data.driver.UserID;
+            });
+        } else {
+            response.json().then(function({error}) {
+                dispatch(ModalActions.addMessage('Failed to add driver: ' + error.message));
+                dispatch({type: modalAction.BACKDROP_HIDE});
+            });
+        }
+        }).catch(() => { 
+            dispatch({type: modalAction.BACKDROP_HIDE});
+            dispatch(ModalActions.addMessage('Network error'));
         });
     }
 }
