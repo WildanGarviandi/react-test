@@ -13,7 +13,11 @@ const Constants = {
     FETCHING_PAGE_STOP: "mycontact/contacts/fetchingStop",
     RESET_FILTER: "mycontact/contacts/reset",
     TOGGLE_SELECT_CONTACT: "mycontact/contacts/select",
-    TOGGLE_SELECT_ALL: "mycontact/selectedAll/toggle"
+    TOGGLE_SELECT_ALL: "mycontact/selectedAll/toggle",
+    EDIT_CONTACTS: "mycontact/contacts/edit",
+    CONTACT_DETAILS_SET: "mycontact/contacts/details",
+    FETCHING_PAGE: "mycontact/contacts/fetching",
+    FETCHING_PAGE_STOP: "mycontact/contacts/fetchingStop",
 }
 
 const initialStore = {
@@ -56,7 +60,7 @@ export default function Reducer(store = initialStore, action) {
 
         case Constants.FETCHING_PAGE_STOP: {
             return lodash.assign({}, store, {
-                order: {},
+                contact: {},
                 isFetching: false
             });
         }
@@ -83,7 +87,9 @@ export default function Reducer(store = initialStore, action) {
 
                 default: {
                     return lodash.assign({}, store, {
-                        contact: action.contact
+                        contact: action.contact,
+                        isEditing: true,
+                        isFetching: false
                     });
                 }
             }
@@ -224,12 +230,37 @@ export function FetchList() {
     }
 }
 
-// contactType can be contact, shipper, pickup, dropoff or null
+export function editContact(id, updateData) {
+    return (dispatch, getState) => {
+        const {myContacts, userLogged} = getState().app;
+        const {contact} = myContacts;
+        const {token} = userLogged;
+        dispatch({type: modalAction.BACKDROP_SHOW});
+        FetchPost('/contact/' + id, token, updateData).then((response) => {
+        if(response.ok) {
+            response.json().then(function({data}) {
+                dispatch({
+                    type: Constants.CONTACT_DETAILS_SET,
+                    contact: lodash.assign({}, updateData, contact),
+                });
+                alert('Edit Contact Success');
+                dispatch({type: modalAction.BACKDROP_HIDE});
+                dispatch(fetchDetails(id));
+            });
+        } else {
+            dispatch({type: modalAction.BACKDROP_HIDE});
+            dispatch(ModalActions.addMessage('Failed to edit contact details'));
+        }
+        }).catch(() => { 
+            dispatch({type: modalAction.BACKDROP_HIDE});
+            dispatch(ModalActions.addMessage('Network error'));
+        });
+    }
+}
 export function fetchDetails(id, contactType) {
     return (dispatch, getState) => {
         const {userLogged} = getState().app;
         const {token} = userLogged;
-
         dispatch({type: modalAction.BACKDROP_SHOW});
         dispatch({type: Constants.FETCHING_PAGE});
         FetchGet('/contact/' + id, token).then(function(response) {
@@ -238,7 +269,6 @@ export function fetchDetails(id, contactType) {
                     throw error;
                 });
             }
-
             response.json().then(function({data}) {
                 dispatch({
                     type: Constants.CONTACT_DETAILS_SET,
@@ -256,18 +286,19 @@ export function fetchDetails(id, contactType) {
     }
 }
 
-
 export function addContact(contact, contactType) {
     return (dispatch, getState) => {
         const {userLogged} = getState().app;
         const {token} = userLogged;
-
         dispatch({type: modalAction.BACKDROP_SHOW});
         FetchPost('/contact', token, contact).then((response) => {
         if(response.ok) {
             dispatch(FetchList());
             response.json().then(function({data}) {
                 dispatch(fetchDetails(data.contact.ContactID, contactType));
+                if (!contactType) {
+                    window.location.href='/mycontacts/edit/' + data.contact.ContactID;
+                }
             });
             dispatch(ModalActions.addMessage('Add Contact Success'));
             dispatch({type: modalAction.BACKDROP_HIDE});
@@ -277,10 +308,14 @@ export function addContact(contact, contactType) {
                 dispatch({type: modalAction.BACKDROP_HIDE});
             });
         }
-        }).catch(() => { 
-            dispatch({type: modalAction.BACKDROP_HIDE});
-            dispatch(ModalActions.addMessage('Network error'));
         });
+    }
+}
+
+export function resetManageContact() {
+    return (dispatch) => {
+   
+        dispatch({type: Constants.FETCHING_PAGE_STOP});
     }
 }
 

@@ -8,6 +8,7 @@ import {ButtonWithLoading} from '../components/button';
 import Table from './contactTable';
 import * as ContactService from './contactService';
 import styles from './styles.css';
+import stylesButton from '../components/button.css';
 
 const ContactPage = React.createClass({
     componentWillMount() {
@@ -18,6 +19,9 @@ const ContactPage = React.createClass({
         return (
             <Page title="My Contact">
                 <Pagination {...paginationState} {...PaginationAction} />
+                <p>
+                    <Link to={'/mycontacts/add'} className={stylesButton.greenButton}>Add Contact</Link>
+                </p>
                 <Table contacts={contacts} />
                 <Pagination {...paginationState} {...PaginationAction} />
             </Page>
