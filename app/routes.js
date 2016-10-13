@@ -22,6 +22,7 @@ import TripHistoryList from './tripHistory/listPage';
 import TripHistoryDetails from './tripHistory/detailsPage';
 import MyContactPage from './contacts/contactPage';
 import ManageContactsPage from './contacts/contactManagePage';
+import MyDriverPage from './drivers/driverPage';
 
 function requireAuth(nextState, replace, callback) {
   checkAuth(store).then(function(result) {
@@ -61,6 +62,7 @@ export default (
         <Route path="/mycontacts" component={MyContactPage} onEnter={requireAuth} />
         <Route path="/mycontacts/add" component={ManageContactsPage} onEnter={requireAuth} />
         <Route path="/mycontacts/edit/:id" component={ManageContactsPage} onEnter={requireAuth} />
+        <Route path="/mydrivers" component={MyDriverPage} onEnter={requireAuth}/>
       </Route>
       <Route path="/qrcode/:id" component={ContainerQRCodePage} />
       <Route path="/login" component={LoginPage} />
