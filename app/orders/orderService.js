@@ -4,8 +4,9 @@ import FetchPost from '../modules/fetch/post';
 import ModalActions from '../modules/modals/actions';
 import {modalAction} from '../modules/modals/constants';
 import moment from 'moment';
-import config from '../../config.json'
+import config from '../../config.json';
 import Promise from 'bluebird';
+import {fetchXhr} from '../modules/fetch/getXhr';
 
 const Constants = {
     BASE: "myorder/defaultSet/",
@@ -351,8 +352,10 @@ export function resetManageOrder() {
 export function ExportOrder(startDate, endDate) {
     return (dispatch, getState) => {
         const {myOrders, userLogged} = getState().app;
-        const {filters} = myOrders;
+        const {filters, total} = myOrders;
         const {token} = userLogged;
+        const acceptHeader = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+        const responseType = 'arraybuffer';
         let params = lodash.assign({}, filters, {});
 
         if (filters.startCreated && filters.endCreated) {
@@ -360,31 +363,47 @@ export function ExportOrder(startDate, endDate) {
             params.endCreated = moment(filters.endCreated).format('MM-DD-YYYY')
         }
 
-        function formatParams(params){
-            return "?" + Object
-                .keys(params)
-                .map(function(key){
-                  return key+"="+params[key]
-                })
-                .join("&");
-        }
+        var output ='<p style="text-align: center">'+
+                    '<img src="../img/loading.gif" style="width:100px; height:100px;" />'+
+                    '<br />'+
+                    'You can do other things, while exporting in progress'+
+                    '</p>';
 
-        dispatch({type: modalAction.BACKDROP_SHOW});
-        var oReq = new XMLHttpRequest();
-        oReq.open("GET", "http://localhost:3001/v2/fleet/order/export/"+ formatParams(params), true);
-        oReq.responseType = "arraybuffer";
-        oReq.setRequestHeader("LoginSessionKey", token);
-        oReq.setRequestHeader("Content-type", 'application/json');
-        oReq.setRequestHeader("Accept", 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        var popout = window.open();
+        popout.document.write(output);
+        let xhr = fetchXhr('/order/export/', params, token, acceptHeader, responseType);
+        xhr.onload = function (oEvent) {
+            let blob = new Blob([xhr.response], {type: acceptHeader});
+            let fileName = 'export_'+ moment(new Date()).format('YYYY-MM-DD HH:mm:ss') +'.xlsx';
+            if (typeof window.navigator.msSaveBlob !== 'undefined') {
+                window.navigator.msSaveBlob(blob, fileName);
+            } else {
+                let URL = window.URL || window.webkitURL;
+                let downloadUrl = window.URL.createObjectURL(blob);
 
-        oReq.onload = function (oEvent) {
-            var blob = new Blob([oReq.response], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
-            dispatch(ModalActions.addMessage('Export Success'));
-            dispatch({type: modalAction.BACKDROP_HIDE});
-            window.open(window.URL.createObjectURL(blob));
+                if (fileName) {
+                    let a = document.createElement("a");
+                    if (typeof a.download === 'undefined') {
+                        popout.location.href = downloadUrl;
+                    } else {
+                        a.href = downloadUrl;
+                        a.download = fileName;
+                        a.target = '_blank';
+                        document.body.appendChild(a);
+                        a.click();
+                    }
+                } else {
+                    popout.location.href = downloadUrl;
+                }
+
+                setTimeout(function () { 
+                    window.URL.revokeObjectURL(downloadUrl); 
+                    popout.close();
+                }, 1000);
+            }
         };
 
-        oReq.send(null);
+        xhr.send(null);
     }
 }
 
