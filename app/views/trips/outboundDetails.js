@@ -88,10 +88,6 @@ const DetailPage = React.createClass({
       });
     }
   },
-  printManifest() {
-    const {trip} = this.props;
-    this.props.printManifest(trip.TripID);
-  },
   render() {
     const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, fillAble, hasDriver, isFetching, isInbound, orders, reusable, statusList, TotalCODValue, CODCount, totalDeliveryFee, trip} = this.props;
 
@@ -122,7 +118,7 @@ const DetailPage = React.createClass({
               canDeassignDriver &&
               <ButtonWithLoading textBase="Cancel Assignment" textLoading="Deassigning" onClick={this.deassignDriver} isLoading={isDeassigning} />
             }
-            <ButtonWithLoading textBase={'Print Manifest'} onClick={this.printManifest} styles={{base: styles.normalBtn}} />
+            <a href={'/trips/' + trip.TripID + '/manifest'} className={styles.manifestLink} target="_blank">Print Manifest</a>
             <NextDestinationSetter trip={trip} accordionState={trip && (trip.Driver || trip.ExternalTrip) ? "collapsed" : "expanded"} />
             <TransportSetter trip={trip} isInbound={false} accordionState={trip && ((trip.Driver || trip.ExternalTrip) || !(trip.District || trip.DestinationHub)) ? "collapsed" : "expanded"}/>
             <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>Total {orders.length} items</span>
@@ -284,9 +280,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     reuse: function(tripID) {
       dispatch(TripDetailsTrue.TripDeliver(tripID, true));
-    },
-    printManifest: function(tripID) {
-      dispatch(push('/trips/' + tripID + '/manifest'));
     },
   };
 };

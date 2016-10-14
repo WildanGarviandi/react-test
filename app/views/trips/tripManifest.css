@@ -163,6 +163,24 @@
   margin: 0;
 }
 
+.semiBold {
+  font-weight: 600;
+}
+
+.translucentBlack {
+  color: rgba(0,0,0,0.5);
+}
+
+.acknowledgementContainer {
+  text-align: right;
+}
+
+.acknowledgement {
+  width: 112px;
+  text-align: center;
+  display: inline-block;
+}
+
 .signature {
   width: 112px;
   height: 80px;
