@@ -168,6 +168,8 @@ function TripHistoryRow({trip, goToDetails}) {
             <TextCell text={trip.DriverName || '---'} />
             <TextCell text={trip.OrderStatus && trip.OrderStatus.OrderStatus} />
             <TextCell text={trip.TripType} />
+            <TextCell text={trip.UserOrderRoutes.length} />
+            <TextCell text={trip.LogisticFee} />
         </tr>
     );
 }
@@ -194,6 +196,8 @@ function TripHistoryHeader() {
       <TextHeader text="Driver" />
       <TextHeader text="Status" />
       <TextHeader text="Trip Type" />
+      <TextHeader text="Total Packages" />
+      <TextHeader text="Fee" />
     </tr>
   );
 }
@@ -253,6 +257,8 @@ function TripHistoryFilters({filters, OnChangeBuilder, OnKeyDown}) {
             <InputCell {...TextFiltersProps('driver')} />
             <FilterStatusCellWithState />
             <FilterTripTypeWithState />
+            <TextCell />
+            <TextCell />
         </tr>
     );
 }
