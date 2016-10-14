@@ -359,13 +359,6 @@ export function ExportOrder(startDate, endDate) {
         let params = lodash.assign({}, filters, {});
         let isProceed;
 
-        if (Object.keys(params).length === 0) {
-            isProceed = confirm('You are about to export ' + total + ' orders. Do you want to continue ?');
-            if (!isProceed) {
-                return;
-            }
-        }
-
         if (filters.startCreated && filters.endCreated) {
             params.startCreated = moment(filters.startCreated).format('MM-DD-YYYY')
             params.endCreated = moment(filters.endCreated).format('MM-DD-YYYY')
@@ -382,6 +375,13 @@ export function ExportOrder(startDate, endDate) {
 
         if (filters.isCOD === 'All') {
             delete params.isCOD;
+        }
+        
+        if (Object.keys(params).length === 0) {
+            isProceed = confirm('You are about to export ' + total + ' orders. Do you want to continue ?');
+            if (!isProceed) {
+                return;
+            }
         }
 
         var output ='<p style="text-align: center">'+
