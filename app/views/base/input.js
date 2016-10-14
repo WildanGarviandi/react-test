@@ -15,12 +15,17 @@ const CheckBox = React.createClass({
     onChange(e.target.checked);
     this.setState({checked: !this.state.checked});
   },
+  handleEnterKey(e) {
+    if(e.keyCode === 13 && this.props.onEnterKeyPressed) {
+      this.props.onEnterKeyPressed();
+    }
+  },
   render() {
     let { checked, label, name, styles = {} } = this.props;
 
     return (
       <span className={styles.container}>
-        <input type="checkbox" checked={this.state.checked} onChange={this.handleClick} id={name} className={styles.checkbox} />
+        <input type="checkbox" checked={this.state.checked} onChange={this.handleClick} id={name} className={styles.checkbox} onKeyDown={this.handleEnterKey} />
         <label htmlFor={name} className={styles.label}>{label}</label>
       </span>
     );
@@ -83,9 +88,10 @@ const InputWithDefault = React.createClass({
   },
   handleSelect() {
     this.props.handleSelect(this.state.currentText);
+    this.props.handleEnter();
   },
   render() {
-    return <Input {...this.props} base={{value: this.state.currentText, type: this.props.type}} onChange={this.setText} onEnterKeyPressed={this.handleSelect} />
+    return <Input {...this.props} base={{value: this.state.currentText, type: this.props.type, autoFocus: this.props.autoFocus}} onChange={this.setText} onEnterKeyPressed={this.handleSelect} />
   }
 });
 
