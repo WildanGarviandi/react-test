@@ -118,7 +118,7 @@ const DetailPage = React.createClass({
               canDeassignDriver &&
               <ButtonWithLoading textBase="Cancel Assignment" textLoading="Deassigning" onClick={this.deassignDriver} isLoading={isDeassigning} />
             }
-            <a href={'/trips/' + trip.TripID + '/manifest'} className={styles.manifestLink} target="_blank">Print Manifest</a>
+            <a href={'/trips/' + trip.TripID + '/manifest#' + trip.ContainerNumber} className={styles.manifestLink} target="_blank">Print Manifest</a>
             <NextDestinationSetter trip={trip} accordionState={trip && (trip.Driver || trip.ExternalTrip) ? "collapsed" : "expanded"} />
             <TransportSetter trip={trip} isInbound={false} accordionState={trip && ((trip.Driver || trip.ExternalTrip) || !(trip.District || trip.DestinationHub)) ? "collapsed" : "expanded"}/>
             <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>Total {orders.length} items</span>

@@ -1,6 +1,5 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import etobeeIcon from '../../img/app-icon.png';
 import moment from 'moment';
 import tripManifestStyle from './tripManifest.css';
 import * as TripDetailsTrue from '../../modules/inboundTripDetails';
@@ -18,6 +17,7 @@ const TripManifestPage = React.createClass({
   componentDidUpdate(prevProps) {
     if (this.props.trip !== prevProps.trip) {
       // when page is rendered with trip & order details, print
+      document.title = "#" + this.props.trip.ContainerNumber;
       window.print();
     }
   },
@@ -56,33 +56,37 @@ const TripManifestPage = React.createClass({
           !isFetching && trip !== null &&
           <div className={tripManifestStyle.container}>
             <div className={tripManifestStyle.logo}>
-              <img src={etobeeIcon} />
+              <img src="/img/app-icon.png" alt="Etobee Icon" />
               <p>etobee</p>
             </div>
             <div className={tripManifestStyle.currentDate}>{moment().format('LL')}</div>
             <div className={tripManifestStyle.content}>
+              <h1 className={tripManifestStyle.contentTitle}>Trip Manifest</h1>
               <div className={tripManifestStyle.mainInfo}>
-                <h1>Trip Manifest</h1>
-                <div><QRCode value={trip.ContainerNumber + ''} /></div>
+                <div>
+                  <QRCode
+                    value={trip.ContainerNumber + ''}
+                    size={80}
+                    className={tripManifestStyle.qrcode}
+                  />
+                  </div>
                 <p>Trip ID</p>
                 <h2>#{trip.ContainerNumber}</h2>
               </div>
               <div className={tripManifestStyle.addressCardContainer}>
                 <div className={tripManifestStyle.addressCard}>
-                  <div>
-                    <p>From</p>
-                    {
-                      trip.PickupAddress !== null &&
-                      this.generateAddressMarkup(trip.PickupAddress)
-                    }
-                  </div>
-                  <div>
-                    <p>To</p>
-                    {
-                      trip.DropoffAddress !== null &&
-                      this.generateAddressMarkup(trip.DropoffAddress)
-                    }
-                  </div>
+                  <p>From</p>
+                  {
+                    trip.PickupAddress !== null &&
+                    this.generateAddressMarkup(trip.PickupAddress)
+                  }
+                </div>
+                <div className={tripManifestStyle.addressCard}>
+                  <p>To</p>
+                  {
+                    trip.DropoffAddress !== null &&
+                    this.generateAddressMarkup(trip.DropoffAddress)
+                  }
                 </div>
               </div>
               {
@@ -109,7 +113,7 @@ const TripManifestPage = React.createClass({
                                 <div>
                                   <p className={tripManifestStyle.semiBold}>{order.PickupAddress.FirstName + ' ' + order.PickupAddress.LastName}</p>
                                   <p className={tripManifestStyle.semiBold}>{order.PickupAddress.PickupMobile}</p>
-                                  <p className={tripManifestStyle.translucentBlack}>{this.generateAddressMarkup(order.PickupAddress)}</p>
+                                  <div className={tripManifestStyle.translucentBlack}>{this.generateAddressMarkup(order.PickupAddress)}</div>
                                 </div>
                               }
                             </td>
@@ -119,7 +123,7 @@ const TripManifestPage = React.createClass({
                                 <div>
                                   <p className={tripManifestStyle.semiBold}>{order.DropoffAddress.FirstName + ' ' + order.DropoffAddress.LastName}</p>
                                   <p className={tripManifestStyle.semiBold}>{order.DropoffAddress.PickupMobile}</p>
-                                  <p className={tripManifestStyle.translucentBlack}>{this.generateAddressMarkup(order.DropoffAddress)}</p>
+                                  <div className={tripManifestStyle.translucentBlack}>{this.generateAddressMarkup(order.DropoffAddress)}</div>
                                 </div>
                               }
                             </td>
