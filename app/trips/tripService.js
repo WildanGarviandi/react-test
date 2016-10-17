@@ -174,11 +174,6 @@ export function FetchList() {
             params.statusIDs = JSON.stringify([filters.status]);
         }
 
-        if (filters.startCreated && filters.endCreated) {
-             params.startCreated = moment(filters.startCreated).format('MM-DD-YYYY')
-             params.endCreated = moment(filters.endCreated).format('MM-DD-YYYY')
-        }
-
         dispatch({type: modalAction.BACKDROP_SHOW});
         FetchGet('/trip/assigned', token, params).then((response) => {
             if(!response.ok) {
