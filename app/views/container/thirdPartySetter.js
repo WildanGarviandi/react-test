@@ -8,8 +8,37 @@ import datetimeStyles from './datetime.css';
 import {InputWithDefault} from '../base/input';
 import {ButtonWithLoading} from '../base';
 import {CreateExternalTrip, SaveEdit3PL, SetExternalTrip, StartEdit3PL, StopEdit3PL, UpdateExternalTrip} from '../../modules/inboundTripDetails';
+import ImageUploader from '../base/ImageUploader';
 
 const DetailRow = React.createClass({
+  generateTypeContent() {
+    const {type, value} = this.props;
+    
+    switch (type) {
+      case "datetime" :
+        return (
+          <span className={styles.itemValue}>:
+            <span className={styles.datetimeWrapper}>
+              <DateTime onChange={this.props.onChange} defaultValue={value} />
+            </span>
+          </span>
+        );
+      case "image" :
+        return (
+          <div className={styles.imageUploaderWrapper}>
+            <ImageUploader currentImageUrl={value} updateImageUrl={(data) => this.props.onChange(data)} />
+          </div>
+        );
+      default :
+        return (
+          <span className={styles.itemValue}>:
+            <span className={styles.inputWrapper}>
+              <InputWithDefault currentText={value} onChange={(data) => this.props.onChange(data)} type={type}/>
+            </span>
+          </span>
+        );
+      }
+  },
   render() {
     const {isEditing, label, type, value} = this.props;
 
@@ -18,23 +47,19 @@ const DetailRow = React.createClass({
         <span className={styles.itemLabel}>{label}</span>
         {
           !isEditing &&
-          <span className={styles.itemValue}>: {value}</span>
+          <span className={styles.itemValue}>
+          : 
+          {
+            type === "image" ?
+            <img src={value} alt="" />
+            :
+            value
+          }
+          </span>
         }
         {
           isEditing &&
-          <span className={styles.itemValue}>
-            :
-            {
-              type === "datetime" ?
-              <span className={styles.datetimeWrapper}>
-                <DateTime onChange={this.props.onChange} defaultValue={value} />
-              </span>
-              :
-              <span className={styles.inputWrapper}>
-                <InputWithDefault currentText={value} onChange={this.props.onChange} type={type}/>
-              </span>
-            }
-          </span>
+          this.generateTypeContent()
         }
       </div>
     );
@@ -76,17 +101,19 @@ const ThirdParty = React.createClass({
         (isEditing3PL || !externalTripRaw || !prev3PL) &&
         <div>
           <h4 style={{marginTop: 0, marginBottom: 10, fontWeight: 'normal'}}>Third Party Logistic Details:</h4>
+          <DetailRow label="Sender" value={externalTrip.Sender} isEditing={true} type="text" onChange={this.onChange('Sender')} />
           <DetailRow label="Fee" value={externalTrip.Fee} isEditing={true} type="number" onChange={this.onChange('Fee')} />
           <DetailRow label="Transportation" value={externalTrip.Transportation} isEditing={true} type="text" onChange={this.onChange('Transportation')} />
           <DetailRow label="Departure Time" value={externalTrip.DepartureTime} isEditing={true} type="datetime" onChange={this.onChange('DepartureTime')} />
           <DetailRow label={arrivalTimeLabel} value={externalTrip.ArrivalTime} isEditing={true} type="datetime" onChange={this.onChange('ArrivalTime')} />
+          <DetailRow label="Receipt" value={externalTrip.PictureUrl} isEditing={true} type="image" onChange={this.onChange('PictureUrl')}/>
           {
             (trip && trip.OrderStatus && trip.OrderStatus.OrderStatus === "BOOKED") ?
             <div style={{clear: 'both'}}>
               <ButtonWithLoading textBase="Save & Start Trip" textLoading="Saving" onClick={this.save} isLoading={false} styles={{base: styles2.normalBtn}} />
             </div>
             :
-            <div>
+            <div style={{clear: 'both'}}>
               <ButtonWithLoading textBase="Save Changes" textLoading="Saving" onClick={this.saveEdit} isLoading={isSaving3PL} styles={{base: styles2.normalBtn}} />
               <ButtonWithLoading textBase="Cancel" textLoading="Saving" onClick={this.stopEdit} isLoading={false} styles={{base: styles2.driverBtn}} />
             </div>
@@ -97,10 +124,12 @@ const ThirdParty = React.createClass({
         !isEditing3PL && externalTripRaw && prev3PL &&
         <div>
           <h4 style={{marginTop: 0, marginBottom: 10, fontWeight: 'normal'}}>Third Party Logistic Details:</h4>
+          <DetailRow label="Sender" value={externalTrip.Sender} isEditing={false} />
           <DetailRow label="Fee" value={externalTrip.Fee} isEditing={false} />
           <DetailRow label="Transportation" value={externalTrip.Transportation} isEditing={false} />
           <DetailRow label="Departure Time" value={externalTrip.DepartureTime && externalTrip.DepartureTime.toLocaleString()} isEditing={false} />
           <DetailRow label={arrivalTimeLabel} value={externalTrip.ArrivalTime && externalTrip.ArrivalTime.toLocaleString()} isEditing={false} />
+          <DetailRow label="Receipt" value={externalTrip.PictureUrl} isEditing={false} type="image" />
           <div style={{clear: 'both'}}>
           {
             !isInbound &&

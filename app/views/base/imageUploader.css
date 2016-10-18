@@ -1,0 +1,46 @@
+.thumbnail {
+  display: block;
+  margin-left: 5px;
+}
+
+.fileInput {
+  opacity: 0;
+  visibility: hidden;
+  display: none;
+}
+
+.thumbnail + .fileLabel {
+  margin-left: 8px;
+}
+
+.disabledFileLabel {
+  padding-left: 25px;
+  margin-top: 6px;
+  background-image: url('../../img/loading.gif');
+  background-position: center left;
+  background-size: 20px;
+  background-repeat: no-repeat;
+  display: inline-block;
+  text-indent: 0;
+}
+
+.fileLabel {
+  color: #333;
+  background-color: #fff;
+  border: solid 1px #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: inline-block;
+  padding: 8px;
+  text-align: center;
+  text-indent: 0;
+  position: relative;
+  left: -1px;
+}
+
+.fileLabel:hover {
+  color: #333;
+  background-color: #e6e6e6;
+  border-color: #adadad;
+}

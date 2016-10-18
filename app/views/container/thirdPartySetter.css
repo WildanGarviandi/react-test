@@ -27,3 +27,16 @@
 .datetimeWrapper {
   position: relative;
 }
+
+.imageUploaderWrapper {
+  float: left;
+  padding: 5px;
+  position: relative;
+}
+
+.imageUploaderWrapper::before {
+  content: ':';
+  position: absolute;
+  left: -10px;
+  top: 10px;
+}
