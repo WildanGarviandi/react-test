@@ -1,7 +1,7 @@
 import config from '../../../config.json';
 import React from 'react';
 import {connect} from 'react-redux';
-import FetchPost from '../../modules/fetch/postMultipart';
+import FetchPost from '../../modules/fetch/post';
 import styles from './ImageUploader.css';
 
 const ImageUploader = React.createClass({
@@ -15,7 +15,7 @@ const ImageUploader = React.createClass({
       var formData = new FormData();
       formData.append('file', e.target.files[0]);
       this.setState({'isUploading': true});
-      FetchPost(`/upload/picture`, this.props.token, formData).then((res) => {
+      FetchPost(`/upload/picture`, this.props.token, formData, true).then((res) => {
         if (res.status == 200) {
           return res.json();
         }
