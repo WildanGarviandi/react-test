@@ -93,6 +93,13 @@ const DetailPage = React.createClass({
 
     const {canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, isDeassigning} = this.props;
 
+    let nextSuggestion = [];
+    for (var p in trip.NextDestinationSuggestion) {
+        if (trip.NextDestinationSuggestion.hasOwnProperty(p) && p !== 'NO_SUGGESTION') {
+            nextSuggestion.push(trip.NextDestinationSuggestion[p] + ' orders should go to ' + p);
+        }
+    }
+
     return (
       <div>
         {
@@ -106,6 +113,18 @@ const DetailPage = React.createClass({
         {
           !this.props.notFound && !isFetching &&
           <Page title={'Trip Details' + (trip.ContainerNumber ? (" of Container " + trip.ContainerNumber) : "")}>
+            {
+              nextSuggestion.length > 0 &&
+              <p className={styles.nextSuggestion}>
+                Next suggestion: {nextSuggestion.join(', ')}
+              </p>
+            }
+            {
+              nextSuggestion.length === 0 &&
+              <p className={styles.nextSuggestion}>
+                Next suggestion is not available
+              </p>
+            }
             {
               fillAble &&
               <ButtonWithLoading textBase={'Fill With Orders'} onClick={this.goToFillContainer} styles={{base: styles.normalBtn}} />

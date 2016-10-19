@@ -82,3 +82,11 @@
 .greenBtn, .greenBtn:hover {
   background-color: #4cc38e;
 }
+
+.nextSuggestion {
+  background-color: #4cc38e;
+  padding: 12px;
+  max-width: 800px;
+  color: #ffffff;
+  border-radius: 5px;
+}
