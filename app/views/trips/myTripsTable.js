@@ -13,21 +13,19 @@ import tableStyles from '../base/table.css';
 import StatusDropdown from '../base/statusDropdown';
 import {TripParser} from '../../modules/trips';
 
-const ColumnsOrder = ['driver', 'webstoreNames', 'tripType', 'dropoff', 'dropoffCity', 'dropoffState', 'containerNumber', 'status', 'numberPackages'];
+const ColumnsOrder = ['driver', 'webstoreNames', 'tripType', 'nextDestination', 'containerNumber', 'status', 'numberPackages'];
 
 const ColumnsTitle = {
   containerNumber: "Container",
   district: "District",
   driver: "Driver",
-  dropoff: "Next Destination",
-  dropoffCity: "City",
-  dropoffState: "State",
+  nextDestination: "",
   dropoffTime: "Dropoff Time",
   pickup: "Pickup Address",
   pickupTime: "Pickup Time",
   status: "Status",
   tripNumber: "Trip Number",
-  tripType: "Type",
+  tripType: "Next Destination",
   webstoreNames: "Webstore",
   numberPackages: "Number of Packages"
 }
@@ -138,8 +136,8 @@ const TripTypeDropDown = React.createClass({
   render() {
     const options = [
       { key: 0, value: "All"},
-      { key: 1, value: "Last Leg"},
-      { key: 2, value: "Inter Hub"},
+      { key: 1, value: "Last Mile"},
+      { key: 2, value: "Hub"},
       { key: 3, value: "No Destination Yet"},
     ];
     const val = options[this.props.val].value;
@@ -206,7 +204,7 @@ const Table = React.createClass({
       <tr>
         {Filters.slice(0,2)}
         <TripTypeDropDownWithState />
-        {Filters.slice(3,7)}
+        {Filters.slice(3,5)}
         <TripStatusSelect {...this.props.statusProps} />
       </tr>
     );
@@ -246,10 +244,10 @@ function ProcessTrip(trip) {
   const dropoff = TripDropOff(trip);
   let tripType;
 
-  if(trip.District) {
-    tripType = "Last Leg";
-  } else if(trip.DestinationHub) {
-    tripType = "Inter Hub";
+  if (trip.District) {
+    tripType = "Last Mile";
+  } else if (trip.DestinationHub) {
+    tripType = "Hub";
   } else {
     tripType = "No Destination Yet";
   }
@@ -258,7 +256,7 @@ function ProcessTrip(trip) {
     containerNumber: trip.ContainerNumber,
     district: trip.District && trip.District.Name,
     driver: trip.Driver && `${trip.Driver.FirstName} ${trip.Driver.LastName}`,
-    dropoff: tripType === "Last Leg" ? "[Multiple Dropoff]" : dropoff.address,
+    dropoff: tripType === "Last Mile" ? `District ${trip.District.Name} - ${trip.District.City}` : `Hub ${trip.DestinationHub.Name}`,
     dropoffCity: dropoff.city,
     dropoffState: dropoff.state,
     dropoffTime: trip.DropoffTime,
