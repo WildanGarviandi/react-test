@@ -14,10 +14,10 @@ import _ from 'underscore';
 
 var classnaming = require('classnames/bind').bind(styles);
 
-const MenuItem = ({active, children, to}) => {
+const MenuItem = ({active, children, to, onClick}) => {
   let className = classnaming('menuItem', {active: active});
   return (
-    <li className={className}>
+    <li onClick={onClick} className={className}>
       <Link className={styles.link} to={to}>{children}</Link>
     </li>
   );
@@ -103,10 +103,10 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
           <Glyph className={styles.menuGlyph} name={'user'}/>
           <span>My Drivers</span>
         </MenuItem>
-        <button className={styles.logoutBtn} onClick={handleLogout}>
-          <Glyph className={styles.glyphBackward} name={'log-out'}/>
+        <MenuItem to={''} onClick={handleLogout}>
+          <Glyph className={styles.menuGlyph} name={'log-out'}/>
           <span>Logout</span>
-        </button>
+        </MenuItem>
       </ul>
       <button className={styles.toggleMenu} onClick={toggleCompact}>
         <Glyph className={styles.glyphBackward} name={'backward'}/>
