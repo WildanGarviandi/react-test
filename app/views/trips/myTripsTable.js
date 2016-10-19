@@ -183,7 +183,10 @@ const TripStatusSelect = React.createClass({
 const Table = React.createClass({
   render() {
     const Headers = _.map(ColumnsOrder, (columnKey) => {
-      return <th className={tableStyles.th} key={columnKey}>{ColumnsTitle[columnKey]}</th>;
+      if (columnKey !== 'nextDestination') {
+        const colHeader = (columnKey === 'tripType') ? 2 : 1;
+        return <th colSpan={colHeader} className={tableStyles.th} key={columnKey}>{ColumnsTitle[columnKey]}</th>;
+      }
     });
 
     const Body = _.map(this.props.items, (item) => {
