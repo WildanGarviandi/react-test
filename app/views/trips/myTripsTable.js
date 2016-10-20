@@ -259,7 +259,7 @@ function ProcessTrip(trip) {
     containerNumber: trip.ContainerNumber,
     district: trip.District && trip.District.Name,
     driver: trip.Driver && `${trip.Driver.FirstName} ${trip.Driver.LastName}`,
-    nextDestination: tripType === "Last Mile" ? `District ${trip.District.Name} - ${trip.District.City}` : `Hub ${trip.DestinationHub.Name}`,
+    nextDestination: tripType === "Last Mile" ? trip.District && `District ${trip.District.Name} - ${trip.District.City}` : trip.DestinationHub && `Hub ${trip.DestinationHub.Name}`,
     dropoffCity: dropoff.city,
     dropoffState: dropoff.state,
     dropoffTime: trip.DropoffTime,
