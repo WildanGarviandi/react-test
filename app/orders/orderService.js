@@ -38,7 +38,8 @@ const initialStore = {
     isFetching: false,
     countOpen: '',
     countInProgress: '',
-    countFinished: ''
+    countFinished: '',
+    statusFilter: ''
 }
 
 export default function Reducer(store = initialStore, action) {
@@ -134,6 +135,10 @@ export function UpdateFilters(filters) {
     }
 }
 
+export function SetStatusFilter(filter) {
+    return StoreSetter("statusFilter", filter);
+}
+
 export function SetDropDownFilter(keyword) {
     const filterNames = {
         "statusName": "status",
@@ -200,7 +205,7 @@ export function ToggleCheckedAll() {
 export function FetchList() {
     return (dispatch, getState) => {
         const {myOrders, userLogged} = getState().app;
-        const {currentPage, limit, total, filters} = myOrders;
+        const {currentPage, limit, total, filters, statusFilter} = myOrders;
         const {token} = userLogged;
         let params = lodash.assign({}, filters, {
             limit: limit,
@@ -208,7 +213,14 @@ export function FetchList() {
         })
 
         if (filters.status === 'All' || !filters.status) {
-            params.status = JSON.stringify(defaultValues.openOrderStatus);
+            switch (statusFilter) {
+                case 'ongoing' :
+                    params.status = JSON.stringify(defaultValues.ongoingOrderStatus);
+                    break;
+                default :
+                    params.status = JSON.stringify(defaultValues.openOrderStatus);
+                    break;
+            }
         }
 
         if (filters.startCreated && filters.endCreated) {
