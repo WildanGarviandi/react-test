@@ -359,14 +359,8 @@ export function ExportOrder(startDate, endDate) {
         let params = lodash.assign({}, filters, {});
         let isProceed;
 
-        if (filters.startCreated && filters.endCreated) {
-            params.startCreated = moment(filters.startCreated).format('MM-DD-YYYY')
-            params.endCreated = moment(filters.endCreated).format('MM-DD-YYYY')
-        }
-
-        if (filters.startDueTime && filters.endDueTime) {
-            params.startDueTime = moment(filters.startDueTime).format('MM-DD-YYYY');
-            params.endDueTime = moment(filters.endDueTime).format('MM-DD-YYYY');
+        if (filters.status === 'All' || !filters.status) {
+            params.status = JSON.stringify(defaultValues.openOrderStatus);
         }
 
         if (filters.isTrunkeyOrder === 'All') {
