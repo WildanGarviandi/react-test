@@ -7,6 +7,7 @@ import FetchStatusList from '../../modules/containers/actions/statusFetch';
 import * as ContactService from '../../contacts/contactService';
 import * as StateService from '../../states/stateService';
 import * as CityService from '../../cities/cityService';
+import * as OrderService from '../../orders/orderService';
 import {Glyph} from '../base';
 import Accordion from '../base/accordion';
 import styles from './styles.css';
@@ -48,7 +49,7 @@ const AccordionMenu = React.createClass({
   }
 })
 
-const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, loggedName}) => {
+const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, loggedName, counterOrder}) => {
   return (
     <div className={styles.menuPanel}>
       <h4 className={styles.menuTitle}>Etobee TMS</h4>
@@ -87,10 +88,14 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
           </MenuItem>
           </div>
         }
-        <MenuItem active={activeMenuIdx == 5} to={'/myorders'}>
-           <Glyph className={styles.menuGlyph} name={'shopping-cart'}/>
-           <span>My Orders</span>
-        </MenuItem>
+        <Accordion initialState={'collapsed'}>
+          <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[5]} iconName={'shopping-cart'} iconTitle={'My Orders'}>
+            <MenuItem active={activeMenuIdx == 5} to={'/myorders'}>
+               <Glyph className={styles.menuGlyph} name={'open-file'}/>
+               <span>Open Orders ({counterOrder.countOpen})</span>
+            </MenuItem>
+          </AccordionMenu>
+        </Accordion>
         <MenuItem active={activeMenuIdx == 6} to={'/mytrips'}>
          <Glyph className={styles.menuGlyph} name={'briefcase'}/>
          <span>My Trips</span>
@@ -153,7 +158,7 @@ const DashboardContainer = React.createClass({
     return (
       <div style={{display: 'table', width: '100%', minHeight: '100%'}}>
         <div className={panelClass} >
-          <DashboardMenu activeMenuIdx={activeMenuIdx} handleLogout={this.handleLogout} toggleCompact={this.toggleCompact} hubID={hubID} loggedName={loggedName} />
+          <DashboardMenu activeMenuIdx={activeMenuIdx} handleLogout={this.handleLogout} toggleCompact={this.toggleCompact} hubID={hubID} loggedName={loggedName} counterOrder={this.props.counterOrder} />
           <DashboardContent>{this.props.children}</DashboardContent>
         </div>
       </div>
@@ -163,8 +168,14 @@ const DashboardContainer = React.createClass({
 
 function StoreToDashboard(store) {
     const userLogged = store.app.userLogged;
+    const {countOpen, countInProgress, countFinished} = store.app.myOrders;
     return {
         userLogged: userLogged,
+        counterOrder: {
+          countOpen: countOpen,
+          countInProgress: countInProgress,
+          countFinished: countFinished
+        }
     }
 }
 
@@ -175,6 +186,7 @@ function DispatchToProps(dispatch) {
       dispatch(ContactService.FetchList());
       dispatch(CityService.FetchList());
       dispatch(StateService.FetchList());
+      dispatch(OrderService.FetchList());
     },
     logout: function() {
       dispatch(LogoutAction.logout());
