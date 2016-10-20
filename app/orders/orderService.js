@@ -4,7 +4,8 @@ import FetchPost from '../modules/fetch/post';
 import ModalActions from '../modules/modals/actions';
 import {modalAction} from '../modules/modals/constants';
 import moment from 'moment';
-import config from '../../config.json'
+import config from '../../config.json';
+import defaultValues from '../../defaultValues.json';
 import Promise from 'bluebird';
 
 const Constants = {
@@ -205,6 +206,10 @@ export function FetchList() {
             limit: limit,
             offset: (currentPage - 1) * limit
         })
+
+        if (filters.status === 'All' || !filters.status) {
+            params.status = JSON.stringify(defaultValues.openOrderStatus);
+        }
 
         if (filters.startCreated && filters.endCreated) {
             params.startCreated = moment(filters.startCreated).format('MM-DD-YYYY');

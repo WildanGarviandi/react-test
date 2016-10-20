@@ -10,6 +10,7 @@ import * as OrderService from './orderService';
 import OrderStatusSelector from '../modules/orderStatus/selector';
 import {Glyph} from '../views/base';
 import {Link} from 'react-router';
+import defaultValues from '../../defaultValues.json';
 
 function StoreBuilder(keyword) {
     return (store) => {
@@ -86,9 +87,13 @@ function DropdownStoreBuilder(name) {
             key: 1, value: 'Yes',
         }];
 
+        let statusOptions = lodash.filter(OrderStatusSelector.GetList(store), function(status) {
+            return defaultValues.openOrderStatus.includes(status.key); 
+        });
+
         const options = {
             "orderType": orderTypeOptions,
-            "statusName": OrderStatusSelector.GetList(store),
+            "statusName": statusOptions,
             "orderOwner": ownerOptions,
             "assignment": assignmentOptions,
             "isCOD": codOptions,
