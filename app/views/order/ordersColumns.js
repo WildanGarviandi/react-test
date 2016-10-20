@@ -24,7 +24,7 @@ export const conf = {
   PickupAddress: {filterType: "String", title: "Pickup Address", cellType: "String"},
   PickupCity: {filterType: "String", title: "City", cellType: "String"},
   PickupState: {filterType: "String", title: "State", cellType: "String"},
-  PickupTime: {title: "Pickup Time", cellType: "String"},
+  PickupTime: {filterType: "DateTime", title: "Pickup Time", cellType: "String"},
   PickupType: {title: "Pickup Type"},
   RouteStatus: {filterType: "StatusDropdown", title: "Route Status", cellType: "String"},
   TotalValue: {title: "Total Value"},

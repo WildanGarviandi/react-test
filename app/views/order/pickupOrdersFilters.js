@@ -5,6 +5,7 @@ import {Filters} from '../base/table';
 import FiltersRow, {StatusFilter, TextFilter} from '../base/filters';
 import * as OrdersPickup from '../../modules/orders/actions/pickup';
 import * as PickupOrders from '../../modules/pickupOrders';
+import * as Table from '../../components/table';
 
 function mapDispatchToPickupOrders(dispatch) {
   return {
@@ -62,8 +63,33 @@ function stateToStatus(state) {
   }
 }
 
+function DateRangeBuilder(keyword) {
+    return (store) => {
+        const {filters} = store.app.pickupOrders;
+        return {
+            startDate: filters['start' + keyword],
+            endDate: filters['end' + keyword],
+        }
+    }
+}
+
+function DateRangeDispatch(keyword) {
+    return (dispatch) => {
+        return {
+            onChange: (event, picker) => {
+                const newFilters = {
+                    ['start' + keyword]: picker.startDate.toISOString(),
+                    ['end' + keyword]: picker.endDate.toISOString()
+                }
+                dispatch(PickupOrders.AddFilters(newFilters));
+            }
+        }
+    }
+}
+
 const PickupOrdersStatusFilter = connect(stateToStatus, statusDispatch)(StatusFilter);
 const PickupOrdersTextFilter = connect(undefined, mapDispatchToPickupOrders)(TextFilter);
+const PickupTimeFilter = connect(DateRangeBuilder('Pickup'), DateRangeDispatch('Pickup'))(Table.FilterDateTimeRangeCell);
 
 function FiltersComponents(type, item) {
   switch(type) {
@@ -73,6 +99,10 @@ function FiltersComponents(type, item) {
 
     case "String": {
       return <PickupOrdersTextFilter {...item} />
+    }
+
+    case "DateTime": {
+      return <PickupTimeFilter {...item} />
     }
 
     default: {
