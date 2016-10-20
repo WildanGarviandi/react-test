@@ -1,3 +1,4 @@
 {
-  "openOrderStatus": [0, 1, 6]
+  "openOrderStatus": [0, 1, 6],
+  "completedOrderStatus": [5, 15, 16]
 }

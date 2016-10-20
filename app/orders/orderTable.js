@@ -87,9 +87,23 @@ function DropdownStoreBuilder(name) {
             key: 1, value: 'Yes',
         }];
 
+        const statusFilter = store.app.myOrders.statusFilter;
         let statusOptions = lodash.filter(OrderStatusSelector.GetList(store), function(status) {
-            return defaultValues.openOrderStatus.includes(status.key); 
+            switch (statusFilter) {
+                case 'completed' :
+                    return defaultValues.completedOrderStatus.includes(status.key);
+                    break;
+                default :
+                    return defaultValues.openOrderStatus.includes(status.key);
+                    break;
+            }
         });
+        if (statusFilter === 'completed') {
+            statusOptions.unshift({
+                key: defaultValues.completedOrderStatus,
+                value: 'SHOW ALL'
+            });
+        }
 
         const options = {
             "orderType": orderTypeOptions,
@@ -294,8 +308,8 @@ function OrderRow({order}) {
                 </Link>
             </td>
             <Table.TextCell text={`${order.UserOrderNumber} / ${order.WebOrderID}`} />
-            <Table.TextCell text={order.PickupAddress.Address1} />
-            <Table.TextCell text={order.DropoffAddress.Address1} />
+            <Table.TextCell text={order.PickupAddress ? order.PickupAddress.Address1 : ''} />
+            <Table.TextCell text={order.DropoffAddress ? order.DropoffAddress.Address1 : ''} />
             <Table.TextCell text={order.Driver} />
             <Table.TextCell text={order.Status} />
             <Table.TextCell text={order.OrderOwner} />
