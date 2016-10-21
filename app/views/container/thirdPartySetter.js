@@ -8,6 +8,7 @@ import datetimeStyles from './datetime.css';
 import {InputWithDefault} from '../base/input';
 import {ButtonWithLoading} from '../base';
 import {CreateExternalTrip, SaveEdit3PL, SetExternalTrip, StartEdit3PL, StopEdit3PL, UpdateExternalTrip} from '../../modules/inboundTripDetails';
+import ImagePreview from '../base/ImagePreview';
 import ImageUploader from '../base/ImageUploader';
 
 const DetailRow = React.createClass({
@@ -51,7 +52,7 @@ const DetailRow = React.createClass({
           : 
           {
             type === "image" ?
-            <img src={value} alt="" />
+            <ImagePreview imageUrl={value} />
             :
             value
           }

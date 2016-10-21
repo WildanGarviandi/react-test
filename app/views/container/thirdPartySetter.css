@@ -32,11 +32,18 @@
   float: left;
   padding: 5px;
   position: relative;
+  text-indent: 0;
 }
 
 .imageUploaderWrapper::before {
   content: ':';
   position: absolute;
-  left: -10px;
+  left: 0px;
   top: 10px;
+  text-indent: 0;
+}
+
+.receiptThumbnail {
+  max-width: 400px;
+  max-height: 400px;
 }

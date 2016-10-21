@@ -3,6 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import FetchPost from '../../modules/fetch/post';
 import styles from './ImageUploader.css';
+import ImagePreview from '../base/ImagePreview';
 
 const ImageUploader = React.createClass({
   getInitialState() {
@@ -30,23 +31,29 @@ const ImageUploader = React.createClass({
       <div>
         {
           typeof this.props.currentImageUrl === "string" &&
-          <img className={styles.thumbnail} src={this.props.currentImageUrl} alt="Receipt" />
+          <span className={styles.textIndent}>
+            <ImagePreview imageUrl={this.props.currentImageUrl} />
+          </span>
         }
         {
           this.state.isUploading ?
-          <label className={styles.disabledFileLabel}>
-            Uploading..
-          </label>
+          <div>
+            <label className={styles.disabledFileLabel}>
+              Uploading..
+            </label>
+          </div>
           :
-          <label className={styles.fileLabel}>
-            Upload New Picture
-            <input type="file"
-              onChange={(e) => this.uploadImage(e)}
-              accept="image/*"
-              name="file"
-              className={styles.fileInput}
-            />
-          </label>
+          <div>
+            <label className={styles.fileLabel}>
+              Upload
+              <input type="file"
+                onChange={(e) => this.uploadImage(e)}
+                accept="image/*"
+                name="file"
+                className={styles.fileInput}
+              />
+            </label>
+          </div>
         }
       </div>
     );
