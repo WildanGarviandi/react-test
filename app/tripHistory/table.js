@@ -218,8 +218,8 @@ function DateRangeDispatch(keyword) {
         return {
             onChange: (event, picker) => {
                 const newFilters = {
-                    ['start' + keyword]: picker.startDate.format('YYYY MM DD'),
-                    ['end' + keyword]: picker.endDate.format('YYYY MM DD')
+                    ['start' + keyword]: picker.startDate.toISOString(),
+                    ['end' + keyword]: picker.endDate.toISOString()
                 }
                 dispatch(TripsHistoryService.UpdateAndFetch(newFilters))
             },

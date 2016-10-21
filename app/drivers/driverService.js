@@ -375,11 +375,6 @@ export function FetchListOrders(id) {
             delete params.status;
         }
 
-        if (filtersOrders.startPickup && filtersOrders.endPickup) {
-            params.startPickup = moment(filtersOrders.startPickup).format('MM-DD-YYYY');
-            params.endPickup = moment(filtersOrders.endPickup).format('MM-DD-YYYY');
-        }
-
         if (params.isTrunkeyOrder === 'All') {
             delete params.isTrunkeyOrder;
         }
