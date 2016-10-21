@@ -5,6 +5,7 @@ const app = express()
 
 // serve static assets normally
 app.use('/css', express.static(__dirname + '/css'));
+app.use('/img', express.static(__dirname + '/img'));
 app.use('/assets', express.static(__dirname + '/assets'));
 
 // handle every other route with index.html.
