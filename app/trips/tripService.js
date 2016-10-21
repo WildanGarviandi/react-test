@@ -5,6 +5,7 @@ import ModalActions from '../modules/modals/actions';
 import {modalAction} from '../modules/modals/constants';
 import moment from 'moment';
 import Promise from 'bluebird';
+import {fetchXhr} from '../modules/fetch/getXhr';
 
 const Constants = {
     BASE: "mytrip/defaultSet/",
@@ -210,8 +211,6 @@ export function fetchDetails(id) {
         const {userLogged} = getState().app;
         const {token} = userLogged;
 
-        console.log('id', id)
-
         dispatch({type: modalAction.BACKDROP_SHOW});
         dispatch({type: Constants.FETCHING_PAGE});
         FetchGet('/trip/' + id, token).then(function(response) {
@@ -234,5 +233,63 @@ export function fetchDetails(id) {
             dispatch(ModalActions.addMessage(message));
             dispatch({type: modalAction.BACKDROP_HIDE});
         });
+    }
+}
+
+export function ExportTrip() {
+    return (dispatch, getState) => {
+        const {myTrips, userLogged} = getState().app;
+        const {filters, total} = myTrips;
+        const {token} = userLogged;
+        const acceptHeader = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+        const responseType = 'arraybuffer';
+        let params = lodash.assign({}, filters, {});
+        let isProceed;
+
+        if (filters.status) {
+            params.statusIDs = JSON.stringify([filters.status]);
+        }
+
+        var output ='<p style="text-align: center">'+
+                    '<img src="../img/loading.gif" style="width:100px; height:100px;" />'+
+                    '<br />'+
+                    'You can do other things, while exporting in progress'+
+                    '</p>';
+
+        var popout = window.open();
+        popout.document.write(output);
+        let xhr = fetchXhr('/trip/assigned/export/', params, token, acceptHeader, responseType);
+        xhr.onload = function (oEvent) {
+            let blob = new Blob([xhr.response], {type: acceptHeader});
+            let fileName = 'export_'+ moment(new Date()).format('YYYY-MM-DD HH:mm:ss') +'.xlsx';
+            if (typeof window.navigator.msSaveBlob !== 'undefined') {
+                window.navigator.msSaveBlob(blob, fileName);
+            } else {
+                let URL = window.URL || window.webkitURL;
+                let downloadUrl = window.URL.createObjectURL(blob);
+
+                if (fileName) {
+                    let a = document.createElement("a");
+                    if (typeof a.download === 'undefined') {
+                        popout.location.href = downloadUrl;
+                    } else {
+                        a.href = downloadUrl;
+                        a.download = fileName;
+                        a.target = '_blank';
+                        document.body.appendChild(a);
+                        a.click();
+                    }
+                } else {
+                    popout.location.href = downloadUrl;
+                }
+
+                setTimeout(function () { 
+                    window.URL.revokeObjectURL(downloadUrl); 
+                    popout.close();
+                }, 1000);
+            }
+        };
+
+        xhr.send(null);
     }
 }
