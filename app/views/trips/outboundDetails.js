@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
 import {ContainerDetailsActions, StatusList} from '../../modules';
 import districtsFetch from '../../modules/districts/actions/districtsFetch';
-import {ButtonBase, ButtonWithLoading, Input, Modal, Page} from '../base';
+import {ButtonBase, ButtonWithLoading, Input, Modal, Page, Glyph} from '../base';
 import DistrictAndDriver from '../container/districtAndDriver';
 import {OrderTable} from '../container/table';
 import * as TripDetails from '../../modules/trips/actions/details';
@@ -115,15 +115,17 @@ const DetailPage = React.createClass({
           <Page title={'Trip Details' + (trip.ContainerNumber ? (" of Container " + trip.ContainerNumber) : "")}>
             {
               nextSuggestion.length > 0 &&
-              <p className={styles.nextSuggestion}>
+              <div className={styles.nextSuggestion}>
+                <Glyph className={styles.infoSuggestion} name={'info-sign'}/>
                 Next suggestion: {nextSuggestion.join(', ')}
-              </p>
+              </div>
             }
             {
               nextSuggestion.length === 0 &&
-              <p className={styles.nextSuggestion}>
+              <div className={styles.nextSuggestion}>
+                <Glyph className={styles.infoSuggestion} name={'info-sign'}/>
                 Next suggestion is not available
-              </p>
+              </div>
             }
             {
               fillAble &&
