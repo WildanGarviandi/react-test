@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 function padTwoDigit(x) {
   return x > 10 ? x.toString() : "0" + x.toString();
 }
@@ -10,3 +12,7 @@ function TimeToHMS(time) {
 }
 
 export default TimeToHMS;
+
+export function formatDate(datetime) {
+    return moment(new Date(datetime)).format('DD MMM YYYY HH:mm:ss')
+}

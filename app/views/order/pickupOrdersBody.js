@@ -7,6 +7,7 @@ import {conf, pickupOrdersColumns} from './ordersColumns';
 import BodyRow, {CheckBoxCell, LinkCell, TextCell} from '../base/cells';
 import * as OrdersPickup from '../../modules/orders/actions/pickup';
 import * as PickupOrders from '../../modules/pickupOrders';
+import {formatDate} from '../../helper/time';
 
 function mapDispatchToCheckBox(dispatch, ownProps) {
   return {
@@ -54,6 +55,10 @@ function BodyComponent(type, keyword, item, index) {
 
     case "Link": {
       return <PickupOrdersLink text={item[keyword]} item={item} to={'/orders/' + item.UserOrderID}/>
+    }
+
+    case "Datetime": {
+      return <TextCell text={formatDate(item[keyword])} />
     }
 
     default: {

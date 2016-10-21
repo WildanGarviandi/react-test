@@ -9,8 +9,10 @@ import {ButtonWithLoading, Input, Page} from '../base';
 import {InputWithDefault, CheckBox} from '../base/input';
 import * as OrdersDetails from '../../modules/orders/actions/details';
 import OrdersSelector from '../../modules/orders/selector';
+import {formatDate} from '../../helper/time';
 
 const boolAttributes = ["IncludeInsurance", "UseExtraHelper", "IsCOD"];
+const dateTimeAttributes = ["Pickup Time", "Dropoff Time"];
 
 const DetailRow = React.createClass({
   render() {
@@ -20,8 +22,12 @@ const DetailRow = React.createClass({
       <div style={{clear: 'both'}}>
         <span className={styles.itemLabel}>{label}</span>
         {
-          !isEditing &&
+          !isEditing && !dateTimeAttributes.includes(label) &&
           <span className={styles.itemValue}>: {value}</span>
+        }
+        {
+          !isEditing && dateTimeAttributes.includes(label) &&
+          <span className={styles.itemValue}>: {formatDate(value)}</span>
         }
         {
           isEditing && !(value === 'Yes' || value === 'No') &&

@@ -13,6 +13,7 @@ import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import {Link} from 'react-router';
 import Accordion from '../views/base/accordion';
 import {Glyph} from '../views/base';
+import {formatDate} from '../helper/time';
 
 const InputStaticRow = React.createClass({
   render() {
@@ -72,7 +73,7 @@ const FailedAttempt = React.createClass({
                     </div>
                     <InputStaticRow label={'Driver'} value={attempt.Driver && `${attempt.Driver.FirstName} ${attempt.Driver.LastName}`} />
                     <InputStaticRow label={'Reason'} value={attempt.ReasonReturn && `${attempt.ReasonReturn.ReasonName}`} />
-                    <InputStaticRow label={'Date'} value={moment(attempt.CreatedDate).format('MM/DD/YYYY hh:mm')} />
+                    <InputStaticRow label={'Date'} value={formatDate(attempt.CreatedDate)} />
                     <InputStaticRowImage label={'Proof of Failed'} value={attempt.ProofOfAttemptURL} />
                 </div>
             );
@@ -90,7 +91,7 @@ const Returned = React.createClass({
                         Returned {idx+1}
                     </div>
                     <InputStaticRow label={'Recipient Name'} value={returned.RecipientName} />
-                    <InputStaticRow label={'Date'} value={moment(returned.CreatedDate).format('MM/DD/YYYY hh:mm')} />
+                    <InputStaticRow label={'Date'} value={formatDate(returned.CreatedDate)} />
                     <InputStaticRowImage label={'Proof of Return'} value={returned.ProofOfReturnURL} />
                     <InputStaticRowImage label={'Signature'} value={returned.SignatureURL} />
                 </div>
@@ -156,7 +157,7 @@ const DetailPage = React.createClass({
                             <InputStaticRow label={'Status'} value={order.OrderStatus && order.OrderStatus.OrderStatus} />
                             <InputStaticRow label={'Package Details'} value={order.OrderMessage} />
                             <InputStaticRow label={'Delivery Instructions'} value={order.DeliveryInstructions} />
-                            <InputStaticRow label={'Pickup Time'} value={moment(order.PickupTime).format('MM/DD/YYYY hh:mm A')} />
+                            <InputStaticRow label={'Pickup Time'} value={formatDate(order.PickupTime)} />
                             <InputStaticRow label={'Pickup Information'} 
                                 value={ order.PickupAddress && `${order.PickupAddress.FirstName} ${order.PickupAddress.LastName} / 
                                     ${order.PickupAddress.CountryCode}${order.PickupAddress.MobileNumber} / ${order.PickupAddress.Address1}`} />

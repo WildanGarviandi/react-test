@@ -13,6 +13,7 @@ import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import {Link} from 'react-router';
 import Accordion from '../views/base/accordion';
 import TimeFormatter from '../helper/time';
+import {formatDate} from '../helper/time';
 
 const tripAttrs = [
     'driver', 
@@ -62,12 +63,12 @@ function ProcessTrip(trip) {
         district: trip.District && trip.District.Name,
         driver: trip.Driver && `${trip.Driver.FirstName} ${trip.Driver.LastName}`,
         dropoffAddress: trip.DropoffAddress && trip.DropoffAddress.Address1,
-        dropoffTime: trip.DropoffTime && new Date(trip.DropoffTime).toLocaleString(),
+        dropoffTime: trip.DropoffTime && formatDate(trip.DropoffTime),
         fleet: fleetManagerName,
         key: trip.TripID,
         tripNumber: trip.TripNumber,
         pickupAddress: trip.PickupAddress && trip.PickupAddress.Address1,
-        pickupTime: trip.PickupTime && new Date(trip.PickupTime).toLocaleString(),
+        pickupTime: trip.PickupTime && formatDate(trip.PickupTime),
         status: trip.OrderStatus && trip.OrderStatus.OrderStatus,
         step: getStep(trip),
         originHub: trip.OriginHub && trip.OriginHub.Name,
@@ -134,12 +135,12 @@ function ProcessRoute(route) {
         deliveryFee: `Rp ${route.DeliveryFee}`,
         distance: `${route.Distance/1000} km`,
         dropoffAddress: route.DropoffAddress && route.DropoffAddress.Address1,
-        dropoffTime: route.DropoffTime && new Date(route.DropoffTime).toLocaleString(),
+        dropoffTime: route.DropoffTime && formatDate(route.DropoffTime),
         etaDelivery: TimeFormatter(route.ETADelivery),
         fleetManager: fleetManagerName,
         netMargin: route.NetMargin,
         pickupAddress: route.PickupAddress && route.PickupAddress.Address1,
-        pickupTime: route.PickupTime && new Date(route.PickupTime).toLocaleString(),
+        pickupTime: route.PickupTime && formatDate(route.PickupTime),
         status: route.OrderStatus && route.OrderStatus.OrderStatus,
     });
 }

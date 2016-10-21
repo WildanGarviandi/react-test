@@ -17,6 +17,7 @@ import NextDestinationSetter from '../container/nextDestinationSetter';
 import TransportSetter from '../container/secondSetting';
 import styles from './styles.css';
 import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered} from '../../modules/trips';
+import {formatDate} from '../../helper/time';
 
 const columns = ['id', 'id2', 'pickup', 'dropoff', 'time', 'CODValue', 'orderStatus', 'routeStatus', 'action'];
 const nonFillColumn = columns.slice(0, columns.length - 1);
@@ -191,7 +192,7 @@ const mapStateToProps = (state, ownProps) => {
       id2: order.UserOrderNumber,
       pickup: order.PickupAddress && order.PickupAddress.Address1,
       dropoff: order.DropoffAddress && order.DropoffAddress.Address1,
-      time: order.PickupTime && (new Date(order.PickupTime)).toString(),
+      time: order.PickupTime && formatDate(order.PickupTime),
       id3: order.UserOrderID,
       isDeleting: order.isRemoving,
       orderStatus: (order.OrderStatus && order.OrderStatus.OrderStatus) || '',

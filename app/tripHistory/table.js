@@ -9,6 +9,7 @@ import * as TripsHistoryService from './service';
 import StatusDropdown from '../views/base/statusDropdown';
 import {push} from 'react-router-redux';
 import * as Components from '../components/table';
+import {formatDate} from '../helper/time';
 
 function InputCell({value, onChange, onKeyDown}) {
     return (
@@ -162,8 +163,8 @@ function TripHistoryRow({trip, goToDetails}) {
             <HubCellWithState hub={trip.OriginHub} hubType="origin" />
             <HubCellWithState hub={trip.DestinationHub} district={trip.District} hubType="destination" />
             <TextCell text={(trip.District && trip.District.Name) || '---'} />
-            <TextCell text={trip.PickupTime && new Date(trip.PickupTime).toLocaleString()} />
-            <TextCell text={trip.DropoffTime && new Date(trip.DropoffTime).toLocaleString()} />
+            <TextCell text={trip.PickupTime && formatDate(trip.PickupTime)} />
+            <TextCell text={trip.DropoffTime && formatDate(trip.DropoffTime)} />
             <TextCell text={trip.FleetName || '---'} />
             <TextCell text={trip.DriverName || '---'} />
             <TextCell text={trip.OrderStatus && trip.OrderStatus.OrderStatus} />
