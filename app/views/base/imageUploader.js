@@ -2,8 +2,8 @@ import config from '../../../config.json';
 import React from 'react';
 import {connect} from 'react-redux';
 import FetchPost from '../../modules/fetch/post';
-import styles from './ImageUploader.css';
-import ImagePreview from '../base/ImagePreview';
+import styles from './imageUploader.css';
+import ImagePreview from '../base/imagePreview';
 
 const ImageUploader = React.createClass({
   getInitialState() {

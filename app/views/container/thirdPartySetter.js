@@ -8,8 +8,8 @@ import datetimeStyles from './datetime.css';
 import {InputWithDefault} from '../base/input';
 import {ButtonWithLoading} from '../base';
 import {CreateExternalTrip, SaveEdit3PL, SetExternalTrip, StartEdit3PL, StopEdit3PL, UpdateExternalTrip} from '../../modules/inboundTripDetails';
-import ImagePreview from '../base/ImagePreview';
-import ImageUploader from '../base/ImageUploader';
+import ImagePreview from '../base/imagePreview';
+import ImageUploader from '../base/imageUploader';
 
 const DetailRow = React.createClass({
   generateTypeContent() {
