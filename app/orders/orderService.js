@@ -260,18 +260,35 @@ export function FetchList() {
                     total: data.count,
                 })
             })
-            FetchGet('/order/assignedCount', token, params).then((response) => {
-                return response.json().then(({data}) => {
-                    dispatch({
-                        type: Constants.SET_COUNT_ORDERS,
-                        countOpen: data.open,
-                        countInProgress: data.inProgress,
-                        countFinished: data.finished,
-                    })
-                    dispatch({type: modalAction.BACKDROP_HIDE});
-                });
-            })
+
+            dispatch({type: modalAction.BACKDROP_HIDE});
         }).catch((e) => {
+            dispatch({type: modalAction.BACKDROP_HIDE});
+            dispatch(ModalActions.addMessage(e.message));
+        });
+    }
+}
+
+ export function FetchCountOrder() {
+    return (dispatch, getState) => {
+ 
+        const {userLogged} = getState().app;
+        const {token} = userLogged;
+        let params = {};
+ 
+        dispatch({type: modalAction.BACKDROP_SHOW});
+        FetchGet('/order/assignedCount', token, params).then((response) => {
+            return response.json().then(({data}) => {
+                dispatch({
+                    type: Constants.SET_COUNT_ORDERS,
+                    countOpen: data.open,
+                    countInProgress: data.inProgress,
+                    countFinished: data.finished,
+                })
+                dispatch({type: modalAction.BACKDROP_HIDE});
+            });
+        })
+        .catch((e) => {
             dispatch({type: modalAction.BACKDROP_HIDE});
             dispatch(ModalActions.addMessage(e.message));
         });
@@ -462,6 +479,7 @@ export function AssignOrder(orders, driverID) {
             alert(assignMessage);
             dispatch({type: modalAction.BACKDROP_HIDE});
             dispatch(FetchList());
+            dispatch(FetchCountOrder());
         });
     }
 }
@@ -507,6 +525,7 @@ export function CancelOrder(orders) {
             alert(cancelMessage);
             dispatch({type: modalAction.BACKDROP_HIDE});
             dispatch(FetchList());
+            dispatch(FetchCountOrder());
         });
     }
 }

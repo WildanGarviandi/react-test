@@ -187,8 +187,17 @@ const OrderPage = React.createClass({
                 base: stylesButton.greenButton,
             }
         };
+        let pageTitle;
+        switch (this.props.statusFilter) {
+            case 'ongoing' :
+                pageTitle = 'My Ongoing Orders';
+                break;
+            default :
+                pageTitle = 'My Open Orders';
+                break;
+        };
         return (
-            <Page title="My Open Orders">
+            <Page title={pageTitle}>
                 <div style={{clear: 'both'}} />
                 <div style={{marginBottom: 15}}>
                   {
