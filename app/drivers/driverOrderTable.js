@@ -9,6 +9,7 @@ import * as DriverService from './driverService';
 import OrderStatusSelector from '../modules/orderStatus/selector';
 import {Glyph} from '../views/base';
 import {Link} from 'react-router';
+import {formatDate} from '../helper/time';
 
 function StoreBuilder(keyword) {
     return (store) => {
@@ -92,8 +93,8 @@ function DateRangeDispatch(keyword) {
         return {
             onChange: (event, picker) => {
                 const newFilters = {
-                    ['start' + keyword]: picker.startDate,
-                    ['end' + keyword]: picker.endDate
+                    ['start' + keyword]: picker.startDate.toISOString(),
+                    ['end' + keyword]: picker.endDate.toISOString()
                 }
                 dispatch(DriverService.StoreSetterOrders("currentPageOrders", 1));
                 dispatch(DriverService.UpdateAndFetchOrders(newFilters))
@@ -160,7 +161,7 @@ function OrderRow({order}) {
             <Table.TextCell text={order.DropoffAddress && order.DropoffAddress.Address1} />
             <Table.TextCell text={order.OrderStatus && order.OrderStatus.OrderStatus} />
             <Table.TextCell text={order.OrderOwner} />
-            <Table.TextCell text={moment(order.PickupTime).format('MM-DD-YYYY hh:mm:ss a')} />
+            <Table.TextCell text={formatDate(order.PickupTime)} />
         </tr>
     );
 }

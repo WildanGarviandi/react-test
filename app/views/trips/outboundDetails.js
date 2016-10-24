@@ -17,6 +17,7 @@ import NextDestinationSetter from '../container/nextDestinationSetter';
 import TransportSetter from '../container/secondSetting';
 import styles from './styles.css';
 import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered} from '../../modules/trips';
+import {formatDate} from '../../helper/time';
 
 const columns = ['id', 'id2', 'pickup', 'dropoff', 'time', 'CODValue', 'orderStatus', 'routeStatus', 'action'];
 const nonFillColumn = columns.slice(0, columns.length - 1);
@@ -118,6 +119,7 @@ const DetailPage = React.createClass({
               canDeassignDriver &&
               <ButtonWithLoading textBase="Cancel Assignment" textLoading="Deassigning" onClick={this.deassignDriver} isLoading={isDeassigning} />
             }
+            <a href={'/trips/' + trip.TripID + '/manifest#' + trip.ContainerNumber} className={styles.manifestLink} target="_blank">Print Manifest</a>
             <NextDestinationSetter trip={trip} accordionState={trip && (trip.Driver || trip.ExternalTrip) ? "collapsed" : "expanded"} />
             <TransportSetter trip={trip} isInbound={false} accordionState={trip && ((trip.Driver || trip.ExternalTrip) || !(trip.District || trip.DestinationHub)) ? "collapsed" : "expanded"}/>
             <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>Total {orders.length} items</span>
@@ -191,7 +193,7 @@ const mapStateToProps = (state, ownProps) => {
       id2: order.UserOrderNumber,
       pickup: order.PickupAddress && order.PickupAddress.Address1,
       dropoff: order.DropoffAddress && order.DropoffAddress.Address1,
-      time: order.PickupTime && (new Date(order.PickupTime)).toString(),
+      time: order.PickupTime && formatDate(order.PickupTime),
       id3: order.UserOrderID,
       isDeleting: order.isRemoving,
       orderStatus: (order.OrderStatus && order.OrderStatus.OrderStatus) || '',

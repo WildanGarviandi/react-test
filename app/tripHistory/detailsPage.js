@@ -5,6 +5,7 @@ import {FetchDetails} from '../modules/inboundTripDetails';
 import {Page} from '../views/base';
 import Accordion from '../views/base/accordion';
 import styles from './styles.css';
+import {formatDate} from '../helper/time';
 
 const tripAttrs = ['fleet', 'driver', 'container', 'status', 'pickupTime', 'dropoffTime'];
 const tripLabel = {
@@ -25,12 +26,12 @@ function ProcessTrip(trip) {
     district: trip.District && trip.District.Name,
     driver: trip.Driver && `${trip.Driver.FirstName} ${trip.Driver.LastName}`,
     dropoffAddress: trip.DropoffAddress && trip.DropoffAddress.Address1,
-    dropoffTime: trip.DropoffTime && new Date(trip.DropoffTime).toLocaleString(),
+    dropoffTime: trip.DropoffTime && formatDate(trip.DropoffTime),
     fleet: fleetManagerName,
     key: trip.TripID,
     tripNumber: trip.TripNumber,
     pickupAddress: trip.PickupAddress && trip.PickupAddress.Address1,
-    pickupTime: trip.PickupTime && new Date(trip.PickupTime).toLocaleString(),
+    pickupTime: trip.PickupTime && formatDate(trip.PickupTime),
     status: trip.OrderStatus && trip.OrderStatus.OrderStatus,
   });
 }

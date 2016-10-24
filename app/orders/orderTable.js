@@ -10,6 +10,7 @@ import * as OrderService from './orderService';
 import OrderStatusSelector from '../modules/orderStatus/selector';
 import {Glyph} from '../views/base';
 import {Link} from 'react-router';
+import {formatDate} from '../helper/time';
 
 function StoreBuilder(keyword) {
     return (store) => {
@@ -149,8 +150,8 @@ function DateRangeDispatch(keyword) {
         return {
             onChange: (event, picker) => {
                 const newFilters = {
-                    ['start' + keyword]: picker.startDate,
-                    ['end' + keyword]: picker.endDate
+                    ['start' + keyword]: picker.startDate.toISOString(),
+                    ['end' + keyword]: picker.endDate.toISOString()
                 }
                 dispatch(OrderService.UpdateAndFetch(newFilters))
             }
@@ -226,8 +227,8 @@ function OrderParser(order) {
         OrderAssignment: getAssignment(order),
         Driver: order.Driver && `${order.Driver.FirstName} ${order.Driver.LastName}`,
         Status: getStatus(order),
-        DueTime: order.DueTime ? moment(order.DueTime).format('MM/DD/YYYY h:mm:ss a') : '-',
-        CreatedDate: order.CreatedDate ? moment(order.CreatedDate).format('MM/DD/YYYY h:mm:ss a') : '-',
+        DueTime: order.DueTime && formatDate(order.DueTime),
+        CreatedDate: order.CreatedDate && formatDate(order.CreatedDate),
         IsChecked: ('IsChecked' in order) ? order.IsChecked : false,
     })
 }
