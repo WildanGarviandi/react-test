@@ -202,7 +202,7 @@ function DispatchToProps(dispatch) {
       dispatch(ContactService.FetchList());
       dispatch(CityService.FetchList());
       dispatch(StateService.FetchList());
-      dispatch(OrderService.FetchList());
+      dispatch(OrderService.FetchCountOrder());
     },
     logout: function() {
       dispatch(LogoutAction.logout());
