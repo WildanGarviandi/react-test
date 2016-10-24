@@ -14,6 +14,7 @@ import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import {Link} from 'react-router';
 import stylesButton from '../components/button.css';
 import {Glyph} from '../views/base';
+import {formatDate} from '../helper/time';
 
 const InputRow = React.createClass({
   render() {
@@ -506,9 +507,9 @@ const ManagePage = React.createClass({
                             <DropdownRow label={'Vehicle'} value={order.Vehicle && order.Vehicle.Name} options={vehicleOptions} handleSelect={this.stateChange('PackageSize')} />
                             <InputRow label={'Package Details'} value={order.OrderMessage} type={'text'} onChange={this.stateChange('PackageComments') } />
                             <InputRow label={'Delivery Instructions'} value={order.DeliveryInstructions} type={'text'} onChange={this.stateChange('DeliveryInstructions') } />
-                            <DatetimeRow label={'Pickup Time'} value={moment(order.PickupTime).format('MM/DD/YYYY hh:mm A')} onChange={this.stateChange('PickupTime') } />
+                            <DatetimeRow label={'Pickup Time'} value={formatDate(order.PickupTime)} onChange={this.stateChange('PickupTime') } />
                             { isEditing &&
-                                <DatetimeRow label={'Due Time'} value={moment(order.DueTime).format('MM/DD/YYYY hh:mm A')} onChange={this.stateChange('DueTime') } />
+                                <DatetimeRow label={'Deadline'} value={formatDate(order.DueTime)} onChange={this.stateChange('DueTime') } />
                             }
                         </div>
                     </div> 

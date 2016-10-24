@@ -11,6 +11,7 @@ import DateRangePicker from '../base/dateRangePicker';
 import tableStyles from '../base/table.css';
 import StatusDropdown from '../base/statusDropdown';
 import {TripParser} from '../../modules/trips';
+import {formatDate} from '../../helper/time';
 
 const ColumnsOrder = ['fleetName', 'driver', 'webstoreNames', 'pickup', 'pickupCity', 'pickupState', 'containerNumber', 'status', 'numberPackages'];
 
@@ -208,13 +209,13 @@ function ProcessTrip(trip) {
     district: trip.District && trip.District.Name,
     driver: trip.Driver && `${trip.Driver.FirstName} ${trip.Driver.LastName}`,
     dropoff: TripDropOff(trip),
-    dropoffTime: trip.DropoffTime,
+    dropoffTime: formatDate(trip.DropoffTime),
     key: trip.TripID,
     tripNumber: trip.TripNumber,
     pickup: trip.PickupAddress && trip.PickupAddress.Address1,
     pickupCity: trip.PickupAddress && trip.PickupAddress.City,
     pickupState: trip.PickupAddress && trip.PickupAddress.State,
-    pickupTime: trip.PickupTime,
+    pickupTime: formatDate(trip.PickupTime),
     status: trip.OrderStatus && trip.OrderStatus.OrderStatus,
     webstoreNames: parsedTrip.WebstoreNames,
     fleetName: fleetName || '',

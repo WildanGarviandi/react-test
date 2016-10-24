@@ -8,6 +8,7 @@ import datetimeStyles from './datetime.css';
 import {InputWithDefault} from '../base/input';
 import {ButtonWithLoading} from '../base';
 import {CreateExternalTrip, SaveEdit3PL, SetExternalTrip, StartEdit3PL, StopEdit3PL, UpdateExternalTrip} from '../../modules/inboundTripDetails';
+import {formatDate} from '../../helper/time';
 
 const DetailRow = React.createClass({
   render() {
@@ -78,8 +79,8 @@ const ThirdParty = React.createClass({
           <h4 style={{marginTop: 0, marginBottom: 10, fontWeight: 'normal'}}>Third Party Logistic Details:</h4>
           <DetailRow label="Fee" value={externalTrip.Fee} isEditing={true} type="number" onChange={this.onChange('Fee')} />
           <DetailRow label="Transportation" value={externalTrip.Transportation} isEditing={true} type="text" onChange={this.onChange('Transportation')} />
-          <DetailRow label="Departure Time" value={externalTrip.DepartureTime} isEditing={true} type="datetime" onChange={this.onChange('DepartureTime')} />
-          <DetailRow label={arrivalTimeLabel} value={externalTrip.ArrivalTime} isEditing={true} type="datetime" onChange={this.onChange('ArrivalTime')} />
+          <DetailRow label="Departure Time" value={formatDate(externalTrip.DepartureTime)} isEditing={true} type="datetime" onChange={this.onChange('DepartureTime')} />
+          <DetailRow label={arrivalTimeLabel} value={formatDate(externalTrip.ArrivalTime)} isEditing={true} type="datetime" onChange={this.onChange('ArrivalTime')} />
           {
             (trip && trip.OrderStatus && trip.OrderStatus.OrderStatus === "BOOKED") ?
             <div style={{clear: 'both'}}>
@@ -99,8 +100,8 @@ const ThirdParty = React.createClass({
           <h4 style={{marginTop: 0, marginBottom: 10, fontWeight: 'normal'}}>Third Party Logistic Details:</h4>
           <DetailRow label="Fee" value={externalTrip.Fee} isEditing={false} />
           <DetailRow label="Transportation" value={externalTrip.Transportation} isEditing={false} />
-          <DetailRow label="Departure Time" value={externalTrip.DepartureTime && externalTrip.DepartureTime.toLocaleString()} isEditing={false} />
-          <DetailRow label={arrivalTimeLabel} value={externalTrip.ArrivalTime && externalTrip.ArrivalTime.toLocaleString()} isEditing={false} />
+          <DetailRow label="Departure Time" value={externalTrip.DepartureTime && formatDate(externalTrip.DepartureTime)} isEditing={false} />
+          <DetailRow label={arrivalTimeLabel} value={externalTrip.ArrivalTime && formatDate(externalTrip.ArrivalTime)} isEditing={false} />
           <div style={{clear: 'both'}}>
           {
             !isInbound &&

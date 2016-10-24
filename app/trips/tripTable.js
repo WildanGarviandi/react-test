@@ -8,6 +8,7 @@ import styles from '../components/table.css';
 import * as TripService from './tripService';
 import OrderStatusSelector from '../modules/orderStatus/selector';
 import {Glyph} from '../views/base';
+import {formatDate} from '../helper/time';
 
 function StoreBuilder(keyword) {
     return (store) => {
@@ -213,7 +214,7 @@ function TripRow({trip}) {
             <Table.TextCell text={trip.PickupAddress && trip.PickupAddress.Address1} />
             <Table.TextCell text={trip.DropoffAddress && trip.DropoffAddress.Address1} />
             <Table.TextCell text={trip.OrderStatus && trip.OrderStatus.OrderStatus} />
-            <Table.TextCell text={moment(trip.CreatedDate).format('MM/DD/YYYY h:mm:ss A')} />
+            <Table.TextCell text={trip.CreatedDate && formatDate(trip.CreatedDate)} />
         </tr>
     );
 }
