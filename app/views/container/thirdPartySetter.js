@@ -28,7 +28,7 @@ const DetailRow = React.createClass({
             {
               type === "datetime" ?
               <span className={styles.datetimeWrapper}>
-                <DateTime onChange={this.props.onChange} defaultValue={value} />
+                <DateTime onChange={this.props.onChange} defaultValue={value} dateFormat={'DD MMM YYYY'} timeFormat={'HH:mm:ss'} />
               </span>
               :
               <span className={styles.inputWrapper}>
@@ -79,8 +79,8 @@ const ThirdParty = React.createClass({
           <h4 style={{marginTop: 0, marginBottom: 10, fontWeight: 'normal'}}>Third Party Logistic Details:</h4>
           <DetailRow label="Fee" value={externalTrip.Fee} isEditing={true} type="number" onChange={this.onChange('Fee')} />
           <DetailRow label="Transportation" value={externalTrip.Transportation} isEditing={true} type="text" onChange={this.onChange('Transportation')} />
-          <DetailRow label="Departure Time" value={formatDate(externalTrip.DepartureTime)} isEditing={true} type="datetime" onChange={this.onChange('DepartureTime')} />
-          <DetailRow label={arrivalTimeLabel} value={formatDate(externalTrip.ArrivalTime)} isEditing={true} type="datetime" onChange={this.onChange('ArrivalTime')} />
+          <DetailRow label="Departure Time" value={externalTrip.DepartureTime && formatDate(externalTrip.DepartureTime)} isEditing={true} type="datetime" onChange={this.onChange('DepartureTime')} />
+          <DetailRow label={arrivalTimeLabel} value={externalTrip.ArrivalTime && formatDate(externalTrip.ArrivalTime)} isEditing={true} type="datetime" onChange={this.onChange('ArrivalTime')} />
           {
             (trip && trip.OrderStatus && trip.OrderStatus.OrderStatus === "BOOKED") ?
             <div style={{clear: 'both'}}>
