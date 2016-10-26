@@ -13,7 +13,7 @@ export const conf = {
   IncludeInsurance: {title: "Include Insurance"},
   IsChecked: {headerType: "Checkbox", cellType: "Checkbox"},
   LogisticShare: {title: "Logistic Share"},
-  NextDestination: {filterType: "String", title: "Next Destination", cellType: "String"},
+  NextDestination: {filterType: "String", title: "Suggested Destination", cellType: "String"},
   OrderCost: {title: "Order Cost"},
   DeliveryFee: {title: "Delivery Fee"},
   OrderStatus: {filterType: "StatusDropdown", title: "Order Status", cellType: "Status"},
@@ -40,6 +40,6 @@ export const conf = {
 
 export const pickupOrdersColumns = ["IsChecked", "ID", "WebstoreName", "PickupTime", "PickupAddress", "PickupCity", "PickupState", "OrderStatus"];
 
-export const receivedOrdersColumns = ["IsChecked", "ID", "WebstoreName", "DropoffAddress", "DropoffCity", "DropoffState", "ZipCode", "RouteStatus"];
+export const receivedOrdersColumns = ["IsChecked", "ID", "WebstoreName", "DropoffAddress", "DropoffCity", "DropoffState", "ZipCode", "RouteStatus", "NextDestination"];
 
 export const orderDetails = ["UserOrderNumber", "WebOrderID", "User", "PickupType", "RouteStatus", "PickupTime", "PickupAddress", "DropoffTime", "DropoffAddress", "PackageWeight", "PackageLength", "PackageWidth", "PackageHeight", "TotalValue", "IsCOD", "DeliveryFee", "FinalCost", "VAT", "IncludeInsurance", "UseExtraHelper", "EtobeeShare", "DriverShare", "LogisticShare"];
