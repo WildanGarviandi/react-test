@@ -266,7 +266,7 @@ export function DeassignFleet(tripID) {
       type: Constants.TRIPS_INBOUND_DETAILS_DEASSIGN_START,
     });
 
-    return FetchDelete(`/trip/${tripID}/fleetmanager`, token).then((response) => {
+    return FetchDelete(`/trip/${tripID}/fleetmanager`, token, {}, true).then((response) => {
       if(!response.ok) {
         return response.json().then(({error}) => {
           throw error;
@@ -313,7 +313,7 @@ export function Deassign(tripID) {
         driver: null,
       });
 
-      return FetchDelete(`/trip/${tripID}/fleetmanager`, token);
+      return FetchDelete(`/trip/${tripID}/fleetmanager`, token, {}, true);
     }).then((response) => {
       if(!response.ok) {
         return response.json().then(({error}) => {
@@ -357,14 +357,14 @@ export function AssignFleet(tripID, fleetManagerID) {
     });
 
     if(fleet) {
-      FetchDelete(`/trip/${tripID}/fleetmanager`, token).then((response) => {
+      FetchDelete(`/trip/${tripID}/fleetmanager`, token, {}, true).then((response) => {
         if(!response.ok) {
           return response.json().then(({error}) => {
             throw error;
           });
         }
 
-        return FetchPost(`/trip/${tripID}/fleetmanager`, token, body);
+        return FetchPost(`/trip/${tripID}/fleetmanager`, token, body, true);
       }).then((response) => {
         if(!response.ok) {
           return response.json().then(({error}) => {
@@ -394,7 +394,7 @@ export function AssignFleet(tripID, fleetManagerID) {
         dispatch(ModalActions.addMessage(message));
       });
     } else {
-      FetchPost(`/trip/${tripID}/fleetmanager`, token, body).then((response) => {
+      FetchPost(`/trip/${tripID}/fleetmanager`, token, body, true).then((response) => {
         if(!response.ok) {
           return response.json().then(({error}) => {
             throw error;

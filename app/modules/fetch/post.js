@@ -13,6 +13,7 @@ const PostParams = (token, body) => {
   }
 }
 
-export default (url, token, body = {}) => {
-  return fetch(config.baseUrl + url, PostParams(token, body));
+export default (url, token, body = {}, isHubAPI = false) => {
+  let baseUrl = isHubAPI ? config.baseUrlHub : config.baseUrl;
+  return fetch(baseUrl + url, PostParams(token, body));
 }
