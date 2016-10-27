@@ -164,6 +164,7 @@ const DetailPage = React.createClass({
                             <InputStaticRow label={'Dropoff Information'} 
                                 value={ order.DropoffAddress && `${order.DropoffAddress.FirstName} ${order.DropoffAddress.LastName} / 
                                     ${order.DropoffAddress.CountryCode}${order.DropoffAddress.MobileNumber} / ${order.DropoffAddress.Address1}`} />
+                            <InputStaticRow label={'Deadline'} value={formatDate(order.DueTime)} />
                         </div>
                     </div> 
                     <div className={styles.orderDetailsBoxRight}>

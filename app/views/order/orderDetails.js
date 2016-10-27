@@ -12,7 +12,7 @@ import OrdersSelector from '../../modules/orders/selector';
 import {formatDate} from '../../helper/time';
 
 const boolAttributes = ["IncludeInsurance", "UseExtraHelper", "IsCOD"];
-const dateTimeAttributes = ["Pickup Time", "Dropoff Time"];
+const dateTimeAttributes = ["Pickup Time", "Dropoff Time", "Deadline"];
 
 const DetailRow = React.createClass({
   render() {
@@ -137,7 +137,7 @@ const Details = React.createClass({
   render() {
     const {canEdit, isEditing, isFetching, isUpdating, order, StartEdit, EndEdit, UpdateOrder, GetDetails} = this.props;
 
-    const r2Edit = lodash.map(orderDetails.slice(9, 15), (row) => {
+    const r2Edit = lodash.map(orderDetails.slice(10, 16), (row) => {
       return (
         <div key={row} style={{clear: 'both'}}>
           <span className={styles.itemLabel}>{conf[row].title}</span>
@@ -157,13 +157,13 @@ const Details = React.createClass({
           !isFetching &&
           <div>
             <Accordion initialState="expanded">
-              <DetailAcc rows={orderDetails.slice(0,9)} order={order} title={"Summary"} topStyle={classNaming(styles.detailWrapper, styles.right, styles.detailsPanel)}/>
+              <DetailAcc rows={orderDetails.slice(0,10)} order={order} title={"Summary"} topStyle={classNaming(styles.detailWrapper, styles.right, styles.detailsPanel)}/>
             </Accordion>
             <Accordion initialState="expanded">
-              <DetailAcc rows={orderDetails.slice(9,15)} order={order} title={"Cost and Dimension"} canEdit={canEdit} isEditing={isEditing} isUpdating={isUpdating} UpdateOrder={UpdateOrder} GetDetails={GetDetails} StartEdit={StartEdit} EndEdit={EndEdit}/>
+              <DetailAcc rows={orderDetails.slice(10,16)} order={order} title={"Cost and Dimension"} canEdit={canEdit} isEditing={isEditing} isUpdating={isUpdating} UpdateOrder={UpdateOrder} GetDetails={GetDetails} StartEdit={StartEdit} EndEdit={EndEdit}/>
             </Accordion>
             <Accordion initialState="expanded">
-              <DetailAcc rows={orderDetails.slice(15)} order={order} title={"Pricing Details"} />
+              <DetailAcc rows={orderDetails.slice(16)} order={order} title={"Pricing Details"} />
             </Accordion>
           </div>
         }
