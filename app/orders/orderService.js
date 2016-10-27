@@ -224,7 +224,7 @@ export function FetchList() {
                     break;
             }
         }
-        debugger;
+
         if (filters.startCreated && filters.endCreated) {
             params.startCreated = moment(filters.startCreated).format('MM-DD-YYYY');
             params.endCreated = moment(filters.endCreated).format('MM-DD-YYYY');
