@@ -215,14 +215,16 @@ export function FetchList() {
         if (filters.status === 'All' || !filters.status) {
             switch (statusFilter) {
                 case 'completed' :
-                    params.status = JSON.stringify(defaultValues.completedOrderStatus);
+                    params.status = JSON.stringify(defaultValues.completedOrderStatus.filter((val) => {
+                        return val;
+                    }));
                     break;
                 default :
                     params.status = JSON.stringify(defaultValues.openOrderStatus);
                     break;
             }
         }
-
+        debugger;
         if (filters.startCreated && filters.endCreated) {
             params.startCreated = moment(filters.startCreated).format('MM-DD-YYYY');
             params.endCreated = moment(filters.endCreated).format('MM-DD-YYYY');

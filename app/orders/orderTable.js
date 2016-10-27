@@ -99,12 +99,6 @@ function DropdownStoreBuilder(name) {
                     break;
             }
         });
-        if (statusFilter === 'completed') {
-            statusOptions.unshift({
-                key: defaultValues.completedOrderStatus,
-                value: 'SHOW ALL'
-            });
-        }
 
         const options = {
             "orderType": orderTypeOptions,
