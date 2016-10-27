@@ -125,19 +125,14 @@ const OrderPage = React.createClass({
         this.props.FetchDrivers(this.props.userLogged.userID);
     },
     setStatusFilter() {
-        let newFilters;
         switch(this.props.statusFilter) {
             case 'ongoing' :
-                newFilters = {status: defaultStatusValues.ongoingOrderStatus};
                 this.props.SetStatusFilter('ongoing');
                 break;
             default :
-                newFilters = {status: 0};
                 this.props.SetStatusFilter('open');
                 break;
         }
-        this.props.UpdateFilters(newFilters);
-        this.props.StoreSetter('currentPage', 1);
     },
     selectDriver(e) {
         this.setState({driverID: e.key});

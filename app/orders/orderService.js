@@ -215,7 +215,9 @@ export function FetchList() {
         if (filters.status === 'All' || !filters.status) {
             switch (statusFilter) {
                 case 'ongoing' :
-                    params.status = JSON.stringify(defaultValues.ongoingOrderStatus);
+                    params.status = JSON.stringify(defaultValues.ongoingOrderStatus.filter((val) => {
+                        return val;
+                    }));
                     break;
                 default :
                     params.status = JSON.stringify(defaultValues.openOrderStatus);

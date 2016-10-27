@@ -99,12 +99,6 @@ function DropdownStoreBuilder(name) {
                      break;
              }
         });
-        if (statusFilter === 'ongoing') {
-             statusOptions.unshift({
-                 key: defaultValues.ongoingOrderStatus,
-                 value: 'SHOW ALL'
-             });
-         }
 
         const options = {
             "orderType": orderTypeOptions,

@@ -1,4 +1,4 @@
 {
   "openOrderStatus": [0, 1, 6],
-  "ongoingOrderStatus": [2, 3, 4]
+  "ongoingOrderStatus": [0, 2, 3, 4]
 }
