@@ -90,7 +90,7 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
         }
         <Accordion initialState={'collapsed'}>
           <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[5]} iconName={'shopping-cart'} iconTitle={'My Orders'}>
-            <MenuItem active={activeMenuIdx == 5} to={'/myorders'}>
+            <MenuItem active={activeMenuIdx == 5} to={'/myorders/open'}>
                <Glyph className={styles.menuGlyph} name={'open-file'}/>
                <span>Open Orders ({counterOrder.countOpen})</span>
             </MenuItem>
@@ -125,7 +125,7 @@ const DashboardContent = ({children}) => {
   return (<div className={styles.content}>{children}</div>);
 }
 
-const menuPaths = ['/orders/pickup', '/trips/inbound', '/orders/received', '/trips/outbound', '/history', '/myorders', '/mytrips', '/mycontacts', '/mydrivers'];
+const menuPaths = ['/orders/pickup', '/trips/inbound', '/orders/received', '/trips/outbound', '/history', '/myorders/open', '/mytrips', '/mycontacts', '/mydrivers'];
 function GetActiveMenuIdx(path) {
   let fpath = _.find(menuPaths, (menu) => (path.indexOf(menu) > -1));
   let idx = menuPaths.indexOf(fpath);
