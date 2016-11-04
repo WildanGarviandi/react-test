@@ -4,8 +4,9 @@ import FetchPost from '../modules/fetch/post';
 import ModalActions from '../modules/modals/actions';
 import {modalAction} from '../modules/modals/constants';
 import moment from 'moment';
-import config from '../../config.json'
+import config from '../../config.json';
 import Promise from 'bluebird';
+import {fetchXhr} from '../modules/fetch/getXhr';
 
 const Constants = {
     BASE: "myorder/defaultSet/",
@@ -364,29 +365,73 @@ export function resetManageOrder() {
 export function ExportOrder(startDate, endDate) {
     return (dispatch, getState) => {
         const {myOrders, userLogged} = getState().app;
+        const {filters, total} = myOrders;
         const {token} = userLogged;
-        let params = lodash.assign({}, {
-            startDate: moment(startDate).format('MM-DD-YYYY'),
-            endDate: moment(endDate).format('MM-DD-YYYY')
-        })
+        const acceptHeader = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+        const responseType = 'arraybuffer';
+        let params = lodash.assign({}, filters, {});
+        let isProceed;
 
-        dispatch({type: modalAction.BACKDROP_SHOW});
-        FetchGet('/order/export', token, params).then((response) => {
-            if(!response.ok) {
-                return response.json().then(({error}) => {
-                    throw error;
-                })
+        if (filters.status === 'All' || !filters.status) {
+            params.status = JSON.stringify(defaultValues.openOrderStatus);
+        }
+
+        if (filters.isTrunkeyOrder === 'All') {
+            delete params.isTrunkeyOrder;
+        }
+
+        if (filters.isCOD === 'All') {
+            delete params.isCOD;
+        }
+        
+        if (Object.keys(params).length === 0) {
+            isProceed = confirm('You are about to export ' + total + ' orders. Do you want to continue ?');
+            if (!isProceed) {
+                return;
             }
+        }
 
-            dispatch(ModalActions.addMessage('Export Success'));
-            dispatch({type: modalAction.BACKDROP_HIDE});
-            return response.json().then(({data}) => {
-                window.location = config.baseAPI + '/order/download/' + data.hash;
-            });
-        }).catch((e) => {
-            dispatch({type: modalAction.BACKDROP_HIDE});
-            dispatch(ModalActions.addMessage(e.message));
-        });
+        var output ='<p style="text-align: center">'+
+                    '<img src="../img/loading.gif" style="width:100px; height:100px;" />'+
+                    '<br />'+
+                    'You can do other things, while exporting in progress'+
+                    '</p>';
+
+        var popout = window.open();
+        popout.document.write(output);
+        let xhr = fetchXhr('/order/export/', params, token, acceptHeader, responseType);
+        xhr.onload = function (oEvent) {
+            let blob = new Blob([xhr.response], {type: acceptHeader});
+            let fileName = 'export_'+ moment(new Date()).format('YYYY-MM-DD HH:mm:ss') +'.xlsx';
+            if (typeof window.navigator.msSaveBlob !== 'undefined') {
+                window.navigator.msSaveBlob(blob, fileName);
+            } else {
+                let URL = window.URL || window.webkitURL;
+                let downloadUrl = window.URL.createObjectURL(blob);
+
+                if (fileName) {
+                    let a = document.createElement("a");
+                    if (typeof a.download === 'undefined') {
+                        popout.location.href = downloadUrl;
+                    } else {
+                        a.href = downloadUrl;
+                        a.download = fileName;
+                        a.target = '_blank';
+                        document.body.appendChild(a);
+                        a.click();
+                    }
+                } else {
+                    popout.location.href = downloadUrl;
+                }
+
+                setTimeout(function () { 
+                    window.URL.revokeObjectURL(downloadUrl); 
+                    popout.close();
+                }, 1000);
+            }
+        };
+
+        xhr.send(null);
     }
 }
 
