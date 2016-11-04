@@ -8,6 +8,7 @@ import BodyRow, {CheckBoxCell, LinkCell, TextCell} from '../base/cells';
 import {ButtonWithLoading} from '../base';
 import * as OrdersReceived from '../../modules/orders/actions/received';
 import * as ReceivedOrders from '../../modules/receivedOrders';
+import {formatDate} from '../../helper/time';
 
 function mapDispatchToCheckBox(dispatch, ownProps) {
   return {
@@ -55,6 +56,10 @@ function BodyComponent(type, keyword, item, index) {
 
     case "Link": {
       return <PickupOrdersLink text={item[keyword]} item={item} to={'/orders/' + item.UserOrderID}/>
+    }
+
+    case "Datetime": {
+      return <TextCell text={formatDate(item[keyword])} />
     }
 
     case "Actions": {

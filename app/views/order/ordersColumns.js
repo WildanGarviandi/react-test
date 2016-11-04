@@ -7,6 +7,7 @@ export const conf = {
   DropoffCity: {filterType: "String", title: "City", cellType: "String"},
   DropoffState: {filterType: "String", title: "State", cellType: "String"},
   DropoffTime: {title: "Dropoff Time"},
+  DueTime: {title: "Deadline", cellType: "Datetime"},
   EtobeeShare: {title: "Etobee Share"},
   FinalCost: {title: "Final Cost"},
   ID: {filterType: "String", title: "AWB / Web Order ID", cellType: "Link"},
@@ -38,8 +39,8 @@ export const conf = {
   IsCOD: {title: "COD Order"},
 }
 
-export const pickupOrdersColumns = ["IsChecked", "ID", "WebstoreName", "PickupTime", "PickupAddress", "PickupCity", "PickupState", "OrderStatus"];
+export const pickupOrdersColumns = ["IsChecked", "ID", "WebstoreName", "PickupTime", "PickupAddress", "PickupCity", "PickupState", "OrderStatus", "DueTime"];
 
-export const receivedOrdersColumns = ["IsChecked", "ID", "WebstoreName", "DropoffAddress", "DropoffCity", "DropoffState", "ZipCode", "RouteStatus", "NextDestination"];
+export const receivedOrdersColumns = ["IsChecked", "ID", "WebstoreName", "DropoffAddress", "DropoffCity", "DropoffState", "ZipCode", "RouteStatus", "DueTime", "NextDestination"];
 
-export const orderDetails = ["UserOrderNumber", "WebOrderID", "User", "PickupType", "RouteStatus", "PickupTime", "PickupAddress", "DropoffTime", "DropoffAddress", "PackageWeight", "PackageLength", "PackageWidth", "PackageHeight", "TotalValue", "IsCOD", "DeliveryFee", "FinalCost", "VAT", "IncludeInsurance", "UseExtraHelper", "EtobeeShare", "DriverShare", "LogisticShare"];
+export const orderDetails = ["UserOrderNumber", "WebOrderID", "User", "PickupType", "RouteStatus", "PickupTime", "PickupAddress", "DropoffTime", "DropoffAddress", "DueTime", "PackageWeight", "PackageLength", "PackageWidth", "PackageHeight", "TotalValue", "IsCOD", "DeliveryFee", "FinalCost", "VAT", "IncludeInsurance", "UseExtraHelper", "EtobeeShare", "DriverShare", "LogisticShare"];
