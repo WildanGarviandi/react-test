@@ -1,6 +1,7 @@
 import lodash from 'lodash';
 import FetchGet from '../modules/fetch/get';
 import FetchPost from '../modules/fetch/post';
+import FetchDelete from '../modules/fetch/delete';
 import ModalActions from '../modules/modals/actions';
 import {modalAction} from '../modules/modals/constants';
 import moment from 'moment';
@@ -12,7 +13,12 @@ const Constants = {
     TOGGLE_SELECT_ORDER: "mytrip/trips/select",
     TOGGLE_SELECT_ALL: "mytrip/trips/selectAll",
     TRIP_DETAILS_SET: "mytrip/trips/details",
-    FETCHING_PAGE: "mytrip/trips/fetchingStart"
+    FETCHING_PAGE: "mytrip/trips/fetchingStart",
+    TRIP_EXPAND_ORDER: "mytrip/trips/expand",
+    TRIP_DRIVER_ASSIGN_START: "mytrip/trips/driver/assign/start",
+    TRIP_DRIVER_ASSIGN_END: "mytrip/trips/driver/assign/end",
+    TRIP_DRIVER_DEASSIGN_START: "mytrip/trips/driver/deassign/start",
+    TRIP_DRIVER_DEASSIGN_END: "mytrip/trips/driver/deassign/end",
 }
 
 const initialStore = {
@@ -24,7 +30,9 @@ const initialStore = {
     trips: [],
     selectedAll: false,
     isFetching: false,
-    trip: {}
+    trip: {},
+    expandedTrip: {},
+    isSettingDriver: false,
 }
 
 export default function Reducer(store = initialStore, action) {
@@ -85,6 +93,36 @@ export default function Reducer(store = initialStore, action) {
             return lodash.assign({}, store, {
                 trip: {},
                 isFetching: false
+            });
+        }
+
+        case Constants.TRIP_EXPAND_ORDER: {
+            return lodash.assign({}, store, {
+                expandedTrip: action.trip
+            });
+        }
+
+        case Constants.TRIP_DRIVER_ASSIGN_START: {
+            return lodash.assign({}, store, {
+                isSettingDriver: true
+            });
+        }
+
+        case Constants.TRIP_DRIVER_ASSIGN_END: {
+            return lodash.assign({}, store, {
+                isSettingDriver: false
+            });
+        }
+
+        case Constants.TRIP_DRIVER_DEASSIGN_START: {
+            return lodash.assign({}, store, {
+                isSettingDriver: true
+            });
+        }
+
+        case Constants.TRIP_DRIVER_DEASSIGN_END: {
+            return lodash.assign({}, store, {
+                isSettingDriver: false
             });
         }
 
@@ -228,6 +266,72 @@ export function fetchDetails(id) {
             const message = (e && e.message) ? e.message : "Failed to fetch trip details";
             dispatch(ModalActions.addMessage(message));
             dispatch({type: modalAction.BACKDROP_HIDE});
+        });
+    }
+}
+
+export function ExpandTrip(trip) {
+    return {
+        type: Constants.TRIP_EXPAND_ORDER,
+        trip: trip
+    }
+}
+
+export function ReassignDriver(tripID, driverID) {
+    return (dispatch, getState) => {
+        const {userLogged} = getState().app;
+        const {token} = userLogged;
+
+        const body = {
+            DriverID: driverID,
+        };
+
+        dispatch({ type: Constants.TRIP_DRIVER_DEASSIGN_START });
+        FetchDelete(`/trip/${tripID}/driver`, token).then((response) => { 
+            dispatch({ type: Constants.TRIP_DRIVER_DEASSIGN_END });
+            if(!response.ok) {
+                return response.json().then(({error}) => {
+                    throw error;
+                });
+            }
+            dispatch({ type: Constants.TRIP_DRIVER_ASSIGN_START });
+            return FetchPost(`/trip/${tripID}/driver`, token, body);
+        }).then((response) => {
+            dispatch({ type: Constants.TRIP_DRIVER_ASSIGN_END });
+            if(!response.ok) {
+                return response.json().then(({error}) => {
+                    throw error;
+                });
+            }
+            window.location.reload(false); 
+        }).catch((e) => {
+            const message = (e && e.message) || "Failed to set driver";
+            dispatch(ModalActions.addMessage(message));
+        });
+    }
+}
+
+export function AssignDriver(tripID, driverID) {
+    return (dispatch, getState) => {
+        const {userLogged} = getState().app;
+        const {token} = userLogged;
+
+        const body = {
+            DriverID: driverID,
+        };
+
+        dispatch({ type: Constants.TRIP_DRIVER_ASSIGN_START });
+        FetchPost(`/trip/${tripID}/driver`, token, body).then((response) => {
+            dispatch({ type: Constants.TRIP_DRIVER_ASSIGN_END });
+            if(!response.ok) {
+                return response.json().then(({error}) => {
+                    throw error;
+                });
+            }
+            window.location.reload(false); 
+        }).catch((e) => {
+            const message = (e && e.message) || "Failed to set driver";
+            dispatch(ModalActions.addMessage(message));
         });
     }
 }

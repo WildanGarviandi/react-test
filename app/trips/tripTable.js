@@ -9,6 +9,8 @@ import * as TripService from './tripService';
 import OrderStatusSelector from '../modules/orderStatus/selector';
 import {Glyph} from '../views/base';
 import {formatDate} from '../helper/time';
+import {ButtonBase} from '../views/base';
+import DriverSetter from './driverSetter';
 
 function StoreBuilder(keyword) {
     return (store) => {
@@ -130,28 +132,46 @@ function ConnectDropdownBuilder(keyword) {
     return connect(DropdownStoreBuilder(keyword), DropdownDispatchBuilder(keyword));
 }
 
+const CheckboxHeader = connect(CheckboxHeaderStore, CheckboxHeaderDispatch)(Table.CheckBoxHeader);
+const CheckboxRow = connect(undefined, CheckboxDispatch)(Table.CheckBoxCell);
 const ContainerNumberFilter = ConnectBuilder('containerNumber')(Table.InputCell);
-const DriverFilter = ConnectBuilder('driver')(Table.InputCell);
+const StatusFilter = ConnectDropdownBuilder('statusName')(Table.FilterDropdown);
 const MerchantFilter = ConnectBuilder('merchant')(Table.InputCell);
 const PickupFilter = ConnectBuilder('pickup')(Table.InputCell);
 const DropoffFilter = ConnectBuilder('dropoff')(Table.InputCell);
-const StatusFilter = ConnectDropdownBuilder('statusName')(Table.FilterDropdown);
-const CreatedDateFilter = connect(DateRangeBuilder('Created'), DateRangeDispatch('Created'))(Table.FilterDateTimeRangeCell);
-const CheckboxHeader = connect(CheckboxHeaderStore, CheckboxHeaderDispatch)(Table.CheckBoxHeader);
-const CheckboxRow = connect(undefined, CheckboxDispatch)(Table.CheckBoxCell);
+const DriverFilter = ConnectBuilder('driver')(Table.InputCell);
+const PickupDateFilter = connect(DateRangeBuilder('Pickup'), DateRangeDispatch('Pickup'))(Table.FilterDateTimeRangeCell);
+const OrderFilter = ConnectBuilder('order')(Table.InputCell);
+
+const HoverCell = React.createClass({
+    render() {
+        const { text, isHover, children, style, handleClick } = this.props;
+        return (
+            <td className={styles.td} style={style}>
+            {text}
+            {
+                isHover &&
+                <div onClick={handleClick}>
+                    {children}
+                </div>
+            }
+            </td>
+        );
+    }
+});
 
 function TripHeader() {
     return (
         <tr className={styles.tr}>
             <CheckboxHeader />
-            <Table.TextHeader />
-            <Table.TextHeader text="Container Number" />
-            <Table.TextHeader text="Driver" />
-            <Table.TextHeader text="Merchant" />
+            <Table.TextHeader text="Trip Number" />
+            <Table.TextHeader text="Status" />
+            <Table.TextHeader text="Webstore" />
             <Table.TextHeader text="Pickup" />
             <Table.TextHeader text="Dropoff" />
-            <Table.TextHeader text="Status" />
-            <Table.TextHeader text="Created Date" />
+            <Table.TextHeader text="Pickup Time" />
+            <Table.TextHeader text="Driver" />
+            <Table.TextHeader text="Number of Orders" style={{whiteSpace:'nowrap'}} />
         </tr>
     );
 }
@@ -191,45 +211,132 @@ function TripFilter() {
     return (
         <tr className={styles.tr}>
             <Table.EmptyCell />
-            <Table.EmptyCell />
             <ContainerNumberFilter />
-            <DriverFilter />
+            <StatusFilter />
             <MerchantFilter />
             <PickupFilter />
             <DropoffFilter />
-            <StatusFilter />
-            <CreatedDateFilter />
+            <PickupDateFilter />
+            <DriverFilter />
+            <OrderFilter />
         </tr>
     )
 }
 
-function TripRow({trip}) {
-    return (
-        <tr className={styles.tr}>
-            <CheckboxRow checked={trip.IsChecked} tripID={trip.TripID} />
-            <Table.LinkCell to={'/mytrips/detail/' + trip.TripID} text={<Glyph name={'search'}/>} />
-            <Table.TextCell text={trip.ContainerNumber} />
-            <Table.TextCell text={trip.Driver && trip.TripDriver } />
-            <Table.TextCell text={trip.TripMerchant } />
-            <Table.TextCell text={trip.PickupAddress && trip.PickupAddress.Address1} />
-            <Table.TextCell text={trip.DropoffAddress && trip.DropoffAddress.Address1} />
-            <Table.TextCell text={trip.OrderStatus && trip.OrderStatus.OrderStatus} />
-            <Table.TextCell text={trip.CreatedDate && formatDate(trip.CreatedDate)} />
-        </tr>
-    );
+const TripRow = React.createClass({
+    getInitialState() {
+        return ({isHover: false, isEdit: false});
+    },
+    editTrip(trip) {
+        this.setState({isEdit: true});
+    },
+    cancelEdit() {
+        this.setState({isEdit: false});
+    },
+    onMouseOver() {
+        this.setState({isHover: true});
+    },
+    onMouseOut() {
+        this.setState({isHover: false});
+    },
+    render() {
+        const { trip, expandedTrip, expand } = this.props;
+        const { isEdit, isHover } = this.state;
+        return (
+           <tr className={styles.tr} onMouseEnter={this.onMouseOver} onMouseLeave={this.onMouseOut}>
+                <CheckboxRow checked={trip.IsChecked} tripID={trip.TripID} />
+                <Table.LinkCell to={'/mytrips/detail/' + trip.TripID} text={trip.ContainerNumber} />
+                <Table.TextCell text={trip.OrderStatus && trip.OrderStatus.OrderStatus} />
+                <Table.TextCell text={trip.TripMerchant } />
+                <Table.TextCell text={trip.PickupAddress && trip.PickupAddress.Address1} />
+                <Table.TextCell text={trip.DropoffAddress && trip.DropoffAddress.Address1} />
+                <Table.TextCell text={trip.PickupTime && formatDate(trip.PickupTime)} />
+                {
+                    isEdit
+                    ?
+                        <Table.Cell><DriverSetter trip={trip} close={this.cancelEdit}/></Table.Cell>
+                    :
+                        <HoverCell
+                            text={trip.Driver && trip.TripDriver}
+                            isHover={isHover && (trip.OrderStatus.OrderStatus === "BOOKED" || trip.OrderStatus.OrderStatus === "PREBOOKED")}
+                            handleClick={()=>{this.editTrip(trip)}}
+                        >
+                            <ButtonBase href="#">Edit Driver</ButtonBase>
+                        </HoverCell>
+                    
+                }
+                <HoverCell
+                    text={trip.UserOrderRoutes.length}
+                    isHover={isHover || trip.TripID == expandedTrip.TripID}
+                    handleClick={()=>{expand(trip)}}
+                    style={{textAlign: 'center'}}
+                >
+                    {
+                        trip.UserOrderRoutes.length > 0 &&
+                        <ButtonBase href="#">{trip.UserOrderRoutes.length} orders in this trip</ButtonBase>
+                    }
+                </HoverCell>
+            </tr>
+        );
+    }
+});
+
+const TripBody = React.createClass({
+    getBodyContent() {
+        const { trips, expandedTrip, expand } = this.props;
+        let content = [];
+        trips.forEach((trip) => {
+            content.push(<TripRow key={trip.TripID} trip={TripParser(trip)} expandedTrip={expandedTrip} expand={expand} />);
+            if (expandedTrip && trip.TripID === expandedTrip.TripID) {
+                content.push(
+                    <tr key={trip.TripID + 'expanded'} className={styles.tr} onMouseEnter={this.onMouseOver} onMouseLeave={this.onMouseOut}>
+                        <td colSpan="9">
+                            <p style={{textAlign: 'center'}}>INSERT ORDER LIST TABLE HERE</p>
+                        </td>
+                    </tr>
+                );
+            }
+        });
+        return content;
+    },
+    render() {
+        return (
+            <tbody>
+                {this.getBodyContent()}
+            </tbody>
+        );
+    }
+});
+
+function TripBodyStore() {
+    return (store) => {
+        const { expandedTrip } = store.app.myTrips;
+        return {
+            expandedTrip: expandedTrip
+        }
+    }
 }
+
+function TripBodyDispatch() {
+    return (dispatch) => {
+        return {
+            expand: (trip) => {
+                dispatch(TripService.ExpandTrip(trip));
+            }
+        }
+    }
+}
+
+const TripBodyContainer = connect(TripBodyStore, TripBodyDispatch)(TripBody);
 
 function TripTable({trips}) {
   const headers = <TripHeader />;
-  const body = lodash.map(trips, (trip) => {
-    return <TripRow key={trip.TripID} trip={TripParser(trip)} />
-  });
 
   return (
     <table className={styles.table}>
       <thead>{headers}</thead>
       <tbody><TripFilter /></tbody>
-      <tbody>{body}</tbody>
+      <TripBodyContainer trips={trips} />
     </table>
   );
 }

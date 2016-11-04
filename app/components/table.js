@@ -29,6 +29,10 @@ export function FilterDateTimeCell({value, onChange}) {
     );
 }
 
+export function Cell({children}) {
+  return <td className={styles.td}>{children}</td>;
+}
+
 export function TextCell({text}) {
   return <td className={styles.td}>{text}</td>;
 }
@@ -61,8 +65,8 @@ export  function FilterDropdown({value, options, handleSelect}) {
     );
 }
 
-export function TextHeader({text}) {
-  return <th className={styles.th}>{text}</th>;
+export function TextHeader({text, style}) {
+  return <th className={styles.th} style={style}>{text}</th>;
 }
 
 export function LinkCell({onClick, text, to}) {
