@@ -11,6 +11,7 @@ import {Glyph} from '../views/base';
 import {formatDate} from '../helper/time';
 import {ButtonBase} from '../views/base';
 import DriverSetter from './driverSetter';
+import OrderTable from './orderTable';
 
 function StoreBuilder(keyword) {
     return (store) => {
@@ -143,23 +144,6 @@ const DriverFilter = ConnectBuilder('driver')(Table.InputCell);
 const PickupDateFilter = connect(DateRangeBuilder('Pickup'), DateRangeDispatch('Pickup'))(Table.FilterDateTimeRangeCell);
 const OrderFilter = ConnectBuilder('order')(Table.InputCell);
 
-const HoverCell = React.createClass({
-    render() {
-        const { text, isHover, children, style, handleClick } = this.props;
-        return (
-            <td className={styles.td} style={style}>
-            {text}
-            {
-                isHover &&
-                <div onClick={handleClick}>
-                    {children}
-                </div>
-            }
-            </td>
-        );
-    }
-});
-
 function TripHeader() {
     return (
         <tr className={styles.tr}>
@@ -233,6 +217,17 @@ const TripRow = React.createClass({
     cancelEdit() {
         this.setState({isEdit: false});
     },
+    expandTrip(trip) {
+        if (!this.props.expandedTrip.TripID) {
+            this.props.expand(trip);
+        } else {
+            if (this.props.expandedTrip.TripID !== trip.TripID) {
+                this.props.expand(trip);
+            } else {
+                this.props.shrink();
+            }
+        }
+    },
     onMouseOver() {
         this.setState({isHover: true});
     },
@@ -240,7 +235,7 @@ const TripRow = React.createClass({
         this.setState({isHover: false});
     },
     render() {
-        const { trip, expandedTrip, expand } = this.props;
+        const { trip, expandedTrip } = this.props;
         const { isEdit, isHover } = this.state;
         return (
            <tr className={styles.tr} onMouseEnter={this.onMouseOver} onMouseLeave={this.onMouseOut}>
@@ -256,26 +251,24 @@ const TripRow = React.createClass({
                     ?
                         <Table.Cell><DriverSetter trip={trip} close={this.cancelEdit}/></Table.Cell>
                     :
-                        <HoverCell
+                        <Table.HoverCell
                             text={trip.Driver && trip.TripDriver}
                             isHover={isHover && (trip.OrderStatus.OrderStatus === "BOOKED" || trip.OrderStatus.OrderStatus === "PREBOOKED")}
-                            handleClick={()=>{this.editTrip(trip)}}
                         >
-                            <ButtonBase href="#">Edit Driver</ButtonBase>
-                        </HoverCell>
+                            <ButtonBase href="#" onClick={()=>{this.editTrip(trip)}}>Edit Driver</ButtonBase>
+                        </Table.HoverCell>
                     
                 }
-                <HoverCell
+                <Table.HoverCell
                     text={trip.UserOrderRoutes.length}
                     isHover={isHover || trip.TripID == expandedTrip.TripID}
-                    handleClick={()=>{expand(trip)}}
                     style={{textAlign: 'center'}}
                 >
                     {
                         trip.UserOrderRoutes.length > 0 &&
-                        <ButtonBase href="#">{trip.UserOrderRoutes.length} orders in this trip</ButtonBase>
+                        <ButtonBase href="#" onClick={()=>{this.expandTrip(trip)}}>{trip.UserOrderRoutes.length} orders in this trip</ButtonBase>
                     }
-                </HoverCell>
+                </Table.HoverCell>
             </tr>
         );
     }
@@ -283,16 +276,20 @@ const TripRow = React.createClass({
 
 const TripBody = React.createClass({
     getBodyContent() {
-        const { trips, expandedTrip, expand } = this.props;
+        const { trips, expandedTrip, expand, shrink } = this.props;
         let content = [];
         trips.forEach((trip) => {
-            content.push(<TripRow key={trip.TripID} trip={TripParser(trip)} expandedTrip={expandedTrip} expand={expand} />);
+            content.push(<TripRow key={trip.TripID} trip={TripParser(trip)} expandedTrip={expandedTrip} expand={expand} shrink={shrink} />);
             if (expandedTrip && trip.TripID === expandedTrip.TripID) {
                 content.push(
-                    <tr key={trip.TripID + 'expanded'} className={styles.tr} onMouseEnter={this.onMouseOver} onMouseLeave={this.onMouseOut}>
-                        <td colSpan="9">
-                            <p style={{textAlign: 'center'}}>INSERT ORDER LIST TABLE HERE</p>
-                        </td>
+                    <tr key={trip.TripID + 'expanded'} className={styles.tr}>
+                        <Table.Cell colspan={9}>
+                            <div>
+                                <ButtonBase href="#">Move</ButtonBase>
+                                <ButtonBase href="#">Create</ButtonBase>
+                            </div>
+                            <OrderTable orders={trip.UserOrderRoutes} />
+                        </Table.Cell>
                     </tr>
                 );
             }
@@ -322,6 +319,9 @@ function TripBodyDispatch() {
         return {
             expand: (trip) => {
                 dispatch(TripService.ExpandTrip(trip));
+            },
+            shrink: () => {
+                dispatch(TripService.ShrinkTrip());
             }
         }
     }

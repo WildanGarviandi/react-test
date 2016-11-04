@@ -10,11 +10,14 @@ import Promise from 'bluebird';
 const Constants = {
     BASE: "mytrip/defaultSet/",
     SET_TRIPS: "mytrip/trips/set",
-    TOGGLE_SELECT_ORDER: "mytrip/trips/select",
+    TOGGLE_SELECT_TRIP: "mytrip/trips/select",
     TOGGLE_SELECT_ALL: "mytrip/trips/selectAll",
     TRIP_DETAILS_SET: "mytrip/trips/details",
     FETCHING_PAGE: "mytrip/trips/fetchingStart",
+    TOGGLE_SELECT_TRIP_ORDER: "mytrip/trips/orders/select",
+    TOGGLE_SELECT_TRIP_ALL: "mytrip/trips/orders/selectAll",
     TRIP_EXPAND_ORDER: "mytrip/trips/expand",
+    TRIP_SHRINK_ORDER: "mytrip/trips/shrink",
     TRIP_DRIVER_ASSIGN_START: "mytrip/trips/driver/assign/start",
     TRIP_DRIVER_ASSIGN_END: "mytrip/trips/driver/assign/end",
     TRIP_DRIVER_DEASSIGN_START: "mytrip/trips/driver/deassign/start",
@@ -33,6 +36,7 @@ const initialStore = {
     trip: {},
     expandedTrip: {},
     isSettingDriver: false,
+    orders: []
 }
 
 export default function Reducer(store = initialStore, action) {
@@ -50,7 +54,7 @@ export default function Reducer(store = initialStore, action) {
             });
         }
 
-        case Constants.TOGGLE_SELECT_ORDER: {
+        case Constants.TOGGLE_SELECT_TRIP: {
             const newTrips= lodash.map(store.trips, (trip) => {
                 if(trip.TripID !== action.tripID) {
                     return trip;
@@ -96,9 +100,47 @@ export default function Reducer(store = initialStore, action) {
             });
         }
 
+        case Constants.TOGGLE_SELECT_TRIP_ORDER: {
+            
+            const { orders } = store;
+
+            let newOrders = lodash.clone(orders);
+            if (newOrders.includes(action.orderID)) {
+                lodash.pull(newOrders, action.orderID);
+            } else {
+                newOrders.push(action.orderID);
+            }
+
+            return lodash.assign({}, store, {
+                orders: newOrders
+            });
+        }
+ 
+        case Constants.TOGGLE_SELECT_TRIP_ALL: {
+            const {expandedTrip, orders} = store;
+
+            let newOrders = [];
+            if (expandedTrip.UserOrderRoutes.length !== orders.length) {
+                newOrders = expandedTrip.UserOrderRoutes.map((order) => {
+                    return order.UserOrderRouteID;
+                });
+            }
+ 
+            return lodash.assign({}, store, {
+                orders: newOrders
+            })
+        }
+
         case Constants.TRIP_EXPAND_ORDER: {
             return lodash.assign({}, store, {
-                expandedTrip: action.trip
+                expandedTrip: action.trip,
+                orders: []
+            });
+        }
+
+        case Constants.TRIP_SHRINK_ORDER: {
+            return lodash.assign({}, store, {
+                expandedTrip: {}
             });
         }
 
@@ -189,7 +231,7 @@ export function UpdateAndFetch(filters) {
 
 export function ToggleChecked(tripID) {
     return {
-        type: Constants.TOGGLE_SELECT_ORDER,
+        type: Constants.TOGGLE_SELECT_TRIP,
         tripID: tripID
     }
 }
@@ -270,10 +312,27 @@ export function fetchDetails(id) {
     }
 }
 
+export function ToggleOrderChecked(orderID) {
+    return {
+        type: Constants.TOGGLE_SELECT_TRIP_ORDER,
+        orderID: orderID
+    }
+}
+ 
+export function ToggleOrderCheckedAll() {
+    return { type: Constants.TOGGLE_SELECT_TRIP_ALL };
+}
+
 export function ExpandTrip(trip) {
     return {
         type: Constants.TRIP_EXPAND_ORDER,
         trip: trip
+    }
+}
+
+export function ShrinkTrip(trip) {
+    return {
+        type: Constants.TRIP_SHRINK_ORDER
     }
 }
 

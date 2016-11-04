@@ -29,8 +29,9 @@ export function FilterDateTimeCell({value, onChange}) {
     );
 }
 
-export function Cell({children}) {
-  return <td className={styles.td}>{children}</td>;
+export function Cell({colspan, children}) {
+    const defaultColspan = colspan ? parseInt(colspan) : colspan;
+    return <td className={styles.td} colSpan={defaultColspan}>{children}</td>;
 }
 
 export function TextCell({text}) {
@@ -94,5 +95,19 @@ export function SortCriteria({onClick, glyphName}) {
         <span onClick={onClick} className={styles.glyphRight}>
             <Glyph name={glyphName} />
         </span>
+    );
+}
+
+export function HoverCell({text, isHover, style, children}) {
+    return (
+        <td className={styles.td} style={style}>
+        {text}
+        {
+            isHover &&
+            <div>
+                {children}
+            </div>
+        }
+        </td>
     );
 }
