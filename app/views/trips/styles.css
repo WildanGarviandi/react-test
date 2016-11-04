@@ -96,3 +96,18 @@
   top: -4px;
   margin-left: 10px;
 }
+
+.nextSuggestion {
+  background-color: #4cc38e;
+  color: #fff;
+  text-indent: 10px;
+  font-size: 15px;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.infoSuggestion {
+  margin-right: 10px;
+  margin-left: -5px;
+}

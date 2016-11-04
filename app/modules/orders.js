@@ -46,7 +46,6 @@ export function OrderParser(order) {
     DropoffTime: dropoffTime.toLocaleString(),
     ID: (order.UserOrderNumber + ' / ' + order.WebOrderID) || "",
     IsChecked: false,
-    NextDestination: (order.CurrentRoute && order.CurrentRoute.DestinationHub && order.CurrentRoute.DestinationHub.Name) || "",
     OrderStatus: (order.OrderStatus && order.OrderStatus.OrderStatus) || "",
     PickupAddress: order.PickupAddress ? FullAddress(order.PickupAddress) : "",
     PickupCity: order.PickupAddress ? order.PickupAddress.City : "",

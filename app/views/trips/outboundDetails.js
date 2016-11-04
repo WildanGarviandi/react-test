@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
 import {ContainerDetailsActions, StatusList} from '../../modules';
 import districtsFetch from '../../modules/districts/actions/districtsFetch';
-import {ButtonBase, ButtonWithLoading, Input, Modal, Page} from '../base';
+import {ButtonBase, ButtonWithLoading, Input, Modal, Page, Glyph} from '../base';
 import DistrictAndDriver from '../container/districtAndDriver';
 import {OrderTable} from '../container/table';
 import * as TripDetails from '../../modules/trips/actions/details';
@@ -94,6 +94,13 @@ const DetailPage = React.createClass({
 
     const {canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, isDeassigning} = this.props;
 
+    let nextSuggestion = [];
+    for (var p in trip.NextDestinationSuggestion) {
+        if (trip.NextDestinationSuggestion.hasOwnProperty(p) && p !== 'NO_SUGGESTION') {
+            nextSuggestion.push(trip.NextDestinationSuggestion[p] + ' orders should go to ' + p);
+        }
+    }
+
     return (
       <div>
         {
@@ -107,6 +114,20 @@ const DetailPage = React.createClass({
         {
           !this.props.notFound && !isFetching &&
           <Page title={'Trip Details' + (trip.ContainerNumber ? (" of Container " + trip.ContainerNumber) : "")}>
+            {
+              nextSuggestion.length > 0 &&
+              <div className={styles.nextSuggestion}>
+                <Glyph className={styles.infoSuggestion} name={'info-sign'}/>
+                Next suggestion: {nextSuggestion.join(', ')}
+              </div>
+            }
+            {
+              nextSuggestion.length === 0 &&
+              <div className={styles.nextSuggestion}>
+                <Glyph className={styles.infoSuggestion} name={'info-sign'}/>
+                Next suggestion is not available
+              </div>
+            }
             {
               fillAble &&
               <ButtonWithLoading textBase={'Fill With Orders'} onClick={this.goToFillContainer} styles={{base: styles.normalBtn}} />
