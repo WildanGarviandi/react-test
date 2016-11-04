@@ -1,4 +1,5 @@
 import config from '../../../config.json';
 export default { 
-  baseUrl: config.baseAPI
+  baseUrl: config.baseAPI,
+  baseUrlHub: config.baseAPIHub
 }
