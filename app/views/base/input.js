@@ -27,10 +27,7 @@ const CheckBox = React.createClass({
 
     var classes = classNaming(
       this.props.className,
-      styles.checkbox,
-      {
-        'form-control': true,
-      }
+      styles.checkbox
     );
 
     return (
@@ -59,10 +56,7 @@ const Input = React.createClass({
 
     var classes = classNaming(
       this.props.className,
-      styles.input,
-      {
-        'form-control': true,
-      }
+      styles.input
     );
 
     return (

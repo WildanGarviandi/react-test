@@ -51,10 +51,12 @@ const CheckBox = React.createClass({
     );
 
     return (
-      <span className={styles.container}>
-        <input type="checkbox" checked={this.state.checked} onChange={this.handleClick} id={name} className={classes} />
-        <label htmlFor={name} className={styles.label}>{label}</label>
-      </span>
+      <div className='nb'>
+        <span className={styles.container}>
+          <input type="checkbox" checked={this.state.checked} onChange={this.handleClick} id={name} className={classes} />
+          <label htmlFor={name} className={styles.label}>{label}</label>
+        </span>
+      </div>
     );
   }
 });
@@ -83,10 +85,12 @@ const Input = React.createClass({
     );
 
     return (
-      <span className={styles.container}>
-        <input {...base} className={classes} onChange={this.handleChange} onKeyDown={this.handleEnterKey} />
-        <span className={styles.notes}>{notes}</span>
-      </span>
+      <div className='nb'>
+        <span className={styles.container}>
+          <input {...base} className={classes} onChange={this.handleChange} onKeyDown={this.handleEnterKey} />
+          <span className={styles.notes}>{notes}</span>
+        </span>
+      </div>
     );
   }
 });

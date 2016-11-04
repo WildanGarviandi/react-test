@@ -57,24 +57,16 @@ const Table = React.createClass({
     return (
       <div style={style}>
         <Pagination {...pagination} {...PaginationActions} />
-        <div className={'row'}>
-          <div className={'col-xs-6'}>
-            <ButtonWithLoading {...groupingOrdersBtnProps} className={consoleBtnClasses} />
-          </div>
-          {
-            !isPickup && !isFill &&
-            <div className={'col-xs-6'}>
-              <span className={orderWrapClasses}>
-                <span className={orderLblClasses}>
-                  Jump to Order with AWB :
-                </span>
-                <span className={'col-xs-6'}>
-                  <Input onChange={this.onChange} onEnterKeyPressed={this.onEnterKeyPressed} base={{placeholder: "Insert AWB Here"}} />
-                </span>
-              </span>
-            </div>
-          }
-        </div>
+        <ButtonWithLoading {...groupingOrdersBtnProps} />
+        {
+          !isPickup && !isFill &&
+          <span className={styles2.finderWrapper}>
+            <span className={styles2.finderLabel}>
+              Jump to Order with AWB :
+            </span>
+            <Input onChange={this.onChange} onEnterKeyPressed={this.onEnterKeyPressed} base={{placeholder: "Insert AWB Here"}} />
+          </span>
+        }
         <table className={styles.table}>
           <Headers />
           <Filters /> 
