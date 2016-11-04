@@ -14,6 +14,7 @@ const Constants = {
     DRIVER_DETAILS_SET: "mydriver/drivers/details",
     FETCHING_PAGE: "mydriver/drivers/fetching",
     FETCHING_PAGE_STOP: "mydriver/drivers/fetchingStop",
+    SET_DRIVERS_ORDERS: "mydriver/drivers/orders"
 }
 
 const initialStore = {
@@ -26,7 +27,15 @@ const initialStore = {
     selectedAll: false,
     driver: {},
     isEditing: false,
-    isFetching: false
+    isFetching: false,
+    orders: [],
+    driverOrdersIDActive: 0,
+    currentPageOrders: 1,
+    totalOrders: 0,
+    statusNameOrders: "SHOW ALL",
+    orderOwner: "ALL",
+    limitOrders: 100,
+    filtersOrders: {}
 }
 
 export default function Reducer(store = initialStore, action) {
@@ -88,6 +97,13 @@ export default function Reducer(store = initialStore, action) {
             return lodash.assign({}, store, {
                 driver: {},
                 isFetching: false
+            });
+        }
+        case Constants.SET_DRIVERS_ORDERS: {
+            return lodash.assign({}, store, {
+                totalOrders: action.total,
+                orders: action.orders,
+                driverOrdersIDActive: action.driverID
             });
         }
 
@@ -287,6 +303,103 @@ export function addDriver(driverData) {
         }).catch(() => { 
             dispatch({type: modalAction.BACKDROP_HIDE});
             dispatch(ModalActions.addMessage('Network error'));
+        });
+    }
+}
+
+export function StoreSetterOrders(keyword, value) {
+    return {type: Constants.BASE + keyword, [keyword]: value};
+}
+
+export function SetFiltersOrders(filters) {
+    return StoreSetterOrders("filtersOrders", filters);
+}
+
+export function UpdateFiltersOrders(filters) {
+    return (dispatch, getState) => {
+        const prevFilters = getState().app.myDrivers.filtersOrders;
+        const nextFilter = lodash.assign({}, prevFilters, filters);
+        dispatch(SetFiltersOrders(nextFilter));
+    }
+}
+
+export function SetDropDownFilterOrders(keyword) {
+    const filterNames = {
+        "statusName": "status",
+        "orderOwner": "isTrunkeyOrder",
+    };
+
+    return (selectedOption) => {
+        const filterName = filterNames[keyword];
+
+        return (dispatch, getState) => {
+            dispatch(StoreSetterOrders(keyword, selectedOption.value));
+            dispatch(UpdateFiltersOrders({[filterName]: selectedOption.key}));
+            dispatch(FetchListOrders());
+        }
+    }
+}
+
+export function UpdateAndFetchOrders(filters) {
+    return (dispatch) => {
+        dispatch(UpdateFiltersOrders(filters));
+        dispatch(FetchListOrders());
+    }
+}
+
+export function SetCurrentPageOrders(currentPage) {
+    return (dispatch, getState) => {
+        dispatch(StoreSetterOrders("currentPageOrders", currentPage));
+        dispatch(FetchListOrders());
+    }
+}
+
+export function SetLimitOrders(limit) {
+    return (dispatch, getState) => {
+        dispatch(StoreSetterOrders("limitOrders", limit));
+        dispatch(SetCurrentPageOrders(1));
+    }
+}
+
+export function FetchListOrders(id) {
+    return (dispatch, getState) => {
+        const {myDrivers, userLogged} = getState().app;
+        const {currentPageOrders, limitOrders, filtersOrders, driverOrdersIDActive} = myDrivers;
+        const {token} = userLogged;
+        let params = lodash.assign({}, filtersOrders, {
+            limit: limitOrders,
+            offset: (currentPageOrders - 1) * limitOrders
+        });
+
+        if (params.status === 0) {
+            delete params.status;
+        }
+
+        if (params.isTrunkeyOrder === 'All') {
+            delete params.isTrunkeyOrder;
+        }
+
+        let driverID = parseInt(id) || parseInt(driverOrdersIDActive);
+        dispatch({type: modalAction.BACKDROP_SHOW});
+        FetchGet('/driver/' + driverID + '/orders', token, params).then((response) => {
+            if(!response.ok) {
+                return response.json().then(({error}) => {
+                    throw error;
+                })
+            }
+
+            return response.json().then(({data}) => {
+                dispatch({type: modalAction.BACKDROP_HIDE});
+                dispatch({
+                    type: Constants.SET_DRIVERS_ORDERS,
+                    driverID: driverID,
+                    orders: data.rows,
+                    total: data.count,
+                })
+            });
+        }).catch((e) => {
+            dispatch({type: modalAction.BACKDROP_HIDE});
+            dispatch(ModalActions.addMessage(e.message));
         });
     }
 }

@@ -10,7 +10,7 @@ export default (store) => {
   return fetchPost('/is-authenticated', token).then((response) => {
     if(response.ok) {
       return response.json().then((response) => {
-        store.dispatch({type: actionTypes.AUTH_VALID, hub: response.data.hub});
+        store.dispatch({type: actionTypes.AUTH_VALID, hub: response.data.hub, user: response.data.user});
         store.dispatch({type: modalAction.BACKDROP_HIDE});
         return { ok: true, data: response.data };
       });

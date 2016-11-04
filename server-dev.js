@@ -8,8 +8,8 @@ var proxy = require('proxy-middleware');
 var url = require('url');
 
 var app = express();
-
 app.use('/css', express.static(__dirname + '/css'));
+app.use('/img', express.static(__dirname + '/img'));
 app.use('/assets', proxy(url.parse('http://localhost:8081/assets')));
 
 app.get('*', function(req, res) {

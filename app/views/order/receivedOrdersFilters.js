@@ -46,6 +46,11 @@ function mapDispatchToPickupOrders(dispatch) {
           newFilter = {userOrderNumber: filter.val};
           break;
         }
+
+        case "NextDestination": {
+          newFilter = {nextDestination: filter.val};
+          break;
+        }
       }
 
       dispatch(ReceivedOrders.AddFilters(newFilter));

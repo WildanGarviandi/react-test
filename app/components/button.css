@@ -7,8 +7,8 @@
 }
 
 .btnBase:hover {
-  background-color: #eF4A50;
   color: #fff;
+  text-decoration: underline;
 }
 
 .btnBase.loading {
@@ -38,6 +38,17 @@
 }
 
 .greenButton {
+    border: 0;
+    border-radius: 5px;
+    background-color: #4cc38e;
+    color: #fff;
+    cursor: pointer;
+    min-width: 120px;
+    min-height: 30px;
+    margin-left: 5px;
+}
+
+.redButton {
     border: 0;
     border-radius: 5px;
     background-color: #4cc38e;

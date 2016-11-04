@@ -1,0 +1,85 @@
+.thumbnail {
+  display: block;
+  max-width: 700px;
+  max-height: 700px;
+}
+
+.modalTrigger {
+  display: inline-block;
+  color: #ff5a60;
+  line-height: 28px;
+  margin-bottom: 5px;
+}
+
+.modalTrigger:visited,
+.modalTrigger:focus,
+.modalTrigger:hover {
+  color: #ff5a60;
+}
+
+.modalTrigger:focus {
+  outline: none;
+}
+
+.fileInput {
+  opacity: 0;
+  visibility: hidden;
+  display: none;
+}
+
+.disabledFileLabel {
+  padding-left: 25px;
+  margin-top: 6px;
+  background-image: url('../../img/loading.gif');
+  background-position: center left;
+  background-size: 20px;
+  background-repeat: no-repeat;
+  display: inline-block;
+  text-indent: 0;
+  margin-left: 10px;
+}
+
+.fileLabel {
+  color: #333;
+  background-color: #fff;
+  border: solid 1px #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: inline-block;
+  padding: 8px;
+  text-align: center;
+  text-indent: 0;
+  position: relative;
+  left: -1px;
+  margin-left: 10px;
+}
+
+.fileLabel:hover {
+  color: #333;
+  background-color: #e6e6e6;
+  border-color: #adadad;
+}
+
+.modalClose {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  border: none;
+  background-color: #ff5a60;
+  display: block;
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  line-height: 30px;
+  cursor: pointer;
+}
+
+.glyphRemove {
+  color: #fff;
+  margin-left: 2px;
+}
+
+.textIndent {
+  text-indent: 10px;
+}

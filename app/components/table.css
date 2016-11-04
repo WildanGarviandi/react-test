@@ -146,6 +146,18 @@ tbody:last-child .tr:nth-of-type(odd) .td {
 }
 
 .createdDate {
+    width: 100px;
+}
+
+.glyphRight {
+    float: right;
+}
+
+.dropdownColumn {
+    min-width: 80px;
+    height: 20px;
+    font-size: 12px;
+    padding: 8px;
     width: 140px;
 }
 

@@ -55,7 +55,7 @@ export function FilterStatusCell({value, handleSelect}) {
 
 export  function FilterDropdown({value, options, handleSelect}) {
     return (
-        <td className={styles.td}>
+        <td className={styles.dropdownColumn}>
             <DropdownWithState2 val={value} options={options} handleSelect={handleSelect} />
         </td>
     );
@@ -69,7 +69,7 @@ export function LinkCell({onClick, text, to}) {
   return <td><Link to={to} className={styles.link}>{text}</Link></td>;
 }
 
-export function FilterDateTimeRangeCell({startDate, endDate, onChange}) {
+export function FilterDateTimeRangeCell({startDate, endDate, onChange, onInputKeyDown}) {
     const startDateFormatted = moment(startDate).format('MM-DD-YYYY');
     const endDateFormatted = moment(endDate).format('MM-DD-YYYY');
     let dateValue = startDateFormatted + ' - ' + endDateFormatted;
@@ -78,10 +78,17 @@ export function FilterDateTimeRangeCell({startDate, endDate, onChange}) {
     }
     return (
         <td className={styles.td}>
-            <DateRangePicker startDate={startDateFormatted} endDate={endDateFormatted} onApply={onChange} >
-                <input className={styles.searchInput + " " + styles.createdDate} type="text" value={dateValue} />
+            <DateRangePicker startDate={startDateFormatted} endDate={endDateFormatted} onApply={onChange} parentEl="#bootstrapPlaceholder" >
+                <input className={styles.searchInput + " " + styles.createdDate} type="text" value={dateValue} onKeyDown={onInputKeyDown} />
             </DateRangePicker>
         </td>
     );
 }
 
+export function SortCriteria({onClick, glyphName}) {
+    return (
+        <span onClick={onClick} className={styles.glyphRight}>
+            <Glyph name={glyphName} />
+        </span>
+    );
+}

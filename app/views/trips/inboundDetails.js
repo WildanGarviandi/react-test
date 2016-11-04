@@ -17,14 +17,15 @@ import NextDestinationSetter from '../container/nextDestinationSetter';
 import TransportSetter from '../container/secondSetting';
 import styles from './styles.css';
 import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered} from '../../modules/trips';
+import {formatDate} from '../../helper/time';
 
-const columns = ['id', 'id2', 'pickup', 'dropoff', 'time', 'CODValue', 'orderStatus', 'routeStatus', 'action'];
+const columns = ['id', 'id2', 'pickup', 'dropoff', 'time', 'CODValue', 'orderStatus', 'routeStatus', 'isSuccess', 'action'];
 const nonFillColumn = columns.slice(0, columns.length - 1);
 const headers = [{
   id: 'Web Order ID', id2: 'User Order Number',
   pickup: 'Pickup Address', dropoff: 'Dropoff Address',
   time: 'Pickup Time', orderStatus: 'Order Status',routeStatus: 'Route Status', action: 'Action',
-  CODValue: 'COD Value'
+  CODValue: 'COD Value', isSuccess: 'Scanned'
 }];
 
 const DetailPage = React.createClass({
@@ -93,6 +94,16 @@ const DetailPage = React.createClass({
 
     const {canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, isDeassigning} = this.props;
 
+    const successfullScan = lodash.filter(this.props.orders, {'isSuccess': 'Yes'});
+
+    let statisticItem = '';
+    if (!this.props.notFound && !isFetching && canDeassignDriver) {
+      statisticItem = `Scanned ${successfullScan.length} of ${orders.length} items`;
+    }
+    if (!this.props.notFound && !isFetching && !canDeassignDriver) {
+      statisticItem = `Total ${orders.length} items`;
+    }
+
     return (
       <div>
         {
@@ -118,10 +129,11 @@ const DetailPage = React.createClass({
               canDeassignDriver &&
               <ButtonWithLoading textBase="Cancel Assignment" textLoading="Deassigning" onClick={this.deassignDriver} isLoading={isDeassigning} />
             }
+            <a href={'/trips/' + trip.TripID + '/manifest#' + trip.ContainerNumber} className={styles.manifestLink} target="_blank">Print Manifest</a>
             <Accordion initialState="collapsed">
               <TransportSetter trip={trip} isInbound={true} />
             </Accordion>
-            <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>Total {orders.length} items</span>
+            <span style={{display: 'block', marginTop: 10, marginBottom: 5, fontSize: 20}}>{statisticItem}</span>
             {
               !trip.DestinationHub && trip.District &&
               <span>
@@ -192,7 +204,7 @@ const mapStateToProps = (state, ownProps) => {
       id2: order.UserOrderNumber,
       pickup: order.PickupAddress && order.PickupAddress.Address1,
       dropoff: order.DropoffAddress && order.DropoffAddress.Address1,
-      time: order.PickupTime && (new Date(order.PickupTime)).toString(),
+      time: order.PickupTime && formatDate(order.PickupTime),
       id3: order.UserOrderID,
       isDeleting: order.isRemoving,
       orderStatus: (order.OrderStatus && order.OrderStatus.OrderStatus) || '',
@@ -200,6 +212,7 @@ const mapStateToProps = (state, ownProps) => {
       CODValue: order.IsCOD ? order.TotalValue : 0,
       DeliveryFee: order.DeliveryFee,
       tripID: trip.TripID,
+      isSuccess: order.Status === 'DELIVERED' ? 'Yes' : 'No'
     }
   });
 

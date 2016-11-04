@@ -13,6 +13,7 @@ const DeleteParams = (token, body) => {
   }
 }
 
-export default (url, token, body = {}) => {
-  return fetch(config.baseUrl + url, DeleteParams(token, body));
+export default (url, token, body = {}, isHubAPI = false) => {
+  let baseUrl = isHubAPI ? config.baseUrlHub : config.baseUrl;
+  return fetch(baseUrl + url, DeleteParams(token, body));
 }

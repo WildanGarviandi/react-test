@@ -23,6 +23,8 @@
   position: fixed;
   top: 0;
   color: #fff;
+  z-index: 999;
+  overflow-y: scroll;
   
   -webkit-transition: border 0.5s ease-out;
   -o-transition: border 0.5s ease-out;
@@ -35,6 +37,7 @@
 
 .menuList {
   width: 100%;
+  margin-bottom: 50px;
 }
 
 .menuItem {
@@ -85,10 +88,9 @@
 }
 
 .menuTitle, .compactTitle {
-  color: #C0B2A5;
+  color: #FFFFFF;
   text-align: center;
   position: relative;
-  margin-left: -15px;
 }
 
 .compact .menuTitle {
@@ -164,14 +166,12 @@
 }
 
 .toggleMenu {
-  position: absolute;
+  position: fixed;
   bottom: 0;
-  left: 0;
-  right: 0;
   margin: 0 auto;
   display: block;
   height: 30px;
-  width: 100%;
+  width: inherit;
   background-color: #ff5a60;
   border: none;
   border-top: solid 1px #222;

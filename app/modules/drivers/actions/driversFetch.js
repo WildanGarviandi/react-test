@@ -11,15 +11,19 @@ function FetchDrivers(fleetID) {
       return;
     }
 
+    let params = {
+      limit: 'all'
+    }
+
     dispatch({ type: actionTypes.DRIVERS_FETCH_START, fleetID });
-    fetchGet(`/fleet/${fleetID}/drivers`, token).then(function(response) {
+    fetchGet(`/fleet/${fleetID}/drivers`, token, params).then(function(response) {
       if(response.ok) {
         response.json().then(function(resp) {
           const response = resp.data;
           dispatch({
             fleetID,
             type: actionTypes.DRIVERS_FETCH_RECEIVED,
-            list: response
+            list: response.rows
           });
         });
       } else {

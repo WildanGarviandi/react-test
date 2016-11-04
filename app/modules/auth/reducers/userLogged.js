@@ -7,6 +7,8 @@ const initialUserState = {
   token: localStorage.token,
   userID: localStorage.userID,
   hubID: localStorage.hubID,
+  hubName: localStorage.hubName,
+  fleetName: localStorage.fleetName,
   isCentralHub: false,
 };
 
@@ -29,11 +31,14 @@ export default (state = initialUserState, action) => {
       localStorage.clear();
       return _.assign({}, state, {isFetching: false, isValid: false, message: action.message});
     case actionTypes.AUTH_VALID:
-      if(!action.hub) return;
-      localStorage.hubID = action.hub.HubID;
+      localStorage.hubID = action.hub && action.hub.HubID;
+      localStorage.hubName = action.hub && action.hub.Name;
+      localStorage.fleetName = action.user && action.user.User && action.user.User.FirstName + ' ' + action.user.User.LastName;
       return _.assign({}, state, {
-        hubID: action.hub.HubID,
-        isCentralHub: "CENTRAL" === action.hub.Type,
+        hubID: action.hub && action.hub.HubID,
+        hubName: action.hub && action.hub.Name,
+        fleetName: action.user && action.user.User && action.user.User.FirstName + ' ' + action.user.User.LastName,
+        isCentralHub: action.hub && ("CENTRAL" === action.hub.Type),
       });
     default:
       return state;

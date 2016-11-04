@@ -374,4 +374,51 @@ const DropdownWithState2 = React.createClass({
   }
 });
 
-export {Form, CheckBox, Input, InputWithDefault, InputWithState, Dropdown, DropdownTypeAhead, DropdownWithState, DropdownWithState2 };
+const Textarea = React.createClass({
+  handleChange(e) {
+    let { onChange } = this.props;
+
+    if(!onChange) return;
+    onChange(e.target.value);
+  },
+  handleEnterKey(e) {
+    if(e.keyCode === 13 && this.props.onEnterKeyPressed) {
+      this.props.onEnterKeyPressed(e.target.value);
+    }
+  },
+  render() {
+    let { base, notes, styles = {} } = this.props;
+
+    return (
+      <span className={styles.container}>
+        <textarea {...base} className={styles.input} onChange={this.handleChange} onKeyDown={this.handleEnterKey} rows={4} cols={22} />
+        <span className={styles.notes}>{notes}</span>
+      </span>
+    );
+  }
+});
+
+const TextareaWithDefault = React.createClass({
+  getInitialState() {
+    return {currentText: this.props.currentText || ""};
+  },
+  componentWillReceiveProps(nextProps) {
+    if(this.props.currentText !== nextProps.currentText) {
+      this.setState({currentText: nextProps.currentText});
+    }
+  },
+  setText(val) {
+    this.setState({currentText: val});
+    if(this.props.onChange) {
+      this.props.onChange(val);
+    }
+  },
+  handleSelect() {
+    this.props.handleSelect(this.state.currentText);
+  },
+  render() {
+    return <Textarea {...this.props} base={{value: this.state.currentText, type: this.props.type}} onChange={this.setText} onEnterKeyPressed={this.handleSelect} />
+  }
+});
+
+export {Form, CheckBox, Input, InputWithDefault, InputWithState, Dropdown, DropdownTypeAhead, DropdownWithState, DropdownWithState2, Textarea, TextareaWithDefault };

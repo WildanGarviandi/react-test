@@ -18,7 +18,9 @@ export const BaseHeader = React.createClass({
 export const BaseCell = React.createClass({
   render() {
     let {attr, item} = this.props;
-    return (<td className={styles.td}>{item[attr] && item[attr].toString()}</td>);
+    const name = (attr === 'isSuccess' && item[attr] === 'Yes') ? classNaming(styles.td, styles.tick) : classNaming(styles.td);
+    const value = (attr === 'isSuccess') ? '' : item[attr] && item[attr].toString();
+    return (<td className={name}>{value}</td>);
   }
 });
 
