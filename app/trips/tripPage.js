@@ -36,6 +36,9 @@ const TripPage = React.createClass({
         var tripPage = this;
         tripPage.props.AssignTrip(selectedTrips, tripPage.state.driverID);
     },
+    exportTrip() {
+        this.props.ExportTrip();
+    },
     render() {
         const {paginationState, PaginationAction, drivers, trips} = this.props;
         const assignTripButton = {
@@ -45,9 +48,19 @@ const TripPage = React.createClass({
                 base: stylesButton.greenButton,
             }
         };
+        const exportTripButton = {
+            textBase: 'Export Trips',
+            onClick: this.exportTrip,
+            styles: {
+                base: stylesButton.greenButton,
+            }
+        };
         return (
             <Page title="My Trips">
                 <Pagination {...paginationState} {...PaginationAction} />
+                <p>
+                    <ButtonWithLoading {...exportTripButton} />
+                </p>
                 <Table trips={trips} />
                 <Pagination {...paginationState} {...PaginationAction} />
             </Page>
@@ -87,6 +100,9 @@ function DispatchToTripsPage(dispatch) {
         },
         AssignTrip: (trips, driverID) => {
             dispatch(TripService.AssignTrip(trips, driverID));
+        },
+        ExportTrip: () => {
+            dispatch(TripService.ExportTrip())
         },
         PaginationAction: {
             setCurrentPage: (currentPage) => {
