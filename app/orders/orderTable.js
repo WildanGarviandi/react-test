@@ -91,13 +91,16 @@ function DropdownStoreBuilder(name) {
         const statusFilter = store.app.myOrders.statusFilter;
         let statusOptions = lodash.filter(OrderStatusSelector.GetList(store), function(status) {
             switch (statusFilter) {
-                 case 'ongoing' :
+                case 'ongoing' :
                      return defaultValues.ongoingOrderStatus.includes(status.key);
                      break;
-                 default :
-                     return defaultValues.openOrderStatus.includes(status.key);
-                     break;
-             }
+                case 'completed' :
+                    return defaultValues.completedOrderStatus.includes(status.key);
+                    break;
+                default :
+                    return defaultValues.openOrderStatus.includes(status.key);
+                    break;
+            }
         });
 
         const options = {

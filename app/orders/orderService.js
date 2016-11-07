@@ -220,6 +220,11 @@ export function FetchList() {
                         return val;
                     }));
                     break;
+                case 'completed' :
+                    params.status = JSON.stringify(defaultValues.completedOrderStatus.filter((val) => {
+                        return val;
+                    }));
+                    break;
                 default :
                     params.status = JSON.stringify(defaultValues.openOrderStatus);
                     break;
@@ -262,13 +267,13 @@ export function FetchList() {
     }
 }
 
- export function FetchCountOrder() {
+export function FetchCountOrder() {
     return (dispatch, getState) => {
- 
+
         const {userLogged} = getState().app;
         const {token} = userLogged;
         let params = {};
- 
+
         dispatch({type: modalAction.BACKDROP_SHOW});
         FetchGet('/order/assignedCount', token, params).then((response) => {
             return response.json().then(({data}) => {

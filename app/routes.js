@@ -71,6 +71,7 @@ export default (
         <Route path="/mytrips/detail/:tripID" component={MyAssignedTripsDetailPage} onEnter={requireAuth} />
         <Route path="/myorders" component={()=>(<MyOrdersPage statusFilter="open" />)} onEnter={requireAuth} />
         <Route path="/myorders/ongoing" component={()=>(<MyOrdersPage statusFilter="ongoing" />)} onEnter={requireAuth} />
+        <Route path="/myorders/completed" component={()=>(<MyOrdersPage statusFilter="completed" />)} onEnter={requireAuth} />
         <Route path="/myorders/add" component={ManageOrdersPage} onEnter={requireAuth} />
         <Route path="/myorders/edit/:id" component={ManageOrdersPage} onEnter={requireAuth} />
         <Route path="/myorders/details/:id" component={MyOrdersDetailsPage} onEnter={requireAuth} />

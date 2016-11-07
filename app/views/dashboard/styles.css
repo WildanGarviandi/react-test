@@ -224,7 +224,7 @@ a:focus, a:hover {
 .menuAccordion .menuItem .link {
   position: relative;
 }
- 
+
 .menuAccordion .menuItem .link span:last-of-type {
   position: absolute;
   left: 35px;
