@@ -69,7 +69,7 @@ export default (
         <Route path="/trips/:tripID/fillPickup" component={PickupFillPage} onEnter={requireHubAuth}/>
         <Route path="/mytrips" component={MyAssignedTripsPage} onEnter={requireAuth} />
         <Route path="/mytrips/detail/:tripID" component={MyAssignedTripsDetailPage} onEnter={requireAuth} />
-        <Route path="/myorders" component={MyOrdersPage} onEnter={requireAuth} />
+        <Route path="/myorders/open" component={MyOrdersPage} onEnter={requireAuth} />
         <Route path="/myorders/add" component={ManageOrdersPage} onEnter={requireAuth} />
         <Route path="/myorders/edit/:id" component={ManageOrdersPage} onEnter={requireAuth} />
         <Route path="/myorders/details/:id" component={MyOrdersDetailsPage} onEnter={requireAuth} />

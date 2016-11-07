@@ -109,23 +109,7 @@ const OrderPage = React.createClass({
             }
         };
         return (
-            <Page title="My Order">
-                <div style={{clear: 'both'}} />
-                <div className={classNaming(styles.container, styles.attrOpen)}>
-                    <Glyph name={'tags'} className={styles.glyph} />
-                    <span className={styles.num}>{countOpen}</span>
-                    <span className={styles.attr}>Open Orders</span>
-                </div>
-                <div className={classNaming(styles.container, styles.attrProcessed)}>
-                    <Glyph name={'tags'} className={styles.glyph} />
-                    <span className={styles.num}>{countInProgress}</span>
-                    <span className={styles.attr}>Processed</span>
-                </div>
-                <div className={classNaming(styles.container, styles.attrFinished)}>
-                    <Glyph name={'tags'} className={styles.glyph} />
-                    <span className={styles.num}>{countFinished}</span>
-                    <span className={styles.attr}>Finished</span>
-                </div>
+            <Page title="My Open Orders">
                 <div style={{clear: 'both'}} />
                 <div style={{marginBottom: 15}}>
                   {

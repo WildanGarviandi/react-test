@@ -5,6 +5,7 @@ import ModalActions from '../modules/modals/actions';
 import {modalAction} from '../modules/modals/constants';
 import moment from 'moment';
 import config from '../../config.json';
+import defaultValues from '../../defaultValues.json';
 import Promise from 'bluebird';
 import {fetchXhr} from '../modules/fetch/getXhr';
 
@@ -206,6 +207,10 @@ export function FetchList() {
             limit: limit,
             offset: (currentPage - 1) * limit
         })
+
+        if (filters.status === 'All' || !filters.status) {
+            params.status = JSON.stringify(defaultValues.openOrderStatus);
+        }
 
         if (filters.isTrunkeyOrder === 'All') {
             delete params.isTrunkeyOrder;
