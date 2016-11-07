@@ -220,3 +220,16 @@
 a:focus, a:hover {
   color: #fff;
 }
+
+.menuAccordion .menuItem .link {
+  position: relative;
+}
+ 
+.menuAccordion .menuItem .link span:last-of-type {
+  position: absolute;
+  left: 35px;
+  text-indent: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  line-height: 16px;
+}

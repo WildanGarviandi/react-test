@@ -17,6 +17,7 @@ import DateRangePicker from 'react-bootstrap-daterangepicker';
 import * as UtilHelper from '../helper/utility';
 import {Glyph} from '../views/base';
 import classNaming from 'classnames';
+import defaultStatusValues from '../../defaultValues.json';
 
 const OrderPage = React.createClass({
     getInitialState() {
@@ -54,8 +55,19 @@ const OrderPage = React.createClass({
         this.props.FetchList();
     },
     componentWillMount() {
+        this.setStatusFilter();
         this.props.FetchList();
         this.props.FetchDrivers(this.props.userLogged.userID);
+    },
+    setStatusFilter() {
+        switch(this.props.statusFilter) {
+            case 'ongoing' :
+                this.props.SetStatusFilter('ongoing');
+                break;
+            default :
+                this.props.SetStatusFilter('open');
+                break;
+        }
     },
     selectDriver(e) {
         this.setState({driverID: e.key});
@@ -108,8 +120,17 @@ const OrderPage = React.createClass({
                 base: stylesButton.greenButton,
             }
         };
+        let pageTitle;
+        switch (this.props.statusFilter) {
+            case 'ongoing' :
+                pageTitle = 'My Ongoing Orders';
+                break;
+            default :
+                pageTitle = 'My Open Orders';
+                break;
+        };
         return (
-            <Page title="My Open Orders">
+            <Page title={pageTitle}>
                 <div style={{clear: 'both'}} />
                 <div style={{marginBottom: 15}}>
                   {
@@ -137,15 +158,17 @@ const OrderPage = React.createClass({
                   }
                 </div>
                 <Pagination {...paginationState} {...PaginationAction} />
-                <p>
-                    <ButtonWithLoading {...assignOrderButton} />
-                    <ButtonWithLoading {...cancelOrderButton} />
-                    <Link to={'/myorders/add'}>
-                        <button className={stylesButton.greenButton}>Add Orders</button> 
-                    </Link>
-                    <ButtonWithLoading {...exportOrderButton} />
-                    <Form.DropdownWithState options={drivers} handleSelect={this.selectDriver} />
-                </p>
+                {
+                    this.props.statusFilter === 'open' &&
+                    <p>
+                        <ButtonWithLoading {...assignOrderButton} />
+                        <ButtonWithLoading {...cancelOrderButton} />
+                        <Link to={'/myorders/add'}>
+                            <button className={stylesButton.greenButton}>Add Orders</button> 
+                        </Link>
+                        <Form.DropdownWithState options={drivers} handleSelect={this.selectDriver} />
+                    </p>
+                }
                 <Table orders={orders} />
                 <Pagination {...paginationState} {...PaginationAction} />
             </Page>
@@ -200,6 +223,9 @@ function DispatchToOrdersPage(dispatch) {
         },
         CancelOrder: (orders) => {
             dispatch(OrderService.CancelOrder(orders));
+        },
+        SetStatusFilter: (filter) => {
+            dispatch(OrderService.SetStatusFilter(filter));
         },
         PaginationAction: {
             setCurrentPage: (currentPage) => {

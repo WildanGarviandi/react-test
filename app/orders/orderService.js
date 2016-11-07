@@ -39,7 +39,8 @@ const initialStore = {
     isFetching: false,
     countOpen: '',
     countInProgress: '',
-    countFinished: ''
+    countFinished: '',
+    statusFilter: ''
 }
 
 export default function Reducer(store = initialStore, action) {
@@ -135,6 +136,10 @@ export function UpdateFilters(filters) {
     }
 }
 
+export function SetStatusFilter(filter) {
+    return StoreSetter("statusFilter", filter);
+}
+
 export function SetDropDownFilter(keyword) {
     const filterNames = {
         "statusName": "status",
@@ -201,7 +206,7 @@ export function ToggleCheckedAll() {
 export function FetchList() {
     return (dispatch, getState) => {
         const {myOrders, userLogged} = getState().app;
-        const {currentPage, limit, total, filters} = myOrders;
+        const {currentPage, limit, total, filters, statusFilter} = myOrders;
         const {token} = userLogged;
         let params = lodash.assign({}, filters, {
             limit: limit,
@@ -209,7 +214,16 @@ export function FetchList() {
         })
 
         if (filters.status === 'All' || !filters.status) {
-            params.status = JSON.stringify(defaultValues.openOrderStatus);
+            switch (statusFilter) {
+                case 'ongoing' :
+                    params.status = JSON.stringify(defaultValues.ongoingOrderStatus.filter((val) => {
+                        return val;
+                    }));
+                    break;
+                default :
+                    params.status = JSON.stringify(defaultValues.openOrderStatus);
+                    break;
+            }
         }
 
         if (filters.isTrunkeyOrder === 'All') {
@@ -239,18 +253,35 @@ export function FetchList() {
                     total: data.count,
                 })
             })
-            FetchGet('/order/assignedCount', token, params).then((response) => {
-                return response.json().then(({data}) => {
-                    dispatch({
-                        type: Constants.SET_COUNT_ORDERS,
-                        countOpen: data.open,
-                        countInProgress: data.inProgress,
-                        countFinished: data.finished,
-                    })
-                    dispatch({type: modalAction.BACKDROP_HIDE});
-                });
-            })
+
+            dispatch({type: modalAction.BACKDROP_HIDE});
         }).catch((e) => {
+            dispatch({type: modalAction.BACKDROP_HIDE});
+            dispatch(ModalActions.addMessage(e.message));
+        });
+    }
+}
+
+ export function FetchCountOrder() {
+    return (dispatch, getState) => {
+ 
+        const {userLogged} = getState().app;
+        const {token} = userLogged;
+        let params = {};
+ 
+        dispatch({type: modalAction.BACKDROP_SHOW});
+        FetchGet('/order/assignedCount', token, params).then((response) => {
+            return response.json().then(({data}) => {
+                dispatch({
+                    type: Constants.SET_COUNT_ORDERS,
+                    countOpen: data.open,
+                    countInProgress: data.inProgress,
+                    countFinished: data.finished,
+                })
+                dispatch({type: modalAction.BACKDROP_HIDE});
+            });
+        })
+        .catch((e) => {
             dispatch({type: modalAction.BACKDROP_HIDE});
             dispatch(ModalActions.addMessage(e.message));
         });
@@ -485,6 +516,7 @@ export function AssignOrder(orders, driverID) {
             alert(assignMessage);
             dispatch({type: modalAction.BACKDROP_HIDE});
             dispatch(FetchList());
+            dispatch(FetchCountOrder());
         });
     }
 }
@@ -530,6 +562,7 @@ export function CancelOrder(orders) {
             alert(cancelMessage);
             dispatch({type: modalAction.BACKDROP_HIDE});
             dispatch(FetchList());
+            dispatch(FetchCountOrder());
         });
     }
 }
