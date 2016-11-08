@@ -253,7 +253,7 @@ const TripRow = React.createClass({
                     :
                         <Table.HoverCell
                             text={trip.Driver && trip.TripDriver}
-                            isHover={isHover && (trip.OrderStatus.OrderStatus === "BOOKED" || trip.OrderStatus.OrderStatus === "PREBOOKED")}
+                            isHover={isHover}
                         >
                             <ButtonBase href="#" onClick={()=>{this.editTrip(trip)}}>Edit Driver</ButtonBase>
                         </Table.HoverCell>
