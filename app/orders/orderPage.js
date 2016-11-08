@@ -166,7 +166,7 @@ const OrderPage = React.createClass({
         this.props.ExportOrder();
     },
     render() {
-        const {paginationState, PaginationAction, orders, drivers, userLogged, countOpen, countInProgress, countFinished} = this.props;
+        const {paginationState, PaginationAction, orders, drivers, userLogged, countOpen, countInProgress, countFinished, isFetching} = this.props;
         const assignOrderButton = {
             textBase: 'Assign Order',
             onClick: this.assignOrder,
@@ -228,28 +228,30 @@ const OrderPage = React.createClass({
                     </div>
                   }
                 </div>
-                <Pagination {...paginationState} {...PaginationAction} />
-                {
-                    this.props.statusFilter === 'open' &&
-                    <p>
-                        <ButtonWithLoading {...assignOrderButton} />
-                        <ButtonWithLoading {...cancelOrderButton} />
-                        <Link to={'/myorders/add'}>
-                            <button className={stylesButton.greenButton}>Add Orders</button> 
-                        </Link>
-                        <Form.DropdownWithState options={drivers} handleSelect={this.selectDriver} />
-                        <ButtonWithLoading {...exportOrderButton} />
-                    </p>
-                }
-                <Table orders={orders} />
-                <Pagination {...paginationState} {...PaginationAction} />
+                <div style={{opacity: isFetching ? 0.5 : 1}}>
+                    <Pagination {...paginationState} {...PaginationAction} />
+                    {
+                        this.props.statusFilter === 'open' &&
+                        <p>
+                            <ButtonWithLoading {...assignOrderButton} />
+                            <ButtonWithLoading {...cancelOrderButton} />
+                            <Link to={'/myorders/add'}>
+                                <button className={stylesButton.greenButton}>Add Orders</button> 
+                            </Link>
+                            <Form.DropdownWithState options={drivers} handleSelect={this.selectDriver} />
+                            <ButtonWithLoading {...exportOrderButton} />
+                        </p>
+                    }
+                    <Table orders={orders} />
+                    <Pagination {...paginationState} {...PaginationAction} />
+                </div>
             </Page>
         );
     }
 });
 
 function StoreToOrdersPage(store) {
-    const {currentPage, limit, total, orders, countOpen, countInProgress, countFinished} = store.app.myOrders;
+    const {currentPage, limit, total, orders, countOpen, countInProgress, countFinished, isFetching} = store.app.myOrders;
     const userLogged = store.app.userLogged;
     const driversStore = store.app.driversStore;
     const driverList = driversStore.driverList;
@@ -269,7 +271,8 @@ function StoreToOrdersPage(store) {
         },
         countOpen: countOpen,
         countInProgress: countInProgress,
-        countFinished: countFinished
+        countFinished: countFinished,
+        isFetching: isFetching
     }
 }
 

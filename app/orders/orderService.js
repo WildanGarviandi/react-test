@@ -20,6 +20,7 @@ const Constants = {
     ORDER_DETAILS_SET: "myorder/orders/details/set",
     FETCHING_PAGE: "myorder/orders/fetching",
     FETCHING_PAGE_STOP: "myorder/orders/fetchingStop",
+    RESET_ORDERS: "myorder/orders/reset",
 }
 
 const initialStore = {
@@ -114,6 +115,13 @@ export default function Reducer(store = initialStore, action) {
             });
         }
 
+        case Constants.RESET_ORDERS: {
+            return lodash.assign({}, store, {
+                total: 0,
+                orders: []
+            });
+        }
+
         default: {
             return store;
         }
@@ -205,6 +213,7 @@ export function ToggleCheckedAll() {
 
 export function FetchList() {
     return (dispatch, getState) => {
+        dispatch({type: Constants.RESET_ORDERS});
         const {myOrders, userLogged} = getState().app;
         const {currentPage, limit, total, filters, statusFilter} = myOrders;
         const {token} = userLogged;
@@ -212,6 +221,27 @@ export function FetchList() {
             limit: limit,
             offset: (currentPage - 1) * limit
         })
+
+        switch (statusFilter) {
+            case 'ongoing' :
+                if (defaultValues.ongoingOrderStatus.indexOf(filters.status) === -1) {
+                    filters.status = null;
+                    dispatch(StoreSetter("statusName", "SHOW ALL"));
+                }
+                break;
+            case 'completed' :
+                if (defaultValues.completedOrderStatus.indexOf(filters.status) === -1) {
+                    filters.status = null;
+                    dispatch(StoreSetter("statusName", "SHOW ALL"));
+                }
+                break;
+            default :
+                if (defaultValues.openOrderStatus.indexOf(filters.status) === -1) {
+                    filters.status = null;
+                    dispatch(StoreSetter("statusName", "SHOW ALL"));
+                }
+                break;
+        }
 
         if (filters.status === 'All' || !filters.status) {
             switch (statusFilter) {
@@ -240,6 +270,7 @@ export function FetchList() {
         }
 
         dispatch({type: modalAction.BACKDROP_SHOW});
+        dispatch({type: Constants.FETCHING_PAGE});
         FetchGet('/order/assigned', token, params)
         .then((response) => {
             if(!response.ok) {
@@ -249,16 +280,13 @@ export function FetchList() {
             }
 
             response.json().then(({data}) => {
-                if (data.count < total) {
-                    dispatch(SetCurrentPage(1));
-                }
                 dispatch({
                     type: Constants.SET_ORDERS,
                     orders: data.rows,
                     total: data.count,
                 })
             })
-
+            dispatch({type: Constants.FETCHING_PAGE_STOP});
             dispatch({type: modalAction.BACKDROP_HIDE});
         }).catch((e) => {
             dispatch({type: modalAction.BACKDROP_HIDE});

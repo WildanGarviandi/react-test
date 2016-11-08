@@ -90,7 +90,7 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
         }
         <Accordion initialState={'collapsed'}>
           <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[5,9,10]} iconName={'shopping-cart'} iconTitle={'My Orders'}>
-            <MenuItem active={activeMenuIdx == 5} to={'/myorders'}>
+            <MenuItem active={activeMenuIdx == 5} to={'/myorders/open'}>
                <Glyph className={styles.menuGlyph} name={'open-file'}/>
                <span>Open Orders ({counterOrder.countOpen})</span>
             </MenuItem>
@@ -139,7 +139,7 @@ const menuPaths = [
   '/orders/received',
   '/trips/outbound',
   '/history',
-  '/myorders',
+  '/myorders/open',
   '/mytrips',
   '/mycontacts',
   '/mydrivers',
