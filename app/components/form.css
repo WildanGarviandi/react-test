@@ -85,3 +85,11 @@
 .container {
   float: left;
 }
+
+input {
+  padding-left: 10px;
+}
+
+.inputSmall {
+  height: 24px;
+}

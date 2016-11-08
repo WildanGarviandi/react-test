@@ -32,14 +32,12 @@ const DetailRow = React.createClass({
         {
           isEditing && !(value === 'Yes' || value === 'No') &&
           <span className={styles.itemValue}>
-            :
             <InputWithDefault handleSelect={this.props.submitForm} autoFocus={label === 'Package Weight'} currentText={value} onChange={this.props.onChange} type="number" />
           </span>
         }
         {
           isEditing && (value === 'Yes' || value === 'No') &&
           <span className={styles.itemValue}>
-            :
             <CheckBox styles={styles} onEnterKeyPressed={this.props.submitForm} checked={value === 'Yes'} onChange={this.props.onChange} />
           </span>
         }

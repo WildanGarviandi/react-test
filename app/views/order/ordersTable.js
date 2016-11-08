@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './table.css';
 import styles2 from './styles.css';
 import {ButtonWithLoading, Input, Pagination} from '../base';
+import classNaming from 'classnames';
 
 const Table = React.createClass({
   getInitialState() {
@@ -37,6 +38,21 @@ const Table = React.createClass({
         base: styles2.groupBtn + " " + (this.props.isGrouping ? styles2.greenBtnLoading : styles2.greenBtn),
       }
     }
+
+    var orderWrapClasses = classNaming(
+      styles2.finderWrapper,
+      {'pull-right': true}
+    );
+
+    var orderLblClasses = classNaming(
+      styles2.finderLabel,
+      {'col-xs-6': true}
+    );
+
+    var consoleBtnClasses = classNaming(
+      this.props.className,
+      {'col-xs-6': true}
+    );
 
     return (
       <div style={style}>
