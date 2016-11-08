@@ -10,10 +10,18 @@ const loggerMiddleware = createLogger();
 
 let store;
 
+const mainReducer = (state, action) => {
+  if (action.type === 'LOGOUT_SUCCESS') {
+    state = undefined;
+  }
+
+  return rootReducer(state, action);
+}
+
 if(process.env && process.env.NODE_ENV === "production") {
   store = createStore(
     combineReducers({
-      app: rootReducer,
+      app: mainReducer,
       routing: routerReducer
     }),
     applyMiddleware(routerMiddleware(browserHistory), thunkMiddleware)
@@ -21,7 +29,7 @@ if(process.env && process.env.NODE_ENV === "production") {
 } else {
   store = createStore(
     combineReducers({
-      app: rootReducer,
+      app: mainReducer,
       routing: routerReducer
     }),
     applyMiddleware(routerMiddleware(browserHistory), thunkMiddleware, loggerMiddleware)
