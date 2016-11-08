@@ -238,6 +238,7 @@ const OrderPage = React.createClass({
                             <button className={stylesButton.greenButton}>Add Orders</button> 
                         </Link>
                         <Form.DropdownWithState options={drivers} handleSelect={this.selectDriver} />
+                        <ButtonWithLoading {...exportOrderButton} />
                     </p>
                 }
                 <Table orders={orders} />
