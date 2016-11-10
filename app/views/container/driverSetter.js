@@ -26,6 +26,7 @@ const DriverSetter = React.createClass({
       selectedDriver: {value: ''},
       changingFleet: false,
       selectedFleet: {value: this.props.fleetName},
+      showDriverSelect: false
     };
   },
   driverSet() {
@@ -52,7 +53,7 @@ const DriverSetter = React.createClass({
   },
   render() {
     const {canPickFleet, driverName, drivers, driversFleetName, fleetName, fleets, isFetchingDriver, isFetchingFleet, isSettingDriver} = this.props;
-    const {selectedDriver} = this.state;
+    const {selectedDriver, showDriverSelect} = this.state;
 
     const {assignedFleet, canAssignFleet, fleet, isChangingFleet, isSetFleet} = this.props;
 
@@ -94,7 +95,7 @@ const DriverSetter = React.createClass({
           }
         </span>
         {
-          fleet &&
+          fleet && showDriverSelect &&
           <span>
             <span>Driver : </span>
             {
