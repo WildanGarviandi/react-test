@@ -21,9 +21,9 @@ const DriverSetter = React.createClass({
   },
   driverSet() {
     if (this.state.currentDriver.key)
-      this.props.DriverReassign(this.props.trip.TripID, this.state.selectedDriver.key);
+      this.props.DriverReassign(this.props.trip.TripID, this.state.selectedDriver.key, this.state.selectedDriver.value);
     else
-      this.props.DriverAssign(this.props.trip.TripID, this.state.selectedDriver.key);
+      this.props.DriverAssign(this.props.trip.TripID, this.state.selectedDriver.key, this.state.selectedDriver.value);
   },
   driverSelect(driver) {
     this.setState({
@@ -100,11 +100,11 @@ function StateToProps(state, ownProps) {
 
 function DispatchToProps(dispatch, ownProps) {
   return {
-    DriverAssign(tripID, driverID) {
-      dispatch(TripService.AssignDriver(tripID, driverID));
+    DriverAssign(tripID, driverID, driverName) {
+      dispatch(TripService.AssignDriver(tripID, driverID, driverName));
     },
-    DriverReassign(tripID, driverID) {
-      dispatch(TripService.ReassignDriver(tripID, driverID));
+    DriverReassign(tripID, driverID, driverName) {
+      dispatch(TripService.ReassignDriver(tripID, driverID, driverName));
     },
   }
 }

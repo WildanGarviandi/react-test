@@ -336,7 +336,7 @@ export function ShrinkTrip(trip) {
     }
 }
 
-export function ReassignDriver(tripID, driverID) {
+export function ReassignDriver(tripID, driverID, driverName) {
     return (dispatch, getState) => {
         const {userLogged} = getState().app;
         const {token} = userLogged;
@@ -362,6 +362,7 @@ export function ReassignDriver(tripID, driverID) {
                     throw error;
                 });
             }
+            alert('Trip ' + tripID+ ' successfully assigned to Driver: ' + driverName);
             window.location.reload(false); 
         }).catch((e) => {
             const message = (e && e.message) || "Failed to set driver";
@@ -370,7 +371,7 @@ export function ReassignDriver(tripID, driverID) {
     }
 }
 
-export function AssignDriver(tripID, driverID) {
+export function AssignDriver(tripID, driverID, driverName) {
     return (dispatch, getState) => {
         const {userLogged} = getState().app;
         const {token} = userLogged;
@@ -387,6 +388,7 @@ export function AssignDriver(tripID, driverID) {
                     throw error;
                 });
             }
+            alert('Trip ' + tripID+ ' successfully assigned to Driver: ' + driverName);
             window.location.reload(false); 
         }).catch((e) => {
             const message = (e && e.message) || "Failed to set driver";
