@@ -285,8 +285,6 @@ const TripBody = React.createClass({
                     <tr key={trip.TripID + 'expanded'} className={styles.tr}>
                         <Table.Cell colspan={9}>
                             <div>
-                                <ButtonBase href="#">Move</ButtonBase>
-                                <ButtonBase href="#">Create</ButtonBase>
                             </div>
                             <OrderTable orders={trip.UserOrderRoutes} />
                         </Table.Cell>
