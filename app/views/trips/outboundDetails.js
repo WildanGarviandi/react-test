@@ -19,7 +19,7 @@ import styles from './styles.css';
 import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered} from '../../modules/trips';
 import {formatDate} from '../../helper/time';
 
-const columns = ['id', 'id2', 'pickup', 'dropoff', 'time', 'CODValue', 'orderStatus', 'routeStatus', 'action'];
+const columns = ['id', 'id2', 'dropoff', 'time', 'CODValue', 'orderStatus', 'routeStatus', 'action'];
 const nonFillColumn = columns.slice(0, columns.length - 1);
 const headers = [{
   id: 'Web Order ID', id2: 'User Order Number',
@@ -94,6 +94,9 @@ const DetailPage = React.createClass({
 
     const {canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, isDeassigning} = this.props;
 
+    const tripType = trip.DestinationHub ? 'Interhub' : 'Last Leg';
+    const tripDestination = trip.DestinationHub ? trip.DestinationHub.Name : '[Multiple Dropoff]';
+
     let nextSuggestion = [];
     for (var p in trip.NextDestinationSuggestion) {
         if (trip.NextDestinationSuggestion.hasOwnProperty(p) && p !== 'NO_SUGGESTION') {
@@ -113,7 +116,13 @@ const DetailPage = React.createClass({
         }
         {
           !this.props.notFound && !isFetching &&
-          <Page title={'Trip Details' + (trip.ContainerNumber ? (" of Container " + trip.ContainerNumber) : "")}>
+          <Page title={'Outbound Trip Details '+ (trip.ContainerNumber ? (" of Container " + trip.ContainerNumber) : "")}>
+            <div style={{marginBottom: 10}}>
+              Trip Type: {tripType}
+            </div>
+            <div style={{marginBottom: 10}}>
+              Trip Destination: {tripDestination}
+            </div>
             {
               nextSuggestion.length > 0 &&
               <div className={styles.nextSuggestion}>
