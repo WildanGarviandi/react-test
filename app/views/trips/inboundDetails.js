@@ -18,6 +18,7 @@ import TransportSetter from '../container/secondSetting';
 import styles from './styles.css';
 import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered} from '../../modules/trips';
 import {formatDate} from '../../helper/time';
+import {TripParser} from '../../modules/trips';
 
 const columns = ['id', 'id2', 'pickup', 'time', 'CODValue', 'orderStatus', 'routeStatus', 'isSuccess', 'action'];
 const nonFillColumn = columns.slice(0, columns.length - 1);
@@ -97,7 +98,7 @@ const DetailPage = React.createClass({
     const successfullScan = lodash.filter(this.props.orders, {'isSuccess': 'Yes'});
 
     const tripType = trip.OriginHub ? 'Interhub' : 'First Leg';
-    const tripOrigin = trip.OriginHub ? trip.OriginHub.Name : '[Multiple Pickup]';
+    const tripOrigin = trip.OriginHub ? trip.OriginHub.Name : TripParser(trip).WebstoreNames;
 
     let statisticItem = '';
     if (!this.props.notFound && !isFetching && canDeassignDriver) {

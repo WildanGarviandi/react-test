@@ -95,7 +95,7 @@ const DetailPage = React.createClass({
     const {canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, isDeassigning} = this.props;
 
     const tripType = trip.DestinationHub ? 'Interhub' : 'Last Leg';
-    const tripDestination = trip.DestinationHub ? trip.DestinationHub.Name : '[Multiple Dropoff]';
+    const tripDestination = trip.DestinationHub ? trip.DestinationHub.Name : 'Multiple Dropoff';
 
     let nextSuggestion = [];
     for (var p in trip.NextDestinationSuggestion) {
