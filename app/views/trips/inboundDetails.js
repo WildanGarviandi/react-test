@@ -19,6 +19,7 @@ import styles from './styles.css';
 import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered} from '../../modules/trips';
 import {formatDate} from '../../helper/time';
 import {TripParser} from '../../modules/trips';
+import {Glyph} from '../base';
 
 const columns = ['id', 'id2', 'pickup', 'time', 'CODValue', 'orderStatus', 'routeStatus', 'isSuccess', 'action'];
 const nonFillColumn = columns.slice(0, columns.length - 1);
@@ -121,12 +122,18 @@ const DetailPage = React.createClass({
         {
           !this.props.notFound && !isFetching &&
           <Page title={'Inbound Trip Details' + (trip.ContainerNumber ? (" of Container " + trip.ContainerNumber) : "")}>
-            <div style={{marginBottom: 10}}>
-              Trip Type: {tripType}
+            <div style={{clear: 'both'}} />
+            <div className={classNaming(styles.container)}>
+              <Glyph name={'tags'} className={styles.glyph} />
+              <span className={styles.num}>Type</span>
+              <span className={styles.attr}>{tripType}</span>
             </div>
-            <div style={{marginBottom: 10}}>
-              Trip Origin: {tripOrigin}
+            <div className={classNaming(styles.container)}>
+              <Glyph name={'arrow-right'} className={styles.glyph} />
+              <span className={styles.num}>Origin</span>
+              <span className={styles.attr}>{tripOrigin}</span>
             </div>
+            <div style={{clear: 'both'}} />
             {
               fillAble &&
               <ButtonWithLoading textBase={'Fill With Orders'} onClick={this.goToFillContainer} styles={{base: styles.normalBtn}} />
