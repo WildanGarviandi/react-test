@@ -99,7 +99,7 @@ const DetailPage = React.createClass({
     const successfullScan = lodash.filter(this.props.orders, {'isSuccess': 'Yes'});
 
     const tripType = trip.OriginHub ? 'Interhub' : 'First Leg';
-    const tripOrigin = trip.OriginHub ? trip.OriginHub.Name : TripParser(trip).WebstoreNames;
+    const tripOrigin = trip.OriginHub ? `Hub ${trip.OriginHub.Name}` : TripParser(trip).WebstoreNames;
 
     let statisticItem = '';
     if (!this.props.notFound && !isFetching && canDeassignDriver) {

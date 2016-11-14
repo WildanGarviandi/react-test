@@ -95,7 +95,7 @@ const DetailPage = React.createClass({
     const {canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, isDeassigning} = this.props;
 
     const tripType = trip.DestinationHub ? 'Interhub' : 'Last Leg';
-    const tripDestination = trip.DestinationHub ? trip.DestinationHub.Name : 'Multiple Dropoff';
+    const tripDestination = trip.DestinationHub ? `Hub ${trip.DestinationHub.Name}` : `District ${trip.District.Name}`;
 
     let nextSuggestion = [];
     for (var p in trip.NextDestinationSuggestion) {
@@ -129,20 +129,6 @@ const DetailPage = React.createClass({
               <span className={styles.attr}>{tripDestination}</span>
             </div>
             <div style={{clear: 'both'}} />
-            {
-              nextSuggestion.length > 0 &&
-              <div className={styles.nextSuggestion}>
-                <Glyph className={styles.infoSuggestion} name={'info-sign'}/>
-                Next suggestion: {nextSuggestion.join(', ')}
-              </div>
-            }
-            {
-              nextSuggestion.length === 0 &&
-              <div className={styles.nextSuggestion}>
-                <Glyph className={styles.infoSuggestion} name={'info-sign'}/>
-                Next suggestion is not available
-              </div>
-            }
             {
               fillAble &&
               <ButtonWithLoading textBase={'Fill With Orders'} onClick={this.goToFillContainer} styles={{base: styles.normalBtn}} />
