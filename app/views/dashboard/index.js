@@ -119,12 +119,12 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
             <Glyph className={styles.menuGlyph} name={'user'}/>
             <span>My Drivers</span>
           </MenuItem>
+          </div>
+        }
           <MenuItem to={''} onClick={handleLogout}>
             <Glyph className={styles.menuGlyph} name={'log-out'}/>
             <span>Logout</span>
           </MenuItem>
-          </div>
-        }
       </ul>
       <button className={styles.toggleMenu} onClick={toggleCompact}>
         <Glyph className={styles.glyphBackward} name={'backward'}/>
