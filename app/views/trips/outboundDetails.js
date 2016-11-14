@@ -95,7 +95,14 @@ const DetailPage = React.createClass({
     const {canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, isDeassigning} = this.props;
 
     const tripType = trip.DestinationHub ? 'Interhub' : 'Last Leg';
-    const tripDestination = trip.DestinationHub ? `Hub ${trip.DestinationHub.Name}` : `District ${trip.District.Name}`;
+    let tripDestination;
+    if (trip.DestinationHub) {
+      tripDestination = `Hub ${trip.DestinationHub.Name}`;
+    else if (trip.District) {
+      tripDestination = `District ${trip.District.Name}`;
+    } else {
+      tripDestination = 'No Destination Yet';
+    }
 
     let nextSuggestion = [];
     for (var p in trip.NextDestinationSuggestion) {
