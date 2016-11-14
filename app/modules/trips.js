@@ -30,7 +30,7 @@ export function CanMarkOrderReceived(trip, orders) {
     return false;
   };
 
-  return ['ACCEPTED', 'PICKUP', 'IN-TRANSIT'].indexOf(trip.OrderStatus.OrderStatus) > -1;
+  return ['BOOKED', 'ACCEPTED', 'PICKUP', 'IN-TRANSIT'].indexOf(trip.OrderStatus.OrderStatus) > -1;
 }
 
 export function CanMarkTripDelivered(trip, orders) {
@@ -42,7 +42,7 @@ export function CanMarkTripDelivered(trip, orders) {
     return false;
   };
 
-  return ['ACCEPTED', 'PICKUP', 'IN-TRANSIT'].indexOf(trip.OrderStatus.OrderStatus) > -1;
+  return ['BOOKED', 'ACCEPTED', 'PICKUP', 'IN-TRANSIT'].indexOf(trip.OrderStatus.OrderStatus) > -1;
 }
 
 export function GetTripType(trip, hubID) {

@@ -592,7 +592,7 @@ export function OrderReceived(scannedID) {
     const {token} = userLogged;
     const {orders} = inboundTripDetails;
 
-    const allowedStatus = ['BOOKED', 'PICKUP', 'ACCEPTED'];
+    const allowedRouteStatus = ['BOOKED', 'PICKUP', 'ACCEPTED'];
     const scannedOrder = lodash.find(orders, (order) => {
       return order.OrderStatus.OrderStatusID !== 5 &&
         (order.UserOrderNumber === scannedID || order.WebOrderID === scannedID);
@@ -602,11 +602,11 @@ export function OrderReceived(scannedID) {
       dispatch(ModalActions.addMessage('Order not found'));
       return;
     }
-
-    if (allowedStatus.indexOf(scannedOrder.OrderStatus.OrderStatus) === -1) {
-      dispatch(ModalActions.addMessage('Only allow order statuses: ' + allowedStatus.join(', ')));
+    
+    if (allowedRouteStatus.indexOf(scannedOrder.Status) === -1) {
+      dispatch(ModalActions.addMessage('Only allow route statuses: ' + allowedRouteStatus.join(', ')));
       return;
-    } 
+    }
 
     dispatch({type: modalAction.BACKDROP_SHOW});
     dispatch({
