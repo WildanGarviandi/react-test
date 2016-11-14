@@ -58,7 +58,26 @@ function BodyComponent(type, keyword, item, index) {
     }
 
     case "Datetime": {
-      return <TextCell text={formatDate(item[keyword])} />
+      switch(keyword) {
+        case "PickupTime": {
+          let color, back;
+
+          if (item["OrderStatus"] === "NOTASSIGNED") {
+            back = "#5cb85c";
+            color = "#fff"
+          } else {
+            back = "#ddd";
+            color = "#000";
+          }
+
+          return <span style={{color: color, backgroundColor: back}}>
+                    <TextCell text={formatDate(item[keyword])} />
+                  </span>
+        }
+        default: {
+          return <TextCell text={formatDate(item[keyword])} />
+        }
+      }
     }
 
     default: {
