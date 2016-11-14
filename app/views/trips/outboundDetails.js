@@ -98,7 +98,7 @@ const DetailPage = React.createClass({
     let tripDestination;
     if (trip.DestinationHub) {
       tripDestination = `Hub ${trip.DestinationHub.Name}`;
-    else if (trip.District) {
+    } else if (trip.District) {
       tripDestination = `District ${trip.District.Name}`;
     } else {
       tripDestination = 'No Destination Yet';
