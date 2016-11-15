@@ -29,6 +29,11 @@ export function FilterDateTimeCell({value, onChange}) {
     );
 }
 
+export function Cell({colspan, children}) {
+    const defaultColspan = colspan ? parseInt(colspan) : colspan;
+    return <td className={styles.td} colSpan={defaultColspan}>{children}</td>;
+}
+
 export function TextCell({text}) {
   return <td className={styles.td}>{text}</td>;
 }
@@ -61,8 +66,8 @@ export  function FilterDropdown({value, options, handleSelect}) {
     );
 }
 
-export function TextHeader({text}) {
-  return <th className={styles.th}>{text}</th>;
+export function TextHeader({text, style}) {
+  return <th className={styles.th} style={style}>{text}</th>;
 }
 
 export function LinkCell({onClick, text, to}) {
@@ -90,5 +95,19 @@ export function SortCriteria({onClick, glyphName}) {
         <span onClick={onClick} className={styles.glyphRight}>
             <Glyph name={glyphName} />
         </span>
+    );
+}
+
+export function HoverCell({text, isHover, style, children}) {
+    return (
+        <td className={styles.td} style={style}>
+        {text}
+        {
+            isHover &&
+            <div>
+                {children}
+            </div>
+        }
+        </td>
     );
 }
