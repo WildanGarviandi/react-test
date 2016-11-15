@@ -592,7 +592,7 @@ export function OrderReceived(scannedID) {
     const {token} = userLogged;
     const {orders} = inboundTripDetails;
 
-    const allowedRouteStatus = ['BOOKED', 'PICKUP', 'ACCEPTED'];
+    const allowedRouteStatus = ['BOOKED', 'PICKUP', 'ACCEPTED', 'IN-TRANSIT'];
     const scannedOrder = lodash.find(orders, (order) => {
       return order.OrderStatus.OrderStatusID !== 5 &&
         (order.UserOrderNumber === scannedID || order.WebOrderID === scannedID);
