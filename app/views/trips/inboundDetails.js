@@ -81,7 +81,7 @@ const DetailPage = React.createClass({
   deliverTrip() {
     if(this.props.canMarkTripDelivered) {
       let scanned = lodash.reduce(this.props.orders, function (sum, order) {
-        if (order.routeStatus !== 'DELIVERED') {
+        if (order.routeStatus === 'DELIVERED') {
           return sum + 1;
         } else {
           return sum;
@@ -94,6 +94,8 @@ const DetailPage = React.createClass({
         if (mark) {
           this.props.deliverTrip(this.props.trip.TripID);
         }
+      } else {
+        this.props.deliverTrip(this.props.trip.TripID);
       }
     } else {
       this.props.askReuse({
