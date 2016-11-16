@@ -18,8 +18,10 @@ import TransportSetter from '../container/secondSetting';
 import styles from './styles.css';
 import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered} from '../../modules/trips';
 import {formatDate} from '../../helper/time';
+import {TripParser} from '../../modules/trips';
+import {Glyph} from '../base';
 
-const columns = ['id', 'id2', 'pickup', 'dropoff', 'time', 'CODValue', 'orderStatus', 'routeStatus', 'isSuccess', 'action'];
+const columns = ['id', 'id2', 'pickup', 'time', 'CODValue', 'orderStatus', 'routeStatus', 'isSuccess', 'action'];
 const nonFillColumn = columns.slice(0, columns.length - 1);
 const headers = [{
   id: 'Web Order ID', id2: 'User Order Number',
@@ -112,6 +114,9 @@ const DetailPage = React.createClass({
 
     const successfullScan = lodash.filter(this.props.orders, {'isSuccess': 'Yes'});
 
+    const tripType = trip.OriginHub ? 'Interhub' : 'First Leg';
+    const tripOrigin = trip.OriginHub ? `Hub ${trip.OriginHub.Name}` : TripParser(trip).WebstoreNames;
+
     let statisticItem = '';
     if (!this.props.notFound && !isFetching && canDeassignDriver) {
       statisticItem = `Scanned ${successfullScan.length} of ${orders.length} items`;
@@ -131,7 +136,19 @@ const DetailPage = React.createClass({
         }
         {
           !this.props.notFound && !isFetching &&
-          <Page title={'Trip Details' + (trip.ContainerNumber ? (" of Container " + trip.ContainerNumber) : "")}>
+          <Page title={'Inbound Trip Details' + (trip.ContainerNumber ? (" of Container " + trip.ContainerNumber) : "")}>
+            <div style={{clear: 'both'}} />
+            <div className={classNaming(styles.container)}>
+              <Glyph name={'tags'} className={styles.glyph} />
+              <span className={styles.num}>Type</span>
+              <span className={styles.attr}>{tripType}</span>
+            </div>
+            <div className={classNaming(styles.container)}>
+              <Glyph name={'arrow-right'} className={styles.glyph} />
+              <span className={styles.num}>Origin</span>
+              <span className={styles.attr}>{tripOrigin}</span>
+            </div>
+            <div style={{clear: 'both'}} />
             {
               fillAble &&
               <ButtonWithLoading textBase={'Fill With Orders'} onClick={this.goToFillContainer} styles={{base: styles.normalBtn}} />

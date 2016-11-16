@@ -117,3 +117,47 @@
   margin-right: 10px;
   margin-left: -5px;
 }
+
+.container {
+  float: left;
+  display: inline-block;
+  border-radius: 5px;
+  width: 15%;
+  height: 110px;
+  position: relative;
+  color: #fff;
+  background-color: #5cb85c;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  border: solid 1px #fff;
+}
+
+.container:hover {
+  border: solid 1px #337ab7;
+}
+
+.num {
+  font-size: 24px;
+  position: absolute;
+  top: 5px;
+  right: 10px;
+}
+
+.attr {
+  font-size: 14px;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  margin-left: 5px;
+}
+
+.glyph {
+  font-size: 20px;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}

@@ -19,7 +19,7 @@ import styles from './styles.css';
 import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered} from '../../modules/trips';
 import {formatDate} from '../../helper/time';
 
-const columns = ['id', 'id2', 'pickup', 'dropoff', 'time', 'CODValue', 'orderStatus', 'routeStatus', 'action'];
+const columns = ['id', 'id2', 'dropoff', 'time', 'CODValue', 'orderStatus', 'routeStatus', 'action'];
 const nonFillColumn = columns.slice(0, columns.length - 1);
 const headers = [{
   id: 'Web Order ID', id2: 'User Order Number',
@@ -94,6 +94,16 @@ const DetailPage = React.createClass({
 
     const {canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, isDeassigning} = this.props;
 
+    const tripType = trip.DestinationHub ? 'Interhub' : 'Last Leg';
+    let tripDestination;
+    if (trip.DestinationHub) {
+      tripDestination = `Hub ${trip.DestinationHub.Name}`;
+    } else if (trip.District) {
+      tripDestination = `District ${trip.District.Name}`;
+    } else {
+      tripDestination = 'No Destination Yet';
+    }
+
     let nextSuggestion = [];
     for (var p in trip.NextDestinationSuggestion) {
         if (trip.NextDestinationSuggestion.hasOwnProperty(p) && p !== 'NO_SUGGESTION') {
@@ -113,21 +123,19 @@ const DetailPage = React.createClass({
         }
         {
           !this.props.notFound && !isFetching &&
-          <Page title={'Trip Details' + (trip.ContainerNumber ? (" of Container " + trip.ContainerNumber) : "")}>
-            {
-              nextSuggestion.length > 0 &&
-              <div className={styles.nextSuggestion}>
-                <Glyph className={styles.infoSuggestion} name={'info-sign'}/>
-                Next suggestion: {nextSuggestion.join(', ')}
-              </div>
-            }
-            {
-              nextSuggestion.length === 0 &&
-              <div className={styles.nextSuggestion}>
-                <Glyph className={styles.infoSuggestion} name={'info-sign'}/>
-                Next suggestion is not available
-              </div>
-            }
+          <Page title={'Outbound Trip Details '+ (trip.ContainerNumber ? (" of Container " + trip.ContainerNumber) : "")}>
+            <div style={{clear: 'both'}} />
+            <div className={classNaming(styles.container)}>
+              <Glyph name={'tags'} className={styles.glyph} />
+              <span className={styles.num}>Type</span>
+              <span className={styles.attr}>{tripType}</span>
+            </div>
+            <div className={classNaming(styles.container)}>
+              <Glyph name={'arrow-right'} className={styles.glyph} />
+              <span className={styles.num}>Destination</span>
+              <span className={styles.attr}>{tripDestination}</span>
+            </div>
+            <div style={{clear: 'both'}} />
             {
               fillAble &&
               <ButtonWithLoading textBase={'Fill With Orders'} onClick={this.goToFillContainer} styles={{base: styles.normalBtn}} />

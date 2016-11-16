@@ -11,6 +11,7 @@ import {CreateExternalTrip, SaveEdit3PL, SetExternalTrip, StartEdit3PL, StopEdit
 import {formatDate} from '../../helper/time';
 import ImagePreview from '../base/imagePreview';
 import ImageUploader from '../base/imageUploader';
+import {Glyph} from '../base';
 
 const DetailRow = React.createClass({
   generateTypeContent() {
@@ -69,6 +70,12 @@ const DetailRow = React.createClass({
 });
 
 const ThirdParty = React.createClass({
+  getInitialState() {
+      return ({
+          show3PL: false,
+          icon3PL: 'chevron-down'
+      });
+  },
   save() {
     this.props.save();
   },
@@ -85,6 +92,10 @@ const ThirdParty = React.createClass({
   },
   stopEdit() {
     this.props.stopEdit();
+  },
+  toggle3PL() {
+    this.setState({show3PL: !this.state.show3PL});
+    this.setState({icon3PL: this.state.icon3PL === 'chevron-down' ? 'chevron-up' : 'chevron-down'});
   },
   render() {
     const {externalTrip: externalTripRaw, isEditing3PL, isInbound, isSaving3PL, prev3PL, trip} = this.props;
@@ -125,13 +136,22 @@ const ThirdParty = React.createClass({
       {
         !isEditing3PL && externalTripRaw && prev3PL &&
         <div>
-          <h4 style={{marginTop: 0, marginBottom: 10, fontWeight: 'normal'}}>Third Party Logistic Details:</h4>
-          <DetailRow label="Sender" value={externalTrip.Sender} isEditing={false} />
-          <DetailRow label="Fee" value={externalTrip.Fee} isEditing={false} />
-          <DetailRow label="Transportation" value={externalTrip.Transportation} isEditing={false} />
-          <DetailRow label="Departure Time" value={externalTrip.DepartureTime && formatDate(externalTrip.DepartureTime)} isEditing={false} />
-          <DetailRow label={arrivalTimeLabel} value={externalTrip.ArrivalTime && formatDate(externalTrip.ArrivalTime)} isEditing={false} />
-          <DetailRow label="Receipt" value={externalTrip.PictureUrl} isEditing={false} type="image" />
+          <h4 style={{marginTop: 0, marginBottom: 10, fontWeight: 'normal'}} onClick={this.toggle3PL}>
+            <span className={styles.arrowDown}>
+                  <Glyph name={this.state.icon3PL}/>
+              </span>
+              Third Party Logistic Details:
+          </h4>
+          { this.state.show3PL &&
+              <span>
+                <DetailRow label="Sender" value={externalTrip.Sender} isEditing={false} />
+                <DetailRow label="Fee" value={externalTrip.Fee} isEditing={false} />
+                <DetailRow label="Transportation" value={externalTrip.Transportation} isEditing={false} />
+                <DetailRow label="Departure Time" value={externalTrip.DepartureTime && formatDate(externalTrip.DepartureTime)} isEditing={false} />
+                <DetailRow label={arrivalTimeLabel} value={externalTrip.ArrivalTime && formatDate(externalTrip.ArrivalTime)} isEditing={false} />
+                <DetailRow label="Receipt" value={externalTrip.PictureUrl} isEditing={false} type="image" />
+              </span>
+          }
           <div style={{clear: 'both'}}>
           {
             !isInbound &&

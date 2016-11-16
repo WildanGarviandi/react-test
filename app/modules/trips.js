@@ -65,6 +65,17 @@ function JoinAttr(orders, attr) {
     .join(', ');
 }
 
+export function GetWebstoreNameByCount(orders) {
+  var arrayOfWebstore = [];
+  var WebstoreNames = lodash.countBy(orders, 'WebstoreName');
+  for (var p in WebstoreNames) {
+      if (WebstoreNames.hasOwnProperty(p)) {
+          arrayOfWebstore.push(p + ' (' + WebstoreNames[p] + (WebstoreNames[p] > 1 ? ' orders' : ' order') + ')');
+      }
+  }
+  return arrayOfWebstore.join(', ');
+}
+
 export function TripParser(trip, hubID) {
   function GroupToString(colls) {
     return lodash.reduce(colls, (results, val, key) => {
@@ -78,7 +89,7 @@ export function TripParser(trip, hubID) {
     return OrderParser(route.UserOrder);
   });
 
-  const WebstoreNames = JoinAttr(orders, 'WebstoreName');
+  const WebstoreNames = GetWebstoreNameByCount(orders);
 
   return lodash.assign({}, trip, {
     WebstoreNames: WebstoreNames,
