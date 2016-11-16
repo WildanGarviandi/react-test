@@ -46,28 +46,34 @@
   margin-bottom: 10px;
 }
 
-.finderWrapper {
+.finderWrapperContainer {
   position: absolute;
+  right: 0;
+  top: -10px;
+}
+
+.finderWrapper {
+  position: relative;
   background-color: #4f4335;
-  top: -40px;
-  right: 0px;
+  top: 0;
+  right: 0;
   border-radius: 5px;
-  padding: 6px;
+  padding: 12px;
   color: #fff;
 }
 
 .finderWrapper2 {
-  position: absolute;
+  position: relative;
   top: -40px;
   right: 0px;
   border-radius: 5px;
-  padding: 6px;
   color: #fff;
 }
 
 .finderWrapper2 button {
-  font-size: 13px;
-  padding: 5px;
+  font-size: 15px;
+  padding: 12px;
+  margin-left: 6px;
 }
 
 .finderLabel {

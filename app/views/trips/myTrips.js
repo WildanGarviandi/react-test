@@ -24,15 +24,17 @@ const ContainerPage = React.createClass({
         {
           isInbound &&
           <div>
-            <span className={'row ' + styles.finderWrapper} style={{top: -10}}>
-              <span className={'col-xs-6 ' + styles.finderLabel} onKeyDown={this.jumpTo}>
-                Jump to Container :
+            <div className={styles.finderWrapperContainer}>
+              <span className={'row ' + styles.finderWrapper}>
+                <span className={'col-xs-6 ' + styles.finderLabel} onKeyDown={this.jumpTo}>
+                  Jump to Container :
+                </span>
+                <span className={'col-xs-6'}>
+                  <Input className={formStyles.inputSmall} onChange={this.onChange} onEnterKeyPressed={this.gotoContainer} />
+                </span>
               </span>
-              <span className={'col-xs-6'}>
-                <Input className={formStyles.inputSmall} onChange={this.onChange} onEnterKeyPressed={this.gotoContainer} />
-              </span>
-            </span>
-            <InboundTable key={this.props.lastPath} lastPath={this.props.lastPath} isInbound={this.props.isInbound} />
+              </div>
+              <InboundTable key={this.props.lastPath} lastPath={this.props.lastPath} isInbound={this.props.isInbound} />
           </div>
         }
         {

@@ -80,7 +80,23 @@ const DetailPage = React.createClass({
   },
   deliverTrip() {
     if(this.props.canMarkTripDelivered) {
-      this.props.deliverTrip(this.props.trip.TripID);
+      let scanned = lodash.reduce(this.props.orders, function (sum, order) {
+        if (order.routeStatus === 'DELIVERED') {
+          return sum + 1;
+        } else {
+          return sum;
+        }
+      }, 0);
+
+      if (scanned < lodash.size(this.props.orders)) {
+        let mark = confirm('You have scanned only ' + scanned + ' from ' + lodash.size(this.props.orders) +
+            ' orders. Continue to mark this trip as delivered?');
+        if (mark) {
+          this.props.deliverTrip(this.props.trip.TripID);
+        }
+      } else {
+        this.props.deliverTrip(this.props.trip.TripID);
+      }
     } else {
       this.props.askReuse({
         message: "Do you want to reuse the container?",
@@ -103,7 +119,6 @@ const DetailPage = React.createClass({
     if (!this.props.notFound && !isFetching && !canDeassignDriver) {
       statisticItem = `Total ${orders.length} items`;
     }
-
     return (
       <div>
         {
@@ -144,21 +159,23 @@ const DetailPage = React.createClass({
             {
               orders.length > 0 &&
               <div style={{position: 'relative'}}>
-                {
-                  canMarkOrderReceived &&
-                  <span className={styles.finderWrapper}>
-                    <span className={styles.finderLabel} onKeyDown={this.jumpTo}>
-                      Mark Order As Received From Driver :
+                <div className={styles.finderWrapperContainer}>
+                  {
+                    canMarkOrderReceived &&
+                    <span className={styles.finderWrapper} style={{top: -40}}>
+                      <span className={styles.finderLabel} onKeyDown={this.jumpTo}>
+                        Mark Order As Received From Driver :
+                      </span>
+                      <Input onChange={this.changeMark} onEnterKeyPressed={this.markReceived} ref="markReceived" base={{value:this.state.orderMarked}} />
                     </span>
-                    <Input onChange={this.changeMark} onEnterKeyPressed={this.markReceived} ref="markReceived" base={{value:this.state.orderMarked}} />
-                  </span>
-                }
-                {
-                  (canMarkTripDelivered || canMarkContainer) &&
-                  <span className={styles.finderWrapper2}>
-                    <ButtonWithLoading styles={{base: styles.greenBtn}} textBase={'Mark Trip As Delivered'} textLoading={'Clearing Container'} isLoading={false} onClick={this.deliverTrip} />
-                  </span>
-                }
+                  }
+                  {
+                    (canMarkTripDelivered || canMarkContainer) &&
+                    <span className={styles.finderWrapper2}>
+                      <ButtonWithLoading styles={{base: styles.greenBtn}} textBase={'Mark Trip As Delivered'} textLoading={'Clearing Container'} isLoading={false} onClick={this.deliverTrip} />
+                    </span>
+                  }
+                </div>
                 <OrderTable columns={fillAble ? columns : nonFillColumn} headers={headers} items={orders} statusList={statusList} />
               </div>
             }
@@ -285,7 +302,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     markReceived: function(scannedID) {
       dispatch(TripDetailsTrue.OrderReceived(scannedID));
     },
-    deliverTrip: function(tripID) {
+    deliverTrip: function(tripID, orders) {
       dispatch(TripDetailsTrue.TripDeliver(tripID));
     },
     askReuse: function(modal) {

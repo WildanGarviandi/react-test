@@ -669,6 +669,8 @@ export function TripDeliver(tripID, reuse) {
         response.json().then(({data}) => {
           dispatch(push(`/trips/${data.NextTrip.TripID}`));
         });
+      } else {
+        dispatch(FetchDetails(tripID));
       }
     }).catch((e) => {
       const message = (e && e.message) ? e.message : "Failed to mark trip as delivered";

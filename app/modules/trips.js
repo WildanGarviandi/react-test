@@ -36,12 +36,6 @@ export function CanMarkOrderReceived(trip, orders) {
 export function CanMarkTripDelivered(trip, orders) {
   if(!trip || !trip.OrderStatus || trip.OriginHub) return false;
 
-  if(lodash.some(orders, (order) => {
-    return order.Status !== "DELIVERED";
-  })) {
-    return false;
-  };
-
   return ['ACCEPTED', 'PICKUP', 'IN-TRANSIT'].indexOf(trip.OrderStatus.OrderStatus) > -1;
 }
 
