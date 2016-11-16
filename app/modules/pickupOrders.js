@@ -396,6 +396,7 @@ export function MarkPickup () {
 
       dispatch(ModalActions.addMessage("Marking pickup is suceeed"));
       dispatch(FetchList());
+      dispatch(FetchInfographic());
 
     }).catch(() => {
       dispatch({
