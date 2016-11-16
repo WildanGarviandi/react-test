@@ -12,6 +12,7 @@ import {Glyph} from '../base';
 import Accordion from '../base/accordion';
 import styles from './styles.css';
 import _ from 'underscore';
+import config from '../../../config.json';
 
 var classnaming = require('classnames/bind').bind(styles);
 
@@ -88,38 +89,42 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
           </MenuItem>
           </div>
         }
-        <Accordion initialState={'collapsed'}>
-          <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[5,9,10]} iconName={'shopping-cart'} iconTitle={'My Orders'}>
-            <MenuItem active={activeMenuIdx == 5} to={'/myorders/open'}>
-               <Glyph className={styles.menuGlyph} name={'open-file'}/>
-               <span>Open Orders ({counterOrder.countOpen})</span>
-            </MenuItem>
-            <MenuItem active={activeMenuIdx == 9} to={'/myorders/ongoing'}>
-               <Glyph className={styles.menuGlyph} name={'open-file'}/>
-               <span>Ongoing Orders ({counterOrder.countInProgress})</span>
-            </MenuItem>
-            <MenuItem active={activeMenuIdx == 10} to={'/myorders/completed'}>
-               <Glyph className={styles.menuGlyph} name={'open-file'}/>
-               <span>Completed Orders ({counterOrder.countFinished})</span>
-            </MenuItem>
-          </AccordionMenu>
-        </Accordion>
-        <MenuItem active={activeMenuIdx == 6} to={'/mytrips'}>
-         <Glyph className={styles.menuGlyph} name={'briefcase'}/>
-         <span>My Trips</span>
-        </MenuItem>
-        <MenuItem active={activeMenuIdx == 7} to={'/mycontacts'}>
-           <Glyph className={styles.menuGlyph} name={'book'}/>
-           <span>My Contacts</span>
-        </MenuItem>
-        <MenuItem active={activeMenuIdx == 8} to={'/mydrivers'}>
-          <Glyph className={styles.menuGlyph} name={'user'}/>
-          <span>My Drivers</span>
-        </MenuItem>
-        <MenuItem to={''} onClick={handleLogout}>
-          <Glyph className={styles.menuGlyph} name={'log-out'}/>
-          <span>Logout</span>
-        </MenuItem>
+        { config.features.menuTMS &&
+          <div>
+          <Accordion initialState={'collapsed'}>
+            <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[5,9,10]} iconName={'shopping-cart'} iconTitle={'My Orders'}>
+              <MenuItem active={activeMenuIdx == 5} to={'/myorders/open'}>
+                 <Glyph className={styles.menuGlyph} name={'open-file'}/>
+                 <span>Open Orders ({counterOrder.countOpen})</span>
+              </MenuItem>
+              <MenuItem active={activeMenuIdx == 9} to={'/myorders/ongoing'}>
+                 <Glyph className={styles.menuGlyph} name={'open-file'}/>
+                 <span>Ongoing Orders ({counterOrder.countInProgress})</span>
+              </MenuItem>
+              <MenuItem active={activeMenuIdx == 10} to={'/myorders/completed'}>
+                 <Glyph className={styles.menuGlyph} name={'open-file'}/>
+                 <span>Completed Orders ({counterOrder.countFinished})</span>
+              </MenuItem>
+            </AccordionMenu>
+          </Accordion>
+          <MenuItem active={activeMenuIdx == 6} to={'/mytrips'}>
+           <Glyph className={styles.menuGlyph} name={'briefcase'}/>
+           <span>My Trips</span>
+          </MenuItem>
+          <MenuItem active={activeMenuIdx == 7} to={'/mycontacts'}>
+             <Glyph className={styles.menuGlyph} name={'book'}/>
+             <span>My Contacts</span>
+          </MenuItem>
+          <MenuItem active={activeMenuIdx == 8} to={'/mydrivers'}>
+            <Glyph className={styles.menuGlyph} name={'user'}/>
+            <span>My Drivers</span>
+          </MenuItem>
+          </div>
+        }
+          <MenuItem to={''} onClick={handleLogout}>
+            <Glyph className={styles.menuGlyph} name={'log-out'}/>
+            <span>Logout</span>
+          </MenuItem>
       </ul>
       <button className={styles.toggleMenu} onClick={toggleCompact}>
         <Glyph className={styles.glyphBackward} name={'backward'}/>

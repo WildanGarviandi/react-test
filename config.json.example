@@ -3,5 +3,8 @@
   "baseAPIHub": "http://localhost:3001/v2/hub",
   "port": 8080,
   "defaultCountryCode": "+62",
-  "defaultCountryID": 95
+  "defaultCountryID": 95,
+  "features": {
+    "menuTMS": true
+  }
 }
