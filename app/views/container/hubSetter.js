@@ -18,7 +18,7 @@ const HubSetter = React.createClass({
     this.setState({selected: val});
   },
   pickHub() {
-    this.props.SetHub(this.state.selected.key);
+    this.props.SetHub(this.state.selected.key || this.props.nextHubID);
   },
   stopEdit() {
     this.props.EndEdit();
@@ -48,7 +48,7 @@ const HubSetter = React.createClass({
             }
             {
               !isEditing && nextHub &&
-              <ButtonBase onClick={this.toEdit} styles={styles.driverBtn}>Change District</ButtonBase>
+              <ButtonBase onClick={this.toEdit} styles={styles.driverBtn}>Change Destination</ButtonBase>
             }
             {
               isEditing &&
@@ -77,6 +77,7 @@ function mapState(state, ownParams) {
   const {trip} = ownParams;
 
   const nextHub = trip.DestinationHub && trip.DestinationHub.Name;
+  const nextHubID = trip.DestinationHub && trip.DestinationHub.HubID;
 
   return {
     isEditing: isEditing || !nextHub,
@@ -86,6 +87,7 @@ function mapState(state, ownParams) {
       return {key: hub.HubID, value: hub.Name};
     }),
     nextHub,
+    nextHubID
   }
 }
 
