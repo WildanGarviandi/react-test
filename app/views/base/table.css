@@ -67,6 +67,11 @@
     width: 150px;
 }
 
+.td:global(.PickupTime) span{
+    padding: 3px;
+    border-radius: 5px;
+}
+
 .td.search {
     padding: 4px;
 }
