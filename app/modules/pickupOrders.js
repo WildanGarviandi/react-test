@@ -356,12 +356,21 @@ export function MarkPickup () {
     const {token} = userLogged;
     const {orders} = pickupOrders;
 
+    let forbidden = false;
     const checkedOrdersIDs = lodash.chain(orders)
       .filter((order) => {
+        if (order.IsChecked && order.OrderStatus === 'NOTASSIGNED') {
+          forbidden = true;
+        }
         return order.IsChecked;
       })
       .map((order) => (order.UserOrderID))
       .value();
+
+    if (forbidden) {
+      dispatch(ModalActions.addMessage('Failed, one or more orders have status NOTASSIGNED'));
+      return;
+    }
 
     if (checkedOrdersIDs.length === 0) {
       dispatch(ModalActions.addMessage('No order selected'));
