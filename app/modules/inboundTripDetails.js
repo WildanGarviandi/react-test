@@ -592,13 +592,19 @@ export function OrderReceived(scannedID) {
     const {token} = userLogged;
     const {orders} = inboundTripDetails;
 
+    const allowedRouteStatus = ['BOOKED', 'PICKUP', 'ACCEPTED', 'IN-TRANSIT'];
     const scannedOrder = lodash.find(orders, (order) => {
-      return order.OrderStatus.OrderStatus !== 5 &&
+      return order.OrderStatus.OrderStatusID !== 5 &&
         (order.UserOrderNumber === scannedID || order.WebOrderID === scannedID);
     });
 
     if(!scannedOrder) {
       dispatch(ModalActions.addMessage('Order not found'));
+      return;
+    }
+    
+    if (allowedRouteStatus.indexOf(scannedOrder.Status) === -1) {
+      dispatch(ModalActions.addMessage('Only allow route statuses: ' + allowedRouteStatus.join(', ')));
       return;
     }
 
