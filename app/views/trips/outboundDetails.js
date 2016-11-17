@@ -163,21 +163,6 @@ const DetailPage = React.createClass({
               orders.length > 0 &&
               <div style={{position: 'relative'}}>
                 <div className={styles.finderWrapperContainer}>
-                  {
-                    canMarkOrderReceived &&
-                    <span className={styles.finderWrapper}>
-                      <span className={styles.finderLabel} onKeyDown={this.jumpTo}>
-                        Mark Order As Received From Driver :
-                      </span>
-                      <Input onChange={this.changeMark} onEnterKeyPressed={this.markReceived} ref="markReceived" base={{value:this.state.orderMarked}} />
-                    </span>
-                  }
-                  {
-                    (canMarkTripDelivered || canMarkContainer) &&
-                    <span className={styles.finderWrapper2}>
-                      <ButtonWithLoading textBase={'Mark Trip As Delivered'} textLoading={'Clearing Container'} isLoading={false} onClick={this.deliverTrip} />
-                    </span>
-                  }
                 </div>
                 <OrderTable columns={fillAble ? columns : nonFillColumn} headers={headers} items={orders} statusList={statusList} />
               </div>
