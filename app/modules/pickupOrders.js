@@ -14,6 +14,8 @@ const Constants = {
   ORDERS_PICKUP_FILTER_STATUS_SET: "pickup/filterStatus/set",
   ORDERS_PICKUP_GROUP_END: "pickup/group/end",
   ORDERS_PICKUP_GROUP_START: "pickup/group/start",
+  ORDERS_PICKUP_MARK_PICKUP_START: "pickup/markPickup/start",
+  ORDERS_PICKUP_MARK_PICKUP_END: "pickup/markPickup/end",
   ORDERS_PICKUP_INFOGRAPHIC_SET: "pickup/infoGraphic/set",
   ORDERS_PICKUP_LIMIT_SET: "pickup/limit/set",
   ORDERS_PICKUP_SELECT_TOGGLE_ALL: "pickup/select/toggleAll",
@@ -40,6 +42,7 @@ const initialState = {
   infographicStatus: infographicStatus,
   isFetching: false,
   isGrouping: false,
+  isMarkingPickup: false,
   limit: 100,
   orders: [],
   total: 0,
@@ -73,6 +76,14 @@ export function Reducer(state = initialState, action) {
 
     case Constants.ORDERS_PICKUP_GROUP_START: {
       return lodash.assign({}, state, {isGrouping: true});
+    }
+
+    case Constants.ORDERS_PICKUP_MARK_PICKUP_START: {
+      return lodash.assign({}, state, {isMarkingPickup: true});
+    }
+
+    case Constants.ORDERS_PICKUP_MARK_PICKUP_END: {
+      return lodash.assign({}, state, {isMarkingPickup: false});
     }
 
     case Constants.ORDERS_PICKUP_INFOGRAPHIC_SET: {
@@ -297,15 +308,20 @@ export function GroupOrders() {
     const {token} = userLogged;
     const {orders} = pickupOrders;
 
-    const checkedOrdersID = lodash.chain(orders)
+    const checkedOrdersIDs = lodash.chain(orders)
       .filter((order) => {
         return order.IsChecked;
       })
       .map((order) => (order.UserOrderID))
       .value();
 
+    if (checkedOrdersIDs.length === 0) {
+      dispatch(ModalActions.addMessage('No order selected'));
+      return;
+    }
+
     const body = {
-      ordersID: checkedOrdersID,
+      ordersID: checkedOrdersIDs,
     }
 
     dispatch({
@@ -330,6 +346,64 @@ export function GroupOrders() {
       });
 
       dispatch(ModalActions.addMessage("Failed to group orders"));
+    });
+  }
+}
+
+export function MarkPickup () {
+  return (dispatch, getState) => {
+    const {pickupOrders, userLogged} = getState().app;
+    const {token} = userLogged;
+    const {orders} = pickupOrders;
+
+    let forbidden = false;
+    const checkedOrdersIDs = lodash.chain(orders)
+      .filter((order) => {
+        if (order.IsChecked && order.OrderStatus === 'NOTASSIGNED') {
+          forbidden = true;
+        }
+        return order.IsChecked;
+      })
+      .map((order) => (order.UserOrderID))
+      .value();
+
+    if (forbidden) {
+      dispatch(ModalActions.addMessage('Failed, one or more orders have status NOTASSIGNED'));
+      return;
+    }
+
+    if (checkedOrdersIDs.length === 0) {
+      dispatch(ModalActions.addMessage('No order selected'));
+      return;
+    }
+
+    const body = {
+      OrderIDs: checkedOrdersIDs
+    }
+
+    dispatch({
+      type: Constants.ORDERS_PICKUP_MARK_PICKUP_START,
+    });
+
+    FetchPost('/order/pickupNow', token, body).then((response) => {
+      if(!response.ok) {
+        throw new Error();
+      }
+
+      dispatch({
+        type: Constants.ORDERS_PICKUP_MARK_PICKUP_END,
+      });
+
+      dispatch(ModalActions.addMessage("Marking pickup is suceeed"));
+      dispatch(FetchList());
+      dispatch(FetchInfographic());
+
+    }).catch(() => {
+      dispatch({
+        type: Constants.ORDERS_PICKUP_MARK_PICKUP_END,
+      });
+
+      dispatch(ModalActions.addMessage("Failed to marking pickup"));
     });
   }
 }

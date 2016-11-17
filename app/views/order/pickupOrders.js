@@ -28,11 +28,12 @@ const PickupOrdersPage = React.createClass({
 function mapState(state) {
   const {pickupOrders} = state.app;
   const userLogged = state.app.userLogged;
-  const {isGrouping} = pickupOrders;
+  const {isGrouping, isMarkingPickup} = pickupOrders;
 
   return {
     isGrouping,
-    userLogged
+    userLogged,
+    isMarkingPickup
   }
 }
 
@@ -40,6 +41,9 @@ function mapDispatch(dispatch) {
   return {
     GroupOrders: () => {
       dispatch(PickupOrders.GroupOrders());
+    },
+    MarkPickup: () => {
+      dispatch(PickupOrders.MarkPickup());  
     }
   }
 }

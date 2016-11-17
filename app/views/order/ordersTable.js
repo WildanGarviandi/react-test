@@ -35,7 +35,19 @@ const Table = React.createClass({
       isLoading: this.props.isGrouping,
       onClick: this.props.GroupOrders,
       styles: {
-        base: styles2.groupBtn + " " + (this.props.isGrouping ? styles2.greenBtnLoading : styles2.greenBtn),
+        base: styles2.groupBtn + " " + (this.props.isGrouping ? styles2.greenBtnLoading : styles2.greenBtn) + 
+              " " + styles2.pickupActionBtn
+      }
+    }
+
+    const markPickupBtnProps = {
+      textBase: 'Mark available for pickup',
+      textLoading: 'Marking Orders',
+      isLoading: this.props.isMarkingPickup,
+      onClick: this.props.MarkPickup,
+      styles: {
+        base: styles2.groupBtn + " " + (this.props.isMarkingPickup ? styles2.greenBtnLoading : styles2.greenBtn) +
+              " " + styles2.pickupActionBtn
       }
     }
 
@@ -58,6 +70,10 @@ const Table = React.createClass({
       <div style={style}>
         <Pagination {...pagination} {...PaginationActions} />
         <ButtonWithLoading {...groupingOrdersBtnProps} />
+        {
+          isPickup &&
+          <ButtonWithLoading {...markPickupBtnProps} />
+        }
         {
           !isPickup && !isFill &&
           <span className={styles2.finderWrapper}>

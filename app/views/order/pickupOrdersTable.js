@@ -11,7 +11,7 @@ import OrdersSelector from '../../modules/orders/selector';
 
 function mapStateToPickupOrders(state, ownProps) {
   const {pickupOrders} = state.app;
-  const {currentPage, isFetching, isGrouping, limit, orders, selected, total} = pickupOrders;
+  const {currentPage, isFetching, isGrouping, limit, orders, selected, total, isMarkingPickup} = pickupOrders;
 
   return {
     Headers: PickupOrdersHeaders,
@@ -19,6 +19,7 @@ function mapStateToPickupOrders(state, ownProps) {
     Body: PickupOrdersBody,
     isFetching: isFetching,
     isGrouping: isGrouping,
+    isMarkingPickup: isMarkingPickup,
     items: orders,
     pagination: {
       currentPage, limit, total,
@@ -47,6 +48,9 @@ function mapDispatchToPickupOrders(dispatch, ownProps) {
     },
     GroupOrders: ownProps.GroupOrders ? ownProps.GroupOrders : () => {
       dispatch(PickupOrders.GroupOrders());
+    },
+    MarkPickup: ownProps.MarkPickup ? ownProps.MarkPickup : () => {
+      dispatch(PickupOrders.MarkPickup());
     }
   }
 }
