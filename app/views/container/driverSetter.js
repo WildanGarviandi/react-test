@@ -49,6 +49,9 @@ const DriverSetter = React.createClass({
     this.props.FleetChangeEnd();
   },
   fleetChangeStart() {
+    this.setState({
+      selectedFleet: {},
+    });
     this.props.FleetChangeStart();
   },
   render() {
