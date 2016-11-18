@@ -718,23 +718,25 @@ export function CreateExternalTrip(tripID) {
       return;
     }
 
-    if(!externalTrip.Fee) {
-      dispatch(ModalActions.addMessage("Can't create external trip. Missing fee information."));
-      return;
-    }
+    let missingInformation = [];
+    const mandatoryInformation = [
+      {key: 'AWBNumber', value: 'AWB Number'},
+      {key: 'Sender', value: 'Sender'},
+      {key: 'Fee', value: 'Fee'},
+      {key: 'Transportation', value: 'Transportation'},
+      {key: 'DepartureTime', value: 'Departure Time'},
+      {key: 'ArrivalTime', value: 'Arrival Time'},
+      {key: 'PictureUrl', value: 'Receipt'}
+    ];
 
-    if(!externalTrip.Transportation) {
-      dispatch(ModalActions.addMessage("Can't create external trip. Missing transportation information."));
-      return;
-    }
+    mandatoryInformation.forEach(function(x) {
+      if (!externalTrip[x.key]) {
+        missingInformation.push(x.value);
+      }
+    });
 
-    if(!externalTrip.DepartureTime) {
-      dispatch(ModalActions.addMessage("Can't create external trip. Missing departure time information."));
-      return;
-    }
-
-    if(!externalTrip.ArrivalTime) {
-      dispatch(ModalActions.addMessage("Can't create external trip. Missing arrival time information."));
+    if (missingInformation.length > 0) {
+      dispatch(ModalActions.addMessage("Can't create external trip. Missing " + missingInformation.join() + " information."));
       return;
     }
 
@@ -766,6 +768,33 @@ export function SaveEdit3PL(tripID) {
     const {inboundTripDetails, userLogged} = getState().app;
     const {token} = userLogged;
     const {externalTrip} = inboundTripDetails;
+
+    if(!externalTrip) {
+      dispatch(ModalActions.addMessage("Can't create external trip without any information"));
+      return;
+    }
+
+    let missingInformation = [];
+    const mandatoryInformation = [
+      {key: 'AWBNumber', value: 'AWB Number'},
+      {key: 'Sender', value: 'Sender'},
+      {key: 'Fee', value: 'Fee'},
+      {key: 'Transportation', value: 'Transportation'},
+      {key: 'DepartureTime', value: 'Departure Time'},
+      {key: 'ArrivalTime', value: 'Arrival Time'},
+      {key: 'PictureUrl', value: 'Receipt'}
+    ];
+
+    mandatoryInformation.forEach(function(x) {
+      if (!externalTrip[x.key]) {
+        missingInformation.push(x.value);
+      }
+    });
+
+    if (missingInformation.length > 0) {
+      dispatch(ModalActions.addMessage("Can't create external trip. Missing " + missingInformation.join() + " information."));
+      return;
+    }
 
     const body = lodash.assign({}, externalTrip, {
       ArrivalTime: new moment(externalTrip.ArrivalTime).utc(),
