@@ -107,7 +107,8 @@ const DetailPage = React.createClass({
     let nextSuggestion = [];
     for (var p in trip.NextDestinationSuggestion) {
         if (trip.NextDestinationSuggestion.hasOwnProperty(p) && p !== 'NO_SUGGESTION') {
-            nextSuggestion.push(trip.NextDestinationSuggestion[p] + ' orders should go to ' + p);
+            nextSuggestion.push(p + ' (' + trip.NextDestinationSuggestion[p] + 
+              (trip.NextDestinationSuggestion[p] > 1 ? ' orders' : ' order') + ')');
         }
     }
 
@@ -135,7 +136,7 @@ const DetailPage = React.createClass({
               <span className={styles.num}>Destination</span>
               <span className={styles.attr}>{tripDestination}</span>
             </div>
-            <div style={{clear: 'both'}} />
+            <div style={{clear: 'both'}} /> 
             {
               fillAble &&
               <ButtonWithLoading textBase={'Fill With Orders'} onClick={this.goToFillContainer} styles={{base: styles.normalBtn}} />
@@ -149,7 +150,7 @@ const DetailPage = React.createClass({
               <ButtonWithLoading textBase="Cancel Assignment" textLoading="Deassigning" onClick={this.deassignDriver} isLoading={isDeassigning} />
             }
             <a href={'/trips/' + trip.TripID + '/manifest#' + trip.ContainerNumber} className={styles.manifestLink} target="_blank">Print Manifest</a>
-            <NextDestinationSetter trip={trip} accordionState={trip && (trip.Driver || trip.ExternalTrip) ? "collapsed" : "expanded"} />
+            <NextDestinationSetter nextSuggestion={nextSuggestion} trip={trip} accordionState={trip && (trip.Driver || trip.ExternalTrip) ? "collapsed" : "expanded"} />
             <TransportSetter trip={trip} isInbound={false} accordionState={trip && ((trip.Driver || trip.ExternalTrip) || !(trip.District || trip.DestinationHub)) ? "collapsed" : "expanded"}/>
             <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>Total {orders.length} items</span>
             {
@@ -229,8 +230,6 @@ const mapStateToProps = (state, ownProps) => {
   const routes = ownProps.routes;
   const paths = routes[2].path.split('/');
   const isInbound = paths[2] === 'inbound';
-
-  console.log('mark', CanMarkTripDelivered(trip, rawOrders), CanMarkContainer(trip, hubID));
 
   return {
     trip: trip,

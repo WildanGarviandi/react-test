@@ -41,7 +41,7 @@ const FirstSetting = React.createClass({
     }
   },
   render() {
-    const {accordionAction, accordionState, trip} = this.props;
+    const {accordionAction, accordionState, trip, nextSuggestion} = this.props;
     const nextDestination = DstHub(trip) || DstDistrict(trip);
     const haveSet = trip.Driver || trip.ExternalTrip;
 
@@ -54,6 +54,12 @@ const FirstSetting = React.createClass({
     });
     const rightStyle = classNaming(styles.setterRight, {
       [styles.disabled]: false
+    });
+
+    const suggestionComponents = nextSuggestion.map(function(suggestion, idx) {
+        return (
+            <li key={ idx }>{suggestion}</li>
+        );
     });
 
     return (
@@ -71,6 +77,12 @@ const FirstSetting = React.createClass({
           <div className={styles.setterBody}>
             <div className={leftStyle}>
               <HubSetter trip={trip} nextDestination={nextDestination} />
+            <div>
+              Maybe send this to:
+              <ul>
+                {suggestionComponents}
+              </ul>
+            </div>
               <div className={styles.shadow}></div>
             </div>
             <div className={rightStyle}>

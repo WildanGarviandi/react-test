@@ -143,6 +143,28 @@ export function ConsolidateOrders() {
       .map((order) => (order.UserOrderID))
       .value();
 
+    let arrayOfNextDestination = [];
+    const checkedOrdersDestination = lodash.chain(orders)
+      .filter((order) => {
+        return order.IsChecked;
+      })
+      .countBy('NextDestination')
+      .value();
+
+
+    for (var p in checkedOrdersDestination) {
+        if (checkedOrdersDestination.hasOwnProperty(p)) {
+            arrayOfNextDestination.push({NextDestination: p, Count: checkedOrdersDestination[p]});
+        }
+    }
+
+    if (checkedOrdersDestination.length > 1) {
+      var isContinue = confirm("Bro, you’re about to group " + checkedOrdersID.length + " orders with different destinations. Sure you wanna do that?");
+      if (!isContinue){
+        return;
+      } 
+    }
+
     const body = {
       OrderIDs: checkedOrdersID,
     }
