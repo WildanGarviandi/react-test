@@ -81,10 +81,6 @@ const DetailPage = React.createClass({
           !this.props.notFound && !isFetching &&
           <Page title={'Trip Details' + (trip.ContainerNumber ? (" of Container " + trip.ContainerNumber) : "")}>
             {
-              fillAble &&
-              <ButtonWithLoading textBase={'Fill With Orders'} onClick={this.goToFillContainer} styles={{base: styles.normalBtn}} />
-            }
-            {
               reusable &&
               <ButtonWithLoading textBase={'Clear and Reuse Container'} textLoading={'Clearing Container'} isLoading={emptying.isInProcess} onClick={this.clearContainer} />
             }
@@ -101,7 +97,15 @@ const DetailPage = React.createClass({
             <Accordion initialState="collapsed">
               <TransportSetter trip={trip} isInbound={isInbound} />
             </Accordion>
-            <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>Total {orders.length} items</span>
+            <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>
+              <span style={{fontSize: 20, display: 'initial', verticalAlign: 'middle'}}>Total {orders.length} items
+              </span>
+              {
+                fillAble &&
+                <ButtonWithLoading textBase={'+ Add Order'} onClick={this.goToFillContainer} 
+                  styles={{base: styles.normalBtn + ' ' + styles.addOrderBtn}} />
+              }
+            </span>
             {
               !trip.DestinationHub && trip.District &&
               <span>

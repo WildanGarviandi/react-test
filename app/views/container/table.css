@@ -69,6 +69,10 @@
     cursor: default;
 }
 
+tr.lightGreen {
+    background-color: #c0f9a8 !important;
+}
+
 .td {
     height: 20px;
     font-size: 12px;

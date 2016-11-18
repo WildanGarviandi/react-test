@@ -203,7 +203,12 @@ export const OrderTable = React.createClass({
     let {columns, headers, items, statusList} = this.props;
     let {orderStatus, routeStatus} = this.state;
     let Header = Rows(React.DOM.thead, BaseHeader, {}, columns, function() {});
-    let Body = Rows(React.DOM.tbody, BaseCell, {action: DeleteCellContainer}, columns, function() {});
+    let Body = Rows(React.DOM.tbody, BaseCell, {action: DeleteCellContainer}, columns, function() {}, undefined, 
+      {
+        column: 'isSuccess',
+        condition: 'Yes',
+        className: styles.lightGreen
+      });
 
     const filteredItems = _.filter(items, (item) => {
       const matchOrderStatus = orderStatus === "SHOW ALL" || orderStatus === item.orderStatus;

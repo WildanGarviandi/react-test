@@ -161,3 +161,8 @@
   top: 10px;
   left: 10px;
 }
+
+.addOrderBtn {
+  margin-left: 10px;
+  height: 30px;
+}
