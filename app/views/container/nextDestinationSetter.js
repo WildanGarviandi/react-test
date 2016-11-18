@@ -77,12 +77,14 @@ const FirstSetting = React.createClass({
           <div className={styles.setterBody}>
             <div className={leftStyle}>
               <HubSetter trip={trip} nextDestination={nextDestination} />
-            <div>
-              Maybe send this to:
-              <ul>
-                {suggestionComponents}
-              </ul>
-            </div>
+            { nextSuggestion.length > 0 &&
+              <div>
+                Maybe send this to:
+                <ul>
+                  {suggestionComponents}
+                </ul>
+              </div>
+            }
               <div className={styles.shadow}></div>
             </div>
             <div className={rightStyle}>
