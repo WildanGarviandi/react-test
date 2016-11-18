@@ -76,6 +76,9 @@ const ThirdParty = React.createClass({
           icon3PL: 'chevron-down'
       });
   },
+  componentWillMount() {
+    this.props.stopEdit();
+  },
   save() {
     this.props.save();
   },
