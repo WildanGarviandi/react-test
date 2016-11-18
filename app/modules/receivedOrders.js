@@ -136,15 +136,21 @@ export function ConsolidateOrders() {
     const {token} = userLogged;
     const {orders} = receivedOrders;
 
-    const checkedOrdersID = lodash.chain(orders)
+    let forbidden = false;
+    const checkedOrdersIDs = lodash.chain(orders)
       .filter((order) => {
         return order.IsChecked;
       })
       .map((order) => (order.UserOrderID))
       .value();
 
+    if (checkedOrdersIDs.length === 0) {
+      dispatch(ModalActions.addMessage('No order selected'));
+      return;
+    }
+
     const body = {
-      OrderIDs: checkedOrdersID,
+      OrderIDs: checkedOrdersIDs,
     }
 
     dispatch({
@@ -152,23 +158,23 @@ export function ConsolidateOrders() {
     });
 
     FetchPost('/trip/outbound', token, body).then((response) => {
-      if(!response.ok) {
-        throw new Error();
+      if(response.ok) {
+        dispatch({
+          type: Constants.ORDERS_RECEIVED_CONSOLIDATE_END,
+        });
+
+        response.json().then(({data}) => {
+          dispatch(push('/trips/' + data.trip.TripID));
+        });
+      } else {
+        response.json().then(({error}) => {
+          dispatch({
+            type: Constants.ORDERS_RECEIVED_CONSOLIDATE_END,
+          });
+
+          dispatch(ModalActions.addMessage("Failed to consolidate orders. " + error.message[0].reason));
+        });
       }
-
-      dispatch({
-        type: Constants.ORDERS_RECEIVED_CONSOLIDATE_END,
-      });
-
-      response.json().then(({data}) => {
-        dispatch(push('/trips/' + data.trip.TripID));
-      });
-    }).catch(() => {
-      dispatch({
-        type: Constants.ORDERS_RECEIVED_CONSOLIDATE_END,
-      });
-
-      dispatch(ModalActions.addMessage("Failed to consolidate orders"));
     });
   }
 }
