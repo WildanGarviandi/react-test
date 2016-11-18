@@ -720,7 +720,7 @@ export function CreateExternalTrip(tripID) {
 
     let missingInformation = [];
     const mandatoryInformation = [
-      {key: 'AWBNumber', value: 'AWB Number'},
+      {key: 'AwbNumber', value: 'AWB Number'},
       {key: 'Sender', value: 'Sender'},
       {key: 'Fee', value: 'Fee'},
       {key: 'Transportation', value: 'Transportation'},

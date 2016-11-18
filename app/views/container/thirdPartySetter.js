@@ -114,7 +114,7 @@ const ThirdParty = React.createClass({
         (isEditing3PL || !externalTripRaw || !prev3PL) &&
         <div>
           <h4 style={{marginTop: 0, marginBottom: 10, fontWeight: 'normal'}}>Third Party Logistic Details:</h4>
-          <DetailRow label="AWB Number" value={externalTrip.AWBNumber} isEditing={true} type="text" onChange={this.onChange('AWBNumber')} />
+          <DetailRow label="AWB Number" value={externalTrip.AwbNumber} isEditing={true} type="text" onChange={this.onChange('AwbNumber')} />
           <DetailRow label="Sender" value={externalTrip.Sender} isEditing={true} type="text" onChange={this.onChange('Sender')} />
           <DetailRow label="Fee" value={externalTrip.Fee} isEditing={true} type="number" onChange={this.onChange('Fee')} />
           <DetailRow label="Transportation" value={externalTrip.Transportation} isEditing={true} type="text" onChange={this.onChange('Transportation')} />
@@ -145,7 +145,7 @@ const ThirdParty = React.createClass({
           </h4>
           { this.state.show3PL &&
               <span>
-                <DetailRow label="AWB Number" value={externalTrip.AWBNumber} isEditing={false} />
+                <DetailRow label="AWB Number" value={externalTrip.AwbNumber} isEditing={false} />
                 <DetailRow label="Sender" value={externalTrip.Sender} isEditing={false} />
                 <DetailRow label="Fee" value={externalTrip.Fee} isEditing={false} />
                 <DetailRow label="Transportation" value={externalTrip.Transportation} isEditing={false} />
