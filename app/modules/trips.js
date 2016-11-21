@@ -18,7 +18,7 @@ export function CanMarkContainer(trip, hubID) {
 
   if(trip.DestinationHub.HubID !== hubID) return false;
 
-  return ['IN-TRANSIT'].indexOf(trip.OrderStatus.OrderStatus) > -1;
+  return ['BOOKED', 'ACCEPTED', 'PICKUP', 'IN-TRANSIT'].indexOf(trip.OrderStatus.OrderStatus) > -1;
 }
 
 export function CanMarkOrderReceived(trip, orders) {
