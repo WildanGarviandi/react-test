@@ -126,7 +126,7 @@ const DetailPage = React.createClass({
           <Page title={'Outbound Trip Details '+ (trip.ContainerNumber ? (" of Container " + trip.ContainerNumber) : "")}>
             <div style={{clear: 'both'}} />
             {
-              trip.DestinationHub &&
+              (trip.DestinationHub || trip.District) &&
               <div className={classNaming(styles.container)}>
                 <Glyph name={'tags'} className={styles.glyph} />
                 <span className={styles.num}>Type</span>
@@ -134,7 +134,7 @@ const DetailPage = React.createClass({
               </div>
             }
             {
-              trip.DestinationHub &&
+              (trip.DestinationHub || trip.District) &&
               <div className={classNaming(styles.container)}>
                 <Glyph name={'arrow-right'} className={styles.glyph} />
                 <span className={styles.num}>Destination</span>
