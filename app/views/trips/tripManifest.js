@@ -17,7 +17,7 @@ const TripManifestPage = React.createClass({
   componentDidUpdate(prevProps) {
     if (this.props.trip !== prevProps.trip) {
       // when page is rendered with trip & order details, print
-      document.title = "#" + this.props.trip.ContainerNumber;
+      document.title = "#TRIP-" + this.props.trip.TripID;
       window.print();
     }
   },
@@ -65,13 +65,13 @@ const TripManifestPage = React.createClass({
               <div className={tripManifestStyle.mainInfo}>
                 <div>
                   <QRCode
-                    value={trip.ContainerNumber + ''}
+                    value={'TRIP-' + trip.TripID + ''}
                     size={80}
                     className={tripManifestStyle.qrcode}
                   />
                   </div>
                 <p>Trip ID</p>
-                <h2>#{trip.ContainerNumber}</h2>
+                <h2>#TRIP-{trip.TripID}</h2>
               </div>
               <div className={tripManifestStyle.addressCardContainer}>
                 <div className={tripManifestStyle.addressCard}>
