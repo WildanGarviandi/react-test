@@ -204,3 +204,15 @@
     width: 10px !important;
 }
 
+.submitButton {
+  background-color: #4cc38e;
+  padding: 7px 15px 7px 15px;
+  border-radius: 3px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.submitButton:hover {
+  background-color: #3eb881;
+}
+

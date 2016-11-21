@@ -14,6 +14,9 @@ const Table = React.createClass({
   onEnterKeyPressed(text) {
     this.props.FindID(text);
   },
+  onClick() {
+    this.props.FindID(this.state.id);
+  },
   componentDidMount() {
     this.props.GetList();
   },
@@ -81,6 +84,7 @@ const Table = React.createClass({
               Jump to Order with AWB :
             </span>
             <Input onChange={this.onChange} onEnterKeyPressed={this.onEnterKeyPressed} base={{placeholder: "Insert AWB Here"}} />
+            <a onClick={this.onClick} className={styles2.submitButton}>Submit</a>
           </span>
         }
         <table className={styles.table}>

@@ -80,6 +80,12 @@ const DetailPage = React.createClass({
       orderMarked: "",
     });
   },
+  submitReceived() {
+    this.props.markReceived(this.state.orderMarked);
+    this.setState({
+      orderMarked: "",
+    });
+  },
   deliverTrip() {
     if(this.props.canMarkTripDelivered) {
       let scanned = lodash.reduce(this.props.orders, function (sum, order) {
@@ -184,6 +190,7 @@ const DetailPage = React.createClass({
                         Mark Order As Received From Driver :
                       </span>
                       <Input onChange={this.changeMark} onEnterKeyPressed={this.markReceived} ref="markReceived" base={{value:this.state.orderMarked}} />
+                      <a onClick={this.submitReceived} className={styles.submitButton}>Submit</a>
                     </span>
                   }
                   {
