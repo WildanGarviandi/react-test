@@ -308,12 +308,21 @@ export function GroupOrders() {
     const {token} = userLogged;
     const {orders} = pickupOrders;
 
+    let forbidden = false;
     const checkedOrdersIDs = lodash.chain(orders)
       .filter((order) => {
+        if (order.IsChecked && order.OrderStatus !== 'NOTASSIGNED') {
+          forbidden = true;
+        }
         return order.IsChecked;
       })
       .map((order) => (order.UserOrderID))
       .value();
+
+    if (forbidden) {
+      dispatch(ModalActions.addMessage('There’s one or more order not ready for pickup. Please check again'));
+      return;
+    }
 
     if (checkedOrdersIDs.length === 0) {
       dispatch(ModalActions.addMessage('No order selected'));
@@ -329,23 +338,23 @@ export function GroupOrders() {
     });
 
     FetchPost('/trip/firstLeg', token, body).then((response) => {
-      if(!response.ok) {
-        throw new Error();
+      if(response.ok) {
+        dispatch({
+          type: Constants.ORDERS_PICKUP_GROUP_END,
+        });
+
+        response.json().then(({data}) => {
+          dispatch(push('/trips/' + data.TripID));
+        });
+      } else {
+        response.json().then(({error}) => {
+          dispatch({
+            type: Constants.ORDERS_PICKUP_GROUP_END,
+          });
+
+          dispatch(ModalActions.addMessage("Failed to group orders. " + error.message[0].reason));
+        });
       }
-
-      dispatch({
-        type: Constants.ORDERS_PICKUP_GROUP_END,
-      });
-
-      response.json().then(({data}) => {
-        dispatch(push('/trips/' + data.TripID));
-      });
-    }).catch(() => {
-      dispatch({
-        type: Constants.ORDERS_PICKUP_GROUP_END,
-      });
-
-      dispatch(ModalActions.addMessage("Failed to group orders"));
     });
   }
 }

@@ -21,8 +21,8 @@ const Table = React.createClass({
     const {Headers, Filters, Body, PaginationActions, isFetching, isFill, isPickup, items, pagination} = this.props;
     const style = isFetching ? {opacity: 0.5} : {};
 
-    let btnText = isPickup ? "Group Orders" : "Consolidate Orders";
-    let btnLoadingText = isPickup ? "Grouping Orders" : "Consolidating Orders";
+    let btnText = "Group Orders";
+    let btnLoadingText = "Grouping Orders";
 
     if(isFill) {
       btnText = "Add Orders";
