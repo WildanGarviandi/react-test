@@ -158,7 +158,7 @@ export function ConsolidateOrders() {
     }
     
     if (arrayOfNextDestination.length > 1) {
-      var isContinue = confirm("Bro, you’re about to group " + checkedOrdersID.length + " orders with different destinations. Sure you wanna do that?");
+      var isContinue = confirm("Bro, you’re about to group " + checkedOrdersIDs.length + " orders with different destinations. Sure you wanna do that?");
       if (!isContinue){
         return;
       } 
