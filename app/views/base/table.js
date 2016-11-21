@@ -111,7 +111,7 @@ function Tables(columns, customCell = {}, opts = {}) {
   return Table;
 }
 
-function Rows(BaseComponent, BaseCell, CustomCell, columns, actionFn, rowClassName) {
+function Rows(BaseComponent, BaseCell, CustomCell, columns, actionFn, rowClassName, specialClassName) {
   const RowItem = React.createClass({
     handleAction(column) {
       let {item} = this.props;      
@@ -124,7 +124,15 @@ function Rows(BaseComponent, BaseCell, CustomCell, columns, actionFn, rowClassNa
         return <Cell key={column} val={item[column]} item={item} attr={column} action={this.handleAction} />
       });
 
-      return (<tr className={styles.tr + ' ' + rowClassName}>{cols}</tr>);
+      if (specialClassName) {
+        if (item[specialClassName.column] === specialClassName.condition) {
+          return (<tr className={styles.tr + ' ' + rowClassName + ' ' + specialClassName.className}>{cols}</tr>);
+        } else {
+          return (<tr className={styles.tr + ' ' + rowClassName}>{cols}</tr>);
+        }
+      } else {
+        return (<tr className={styles.tr + ' ' + rowClassName}>{cols}</tr>);
+      }
     }
   });
 

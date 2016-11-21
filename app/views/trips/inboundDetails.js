@@ -150,10 +150,6 @@ const DetailPage = React.createClass({
             </div>
             <div style={{clear: 'both'}} />
             {
-              fillAble &&
-              <ButtonWithLoading textBase={'Fill With Orders'} onClick={this.goToFillContainer} styles={{base: styles.normalBtn}} />
-            }
-            {
               reusable &&
               <ButtonWithLoading textBase={'Clear and Reuse Container'} textLoading={'Clearing Container'} isLoading={emptying.isInProcess} onClick={this.clearContainer} />
             }
@@ -161,11 +157,23 @@ const DetailPage = React.createClass({
               canDeassignDriver &&
               <ButtonWithLoading textBase="Cancel Assignment" textLoading="Deassigning" onClick={this.deassignDriver} isLoading={isDeassigning} />
             }
+            {
+              (canMarkTripDelivered || canMarkContainer) &&
+              <ButtonWithLoading styles={{base: styles.greenBtn}} textBase={'Complete Trip'} textLoading={'Clearing Container'} isLoading={false} onClick={this.deliverTrip} />
+            }
             <a href={'/trips/' + trip.TripID + '/manifest#' + trip.ContainerNumber} className={styles.manifestLink} target="_blank">Print Manifest</a>
             <Accordion initialState="collapsed">
               <TransportSetter trip={trip} isInbound={true} />
             </Accordion>
-            <span style={{display: 'block', marginTop: 10, marginBottom: 5, fontSize: 20}}>{statisticItem}</span>
+            <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>
+              <span style={{fontSize: 20, display: 'initial', verticalAlign: 'middle'}}>{statisticItem}</span>
+              {
+                fillAble &&
+                <ButtonWithLoading textBase={'+ Add Order'} onClick={this.goToFillContainer} 
+                  styles={{base: styles.normalBtn + ' ' + styles.addOrderBtn}} />
+              }
+            </span>
+            
             {
               !trip.DestinationHub && trip.District &&
               <span>
@@ -181,15 +189,9 @@ const DetailPage = React.createClass({
                     canMarkOrderReceived &&
                     <span className={styles.finderWrapper} style={{top: -40}}>
                       <span className={styles.finderLabel} onKeyDown={this.jumpTo}>
-                        Mark Order As Received From Driver :
+                        Received Order :
                       </span>
                       <Input onChange={this.changeMark} onEnterKeyPressed={this.markReceived} ref="markReceived" base={{value:this.state.orderMarked}} />
-                    </span>
-                  }
-                  {
-                    (canMarkTripDelivered || canMarkContainer) &&
-                    <span className={styles.finderWrapper2}>
-                      <ButtonWithLoading styles={{base: styles.greenBtn}} textBase={'Mark Trip As Delivered'} textLoading={'Clearing Container'} isLoading={false} onClick={this.deliverTrip} />
                     </span>
                   }
                 </div>
