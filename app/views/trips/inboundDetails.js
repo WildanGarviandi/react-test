@@ -165,7 +165,7 @@ const DetailPage = React.createClass({
             <Accordion initialState="collapsed">
               <TransportSetter trip={trip} isInbound={true} />
             </Accordion>
-            <span style={{display: 'block', marginTop: 10, marginBottom: 5, fontSize: 20}}>{statisticItem}</span>
+            <span style={{display: 'block', marginTop: 25, marginBottom: 5, fontSize: 20}}>{statisticItem}</span>
             {
               !trip.DestinationHub && trip.District &&
               <span>
@@ -179,7 +179,7 @@ const DetailPage = React.createClass({
                 <div className={styles.finderWrapperContainer}>
                   {
                     canMarkOrderReceived &&
-                    <span className={styles.finderWrapper} style={{top: -40}}>
+                    <span className={styles.finderWrapper} style={{top: -25}}>
                       <span className={styles.finderLabel} onKeyDown={this.jumpTo}>
                         Mark Order As Received From Driver :
                       </span>

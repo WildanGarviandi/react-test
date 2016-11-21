@@ -67,15 +67,21 @@ const DistrictSetter = React.createClass({
         }
         {
           canChangeDistrict && !showDistrictPicker &&
-          <ButtonBase onClick={this.toChanging} styles={styles.driverBtn}>Change District</ButtonBase>
+          <div className={classNaming(styles.buttonWrapper)}>
+            <ButtonBase onClick={this.toChanging} styles={styles.driverBtn}>Change District</ButtonBase>
+          </div>
         }
         {
           showDistrictPicker &&
-          <ButtonWithLoading textBase="Set District" textLoading="Setting District" onClick={this.districtSet} isLoading={isSettingDistrict} styles={{base: styles.normalBtn}} />
+          <div className={classNaming(styles.buttonWrapper)}>
+            <ButtonWithLoading textBase="Set District" textLoading="Setting District" onClick={this.districtSet} isLoading={isSettingDistrict} styles={{base: styles.normalBtn}} />
+          </div>
         }
         {
           showDistrictPicker && districtName &&
-          <ButtonBase onClick={this.cancelChanging} styles={styles.driverBtn}>Cancel</ButtonBase>
+          <div className={classNaming(styles.buttonWrapper)}>
+            <ButtonBase onClick={this.cancelChanging} styles={styles.driverBtn}>Cancel</ButtonBase>
+          </div>
         }
       </div>
     );

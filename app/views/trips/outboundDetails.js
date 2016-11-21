@@ -125,16 +125,22 @@ const DetailPage = React.createClass({
           !this.props.notFound && !isFetching &&
           <Page title={'Outbound Trip Details '+ (trip.ContainerNumber ? (" of Container " + trip.ContainerNumber) : "")}>
             <div style={{clear: 'both'}} />
-            <div className={classNaming(styles.container)}>
-              <Glyph name={'tags'} className={styles.glyph} />
-              <span className={styles.num}>Type</span>
-              <span className={styles.attr}>{tripType}</span>
-            </div>
-            <div className={classNaming(styles.container)}>
-              <Glyph name={'arrow-right'} className={styles.glyph} />
-              <span className={styles.num}>Destination</span>
-              <span className={styles.attr}>{tripDestination}</span>
-            </div>
+            {
+              trip.DestinationHub &&
+              <div className={classNaming(styles.container)}>
+                <Glyph name={'tags'} className={styles.glyph} />
+                <span className={styles.num}>Type</span>
+                <span className={styles.attr}>{tripType}</span>
+              </div>
+            }
+            {
+              trip.DestinationHub &&
+              <div className={classNaming(styles.container)}>
+                <Glyph name={'arrow-right'} className={styles.glyph} />
+                <span className={styles.num}>Destination</span>
+                <span className={styles.attr}>{tripDestination}</span>
+              </div>
+            }
             <div style={{clear: 'both'}} />
             {
               fillAble &&

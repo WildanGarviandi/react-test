@@ -44,6 +44,17 @@
   width: 200px;
 }
 
+.buttonWrapper {
+  display: inline-block;
+}
+
+@media screen and (max-width: 1200px) {
+  .buttonWrapper {
+    display: block;
+    margin-top: 10px;
+  }
+}
+
 .error {
   border: solid 1px #c33;
   border-radius: 3px;

@@ -63,6 +63,15 @@
   margin-left: 30px;
 }
 
+@media screen and (max-width: 1200px) {
+  .setterLeft > *,
+  .setterRight > * {
+    padding: 15px 15px 0;
+    margin-left: 0;
+    text-align: center;
+  }
+}
+
 .setterOR {
   font-size: 20px;
   width: 50px;
