@@ -11,7 +11,7 @@ import Infographic from './infoGraphic';
 const PickupOrdersPage = React.createClass({
   componentWillMount() {
     if (!this.props.userLogged.hubID) {
-      window.location.href ='/myorders';
+      window.location.href ='/myorders/open';
     }
   },
   render() {
