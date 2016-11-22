@@ -6,6 +6,7 @@ import FetchDelete from './fetch/delete';
 import FetchGet from './fetch/get';
 import FetchPost from './fetch/post';
 import ModalActions from './modals/actions';
+import NotifActions from './notification/actions';
 import {modalAction} from './modals/constants';
 
 const Constants = {
@@ -599,7 +600,7 @@ export function OrderReceived(scannedID) {
     });
 
     if(!scannedOrder) {
-      dispatch(ModalActions.addMessage('Order not found'));
+      dispatch(ModalActions.addMessage(`Order ${scannedID} was not found`));
       return;
     }
     
@@ -622,7 +623,7 @@ export function OrderReceived(scannedID) {
 
       dispatch({type: modalAction.BACKDROP_HIDE});
       dispatch({ type: Constants.TRIPS_INBOUND_DETAILS_ORDER_RECEIVED_END });
-      dispatch(ModalActions.addMessage(`Order ${scannedID} has been received`));
+      dispatch(NotifActions.addNotification(`Order ${scannedID} has been received`, 'success'));
       dispatch({
         type: Constants.TRIPS_INBOUND_DETAILS_ORDER_RECEIVED_SET,
         orderID: scannedOrder.UserOrderID,

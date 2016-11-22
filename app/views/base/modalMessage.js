@@ -1,5 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import ReactDOM from 'react-dom';
 
 import ModalActions from '../../modules/modals/actions';
 
@@ -7,6 +8,9 @@ import {ButtonBase, Modal} from '.';
 import styles from './modal.css';
 
 const ModalMessage = React.createClass({
+  componentDidMount() {
+    ReactDOM.findDOMNode(this.refs.elementForModalFocus).focus();
+  },
   handleClose() {
     this.props.closeModal();
   },
@@ -24,6 +28,7 @@ const ModalMessage = React.createClass({
       <Modal show={modal} width={width || 300}>
         {message}
         <span className={styles.closeBtn} onClick={this.handleClose}>X</span>
+        <button ref="elementForModalFocus" className={styles.focusBtn} type=""></button>
         <div style={{clear: 'both'}} />
         {
           onConfirm ?

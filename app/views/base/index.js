@@ -9,6 +9,7 @@ import Page, { ButtonAtRightTop, PageTitle } from './page';
 import { Pagination } from './pagination';
 import { Rows, Tables } from './table';
 import Modal from './modal';
+import NotificationContainer from './notification';
 import classNaming from 'classnames';
 import baseStyle from './index.css';
 
@@ -46,4 +47,4 @@ const ButtonWithLoading = React.createClass({
   }
 })
 
-export { ButtonAtRightTop, ButtonBase, ButtonAction, ButtonWithLoading, CheckBox, Collection, Dropdown, DropdownTypeAhead, Glyph, Infograph, Input, Modal, ModalMessage, Page, PageTitle, Pagination, Rows, Tables };
+export { ButtonAtRightTop, ButtonBase, ButtonAction, ButtonWithLoading, CheckBox, Collection, Dropdown, DropdownTypeAhead, Glyph, Infograph, Input, Modal, ModalMessage, Page, PageTitle, Pagination, Rows, Tables, NotificationContainer };

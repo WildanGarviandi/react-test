@@ -68,3 +68,21 @@
   text-align: center;
   cursor: pointer;
 }
+
+.focusBtn {
+  border: none;
+  background: none;
+  outline: none;
+}
+
+.focusBtn:focus {
+  border: none;
+  background: none;
+  outline: none;
+}
+
+.focusBtn:active {
+  border: none;
+  background: none;
+  outline: none;
+}
