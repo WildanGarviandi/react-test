@@ -80,6 +80,12 @@ const DetailPage = React.createClass({
       orderMarked: "",
     });
   },
+  submitReceived() {
+    this.props.markReceived(this.state.orderMarked);
+    this.setState({
+      orderMarked: "",
+    });
+  },
   deliverTrip() {
     if(this.props.canMarkTripDelivered) {
       let scanned = lodash.reduce(this.props.orders, function (sum, order) {
@@ -165,7 +171,7 @@ const DetailPage = React.createClass({
             <Accordion initialState="collapsed">
               <TransportSetter trip={trip} isInbound={true} />
             </Accordion>
-            <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>
+            <span style={{display: 'block', marginTop: 25, marginBottom: 5}}>
               <span style={{fontSize: 20, display: 'initial', verticalAlign: 'middle'}}>{statisticItem}</span>
               {
                 fillAble &&
@@ -173,7 +179,6 @@ const DetailPage = React.createClass({
                   styles={{base: styles.normalBtn + ' ' + styles.addOrderBtn}} />
               }
             </span>
-            
             {
               !trip.DestinationHub && trip.District &&
               <span>
@@ -187,11 +192,12 @@ const DetailPage = React.createClass({
                 <div className={styles.finderWrapperContainer}>
                   {
                     canMarkOrderReceived &&
-                    <span className={styles.finderWrapper} style={{top: -40}}>
+                    <span className={styles.finderWrapper} style={{top: -25}}>
                       <span className={styles.finderLabel} onKeyDown={this.jumpTo}>
                         Received Order :
                       </span>
                       <Input onChange={this.changeMark} onEnterKeyPressed={this.markReceived} ref="markReceived" base={{value:this.state.orderMarked}} />
+                      <a onClick={this.submitReceived} className={styles.submitButton}>Submit</a>
                     </span>
                   }
                 </div>

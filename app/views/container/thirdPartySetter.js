@@ -22,7 +22,8 @@ const DetailRow = React.createClass({
         return (
           <span className={styles.itemValue}>:
             <span className={styles.datetimeWrapper}>
-              <DateTime onChange={this.props.onChange} defaultValue={value} />
+              <DateTime onChange={this.props.onChange} defaultValue={value} 
+                dateFormat='DD MMM YYYY' timeFormat="HH:mm:ss" viewMode='days'/>
             </span>
           </span>
         );

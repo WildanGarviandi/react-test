@@ -126,17 +126,27 @@ const DetailPage = React.createClass({
           !this.props.notFound && !isFetching &&
           <Page title={'Outbound Trip Details '+ (trip.ContainerNumber ? (" of Container " + trip.ContainerNumber) : "")}>
             <div style={{clear: 'both'}} />
-            <div className={classNaming(styles.container)}>
-              <Glyph name={'tags'} className={styles.glyph} />
-              <span className={styles.num}>Type</span>
-              <span className={styles.attr}>{tripType}</span>
-            </div>
-            <div className={classNaming(styles.container)}>
-              <Glyph name={'arrow-right'} className={styles.glyph} />
-              <span className={styles.num}>Destination</span>
-              <span className={styles.attr}>{tripDestination}</span>
-            </div>
-            <div style={{clear: 'both'}} /> 
+            {
+              (trip.DestinationHub || trip.District) &&
+              <div className={classNaming(styles.container)}>
+                <Glyph name={'tags'} className={styles.glyph} />
+                <span className={styles.num}>Type</span>
+                <span className={styles.attr}>{tripType}</span>
+              </div>
+            }
+            {
+              (trip.DestinationHub || trip.District) &&
+              <div className={classNaming(styles.container)}>
+                <Glyph name={'arrow-right'} className={styles.glyph} />
+                <span className={styles.num}>Destination</span>
+                <span className={styles.attr}>{tripDestination}</span>
+              </div>
+            }
+            <div style={{clear: 'both'}} />
+            {
+              fillAble &&
+              <ButtonWithLoading textBase={'Fill With Orders'} onClick={this.goToFillContainer} styles={{base: styles.normalBtn}} />
+            }
             {
               reusable &&
               <ButtonWithLoading textBase={'Clear and Reuse Container'} textLoading={'Clearing Container'} isLoading={emptying.isInProcess} onClick={this.clearContainer} />

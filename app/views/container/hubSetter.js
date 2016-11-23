@@ -48,7 +48,9 @@ const HubSetter = React.createClass({
             }
             {
               !isEditing && nextHub &&
-              <ButtonBase onClick={this.toEdit} styles={styles.driverBtn}>Change Destination</ButtonBase>
+              <div className={classNaming(styles.buttonWrapper)}>
+                <ButtonBase onClick={this.toEdit} styles={styles.driverBtn}>Change Destination</ButtonBase>
+              </div>
             }
             {
               isEditing &&
@@ -58,11 +60,15 @@ const HubSetter = React.createClass({
             }
             {
               isEditing &&
-              <ButtonWithLoading textBase="Set as Destination" textLoading="Setting Destination" onClick={this.pickHub} isLoading={isUpdating} styles={{base: styles.normalBtn}} />
+              <div className={classNaming(styles.buttonWrapper)}>
+                <ButtonWithLoading textBase="Set as Destination" textLoading="Setting Destination" onClick={this.pickHub} isLoading={isUpdating} styles={{base: styles.normalBtn}} />
+              </div>
             }
             {
               isEditing && nextHub &&
-              <ButtonBase onClick={this.stopEdit} styles={styles.driverBtn}>Cancel</ButtonBase>
+              <div className={classNaming(styles.buttonWrapper)}>
+                <ButtonBase onClick={this.stopEdit} styles={styles.driverBtn}>Cancel</ButtonBase>
+              </div>
             }
           </span>
         }
