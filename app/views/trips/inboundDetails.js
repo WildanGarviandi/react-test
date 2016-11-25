@@ -86,6 +86,9 @@ const DetailPage = React.createClass({
       orderMarked: "",
     });
   },
+  exportManifest() {
+    this.props.exportManifest();
+  },
   deliverTrip() {
     if(this.props.canMarkTripDelivered) {
       let scanned = lodash.reduce(this.props.orders, function (sum, order) {
@@ -168,6 +171,7 @@ const DetailPage = React.createClass({
               <ButtonWithLoading styles={{base: styles.greenBtn}} textBase={'Complete Trip'} textLoading={'Clearing Container'} isLoading={false} onClick={this.deliverTrip} />
             }
             <a href={'/trips/' + trip.TripID + '/manifest#'} className={styles.manifestLink} target="_blank">Print Manifest</a>
+            <a onClick={this.exportManifest} className={styles.manifestLink} target="_blank">Export Excel Manifest</a>
             <Accordion initialState="collapsed">
               <TransportSetter trip={trip} isInbound={true} />
             </Accordion>
@@ -335,6 +339,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     reuse: function(tripID) {
       dispatch(TripDetailsTrue.TripDeliver(tripID, true));
+    },
+    exportManifest: function() {
+      dispatch(TripDetailsTrue.ExportManifest(ownProps.params.id));
     },
   };
 };

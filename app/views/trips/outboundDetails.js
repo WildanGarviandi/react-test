@@ -89,6 +89,9 @@ const DetailPage = React.createClass({
       });
     }
   },
+  exportManifest() {
+    this.props.exportManifest();
+  },
   render() {
     const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, fillAble, hasDriver, isFetching, isInbound, orders, reusable, statusList, TotalCODValue, CODCount, totalDeliveryFee, trip} = this.props;
 
@@ -156,6 +159,7 @@ const DetailPage = React.createClass({
               <ButtonWithLoading textBase="Cancel Assignment" textLoading="Deassigning" onClick={this.deassignDriver} isLoading={isDeassigning} />
             }
             <a href={'/trips/' + trip.TripID + '/manifest#'} className={styles.manifestLink} target="_blank">Print Manifest</a>
+            <a onClick={this.exportManifest} className={styles.manifestLink} target="_blank">Export Excel Manifest</a>
             <NextDestinationSetter nextSuggestion={nextSuggestion} trip={trip} accordionState={trip && (trip.Driver || trip.ExternalTrip) ? "collapsed" : "expanded"} />
             <TransportSetter trip={trip} isInbound={false} accordionState={trip && ((trip.Driver || trip.ExternalTrip) || !(trip.District || trip.DestinationHub)) ? "collapsed" : "expanded"}/>
             <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>
@@ -310,6 +314,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     reuse: function(tripID) {
       dispatch(TripDetailsTrue.TripDeliver(tripID, true));
+    },
+    exportManifest: function() {
+      dispatch(TripDetailsTrue.ExportManifest(ownProps.params.id));
     },
   };
 };
