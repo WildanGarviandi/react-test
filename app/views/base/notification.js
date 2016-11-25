@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { addNotification } from '../../modules/notification/actions';
 import NotificationSystem from 'react-notification-system';
+import NotifActions from '../../modules/notification/actions';
 
 /**
  * Overriding style
@@ -32,6 +33,9 @@ function createNotification (component, message, level, position) {
       level: level || 'info',
       position: position || 'tr',
       autoDismiss: 2,
+      onRemove: function () {
+        component.props.removeNotification();
+      }
     });
   }
 }
@@ -68,9 +72,10 @@ function mapStateToProps(state) {
  
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({
-      addNotification
-    }, dispatch)
+    actions: bindActionCreators({ addNotification }, dispatch),
+    removeNotification: () => {
+      dispatch(NotifActions.removeNotification());
+    }
   };
 }
  

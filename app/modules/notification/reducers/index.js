@@ -8,6 +8,10 @@ function reducer (state = {}, action) {
         level: action.level,
         position: action.position
       });
+    case notifAction.REMOVE_NOTIFICATION:
+      return Object.assign({}, state, {
+        message: ''
+      });
     default:
       return state;
   }
