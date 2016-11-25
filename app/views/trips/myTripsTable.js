@@ -216,29 +216,32 @@ const Table = React.createClass({
     );
 
     if (this.props.isFetching) {
-      let wrapperClass = classnaming('wrapper', {show: true});
-      return (
-        <div className={wrapperClass}>
-          <div className={stylesModal.backdropBlocking}></div>
-        </div>
-      );
-    } else if (!this.props.isFetching && this.props.items.length === 0) {
       return (
         <div style={{textAlign:'center'}}>
-          <img src="/img/orders-empty-state.png" />
           <div style={{fontSize: 20}}>
-            You have no outbound trips
+            Fetching data....
           </div>
         </div>
       );
     } else {
-      return (
-        <table className={tableStyles.table}>
-          <thead><tr>{Headers}</tr></thead>
-          <tbody>{Search}</tbody>
-          <tbody>{Body}</tbody>
-        </table>
-      );
+      if (this.props.items.length === 0) {
+        return (
+          <div style={{textAlign:'center'}}>
+            <img src="/img/orders-empty-state.png" />
+            <div style={{fontSize: 20}}>
+              You have no outbound trips
+            </div>
+          </div>
+        );
+      } else {
+        return (
+          <table className={tableStyles.table}>
+            <thead><tr>{Headers}</tr></thead>
+            <tbody>{Search}</tbody>
+            <tbody>{Body}</tbody>
+          </table>
+        );
+      }
     }
   }
 });

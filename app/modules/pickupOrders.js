@@ -43,7 +43,7 @@ const initialState = {
   isFetching: false,
   isGrouping: false,
   isMarkingPickup: false,
-  limit: 100,
+  limit: 50,
   orders: [],
   total: 0,
 }

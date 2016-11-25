@@ -32,7 +32,7 @@ const initialState = {
   filters: {},
   isConsolidating: false,
   isFetching: false,
-  limit: 100,
+  limit: 50,
   orders: [],
   total: 0,
 }
