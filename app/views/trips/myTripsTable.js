@@ -12,6 +12,9 @@ import DateRangePicker from '../base/dateRangePicker';
 import tableStyles from '../base/table.css';
 import StatusDropdown from '../base/statusDropdown';
 import {TripParser} from '../../modules/trips';
+import {modalAction} from '../../modules/modals/constants';
+import stylesModal from '../base/modal.css';
+import classnaming from 'classnames';
 
 const ColumnsOrder = ['driver', 'webstoreNames', 'tripType', 'nextDestination', 'containerNumber', 'status', 'numberPackages'];
 
@@ -212,13 +215,31 @@ const Table = React.createClass({
       </tr>
     );
 
-    return (
-      <table className={tableStyles.table}>
-        <thead><tr>{Headers}</tr></thead>
-        <tbody>{Search}</tbody>
-        <tbody>{Body}</tbody>
-      </table>
-    );
+    if (this.props.isFetching) {
+      let wrapperClass = classnaming('wrapper', {show: true});
+      return (
+        <div className={wrapperClass}>
+          <div className={stylesModal.backdropBlocking}></div>
+        </div>
+      );
+    } else if (!this.props.isFetching && this.props.items.length === 0) {
+      return (
+        <div style={{textAlign:'center'}}>
+          <img src="/img/orders-empty-state.png" />
+          <div style={{fontSize: 20}}>
+            You have no outbound trips
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <table className={tableStyles.table}>
+          <thead><tr>{Headers}</tr></thead>
+          <tbody>{Search}</tbody>
+          <tbody>{Body}</tbody>
+        </table>
+      );
+    }
   }
 });
 
@@ -334,11 +355,12 @@ const TableStateful = React.createClass({
       toDetails: tripDetails,
       filteringAction, statusProps,
       filters: this.state,
+      isFetching: tripsIsFetching
     }
 
     return (
       <div>
-        <div style={{opacity: tripsIsFetching ? 0.5 : 1}}>
+        <div style={{opacity: tripsIsFetching ? 0 : 1}}>
           <Pagination {...paginationProps} />
           <Table {...tableProps} />
         </div>
