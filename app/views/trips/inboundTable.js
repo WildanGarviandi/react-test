@@ -309,7 +309,7 @@ const TableStateful = React.createClass({
 
     return (
       <div>
-        <div style={{opacity: tripsIsFetching ? 0 : 1}}>
+        <div style={{opacity: tripsIsFetching ? 0.5 : 1}}>
           <Pagination {...paginationProps} />
           <Table {...tableProps} />
         </div>

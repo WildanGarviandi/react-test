@@ -3,9 +3,6 @@ import styles from './table.css';
 import styles2 from './styles.css';
 import {ButtonWithLoading, Input, Pagination} from '../base';
 import classNaming from 'classnames';
-import {modalAction} from '../../modules/modals/constants';
-import stylesModal from '../base/modal.css';
-var classnaming = require('classnames/bind').bind(styles);
 
 const Table = React.createClass({
   getInitialState() {
@@ -72,21 +69,14 @@ const Table = React.createClass({
       {'col-xs-6': true}
     );
 
-    if (isFetching) {
-      let wrapperClass = classnaming('wrapper', {show: true});
-      return (
-        <div className={wrapperClass}>
-          <div className={stylesModal.backdropBlocking}></div>
-        </div>
-      );
-    } else if (!isFetching && items.length === 0) {
+    if (!isFetching && items.length === 0) {
       return (
         <div style={{textAlign:'center'}}>
           <img src="/img/orders-empty-state.png" />
           {
             isPickup &&
             <div style={{fontSize: 20}}>
-              You have no pickup orders
+              You have no pickup order
             </div>
           }
           {
