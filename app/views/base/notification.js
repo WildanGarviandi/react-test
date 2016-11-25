@@ -33,16 +33,15 @@ class NotificationContainer extends Component {
  
   componentDidMount() {
     this.notificationSystem = this.refs.notificationSystem;
-  }
- 
-  componentWillReceiveProps(newProps) {
-    const { message, level, position } = newProps.notification;
-    this.notificationSystem.addNotification({
-      message,
-      level,
-      position,
-      autoDismiss: 2,
-    });
+    const { message, level, position } = this.props.notification;
+    if (message) {
+      this.notificationSystem.addNotification({
+        message,
+        level: level || 'info',
+        position: position || 'tr',
+        autoDismiss: 2,
+      });
+    }
   }
  
   render() {

@@ -28,12 +28,13 @@ const App = React.createClass({
 });
 
 function StateToProps(state) {
-  const {modals, showBackdrop} = state.app.modals;
+  const { notification } = state.app;
+  const { modals, showBackdrop } = state.app.modals;
 
   return {
     haveModal: modals.length > 0,
     showBackdrop,
-    haveNotif: true
+    haveNotif: (notification && notification.message)
   }
 }
 
