@@ -24,6 +24,17 @@ let style = {
     }
   }
 };
+
+function createNotification (component, message, level, position) {
+  if (message) {
+    component.notificationSystem.addNotification({
+      message,
+      level: level || 'info',
+      position: position || 'tr',
+      autoDismiss: 2,
+    });
+  }
+}
  
 class NotificationContainer extends Component {
  
@@ -34,14 +45,12 @@ class NotificationContainer extends Component {
   componentDidMount() {
     this.notificationSystem = this.refs.notificationSystem;
     const { message, level, position } = this.props.notification;
-    if (message) {
-      this.notificationSystem.addNotification({
-        message,
-        level: level || 'info',
-        position: position || 'tr',
-        autoDismiss: 2,
-      });
-    }
+    createNotification (this, message, level, position);
+  }
+
+  componentWillReceiveProps(newProps) {
+    const { message, level, position } = newProps.notification;
+    createNotification (this, message, level, position);
   }
  
   render() {
