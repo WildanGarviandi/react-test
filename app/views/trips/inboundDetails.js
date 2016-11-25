@@ -142,7 +142,8 @@ const DetailPage = React.createClass({
         }
         {
           !this.props.notFound && !isFetching &&
-          <Page title={'Inbound Trip Details' + (trip.ContainerNumber ? (" of Container " + trip.ContainerNumber) : "")}>
+          <Page title={'Inbound Trip Details' + (trip.ContainerNumber ? (" of Container " + trip.ContainerNumber) : "")}
+            backButton="true">
             <div style={{clear: 'both'}} />
             <div className={classNaming(styles.container)}>
               <Glyph name={'tags'} className={styles.glyph} />

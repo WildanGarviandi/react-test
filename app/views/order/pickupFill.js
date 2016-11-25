@@ -30,7 +30,7 @@ const PickupOrders = React.createClass({
     }
 
     return (
-      <Page title="Add Orders to Trip">
+      <Page title="Add Orders to Trip" backButton="true">
         <Accordion />
         <PickupOrdersTable isFill={true}  GroupOrders={this.props.GroupOrders} />
       </Page>

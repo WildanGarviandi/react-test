@@ -1,10 +1,16 @@
 import React from 'react';
-import {ButtonWithLoading} from './';
+import {ButtonWithLoading, Glyph} from './';
 import styles from './page.css';
+import { browserHistory } from 'react-router';
 
-const PageTitle = ({additional, title}) => {
+const PageTitle = ({additional, title, backButton}) => {
   return (
     <span>
+      { backButton &&
+        <button className={styles.backButton} onClick={browserHistory.goBack}>
+          <Glyph className="" name="chevron-left" />
+        </button>
+      }
       <h2 className={styles.contentTitle}>{title}</h2>
       {additional && <h3 className={styles.additionalTitle}><em>-- {additional}</em></h3>}
     </span>
@@ -45,14 +51,14 @@ const ClassifyChildren = (children) => {
 
 export default React.createClass({
   render() {
-    const {title, children, additional} = this.props;
+    const {title, children, additional, backButton} = this.props;
     const {backLink, buttons, body} = ClassifyChildren(children);
 
     return (
       <div style={{position: 'relative'}}>
         {backLink}
         {buttons}
-        <PageTitle title={title} additional={additional} />
+        <PageTitle title={title} additional={additional} backButton={backButton}/>
         {body}
       </div>
     );

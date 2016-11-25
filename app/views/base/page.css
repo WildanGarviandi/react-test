@@ -22,3 +22,13 @@
   color: #333;
   margin-top: 0;
 }
+
+.backButton {
+  height: 30px;
+  width: 30px;
+  background-color: white;
+  border: solid 1px black;
+  cursor: pointer;
+  border-radius: 20px;
+  margin-right: 10px;
+}
