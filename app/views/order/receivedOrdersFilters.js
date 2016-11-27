@@ -42,6 +42,11 @@ function mapDispatchToPickupOrders(dispatch) {
           break;
         }
 
+        case "ZipCode": {
+          newFilter = {dropoffZip: filter.val};
+          break;
+        }
+
         case "ID": {
           newFilter = {userOrderNumber: filter.val};
           break;
