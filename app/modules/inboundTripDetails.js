@@ -6,6 +6,7 @@ import FetchDelete from './fetch/delete';
 import FetchGet from './fetch/get';
 import FetchPost from './fetch/post';
 import ModalActions from './modals/actions';
+import NotifActions from './notification/actions';
 import {modalAction} from './modals/constants';
 
 const Constants = {
@@ -586,7 +587,7 @@ export function OrderRemove(tripID, orderID) {
   }
 }
 
-export function OrderReceived(scannedID) {
+export function OrderReceived(scannedID, backElementFocusID) {
   return (dispatch, getState) => {
     const {inboundTripDetails, userLogged} = getState().app;
     const {token} = userLogged;
@@ -599,12 +600,13 @@ export function OrderReceived(scannedID) {
     });
 
     if(!scannedOrder) {
-      dispatch(ModalActions.addMessage('Order not found'));
+      dispatch(ModalActions.addMessage(`Order ${scannedID} was not found`, backElementFocusID));
       return;
     }
     
     if (allowedRouteStatus.indexOf(scannedOrder.Status) === -1) {
-      dispatch(ModalActions.addMessage('Only allow route statuses: ' + allowedRouteStatus.join(', ')));
+      dispatch(ModalActions.addMessage('Only allow route statuses: ' + allowedRouteStatus.join(', '), 
+        backElementFocusID));
       return;
     }
 
@@ -622,7 +624,7 @@ export function OrderReceived(scannedID) {
 
       dispatch({type: modalAction.BACKDROP_HIDE});
       dispatch({ type: Constants.TRIPS_INBOUND_DETAILS_ORDER_RECEIVED_END });
-      dispatch(ModalActions.addMessage(`Order ${scannedID} has been received`));
+      dispatch(NotifActions.addNotification(`Order ${scannedID} has been received`, 'success'));
       dispatch({
         type: Constants.TRIPS_INBOUND_DETAILS_ORDER_RECEIVED_SET,
         orderID: scannedOrder.UserOrderID,
@@ -631,7 +633,7 @@ export function OrderReceived(scannedID) {
       const message = (e && e.message) ? e.message : "Failed to mark order as received";
       dispatch({type: modalAction.BACKDROP_HIDE});
       dispatch({ type: Constants.TRIPS_INBOUND_DETAILS_ORDER_RECEIVED_END });
-      dispatch(ModalActions.addMessage(message));
+      dispatch(ModalActions.addMessage(message, backElementFocusID));
     });
   }
 }

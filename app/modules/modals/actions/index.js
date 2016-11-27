@@ -47,8 +47,8 @@ function doConfirm() {
   }
 }
 
-function addMessage(message) {
-  return addModal({message});
+function addMessage(message, backElementFocusID) {
+  return addModal({message, backElementFocusID});
 }
 
 function closeModal() {

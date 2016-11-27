@@ -75,7 +75,7 @@ const DetailPage = React.createClass({
     })
   },
   markReceived(val) {
-    this.props.markReceived(val);
+    this.props.markReceived(val, "markReceivedInput");
     this.setState({
       orderMarked: "",
     });
@@ -196,7 +196,8 @@ const DetailPage = React.createClass({
                       <span className={styles.finderLabel} onKeyDown={this.jumpTo}>
                         Received Order :
                       </span>
-                      <Input onChange={this.changeMark} onEnterKeyPressed={this.markReceived} ref="markReceived" base={{value:this.state.orderMarked}} />
+                      <Input onChange={this.changeMark} onEnterKeyPressed={this.markReceived} ref="markReceived" base={{value:this.state.orderMarked}}
+                      id="markReceivedInput" />
                       <a onClick={this.submitReceived} className={styles.submitButton}>Submit</a>
                     </span>
                   }
@@ -324,8 +325,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     fetchStatusList: function() {
       dispatch(StatusList.fetch());
     },
-    markReceived: function(scannedID) {
-      dispatch(TripDetailsTrue.OrderReceived(scannedID));
+    markReceived: function(scannedID, backElementFocusID) {
+      dispatch(TripDetailsTrue.OrderReceived(scannedID, backElementFocusID));
     },
     deliverTrip: function(tripID, orders) {
       dispatch(TripDetailsTrue.TripDeliver(tripID));

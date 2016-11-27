@@ -4,6 +4,7 @@ import containersReducers from './modules/containers/reducers';
 import districtsReducers from './modules/districts/reducers';
 import drivers from './modules/drivers/reducers';
 import modalsReducer from './modules/modals/reducers';
+import notifReducer from './modules/notification/reducers';
 import orders from './modules/orders/reducers';
 // import pickupOrders from './modules/orders/reducers/pickup';
 import {Reducer as inboundTripDetails} from './modules/inboundTripDetails';
@@ -32,6 +33,7 @@ export default combineReducers({
   districts: districtsReducers,
   driversStore: drivers,
   modals: modalsReducer,
+  notification: notifReducer,
 
   hubs,
   inboundTripDetails,

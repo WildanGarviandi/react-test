@@ -1,11 +1,11 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {BackDrop} from './base/modal';
-import {ModalMessage} from './base';
+import {ModalMessage, NotificationContainer} from './base';
 
 const App = React.createClass({
   render() {
-    const {haveModal, showBackdrop} = this.props;
+    const {haveModal, showBackdrop, haveNotif} = this.props;
 
     return (
       <div style={{height: "100%", overflow: (haveModal && 'hidden')}}>
@@ -18,17 +18,23 @@ const App = React.createClass({
           showBackdrop &&
           <BackDrop show={true} />
         }
+        {
+          haveNotif &&
+          <NotificationContainer />
+        }
       </div>
     );
   }
 });
 
 function StateToProps(state) {
-  const {modals, showBackdrop} = state.app.modals;
+  const { notification } = state.app;
+  const { modals, showBackdrop } = state.app.modals;
 
   return {
     haveModal: modals.length > 0,
     showBackdrop,
+    haveNotif: (notification && notification.message)
   }
 }
 
