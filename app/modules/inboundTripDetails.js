@@ -5,6 +5,7 @@ import FetchDrivers from './drivers/actions/driversFetch';
 import FetchDelete from './fetch/delete';
 import FetchGet from './fetch/get';
 import FetchPost from './fetch/post';
+import {fetchXhr} from './fetch/getXhr';
 import ModalActions from './modals/actions';
 import NotifActions from './notification/actions';
 import {modalAction} from './modals/constants';
@@ -837,4 +838,55 @@ export function StartEdit3PL() {
 
 export function StopEdit3PL() {
   return {type: Constants.TRIPS_INBOUND_DETAILS_EXTERNALTRIP_CANCEL};
+}
+
+export function ExportManifest(tripID) {
+    return (dispatch, getState) => {
+        const {userLogged} = getState().app;
+        const {token} = userLogged;
+        const acceptHeader = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+        const responseType = 'arraybuffer';
+
+        var output ='<p style="text-align: center">'+
+                    '<img src="../../img/loading.gif" style="width:100px; height:100px;" />'+
+                    '<br />'+
+                    'You can do other things, while exporting in progress'+
+                    '</p>';
+
+        var popout = window.open();
+        popout.document.write(output);
+        let xhr = fetchXhr('/trip/' + tripID + '/manifest', {}, token, acceptHeader, responseType);
+        xhr.onload = function (oEvent) {
+            let blob = new Blob([xhr.response], {type: acceptHeader});
+            let fileName = 'manifest_'+ moment(new Date()).format('YYYY-MM-DD HH:mm:ss') +'.xlsx';
+            if (typeof window.navigator.msSaveBlob !== 'undefined') {
+                window.navigator.msSaveBlob(blob, fileName);
+            } else {
+                let URL = window.URL || window.webkitURL;
+                let downloadUrl = window.URL.createObjectURL(blob);
+
+                if (fileName) {
+                    let a = document.createElement("a");
+                    if (typeof a.download === 'undefined') {
+                        popout.location.href = downloadUrl;
+                    } else {
+                        a.href = downloadUrl;
+                        a.download = fileName;
+                        a.target = '_blank';
+                        document.body.appendChild(a);
+                        a.click();
+                    }
+                } else {
+                    popout.location.href = downloadUrl;
+                }
+
+                setTimeout(function () { 
+                    window.URL.revokeObjectURL(downloadUrl); 
+                    popout.close();
+                }, 1000);
+            }
+        };
+
+        xhr.send(null);
+    }
 }
