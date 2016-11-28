@@ -19,6 +19,7 @@ const initialState = {
   currentPage: 1,
   filters: {
     tripType: 0,
+    externalTrip: 'All'
   },
   filtersStatus: "SHOW ALL",
   isFetching: false,
@@ -64,6 +65,7 @@ export function Reducer(state = initialState, action) {
       return lodash.assign({}, state, {
         filters: {
           tripType: 0,
+          externalTrip: 'All'
         },
         currentPage: 1,
         filterStatus: "SHOW ALL",

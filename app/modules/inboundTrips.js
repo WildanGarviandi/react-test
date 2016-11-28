@@ -19,7 +19,9 @@ const Constants = {
 
 const initialState = {
   currentPage: 1,
-  filters: {},
+  filters: {
+    tripType: 0
+  },
   filtersStatus: "SHOW ALL",
   isFetching: false,
   limit: 100,
@@ -62,7 +64,9 @@ export function Reducer(state = initialState, action) {
 
     case Constants.TRIPS_INBOUND_RESET_FILTER: {
       return lodash.assign({}, state, {
-        filters: {}, 
+        filters: {
+          tripType: 0
+        }, 
         currentPage: 1,
         filterStatus: "SHOW ALL",
         limit: 100,
