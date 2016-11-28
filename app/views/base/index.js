@@ -9,6 +9,7 @@ import Page, { ButtonAtRightTop, PageTitle } from './page';
 import { Pagination } from './pagination';
 import { Rows, Tables } from './table';
 import Modal from './modal';
+import NotificationContainer from './notification';
 import classNaming from 'classnames';
 import baseStyle from './index.css';
 
@@ -29,7 +30,7 @@ function ButtonAction(props) {
 
 const ButtonWithLoading = React.createClass({
   render() {
-    const {textBase, textLoading, isLoading, onClick, styles, base} = this.props;
+    const {textBase, textLoading, isLoading, onClick, styles = {}, base} = this.props;
     const btnClass = classNaming(baseStyle.btnBase, {[baseStyle.loading]: isLoading}, styles.base);
     const spinnerClass = classNaming(baseStyle.spinner, styles.spinner);
 
@@ -46,4 +47,4 @@ const ButtonWithLoading = React.createClass({
   }
 })
 
-export { ButtonAtRightTop, ButtonBase, ButtonAction, ButtonWithLoading, CheckBox, Collection, Dropdown, DropdownTypeAhead, Glyph, Infograph, Input, Modal, ModalMessage, Page, PageTitle, Pagination, Rows, Tables };
+export { ButtonAtRightTop, ButtonBase, ButtonAction, ButtonWithLoading, CheckBox, Collection, Dropdown, DropdownTypeAhead, Glyph, Infograph, Input, Modal, ModalMessage, Page, PageTitle, Pagination, Rows, Tables, NotificationContainer };

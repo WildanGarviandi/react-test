@@ -25,5 +25,6 @@ export default {
   setLimit: setLimit,
   setStatus: setStatus,
   toggleActive: containerActiveToggle,
-  districtSet, driverSet,
+  districtSet, districtSet,
+  driverSet: driverSet,
 };

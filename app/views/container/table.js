@@ -6,6 +6,7 @@ import orderToggleAll from '../../modules/containers/actions/orderToggleAll';
 import orderToggle from '../../modules/containers/actions/orderToggle';
 import styles from './table.css';
 import classNaming from 'classnames';
+import * as TripDetails from '../../modules/inboundTripDetails';
 
 export const BaseHeader = React.createClass({
   render() {
@@ -17,7 +18,9 @@ export const BaseHeader = React.createClass({
 export const BaseCell = React.createClass({
   render() {
     let {attr, item} = this.props;
-    return (<td className={styles.td}>{item[attr] && item[attr].toString()}</td>);
+    const name = (attr === 'isSuccess' && item[attr] === 'Yes') ? classNaming(styles.td, styles.tick) : classNaming(styles.td);
+    const value = (attr === 'isSuccess') ? '' : item[attr] && item[attr].toString();
+    return (<td className={name}>{value}</td>);
   }
 });
 
@@ -126,8 +129,8 @@ const StatusCell = React.createClass({
 
 const DeleteCell = React.createClass({
   handleDelete() {
-    const {orderRemove, item} = this.props;
-    orderRemove(item.id3);
+    const {orderRemove, item, tripID} = this.props;
+    orderRemove(item.tripID, item.id3);
   },
   render() {
     const {item} = this.props;
@@ -137,7 +140,7 @@ const DeleteCell = React.createClass({
         {
           isDeleting ? 
           <span>Deleting...</span> :
-          <ButtonBase onClick={this.handleDelete}>Delete</ButtonBase>
+          <ButtonBase onClick={this.handleDelete}>Remove</ButtonBase>
         }
       </td>
     );
@@ -150,8 +153,8 @@ const DeleteCellState = (state) => {
 
 const DeleteCellDispatch = (dispatch) => {
   return {
-    orderRemove: function(id) {
-      dispatch(orderRemove(id));
+    orderRemove: function(tripID, orderID) {
+      dispatch(TripDetails.OrderRemove(tripID, orderID));
     }
   }
 }
@@ -200,7 +203,12 @@ export const OrderTable = React.createClass({
     let {columns, headers, items, statusList} = this.props;
     let {orderStatus, routeStatus} = this.state;
     let Header = Rows(React.DOM.thead, BaseHeader, {}, columns, function() {});
-    let Body = Rows(React.DOM.tbody, BaseCell, {action: DeleteCellContainer}, columns, function() {});
+    let Body = Rows(React.DOM.tbody, BaseCell, {action: DeleteCellContainer}, columns, function() {}, undefined, 
+      {
+        column: 'isSuccess',
+        condition: 'Yes',
+        className: styles.lightGreen
+      });
 
     const filteredItems = _.filter(items, (item) => {
       const matchOrderStatus = orderStatus === "SHOW ALL" || orderStatus === item.orderStatus;

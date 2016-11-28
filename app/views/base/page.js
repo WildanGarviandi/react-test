@@ -2,8 +2,13 @@ import React from 'react';
 import {ButtonWithLoading} from './';
 import styles from './page.css';
 
-const PageTitle = ({title}) => {
-  return (<h2 className={styles.contentTitle}>{title}</h2>);
+const PageTitle = ({additional, title}) => {
+  return (
+    <span>
+      <h2 className={styles.contentTitle}>{title}</h2>
+      {additional && <h3 className={styles.additionalTitle}><em>-- {additional}</em></h3>}
+    </span>
+  );
 }
 
 const ButtonAtRightTop = ({onClick, val}) => {
@@ -29,7 +34,7 @@ const ClassifyChildren = (children) => {
     if(child.type.displayName == 'ButtonWithLoading') {
       buttons.push(child);
     } else if(child.type == 'a') {
-      backLink.push(React.cloneElement(child, {key: backLink.length, style: {marginBottom: 10, display: "inline-block"}}));
+      backLink.push(React.cloneElement(child, {key: backLink.length, style: {marginBottom: 10, display: "block"}}));
     } else {
       body.push(child);
     }
@@ -40,14 +45,14 @@ const ClassifyChildren = (children) => {
 
 export default React.createClass({
   render() {
-    const {title, children} = this.props;
+    const {title, children, additional} = this.props;
     const {backLink, buttons, body} = ClassifyChildren(children);
 
     return (
       <div style={{position: 'relative'}}>
         {backLink}
         {buttons}
-        <PageTitle title={title} />
+        <PageTitle title={title} additional={additional} />
         {body}
       </div>
     );

@@ -1,0 +1,293 @@
+.itemLabel {
+    display: block;
+    padding: 5px;
+    width: 150px;
+    float: left;
+}
+
+.itemValue {
+    padding: 5px;
+    display: block;
+    margin-left: 160px;
+    max-width: 350px;
+    text-indent: 0px;
+}
+
+.orderDetailsHeader {
+    background-color: #222D32;
+    color: #eee;
+    text-indent: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 15px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    clear: both;
+}
+
+.orderDetailsInformation {
+    background-color: #eee;
+    color: #000;
+    text-indent: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 15px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    clear: both;
+    padding-bottom: 30px;
+    margin-bottom: 20px;
+}
+
+.orderDetailsBoxLeft {
+    float: left;
+    width: 48%;
+}
+
+.orderDetailsBoxRight {
+    float: right;
+    width: 48%;
+}
+
+.editOrderHeaders {
+    margin-bottom: 10px;
+    background-color: #eee;
+    color: #000;
+    font-weight: bold;
+    text-indent: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 15px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    clear: both;
+}
+
+.addOrderButton {
+    border: 0;
+    border-radius: 5px;
+    background-color: #FF5A60;
+    color: #fff;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.orderDetailsContact {
+    float: left;
+    width: 50%;
+}
+
+.contactDetails {
+    float: left;
+    width: 45%;
+    margin-left: 15px;
+    margin-right: 25px;
+}
+
+.contactDetailsBox {
+    min-height: 360px;
+    padding: 15px;
+    background-color: #eee;
+    color: #000;
+    clear: both;
+    padding-bottom: 30px;
+    margin-bottom: 20px;
+}
+
+.detailsTableColumn {
+    min-width: 40px;
+}
+
+.attemptInformationHeader {
+    background-color: #222D32;
+    color: #eee;
+    text-indent: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 15px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    clear: both;
+}
+
+.itemImage {
+    padding: 5px;
+    display: block;
+    margin-left: 160px;
+    max-width: 150px;
+    max-height: 200px;
+    text-indent: 0px;
+}
+
+.orderDetailsFullWidth {
+    float: left;
+    width: 100%;
+}
+
+.assignOrderButton {
+    border: 0;
+    border-radius: 5px;
+    background-color: #FF5A60;
+    color: #fff;
+    cursor: pointer;
+    padding: 5px;
+    margin-left: 5px;
+}
+
+.selectDriver { 
+    width: 300px;
+}
+
+.panel {
+    border-radius: 5px;
+    border: solid 1px #ccc;
+}
+
+.bottom {
+    padding: 0 15px 45px;
+}
+
+.title {
+    margin-top: 0;
+    padding: 10px;
+}
+
+.top {
+    background-color: #371e38;
+    color: #ccc;
+    text-indent: 10px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    cursor: pointer;
+}
+
+.modalBtn, .modalLink {
+    padding: 8px;
+    display: inline-block;
+    margin-left: 4px;
+    margin-top: 5px;
+    float: right;
+}
+
+.modalLink:hover {
+    color: #337ab7;
+}
+
+.top2 {
+    background-color: #371e38;
+    color: #ccc;
+    text-indent: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.glyphFilter {
+    position: relative;
+    left: -13px;
+}
+
+.arrowDown {
+    float: left;
+}
+
+.addContactButton {
+    margin-left: 5px;
+}
+
+.contactAddress {
+    background-color: #4cc38e;
+    color: #eee;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 8px;
+    clear: both;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    font-size: 12px;
+}
+
+.arrowRight {
+    float: right;
+}
+
+.removeShipperButton {
+    background-color: #FF5A60;
+    color: #eee;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 8px;
+    clear: both;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    font-size: 12px;
+}
+
+.activeContactButton {
+    background-color: #4cc370;
+    color: #eee;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 8px;
+    clear: both;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    font-size: 12px;
+}
+
+.container {
+    float: left;
+    display: inline-block;
+    border-radius: 5px;
+    width: 15%;
+    height: 110px;
+    position: relative;
+    color: #fff;
+    background-color: #5cb85c;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    border: solid 1px #fff;
+}
+
+.num {
+    font-size: 35px;
+    position: absolute;
+    top: 0;
+    right: 10px;
+}
+
+.attr {
+    font-size: 20px;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+.glyph {
+    font-size: 50px;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+.container:hover {
+    border: solid 1px #337ab7;
+}
+
+.attrAll {
+    background-color: #337ab7;
+}
+
+.attrOpen {
+    background-color: #d9534f;
+}
+
+.attrProcessed {
+    background-color: #f0ad4e;
+}
+
+.attrFinished {
+    background-color: #5cb85c;
+}

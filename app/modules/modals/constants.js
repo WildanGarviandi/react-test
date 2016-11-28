@@ -1,4 +1,6 @@
 export const modalAction = {
   ADD_MODAL: "ADD_MODAL",
   CLOSE_MODAL: "CLOSE_MODAL",
+  BACKDROP_SHOW: "BACKDROP_SHOW",
+  BACKDROP_HIDE: "BACKDROP_HIDE",
 };

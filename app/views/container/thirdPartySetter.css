@@ -1,0 +1,49 @@
+.itemLabel {
+  display: block;
+  padding: 5px;
+  width: 120px;
+  float: left;
+  line-height: 32px;
+}
+
+.itemValue {
+  padding: 5px;
+  display: block;
+  line-height: 32px;
+  text-indent: 0;
+}
+
+.itemValue input {
+  border-radius: 3px;
+  border: solid 1px #ccc;
+  display: inline-block;
+  height: 28px;
+  width: 280px;
+  position: relative;
+  left: 10px;
+  text-indent: 10px;
+}
+
+.datetimeWrapper {
+  position: relative;
+}
+
+.imageUploaderWrapper {
+  float: left;
+  padding: 5px;
+  position: relative;
+  text-indent: 0;
+}
+
+.imageUploaderWrapper::before {
+  content: ':';
+  position: absolute;
+  left: 0px;
+  top: 10px;
+  text-indent: 0;
+}
+
+.receiptThumbnail {
+  max-width: 400px;
+  max-height: 400px;
+}

@@ -5,7 +5,7 @@
 Copy config.json.example to config.json
 Put app configuration there
 
-## Development Step
+## Development Step 
 
 ```
 git clone git@gitlab.com:etobee-techgroup/etobee-hub.git

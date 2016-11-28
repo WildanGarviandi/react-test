@@ -28,6 +28,16 @@
   position: fixed;
 }
 
+.backdropBlocking {
+  background-color: #000;
+  opacity: 0.8; 
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+}
+
 .modal {
   border-radius: 10px;
   width: 1000px;
@@ -42,9 +52,47 @@
   margin-bottom: 70px;
 }
 
-.modalBtn {
+.modalBtn,
+.modalBtnY {
   padding: 8px;
   display: inline-block;
   margin-left: 4px;
   float: right;
+}
+
+.modalBtnY {
+  background-color: #4cc38e !important;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 16px;
+  border: solid 1px #c33;
+  border-radius: 5px;
+  display: inline-block;
+  height: 20px;
+  line-height: 23px;
+  width: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.focusBtn {
+  border: none;
+  background: none;
+  outline: none;
+}
+
+.focusBtn:focus {
+  border: none;
+  background: none;
+  outline: none;
+}
+
+.focusBtn:active {
+  border: none;
+  background: none;
+  outline: none;
 }

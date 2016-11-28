@@ -8,9 +8,10 @@ const BoxState = {
     styles: styles.attrAll,
     name: 'list-alt'
   },
-  booked: {
-    styles: styles.attrOpen,
-    name: 'tags'
+  BOOKED: {
+    styles: styles.attrProcessed,
+    name: 'tags',
+    title: "Soon available",
   },
   processed: {
     styles: styles.attrProcessed,
@@ -19,6 +20,16 @@ const BoxState = {
   finished: {
     styles: styles.attrFinished,
     name: 'check'
+  },
+  NOTASSIGNED: {
+    styles: styles.attrOpen,
+    name: 'map-marker',
+    title: "Pick up now",
+  },
+  bookedOrder: {
+    styles: styles.attrProcessed,
+    name: 'tags',
+    title: "Soon available",
   }
 }
 
@@ -33,7 +44,7 @@ export default React.createClass({
       <div className={classNaming(styles.container, state.styles)} onClick={this.handleClick}>
         <Glyph name={state.name} className={styles.glyph} />
         <span className={styles.num}>{val}</span>
-        <span className={styles.attr}>{attr}</span>
+        <span className={styles.attr}>{state.title}</span>
       </div>
     );
   }

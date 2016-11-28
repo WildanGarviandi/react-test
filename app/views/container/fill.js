@@ -154,7 +154,7 @@ const FillForm = React.createClass({
         <div style={{clear: 'both', marginBottom: 10}} />
         <Filter />
         <div style={{clear: 'both', marginBottom: 10}} />
-        <Pagination limit={limit} totalItem={ordersPrepared.count} currentPage={currentPage} setLimit={this.setLimit} setCurrentPage={this.setCurrentPage} />
+        <Pagination limit={limit} total={ordersPrepared.count} currentPage={currentPage} setLimit={this.setLimit} setCurrentPage={this.setCurrentPage} />
         <div style={isFetching || isFilling ? {opacity: 0.5} : {}}>
           <OrderTable2 headers={[_.assign({}, headers[0], {checked: ordersPrepared.checkAll})]} columns={columns} items={orders} rowClicked={this.handleRowClick}/>
         </div>

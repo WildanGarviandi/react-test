@@ -1,6 +1,6 @@
+import lodash from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import _ from 'underscore';
 import * as utils from './utils';
 import {InputText} from './input';
 
@@ -111,7 +111,7 @@ function Tables(columns, customCell = {}, opts = {}) {
   return Table;
 }
 
-function Rows(BaseComponent, BaseCell, CustomCell, columns, actionFn, rowClassName) {
+function Rows(BaseComponent, BaseCell, CustomCell, columns, actionFn, rowClassName, specialClassName) {
   const RowItem = React.createClass({
     handleAction(column) {
       let {item} = this.props;      
@@ -124,7 +124,15 @@ function Rows(BaseComponent, BaseCell, CustomCell, columns, actionFn, rowClassNa
         return <Cell key={column} val={item[column]} item={item} attr={column} action={this.handleAction} />
       });
 
-      return (<tr className={styles.tr + ' ' + rowClassName}>{cols}</tr>);
+      if (specialClassName) {
+        if (item[specialClassName.column] === specialClassName.condition) {
+          return (<tr className={styles.tr + ' ' + rowClassName + ' ' + specialClassName.className}>{cols}</tr>);
+        } else {
+          return (<tr className={styles.tr + ' ' + rowClassName}>{cols}</tr>);
+        }
+      } else {
+        return (<tr className={styles.tr + ' ' + rowClassName}>{cols}</tr>);
+      }
     }
   });
 
@@ -145,3 +153,21 @@ function Rows(BaseComponent, BaseCell, CustomCell, columns, actionFn, rowClassNa
 }
 
 export { Tables, Rows };
+
+export function Headers(conf, columns) {
+  return lodash.map(columns, (column) => {
+    return {keyword: column, type: conf[column].headerType, header: conf[column]};
+  });
+}
+
+export function Filters(conf, columns) {
+  return lodash.map(columns, (column) => {
+    return {keyword: column, type: conf[column].filterType};
+  });
+}
+
+export function Body(conf, columns) {
+  return lodash.map(columns, (column) => {
+    return {keyword: column, type: conf[column].cellType};
+  });
+}

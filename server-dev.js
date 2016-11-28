@@ -8,9 +8,11 @@ var proxy = require('proxy-middleware');
 var url = require('url');
 
 var app = express();
+app.use('/css', express.static(__dirname + '/css'));
+app.use('/img', express.static(__dirname + '/img'));
 app.use('/assets', proxy(url.parse('http://localhost:8081/assets')));
 
-app.get('/*', function(req, res) {
+app.get('*', function(req, res) {
     res.sendFile(__dirname + '/build/index.html');
 });
 
@@ -26,4 +28,4 @@ var server = new WebpackDevServer(webpack(config), {
 
 server.listen(8081, "localhost", function() {});
 app.listen(8080);
-console.log('listen to 8081');
+console.log('listen to 8080');

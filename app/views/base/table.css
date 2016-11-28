@@ -22,8 +22,8 @@
 .th {
     border-top: 0;
     border-bottom-width: 2px;
-    border: solid 1px #ddd;
-    background-color: #1A2226;
+    /*background-color: #1A2226;*/
+    background-color: #371e38;
     vertical-align: middle;
     text-align: left;
 
@@ -36,6 +36,7 @@
 
 .tr {
     cursor: pointer;
+    border: solid 1px #ddd;
 }
 
 .tr:nth-of-type(odd) {
@@ -51,7 +52,24 @@
     font-size: 12px;
     padding: 8px;
     color: #5D5D5D;
-    border: solid 1px #ddd;
+}
+
+.td:global(.CODValue) {
+    width: 60px;
+}
+
+.td:global(.OrderStatus),
+.td:global(.RouteStatus) {
+    width: 120px;
+}
+
+.td:global(.PickupTime) {
+    width: 150px;
+}
+
+.td:global(.PickupTime) span{
+    padding: 3px;
+    border-radius: 5px;
 }
 
 .td.search {
@@ -74,4 +92,8 @@
 
     width: 100%;
     height: 28px;
+}
+
+.link {
+    color: #33c;
 }

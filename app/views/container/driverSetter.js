@@ -1,3 +1,4 @@
+import lodash from 'lodash';
 import React from 'react';
 import {connect} from 'react-redux';
 
@@ -5,22 +6,31 @@ import * as UtilHelper from '../../helper/utility';
 import {DriversActions} from '../../modules';
 import FleetSet from '../../modules/drivers/actions/fleetSet';
 import FleetsFetch from '../../modules/drivers/actions/fleetsFetch';
+import * as TripDetails from '../../modules/inboundTripDetails';
+import {CanAssignFleet} from '../../modules/trips';
 
-import {ButtonWithLoading, DropdownTypeAhead} from '../base';
+import {ButtonBase, ButtonWithLoading, DropdownTypeAhead} from '../base';
 import styles from './styles.css';
 
 const DriverSetter = React.createClass({
   componentWillMount() {
     this.props.FleetsFetch();
   },
+  // componentWillReceiveProps(nextProps) {
+  //   this.setState({
+  //     selectedFleet: {value: nextProps.fleetName},
+  //   });
+  // },
   getInitialState() {
     return {
       selectedDriver: {value: ''},
+      changingFleet: false,
+      selectedFleet: {value: this.props.fleetName},
+      showDriverSelect: false
     };
   },
   driverSet() {
-    this.props.DriverSet(this.state.selectedDriver.key);
-    this.props.validate();
+    this.props.DriverSet(this.props.trip.TripID, this.state.selectedDriver.key);
   },
   driverSelect(driver) {
     this.setState({
@@ -28,64 +38,107 @@ const DriverSetter = React.createClass({
     });
   },
   fleetSelect(fleet) {
-    this.props.FleetSet(fleet.key);
     this.setState({
-      selectedDriver: {value: ''},
+      selectedFleet: fleet,
     });
+  },
+  fleetSet() {
+    this.props.FleetSet(this.props.trip.TripID, this.state.selectedFleet.key);
+  },
+  fleetChangeEnd() {
+    this.props.FleetChangeEnd();
+  },
+  fleetChangeStart() {
+    this.setState({
+      selectedFleet: {},
+    });
+    this.props.FleetChangeStart();
   },
   render() {
     const {canPickFleet, driverName, drivers, driversFleetName, fleetName, fleets, isFetchingDriver, isFetchingFleet, isSettingDriver} = this.props;
-    const {selectedDriver} = this.state;
+    const {selectedDriver, showDriverSelect} = this.state;
+
+    const {assignedFleet, canAssignFleet, fleet, isChangingFleet, isSetFleet} = this.props;
 
     return (
       <div>
-        {
-          !driverName && canPickFleet &&
-          <span className={styles.line}>
-            <span>Fleets : </span>
-            <span className={styles.fillDriverWrapper}>
-              {
-                isFetchingFleet &&
-                <span>Fetching Fleet List...</span>
-              }
-              {
-                !isFetchingFleet &&
-                <DropdownTypeAhead options={fleets} selectVal={this.fleetSelect} val={fleetName} />
-              }
-            </span>
-          </span>
-        }
-        <span>
-          <span>Driver : </span>
+        <span className={styles.line}>
+          <span>Fleets : </span>
           {
             isFetchingFleet &&
-            <span>Waiting for Fleet Data...</span>
+            <span>Fetching Fleet List...</span>
           }
           {
-            !isFetchingFleet && isFetchingDriver &&
-            <span>Fetching Driver List...</span>
-          }
-          {
-            !isFetchingFleet && !isFetchingDriver && driverName &&
-            <span>{driverName} / {driversFleetName}</span>
-          }
-          {
-            !isFetchingFleet && !isFetchingDriver && !driverName &&
+            !isFetchingFleet &&
             <span>
-              <span className={styles.fillDriverWrapper}>
-                <DropdownTypeAhead options={drivers} selectVal={this.driverSelect} val={selectedDriver.value} />
+            {
+              !isChangingFleet &&
+              <span>
+                <span>{fleetName}</span>
+                {
+                  canAssignFleet &&
+                  <ButtonBase onClick={this.fleetChangeStart} styles={styles.driverBtn}>Change Fleet</ButtonBase>
+                }
               </span>
-              <ButtonWithLoading textBase="Set Driver" textLoading="Setting Driver" onClick={this.driverSet} isLoading={isSettingDriver} styles={{base: styles.normalBtn}} />
+            }
+            {
+              isChangingFleet &&
+              <span>
+                <span className={styles.fillDriverWrapper}>
+                  <DropdownTypeAhead options={fleets} selectVal={this.fleetSelect} val={this.state.selectedFleet.value} />
+                </span>
+                <ButtonWithLoading textBase="Set Fleet" textLoading="Setting Fleet" onClick={this.fleetSet} isLoading={isSetFleet} styles={{base: styles.normalBtn}} />
+                {
+                  fleetName &&
+                  <ButtonBase onClick={this.fleetChangeEnd} styles={styles.driverBtn}>Cancel</ButtonBase>
+                }
+              </span>
+            }
             </span>
           }
         </span>
+        {
+          fleet && showDriverSelect &&
+          <span>
+            <span>Driver : </span>
+            {
+              isFetchingFleet &&
+              <span>Waiting for Fleet Data...</span>
+            }
+            {
+              !isFetchingFleet && isFetchingDriver &&
+              <span>Fetching Driver List...</span>
+            }
+            {
+              !isFetchingFleet && !isFetchingDriver && driverName &&
+              <span>{driverName} {driversFleetName}</span>
+            }
+            {
+              !isFetchingFleet && !isFetchingDriver && !driverName &&
+              <span>
+                <span className={styles.fillDriverWrapper}>
+                  <DropdownTypeAhead options={drivers} selectVal={this.driverSelect} val={selectedDriver.value} />
+                </span>
+                <ButtonWithLoading textBase="Set Driver" textLoading="Setting Driver" onClick={this.driverSet} isLoading={isSettingDriver} styles={{base: styles.normalBtn}} />
+              </span>
+            }
+          </span>
+        }
+        <span style={{clear: 'both'}} />
       </div>
     );
   }
 });
 
 function StateToProps(state, ownProps) {
-  const container = state.app.containers.containers[ownProps.containerID];
+  const {inboundTripDetails, tripDetails} = state.app;
+  const container = {CurrentTrip: inboundTripDetails.trip};
+  const trip = ownProps.trip;
+
+  const canAssignFleet = CanAssignFleet(trip);
+  const assignedFleet = inboundTripDetails.fleet;
+  const {fleet, isChangingFleet, isSetFleet} = inboundTripDetails;
+
   const driversStore = state.app.driversStore;
   const fleetDrivers = driversStore.fleetDrivers;
 
@@ -102,20 +155,25 @@ function StateToProps(state, ownProps) {
 
   const driverList = driversStore.driverList;
   const isFetchingDriver = driverList.isLoading;
-  const drivers = _.chain(fleetDrivers.dict[fleetDrivers.active] || [])
+  const drivers = _.chain(fleetDrivers.dict[fleet && fleet.UserID] || [])
     .map((driverID) => {
       return {
         key: driverID,
-        value: UtilHelper.UserFullName(driverList.dict[driverID].Driver),
+        value: UtilHelper.UserFullName(driverList.dict[driverID]),
       }
     })
     .value();
 
-  const driver = container && container.CurrentTrip && container.CurrentTrip.Driver;
+  const driver = inboundTripDetails.driver;
   const driverName =  UtilHelper.UserFullName(driver);
-  const fleet = fleetList.dict[fleetDrivers.active];
-  const fleetName = UtilHelper.FleetName(fleet);
-  const driversFleetName = container.CurrentTrip.Driver && container.CurrentTrip.Driver.Driver.FleetManager.CompanyDetail.CompanyName;
+  // const fleet = fleetList.dict[fleetDrivers.active];
+  // const fleetName = UtilHelper.FleetName(fleet);
+  let fleetName = UtilHelper.FleetName(inboundTripDetails.fleet);
+  if(inboundTripDetails.fleet) {
+    fleetName = UtilHelper.FleetName(fleetList.dict[inboundTripDetails.fleet.UserID]);
+  }
+
+  const driversFleetName = "";
   const {isSettingDriver} = container;
 
   const canPickFleet = state.app.userLogged.isCentralHub;
@@ -124,20 +182,32 @@ function StateToProps(state, ownProps) {
     canPickFleet,
     driverName, drivers, driversFleetName, fleetName, fleets,
     isFetchingDriver, isFetchingFleet,
-    isSettingDriver,
+    isSettingDriver: inboundTripDetails.isSetDriver,
+
+    assignedFleet, canAssignFleet, isSetFleet,
+    isChangingFleet: isChangingFleet || !inboundTripDetails.fleet,
+    fleet: inboundTripDetails.fleet,
+    trip: inboundTripDetails.trip,
   };
 }
 
 function DispatchToProps(dispatch, ownProps) {
   return {
-    DriverSet(driverID) {
-      dispatch(DriversActions.driverSet(ownProps.containerID, driverID));
+    DriverSet(tripID, driverID) {
+      dispatch(TripDetails.AssignDriver(tripID, driverID));
     },
-    FleetSet(fleetID) {
-      dispatch(FleetSet(fleetID));
+    FleetSet(tripID, fleetID) {
+      dispatch(TripDetails.AssignFleet(tripID, fleetID));
     },
     FleetsFetch() {
       dispatch(FleetsFetch());
+    },
+    FleetChangeEnd() {
+      dispatch(TripDetails.ChangeFleetEnd());
+    },
+    FleetChangeStart() {
+      console.log('change!!');
+      dispatch(TripDetails.ChangeFleetStart());
     },
   }
 }

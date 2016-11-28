@@ -26,7 +26,7 @@ const LoginInput = (props) => {
   }
 
   return (
-    <Input {...props} styles={inputStyles} />
+    <Input {...props} styles={inputStyles} className={inputStyles.input} />
   );
 }
 

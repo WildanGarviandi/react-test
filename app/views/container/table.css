@@ -37,6 +37,7 @@
 .tr {
     cursor: pointer;
     color: #333;
+    border: solid 1px #ddd;
 }
 
 .tr:nth-of-type(odd) .td {
@@ -68,11 +69,14 @@
     cursor: default;
 }
 
+tr.lightGreen {
+    background-color: #c0f9a8 !important;
+}
+
 .td {
     height: 20px;
     font-size: 12px;
     padding: 8px;
-    border: solid 1px #ddd;
 }
 
 .td.search {
@@ -115,4 +119,11 @@
 
 .checkbox.Loading {
     background-image: url(../../img/loading.gif);
+}
+
+.tick{
+    background-image: url('../../img/tick.png');
+    background-size: 40px 40px;
+    background-position: center; 
+    background-repeat: no-repeat;
 }

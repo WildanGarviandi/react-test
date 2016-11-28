@@ -28,6 +28,7 @@ function GetParams(token) {
   }
 };
 
-export default (url, token, query = {}) => {
-  return fetch(config.baseUrl + url + UrlParams(query), GetParams(token));
+export default (url, token, query = {}, isHubAPI = false) => {
+  let baseUrl = isHubAPI ? config.baseUrlHub : config.baseUrl;
+  return fetch(baseUrl + url + UrlParams(query), GetParams(token));
 }

@@ -23,4 +23,14 @@ function Modal(props) {
   );
 }
 
+export function BackDrop(props) {
+  let wrapperClass = classnaming('wrapper', {show: props.show});
+
+  return (
+    <div className={wrapperClass}>
+      <div className={styles.backdrop}></div>
+    </div>
+  );
+}
+
 export default Modal;

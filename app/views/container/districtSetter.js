@@ -67,15 +67,21 @@ const DistrictSetter = React.createClass({
         }
         {
           canChangeDistrict && !showDistrictPicker &&
-          <ButtonBase onClick={this.toChanging} styles={styles.driverBtn}>Change District</ButtonBase>
+          <div className={classNaming(styles.buttonWrapper)}>
+            <ButtonBase onClick={this.toChanging} styles={styles.driverBtn}>Change District</ButtonBase>
+          </div>
         }
         {
           showDistrictPicker &&
-          <ButtonWithLoading textBase="Set District" textLoading="Setting District" onClick={this.districtSet} isLoading={isSettingDistrict} styles={{base: styles.normalBtn}} />
+          <div className={classNaming(styles.buttonWrapper)}>
+            <ButtonWithLoading textBase="Set District" textLoading="Setting District" onClick={this.districtSet} isLoading={isSettingDistrict} styles={{base: styles.normalBtn}} />
+          </div>
         }
         {
           showDistrictPicker && districtName &&
-          <ButtonBase onClick={this.cancelChanging} styles={styles.driverBtn}>Cancel</ButtonBase>
+          <div className={classNaming(styles.buttonWrapper)}>
+            <ButtonBase onClick={this.cancelChanging} styles={styles.driverBtn}>Cancel</ButtonBase>
+          </div>
         }
       </div>
     );
@@ -83,8 +89,10 @@ const DistrictSetter = React.createClass({
 });
 
 function StateToProps(state, ownProps) {
-  const containerID = ownProps.containerID;
-  const container = state.app.containers.containers[containerID];
+  // const containerID = ownProps.containerID;
+  // const container = state.app.containers.containers[containerID];
+  const {inboundTripDetails} = state.app;
+  const container = {CurrentTrip: inboundTripDetails.trip};
 
   const districtsList = state.app.districts.districts;
   const districts = _.map(districtsList, (district) => {
@@ -122,7 +130,7 @@ function DispatchToProps(dispatch, ownProps) {
       dispatch(DistrictsFetch());
     },
     DistrictSet(districtID) {
-      dispatch(DistrictsActions.districtSet(ownProps.containerID, districtID));
+      dispatch(DistrictsActions.districtSet(ownProps.tripID, districtID));
     },
   }
 }
