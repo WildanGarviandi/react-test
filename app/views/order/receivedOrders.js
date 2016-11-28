@@ -9,6 +9,9 @@ import Accordion from './receivedOrdersAccordion';
 import * as ReceivedOrders from '../../modules/receivedOrders';
 
 const PickupOrders = React.createClass({
+  componentWillMount() {
+    this.props.ResetFilter();
+  },
   render() {
     return (
       <Page title="Received Orders" additional="Deliver this order to next destination">
@@ -39,6 +42,9 @@ function mapDispatch(dispatch) {
     FindID: (id) => {
       dispatch(ReceivedOrders.GoToDetails(id));
     },
+    ResetFilter: () => {
+      dispatch(ReceivedOrders.ResetFilter());
+    }
   }
 }
 

@@ -8,6 +8,7 @@ import * as TripsHistoryService from './service';
 
 const TripHistoryPage = React.createClass({
     componentWillMount() {
+        this.props.ResetFilter();
         this.props.FetchList();
     },
     render() {
@@ -44,6 +45,9 @@ function DispatchToTripsHistoryPage(dispatch) {
             setLimit: (limit) => {
                 dispatch(TripsHistoryService.SetLimit(limit));
             },
+        },
+        ResetFilter: () => {
+            dispatch(TripsHistoryService.ResetFilter());
         }
     }
 }

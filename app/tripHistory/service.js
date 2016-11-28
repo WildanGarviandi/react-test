@@ -10,6 +10,7 @@ const Constants = {
     SET_STATUSNAME: "history/statusName/set",
     SET_TRIPS: "history/trips/set",
     SET_TRIPTYPE: "history/tripType/set",
+    RESET_FILTER: "history/resetFilter"
 }
 
 const initialStore = {
@@ -48,6 +49,15 @@ export default function Reducer(store = initialStore, action) {
             return lodash.assign({}, store, {
                 total: action.total,
                 trips: action.trips,
+            });
+        }
+
+        case Constants.RESET_FILTER: {
+            return lodash.assign({}, store, {
+                filters: {}, 
+                currentPage: 1,
+                filterStatus: "SHOW ALL",
+                limit: 100,
             });
         }
 
@@ -145,5 +155,11 @@ export function SetTripType(tripType) {
         dispatch({type: Constants.SET_TRIPTYPE, tripType: tripType.value});
         dispatch(UpdateFilters({tripType: tripType.key}));
         dispatch(SetCurrentPage(1));
+    }
+}
+
+export function ResetFilter() {
+    return (dispatch) => {
+        dispatch({type: Constants.RESET_FILTER});
     }
 }

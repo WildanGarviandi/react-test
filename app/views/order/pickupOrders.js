@@ -10,6 +10,7 @@ import Infographic from './infoGraphic';
 
 const PickupOrdersPage = React.createClass({
   componentWillMount() {
+    this.props.ResetFilter();
     if (!this.props.userLogged.hubID) {
       window.location.href ='/myorders/open';
     }
@@ -44,6 +45,9 @@ function mapDispatch(dispatch) {
     },
     MarkPickup: () => {
       dispatch(PickupOrders.MarkPickup());  
+    },
+    ResetFilter: () => {
+      dispatch(PickupOrders.ResetFilter());
     }
   }
 }

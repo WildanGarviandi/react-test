@@ -12,6 +12,7 @@ const Constants = {
   TRIPS_OUTBOUND_FILTERS_STATUS_SET: "outbound/filtersStatus/set",
   TRIPS_OUTBOUND_LIMIT_SET: "outbound/limit/set",
   TRIPS_OUTBOUND_SET: "outbound/trips/set",
+  TRIPS_OUTBOUND_RESET_FILTER: "outbound/trips/resetFilter"
 }
 
 const initialState = {
@@ -56,6 +57,17 @@ export function Reducer(state = initialState, action) {
       return lodash.assign({}, state, {
         trips: action.trips,
         total: action.total,
+      });
+    }
+
+    case Constants.TRIPS_OUTBOUND_RESET_FILTER: {
+      return lodash.assign({}, state, {
+        filters: {
+          tripType: 0,
+        },
+        currentPage: 1,
+        filterStatus: "SHOW ALL",
+        limit: 100,
       });
     }
 
@@ -171,5 +183,11 @@ export function SetLimit(limit) {
     });
 
     dispatch(SetCurrentPage(1));
+  }
+}
+
+export function ResetFilter() {
+  return (dispatch) => {
+    dispatch({type: Constants.TRIPS_OUTBOUND_RESET_FILTER});
   }
 }
