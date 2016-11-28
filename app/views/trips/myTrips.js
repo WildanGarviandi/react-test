@@ -2,6 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Input, Page} from '../base';
 import * as InboundTrips from '../../modules/inboundTrips';
+import * as OutboundTrips from '../../modules/outboundTrips';
 import MyTripsTable from './myTripsTable';
 import InboundTable from './inboundTable';
 import FleetsFetch from '../../modules/drivers/actions/fleetsFetch';
@@ -11,6 +12,7 @@ import formStyles from '../../components/form.css';
 const ContainerPage = React.createClass({
   componentWillMount() {
     this.props.fleetsFetch();
+    this.props.isInbound ? this.props.ResetFilterInbound() : this.props.ResetFilterOutbound();
   },
   gotoContainer(containerNumber) {
     this.props.gotoContainer(containerNumber);
@@ -66,6 +68,12 @@ function DispatchToPage(dispatch) {
     },
     fleetsFetch: () => {
       dispatch(FleetsFetch());
+    },
+    ResetFilterInbound: () => {
+      dispatch(InboundTrips.ResetFilter());
+    },
+    ResetFilterOutbound: () => {
+      dispatch(OutboundTrips.ResetFilter());
     }
   }
 }

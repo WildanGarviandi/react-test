@@ -14,11 +14,14 @@ const Constants = {
   TRIPS_INBOUND_FILTERS_STATUS_SET: "inbound/filtersStatus/set",
   TRIPS_INBOUND_LIMIT_SET: "inbound/limit/set",
   TRIPS_INBOUND_SET: "inbound/trips/set",
+  TRIPS_INBOUND_RESET_FILTER: "inbound/trips/resetFilter"
 }
 
 const initialState = {
   currentPage: 1,
-  filters: {},
+  filters: {
+    tripType: 0
+  },
   filtersStatus: "SHOW ALL",
   isFetching: false,
   limit: 100,
@@ -56,6 +59,17 @@ export function Reducer(state = initialState, action) {
       return lodash.assign({}, state, {
         trips: action.trips,
         total: action.total,
+      });
+    }
+
+    case Constants.TRIPS_INBOUND_RESET_FILTER: {
+      return lodash.assign({}, state, {
+        filters: {
+          tripType: 0
+        }, 
+        currentPage: 1,
+        filterStatus: "SHOW ALL",
+        limit: 100,
       });
     }
 
@@ -202,5 +216,11 @@ export function GoToContainer(containerNumber) {
     dispatch({type: modalAction.BACKDROP_HIDE});
       dispatch(ModalActions.addMessage(message));
     });
+  }
+}
+
+export function ResetFilter() {
+  return (dispatch) => {
+    dispatch({type: Constants.TRIPS_INBOUND_RESET_FILTER});
   }
 }

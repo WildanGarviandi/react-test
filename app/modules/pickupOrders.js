@@ -21,6 +21,7 @@ const Constants = {
   ORDERS_PICKUP_SELECT_TOGGLE_ALL: "pickup/select/toggleAll",
   ORDERS_PICKUP_SELECT_TOGGLE_ONE: "pickup/select/toggleOne",
   ORDERS_PICKUP_SET: "pickup/set",
+  ORDERS_PICKUP_RESET_FILTER: "pickup/resetFilter"
 }
 
 //
@@ -132,6 +133,15 @@ export function Reducer(state = initialState, action) {
       return lodash.assign({}, state, {
         orders: action.orders,
         total: action.total,
+      });
+    }
+
+    case Constants.ORDERS_PICKUP_RESET_FILTER: {
+      return lodash.assign({}, state, {
+        filters: {}, 
+        currentPage: 1,
+        filterStatus: "SHOW ALL",
+        limit: 50,
       });
     }
 
@@ -481,5 +491,11 @@ export function ToggleSelectOne(orderID) {
       type: Constants.ORDERS_PICKUP_SELECT_TOGGLE_ONE,
       orderID: orderID,
     });
+  }
+}
+
+export function ResetFilter() {
+  return (dispatch) => {
+    dispatch({type: Constants.ORDERS_PICKUP_RESET_FILTER});
   }
 }

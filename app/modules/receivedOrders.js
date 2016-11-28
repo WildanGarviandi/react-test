@@ -19,6 +19,7 @@ const Constants = {
   ORDERS_RECEIVED_SELECT_TOGGLE_ALL: "received/select/toggleAll",
   ORDERS_RECEIVED_SELECT_TOGGLE_ONE: "received/select/toggleOne",
   ORDERS_RECEIVED_SET: "received/set",
+  ORDERS_RECEIVED_RESET_FILTER: "received/resetFilter"
 }
 
 //
@@ -105,6 +106,15 @@ export function Reducer(state = initialState, action) {
       return lodash.assign({}, state, {
         orders: action.orders,
         total: action.total,
+      });
+    }
+
+    case Constants.ORDERS_RECEIVED_RESET_FILTER: {
+      return lodash.assign({}, state, {
+        filters: {}, 
+        currentPage: 1,
+        filterStatus: "SHOW ALL",
+        limit: 50,
       });
     }
 
@@ -405,3 +415,8 @@ export function FetchNotAssignedList() {
   }
 }
 
+export function ResetFilter() {
+  return (dispatch) => {
+    dispatch({type: Constants.ORDERS_RECEIVED_RESET_FILTER});
+  }
+}
