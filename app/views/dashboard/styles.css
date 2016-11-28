@@ -25,7 +25,6 @@
   color: #fff;
   z-index: 999;
   overflow-y: scroll;
-  
   -webkit-transition: border 0.5s ease-out;
   -o-transition: border 0.5s ease-out;
   transition: border 0.5s ease-out;
