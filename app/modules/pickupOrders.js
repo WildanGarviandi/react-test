@@ -43,7 +43,7 @@ const initialState = {
   isFetching: false,
   isGrouping: false,
   isMarkingPickup: false,
-  limit: 100,
+  limit: 50,
   orders: [],
   total: 0,
 }
@@ -255,15 +255,15 @@ export function FetchList() {
         throw new Error();
       }
 
-      dispatch({
-        type: Constants.ORDERS_PICKUP_FETCH_END,
-      });
-
       response.json().then(({data}) => {
         dispatch({
           type: Constants.ORDERS_PICKUP_SET,
           orders: lodash.map(data.rows, OrderParser),
           total: data.count,
+        });
+
+        dispatch({
+          type: Constants.ORDERS_PICKUP_FETCH_END,
         });
       });
     }).catch(() => {

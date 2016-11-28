@@ -69,6 +69,40 @@ const Table = React.createClass({
       {'col-xs-6': true}
     );
 
+    let bodyComponents = (
+      <td colSpan={8}>
+        <div style={{fontSize: 20, textAlign:'center'}}>
+          Fetching data...
+        </div>
+      </td>
+    );
+    if (!isFetching) {
+      if (items.length === 0) {
+        bodyComponents = (
+          <td colSpan={8}>
+            <div style={{textAlign:'center'}}>
+              <img src="/img/orders-empty-state.png" />
+              {
+                isPickup &&
+                <div style={{fontSize: 20}}>
+                  You have no pickup order
+                </div>
+              }
+              {
+                !isPickup &&
+                <div style={{fontSize: 20}}>
+                  You have no received orders
+                </div>
+              }
+            </div>
+          </td>
+        );
+      } else {
+        bodyComponents = (
+          <Body items={items} />
+        )
+      }
+    }
     return (
       <div style={style}>
         <Pagination {...pagination} {...PaginationActions} />
@@ -90,7 +124,7 @@ const Table = React.createClass({
         <table className={styles.table}>
           <Headers />
           <Filters /> 
-          <Body items={items} />
+          {bodyComponents}
         </table>
         <Pagination {...pagination} {...PaginationActions} />
       </div>

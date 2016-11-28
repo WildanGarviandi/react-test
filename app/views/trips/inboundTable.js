@@ -12,6 +12,9 @@ import tableStyles from '../base/table.css';
 import StatusDropdown from '../base/statusDropdown';
 import {TripParser} from '../../modules/trips';
 import {formatDate} from '../../helper/time';
+import {modalAction} from '../../modules/modals/constants';
+import stylesModal from '../base/modal.css';
+import classnaming from 'classnames';
 
 const ColumnsOrder = ['fleetName', 'driver', 'webstoreNames', 'pickup', 'pickupCity', 'pickupState', 'containerNumber', 'status', 'numberPackages'];
 
@@ -174,13 +177,34 @@ const Table = React.createClass({
       </tr>
     );
 
-    return (
-      <table className={tableStyles.table}>
-        <thead><tr>{Headers}</tr></thead>
-        <tbody>{Search}</tbody>
-        <tbody>{Body}</tbody>
-      </table>
-    );
+    if (this.props.isFetching) {
+      return (
+        <div style={{textAlign:'center'}}>
+          <div style={{fontSize: 20}}>
+            Fetching data....
+          </div>
+        </div>
+      );
+    } else {
+      if (this.props.items.length === 0) {
+        return (
+          <div style={{textAlign:'center'}}>
+            <img src="/img/orders-empty-state.png" />
+            <div style={{fontSize: 20}}>
+              You have no inbound trips
+            </div>
+          </div>
+        );
+      } else {
+        return (
+          <table className={tableStyles.table}>
+            <thead><tr>{Headers}</tr></thead>
+            <tbody>{Search}</tbody>
+            <tbody>{Body}</tbody>
+          </table>
+        );
+      }
+    }
   }
 });
 
@@ -283,6 +307,7 @@ const TableStateful = React.createClass({
       toDetails: tripDetails,
       filteringAction, statusProps,
       filters: this.state,
+      isFetching: tripsIsFetching
     }
 
     return (
