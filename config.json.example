@@ -6,5 +6,6 @@
   "defaultCountryID": 95,
   "features": {
     "menuTMS": true
-  }
+  },
+  "googleSiteKey": ""
 }
