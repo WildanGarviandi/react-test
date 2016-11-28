@@ -220,15 +220,15 @@ export function FetchList() {
         throw new Error();
       }
 
-      dispatch({
-        type: Constants.ORDERS_RECEIVED_FETCH_END,
-      });
-
       response.json().then(({data}) => {
         dispatch({
           type: Constants.ORDERS_RECEIVED_SET,
           orders: lodash.map(data.rows, OrderParser),
           total: data.count,
+        });
+
+        dispatch({
+          type: Constants.ORDERS_RECEIVED_FETCH_END,
         });
       });
     }).catch((e) => {
