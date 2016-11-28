@@ -135,7 +135,7 @@ const Details = React.createClass({
   render() {
     const {canEdit, isEditing, isFetching, isUpdating, order, StartEdit, EndEdit, UpdateOrder, GetDetails} = this.props;
 
-    const r2Edit = lodash.map(orderDetails.slice(10, 16), (row) => {
+    const r2Edit = lodash.map(orderDetails.slice(11, 17), (row) => {
       return (
         <div key={row} style={{clear: 'both'}}>
           <span className={styles.itemLabel}>{conf[row].title}</span>
@@ -155,13 +155,13 @@ const Details = React.createClass({
           !isFetching &&
           <div>
             <Accordion initialState="expanded">
-              <DetailAcc rows={orderDetails.slice(0,10)} order={order} title={"Summary"} topStyle={classNaming(styles.detailWrapper, styles.right, styles.detailsPanel)}/>
+              <DetailAcc rows={orderDetails.slice(0,11)} order={order} title={"Summary"} topStyle={classNaming(styles.detailWrapper, styles.right, styles.detailsPanel)}/>
             </Accordion>
             <Accordion initialState="expanded">
-              <DetailAcc rows={orderDetails.slice(10,16)} order={order} title={"Cost and Dimension"} canEdit={canEdit} isEditing={isEditing} isUpdating={isUpdating} UpdateOrder={UpdateOrder} GetDetails={GetDetails} StartEdit={StartEdit} EndEdit={EndEdit}/>
+              <DetailAcc rows={orderDetails.slice(11,17)} order={order} title={"Cost and Dimension"} canEdit={canEdit} isEditing={isEditing} isUpdating={isUpdating} UpdateOrder={UpdateOrder} GetDetails={GetDetails} StartEdit={StartEdit} EndEdit={EndEdit}/>
             </Accordion>
             <Accordion initialState="expanded">
-              <DetailAcc rows={orderDetails.slice(16)} order={order} title={"Pricing Details"} />
+              <DetailAcc rows={orderDetails.slice(17)} order={order} title={"Pricing Details"} />
             </Accordion>
           </div>
         }
