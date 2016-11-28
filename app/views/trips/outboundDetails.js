@@ -19,13 +19,13 @@ import styles from './styles.css';
 import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered} from '../../modules/trips';
 import {formatDate} from '../../helper/time';
 
-const columns = ['id', 'id2', 'dropoff', 'time', 'CODValue', 'orderStatus', 'routeStatus', 'action'];
+const columns = ['id', 'id2', 'dropoff', 'time', 'CODValue', 'CODStatus', 'orderStatus', 'routeStatus', 'action'];
 const nonFillColumn = columns.slice(0, columns.length - 1);
 const headers = [{
   id: 'Web Order ID', id2: 'User Order Number',
   pickup: 'Pickup Address', dropoff: 'Dropoff Address',
   time: 'Pickup Time', orderStatus: 'Order Status',routeStatus: 'Route Status', action: 'Action',
-  CODValue: 'COD Value'
+  CODValue: 'COD Value', CODStatus: 'COD Status'
 }];
 
 const DetailPage = React.createClass({
@@ -232,6 +232,7 @@ const mapStateToProps = (state, ownProps) => {
       CODValue: order.IsCOD ? order.TotalValue : 0,
       DeliveryFee: order.DeliveryFee,
       tripID: trip.TripID,
+      CODStatus: order.CODPaymentUserOrder.CODPayment.Status || 'N/A'
     }
   });
 

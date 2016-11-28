@@ -179,6 +179,19 @@ const DetailPage = React.createClass({
                             <InputStaticRow label={'Package Length'} value={order.PackageLength} />
                         </div> 
                     </div>
+                    {
+                        order.IsCOD &&
+                        <div className={styles.orderDetailsBoxRight}>
+                            <div className={styles.orderDetailsHeader}>
+                                COD Details
+                            </div>
+                            <div className={styles.orderDetailsInformation}>
+                                <InputStaticRow label={'COD Amount'} value={order.TotalValue} />
+                                <InputStaticRow label={'COD Status'} 
+                                    value={order.CODPaymentUserOrder.CODPayment.Status || 'N/A'} />
+                            </div> 
+                        </div>
+                    }
                     <div style={{clear: 'both'}}>
                     </div>
                     { order.RecipientName &&
