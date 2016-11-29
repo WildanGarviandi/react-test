@@ -5,12 +5,16 @@ import {push} from 'react-router-redux';
 import PickupOrdersTable from './pickupOrdersTable';
 import styles from './styles.css';
 import {ButtonWithLoading, Input, Page} from '../base';
-import Accordion from './receivedOrdersAccordion';
+import Accordion from './pickupOrdersAccordion';
 import * as OrdersPickup from '../../modules/orders/actions/pickup';
+import * as OrdersPickup2 from '../../modules/pickupOrders';
 
 const PickupOrders = React.createClass({
   getInitialState() {
     return {id: ''};
+  },
+  componentWillMount() {
+    this.props.ResetFilter();
   },
   onChange(text) {
     this.setState({id: text});
@@ -57,6 +61,9 @@ function mapDispatch(dispatch, ownParams) {
     GroupOrders: () => {
       dispatch(OrdersPickup.fillTrip(tripID));
     },
+    ResetFilter: () => {
+      dispatch(OrdersPickup2.ResetFilter());
+    }
   }
 }
 

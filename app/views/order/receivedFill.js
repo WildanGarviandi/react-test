@@ -7,10 +7,14 @@ import styles from './styles.css';
 import {ButtonWithLoading, Input, Page} from '../base';
 import Accordion from './receivedOrdersAccordion';
 import * as OrdersReceived from '../../modules/orders/actions/received';
+import * as ReceivedOrders from '../../modules/receivedOrders';
 
 const PickupOrders = React.createClass({
   getInitialState() {
     return {id: ''};
+  },
+  componentWillMount() {
+    this.props.ResetFilter();
   },
   onChange(text) {
     this.setState({id: text});
@@ -57,6 +61,9 @@ function mapDispatch(dispatch, ownParams) {
     GroupOrders: () => {
       dispatch(OrdersReceived.fillTrip(tripID));
     },
+    ResetFilter: () => {
+      dispatch(ReceivedOrders.ResetFilter());
+    }
   }
 }
 

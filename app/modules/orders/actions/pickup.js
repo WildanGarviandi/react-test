@@ -151,15 +151,29 @@ export const fillTrip = (tripID) => {
     const {orders, selected} = pickupOrders;
     const {token} = userLogged;
 
-    const checkedOrdersID = lodash.chain(orders)
+    let forbidden = false;
+    const checkedOrdersIDs = lodash.chain(orders)
       .filter((order) => {
+        if (order.IsChecked && order.OrderStatus !== 'NOTASSIGNED') {
+          forbidden = true;
+        }
         return order.IsChecked;
       })
       .map((order) => (order.UserOrderID))
       .value();
 
+    if (forbidden) {
+      dispatch(ModalActions.addMessage('There’s one or more order not ready for pickup. Please check again'));
+      return;
+    }
+
+    if (checkedOrdersIDs.length === 0) {
+      dispatch(ModalActions.addMessage('No order selected'));
+      return;
+    }
+
     const body = {
-      ordersID: checkedOrdersID,
+      ordersID: checkedOrdersIDs,
     }
 
     dispatch({type: modalAction.BACKDROP_SHOW});
