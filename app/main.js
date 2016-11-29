@@ -6,11 +6,14 @@ import { Provider } from 'react-redux';
 import store from './store';
 import './main.css';
 import routes from './routes';
+import { IntlProvider } from 'react-intl-redux';
 
 const Root = () => {
   return (
     <Provider store={store}>
-      {routes}
+      <IntlProvider>
+        {routes}
+      </IntlProvider>
     </Provider>
   );
 };

@@ -316,7 +316,14 @@ function OrderRow({order}) {
             <Table.TextCell text={order.Status} />
             <Table.TextCell text={order.OrderOwner} />
             <Table.TextCell text={order.IsCOD} />
-            <Table.TextCell text={(order.IsCOD === 'Yes') ? order.TotalValue : '-'} />
+            {
+              (order.IsCOD === 'Yes') && order.TotalValue &&
+              <Table.NumberCell number={order.TotalValue} />
+            }
+            {
+              (order.IsCOD !== 'Yes' || !order.TotalValue) &&
+              <Table.TextCell text={'-'} />
+            }
             <Table.TextCell text={(order.IsCOD === 'Yes') ? 
                                 (order.CODPaymentUserOrder.CODPayment.Status || 'N/A') : 'N/A'} />
             <Table.TextCell text={order.CreatedDate} />

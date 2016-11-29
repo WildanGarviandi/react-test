@@ -7,6 +7,7 @@ import orderToggle from '../../modules/containers/actions/orderToggle';
 import styles from './table.css';
 import classNaming from 'classnames';
 import * as TripDetails from '../../modules/inboundTripDetails';
+import { FormattedNumber } from 'react-intl';
 
 export const BaseHeader = React.createClass({
   render() {
@@ -19,7 +20,12 @@ export const BaseCell = React.createClass({
   render() {
     let {attr, item} = this.props;
     const name = (attr === 'isSuccess' && item[attr] === 'Yes') ? classNaming(styles.td, styles.tick) : classNaming(styles.td);
-    const value = (attr === 'isSuccess') ? '' : item[attr] && item[attr].toString();
+    let value; 
+    switch(attr) {
+      case 'isSuccess': value = ''; break;
+      case 'CODValue': value = NumberCell(item[attr] || 0); break;
+      default: value = item[attr] && item[attr].toString();
+    }
     return (<td className={name}>{value}</td>);
   }
 });
@@ -48,6 +54,12 @@ export const SearchCell = React.createClass({
     );
   }
 });
+
+const NumberCell = (val) => {
+  return (
+    <FormattedNumber value={val} />
+  );
+};
 
 const CellWithSelected = React.createClass({
   render() {
