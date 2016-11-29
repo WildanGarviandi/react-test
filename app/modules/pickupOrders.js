@@ -212,7 +212,7 @@ export function FetchNotAssignedList() {
     const query = lodash.assign({}, filters, {
       limit: limit,
       offset: (currentPage-1)*limit,
-      status: orderStatus.NOTASSIGNED,
+      status: orderStatus.NOTASSIGNED || 6,
     });
 
     dispatch({
@@ -224,15 +224,14 @@ export function FetchNotAssignedList() {
         throw new Error();
       }
 
-      dispatch({
-        type: Constants.ORDERS_PICKUP_FETCH_END,
-      });
-
       response.json().then(({data}) => {
         dispatch({
           type: Constants.ORDERS_PICKUP_SET,
           orders: lodash.map(data.rows, OrderParser),
           total: data.count,
+        });
+        dispatch({
+          type: Constants.ORDERS_PICKUP_FETCH_END,
         });
       });
     }).catch(() => {
