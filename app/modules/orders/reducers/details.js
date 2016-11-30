@@ -4,6 +4,7 @@ import Constants from '../constants';
 const initialState = {
   isFetching: false,
   isUpdating: false,
+  isEditing: false,
   order: {},
 }
 

@@ -101,7 +101,8 @@ const DetailAcc = React.createClass({
     }
 
     const colls = lodash.map(rows, (row) => {
-      return <DetailRow key={row} label={conf[row].title} value={order[row]} isEditing={isEditing} onChange={this.textChange(row) } submitForm={this.submit} />
+      return <DetailRow key={row.key} label={conf[row.key].title} value={order[row.key]} 
+        isEditing={row.canEdit && isEditing} onChange={this.textChange(row.key) } submitForm={this.submit} />
     });
 
     return (
@@ -133,7 +134,8 @@ const Details = React.createClass({
     }
   },
   render() {
-    const {canEdit, isEditing, isFetching, isUpdating, order, StartEdit, EndEdit, UpdateOrder, GetDetails} = this.props;
+    const {canEdit, isEditing, isFetching, isUpdating, order, 
+      StartEdit, EndEdit, UpdateOrder, GetDetails, editCOD, editVolume, editWeight} = this.props;
 
     const r2Edit = lodash.map(orderDetails.slice(10, 16), (row) => {
       return (
@@ -145,6 +147,35 @@ const Details = React.createClass({
 
     const Title = "Order Details " + (order.UserOrderNumber || "");
 
+    const summaryRows = orderDetails.slice(0,10).map(function (val) {
+      return {
+        key: val,
+        canEdit: false
+      }
+    });
+
+    const costRows = orderDetails.slice(10,16).map(function (val) {
+      var canEdit = false;
+      if (val === 'PackageWeight') {
+        canEdit = editWeight;
+      } else if (['PackageHeight', 'PackageWidth', 'PackageLength'].includes(val)) {
+        canEdit = editVolume;
+      } else if (['TotalValue', 'IsCOD'].includes(val)) {
+        canEdit = editCOD;
+      }
+      return {
+        key: val,
+        canEdit: canEdit
+      }
+    });
+
+    const pricingRows = orderDetails.slice(16).map(function (val) {
+      return {
+        key: val,
+        canEdit: false
+      }
+    });
+
     return (
       <Page title={Title}>
         {
@@ -155,13 +186,13 @@ const Details = React.createClass({
           !isFetching &&
           <div>
             <Accordion initialState="expanded">
-              <DetailAcc rows={orderDetails.slice(0,10)} order={order} title={"Summary"} topStyle={classNaming(styles.detailWrapper, styles.right, styles.detailsPanel)}/>
+              <DetailAcc rows={summaryRows} order={order} title={"Summary"} topStyle={classNaming(styles.detailWrapper, styles.right, styles.detailsPanel)}/>
             </Accordion>
             <Accordion initialState="expanded">
-              <DetailAcc rows={orderDetails.slice(10,16)} order={order} title={"Cost and Dimension"} canEdit={canEdit} isEditing={isEditing} isUpdating={isUpdating} UpdateOrder={UpdateOrder} GetDetails={GetDetails} StartEdit={StartEdit} EndEdit={EndEdit}/>
+              <DetailAcc rows={costRows} order={order} title={"Cost and Dimension"} canEdit={canEdit} isEditing={isEditing} isUpdating={isUpdating} UpdateOrder={UpdateOrder} GetDetails={GetDetails} StartEdit={StartEdit} EndEdit={EndEdit}/>
             </Accordion>
             <Accordion initialState="expanded">
-              <DetailAcc rows={orderDetails.slice(16)} order={order} title={"Pricing Details"} />
+              <DetailAcc rows={pricingRows} order={order} title={"Pricing Details"} />
             </Accordion>
           </div>
         }
@@ -171,8 +202,10 @@ const Details = React.createClass({
 });
 
 function mapStateToPickupOrders(state) {
-  const canEdit = state.app.userLogged && state.app.userLogged.isCentralHub;
-  const {isEditing, isFetching, isUpdating, order} = state.app.orderDetails;
+  const { orderDetails, userLogged } = state.app;
+  const { editCOD, editVolume, editWeight } = userLogged;
+  const {isEditing, isFetching, isUpdating, order} = orderDetails;
+  const canEdit = userLogged && (editCOD || editVolume || editWeight);
 
   return {
     canEdit,
@@ -180,6 +213,9 @@ function mapStateToPickupOrders(state) {
     isFetching,
     isUpdating,
     order,
+    editCOD,
+    editVolume,
+    editWeight
   }
 }
 
