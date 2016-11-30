@@ -41,6 +41,8 @@ const Constants = {
   TRIPS_INBOUND_DETAILS_TRIP_DELIVERED_SET: "inbound/details/trip/delivered/set",
   TRIPS_INBOUND_DETAILS_TRIP_DELIVERED_START: "inbound/details/trip/delivered/start",
   TRIPS_INBOUND_DETAILS_TRIP_SET: "inbound/details/trip/set",
+  TRIPS_INBOUND_DETAILS_START_EDIT_ORDER: "inbound/details/trip/startEditOrder",
+  TRIPS_INBOUND_DETAILS_END_EDIT_ORDER: "inbound/details/trip/endEditOrder"
 }
 
 const initialState = {
@@ -57,6 +59,8 @@ const initialState = {
   isSetFleet: false,
   orders: [],
   trip: null,
+  isEditing: false,
+  scannedOrder: ''
 }
 
 export function Reducer(state = initialState, action) {
@@ -235,6 +239,20 @@ export function Reducer(state = initialState, action) {
         orders: action.orders,
         prev3PL: action.externalTrip,
         trip: action.trip,
+      });
+    }
+
+    case Constants.TRIPS_INBOUND_DETAILS_START_EDIT_ORDER: {
+      return lodash.assign({}, state, {
+        isEditing: true, 
+        scannedOrder: action.scannedOrder
+      });
+    }
+
+    case Constants.TRIPS_INBOUND_DETAILS_END_EDIT_ORDER: {
+      return lodash.assign({}, state, {
+        isEditing: false,
+        scannedOrder: ''
       });
     }
 
@@ -602,12 +620,18 @@ export function OrderReceived(scannedID, backElementFocusID) {
 
     if(!scannedOrder) {
       dispatch(ModalActions.addMessage(`Order ${scannedID} was not found`, backElementFocusID));
+      dispatch({
+        type: Constants.TRIPS_INBOUND_DETAILS_END_EDIT_ORDER,
+      });
       return;
     }
     
     if (allowedRouteStatus.indexOf(scannedOrder.Status) === -1) {
       dispatch(ModalActions.addMessage('Only allow route statuses: ' + allowedRouteStatus.join(', '), 
         backElementFocusID));
+      dispatch({
+        type: Constants.TRIPS_INBOUND_DETAILS_END_EDIT_ORDER,
+      });
       return;
     }
 
@@ -630,11 +654,18 @@ export function OrderReceived(scannedID, backElementFocusID) {
         type: Constants.TRIPS_INBOUND_DETAILS_ORDER_RECEIVED_SET,
         orderID: scannedOrder.UserOrderID,
       });
+      dispatch({
+        type: Constants.TRIPS_INBOUND_DETAILS_START_EDIT_ORDER,
+        scannedOrder: scannedOrder
+      });
     }).catch((e) => {
       const message = (e && e.message) ? e.message : "Failed to mark order as received";
       dispatch({type: modalAction.BACKDROP_HIDE});
       dispatch({ type: Constants.TRIPS_INBOUND_DETAILS_ORDER_RECEIVED_END });
       dispatch(ModalActions.addMessage(message, backElementFocusID));
+      dispatch({
+        type: Constants.TRIPS_INBOUND_DETAILS_END_EDIT_ORDER,
+      });
     });
   }
 }
@@ -889,4 +920,8 @@ export function ExportManifest(tripID) {
 
         xhr.send(null);
     }
+}
+
+export function StopEditOrder() {
+  return {type: Constants.TRIPS_INBOUND_DETAILS_END_EDIT_ORDER};
 }

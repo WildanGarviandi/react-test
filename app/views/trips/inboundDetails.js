@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
 import {ContainerDetailsActions, StatusList} from '../../modules';
 import districtsFetch from '../../modules/districts/actions/districtsFetch';
-import {ButtonBase, ButtonWithLoading, Input, Modal, Page} from '../base';
+import {ButtonBase, ButtonWithLoading, Input, InputWithDefault, Modal, Page} from '../base';
 import DistrictAndDriver from '../container/districtAndDriver';
 import {OrderTable} from '../container/table';
 import * as TripDetails from '../../modules/trips/actions/details';
@@ -20,6 +20,8 @@ import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered} from '../.
 import {formatDate} from '../../helper/time';
 import {TripParser} from '../../modules/trips';
 import {Glyph} from '../base';
+import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import * as OrdersDetails from '../../modules/orders/actions/details';
 
 const columns = ['id', 'id2', 'pickup', 'time', 'CODValue', 'orderStatus', 'routeStatus', 'isSuccess', 'action'];
 const nonFillColumn = columns.slice(0, columns.length - 1);
@@ -29,6 +31,21 @@ const headers = [{
   time: 'Pickup Time', orderStatus: 'Order Status',routeStatus: 'Route Status', action: 'Action',
   CODValue: 'COD Value', isSuccess: 'Scanned'
 }];
+
+const InputRow = React.createClass({
+  render() {
+    const {isEditing, label, value, onChange, type} = this.props;
+
+    return (
+      <div style={{clear: 'both'}}>
+        <span className={styles.itemLabel}>{label}</span>
+          <span className={styles.itemValue}>
+            <InputWithDefault currentText={value} onChange={this.props.onChange} type={type} />
+          </span>
+      </div>
+    );
+  }
+});
 
 const DetailPage = React.createClass({
   getInitialState() {
@@ -40,6 +57,9 @@ const DetailPage = React.createClass({
       },
       orderMarked: "",
     };
+  },
+  openModal() {
+    this.setState({showModal: true});
   },
   closeModal() {
     this.setState({showModal: false});
@@ -86,6 +106,12 @@ const DetailPage = React.createClass({
       orderMarked: "",
     });
   },
+  componentWillReceiveProps(nextProps) {
+    this.closeModal();
+    if ((nextProps['isEditing'])) {
+      this.openModal();
+    }
+  },
   exportManifest() {
     this.props.exportManifest();
   },
@@ -116,10 +142,26 @@ const DetailPage = React.createClass({
       });
     }
   },
+  stateChange(key) {
+    return (value) => {
+      this.setState({[key]: value});
+    };
+  },
+  updateOrder() {
+    let updatedFields = ['PackageHeight', 'PackageLength', 'PackageWidth', 'PackageWeight', 'DeliveryFee', 'TotalValue']
+    let currentData = lodash.assign({}, this.state);
+    let updatedData = {}
+    updatedFields.forEach(function(field) {
+      if (typeof currentData[field] !== 'undefined') {
+        updatedData[field] = parseInt(currentData[field]);
+      } 
+    });
+    this.props.UpdateOrder(this.props.scannedOrder.UserOrderID, updatedData);
+  },
   render() {
     const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, fillAble, hasDriver, isFetching, isInbound, orders, reusable, statusList, TotalCODValue, CODCount, totalDeliveryFee, trip} = this.props;
 
-    const {canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, isDeassigning} = this.props;
+    const {canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, isDeassigning, isEditing, scannedOrder} = this.props;
 
     const successfullScan = lodash.filter(this.props.orders, {'isSuccess': 'Yes'});
 
@@ -138,6 +180,23 @@ const DetailPage = React.createClass({
         {
           isFetching &&
           <h3>Fetching Trip Details...</h3>
+        }
+        {
+          this.state.showModal && isEditing &&
+          <ModalContainer onClose={this.closeModal}>
+            <ModalDialog onClose={this.closeModal}>   
+              <div style={{clear: 'both'}}>
+                <InputRow label={'Package Height'} value={scannedOrder.PackageHeight} type={'text'} onChange={this.stateChange('PackageHeight') } />
+                <InputRow label={'Package Length'} value={scannedOrder.PackageLength} type={'text'} onChange={this.stateChange('PackageLength') } />
+                <InputRow label={'Package Width'} value= {scannedOrder.PackageWidth} type={'text'} onChange={this.stateChange('PackageWidth') } />
+                <InputRow label={'Package Weight'} value={scannedOrder.PackageWeight} type={'text'} onChange={this.stateChange('PackageWeight') } />
+                <InputRow label={'Total Value'} value={scannedOrder.TotalValue} type={'text'} onChange={this.stateChange('TotalValue') } />
+                <InputRow label={'Delivery Fee'} value={scannedOrder.OrderCost} type={'text'} onChange={this.stateChange('DeliveryFee') } />
+              </div> 
+              <div style={{clear: 'both'}} />
+              <ButtonWithLoading textBase="Submit" onClick={this.updateOrder} />
+            </ModalDialog>
+          </ModalContainer>
         }
         {
           this.props.notFound && !isFetching &&
@@ -219,7 +278,7 @@ const DetailPage = React.createClass({
 const mapStateToProps = (state, ownProps) => {
   const {inboundTripDetails, userLogged} = state.app;
   const {hubID} = userLogged;
-  const {isDeassigning, isFetching, orders: rawOrders} = inboundTripDetails;
+  const {isDeassigning, isFetching, orders: rawOrders, isEditing, scannedOrder} = inboundTripDetails;
   const trip = ownProps.trip;
   const containerID = ownProps.params.id;
   const {containers, statusList} = state.app.containers;
@@ -303,6 +362,8 @@ const mapStateToProps = (state, ownProps) => {
     canMarkOrderReceived: CanMarkOrderReceived(trip, rawOrders),
     canMarkTripDelivered: CanMarkTripDelivered(trip, rawOrders),
     canMarkContainer: CanMarkContainer(trip, hubID),
+    isEditing,
+    scannedOrder
   }
 }
 
@@ -343,6 +404,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     exportManifest: function() {
       dispatch(TripDetailsTrue.ExportManifest(ownProps.params.id));
+    },
+    UpdateOrder: function(id, order){
+      dispatch(OrdersDetails.editOrder(id, order));
     },
   };
 };

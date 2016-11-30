@@ -178,3 +178,18 @@
 .submitButton:hover {
   background-color: #3eb881;
 }
+
+.itemLabel {
+  display: block;
+  padding: 5px;
+  width: 150px;
+  float: left;
+}
+
+.itemValue {
+  padding: 5px;
+  display: block;
+  margin-left: 160px;
+  max-width: 350px;
+  text-indent: 0px;
+}
