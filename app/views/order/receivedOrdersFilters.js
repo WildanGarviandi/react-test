@@ -58,7 +58,7 @@ function mapDispatchToPickupOrders(dispatch) {
         }
 
         case "SuggestedVendors": {
-          newFilter = {suggestedVendor: filter.val};
+          newFilter = {lastMileFleetSuggestion: filter.val};
           break;
         }
       }

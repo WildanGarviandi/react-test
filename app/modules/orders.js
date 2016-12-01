@@ -56,6 +56,9 @@ export function OrderParser(order) {
     User: (order.User && (order.User.FirstName + ' ' + order.User.LastName)) || '',
     WebstoreName: (order.User && (order.User.FirstName + ' ' + order.User.LastName)) || '',
     ZipCode: order.DropoffAddress && order.DropoffAddress.ZipCode,
+    SuggestedVendors: (order.LastMileFleetSuggestion) ? order.LastMileFleetSuggestion.map((val) => {
+      return val.CompanyDetail.CompanyName;
+    }) : []
   }, lodash.reduce(currencyAttributes, (acc, attr) => {
     return lodash.assign(acc, {[attr]: Currency(order[attr])});
   }, {}), lodash.reduce(boolAttributes, (acc, attr) => {
