@@ -5,7 +5,7 @@ import styles from './table.css';
 
 function Headers({items, components}) {
   const cells = lodash.map(items, (item) => {
-    const className = classNaming(styles.th, item.keyword);
+    const className = classNaming(styles.th, styles[item.keyword]);
     const cell = components(item.type, item);
     return <th key={item.keyword} className={className}>{cell}</th>;
   });

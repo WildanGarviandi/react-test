@@ -78,8 +78,8 @@ function BodyComponent(type, keyword, item, index) {
     }
 
     case "Array": {
-      const items = _.map(item[keyword], (val) => {
-        return <p style={{margin: 0}}>{val}</p>
+      const items = _.map(item[keyword], (val, index) => {
+        return <p key={index} style={{margin: 0}}>{val}</p>
       });
       return <TextCell text={items} />
     }
