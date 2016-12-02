@@ -606,7 +606,7 @@ export function OrderRemove(tripID, orderID) {
   }
 }
 
-export function OrderReceived(scannedID, backElementFocusID) {
+export function OrderReceived(scannedID, backElementFocusID, scanUpdateToggle) {
   return (dispatch, getState) => {
     const {inboundTripDetails, userLogged} = getState().app;
     const {token} = userLogged;
@@ -654,10 +654,12 @@ export function OrderReceived(scannedID, backElementFocusID) {
         type: Constants.TRIPS_INBOUND_DETAILS_ORDER_RECEIVED_SET,
         orderID: scannedOrder.UserOrderID,
       });
-      dispatch({
-        type: Constants.TRIPS_INBOUND_DETAILS_START_EDIT_ORDER,
-        scannedOrder: scannedOrder
-      });
+      if (scanUpdateToggle) {
+        dispatch({
+          type: Constants.TRIPS_INBOUND_DETAILS_START_EDIT_ORDER,
+          scannedOrder: scannedOrder
+        });
+      }
     }).catch((e) => {
       const message = (e && e.message) ? e.message : "Failed to mark order as received";
       dispatch({type: modalAction.BACKDROP_HIDE});

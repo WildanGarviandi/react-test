@@ -4,6 +4,7 @@ import fetchGet from '../../fetch/get';
 import fetchPost from '../../fetch/post';
 import {OrderParser} from '../selector';
 import ModalActions from '../../modals/actions';
+import {modalAction} from '../../modals/constants';
 
 export const startEditing = () => {
   return {type: Constants.EDIT_ORDER_START};
@@ -13,7 +14,11 @@ export const endEditing = () => {
   return {type: Constants.EDIT_ORDER_END};
 }
 
-export const editOrder = (id, order) => {
+export const revertSuccessEditing = () => {
+  return {type: Constants.REVERT_SUCCESS_EDITING};
+}
+
+export const editOrder = (id, order, fromInbound) => {
   return (dispatch, getState) => {
     const {userLogged, orderDetails} = getState().app;
     const {token} = userLogged;
@@ -23,23 +28,29 @@ export const editOrder = (id, order) => {
     }
 
     dispatch({ type: Constants.UPDATE_ORDERS_START });
+    dispatch({ type: modalAction.BACKDROP_SHOW });
     fetchPost('/order/' + id, token, postBody).then((response) => {
       if(response.ok) {
         response.json().then(function({data}) {
-          console.log('data', data);
           dispatch({
             type: Constants.DETAILS_SET,
             order: lodash.assign({}, orderDetails.order, order),
           });
           dispatch({ type: Constants.UPDATE_ORDERS_END });
           dispatch({ type: Constants.EDIT_ORDER_END });
+          dispatch({ type: modalAction.BACKDROP_HIDE });
         });
+        if (fromInbound) {
+          dispatch({ type: Constants.SUCCESS_EDITING });
+        }
       } else {
         dispatch({ type: Constants.UPDATE_ORDERS_END });
+        dispatch({ type: modalAction.BACKDROP_HIDE });
         dispatch(ModalActions.addMessage('Failed to edit order details'));
       }
     }).catch(() => { 
       dispatch({ type: Constants.UPDATE_ORDERS_END });
+      dispatch({ type: modalAction.BACKDROP_HIDE });
       dispatch(ModalActions.addMessage('Network error'));
     });
   }
