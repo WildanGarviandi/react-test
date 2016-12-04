@@ -14,7 +14,7 @@ export const conf = {
   IncludeInsurance: {title: "Include Insurance"},
   IsChecked: {headerType: "Checkbox", cellType: "Checkbox"},
   LogisticShare: {title: "Logistic Share"},
-  NextDestination: {title: "Suggested Destination", cellType: "String"},
+  NextDestination: {filterType: "String", title: "Suggested Destination", cellType: "String"},
   OrderCost: {title: "Order Cost"},
   DeliveryFee: {title: "Delivery Fee"},
   OrderStatus: {filterType: "StatusDropdown", title: "Order Status", cellType: "Status"},
