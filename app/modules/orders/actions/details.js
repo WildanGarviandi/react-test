@@ -46,7 +46,9 @@ export const editOrder = (id, order, fromInbound) => {
       } else {
         dispatch({ type: Constants.UPDATE_ORDERS_END });
         dispatch({ type: modalAction.BACKDROP_HIDE });
-        dispatch(ModalActions.addMessage('Failed to edit order details'));
+        response.json().then(({error}) => {
+          dispatch(ModalActions.addMessage('Failed to edit order details. ' + error.message));
+        });
       }
     }).catch(() => { 
       dispatch({ type: Constants.UPDATE_ORDERS_END });

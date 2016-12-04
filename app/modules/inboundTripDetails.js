@@ -924,6 +924,23 @@ export function ExportManifest(tripID) {
     }
 }
 
+export function StartEditOrder(orderID) {
+  return (dispatch, getState) => {
+    const {userLogged} = getState().app;
+    const {token} = userLogged;
+    dispatch({type:modalAction.BACKDROP_SHOW});
+    FetchGet('/order/' + orderID, token).then(function(response) {
+      response.json().then(function({data}) {
+        dispatch({type:modalAction.BACKDROP_HIDE});
+        dispatch({
+          type: Constants.TRIPS_INBOUND_DETAILS_START_EDIT_ORDER,
+          scannedOrder: data
+        });
+      });
+    });
+  }
+}
+
 export function StopEditOrder() {
   return {type: Constants.TRIPS_INBOUND_DETAILS_END_EDIT_ORDER};
 }

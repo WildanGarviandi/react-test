@@ -321,7 +321,7 @@ const DetailPage = React.createClass({
                     </span>
                   }
                 </div>
-                <OrderTable columns={fillAble ? columns : nonFillColumn} headers={headers} items={orders} statusList={statusList} />
+                <OrderTable isInbound={true} columns={fillAble ? columns : nonFillColumn} headers={headers} items={orders} statusList={statusList} />
               </div>
             }
           </Page>
@@ -472,7 +472,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     revertSuccessEditing: function(){
       dispatch(OrdersDetails.revertSuccessEditing());
-    },
+    }
   };
 };
 
