@@ -57,11 +57,6 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
       <h4 className={styles.menuTitle}>Etobee {tmsMenu ? 'TMS' : 'Hub'}</h4>
       <h5 className={styles.menuTitle}>{loggedName}</h5>
       <h4 className={styles.compactTitle}>{tmsMenu ? 'E-TMS' : 'E-Hub'}</h4>
-      <center className={styles.menuTitle}>
-        <a className={styles.switchLink} onClick={switchMenu}>
-          <span>Switch to {tmsMenu ? 'Hub' : 'TMS'}</span>
-        </a>
-      </center>
       <ul className={styles.menuList}>
         { hubID && !tmsMenu &&
           <div>
@@ -95,7 +90,7 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
           </MenuItem>
           </div>
         }
-        { config.features.menuTMS && tmsMenu &&
+        { config.features.menuTMS && (tmsMenu || !hubID) &&
           <div>
           <Accordion initialState={'collapsed'}>
             <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[5,9,10]} iconName={'shopping-cart'} iconTitle={'My Orders'}>
@@ -132,6 +127,13 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
             <span>Logout</span>
           </MenuItem>
       </ul>
+      { hubID &&
+        <center className={styles.menuTitle}>
+          <a className={styles.switchLink} onClick={switchMenu}>
+            <span>Switch to {tmsMenu ? 'Hub' : 'TMS'}</span>
+          </a>
+        </center>
+      }
       <button className={styles.toggleMenu} onClick={toggleCompact}>
         <Glyph className={styles.glyphBackward} name={'backward'}/>
         <Glyph className={styles.glyphForward} name={'forward'}/>
@@ -169,7 +171,7 @@ const DashboardContainer = React.createClass({
     router: React.PropTypes.object.isRequired
   },
   getInitialState() {
-    return {isCompact: false, tmsMenu: false};
+    return {isCompact: false, tmsMenu: this.props.hubID};
   },
   componentWillMount() {
     this.props.initialLoad();
