@@ -173,6 +173,7 @@ export function FetchList() {
                 dispatch({type: modalAction.BACKDROP_HIDE});
             });
         } else {
+            delete params.userOrderNumbers;
             dispatch({type: modalAction.BACKDROP_SHOW});
             FetchGet(`/trip/historyByHub/${hubID}`, token, params).then((response) => {
                 if(!response.ok) {

@@ -14,8 +14,8 @@ const FilterMessage = React.createClass({
     render: function() {
         var messageComponents = this.props.messages.map(function(message, idx) {
             return (
-                <div>
-                    {message.UserOrderNumber} found on <a href={"/history/" + message.TripID} target={"_blank"}>{message.TripID}</a>
+                <div className={styles.foundTrip}>
+                    {message.UserOrderNumber} found on Trip <a href={"/history/" + message.TripID} target={"_blank"}>{message.TripID}</a>
                 </div>
             );
         });

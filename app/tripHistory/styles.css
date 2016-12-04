@@ -106,3 +106,16 @@
 .arrowDown {
     float: left;
 }
+
+.foundTrip {
+    background-color: #371e38;
+    color: #C0B2A5;
+    padding: 3px;
+    border-radius: 5px;
+    margin-bottom: 2px;
+    margin-top: 2px;
+}
+
+.foundTrip a {
+    color: #fff;
+}
