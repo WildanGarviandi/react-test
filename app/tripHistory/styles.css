@@ -119,3 +119,31 @@
 .foundTrip a {
     color: #fff;
 }
+
+.tableMessage {
+    background-color: #FFFFFF;
+    color: #000000;
+    border: 1px solid;
+    border-radius: 3px;
+    padding: 8px;
+}
+
+.tableMessage a {
+    text-decoration: underline;
+}
+
+.tableMessage thead {
+    background-color: #1A2226;
+    color: #FFFFFF;
+    padding: 4px;
+}
+
+.tableMessage tr {
+    padding: 4px;
+    border: 1px solid;
+}
+
+.tableMessage td {
+    padding: 4px;
+    border: 1px solid;
+}

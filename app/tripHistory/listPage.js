@@ -26,20 +26,26 @@ const FilterMessage = React.createClass({
         const {messages} = this.props;
         let messageComponents = messages.map(function(message) {
             return (
-                <div className={styles.foundTrip}>
+                <tr>
+                    <td>
+                        {message.UserOrderNumber}
+                    </td>
                     { message.Found ?
-                        <span>
-                            {message.UserOrderNumber} found on Trip:
+                        <td>
                             <LinkComponents message={message} />
-                        </span> :
-                        <span>
-                            {message.UserOrderNumber} not found
-                        </span>
+                        </td> :
+                        <td>
+                            Not found
+                        </td>
                     }
-                </div>
+                </tr>
             );
         });
-        return <div>{messageComponents}</div>;
+        return (
+            <tbody>
+                {messageComponents}
+            </tbody>
+        );
     }
 });
 
@@ -140,7 +146,15 @@ const TripHistoryPage = React.createClass({
                   <ModalContainer onClose={this.closeModal}>
                     <ModalDialog onClose={this.closeModal}>
                         <div>
-                            <FilterMessage messages={this.state.filteredOrders} />
+                            <table className={styles.tableMessage}>
+                                <thead>
+                                    <tr>
+                                        <td>EDS / WebOrderID</td>
+                                        <td>Trip</td>
+                                    </tr>
+                                </thead>
+                                <FilterMessage messages={this.state.filteredOrders} />
+                            </table>
                         </div>
                     </ModalDialog>
                   </ModalContainer>
