@@ -138,69 +138,79 @@ export function FetchList() {
             offset: (currentPage-1)*limit
         });
 
-        if (params.userOrderNumbers && params.userOrderNumbers.length > 0) {
-            let promises = [];
-            let filterMessage = [];
-
-            function filterSingleEDS(token, userOrderNumber, params) {
-                return new Promise(function(resolve, reject) {
-                    FetchGet(`/trip/historyByHub/${hubID}`, token, params)
-                    .then(function(response) {
-                        return response.json().then(({data}) => {
-                            data.UserOrderNumber = userOrderNumber;
-                            return resolve(data);
-                        });
-                    });
-                });
+        delete params.userOrderNumbers;
+        dispatch({type: modalAction.BACKDROP_SHOW});
+        FetchGet(`/trip/historyByHub/${hubID}`, token, params).then((response) => {
+            if(!response.ok) {
+                return response.json().then(({error}) => {
+                    throw error;
+                })
             }
 
-            dispatch({type: modalAction.BACKDROP_SHOW});
-            params.userOrderNumbers.forEach(function(userOrderNumber) {
-                params.userOrderNumber = userOrderNumber;
-                promises.push(filterSingleEDS(token, userOrderNumber, params));
-            });
-
-            Promise.all(promises).then(function(responses) {
-                responses.forEach(function(response) {
-                    if (response.rows.length === 0) {
-                        filterMessage.push({UserOrderNumber: response.UserOrderNumber, Found: false});
-                    } else {
-                        let tripIDs = [];
-                        response.rows.forEach(function(trip) {
-                            tripIDs.push(trip.TripID);
-                        });
-                        filterMessage.push({UserOrderNumber: response.UserOrderNumber, Found: true, TripID: tripIDs});
-                    }
-                })
+            return response.json().then(({data}) => {
+                dispatch({type: modalAction.BACKDROP_HIDE});
                 dispatch({
-                    type: Constants.SET_FILTER_ORDER,
-                    filteredOrders: filterMessage
+                    type: Constants.SET_TRIPS,
+                    trips: data.rows,
+                    total: data.count,
                 })
-                dispatch({type: modalAction.BACKDROP_HIDE});
             });
-        } else {
-            delete params.userOrderNumbers;
-            dispatch({type: modalAction.BACKDROP_SHOW});
-            FetchGet(`/trip/historyByHub/${hubID}`, token, params).then((response) => {
-                if(!response.ok) {
-                    return response.json().then(({error}) => {
-                        throw error;
-                    })
-                }
+        }).catch((e) => {
+            dispatch({type: modalAction.BACKDROP_HIDE});
+            dispatch(ModalActions.addMessage(e.message));
+        });
+    }
+}
 
-                return response.json().then(({data}) => {
-                    dispatch({type: modalAction.BACKDROP_HIDE});
-                    dispatch({
-                        type: Constants.SET_TRIPS,
-                        trips: data.rows,
-                        total: data.count,
-                    })
+export function FilterMultipleOrder() {
+    return (dispatch, getState) => {
+        const {tripsHistory, userLogged} = getState().app;
+        const {currentPage, limit, filters} = tripsHistory;
+        const {hubID, token} = userLogged;
+
+        const params = {};
+        params.userOrderNumbers = filters.userOrderNumbers;
+
+        let promises = [];
+        let filterMessage = [];
+
+        function filterSingleEDS(token, userOrderNumber, params) {
+            return new Promise(function(resolve, reject) {
+                delete params.userOrderNumbers;
+                FetchGet(`/trip/historyByHub/${hubID}`, token, params)
+                .then(function(response) {
+                    return response.json().then(({data}) => {
+                        data.UserOrderNumber = userOrderNumber;
+                        return resolve(data);
+                    });
                 });
-            }).catch((e) => {
-                dispatch({type: modalAction.BACKDROP_HIDE});
-                dispatch(ModalActions.addMessage(e.message));
             });
         }
+
+        dispatch({type: modalAction.BACKDROP_SHOW});
+        params.userOrderNumbers.forEach(function(userOrderNumber) {
+            params.userOrderNumber = userOrderNumber;
+            promises.push(filterSingleEDS(token, userOrderNumber, params));
+        });
+
+        Promise.all(promises).then(function(responses) {
+            responses.forEach(function(response) {
+                if (response.rows.length === 0) {
+                    filterMessage.push({UserOrderNumber: response.UserOrderNumber, Found: false});
+                } else {
+                    let tripIDs = [];
+                    response.rows.forEach(function(trip) {
+                        tripIDs.push(trip.TripID);
+                    });
+                    filterMessage.push({UserOrderNumber: response.UserOrderNumber, Found: true, TripID: tripIDs});
+                }
+            })
+            dispatch({
+                type: Constants.SET_FILTER_ORDER,
+                filteredOrders: filterMessage
+            })
+            dispatch({type: modalAction.BACKDROP_HIDE});
+        });
     }
 }
 

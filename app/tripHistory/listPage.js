@@ -73,7 +73,7 @@ const TripHistoryPage = React.createClass({
         this.toggleOpen();
         const newFilters = {['userOrderNumbers']: IDs};
         this.props.UpdateFilters(newFilters);
-        this.props.SetCurrentPage(1);
+        this.props.FilterMultipleOrder();
         this.openModal();
     },
     clearText() {
@@ -82,7 +82,7 @@ const TripHistoryPage = React.createClass({
         this.toggleOpen();
         const newFilters = {['userOrderNumbers']: []};
         this.props.UpdateFilters(newFilters);
-        this.props.SetCurrentPage(1);
+        this.props.FilterMultipleOrder();
     },
     componentWillMount() {
         this.props.ResetFilter();
@@ -107,7 +107,7 @@ const TripHistoryPage = React.createClass({
                         <div className={styles.top2} onClick={this.toggleOpen}>
                           <h4 className={styles.title}>
                             <Glyph name='chevron-down' className={styles.glyphFilter} />
-                            {'Filter Order (' + this.state.ids.length + ' keywords)'}
+                            {'Search Order (' + this.state.ids.length + ' keywords)'}
                           </h4>
                         </div> :
                         <div className={styles.panel}>
@@ -118,10 +118,13 @@ const TripHistoryPage = React.createClass({
                             </h4>
                           </div>
                           <div className={styles.bottom}>
-                            <textarea style={{height: 100, width: '100%'}} value={this.state.idsRaw} onChange={this.textChange} placeholder={'Write/Paste EDS Number or Order ID here, separated with newline'} />
+                            <textarea 
+                                style={{height: 100, width: '100%'}} 
+                                value={this.state.idsRaw} 
+                                onChange={this.textChange} 
+                                placeholder={'Write/Paste EDS Number or Order ID here, separated with newline'} />
                             <ButtonBase styles={styles.modalBtn} onClick={this.processText}>Filter</ButtonBase>
                             <a href="javascript:;" className={styles.modalLink} onClick={this.cancelChange}>Cancel</a>
-                            <a href="javascript:;" className={styles.modalLink} onClick={this.clearText}>Clear</a>
                           </div>
                         </div>
                         }
@@ -169,6 +172,9 @@ function DispatchToTripsHistoryPage(dispatch) {
         },
         ResetFilter: () => {
             dispatch(TripsHistoryService.ResetFilter());
+        },
+        FilterMultipleOrder: () => {
+            dispatch(TripsHistoryService.FilterMultipleOrder());
         },
         UpdateFilters: (newFilters) => {
             dispatch(TripsHistoryService.UpdateFilters(newFilters));
