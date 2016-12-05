@@ -2,7 +2,7 @@ import classNaming from 'classnames';
 import lodash from 'lodash';
 import React from 'react';
 import {connect} from 'react-redux';
-import {conf, orderDetails} from './ordersColumns';
+import {conf, orderDetailsSummary, orderDetailsCost, orderDetailsPricing} from './ordersColumns';
 import styles from './styles.css';
 import Accordion from '../base/accordion';
 import {ButtonWithLoading, Input, Page} from '../base';
@@ -137,24 +137,16 @@ const Details = React.createClass({
     const {canEdit, isEditing, isFetching, isUpdating, order, 
       StartEdit, EndEdit, UpdateOrder, GetDetails, editCOD, editVolume, editWeight} = this.props;
 
-    const r2Edit = lodash.map(orderDetails.slice(11, 17), (row) => {
-      return (
-        <div key={row} style={{clear: 'both'}}>
-          <span className={styles.itemLabel}>{conf[row].title}</span>
-        </div>
-      );
-    });
-
     const Title = "Order Details " + (order.UserOrderNumber || "");
 
-    const summaryRows = orderDetails.slice(0,11).map(function (val) {
+    const summaryRows = orderDetailsSummary.map(function (val) {
       return {
         key: val,
         canEdit: false
       }
     });
 
-    const costRows = orderDetails.slice(11,17).map(function (val) {
+    const costRows = orderDetailsCost.map(function (val) {
       var canEdit = false;
       if (val === 'PackageWeight') {
         canEdit = editWeight;
@@ -169,7 +161,7 @@ const Details = React.createClass({
       }
     });
 
-    const pricingRows = orderDetails.slice(17).map(function (val) {
+    const pricingRows = orderDetailsPricing.map(function (val) {
       return {
         key: val,
         canEdit: false
