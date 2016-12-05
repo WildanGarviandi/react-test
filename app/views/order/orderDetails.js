@@ -137,7 +137,7 @@ const Details = React.createClass({
     const {canEdit, isEditing, isFetching, isUpdating, order, 
       StartEdit, EndEdit, UpdateOrder, GetDetails, editCOD, editVolume, editWeight} = this.props;
 
-    const r2Edit = lodash.map(orderDetails.slice(10, 16), (row) => {
+    const r2Edit = lodash.map(orderDetails.slice(11, 17), (row) => {
       return (
         <div key={row} style={{clear: 'both'}}>
           <span className={styles.itemLabel}>{conf[row].title}</span>
@@ -147,14 +147,14 @@ const Details = React.createClass({
 
     const Title = "Order Details " + (order.UserOrderNumber || "");
 
-    const summaryRows = orderDetails.slice(0,10).map(function (val) {
+    const summaryRows = orderDetails.slice(0,11).map(function (val) {
       return {
         key: val,
         canEdit: false
       }
     });
 
-    const costRows = orderDetails.slice(10,16).map(function (val) {
+    const costRows = orderDetails.slice(11,17).map(function (val) {
       var canEdit = false;
       if (val === 'PackageWeight') {
         canEdit = editWeight;
@@ -169,7 +169,7 @@ const Details = React.createClass({
       }
     });
 
-    const pricingRows = orderDetails.slice(16).map(function (val) {
+    const pricingRows = orderDetails.slice(17).map(function (val) {
       return {
         key: val,
         canEdit: false
