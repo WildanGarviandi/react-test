@@ -40,8 +40,10 @@ export function TextCell({text}) {
 }
 
 export function NumberCell({number}) {
-  return <td className={styles.td}>
-          <FormattedNumber value={number} /></td>;
+  return ( 
+    <td className={styles.td}>
+    <FormattedNumber value={number} /></td>
+  );
 }
 
 export function DateCell({date}) {
