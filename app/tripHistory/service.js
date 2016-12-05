@@ -170,6 +170,8 @@ export function FilterMultipleOrder() {
 
         const params = {};
         params.userOrderNumbers = filters.userOrderNumbers;
+        params.limit = 100;
+        params.offset = 0;
 
         let promises = [];
         let filterMessage = [];
