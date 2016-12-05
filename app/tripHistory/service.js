@@ -162,9 +162,15 @@ export function FetchList() {
 
             Promise.all(promises).then(function(responses) {
                 responses.forEach(function(response) {
-                    response.rows.forEach(function(trip) {
-                        filterMessage.push({UserOrderNumber: response.UserOrderNumber, TripID: trip.TripID});
-                    });
+                    if (response.rows.length === 0) {
+                        filterMessage.push({UserOrderNumber: response.UserOrderNumber, Found: false});
+                    } else {
+                        let tripIDs = [];
+                        response.rows.forEach(function(trip) {
+                            tripIDs.push(trip.TripID);
+                        });
+                        filterMessage.push({UserOrderNumber: response.UserOrderNumber, Found: true, TripID: tripIDs});
+                    }
                 })
                 dispatch({
                     type: Constants.SET_FILTER_ORDER,

@@ -10,12 +10,32 @@ import {Glyph} from '../views/base';
 import {ButtonWithLoading, ButtonBase} from '../components/button';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 
+const LinkComponents = React.createClass({
+    render: function() {
+        let linkComponents = this.props.message.TripID.map(function(trip) {
+            return (
+                <a href={"/history/" + trip} target={"_blank"}>{trip} </a>
+            );
+        });
+        return <div>{linkComponents}</div>;
+    }
+});
+
 const FilterMessage = React.createClass({
     render: function() {
-        var messageComponents = this.props.messages.map(function(message, idx) {
+        const {messages} = this.props;
+        let messageComponents = messages.map(function(message) {
             return (
                 <div className={styles.foundTrip}>
-                    {message.UserOrderNumber} found on Trip <a href={"/history/" + message.TripID} target={"_blank"}>{message.TripID}</a>
+                    { message.Found ?
+                        <span>
+                            {message.UserOrderNumber} found on Trip:
+                            <LinkComponents message={message} />
+                        </span> :
+                        <span>
+                            {message.UserOrderNumber} not found
+                        </span>
+                    }
                 </div>
             );
         });
