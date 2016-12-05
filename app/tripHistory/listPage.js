@@ -69,6 +69,10 @@ const TripHistoryPage = React.createClass({
     processText() {
         const {filterAction} = this.props;
         const IDs = _.chain(this.state.idsRaw.match(/\S+/g)).uniq().value();
+        if (IDs.length === 0) {
+            alert('Please write EDS Number or Order ID');
+            return;
+        }
         this.setState({ids: IDs});
         this.toggleOpen();
         const newFilters = {['userOrderNumbers']: IDs};
