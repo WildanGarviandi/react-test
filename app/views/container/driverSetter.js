@@ -55,10 +55,25 @@ const DriverSetter = React.createClass({
     this.props.FleetChangeStart();
   },
   render() {
-    const {canPickFleet, driverName, drivers, driversFleetName, fleetName, fleets, isFetchingDriver, isFetchingFleet, isSettingDriver} = this.props;
+    const {canPickFleet, driverName, drivers, driversFleetName, fleetName, fleets, suggestion, isFetchingDriver, isFetchingFleet, isSettingDriver} = this.props;
     const {selectedDriver, showDriverSelect} = this.state;
 
-    const {assignedFleet, canAssignFleet, fleet, isChangingFleet, isSetFleet} = this.props;
+    const {assignedFleet, canAssignFleet, fleet, isChangingFleet, isSetFleet, isInbound} = this.props;
+
+    let reorderedFleets = [].concat(fleets);
+
+    if (suggestion && suggestion.length > 0 && fleets.length > 0) {
+      suggestion.forEach(function (val) {
+        let index = _.findIndex(reorderedFleets, { key: val.fleetID });
+        if (index !== -1) {
+          let data = reorderedFleets[index];
+          data.value = val.companyName + ' (' + val.capacity +
+                                            '/' + val.ovl + ')';
+          reorderedFleets.splice(index, 1);
+          reorderedFleets.unshift(data);
+        }
+      });
+    }
 
     return (
       <div>
@@ -85,7 +100,7 @@ const DriverSetter = React.createClass({
               isChangingFleet &&
               <span>
                 <span className={styles.fillDriverWrapper}>
-                  <DropdownTypeAhead options={fleets} selectVal={this.fleetSelect} val={this.state.selectedFleet.value} />
+                <DropdownTypeAhead options={(isInbound) ? fleets : reorderedFleets} selectVal={this.fleetSelect} val={this.state.selectedFleet.value} />
                 </span>
                 <ButtonWithLoading textBase="Set Fleet" textLoading="Setting Fleet" onClick={this.fleetSet} isLoading={isSetFleet} styles={{base: styles.normalBtn}} />
                 {
@@ -144,7 +159,7 @@ function StateToProps(state, ownProps) {
 
   const fleetList = driversStore.fleetList;
   const isFetchingFleet = fleetList.isLoading;
-  const fleets = _.chain(fleetList.shown)
+  let fleets = _.chain(fleetList.shown)
     .map((fleetID) => {
       return {
         key: fleetID,
