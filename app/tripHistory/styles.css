@@ -138,6 +138,10 @@
     padding: 4px;
 }
 
+.tableMessage tbody {
+    background-color: #C0B2A5;
+}
+
 .tableMessage tr {
     padding: 4px;
     border: 1px solid;

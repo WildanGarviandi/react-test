@@ -149,8 +149,8 @@ const TripHistoryPage = React.createClass({
                             <table className={styles.tableMessage}>
                                 <thead>
                                     <tr>
-                                        <td>EDS / WebOrderID</td>
-                                        <td>Trip</td>
+                                        <td>EDS Number</td>
+                                        <td>Related Trips</td>
                                     </tr>
                                 </thead>
                                 <FilterMessage messages={this.state.filteredOrders} />
