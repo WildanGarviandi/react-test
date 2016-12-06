@@ -112,7 +112,6 @@ function StoreToFilterTripType(store) {
 function DispatchToFilterTripType(dispatch) {
     return {
         handleSelect: (tripType) => {
-            console.log('t', tripType);
             dispatch(TripsHistoryService.SetTripType(tripType));
         }
     }
