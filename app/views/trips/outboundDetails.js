@@ -232,7 +232,8 @@ const mapStateToProps = (state, ownProps) => {
       CODValue: order.IsCOD ? order.TotalValue : 0,
       DeliveryFee: order.DeliveryFee,
       tripID: trip.TripID,
-      CODStatus: order.CODPaymentUserOrder.CODPayment.Status || 'N/A'
+      CODStatus: (order.CODPaymentUserOrder && order.CODPaymentUserOrder.CODPayment) ?
+                  order.CODPaymentUserOrder.CODPayment.Status : 'N/A'
     }
   });
 

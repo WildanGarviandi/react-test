@@ -324,8 +324,9 @@ function OrderRow({order}) {
               (order.IsCOD !== 'Yes' || !order.TotalValue) &&
               <Table.TextCell text={'-'} />
             }
-            <Table.TextCell text={(order.IsCOD === 'Yes') ? 
-                                (order.CODPaymentUserOrder.CODPayment.Status || 'N/A') : 'N/A'} />
+            <Table.TextCell text={(order.IsCOD === 'Yes' && order.CODPaymentUserOrder &&
+                                    order.CODPaymentUserOrder.CODPayment) ? 
+                                    order.CODPaymentUserOrder.CODPayment.Status : 'N/A'} />
             <Table.TextCell text={order.CreatedDate} />
             <Table.TextCell text={order.DueTime} />
         </tr>

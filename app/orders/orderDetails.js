@@ -196,7 +196,8 @@ const DetailPage = React.createClass({
                             <div className={styles.orderDetailsInformation}>
                                 <InputStaticRow label={'COD Amount'} type='number' value={order.TotalValue} />
                                 <InputStaticRow label={'COD Status'} 
-                                    value={order.CODPaymentUserOrder.CODPayment.Status || 'N/A'} />
+                                    value={(order.CODPaymentUserOrder && order.CODPaymentUserOrder.CODPayment) ?
+                                        order.CODPaymentUserOrder.CODPayment.Status : 'N/A'} />
                             </div> 
                         </div>
                     }
