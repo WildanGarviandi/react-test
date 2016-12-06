@@ -4,6 +4,7 @@ import Constants from '../constants';
 const initialState = {
   isFetching: false,
   isUpdating: false,
+  isSuccessEditing: false,
   order: {},
 }
 
@@ -35,6 +36,14 @@ export default (state = initialState, action) => {
 
     case Constants.UPDATE_ORDERS_END: {
       return lodash.assign({}, state, {isUpdating: false});
+    }
+
+    case Constants.SUCCESS_EDITING: {
+      return lodash.assign({}, state, {isSuccessEditing: true});
+    }
+
+    case Constants.REVERT_SUCCESS_EDITING: {
+      return lodash.assign({}, state, {isSuccessEditing: false});
     }
 
     default: return state;

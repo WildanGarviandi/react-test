@@ -24,6 +24,29 @@ export const BaseCell = React.createClass({
   }
 });
 
+export const BaseCellInboundDetails = React.createClass({
+  handleClick() {
+    let {attr, item} = this.props;
+    this.props.StartEditOrder(item.id3);
+  },
+  render() {
+    let {attr, item} = this.props;
+    const name = (attr === 'isSuccess' && item[attr] === 'Yes') ? classNaming(styles.td, styles.tick) : classNaming(styles.td);
+    const value = (attr === 'isSuccess') ? '' : item[attr] && item[attr].toString();
+    return (<td onClick={this.handleClick} className={name}>{value}</td>);
+  }
+});
+
+const BaseCellInboundDetailsDispatch = (dispatch) => {
+  return {
+    StartEditOrder: function(orderID) {
+      dispatch(TripDetails.StartEditOrder(orderID));
+    }
+  }
+}
+
+const BaseCellInboundDetailsContainer = connect(undefined, BaseCellInboundDetailsDispatch)(BaseCellInboundDetails);
+
 export const BaseRow = React.createClass({
   render() {
     let {children} = this.props;
@@ -200,10 +223,10 @@ export const OrderTable = React.createClass({
     this.setState({[key]: val.value});
   },
   render() {
-    let {columns, headers, items, statusList} = this.props;
+    let {columns, headers, items, statusList, isInbound} = this.props;
     let {orderStatus, routeStatus} = this.state;
     let Header = Rows(React.DOM.thead, BaseHeader, {}, columns, function() {});
-    let Body = Rows(React.DOM.tbody, BaseCell, {action: DeleteCellContainer}, columns, function() {}, undefined, 
+    let Body = Rows(React.DOM.tbody, isInbound ? BaseCellInboundDetailsContainer : BaseCell, {action: DeleteCellContainer}, columns, function() {}, undefined, 
       {
         column: 'isSuccess',
         condition: 'Yes',

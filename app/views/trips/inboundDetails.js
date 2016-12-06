@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
 import {ContainerDetailsActions, StatusList} from '../../modules';
 import districtsFetch from '../../modules/districts/actions/districtsFetch';
-import {ButtonBase, ButtonWithLoading, Input, Modal, Page} from '../base';
+import {ButtonBase, ButtonWithLoading, Input, InputWithDefault, Modal, Page} from '../base';
 import DistrictAndDriver from '../container/districtAndDriver';
 import {OrderTable} from '../container/table';
 import * as TripDetails from '../../modules/trips/actions/details';
@@ -20,6 +20,8 @@ import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered} from '../.
 import {formatDate} from '../../helper/time';
 import {TripParser} from '../../modules/trips';
 import {Glyph} from '../base';
+import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import * as OrdersDetails from '../../modules/orders/actions/details';
 
 const columns = ['id', 'id2', 'pickup', 'time', 'CODValue', 'orderStatus', 'routeStatus', 'isSuccess', 'action'];
 const nonFillColumn = columns.slice(0, columns.length - 1);
@@ -30,6 +32,38 @@ const headers = [{
   CODValue: 'COD Value', isSuccess: 'Scanned'
 }];
 
+const InputRow = React.createClass({
+  getInitialState() {
+    return {
+      hover: false
+    };
+  },
+  onMouseEnterHandler: function() {
+    this.setState({
+      hover: true
+    });
+  },
+  onMouseLeaveHandler: function() {
+    this.setState({
+      hover: false
+    });
+  },
+  render() {
+    const {isEditing, label, value, onChange, type, icon, id} = this.props;
+    let stylesLabel = styles.itemLabelHover;
+    let stylesValue = styles.itemValueHover;
+
+    return (
+      <div style={{clear: 'both'}} 
+        className={styles.bgInput}>
+        <img className={styles.iconInput} src={"/img/" + icon + ".png"} />
+        <span className={stylesLabel}>{label}</span>
+        <InputWithDefault id={id} className={stylesValue} currentText={value} type={type} onChange={this.props.onChange} />
+      </div>
+    );
+  }
+});
+
 const DetailPage = React.createClass({
   getInitialState() {
     return {
@@ -39,10 +73,20 @@ const DetailPage = React.createClass({
         isChanging: false,
       },
       orderMarked: "",
+      scanUpdateToggle: false,
+      scannedOrder: this.props.scannedOrder || {},
+      isSuccessEditing: false
     };
   },
+  openModal() {
+    this.setState({showModal: true});
+  },
   closeModal() {
-    this.setState({showModal: false});
+    this.setState({showModal: false, scannedOrder: {}});    
+    this.props.StopEditOrder();
+  },
+  changeToggle() {
+    this.setState({scanUpdateToggle: !this.state.scanUpdateToggle});    
   },
   clearContainer() {
     if(confirm('Are you sure you want to empty and reuse this container?')) {
@@ -52,6 +96,7 @@ const DetailPage = React.createClass({
   },
   componentWillMount() {
     this.props.fetchStatusList();
+    this.props.StopEditOrder();
   },
   goToFillContainer() {
     const {trip} = this.props;
@@ -75,15 +120,31 @@ const DetailPage = React.createClass({
     })
   },
   markReceived(val) {
-    this.props.markReceived(val, "markReceivedInput");
+    this.props.markReceived(val, "markReceivedInput", this.state.scanUpdateToggle);
     this.setState({
       orderMarked: "",
     });
   },
   submitReceived() {
-    this.props.markReceived(this.state.orderMarked);
+    this.props.markReceived(this.state.orderMarked, null, this.state.scanUpdateToggle);
     this.setState({
       orderMarked: "",
+    });
+  },
+  componentWillReceiveProps(nextProps) {
+    if ((nextProps['isEditing'])) {
+      this.openModal();
+      if (document.getElementById('packageVolume')) {
+        document.getElementById('packageVolume').focus();
+      }
+    }
+    if (this.state.scannedOrder.UserOrderID !== nextProps.scannedOrder) {
+      this.setState({
+        scannedOrder: nextProps['scannedOrder'],
+      });
+    }
+    this.setState({
+      isSuccessEditing: nextProps['isSuccessEditing'],
     });
   },
   exportManifest() {
@@ -116,10 +177,30 @@ const DetailPage = React.createClass({
       });
     }
   },
+  stateChange(key) {
+    return (value) => {
+      this.setState({[key]: value});
+    };
+  },
+  updateOrder() {
+    let updatedFields = ['PackageVolume', 'PackageWeight', 'DeliveryFee']
+    let currentData = lodash.assign({}, this.state);
+    let updatedData = {}
+    updatedFields.forEach(function(field) {
+      if (typeof currentData[field] !== 'undefined') {
+        updatedData[field] = parseInt(currentData[field]);
+      } 
+    });
+    this.props.UpdateOrder(this.props.scannedOrder.UserOrderID, updatedData);
+  },
+  confirmSuccess() {
+    this.closeModal();
+    this.props.revertSuccessEditing();
+  },
   render() {
     const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, fillAble, hasDriver, isFetching, isInbound, orders, reusable, statusList, TotalCODValue, CODCount, totalDeliveryFee, trip} = this.props;
 
-    const {canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, isDeassigning} = this.props;
+    const {canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, isDeassigning, isEditing, scannedOrder} = this.props;
 
     const successfullScan = lodash.filter(this.props.orders, {'isSuccess': 'Yes'});
 
@@ -138,6 +219,31 @@ const DetailPage = React.createClass({
         {
           isFetching &&
           <h3>Fetching Trip Details...</h3>
+        }
+        {
+          this.state.showModal && isEditing &&
+          <ModalContainer onClose={this.closeModal}>
+            <ModalDialog onClose={this.closeModal}>
+              { !this.state.isSuccessEditing &&
+                <div style={{clear: 'both'}}>
+                  <InputRow id={'packageVolume'} label={'Package Volume'} icon={'icon-volume'} value={this.state.scannedOrder.PackageVolume} type={'text'} onChange={this.stateChange('PackageVolume') } />
+                  <InputRow label={'Package Weight'} icon={'icon-weight'} value={this.state.scannedOrder.PackageWeight} type={'text'} onChange={this.stateChange('PackageWeight') } />
+                  <InputRow label={'Delivery Fee'} icon={'icon-delivery-fee'} value={this.state.scannedOrder.OrderCost} type={'text'} onChange={this.stateChange('DeliveryFee') } />
+                  <div style={{clear: 'both'}} />
+                  <button className={styles.saveButton} onClick={this.updateOrder}>SUBMIT</button>
+                </div> 
+              }   
+              { this.state.isSuccessEditing &&
+                <div>
+                  <img className={styles.successIcon} src={"/img/icon-success.png"} />
+                  <div className={styles.updateSuccess}>
+                    Update Order Success
+                  </div> 
+                  <button className={styles.saveButton} onClick={this.confirmSuccess}>OK</button>
+                </div>
+              }
+            </ModalDialog>
+          </ModalContainer>
         }
         {
           this.props.notFound && !isFetching &&
@@ -176,6 +282,15 @@ const DetailPage = React.createClass({
             <Accordion initialState="collapsed">
               <TransportSetter trip={trip} isInbound={true} />
             </Accordion>
+            { this.props.isCentralHub && canMarkOrderReceived &&
+              <div className={styles.bgToggle}>
+                <div className={styles.toggleQuestion}>
+                  What do you want to do?
+                </div>
+                <button className={this.state.scanUpdateToggle ? styles.toggleScanButtonInactive : styles.toggleScanButtonActive} onClick={this.changeToggle}>Scan Only</button>
+                <button className={this.state.scanUpdateToggle ? styles.toggleScanButtonActive : styles.toggleScanButtonInactive} onClick={this.changeToggle}>Scan + Update Data</button>
+              </div>
+            }
             <span style={{display: 'block', marginTop: 25, marginBottom: 5}}>
               <span style={{fontSize: 20, display: 'initial', verticalAlign: 'middle'}}>{statisticItem}</span>
               {
@@ -207,7 +322,7 @@ const DetailPage = React.createClass({
                     </span>
                   }
                 </div>
-                <OrderTable columns={fillAble ? columns : nonFillColumn} headers={headers} items={orders} statusList={statusList} />
+                <OrderTable isInbound={true} columns={fillAble ? columns : nonFillColumn} headers={headers} items={orders} statusList={statusList} />
               </div>
             }
           </Page>
@@ -218,10 +333,11 @@ const DetailPage = React.createClass({
 });
 
 const mapStateToProps = (state, ownProps) => {
-  const {inboundTripDetails, userLogged} = state.app;
-  const {hubID} = userLogged;
-  const {isDeassigning, isFetching, orders: rawOrders} = inboundTripDetails;
+  const {inboundTripDetails, userLogged, orderDetails} = state.app;
+  const {hubID, isCentralHub} = userLogged;
+  const {isDeassigning, isFetching, orders: rawOrders, isEditing, scannedOrder} = inboundTripDetails;
   const trip = ownProps.trip;
+  const isSuccessEditing = orderDetails.isSuccessEditing;
   const containerID = ownProps.params.id;
   const {containers, statusList} = state.app.containers;
   const container = containers[containerID];
@@ -304,6 +420,10 @@ const mapStateToProps = (state, ownProps) => {
     canMarkOrderReceived: CanMarkOrderReceived(trip, rawOrders),
     canMarkTripDelivered: CanMarkTripDelivered(trip, rawOrders),
     canMarkContainer: CanMarkContainer(trip, hubID),
+    isEditing,
+    scannedOrder,
+    isSuccessEditing,
+    isCentralHub
   }
 }
 
@@ -330,8 +450,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     fetchStatusList: function() {
       dispatch(StatusList.fetch());
     },
-    markReceived: function(scannedID, backElementFocusID) {
-      dispatch(TripDetailsTrue.OrderReceived(scannedID, backElementFocusID));
+    markReceived: function(scannedID, backElementFocusID, scanUpdateToggle) {
+      dispatch(TripDetailsTrue.OrderReceived(scannedID, backElementFocusID, scanUpdateToggle));
     },
     deliverTrip: function(tripID, orders) {
       dispatch(TripDetailsTrue.TripDeliver(tripID));
@@ -345,6 +465,15 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     exportManifest: function() {
       dispatch(TripDetailsTrue.ExportManifest(ownProps.params.id));
     },
+    UpdateOrder: function(id, order){
+      dispatch(OrdersDetails.editOrder(id, order, true));
+    },
+    StopEditOrder: function() {
+      dispatch(TripDetailsTrue.StopEditOrder());
+    },
+    revertSuccessEditing: function(){
+      dispatch(OrdersDetails.revertSuccessEditing());
+    }
   };
 };
 

@@ -178,3 +178,113 @@
 .submitButton:hover {
   background-color: #3eb881;
 }
+
+.itemLabel {
+  font-size: 14px;
+  font-weight: 500;
+  float: left;
+  display: block;
+  margin-top: 26px;
+}
+
+.itemLabelHover {
+  font-size: 10px;
+  font-weight: 500;
+  float: left;
+  display: block;
+  margin-top: 16px;
+}
+
+.itemValue {
+  display: none;
+}
+
+.itemValueHover {
+  font-size: 14px;
+  font-weight: 500;
+  display: block;
+  margin-top: 30px;
+  border: solid 1px #ebebeb;
+  border-radius: 3px;
+  height: 30px
+}
+
+.bgInput {
+  width: 416px;
+  height: 72px;
+  border-radius: 6px;
+  background-color: #fff;
+  border: solid 1px #ebebeb;
+  margin-top: 10px;
+}
+
+.iconInput {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  float: left;
+  display: block;
+  margin-top: 15px;
+  margin-left: 5px;
+}
+
+.saveButton {
+  width: 416px;
+  height: 72px;
+  border-radius: 6px;
+  background-color: #4dc38e;
+  font-size: 20px;
+  font-weight: 900;
+  text-align: center;
+  color: #ffffff;
+  margin-top: 10px;
+}
+
+.bgToggle {
+  margin-top: -120px;
+  float: right;
+}
+
+.toggleScanButtonActive {
+  width: 240px;
+  height: 48px;
+  border-radius: 4px;
+  background-color: #4990e2;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  color: #ffffff;
+}
+
+.toggleScanButtonInactive {
+  width: 240px;
+  height: 48px;
+  border-radius: 4px;
+  background-color: #dddddd;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  color: #ffffff;
+}
+
+.toggleQuestion {
+  height: 22px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #000000;
+}
+
+.updateSuccess {
+  font-size: 20px;
+  font-weight: 500;
+  text-align: center;
+  color: #000000;
+}
+
+.successIcon {
+  width: 160px;
+  height: 160px;  
+  margin-left: 110px;
+  object-fit: contain;
+}
+
