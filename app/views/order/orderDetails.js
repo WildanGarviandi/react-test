@@ -146,7 +146,7 @@ const Details = React.createClass({
     const Title = "Order Details " + (order.UserOrderNumber || "");
 
     return (
-      <Page title={Title}>
+      <Page title={Title} backButton="true">
         {
           isFetching &&
           <h3>Fetching order details...</h3>
