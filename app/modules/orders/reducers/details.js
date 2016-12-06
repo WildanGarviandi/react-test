@@ -5,6 +5,7 @@ const initialState = {
   isFetching: false,
   isUpdating: false,
   isSuccessEditing: false,
+  isEditing: false,
   order: {},
 }
 
