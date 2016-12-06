@@ -107,6 +107,12 @@ const DriverSetter = React.createClass({
                   fleetName &&
                   <ButtonBase onClick={this.fleetChangeEnd} styles={styles.driverBtn}>Cancel</ButtonBase>
                 }
+                <div className={styles.noteText}>
+                  <strong>Notes:&nbsp;</strong>
+                  <span>
+                    The number shows OVL. 90/100 meaning the vendor can accept 90 more orders out of his 100 capacity.
+                  </span>
+                </div>
               </span>
             }
             </span>

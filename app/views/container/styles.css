@@ -70,3 +70,8 @@
   display: block;
   margin-bottom: 10px;
 }
+
+.noteText {
+  font-size: 11px;
+  margin-top: 5px;
+}
