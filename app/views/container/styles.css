@@ -70,3 +70,33 @@
   display: block;
   margin-bottom: 10px;
 }
+
+.remarksContent {
+}
+
+.remarksContent textarea {
+  width: 400px;
+  height: 70px;
+}
+
+.remarksCancel {
+  background-color: grey;
+  width: 60px;
+  height: 30px;
+}
+
+.remarksCancel:hover {
+  background-color: darkgrey;
+}
+
+.remarksSave {
+  margin-left: 286px;
+  width: 60px;
+  height: 30px;
+}
+
+.remarksEdit {
+  margin-top: 10px;
+  width: 60px;
+  height: 30px;
+}

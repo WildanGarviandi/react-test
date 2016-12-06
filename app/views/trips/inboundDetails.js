@@ -15,6 +15,7 @@ import ModalActions from '../../modules/modals/actions';
 import Accordion from '../base/accordion';
 import NextDestinationSetter from '../container/nextDestinationSetter';
 import TransportSetter from '../container/secondSetting';
+import RemarksSetter from '../container/remarksSetter';
 import styles from './styles.css';
 import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered} from '../../modules/trips';
 import {formatDate} from '../../helper/time';
@@ -157,6 +158,7 @@ const DetailPage = React.createClass({
               <span className={styles.num}>Origin</span>
               <span className={styles.attr}>{tripOrigin}</span>
             </div>
+            <RemarksSetter trip={trip} />
             <div style={{clear: 'both'}} />
             {
               reusable &&

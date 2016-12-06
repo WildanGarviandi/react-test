@@ -15,6 +15,7 @@ import ModalActions from '../../modules/modals/actions';
 import Accordion from '../base/accordion';
 import NextDestinationSetter from '../container/nextDestinationSetter';
 import TransportSetter from '../container/secondSetting';
+import RemarksSetter from '../container/remarksSetter';
 import styles from './styles.css';
 import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered} from '../../modules/trips';
 import {formatDate} from '../../helper/time';
@@ -37,6 +38,9 @@ const DetailPage = React.createClass({
         isChanging: false,
       },
       orderMarked: "",
+      edit: {
+        remarks: ""
+      }
     };
   },
   closeModal() {
@@ -95,7 +99,8 @@ const DetailPage = React.createClass({
   render() {
     const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, fillAble, hasDriver, isFetching, isInbound, orders, reusable, statusList, TotalCODValue, CODCount, totalDeliveryFee, trip} = this.props;
 
-    const {canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, isDeassigning} = this.props;
+    const {canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, 
+          isDeassigning, isChangingRemarks, isTripEditing} = this.props;
 
     const tripType = trip.DestinationHub ? 'Interhub' : 'Last Leg';
     let tripDestination;
@@ -145,6 +150,7 @@ const DetailPage = React.createClass({
                 <span className={styles.attr}>{tripDestination}</span>
               </div>
             }
+            <RemarksSetter trip={trip} />
             <div style={{clear: 'both'}} />
             {
               fillAble &&
@@ -196,7 +202,7 @@ const DetailPage = React.createClass({
 const mapStateToProps = (state, ownProps) => {
   const {inboundTripDetails, userLogged} = state.app;
   const {hubID} = userLogged;
-  const {isDeassigning, isFetching, orders: rawOrders} = inboundTripDetails;
+  const {isDeassigning, isFetching, orders: rawOrders, isChangingRemarks, isTripEditing} = inboundTripDetails;
   const trip = ownProps.trip;
   const containerID = ownProps.params.id;
   const {containers, statusList} = state.app.containers;
@@ -277,6 +283,8 @@ const mapStateToProps = (state, ownProps) => {
     canMarkOrderReceived: CanMarkOrderReceived(trip, rawOrders),
     canMarkTripDelivered: CanMarkTripDelivered(trip, rawOrders),
     canMarkContainer: CanMarkContainer(trip, hubID),
+    isChangingRemarks,
+    isTripEditing
   }
 }
 
