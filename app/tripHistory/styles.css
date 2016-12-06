@@ -46,3 +46,108 @@
   margin-bottom: 10px;
 }
 
+.panel {
+    border-radius: 5px;
+    border: solid 1px #ccc;
+}
+
+.bottom {
+    padding: 0 15px 45px;
+}
+
+.title {
+    margin-top: 0;
+    padding: 10px;
+}
+
+.top {
+    background-color: #371e38;
+    color: #ccc;
+    text-indent: 10px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    cursor: pointer;
+}
+
+.top {
+    background-color: #371e38;
+    color: #ccc;
+    text-indent: 10px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    cursor: pointer;
+}
+
+.modalBtn, .modalLink {
+    padding: 8px;
+    display: inline-block;
+    margin-left: 4px;
+    margin-top: 5px;
+    float: right;
+}
+
+.modalLink:hover {
+    color: #337ab7;
+}
+
+.top2 {
+    background-color: #371e38;
+    color: #ccc;
+    text-indent: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.glyphFilter {
+    position: relative;
+    left: -13px;
+}
+
+.arrowDown {
+    float: left;
+}
+
+.foundTrip {
+    background-color: #371e38;
+    color: #C0B2A5;
+    padding: 3px;
+    border-radius: 5px;
+    margin-bottom: 2px;
+    margin-top: 2px;
+}
+
+.foundTrip a {
+    color: #fff;
+}
+
+.tableMessage {
+    background-color: #FFFFFF;
+    color: #000000;
+    border: 1px solid;
+    border-radius: 3px;
+    padding: 8px;
+}
+
+.tableMessage a {
+    text-decoration: underline;
+}
+
+.tableMessage thead {
+    background-color: #1A2226;
+    color: #FFFFFF;
+    padding: 4px;
+}
+
+.tableMessage tbody {
+    background-color: #C0B2A5;
+}
+
+.tableMessage tr {
+    padding: 4px;
+    border: 1px solid;
+}
+
+.tableMessage td {
+    padding: 4px;
+    border: 1px solid;
+}

@@ -60,13 +60,7 @@ const SecondSetting = React.createClass({
         }
         </div>
         {
-          accordionState === "expanded" && (trip.District || !isCentralHub) &&
-          <div className={styles.setterBody}>
-            <DriverSetter trip={trip} />
-          </div>
-        }
-        {
-          accordionState === "expanded" && !trip.District && isCentralHub &&
+          accordionState === "expanded" &&
           <div className={styles.setterBody}>
             <div className={leftStyle}>
               <DriverSetter trip={trip} />

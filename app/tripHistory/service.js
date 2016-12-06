@@ -10,7 +10,9 @@ const Constants = {
     SET_STATUSNAME: "history/statusName/set",
     SET_TRIPS: "history/trips/set",
     SET_TRIPTYPE: "history/tripType/set",
-    RESET_FILTER: "history/resetFilter"
+    RESET_FILTER: "history/resetFilter",
+    SET_FILTER_ORDER: "history/setFilterOrder",
+    RESET_FILTER_ORDER: "history/resetFilterOrder"
 }
 
 const initialStore = {
@@ -21,6 +23,7 @@ const initialStore = {
     total: 0,
     tripType: "Show All",
     trips: [],
+    filteredOrders: []
 }
 
 export default function Reducer(store = initialStore, action) {
@@ -59,6 +62,14 @@ export default function Reducer(store = initialStore, action) {
                 filterStatus: "SHOW ALL",
                 limit: 100,
             });
+        }
+
+        case Constants.SET_FILTER_ORDER: {
+            return lodash.assign({}, store, {filteredOrders: action.filteredOrders});
+        }
+
+        case Constants.RESET_FILTER_ORDER: {
+            return lodash.assign({}, store, {filteredOrders: []});
         }
 
         default: {
@@ -127,6 +138,7 @@ export function FetchList() {
             offset: (currentPage-1)*limit
         });
 
+        delete params.userOrderNumbers;
         dispatch({type: modalAction.BACKDROP_SHOW});
         FetchGet(`/trip/historyByHub/${hubID}`, token, params).then((response) => {
             if(!response.ok) {
@@ -150,6 +162,60 @@ export function FetchList() {
     }
 }
 
+export function FilterMultipleOrder() {
+    return (dispatch, getState) => {
+        const {tripsHistory, userLogged} = getState().app;
+        const {currentPage, limit, filters} = tripsHistory;
+        const {hubID, token} = userLogged;
+
+        const params = {};
+        params.userOrderNumbers = filters.userOrderNumbers;
+        params.limit = 1000000;
+        params.offset = 0;
+
+        let promises = [];
+        let filterMessage = [];
+
+        function filterSingleEDS(token, userOrderNumber, params) {
+            return new Promise(function(resolve, reject) {
+                delete params.userOrderNumbers;
+                FetchGet(`/trip/historyByHub/${hubID}`, token, params)
+                .then(function(response) {
+                    return response.json().then(({data}) => {
+                        data.UserOrderNumber = userOrderNumber;
+                        return resolve(data);
+                    });
+                });
+            });
+        }
+
+        dispatch({type: modalAction.BACKDROP_SHOW});
+        params.userOrderNumbers.forEach(function(userOrderNumber) {
+            params.userOrderNumber = userOrderNumber;
+            promises.push(filterSingleEDS(token, userOrderNumber, params));
+        });
+
+        Promise.all(promises).then(function(responses) {
+            responses.forEach(function(response) {
+                if (response.rows.length === 0) {
+                    filterMessage.push({UserOrderNumber: response.UserOrderNumber, Found: false});
+                } else {
+                    let tripIDs = [];
+                    response.rows.forEach(function(trip) {
+                        tripIDs.push(trip.TripID);
+                    });
+                    filterMessage.push({UserOrderNumber: response.UserOrderNumber, Found: true, TripID: tripIDs});
+                }
+            })
+            dispatch({
+                type: Constants.SET_FILTER_ORDER,
+                filteredOrders: filterMessage
+            })
+            dispatch({type: modalAction.BACKDROP_HIDE});
+        });
+    }
+}
+
 export function SetTripType(tripType) {
     return (dispatch, getState) => {
         dispatch({type: Constants.SET_TRIPTYPE, tripType: tripType.value});
@@ -162,4 +228,8 @@ export function ResetFilter() {
     return (dispatch) => {
         dispatch({type: Constants.RESET_FILTER});
     }
+}
+
+export function ResetFilterOrder(filters) {
+    return {type: Constants.RESET_FILTER_ORDER}
 }

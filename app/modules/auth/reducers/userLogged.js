@@ -10,6 +10,9 @@ const initialUserState = {
   hubName: localStorage.hubName,
   fleetName: localStorage.fleetName,
   isCentralHub: false,
+  editCOD: false, 
+  editVolume: false,
+  editWeight: false
 };
 
 export default (state = initialUserState, action) => {
@@ -39,6 +42,9 @@ export default (state = initialUserState, action) => {
         hubName: action.hub && action.hub.Name,
         fleetName: action.user && action.user.User && action.user.User.FirstName + ' ' + action.user.User.LastName,
         isCentralHub: action.hub && ("CENTRAL" === action.hub.Type),
+        editCOD: action.order.edit_cod, 
+        editVolume: action.order.edit_volume,
+        editWeight: action.order.edit_weight
       });
     default:
       return state;

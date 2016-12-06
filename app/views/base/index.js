@@ -3,7 +3,7 @@ import Collection from './collection';
 import { Dropdown, DropdownTypeAhead } from './dropdown';
 import { Glyph } from './glyph';
 import Infograph from './infograph';
-import { CheckBox, Input } from './input';
+import { CheckBox, Input, InputWithDefault } from './input';
 import ModalMessage from './modalMessage';
 import Page, { ButtonAtRightTop, PageTitle } from './page';
 import { Pagination } from './pagination';
@@ -47,4 +47,4 @@ const ButtonWithLoading = React.createClass({
   }
 })
 
-export { ButtonAtRightTop, ButtonBase, ButtonAction, ButtonWithLoading, CheckBox, Collection, Dropdown, DropdownTypeAhead, Glyph, Infograph, Input, Modal, ModalMessage, Page, PageTitle, Pagination, Rows, Tables, NotificationContainer };
+export { ButtonAtRightTop, ButtonBase, ButtonAction, ButtonWithLoading, CheckBox, Collection, Dropdown, DropdownTypeAhead, Glyph, Infograph, Input, InputWithDefault, Modal, ModalMessage, Page, PageTitle, Pagination, Rows, Tables, NotificationContainer };
