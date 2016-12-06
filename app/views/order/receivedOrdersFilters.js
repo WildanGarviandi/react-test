@@ -56,6 +56,11 @@ function mapDispatchToPickupOrders(dispatch) {
           newFilter = {nextDestination: filter.val};
           break;
         }
+
+        case "SuggestedVendors": {
+          newFilter = {lastMileFleetSuggestion: filter.val};
+          break;
+        }
       }
 
       dispatch(ReceivedOrders.AddFilters(newFilter));

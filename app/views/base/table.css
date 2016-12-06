@@ -97,3 +97,11 @@
 .link {
     color: #33c;
 }
+
+.th.SuggestedVendors, .td.SuggestedVendors {
+  min-width: 100px;
+}
+
+.td.SuggestedVendors {
+  text-align: center;
+}
