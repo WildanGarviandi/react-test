@@ -9,6 +9,14 @@ import { TextareaWithDefault } from '../../components/form';
 import styles from './styles.css';
 
 const RemarksSetter = React.createClass({
+  getInitialState() {
+    return {
+      showEdit: false,
+      edit: {
+        remarks: ""
+      }
+    }
+  },
   setRemarksText() {
     this.props.saveTripDetails(this.props.trip.TripID, {remarks: this.state.edit.remarks});
   },
@@ -17,6 +25,16 @@ const RemarksSetter = React.createClass({
   },
   cancelChangingRemarks() {
     this.props.cancelChangingRemarks();
+  },
+  showEdit() {
+    this.setState({
+      showEdit: true
+    });
+  },
+  hideEdit() {
+    this.setState({
+      showEdit: false
+    });
   },
   changeState(key) {
     return (value) => {
@@ -31,14 +49,19 @@ const RemarksSetter = React.createClass({
     const { isChangingRemarks, trip, isTripEditing } = this.props;
 
     return (
-      <div>
-        Remarks / Notes:
+      <div className={styles.remarksContainer} onMouseLeave={this.hideEdit} onMouseEnter={this.showEdit}>
+        <span className={styles.remarksTitle}>Remarks / Notes:</span>
         {
           !isChangingRemarks &&
-          <div>
-            <div className={styles.remarksContent} >{trip.Notes}</div>
-            <ButtonBase children={'Edit'} onClick={this.editRemarks} styles={styles.remarksEdit} />
-          </div>
+          <span>
+            <span className={styles.remarksContent} >
+              <span className={styles.remarksText}>{trip.Notes}</span>
+              {
+                this.state.showEdit &&
+                <ButtonBase children={'Edit'} onClick={this.editRemarks} styles={styles.remarksEdit} />
+              }
+            </span>
+          </span>
         }
         {
           isChangingRemarks &&

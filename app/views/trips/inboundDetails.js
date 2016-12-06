@@ -158,7 +158,6 @@ const DetailPage = React.createClass({
               <span className={styles.num}>Origin</span>
               <span className={styles.attr}>{tripOrigin}</span>
             </div>
-            <RemarksSetter trip={trip} />
             <div style={{clear: 'both'}} />
             {
               reusable &&
@@ -177,6 +176,7 @@ const DetailPage = React.createClass({
             <Accordion initialState="collapsed">
               <TransportSetter trip={trip} isInbound={true} />
             </Accordion>
+            <RemarksSetter trip={trip} />
             <span style={{display: 'block', marginTop: 25, marginBottom: 5}}>
               <span style={{fontSize: 20, display: 'initial', verticalAlign: 'middle'}}>{statisticItem}</span>
               {

@@ -37,10 +37,7 @@ const DetailPage = React.createClass({
       district: {
         isChanging: false,
       },
-      orderMarked: "",
-      edit: {
-        remarks: ""
-      }
+      orderMarked: ""
     };
   },
   closeModal() {
@@ -150,7 +147,6 @@ const DetailPage = React.createClass({
                 <span className={styles.attr}>{tripDestination}</span>
               </div>
             }
-            <RemarksSetter trip={trip} />
             <div style={{clear: 'both'}} />
             {
               fillAble &&
@@ -168,6 +164,7 @@ const DetailPage = React.createClass({
             <a onClick={this.exportManifest} className={styles.manifestLink} target="_blank">Export Excel Manifest</a>
             <NextDestinationSetter nextSuggestion={nextSuggestion} trip={trip} accordionState={trip && (trip.Driver || trip.ExternalTrip) ? "collapsed" : "expanded"} />
             <TransportSetter trip={trip} isInbound={false} accordionState={trip && ((trip.Driver || trip.ExternalTrip) || !(trip.District || trip.DestinationHub)) ? "collapsed" : "expanded"}/>
+            <RemarksSetter trip={trip} />
             <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>
               <span style={{fontSize: 20, display: 'initial', verticalAlign: 'middle'}}>Total {orders.length} items
               </span>

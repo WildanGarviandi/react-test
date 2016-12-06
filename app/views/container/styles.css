@@ -71,18 +71,35 @@
   margin-bottom: 10px;
 }
 
+.remarksContainer {
+  width: 500px;
+  position: relative;
+}
+
+.remarksTitle {
+  margin-right: 10px;
+}
+
 .remarksContent {
+  margin-top: 5px;
 }
 
 .remarksContent textarea {
-  width: 400px;
+  width: 85%;
   height: 70px;
+}
+
+.remarksText {
+  margin-right: 10px;
 }
 
 .remarksCancel {
   background-color: grey;
   width: 60px;
   height: 30px;
+  position: absolute;
+  top: 20px;
+  right: 0;
 }
 
 .remarksCancel:hover {
@@ -93,10 +110,11 @@
   margin-left: 286px;
   width: 60px;
   height: 30px;
+  position: absolute;
+  top: 60px;
+  right: 0;
 }
 
 .remarksEdit {
-  margin-top: 10px;
-  width: 60px;
-  height: 30px;
+  margin-top: 5px;
 }
