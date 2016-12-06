@@ -165,7 +165,7 @@ function TripHistoryRow({trip, goToDetails}) {
             <TextCell text={(trip.District && trip.District.Name) || '---'} />
             <TextCell text={trip.PickupTime && formatDate(trip.PickupTime)} />
             <TextCell text={trip.DropoffTime && formatDate(trip.DropoffTime)} />
-            <TextCell text={trip.FleetName || '---'} />
+            <TextCell text={(trip.FleetManager && trip.FleetManager.CompanyDetail && trip.FleetManager.CompanyDetail.CompanyName) || '---'} />
             <TextCell text={trip.DriverName || '---'} />
             <TextCell text={trip.OrderStatus && trip.OrderStatus.OrderStatus} />
             <TextCell text={trip.TripType} />
