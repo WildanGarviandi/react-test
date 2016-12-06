@@ -13,6 +13,7 @@ import Accordion from '../base/accordion';
 import styles from './styles.css';
 import _ from 'underscore';
 import config from '../../../config.json';
+import {push} from 'react-router-redux';
 
 var classnaming = require('classnames/bind').bind(styles);
 
@@ -50,14 +51,14 @@ const AccordionMenu = React.createClass({
   }
 })
 
-const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, loggedName, counterOrder}) => {
+const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, loggedName, counterOrder, tmsMenu, switchMenu}) => {
   return (
     <div className={styles.menuPanel}>
-      <h4 className={styles.menuTitle}>Etobee TMS</h4>
+      <h4 className={styles.menuTitle}>Etobee {tmsMenu ? 'TMS' : 'Hub'}</h4>
       <h5 className={styles.menuTitle}>{loggedName}</h5>
-      <h4 className={styles.compactTitle}>ETMS</h4>
+      <h4 className={styles.compactTitle}>{tmsMenu ? 'E-TMS' : 'E-Hub'}</h4>
       <ul className={styles.menuList}>
-        { hubID &&
+        { hubID && !tmsMenu &&
           <div>
           <Accordion initialState={'collapsed'}>
             <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[0,1]} iconName={'list-alt'} iconTitle={'Inbound'}>
@@ -89,7 +90,7 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
           </MenuItem>
           </div>
         }
-        { config.features.menuTMS &&
+        { config.features.menuTMS && (tmsMenu || !hubID) &&
           <div>
           <Accordion initialState={'collapsed'}>
             <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[5,9,10]} iconName={'shopping-cart'} iconTitle={'My Orders'}>
@@ -126,6 +127,13 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
             <span>Logout</span>
           </MenuItem>
       </ul>
+      { hubID &&
+        <center className={styles.menuTitle}>
+          <a className={styles.switchLink} onClick={switchMenu}>
+            <span>Switch to {tmsMenu ? 'Hub' : 'TMS'}</span>
+          </a>
+        </center>
+      }
       <button className={styles.toggleMenu} onClick={toggleCompact}>
         <Glyph className={styles.glyphBackward} name={'backward'}/>
         <Glyph className={styles.glyphForward} name={'forward'}/>
@@ -163,7 +171,7 @@ const DashboardContainer = React.createClass({
     router: React.PropTypes.object.isRequired
   },
   getInitialState() {
-    return {isCompact: false};
+    return {isCompact: false, tmsMenu: this.props.hubID};
   },
   componentWillMount() {
     this.props.initialLoad();
@@ -173,6 +181,10 @@ const DashboardContainer = React.createClass({
   },
   handleLogout() {
     this.props.logout();
+  },
+  switchMenu() {
+    this.setState({tmsMenu: !this.state.tmsMenu});
+    this.props.switchMenu(!this.state.tmsMenu);
   },
   render() {
     let {routes, userLogged} = this.props;
@@ -184,7 +196,15 @@ const DashboardContainer = React.createClass({
     return (
       <div style={{display: 'table', width: '100%', minHeight: '100%'}}>
         <div className={panelClass} >
-          <DashboardMenu activeMenuIdx={activeMenuIdx} handleLogout={this.handleLogout} toggleCompact={this.toggleCompact} hubID={hubID} loggedName={loggedName} counterOrder={this.props.counterOrder} />
+          <DashboardMenu 
+            activeMenuIdx={activeMenuIdx} 
+            handleLogout={this.handleLogout} 
+            toggleCompact={this.toggleCompact} 
+            hubID={hubID} 
+            loggedName={loggedName} 
+            counterOrder={this.props.counterOrder}
+            tmsMenu={this.state.tmsMenu}
+            switchMenu={this.switchMenu} />
           <DashboardContent>{this.props.children}</DashboardContent>
         </div>
       </div>
@@ -216,6 +236,13 @@ function DispatchToProps(dispatch) {
     },
     logout: function() {
       dispatch(LogoutAction.logout());
+    },
+    switchMenu: function(tmsMenu) {
+      if (tmsMenu) {
+        dispatch(push('/myorders/open'));
+      } else {
+        dispatch(push('/orders/pickup'));
+      }
     }
   }
 }

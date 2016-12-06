@@ -232,3 +232,16 @@ a:focus, a:hover {
   transform: translateY(-50%);
   line-height: 16px;
 }
+
+.switchLink {
+  text-align: center;
+  margin-top: 5px;
+  background-color: #ff5a60;
+  cursor: pointer;
+  position: fixed;
+  bottom: 30px;
+  left: 35px;
+  padding: 5px;
+  box-sizing: border-box;
+  border-radius: 5px;
+}
