@@ -148,7 +148,7 @@ function StateToProps(state, ownProps) {
     .map((fleetID) => {
       return {
         key: fleetID,
-        value: UtilHelper.FleetName(fleetList.dict[fleetID]),
+        value: UtilHelper.FleetNameWithCapacity(fleetList.dict[fleetID]),
       }
     })
     .value();

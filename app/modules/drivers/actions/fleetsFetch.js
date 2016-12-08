@@ -14,10 +14,14 @@ function FetchFleets() {
     //   dispatch(fleetSet(driversStore.fleetDrivers.active));
     //   return;
     // }
+    
+    const params = {
+      includeCapacity: 1
+    }
 
     dispatch({ type: actionTypes.FLEETS_FETCH_START});
 
-    fetchGet('/fleet/', token).then(function(response) {
+    fetchGet('/fleet/', token, params).then(function(response) {
       if(response.ok) {
         response.json().then(function(resp) {
           const response = resp.data;
