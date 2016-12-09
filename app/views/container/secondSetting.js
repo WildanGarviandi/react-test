@@ -26,7 +26,7 @@ const SecondSetting = React.createClass({
     }
   },
   render() {
-    const {accordionAction, accordionState, isCentralHub, isInbound, transportMethod, trip} = this.props;
+    const {accordionAction, accordionState, isCentralHub, isInbound, transportMethod, trip, suggestion} = this.props;
     const leftStyle = classNaming(styles.setterLeft);
 
     const canSet = trip.DestinationHub || trip.District;
@@ -63,7 +63,7 @@ const SecondSetting = React.createClass({
           accordionState === "expanded" &&
           <div className={styles.setterBody}>
             <div className={leftStyle}>
-              <DriverSetter trip={trip} />
+              <DriverSetter trip={trip} isInbound={isInbound} suggestion={suggestion} />
             </div>
             <div className={styles.setterRight}>
               <ThirdPartySetter trip={trip} isInbound={isInbound} />

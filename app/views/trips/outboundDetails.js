@@ -115,6 +115,19 @@ const DetailPage = React.createClass({
         }
     }
 
+    let fleetSuggestion = [];
+    if (trip.LastMileFleetSuggestion && trip.LastMileFleetSuggestion.length > 0) {
+      fleetSuggestion = trip.LastMileFleetSuggestion.map((val) => {
+        return {
+          fleetID: val.UserID,
+          companyName: val.CompanyDetail.CompanyName,
+          capacity: val.OrderCapacity,
+          ovl: val.CompanyDetail.OrderVolumeLimit
+        }
+      });
+    }
+
+
     return (
       <div>
         {
@@ -162,7 +175,7 @@ const DetailPage = React.createClass({
             <a href={'/trips/' + trip.TripID + '/manifest#'} className={styles.manifestLink} target="_blank">Print Manifest</a>
             <a onClick={this.exportManifest} className={styles.manifestLink} target="_blank">Export Excel Manifest</a>
             <NextDestinationSetter nextSuggestion={nextSuggestion} trip={trip} accordionState={trip && (trip.Driver || trip.ExternalTrip) ? "collapsed" : "expanded"} />
-            <TransportSetter trip={trip} isInbound={false} accordionState={trip && ((trip.Driver || trip.ExternalTrip) || !(trip.District || trip.DestinationHub)) ? "collapsed" : "expanded"}/>
+            <TransportSetter suggestion={fleetSuggestion} trip={trip} isInbound={false} accordionState={trip && ((trip.Driver || trip.ExternalTrip) || !(trip.District || trip.DestinationHub)) ? "collapsed" : "expanded"}/>
             <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>
               <span style={{fontSize: 20, display: 'initial', verticalAlign: 'middle'}}>Total {orders.length} items
               </span>

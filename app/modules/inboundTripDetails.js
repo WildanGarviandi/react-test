@@ -538,9 +538,12 @@ export function FetchDetails(tripID) {
   return (dispatch, getState) => {
     const {userLogged} = getState().app;
     const {token} = userLogged;
+    let params =  {
+      suggestLastMileFleet: 1
+    };
 
     dispatch({ type: Constants.TRIPS_INBOUND_DETAILS_FETCH_START });
-    FetchGet('/trip/' + tripID, token).then((response) => {
+    FetchGet('/trip/' + tripID, token, params).then((response) => {
       if(!response.ok) {
         if(response.status == 403) {
           throw new Error("This trip doesn't belong to this hub");
