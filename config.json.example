@@ -4,6 +4,7 @@
   "port": 8080,
   "defaultCountryCode": "+62",
   "defaultCountryID": 95,
+  "locale": "id",
   "features": {
     "menuTMS": true
   }

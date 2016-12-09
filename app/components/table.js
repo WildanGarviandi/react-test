@@ -8,6 +8,7 @@ import StatusDropdown from '../views/base/statusDropdown';
 import {Link} from 'react-router';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import moment from 'moment';
+import { FormattedNumber } from 'react-intl';
 
 export function EmptyCell() {
     return <td className={styles.td}></td>;
@@ -36,6 +37,13 @@ export function Cell({colspan, children}) {
 
 export function TextCell({text}) {
   return <td className={styles.td}>{text}</td>;
+}
+
+export function NumberCell({number}) {
+  return ( 
+    <td className={styles.td}>
+    <FormattedNumber value={number} /></td>
+  );
 }
 
 export function DateCell({date}) {

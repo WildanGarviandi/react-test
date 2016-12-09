@@ -14,6 +14,7 @@ import {Link} from 'react-router';
 import Accordion from '../views/base/accordion';
 import {Glyph} from '../views/base';
 import {formatDate} from '../helper/time';
+import { FormattedNumber } from 'react-intl';
 
 const InputStaticRow = React.createClass({
   render() {
@@ -23,7 +24,14 @@ const InputStaticRow = React.createClass({
       <div style={{clear: 'both'}}>
         <span className={styles.itemLabel}>{label}</span>
           <span className={styles.itemValue}>
-            {value}
+            {
+              (type === 'number') && value &&
+              <FormattedNumber value={value} />
+            }
+            {
+              !type &&
+              <span>{value}</span>
+            }
           </span>
       </div>
     );
@@ -172,13 +180,27 @@ const DetailPage = React.createClass({
                             Order Dimension
                         </div>
                         <div className={styles.orderDetailsInformation}>
-                            <InputStaticRow label={'Package Weight'} value={order.PackageWeight} />
-                            <InputStaticRow label={'Package Volume'} value={order.PackageVolume} />
-                            <InputStaticRow label={'Package Width'} value={order.PackageWidth} />
-                            <InputStaticRow label={'Package Height'} value={order.PackageHeight} />
-                            <InputStaticRow label={'Package Length'} value={order.PackageLength} />
+                            <InputStaticRow label={'Package Weight'} type='number' value={order.PackageWeight} />
+                            <InputStaticRow label={'Package Volume'} type='number' value={order.PackageVolume} />
+                            <InputStaticRow label={'Package Width'} type='number' value={order.PackageWidth} />
+                            <InputStaticRow label={'Package Height'} type='number' value={order.PackageHeight} />
+                            <InputStaticRow label={'Package Length'} type='number' value={order.PackageLength} />
                         </div> 
                     </div>
+                    {
+                        order.IsCOD &&
+                        <div className={styles.orderDetailsBoxRight}>
+                            <div className={styles.orderDetailsHeader}>
+                                COD Details
+                            </div>
+                            <div className={styles.orderDetailsInformation}>
+                                <InputStaticRow label={'COD Amount'} type='number' value={order.TotalValue} />
+                                <InputStaticRow label={'COD Status'} 
+                                    value={(order.CODPaymentUserOrder && order.CODPaymentUserOrder.CODPayment) ?
+                                        order.CODPaymentUserOrder.CODPayment.Status : 'N/A'} />
+                            </div> 
+                        </div>
+                    }
                     <div style={{clear: 'both'}}>
                     </div>
                     { order.RecipientName &&
