@@ -15,17 +15,18 @@ import ModalActions from '../../modules/modals/actions';
 import Accordion from '../base/accordion';
 import NextDestinationSetter from '../container/nextDestinationSetter';
 import TransportSetter from '../container/secondSetting';
+import RemarksSetter from '../container/remarksSetter';
 import styles from './styles.css';
 import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered} from '../../modules/trips';
 import {formatDate} from '../../helper/time';
 
-const columns = ['id', 'id2', 'dropoff', 'time', 'CODValue', 'orderStatus', 'routeStatus', 'action'];
+const columns = ['id', 'id2', 'dropoff', 'time', 'CODValue', 'CODStatus', 'orderStatus', 'routeStatus', 'action'];
 const nonFillColumn = columns.slice(0, columns.length - 1);
 const headers = [{
   id: 'Web Order ID', id2: 'User Order Number',
   pickup: 'Pickup Address', dropoff: 'Dropoff Address',
   time: 'Pickup Time', orderStatus: 'Order Status',routeStatus: 'Route Status', action: 'Action',
-  CODValue: 'COD Value'
+  CODValue: 'COD Value', CODStatus: 'COD Status'
 }];
 
 const DetailPage = React.createClass({
@@ -36,7 +37,7 @@ const DetailPage = React.createClass({
       district: {
         isChanging: false,
       },
-      orderMarked: "",
+      orderMarked: ""
     };
   },
   closeModal() {
@@ -95,7 +96,8 @@ const DetailPage = React.createClass({
   render() {
     const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, fillAble, hasDriver, isFetching, isInbound, orders, reusable, statusList, TotalCODValue, CODCount, totalDeliveryFee, trip} = this.props;
 
-    const {canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, isDeassigning} = this.props;
+    const {canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, 
+          isDeassigning, isChangingRemarks, isTripEditing} = this.props;
 
     const tripType = trip.DestinationHub ? 'Interhub' : 'Last Leg';
     let tripDestination;
@@ -114,6 +116,19 @@ const DetailPage = React.createClass({
               (trip.NextDestinationSuggestion[p] > 1 ? ' orders' : ' order') + ')');
         }
     }
+
+    let fleetSuggestion = [];
+    if (trip.LastMileFleetSuggestion && trip.LastMileFleetSuggestion.length > 0) {
+      fleetSuggestion = trip.LastMileFleetSuggestion.map((val) => {
+        return {
+          fleetID: val.UserID,
+          companyName: val.CompanyDetail.CompanyName,
+          capacity: val.OrderCapacity,
+          ovl: val.CompanyDetail.OrderVolumeLimit
+        }
+      });
+    }
+
 
     return (
       <div>
@@ -162,7 +177,8 @@ const DetailPage = React.createClass({
             <a href={'/trips/' + trip.TripID + '/manifest#'} className={styles.manifestLink} target="_blank">Print Manifest</a>
             <a onClick={this.exportManifest} className={styles.manifestLink} target="_blank">Export Excel Manifest</a>
             <NextDestinationSetter nextSuggestion={nextSuggestion} trip={trip} accordionState={trip && (trip.Driver || trip.ExternalTrip) ? "collapsed" : "expanded"} />
-            <TransportSetter trip={trip} isInbound={false} accordionState={trip && ((trip.Driver || trip.ExternalTrip) || !(trip.District || trip.DestinationHub)) ? "collapsed" : "expanded"}/>
+            <TransportSetter suggestion={fleetSuggestion} trip={trip} isInbound={false} accordionState={trip && ((trip.Driver || trip.ExternalTrip) || !(trip.District || trip.DestinationHub)) ? "collapsed" : "expanded"}/>
+            <RemarksSetter trip={trip} />
             <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>
               <span style={{fontSize: 20, display: 'initial', verticalAlign: 'middle'}}>Total {orders.length} items
               </span>
@@ -197,7 +213,7 @@ const DetailPage = React.createClass({
 const mapStateToProps = (state, ownProps) => {
   const {inboundTripDetails, userLogged} = state.app;
   const {hubID} = userLogged;
-  const {isDeassigning, isFetching, orders: rawOrders} = inboundTripDetails;
+  const {isDeassigning, isFetching, orders: rawOrders, isChangingRemarks, isTripEditing} = inboundTripDetails;
   const trip = ownProps.trip;
   const containerID = ownProps.params.id;
   const {containers, statusList} = state.app.containers;
@@ -237,6 +253,8 @@ const mapStateToProps = (state, ownProps) => {
       CODValue: order.IsCOD ? order.TotalValue : 0,
       DeliveryFee: order.DeliveryFee,
       tripID: trip.TripID,
+      CODStatus: (order.CODPaymentUserOrder && order.CODPaymentUserOrder.CODPayment) ?
+                  order.CODPaymentUserOrder.CODPayment.Status : 'N/A'
     }
   });
 
@@ -278,6 +296,8 @@ const mapStateToProps = (state, ownProps) => {
     canMarkOrderReceived: CanMarkOrderReceived(trip, rawOrders),
     canMarkTripDelivered: CanMarkTripDelivered(trip, rawOrders),
     canMarkContainer: CanMarkContainer(trip, hubID),
+    isChangingRemarks,
+    isTripEditing
   }
 }
 

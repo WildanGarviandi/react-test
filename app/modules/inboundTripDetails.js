@@ -42,7 +42,12 @@ const Constants = {
   TRIPS_INBOUND_DETAILS_TRIP_DELIVERED_START: "inbound/details/trip/delivered/start",
   TRIPS_INBOUND_DETAILS_TRIP_SET: "inbound/details/trip/set",
   TRIPS_INBOUND_DETAILS_START_EDIT_ORDER: "inbound/details/trip/startEditOrder",
-  TRIPS_INBOUND_DETAILS_END_EDIT_ORDER: "inbound/details/trip/endEditOrder"
+  TRIPS_INBOUND_DETAILS_END_EDIT_ORDER: "inbound/details/trip/endEditOrder",
+  TRIPS_INBOUND_DETAILS_TRIP_EDITING_START: "inbound/details/trip/editing/start",
+  TRIPS_INBOUND_DETAILS_TRIP_EDITING_SET: "inbound/details/trip/editing/set",
+  TRIPS_INBOUND_DETAILS_TRIP_EDITING_END: "inbound/details/trip/editing/end",
+  TRIPS_INBOUND_DETAILS_REMARKS_CHANGING: "inbound/details/trip/remarks/changing",
+  TRIPS_INBOUND_DETAILS_REMARKS_CHANGED: "inbound/details/trip/remarks/changed",
 }
 
 const initialState = {
@@ -60,7 +65,9 @@ const initialState = {
   orders: [],
   trip: null,
   isEditing: false,
-  scannedOrder: ''
+  scannedOrder: '',
+  isTripEditing: false,
+  isChangingRemarks: false
 }
 
 export function Reducer(state = initialState, action) {
@@ -254,6 +261,28 @@ export function Reducer(state = initialState, action) {
         isEditing: false,
         scannedOrder: ''
       });
+    }
+
+    case Constants.TRIPS_INBOUND_DETAILS_TRIP_EDITING_START: {
+      return lodash.assign({}, state, {isTripEditing: true});
+    }
+
+    case Constants.TRIPS_INBOUND_DETAILS_TRIP_EDITING_END: {
+      return lodash.assign({}, state, {isTripEditing: false});
+    }
+
+    case Constants.TRIPS_INBOUND_DETAILS_TRIP_EDITING_SET: {
+      return lodash.assign({}, state, {
+        trip: lodash.assignIn(state.trip, action.newTripData)
+      });
+    }
+
+    case Constants.TRIPS_INBOUND_DETAILS_REMARKS_CHANGING: {
+      return lodash.assign({}, state, {isChangingRemarks: true});
+    }
+
+    case Constants.TRIPS_INBOUND_DETAILS_REMARKS_CHANGED: {
+      return lodash.assign({}, state, {isChangingRemarks: false});
     }
 
     default: return state;
@@ -538,9 +567,12 @@ export function FetchDetails(tripID) {
   return (dispatch, getState) => {
     const {userLogged} = getState().app;
     const {token} = userLogged;
+    let params =  {
+      suggestLastMileFleet: 1
+    };
 
     dispatch({ type: Constants.TRIPS_INBOUND_DETAILS_FETCH_START });
-    FetchGet('/trip/' + tripID, token).then((response) => {
+    FetchGet('/trip/' + tripID, token, params).then((response) => {
       if(!response.ok) {
         if(response.status == 403) {
           throw new Error("This trip doesn't belong to this hub");
@@ -943,4 +975,58 @@ export function StartEditOrder(orderID) {
 
 export function StopEditOrder() {
   return {type: Constants.TRIPS_INBOUND_DETAILS_END_EDIT_ORDER};
+}
+
+export function EditTrip (tripID, editData) {
+  return (dispatch, getState) => {
+    const { userLogged } = getState().app;
+    const { token } = userLogged;
+
+    const params = {
+      notes: editData.remarks
+    }
+
+    dispatch({
+      type: Constants.TRIPS_INBOUND_DETAILS_TRIP_EDITING_START
+    });
+
+    FetchPost(`/trip/${tripID}`, token, params, true)
+    .then(function (response) {
+      if (response.ok) {
+        response.json().then(function (response) {
+          dispatch({
+            type: Constants.TRIPS_INBOUND_DETAILS_TRIP_EDITING_SET,
+            newTripData: response.data
+          })
+          dispatch({
+            type: Constants.TRIPS_INBOUND_DETAILS_TRIP_EDITING_END
+          });
+          dispatch({
+            type: Constants.TRIPS_INBOUND_DETAILS_REMARKS_CHANGED
+          });
+        });
+      } else {
+        dispatch({
+          type: Constants.TRIPS_INBOUND_DETAILS_TRIP_EDITING_END
+        });
+        dispatch(ModalActions.addMessage('Updating trip details failed'));
+      }
+    });
+  }  
+}
+
+export function ChangeRemarks () {
+  return (dispatch) => {
+    dispatch({
+      type: Constants.TRIPS_INBOUND_DETAILS_REMARKS_CHANGING
+    });
+  };
+}
+
+export function CancelChangingRemarks () {
+  return (dispatch) => {
+    dispatch({
+      type: Constants.TRIPS_INBOUND_DETAILS_REMARKS_CHANGED
+    });
+  };
 }

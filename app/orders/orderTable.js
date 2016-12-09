@@ -261,6 +261,8 @@ function OrderHeader() {
             <Table.TextHeader text="Status" />
             <Table.TextHeader text="Order Owner" />
             <Table.TextHeader text="Is COD" />
+            <Table.TextHeader text="COD Amount" />
+            <Table.TextHeader text="COD Status" />
             <th className={styles.th}>
                 Created Date
                 <CreatedDateASC glyphName='chevron-down' />
@@ -287,6 +289,8 @@ function OrderFilter() {
             <StatusFilter />
             <OrderOwnerFilter />
             <CODFilter />
+            <Table.EmptyCell />
+            <Table.EmptyCell />
             <CreatedDateFilter />
             <DueTimeFilter />
         </tr>
@@ -312,6 +316,17 @@ function OrderRow({order}) {
             <Table.TextCell text={order.Status} />
             <Table.TextCell text={order.OrderOwner} />
             <Table.TextCell text={order.IsCOD} />
+            {
+              (order.IsCOD === 'Yes') && order.TotalValue &&
+              <Table.NumberCell number={order.TotalValue} />
+            }
+            {
+              (order.IsCOD !== 'Yes' || !order.TotalValue) &&
+              <Table.TextCell text={'-'} />
+            }
+            <Table.TextCell text={(order.IsCOD === 'Yes' && order.CODPaymentUserOrder &&
+                                    order.CODPaymentUserOrder.CODPayment) ? 
+                                    order.CODPaymentUserOrder.CODPayment.Status : 'N/A'} />
             <Table.TextCell text={order.CreatedDate} />
             <Table.TextCell text={order.DueTime} />
         </tr>

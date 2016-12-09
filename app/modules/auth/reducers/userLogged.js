@@ -36,15 +36,15 @@ export default (state = initialUserState, action) => {
     case actionTypes.AUTH_VALID:
       localStorage.hubID = action.hub && action.hub.HubID;
       localStorage.hubName = action.hub && action.hub.Name;
-      localStorage.fleetName = action.user && action.user.User && action.user.User.FirstName + ' ' + action.user.User.LastName;
+      localStorage.fleetName = action.user && action.user.User && action.user.User.CompanyDetail && action.user.User.CompanyDetail.CompanyName;
       return _.assign({}, state, {
         hubID: action.hub && action.hub.HubID,
         hubName: action.hub && action.hub.Name,
-        fleetName: action.user && action.user.User && action.user.User.FirstName + ' ' + action.user.User.LastName,
+        fleetName: action.user && action.user.User && action.user.User.CompanyDetail && action.user.User.CompanyDetail.CompanyName,
         isCentralHub: action.hub && ("CENTRAL" === action.hub.Type),
-        editCOD: action.order.edit_cod, 
-        editVolume: action.order.edit_volume,
-        editWeight: action.order.edit_weight
+        editCOD: action.order && action.order.edit_cod, 
+        editVolume: action.order && action.order.edit_volume,
+        editWeight: action.order && action.order.edit_weight
       });
     default:
       return state;

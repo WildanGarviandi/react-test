@@ -232,7 +232,7 @@ const OrderPage = React.createClass({
                     <Pagination {...paginationState} {...PaginationAction} />
                     {
                         this.props.statusFilter === 'open' &&
-                        <p>
+                        <div style={{marginTop: '1em', marginBottom: '1em'}}>
                             <ButtonWithLoading {...assignOrderButton} />
                             <ButtonWithLoading {...cancelOrderButton} />
                             <Link to={'/myorders/add'}>
@@ -240,7 +240,7 @@ const OrderPage = React.createClass({
                             </Link>
                             <Form.DropdownWithState options={drivers} handleSelect={this.selectDriver} />
                             <ButtonWithLoading {...exportOrderButton} />
-                        </p>
+                        </div>
                     }
                     <Table orders={orders} />
                     <Pagination {...paginationState} {...PaginationAction} />

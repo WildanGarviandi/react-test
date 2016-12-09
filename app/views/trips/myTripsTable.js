@@ -16,7 +16,8 @@ import {modalAction} from '../../modules/modals/constants';
 import stylesModal from '../base/modal.css';
 import classnaming from 'classnames';
 
-const ColumnsOrder = ['driver', 'webstoreNames', 'tripType', 'nextDestination', 'containerNumber', 'status', 'numberPackages'];
+const ColumnsOrder = ['driver', 'webstoreNames', 'tripType', 
+  'nextDestination', 'containerNumber', 'status', 'numberPackages', 'remarks'];
 
 const ColumnsTitle = {
   containerNumber: "Container",
@@ -30,7 +31,8 @@ const ColumnsTitle = {
   tripNumber: "Trip Number",
   tripType: "Next Destination",
   webstoreNames: "Webstore",
-  numberPackages: "Number of Packages"
+  numberPackages: "Number of Packages",
+  remarks: "Remarks"
 }
 
 function FindFilter(filters, attr) {
@@ -294,7 +296,8 @@ function ProcessTrip(trip) {
     tripNumber: trip.TripNumber,
     tripType: tripType,
     webstoreNames: parsedTrip.WebstoreNames,
-    numberPackages: trip.UserOrderRoutes.length
+    numberPackages: trip.UserOrderRoutes.length,
+    remarks: trip.Notes
   }
 }
 
