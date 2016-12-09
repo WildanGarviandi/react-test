@@ -15,6 +15,7 @@ import ModalActions from '../../modules/modals/actions';
 import Accordion from '../base/accordion';
 import NextDestinationSetter from '../container/nextDestinationSetter';
 import TransportSetter from '../container/secondSetting';
+import RemarksSetter from '../container/remarksSetter';
 import styles from './styles.css';
 import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered} from '../../modules/trips';
 import {formatDate} from '../../helper/time';
@@ -291,6 +292,7 @@ const DetailPage = React.createClass({
                 <button className={this.state.scanUpdateToggle ? styles.toggleScanButtonActive : styles.toggleScanButtonInactive} onClick={this.changeToggle}>Scan + Update Data</button>
               </div>
             }
+            <RemarksSetter trip={trip} />
             <span style={{display: 'block', marginTop: 25, marginBottom: 5}}>
               <span style={{fontSize: 20, display: 'initial', verticalAlign: 'middle'}}>{statisticItem}</span>
               {
@@ -377,7 +379,7 @@ const mapStateToProps = (state, ownProps) => {
       DeliveryFee: order.DeliveryFee,
       tripID: trip.TripID,
       isSuccess: order.Status === 'DELIVERED' ? 'Yes' : 'No',
-      CODStatus: order.CODPaymentUserOrder.CODPayment.Status || 'N/A'
+      CODStatus: order.CODPaymentUserOrder && order.CODPaymentUserOrder.CODPayment.Status || 'N/A'
     }
   });
 

@@ -16,7 +16,7 @@ import {modalAction} from '../../modules/modals/constants';
 import stylesModal from '../base/modal.css';
 import classnaming from 'classnames';
 
-const ColumnsOrder = ['fleetName', 'driver', 'webstoreNames', 'pickup', 'pickupCity', 'pickupState', 'containerNumber', 'status', 'numberPackages'];
+const ColumnsOrder = ['fleetName', 'driver', 'webstoreNames', 'pickup', 'pickupCity', 'pickupState', 'containerNumber', 'status', 'numberPackages', 'remarks'];
 
 const ColumnsTitle = {
   containerNumber: "Container",
@@ -32,7 +32,8 @@ const ColumnsTitle = {
   status: "Status",
   tripNumber: "Trip Number",
   webstoreNames: "Webstore",
-  numberPackages: "Number of Packages"
+  numberPackages: "Number of Packages",
+  remarks: "Remarks"
 }
 
 let fleetList = {};
@@ -243,7 +244,8 @@ function ProcessTrip(trip) {
     status: trip.OrderStatus && trip.OrderStatus.OrderStatus,
     webstoreNames: parsedTrip.WebstoreNames,
     fleetName: fleetName || '',
-    numberPackages: trip.UserOrderRoutes.length
+    numberPackages: trip.UserOrderRoutes.length,
+    remarks: trip.Notes
   }
 }
 
