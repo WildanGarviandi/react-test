@@ -17,6 +17,7 @@ export function FleetName(fleet) {
 };
 
 export function FleetNameWithCapacity (fleet) {
-  return (fleet && fleet.CompanyDetail) ? fleet.CompanyDetail.CompanyName + ' (' +
-    fleet.OrderCapacity + '/' + fleet.CompanyDetail.OrderVolumeLimit + ')' : '';
+  return (fleet && fleet.CompanyDetail) ? 
+    `${fleet.CompanyDetail.CompanyName} (${fleet.OrderCapacity}/${fleet.CompanyDetail.OrderVolumeLimit})` :
+    '';
 }
