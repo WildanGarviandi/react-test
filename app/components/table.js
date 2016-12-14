@@ -55,7 +55,7 @@ export function CheckBoxCell({checked, onChange}) {
 }
 
 export function CheckBoxHeader({checked, onChange}) {
-  return <th className={styles.th}><CheckBox checked={checked} onChange={onChange} /></th>;
+  return <th><CheckBox checked={checked} onChange={onChange} /></th>;
 }
 
 export function FilterStatusCell({value, handleSelect}) {
@@ -75,7 +75,7 @@ export  function FilterDropdown({value, options, handleSelect}) {
 }
 
 export function TextHeader({text, style}) {
-  return <th className={styles.th} style={style}>{text}</th>;
+  return <th style={style}>{text}</th>;
 }
 
 export function LinkCell({onClick, text, to}) {
