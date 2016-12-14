@@ -55,6 +55,7 @@ export function OrderParser(order) {
     RouteStatus: (order.CurrentRoute && order.CurrentRoute.OrderStatus && order.CurrentRoute.OrderStatus.OrderStatus) || "",
     User: (order.User && (order.User.FirstName + ' ' + order.User.LastName)) || '',
     WebstoreName: (order.User && (order.User.FirstName + ' ' + order.User.LastName)) || '',
+    Weight: (order.PackageWeight && (order.PackageWeight + ' kg')) || "",
     ZipCode: order.DropoffAddress && order.DropoffAddress.ZipCode,
     SuggestedVendors: (order.LastMileFleetSuggestion) ? order.LastMileFleetSuggestion.map((val) => {
       return val.CompanyDetail.CompanyName + ' (' + val.OrderCapacity + '/' + 
