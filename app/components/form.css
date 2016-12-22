@@ -64,7 +64,7 @@
 
 .caret {
   position: relative;
-  top: 8px;
+  top: 16px;
 }
 
 .typeBox {
@@ -79,7 +79,7 @@
   box-sizing: border-box;
 
   width: 80%;
-  height: 28px;
+  height: 48px;
 }
 
 .container {
@@ -92,4 +92,28 @@ input {
 
 .inputSmall {
   height: 24px;
+}
+
+.filterTop {
+  float: left;
+  margin-right: 10px;
+}
+
+.filterTitle {
+  opacity: 0.5;
+  font-family: Helvetica;
+  font-size: 12px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  text-align: left;
+  color: #000000;
+  margin-bottom: 9px;
+}
+
+.searchInput {
+  height: 44px;
+  border-radius: 4px;
+  background-color: #ffffff;
+  border: solid 1px #e8e8e8;
 }

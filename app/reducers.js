@@ -10,7 +10,7 @@ import orders from './modules/orders/reducers';
 import {Reducer as inboundTripDetails} from './modules/inboundTripDetails';
 import {Reducer as inboundTrips} from './modules/inboundTrips';
 import {Reducer as outboundTrips} from './modules/outboundTrips';
-import {Reducer as pickupOrders} from './modules/pickupOrders';
+// import {Reducer as pickupOrders} from './modules/pickupOrders';
 // import receivedOrders from './modules/orders/reducers/received';
 import {Reducer as receivedOrders} from './modules/receivedOrders';
 import orderDetails from './modules/orders/reducers/details';
@@ -24,6 +24,9 @@ import stateList from './states/stateService';
 import tripsHistory from './tripHistory/service';
 import myDrivers from './drivers/driverService';
 import cityList from './cities/cityService';
+import {Reducer as pickupOrders} from './pickupOrders/pickupOrdersService';
+import {Reducer as pickupOrdersReady} from './pickupOrders/pickupOrdersReadyService';
+import nearbyFleets from './nearbyFleets/nearbyFleetService';
 
 export default combineReducers({ 
   userLogged: authReducers,
@@ -42,6 +45,7 @@ export default combineReducers({
   orders,
   outboundTrips,
   pickupOrders,
+  pickupOrdersReady,
   receivedOrders,
   tripDetails,
   myTrips,
@@ -51,4 +55,5 @@ export default combineReducers({
   tripsHistory,
   myDrivers,
   cityList,
+  nearbyFleets
 });

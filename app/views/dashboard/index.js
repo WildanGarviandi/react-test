@@ -8,6 +8,7 @@ import * as ContactService from '../../contacts/contactService';
 import * as StateService from '../../states/stateService';
 import * as CityService from '../../cities/cityService';
 import * as OrderService from '../../orders/orderService';
+import * as FleetService from '../../nearbyFleets/nearbyFleetService';
 import {Glyph} from '../base';
 import Accordion from '../base/accordion';
 import styles from './styles.css';
@@ -222,6 +223,7 @@ function DispatchToProps(dispatch) {
       dispatch(CityService.FetchList());
       dispatch(StateService.FetchList());
       dispatch(OrderService.FetchCountOrder());
+      dispatch(FleetService.FetchList());
     },
     logout: function() {
       dispatch(LogoutAction.logout());

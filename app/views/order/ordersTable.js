@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './table.css';
 import styles2 from './styles.css';
-import {ButtonWithLoading, Input, Pagination} from '../base';
+import {ButtonWithLoading, ButtonStandard, Input, Pagination, DropdownWithState} from '../base';
 import classNaming from 'classnames';
 
 const Table = React.createClass({

@@ -41,7 +41,7 @@ export const conf = {
   SuggestedVendors: {title: "Suggested Vendors", cellType: "Array", filterType: "String"},
 }
 
-export const pickupOrdersColumns = ["IsChecked", "ID", "WebstoreName", "Weight", "PickupAddress", "PickupCity", "ZipCode", "PickupTime", "OrderStatus"];
+export const pickupOrdersColumns = ["IsChecked", "ID", "WebstoreName", "Weight", "PickupAddress", "PickupCity", "ZipCode", "DueTime"];
 
 export const receivedOrdersColumns = ["IsChecked", "ID", "WebstoreName", "DropoffAddress", "DropoffCity", "DropoffState", "ZipCode", "DueTime", "NextDestination", "SuggestedVendors"];
 

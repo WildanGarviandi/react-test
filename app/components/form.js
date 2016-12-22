@@ -425,4 +425,30 @@ const TextareaWithDefault = React.createClass({
   }
 });
 
-export {Form, CheckBox, Input, InputWithDefault, InputWithState, Dropdown, DropdownTypeAhead, DropdownWithState, DropdownWithState2, Textarea, TextareaWithDefault };
+const FilterTop = React.createClass({
+  render() {
+    return (
+      <div className={styles.filterTop}>
+        <div className={styles.filterTitle}>{this.props.title}</div>
+        <div>
+          <DropdownWithState2 val={this.props.value} options={this.props.options} handleSelect={this.props.handleSelect} />
+        </div>
+      </div>
+    );
+  }
+});
+
+const FilterText = React.createClass({
+  render() {
+    return (
+      <div className={styles.filterTop}>
+        <div className={styles.filterTitle}>{this.props.title}</div>
+        <div>
+          <input className={styles.searchInput} type="text" value={this.props.value} onChange={this.props.onChange} onKeyDown={this.props.onKeyDown} />
+        </div>
+      </div>
+    );
+  }
+});
+
+export {Form, CheckBox, FilterTop, FilterText, Input, InputWithDefault, InputWithState, Dropdown, DropdownTypeAhead, DropdownWithState, DropdownWithState2, Textarea, TextareaWithDefault };

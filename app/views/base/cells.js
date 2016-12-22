@@ -4,6 +4,7 @@ import React from 'react';
 import {Link} from 'react-router';
 import {CheckBox} from './input';
 import styles from './table.css';
+import {ButtonStandard} from './index';
 
 export function TextCell({text}) {
   return <span>{text}</span>;
@@ -33,6 +34,36 @@ export function OrderIDLinkCell({onClick, eds, id, to, isChecked, item}) {
     </Link>
   );
 }
+
+export function ButtonCell({value, onClick}) {
+  const buttonAction = {
+    textBase: value,
+    onClick: onClick,
+    styles: {
+      base: styles.cellButton
+    }
+  }
+
+  return (
+    <div style={{textAlign: 'center'}}>
+      <ButtonStandard {...buttonAction} />
+    </div>
+  );
+}
+
+export function IDCell({text, onClick}) {
+  return (
+    <div onClick={onClick} style={{textAlign: 'center'}}>
+      <div className={styles.detailsID}>
+        {text}
+      </div>
+      <div className={styles.detailsInfo}>
+        (click to see details)
+      </div>
+    </div>
+  );
+}
+
 
 export const CheckBoxCell = CheckBox;
 

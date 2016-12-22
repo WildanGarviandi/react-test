@@ -76,6 +76,38 @@ export function GetWebstoreNameByCount(orders) {
   return arrayOfWebstore.join(', ');
 }
 
+export function GetWebstoreNameWithoutCount(orders) {
+  var arrayOfWebstore = [];
+  var WebstoreNames = lodash.countBy(orders, 'WebstoreName');
+  for (var p in WebstoreNames) {
+      if (WebstoreNames.hasOwnProperty(p)) {
+          arrayOfWebstore.push(p);
+      }
+  }
+  return arrayOfWebstore.join(', ');
+}
+
+export function GetWebstoreNameWithMores(orders) {
+  var arrayOfWebstore = [];
+  var WebstoreNames = lodash.countBy(orders, 'WebstoreName');
+  for (var p in WebstoreNames) {
+      if (WebstoreNames.hasOwnProperty(p)) {
+          arrayOfWebstore.push(p);
+      }
+  }
+  if (arrayOfWebstore.length === 1) {
+    return arrayOfWebstore[0];
+  } else if (arrayOfWebstore.length === 2) {
+    return arrayOfWebstore[0] + ' and ' + arrayOfWebstore[1];
+  } else {
+    return arrayOfWebstore[0] + ' and ' + (arrayOfWebstore.length - 1) + ' merchants';
+  }
+}
+
+export function GetWeightTrip(orders) {
+  return `${lodash.sumBy(orders, 'PackageWeight')}`;
+}
+
 export function TripParser(trip, hubID) {
   function GroupToString(colls) {
     return lodash.reduce(colls, (results, val, key) => {
@@ -90,8 +122,12 @@ export function TripParser(trip, hubID) {
   });
 
   const WebstoreNames = GetWebstoreNameByCount(orders);
+  const Weight = GetWeightTrip(orders);
 
   return lodash.assign({}, trip, {
     WebstoreNames: WebstoreNames,
+    Weight: Weight,
+    ListWebstore: GetWebstoreNameWithoutCount(orders),
+    ListWebstoreMores: GetWebstoreNameWithMores(orders)
   });
 }

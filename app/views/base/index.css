@@ -36,3 +36,11 @@
   padding: 2px;
   display: inline-block;
 }
+
+.buttonTitle {
+  padding: 2px;
+}
+
+.buttonImage {
+  float: left;
+}
