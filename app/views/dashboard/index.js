@@ -61,23 +61,23 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
         { hubID && !tmsMenu &&
           <div>
             <MenuItem active={activeMenuIdx == 0} to={'/orders/pickup'}>
-              <Glyph className={styles.menuGlyph} name={'alert'}/>
+              <img src="/img/icon-pickup.png" className={styles.menuGlyph} />
               <span>Pickup Orders</span>
             </MenuItem>
             <MenuItem active={activeMenuIdx == 1} to={'/trips/inbound'}>
-              <Glyph className={styles.menuGlyph} name={'tasks'}/>
+              <img src="/img/icon-inbound.png" className={styles.menuGlyph} />
               <span>Inbound Trips</span>
             </MenuItem>
             <MenuItem active={activeMenuIdx == 2} to={'/orders/received'}>
-              <Glyph className={styles.menuGlyph} name={'transfer'}/>
+              <img src="/img/icon-grouping.png" className={styles.menuGlyph} />
               <span>Received Orders</span>
             </MenuItem>
             <MenuItem active={activeMenuIdx == 3} to={'/trips/outbound'}>
-              <Glyph className={styles.menuGlyph} name={'road'}/>
+              <img src="/img/icon-outbound.png" className={styles.menuGlyph} />
               <span>Outbound Trips</span>
             </MenuItem>
             <MenuItem active={activeMenuIdx == 4} to={'/history'}>
-              <Glyph className={styles.menuGlyph} name={'folder-open'}/>
+              <img src="/img/icon-outbound.png" className={styles.menuGlyph} />
               <span>Trips History</span>
             </MenuItem>
           </div>
@@ -115,7 +115,7 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
           </div>
         }
           <MenuItem to={''} onClick={handleLogout}>
-            <Glyph className={styles.menuGlyph} name={'log-out'}/>
+              <img src="/img/icon-outbound.png" className={styles.menuGlyph} />
             <span>Logout</span>
           </MenuItem>
       </ul>
