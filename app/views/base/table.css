@@ -94,7 +94,7 @@
     height: 28px;
 }
 
-.link {
+.link, .link:hover {
     color: #33c;
 }
 
@@ -104,4 +104,14 @@
 
 .td.SuggestedVendors {
   text-align: center;
+}
+
+.table th {
+    border: solid 1px #e8e8e8;
+    padding: 12px;
+}
+
+.table td {
+    border: solid 1px #e8e8e8;
+    text-align: center;
 }
