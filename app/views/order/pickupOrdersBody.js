@@ -4,20 +4,22 @@ import {push} from 'react-router-redux';
 import {connect} from 'react-redux';
 import {Body} from '../base/table';
 import {conf, pickupOrdersColumns} from './ordersColumns';
-import BodyRow, {CheckBoxCell, LinkCell, TextCell} from '../base/cells';
+import BodyRow, {CheckBoxCell, LinkCell, TextCell, OrderIDLinkCell} from '../base/cells';
 import * as OrdersPickup from '../../modules/orders/actions/pickup';
 import * as PickupOrders from '../../modules/pickupOrders';
 import {formatDate} from '../../helper/time';
+import {CheckboxCell} from '../base/tableCell';
+import styles from '../base/table.css';
 
 function mapDispatchToCheckBox(dispatch, ownProps) {
   return {
-    onChange: function(val) {
+    onToggle: function(val) {
       dispatch(PickupOrders.ToggleSelectOne(ownProps.item.UserOrderID));
     }
   }
 }
 
-const PickupOrdersCheckBox = connect(undefined, mapDispatchToCheckBox)(CheckBoxCell);
+const PickupOrdersCheckBox = connect(undefined, mapDispatchToCheckBox)(CheckboxCell);
 
 function mapDispatchToLink(dispatch, ownParams) {
   return {
@@ -27,7 +29,7 @@ function mapDispatchToLink(dispatch, ownParams) {
   }
 }
 
-const PickupOrdersLink = connect(undefined, mapDispatchToLink)(LinkCell);
+const PickupOrdersLink = connect(undefined, mapDispatchToLink)(OrderIDLinkCell);
 
 function BodyComponent(type, keyword, item, index) {
   switch(type) {
@@ -36,39 +38,51 @@ function BodyComponent(type, keyword, item, index) {
     }
 
     case "Status": {
-      let color;
+      let color, status, imgUrl;
 
       if(item["OrderStatus"] === "NOTASSIGNED") {
-        color = "#C33"
+        color = "#C33";
+        status = 'Ready';
+        imgUrl = item.IsChecked ? '/img/icon-ready-white.png' : '/img/icon-ready.png';
       } else if(item["OrderStatus"] === "BOOKED") {
-        color = "#f0ad4e";
-      } else {
         color = "#000";
+        status = 'Not Ready';
+        imgUrl = item.IsChecked ? '/img/icon-not-ready-white.png' : '/img/icon-not-ready.png';
       }
 
-      return <span style={{color: color}}><TextCell text={item[keyword]} /></span>
+      const imgStyle = {
+        width: 24,
+        height: 24,
+        display: 'inline-block',
+        float: 'left'
+      }
+
+      return (
+        <span style={{display: 'inline-block', width: 100}}>
+          <img src={imgUrl} style={imgStyle}/>
+          <span style={{lineHeight: '25px'}}>
+            <TextCell text={status} />
+          </span>
+        </span>
+      );
     }
 
     case "Checkbox": {
-      return <PickupOrdersCheckBox checked={item[keyword]} item={item} />
+      return <PickupOrdersCheckBox isChecked={item[keyword]} item={item} />
     }
 
     case "Link": {
       return <PickupOrdersLink text={item[keyword]} item={item} to={'/orders/' + item.UserOrderID}/>
     }
 
+    case "IDLink": {
+      return <PickupOrdersLink eds={item.UserOrderNumber} id={item.WebOrderID} item={item} to={'/orders/' + item.UserOrderID}/>
+    }
+
     case "Datetime": {
       switch(keyword) {
         case "PickupTime": {
           let color, back;
-
-          if (item["OrderStatus"] === "NOTASSIGNED") {
-            back = "#5cb85c";
-            color = "#fff"
-          } else {
-            back = "#ddd";
-            color = "#000";
-          }
 
           return <span style={{color: color, backgroundColor: back}}>
                     <TextCell text={formatDate(item[keyword])} />
@@ -88,7 +102,29 @@ function BodyComponent(type, keyword, item, index) {
 
 function PickupOrdersBody({items}) {
   const body = Body(conf, pickupOrdersColumns);
-  return <BodyRow columns={body} items={items} components={BodyComponent} />
+
+  const rows = lodash.map(items, (item, idx) => {
+    const cells = lodash.map(body, (column) => {
+      const cell = BodyComponent(column.type, column.keyword, item, idx);
+      const className = styles.td + ' ' + styles[column.keyword];
+
+      let style = {};
+      if (item.IsChecked && column.type !== "Checkbox") {
+        style.color = '#fff';
+        style.backgroundColor = '#ff5a60';
+      }
+
+      return <td key={column.keyword} style={style} className={className}>{cell}</td>;
+    });
+
+    return <tr key={idx} className={styles.tr}>{cells}</tr>
+  });
+
+  return (
+    <tbody>
+      {rows}
+    </tbody>
+  );
 }
 
 export default PickupOrdersBody;

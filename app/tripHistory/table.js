@@ -120,7 +120,7 @@ function DispatchToFilterTripType(dispatch) {
 const FilterTripTypeWithState = connect(StoreToFilterTripType, DispatchToFilterTripType)(FilterTripType);
 
 function TextHeader({text}) {
-  return <th className={styles.th}>{text}</th>;
+  return <th>{text}</th>;
 }
 
 function HubCell({currentHubID, district, hub, hubType, merchants}) {
@@ -186,7 +186,7 @@ const TripHistoryRowStateful = connect(undefined, TripHistoryRowDispatch)(TripHi
 
 function TripHistoryHeader() {
   return (
-    <tr className={styles.tr}>
+    <tr>
       <TextHeader text="Origin Hub" />
       <TextHeader text="Destination Hub" />
       <TextHeader text="Destination District" />
@@ -306,7 +306,6 @@ function Table({trips}) {
   return (
     <table className={styles.table}>
       <thead>{headers}</thead>
-      <tbody>{filters}</tbody>
       <tbody>{body}</tbody>
     </table>
   );
