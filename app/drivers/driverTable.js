@@ -9,6 +9,7 @@ import * as DriverService from './driverService';
 import OrderStatusSelector from '../modules/orderStatus/selector';
 import {Glyph} from '../views/base';
 import {Link} from 'react-router';
+import {CheckboxHeader as CheckboxHeaderBase, CheckboxCell} from '../views/base/tableCell';
 
 function StoreBuilder(keyword) {
     return (store) => {
@@ -79,7 +80,7 @@ function DropdownDispatchBuilder(filterKeyword) {
 
 function CheckboxDispatch(dispatch, props) {
     return {
-        onChange: () => {
+        onToggle: () => {
             dispatch(DriverService.ToggleChecked(props.driverID));
         }
     }
@@ -87,13 +88,13 @@ function CheckboxDispatch(dispatch, props) {
 
 function CheckboxHeaderStore(store) {
     return {
-        value: store.app.myDrivers.selectedAll,
+        isChecked: store.app.myDrivers.selectedAll,
     }
 }
 
 function CheckboxHeaderDispatch(dispatch) {
     return {
-        onChange: () => {
+        onToggle: () => {
             dispatch(DriverService.ToggleCheckedAll());
         }
     }
@@ -134,8 +135,8 @@ function ConnectDropdownBuilder(keyword) {
 const NameFilter = ConnectBuilder('name')(Table.InputCell);
 const PhoneFilter = ConnectBuilder('phone')(Table.InputCell);
 const EmailFilter = ConnectBuilder('email')(Table.InputCell);
-const CheckboxHeader = connect(CheckboxHeaderStore, CheckboxHeaderDispatch)(Table.CheckBoxHeader);
-const CheckboxRow = connect(undefined, CheckboxDispatch)(Table.CheckBoxCell);
+const CheckboxHeader = connect(CheckboxHeaderStore, CheckboxHeaderDispatch)(CheckboxHeaderBase);
+const CheckboxRow = connect(undefined, CheckboxDispatch)(CheckboxCell);
 
 function DriverParser(driver) {
 
@@ -172,8 +173,8 @@ function DriverFilter() {
 
 function DriverRow({driver}) {
     return (
-        <tr className={styles.tr}>
-            <CheckboxRow checked={driver.IsChecked} driverID={driver.Driver.UserID} />
+        <tr className={styles.tr + (driver.IsChecked && (' ' + styles.selected))}>
+            <td><CheckboxRow isChecked={driver.IsChecked} driverID={driver.Driver.UserID} /></td>
             <td>
                 <Link title='View Details' to={'/mydrivers/edit/' + driver.UserID} className={styles.linkMenu}>
                     {<Glyph name={'search'}/>}
@@ -198,7 +199,6 @@ function DriverTable({drivers}) {
   return (
     <table className={styles.table}>
       <thead>{headers}</thead>
-      <tbody><DriverFilter /></tbody>
       <tbody>{body}</tbody>
     </table>
   );

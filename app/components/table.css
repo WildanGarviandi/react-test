@@ -165,3 +165,25 @@ tbody:last-child .tr:nth-of-type(odd) .td {
     color: #33c;
     padding: 3px;
 }
+
+.table th {
+    border: solid 1px #e8e8e8;
+    padding: 12px;
+}
+
+.table td {
+    border: solid 1px #e8e8e8;
+    text-align: center;
+}
+
+tbody:last-child .tr:nth-of-type(odd).selected .td,
+.selected td {
+    background-color: #ff5a60;
+    color: #fff;
+}
+
+tbody:last-child .tr:nth-of-type(odd).selected .td:first-child,
+.selected td:first-child {
+    background-color: #fff;
+    color: #fff;
+}
