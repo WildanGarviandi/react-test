@@ -83,3 +83,13 @@
 .td.nums {
     text-align: right;
 }
+
+.table th {
+    border: solid 1px #e8e8e8;
+    padding: 12px;
+}
+
+.table td {
+    border: solid 1px #e8e8e8;
+    text-align: center;
+}

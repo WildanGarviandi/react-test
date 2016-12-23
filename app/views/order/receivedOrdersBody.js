@@ -4,31 +4,33 @@ import {push} from 'react-router-redux';
 import {connect} from 'react-redux';
 import {Body} from '../base/table';
 import {conf, receivedOrdersColumns} from './ordersColumns';
-import BodyRow, {CheckBoxCell, LinkCell, TextCell} from '../base/cells';
+import BodyRow, {CheckBoxCell, LinkCell, TextCell, OrderIDLinkCell} from '../base/cells';
 import {ButtonWithLoading} from '../base';
 import * as OrdersReceived from '../../modules/orders/actions/received';
 import * as ReceivedOrders from '../../modules/receivedOrders';
 import {formatDate} from '../../helper/time';
+import {CheckboxCell} from '../base/tableCell';
+import styles from '../base/table.css';
 
 function mapDispatchToCheckBox(dispatch, ownProps) {
   return {
-    onChange: function(val) {
+    onToggle: function(val) {
       dispatch(ReceivedOrders.ToggleSelectOne(ownProps.item.UserOrderID));
     }
   }
 }
 
-const ReceivedOrdersCheckBox = connect(undefined, mapDispatchToCheckBox)(CheckBoxCell);
+const ReceivedOrdersCheckBox = connect(undefined, mapDispatchToCheckBox)(CheckboxCell);
 
 function mapDispatchToLink(dispatch, ownParams) {
   return {
-    onClick: function() {
+    onToggle: function() {
       dispatch(push('/orders/' + ownParams.item.UserOrderID));
     }
   }
 }
 
-const PickupOrdersLink = connect(undefined, mapDispatchToLink)(LinkCell);
+const PickupOrdersLink = connect(undefined, mapDispatchToLink)(OrderIDLinkCell);
 
 function BodyComponent(type, keyword, item, index) {
   switch(type) {
@@ -51,11 +53,15 @@ function BodyComponent(type, keyword, item, index) {
     }
 
     case "Checkbox": {
-      return <ReceivedOrdersCheckBox checked={item[keyword]} item={item} />
+      return <ReceivedOrdersCheckBox isChecked={item[keyword]} item={item} />
     }
 
     case "Link": {
       return <PickupOrdersLink text={item[keyword]} item={item} to={'/orders/' + item.UserOrderID}/>
+    }
+
+    case "IDLink": {
+      return <PickupOrdersLink eds={item.UserOrderNumber} id={item.WebOrderID} item={item} to={'/orders/' + item.UserOrderID}/>
     }
 
     case "Datetime": {
@@ -92,7 +98,29 @@ function BodyComponent(type, keyword, item, index) {
 
 function PickupOrdersBody({items}) {
   const body = Body(conf, receivedOrdersColumns);
-  return <BodyRow columns={body} items={items} components={BodyComponent} />
+
+  const rows = lodash.map(items, (item, idx) => {
+    const cells = lodash.map(body, (column) => {
+      const cell = BodyComponent(column.type, column.keyword, item, idx);
+      const className = styles.td + ' ' + styles[column.keyword];
+
+      let style = {};
+      if (item.IsChecked && column.type !== "Checkbox") {
+        style.color = '#fff';
+        style.backgroundColor = '#ff5a60';
+      }
+
+      return <td key={column.keyword} style={style} className={className}>{cell}</td>;
+    });
+
+    return <tr key={idx} className={styles.tr}>{cells}</tr>
+  });
+
+  return (
+    <tbody>
+      {rows}
+    </tbody>
+  );
 }
 
 export default PickupOrdersBody;

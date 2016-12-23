@@ -9,6 +9,7 @@ import * as ContactService from './contactService';
 import OrderStatusSelector from '../modules/orderStatus/selector';
 import {Glyph} from '../views/base';
 import {Link} from 'react-router';
+import {CheckboxHeader as CheckboxHeaderBase, CheckboxCell} from '../views/base/tableCell';
 
 function StoreBuilder(keyword) {
     return (store) => {
@@ -79,7 +80,7 @@ function DropdownDispatchBuilder(filterKeyword) {
 
 function CheckboxDispatch(dispatch, props) {
     return {
-        onChange: () => {
+        onToggle: () => {
             dispatch(ContactService.ToggleChecked(props.contactID));
         }
     }
@@ -87,13 +88,13 @@ function CheckboxDispatch(dispatch, props) {
 
 function CheckboxHeaderStore(store) {
     return {
-        value: store.app.myContacts.selectedAll,
+        isChecked: store.app.myContacts.selectedAll,
     }
 }
 
 function CheckboxHeaderDispatch(dispatch) {
     return {
-        onChange: () => {
+        onToggle: () => {
             dispatch(ContactService.ToggleCheckedAll());
         }
     }
@@ -123,6 +124,7 @@ function DateRangeDispatch(keyword) {
         }
     }
 }
+
 function ConnectBuilder(keyword) {
     return connect(StoreBuilder(keyword), DispatchBuilder(keyword));
 }
@@ -134,8 +136,8 @@ function ConnectDropdownBuilder(keyword) {
 const NameFilter = ConnectBuilder('contactName')(Table.InputCell);
 const PhoneFilter = ConnectBuilder('phone')(Table.InputCell);
 const EmailFilter = ConnectBuilder('email')(Table.InputCell);
-const CheckboxHeader = connect(CheckboxHeaderStore, CheckboxHeaderDispatch)(Table.CheckBoxHeader);
-const CheckboxRow = connect(undefined, CheckboxDispatch)(Table.CheckBoxCell);
+const CheckboxHeader = connect(CheckboxHeaderStore, CheckboxHeaderDispatch)(CheckboxHeaderBase);
+const CheckboxRow = connect(undefined, CheckboxDispatch)(CheckboxCell);
 
 function ContactParser(contact) {
 
@@ -175,8 +177,8 @@ function ContactFilter() {
  
 function ContactRow({contact}) {
     return (
-        <tr className={styles.tr}>
-            <CheckboxRow checked={contact.IsChecked} contactID={contact.ContactID} />
+        <tr className={styles.tr + (contact.IsChecked && (' ' + styles.selected))}>
+            <td><CheckboxRow isChecked={contact.IsChecked} contactID={contact.ContactID} /></td>
             <td>
                 <Link title='View Details' to={'/mycontacts/edit/' + contact.ContactID} className={styles.linkMenu}>
                     {<Glyph name={'search'}/>}
@@ -199,7 +201,6 @@ function ContactTable({contacts}) {
   return (
     <table className={styles.table}>
       <thead>{headers}</thead>
-      <tbody><ContactFilter /></tbody>
       <tbody>{body}</tbody>
     </table>
   );
