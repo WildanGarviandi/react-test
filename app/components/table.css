@@ -187,3 +187,21 @@ tbody:last-child .tr:nth-of-type(odd).selected .td:first-child,
     background-color: #fff;
     color: #fff;
 }
+
+thead {
+    background: #fff;
+}
+
+table {
+    margin-bottom: 0px !important;
+    border: none !important;
+    border-collapse: separate !important;
+}
+
+table th:first-child{
+  border-radius:5px 0 0 0px;
+}
+
+table th:last-child{
+  border-radius:0 5px 0px 0;
+}

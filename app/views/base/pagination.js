@@ -101,7 +101,7 @@ const Pagination = React.createClass({
     var totalPages = this.countPages();
 
     return (
-      <div>
+      <div className={styles.paginationTable}>
         <div className="fixed-table-pagination" style={{display: 'block'}}>
           <PaginationDetail limit={limit} total={total} page={currentPage} setLimit={this.setLimit} />
           <PaginationControl pagesCount={totalPages} currentPage={currentPage} setPage={this.setPage} />
