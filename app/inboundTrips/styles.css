@@ -1,0 +1,313 @@
+.panel {
+  border: solid 1px #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.panel .title {
+  background-color: #222D32;
+  color: #f2f2f2;
+  cursor: pointer;
+  margin: 0;
+  padding: 10px;
+}
+
+.subtitle {
+  text-indent: 10px;
+}
+
+.body {
+  background-color: #f2f2f2;
+}
+
+.row {
+  display: block;
+  padding: 10px;
+}
+
+.row:nth-of-type(odd) {
+    background-color: #f9f9f9;
+}
+
+.label {
+  display: inline-block;
+  position: absolute;
+  width: 150px;
+}
+
+.value {
+  display: inline-block;
+  margin-left: 150px;
+}
+
+.detail {
+  border: solid 1px #eee;
+  margin-bottom: 10px;
+}
+
+.finderWrapperContainer {
+  position: absolute;
+  right: 0;
+  top: -10px;
+}
+
+.finderWrapper {
+  position: relative;
+  background-color: #4f4335;
+  top: 0;
+  right: 0;
+  border-radius: 5px;
+  padding: 12px;
+  color: #fff;
+}
+
+.finderWrapper2 {
+  position: relative;
+  top: -40px;
+  right: 0px;
+  border-radius: 5px;
+  color: #fff;
+}
+
+.finderWrapper2 button {
+  font-size: 15px;
+  padding: 12px;
+  margin-left: 6px;
+}
+
+.finderLabel {
+  padding-right: 5px;
+  font-size: 15px;
+}
+
+.finderWrapper input {
+  font-size: 15px;
+}
+
+.greenBtn, .greenBtn:hover {
+  background-color: #4cc38e;
+}
+
+.manifestLink {
+  border: 0;
+  border-radius: 5px;
+  background-color: #FF5A60;
+  color: #fff;
+  cursor: pointer;
+  float: right;
+  font-size: 12px;
+  padding: 8px;
+  position: relative;
+  top: -4px;
+  margin-left: 10px;
+}
+
+.nextSuggestion {
+  background-color: #4cc38e;
+  color: #fff;
+  text-indent: 10px;
+  font-size: 15px;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.infoSuggestion {
+  margin-right: 10px;
+  margin-left: -5px;
+}
+
+.container {
+  float: left;
+  display: inline-block;
+  border-radius: 5px;
+  min-width: 170px;
+  width: 15%;
+  height: 110px;
+  position: relative;
+  color: #fff;
+  background-color: #5cb85c;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  border: solid 1px #fff;
+}
+
+.container:hover {
+  border: solid 1px #337ab7;
+}
+
+.num {
+  font-size: 24px;
+  position: absolute;
+  top: 5px;
+  right: 10px;
+}
+
+.attr {
+  font-size: 14px;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  margin-left: 5px;
+}
+
+.glyph {
+  font-size: 20px;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+.addOrderBtn {
+  margin-left: 10px;
+  height: 30px;
+}
+
+.submitButton {
+  background-color: #4cc38e;
+  padding: 7px 15px 7px 15px;
+  border-radius: 3px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.submitButton:hover {
+  background-color: #3eb881;
+}
+
+.itemLabel {
+  font-size: 14px;
+  font-weight: 500;
+  float: left;
+  display: block;
+  margin-top: 26px;
+}
+
+.itemLabelHover {
+  font-size: 10px;
+  font-weight: 500;
+  float: left;
+  display: block;
+  margin-top: 16px;
+}
+
+.itemValue {
+  display: none;
+}
+
+.itemValueHover {
+  font-size: 14px;
+  font-weight: 500;
+  display: block;
+  margin-top: 30px;
+  border: solid 1px #ebebeb;
+  border-radius: 3px;
+  height: 30px
+}
+
+.bgInput {
+  width: 416px;
+  height: 72px;
+  border-radius: 6px;
+  background-color: #fff;
+  border: solid 1px #ebebeb;
+  margin-top: 10px;
+}
+
+.iconInput {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  float: left;
+  display: block;
+  margin-top: 15px;
+  margin-left: 5px;
+}
+
+.saveButton {
+  width: 416px;
+  height: 72px;
+  border-radius: 6px;
+  background-color: #4dc38e;
+  font-size: 20px;
+  font-weight: 900;
+  text-align: center;
+  color: #ffffff;
+  margin-top: 10px;
+}
+
+.bgToggle {
+  margin-top: -120px;
+  float: right;
+}
+
+.toggleScanButtonActive {
+  width: 240px;
+  height: 48px;
+  border-radius: 4px;
+  background-color: #4990e2;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  color: #ffffff;
+}
+
+.toggleScanButtonInactive {
+  width: 240px;
+  height: 48px;
+  border-radius: 4px;
+  background-color: #dddddd;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  color: #ffffff;
+}
+
+.toggleQuestion {
+  height: 22px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #000000;
+}
+
+.updateSuccess {
+  font-size: 20px;
+  font-weight: 500;
+  text-align: center;
+  color: #000000;
+}
+
+.successIcon {
+  width: 160px;
+  height: 160px;  
+  margin-left: 110px;
+  object-fit: contain;
+}
+
+.searchButton {
+  background-color: #2196f3;
+  border: 0;
+  width: 160px;
+  height: 44px;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  padding: 5px;
+  float: left;
+}
+
+.searchInput {
+  width: calc(100% - 180px);
+  border-radius: 4px;
+  padding: 5px;
+  height: 34px;
+  float: left;
+}
+
+.mainTable {
+  margin-top: 80px;
+}

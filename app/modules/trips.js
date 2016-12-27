@@ -76,6 +76,10 @@ export function GetWebstoreNameByCount(orders) {
   return arrayOfWebstore.join(', ');
 }
 
+export function GetWeightTrip(orders) {
+  return `${lodash.sumBy(orders, 'PackageWeight')} kg`;
+}
+
 export function TripParser(trip, hubID) {
   function GroupToString(colls) {
     return lodash.reduce(colls, (results, val, key) => {
@@ -90,8 +94,10 @@ export function TripParser(trip, hubID) {
   });
 
   const WebstoreNames = GetWebstoreNameByCount(orders);
+  const Weight = GetWeightTrip(orders);
 
   return lodash.assign({}, trip, {
     WebstoreNames: WebstoreNames,
+    Weight: Weight
   });
 }
