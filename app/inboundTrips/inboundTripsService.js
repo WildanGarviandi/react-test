@@ -14,7 +14,9 @@ const Constants = {
   TRIPS_INBOUND_FILTERS_STATUS_SET: "inbound/filtersStatus/set",
   TRIPS_INBOUND_LIMIT_SET: "inbound/limit/set",
   TRIPS_INBOUND_SET: "inbound/trips/set",
-  TRIPS_INBOUND_RESET_FILTER: "inbound/trips/resetFilter"
+  TRIPS_INBOUND_RESET_FILTER: "inbound/trips/resetFilter",
+  TRIPS_INBOUND_SHOW_DETAILS: "inbound/trips/showDetails",
+  TRIPS_INBOUND_HIDE_DETAILS: "inbound/trips/hideDetails"
 }
 
 const initialState = {
@@ -27,6 +29,7 @@ const initialState = {
   limit: 100,
   total: 0,
   trips: [],
+  showDetails: false
 }
 
 export function Reducer(state = initialState, action) {
@@ -71,6 +74,14 @@ export function Reducer(state = initialState, action) {
         filterStatus: "SHOW ALL",
         limit: 100,
       });
+    }
+
+    case Constants.TRIPS_INBOUND_SHOW_DETAILS: {
+      return lodash.assign({}, state, {showDetails: true});
+    }
+
+    case Constants.TRIPS_INBOUND_HIDE_DETAILS: {
+      return lodash.assign({}, state, {showDetails: false});
     }
 
     default: return state;
@@ -222,5 +233,17 @@ export function GoToContainer(containerNumber) {
 export function ResetFilter() {
   return (dispatch) => {
     dispatch({type: Constants.TRIPS_INBOUND_RESET_FILTER});
+  }
+}
+
+export function ShowDetails() {
+  return (dispatch) => {
+    dispatch({type: Constants.TRIPS_INBOUND_SHOW_DETAILS});
+  }
+}
+
+export function HideDetails() {
+  return (dispatch) => {
+    dispatch({type: Constants.TRIPS_INBOUND_HIDE_DETAILS});
   }
 }

@@ -8,7 +8,7 @@ import notifReducer from './modules/notification/reducers';
 import orders from './modules/orders/reducers';
 // import pickupOrders from './modules/orders/reducers/pickup';
 import {Reducer as inboundTripDetails} from './modules/inboundTripDetails';
-import {Reducer as inboundTrips} from './modules/inboundTrips';
+import {Reducer as inboundTrips} from './inboundTrips/inboundTripsService';
 import {Reducer as outboundTrips} from './modules/outboundTrips';
 import {Reducer as pickupOrders} from './modules/pickupOrders';
 // import receivedOrders from './modules/orders/reducers/received';

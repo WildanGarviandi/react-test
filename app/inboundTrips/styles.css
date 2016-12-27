@@ -303,8 +303,9 @@
 .searchInput {
   width: calc(100% - 180px);
   border-radius: 4px;
-  padding: 5px;
-  height: 34px;
+  background-color: #ffffff;
+  border: solid 1px #e8e8e8;
+  height: 40px;
   float: left;
 }
 

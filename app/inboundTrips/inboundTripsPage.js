@@ -14,12 +14,13 @@ const InboundTripPage = React.createClass({
   },
   render() {
     const title = "Inbound Trips";
+
     return (
       <div>
         <Page title={title}>
           <div>
             <span>
-              <Input placeholder={'Enter Trip ID'} className={styles.searchInput} onChange={this.onChange} onEnterKeyPressed={this.gotoTrip} />
+              <Input base={{placeholder:"Search Trip ID here ..."}} className={styles.searchInput} onChange={this.onChange} onEnterKeyPressed={this.gotoTrip} />
             </span>
             <span onKeyDown={this.jumpTo}>
               <button className={styles.searchButton}>Search</button>

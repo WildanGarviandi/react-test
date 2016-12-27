@@ -14,6 +14,8 @@ import {formatDate} from '../helper/time';
 import {modalAction} from '../modules/modals/constants';
 import stylesModal from '../views/base/modal.css';
 import classnaming from 'classnames';
+import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import styles from './styles.css';
 
 const ColumnsOrder = ['tripID', 'webstoreNames', 'weight', 'driver', 'status', 'numberPackages', 'remarks'];
 
@@ -160,10 +162,13 @@ const Table = React.createClass({
 
     const Body = _.map(this.props.items, (item) => {
       const cells = _.map(ColumnsOrder, (columnKey) => {
+        if (columnKey === 'tripID') {
+          return <td className={tableStyles.td} key={columnKey}>{item[columnKey]} <span onClick={this.props.showModals.bind(null, item.key)}>See details</span></td>;
+        }
         return <td className={tableStyles.td} key={columnKey}>{item[columnKey]}</td>;
       });
 
-      return <tr className={tableStyles.tr} key={item.key} onClick={this.props.toDetails.bind(null, item.key)}>{cells}</tr>;
+      return <tr className={tableStyles.tr} key={item.key}>{cells}</tr>;
     });
 
     const changeFilter = this.props.filteringAction.changeFilter;
@@ -288,6 +293,9 @@ const TableStateful = React.createClass({
       this.fetchTrips();
     });
   },
+  closeModal() {
+    this.props.closeModal();    
+  },
   render() {
     const {filters, paginationAction, paginationState, statusParams, tripDetails, tripsIsFetching} = this.props;
 
@@ -311,7 +319,8 @@ const TableStateful = React.createClass({
       toDetails: tripDetails,
       filteringAction, statusProps,
       filters: this.state,
-      isFetching: tripsIsFetching
+      isFetching: tripsIsFetching,
+      showModals: this.props.showModals
     }
 
     return (
@@ -320,6 +329,20 @@ const TableStateful = React.createClass({
           <Pagination {...paginationProps} />
           <Table {...tableProps} />
         </div>
+        {
+          this.props.showDetails &&
+          <ModalContainer onClose={this.closeModal}>
+            <ModalDialog onClose={this.closeModal}>
+              <div>
+                <div>
+                  <span className={styles.modalTitle}>
+                    Trip Details
+                  </span>
+                </div> 
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
       </div>
     );
   }
@@ -327,7 +350,7 @@ const TableStateful = React.createClass({
 
 function StateToProps(state) {
   const {inboundTrips, driversStore} = state.app;
-  const {isFetching, limit, total, currentPage, trips, filters} = inboundTrips;
+  const {isFetching, limit, total, currentPage, trips, filters, showDetails} = inboundTrips;
 
   fleetList = driversStore.fleetList.dict;
 
@@ -347,6 +370,7 @@ function StateToProps(state) {
       return memo;
     }, {}),
     filters,
+    showDetails
   };
 }
 
@@ -368,6 +392,12 @@ function DispatchToProps(dispatch, ownProps) {
     },
     tripDetails(id) {
       dispatch(push(`/trips/${id}/`));
+    },
+    showModals: () => {
+      dispatch(InboundTrips.ShowDetails());
+    },
+    closeModal: () => {
+      dispatch(InboundTrips.HideDetails());
     },
   };
 }
