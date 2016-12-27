@@ -7,12 +7,12 @@ function Headers({items, components}) {
   const cells = lodash.map(items, (item) => {
     const className = classNaming(styles.th, styles[item.keyword]);
     const cell = components(item.type, item);
-    return <th key={item.keyword} className={className}>{cell}</th>;
+    return <th key={item.keyword}>{cell}</th>;
   });
 
   return (
     <thead>
-      <tr className={styles.tr}>
+      <tr>
         {cells}
       </tr>
     </thead>

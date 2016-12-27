@@ -10,7 +10,7 @@ export const conf = {
   DueTime: {title: "Deadline", cellType: "Datetime"},
   EtobeeShare: {title: "Etobee Share"},
   FinalCost: {title: "Final Cost"},
-  ID: {filterType: "String", title: "AWB / Web Order ID", cellType: "Link"},
+  ID: {filterType: "String", title: "AWB / Web Order ID", cellType: "IDLink"},
   IncludeInsurance: {title: "Include Insurance"},
   IsChecked: {headerType: "Checkbox", cellType: "Checkbox"},
   LogisticShare: {title: "Logistic Share"},
@@ -35,12 +35,13 @@ export const conf = {
   VAT: {title: "VAT"},
   WebOrderID: {filterType: "String", title: "Web Order ID", cellType: "String"},
   WebstoreName: {filterType: "String", title: "Webstore Name", cellType: "String"},
+  Weight: {filterType: "String", title: "Weight", cellType: "String"},
   ZipCode: {filterType: "String", title: "Zip Code", cellType: "String"},
   IsCOD: {title: "COD Order"},
   SuggestedVendors: {title: "Suggested Vendors", cellType: "Array", filterType: "String"},
 }
 
-export const pickupOrdersColumns = ["IsChecked", "ID", "WebstoreName", "PickupTime", "PickupAddress", "PickupCity", "PickupState", "OrderStatus", "DueTime"];
+export const pickupOrdersColumns = ["IsChecked", "ID", "WebstoreName", "Weight", "PickupAddress", "PickupCity", "ZipCode", "PickupTime", "OrderStatus"];
 
 export const receivedOrdersColumns = ["IsChecked", "ID", "WebstoreName", "DropoffAddress", "DropoffCity", "DropoffState", "ZipCode", "DueTime", "NextDestination", "SuggestedVendors"];
 
