@@ -212,8 +212,8 @@ const TableStateful = React.createClass({
     return (
       <div>
         <div style={{opacity: tripsIsFetching ? 0.5 : 1}}>
-          <Pagination {...paginationProps} />
           <Table {...tableProps} />
+          <Pagination {...paginationProps} />
         </div>
         {
           this.props.showDetails &&
