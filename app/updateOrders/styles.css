@@ -1,0 +1,105 @@
+.modal {
+	background-color: #e8e8e8;
+	margin-left: -20px;
+	margin-right: -20px;
+	width: 500px;
+}
+
+.modalHeader {
+	background-color: white;
+	padding: 0 20px 16px;
+}
+
+.modalTitle {
+	font-size: 20px;
+	margin-top: 0;
+	text-align: center;
+}
+
+.modalInfo {
+	padding-left: 16px;
+	padding-right: 16px;
+	padding-top: 10px;
+	padding-bottom: 14px;
+	border: solid 1px #e8e8e8;
+	border-radius: 4px;
+}
+
+.smallText {
+	font-size: 12px;
+}
+
+.smallestText {
+	font-size: 10px;
+	width: 160px;
+}
+
+.bigText {
+	font-size: 20px;
+	margin: 4px 0;
+	font-weight: bold;
+}
+
+.modalContent1 {
+	padding: 20px 20px 10px;
+}
+
+.modalContent2 {
+	background-color: white;
+	padding: 20px 20px;
+	margin-bottom: 10px;
+}
+
+.modalContent3 {
+	padding: 10px 15px;
+	background-color: white;
+	border-radius: 4px;
+	margin: 10px 0;
+}
+
+.modalFooter {
+	background-color: white;
+	text-align: center;
+	padding: 20px 20px 0;
+}
+
+.saveButton {
+	font-size: 20px;
+	font-weight: 700;
+	background-color: #38b393;
+	box-shadow: none;
+	border: none;
+	border-radius: 4px;
+	color: white;
+	width: 100%;
+	height: 50px;
+	cursor: pointer;
+}
+
+.normalButton {
+	box-shadow: none;
+	border: solid 2px #e8e8e8;
+	background-color: white;
+	border-radius: 4px;
+	color: #38b393;
+	font-weight: 700;
+	height: 50px;
+	width: 110px;
+	cursor: pointer;
+}
+
+.input {
+	font-size: 20px;
+	font-weight: bold;
+	border: none;
+	padding-left: 0;
+	margin: 4px 0;
+}
+
+.input:hover {
+	border-bottom: solid 1px;
+}
+
+.inputWithBorder {
+	border-bottom: solid 1px;
+}

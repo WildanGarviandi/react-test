@@ -3,7 +3,7 @@ import {ButtonWithLoading, Glyph} from './';
 import styles from './page.css';
 import { browserHistory } from 'react-router';
 
-const PageTitle = ({additional, title, backButton}) => {
+const PageTitle = ({additional, title, backButton, count}) => {
   return (
     <span>
       { backButton &&
@@ -13,6 +13,14 @@ const PageTitle = ({additional, title, backButton}) => {
       }
       <h2 className={styles.contentTitle}>{title}</h2>
       {additional && <h3 className={styles.additionalTitle}><em>-- {additional}</em></h3>}
+      {
+        count && (parseInt(count.value) > 0) &&
+        <span className={styles.countItem}>{count.value} {count.itemName}</span>
+      }
+      {
+        count && (parseInt(count.value) == 0) &&
+        <span className={styles.countItem + ' ' + styles.countItemZero}>{count.done}</span>
+      }
     </span>
   );
 }
@@ -51,14 +59,14 @@ const ClassifyChildren = (children) => {
 
 export default React.createClass({
   render() {
-    const {title, children, additional, backButton} = this.props;
+    const {title, children, additional, backButton, count} = this.props;
     const {backLink, buttons, body} = ClassifyChildren(children);
 
     return (
       <div style={{position: 'relative'}}>
         {backLink}
         {buttons}
-        <PageTitle title={title} additional={additional} backButton={backButton}/>
+        <PageTitle title={title} additional={additional} backButton={backButton} count={count}/>
         {body}
       </div>
     );
