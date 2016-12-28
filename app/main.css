@@ -11,6 +11,7 @@ body {
   min-height: 100vh;
   font-family: "proxima_nova_rgregular", Helvetica, Arial, sans-serif;
   font-size: 14px;
+  background-color: #f1f1f1;
 }
 
 a {
