@@ -12,6 +12,7 @@ import {Glyph} from '../views/base';
 import {Link} from 'react-router';
 import {formatDate} from '../helper/time';
 import defaultValues from '../../defaultValues.json';
+import {CheckboxHeader as CheckboxHeaderBase, CheckboxCell} from '../views/base/tableCell';
 
 function StoreBuilder(keyword) {
     return (store) => {
@@ -131,7 +132,7 @@ function DropdownDispatchBuilder(filterKeyword) {
 
 function CheckboxDispatch(dispatch, props) {
     return {
-        onChange: () => {
+        onToggle: () => {
             dispatch(OrderService.ToggleChecked(props.orderID));
         }
     }
@@ -139,13 +140,13 @@ function CheckboxDispatch(dispatch, props) {
 
 function CheckboxHeaderStore(store) {
     return {
-        value: store.app.myOrders.selectedAll,
+        isChecked: store.app.myOrders.selectedAll,
     }
 }
 
 function CheckboxHeaderDispatch(dispatch) {
     return {
-        onChange: () => {
+        onToggle: () => {
             dispatch(OrderService.ToggleCheckedAll());
         }
     }
@@ -213,8 +214,8 @@ const CreatedDateASC = connect(undefined, HeaderDispatch('CreatedDate', 'ASC'))(
 const CreatedDateDESC = connect(undefined, HeaderDispatch('CreatedDate', 'DESC'))(Table.SortCriteria);
 const DueTimeASC = connect(undefined, HeaderDispatch('DueTime', 'ASC'))(Table.SortCriteria);
 const DueTimeDESC = connect(undefined, HeaderDispatch('DueTime', 'DESC'))(Table.SortCriteria);
-const CheckboxHeader = connect(CheckboxHeaderStore, CheckboxHeaderDispatch)(Table.CheckBoxHeader);
-const CheckboxRow = connect(undefined, CheckboxDispatch)(Table.CheckBoxCell);
+const CheckboxHeader = connect(CheckboxHeaderStore, CheckboxHeaderDispatch)(CheckboxHeaderBase);
+const CheckboxRow = connect(undefined, CheckboxDispatch)(CheckboxCell);
 
 function OrderParser(order) {
     function getAssignment(order) {
@@ -251,7 +252,7 @@ function OrderParser(order) {
 
 function OrderHeader() {
     return (
-        <tr className={styles.tr}>
+        <tr>
             <CheckboxHeader />
             <Table.TextHeader />
             <Table.TextHeader text="AWB / Order ID" />
@@ -263,15 +264,19 @@ function OrderHeader() {
             <Table.TextHeader text="Is COD" />
             <Table.TextHeader text="COD Amount" />
             <Table.TextHeader text="COD Status" />
-            <th className={styles.th}>
-                Created Date
-                <CreatedDateASC glyphName='chevron-down' />
-                <CreatedDateDESC glyphName='chevron-up' />
+            <th style={{textAlign: 'center'}}>
+                <span style={{display:'block', width: 120}}>
+                    Created Date
+                    <CreatedDateASC glyphName='chevron-down' />
+                    <CreatedDateDESC glyphName='chevron-up' />
+                </span>
             </th>
-            <th className={styles.th}>
-                Deadline
-                <DueTimeASC glyphName='chevron-down' />
-                <DueTimeDESC glyphName='chevron-up' />
+            <th>
+                <span style={{display:'block', width: 90}}>
+                    Deadline
+                    <DueTimeASC glyphName='chevron-down' />
+                    <DueTimeDESC glyphName='chevron-up' />
+                </span>
             </th>
         </tr>
     );
@@ -299,8 +304,8 @@ function OrderFilter() {
 
 function OrderRow({order}) {
     return (
-        <tr className={styles.tr}>
-            <CheckboxRow checked={order.IsChecked} orderID={order.UserOrderID} />
+        <tr className={styles.tr + (order.IsChecked && (" " + styles.selected))}>
+            <td><CheckboxRow isChecked={order.IsChecked} orderID={order.UserOrderID} /></td>
             <td className={stylesOrders.detailsTableColumn}>
                 <Link title='Edit' to={'/myorders/edit/' + order.UserOrderID} className={styles.linkMenu}>
                     {<Glyph name={'pencil'}/>}
@@ -342,7 +347,6 @@ function OrderTable({orders}) {
   return (
     <table className={styles.table}>
       <thead>{headers}</thead>
-      <tbody><OrderFilter /></tbody>
       <tbody>{body}</tbody>
     </table>
   );
