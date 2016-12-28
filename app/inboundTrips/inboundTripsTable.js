@@ -143,7 +143,7 @@ const VerifiedOrder = React.createClass({
     render: function() {
       var orderComponents = this.props.routes.map(function(route, idx) {
         return (
-          <div key={idx} className={route.OrderStatus.OrderStatus === 'DELIVERED' ? 
+          <div key={idx} className={route.OrderStatus && route.OrderStatus.OrderStatus === 'DELIVERED' ? 
             styles.modalOrderMain : styles.modalOrderMainNotVerified}>
             <table>
               <tr>
