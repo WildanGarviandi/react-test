@@ -94,7 +94,7 @@ export function GetWeightTrip(orders) {
 export function GetScannedRoutes(routes) {
   let scannedOrders = 0;
   routes.forEach(function(route) {
-    if (route.OrderStatus.OrderStatus === 'DELIVERED') {
+    if (route.OrderStatus && route.OrderStatus.OrderStatus === 'DELIVERED') {
       scannedOrders++;
     }
   })

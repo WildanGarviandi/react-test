@@ -151,7 +151,7 @@ const VerifiedOrder = React.createClass({
                   {route.UserOrder.UserOrderNumber}
                 </td>
                 <td rowSpan={2} className={styles.modalOrderVerified}>
-                  {route.OrderStatus.OrderStatus === 'DELIVERED' ? 'VERIFIED' : 'NOT VERIFIED'}
+                  {route.OrderStatus && route.OrderStatus.OrderStatus === 'DELIVERED' ? 'VERIFIED' : 'NOT VERIFIED'}
                 </td>
               </tr>
               <tr>
