@@ -29,7 +29,8 @@ const initialState = {
   limit: 100,
   total: 0,
   trips: [],
-  showDetails: false
+  showDetails: false,
+  tripActive: {}
 }
 
 export function Reducer(state = initialState, action) {
@@ -77,11 +78,11 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.TRIPS_INBOUND_SHOW_DETAILS: {
-      return lodash.assign({}, state, {showDetails: true});
+      return lodash.assign({}, state, {showDetails: true, tripActive: action.trip});
     }
 
     case Constants.TRIPS_INBOUND_HIDE_DETAILS: {
-      return lodash.assign({}, state, {showDetails: false});
+      return lodash.assign({}, state, {showDetails: false, tripActive: {}});
     }
 
     default: return state;
@@ -236,9 +237,51 @@ export function ResetFilter() {
   }
 }
 
-export function ShowDetails() {
-  return (dispatch) => {
-    dispatch({type: Constants.TRIPS_INBOUND_SHOW_DETAILS});
+export function GoToTrip(tripID) {
+  return (dispatch, getState) => {
+    const {userLogged} = getState().app;
+    const {hubID, token} = userLogged;
+
+    const query = {
+      tripID: tripID.split('-')[1],
+    };
+
+    if (typeof query.tripID === 'undefined') {
+      dispatch(ModalActions.addMessage('Not a valid trip ID'));
+      return;
+    }
+
+    dispatch({type: modalAction.BACKDROP_SHOW});
+    FetchGet('/trip/inbound', token, query).then((response) => {
+      if(!response.ok) {
+        throw new Error('Trip not found');
+      }
+
+      return response.json().then(({data}) => {
+        if(data.count < 1) {
+          throw new Error('Trip not found');
+        }
+
+        dispatch({type: modalAction.BACKDROP_HIDE});
+        dispatch(push(`/trips/${data.rows[0].TripID}`));
+      })
+    }).catch((e) => {
+      const message = (e && e.message) ? e.message : "Failed to get trip details";
+    dispatch({type: modalAction.BACKDROP_HIDE});
+      dispatch(ModalActions.addMessage(message));
+    });
+  }
+}
+
+export function ShowDetails(tripID) {
+  return (dispatch, getState) => {
+    const {inboundTrips} = getState().app;
+    const {trips} = inboundTrips;
+    
+    dispatch({
+      type: Constants.TRIPS_INBOUND_SHOW_DETAILS,
+      trip: lodash.find(trips, {TripID: tripID}),
+    });
   }
 }
 

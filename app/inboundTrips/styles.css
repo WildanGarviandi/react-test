@@ -312,3 +312,75 @@
 .mainTable {
   margin-top: 80px;
 }
+
+.verifiedColumn {
+  color: #f00;
+}
+
+.modalTitle {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.modalDesc {
+  float: left;
+  width: 450px;
+}
+
+.modalDesc2 {
+  float: right;
+  font-size: 12px;
+  line-height: 1.5em;
+}
+
+.topDesc {
+  border-radius: 4px;
+  background-color: #ffffff;
+  border: solid 1px #e8e8e8;
+  padding: 10px;
+}
+
+.mainLabel {
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1.5em;
+}
+
+.weightLabel {
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 1.5em;
+}
+
+.modalOrderID {
+  font-size: 18px;
+  width: 450px;
+  font-weight: bold;
+}
+
+.modalOrderWeight {
+  font-size: 14px;
+}
+
+.modalOrderVerified {
+  float: right;
+  border: solid 1px #e8e8e8;
+  border-radius: 4px;  
+  padding: 8px;
+}
+
+.modalOrderMainNotVerified {
+  border-radius: 4px;
+  background-color: #eeeeee;
+  border: solid 1px #eeeeee;
+  padding: 10px;
+}
+
+.modalOrderMain {
+  border-radius: 4px;
+  background-color: #ffffff;
+  border: solid 1px #eeeeee;
+  padding: 10px;
+}

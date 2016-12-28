@@ -9,11 +9,24 @@ import formStyles from '../components/form.css';
 import {push} from 'react-router-redux';
 
 const InboundTripPage = React.createClass({
-  gotoTrip(tripID) {
-    this.props.gotoTrip(tripID);
+  getInitialState() {
+    return ({
+      tripID: null
+    })
+  },
+  componentWillMount() {
+    this.props.getList();
+  },
+  gotoTrip() {
+    this.props.gotoTrip(this.state.tripID);
+  },
+  onChange(e) {
+    this.setState({
+      tripID: e
+    })
   },
   render() {
-    const title = "Inbound Trips";
+    const title = this.props.isFetching ? `Inbound Trips` : `Inbound Trips (${this.props.total})`;
 
     return (
       <div>
@@ -22,8 +35,8 @@ const InboundTripPage = React.createClass({
             <span>
               <Input base={{placeholder:"Search Trip ID here ..."}} className={styles.searchInput} onChange={this.onChange} onEnterKeyPressed={this.gotoTrip} />
             </span>
-            <span onKeyDown={this.jumpTo}>
-              <button className={styles.searchButton}>Search</button>
+            <span>
+              <button onClick={this.gotoTrip} className={styles.searchButton}>Search</button>
             </span>
           </div>
           <div className={styles.mainTable}>
@@ -39,16 +52,23 @@ function StateToProps(state, ownProps) {
   const routes = ownProps.routes;
   const paths = routes[routes.length-1].path.split('/');
   const lastPath = paths[paths.length-1];
+  const {inboundTrips} = state.app;
+  const {total, isFetching} = inboundTrips;
 
   return {
-    lastPath
+    lastPath,
+    total,
+    isFetching
   };
 };
 
 function DispatchToPage(dispatch) {
   return {
     gotoTrip: (tripID) => {
-      dispatch(push(`/trips/${tripID}/`));
+      dispatch(InboundTrips.GoToTrip(tripID));
+    },
+    getList: () => {
+      dispatch(InboundTrips.FetchList());
     }
   }
 }

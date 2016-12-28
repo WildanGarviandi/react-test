@@ -76,8 +76,29 @@ export function GetWebstoreNameByCount(orders) {
   return arrayOfWebstore.join(', ');
 }
 
+export function GetWebstoreNameWithoutCount(orders) {
+  var arrayOfWebstore = [];
+  var WebstoreNames = lodash.countBy(orders, 'WebstoreName');
+  for (var p in WebstoreNames) {
+      if (WebstoreNames.hasOwnProperty(p)) {
+          arrayOfWebstore.push(p);
+      }
+  }
+  return arrayOfWebstore.join(', ');
+}
+
 export function GetWeightTrip(orders) {
   return `${lodash.sumBy(orders, 'PackageWeight')} kg`;
+}
+
+export function GetScannedRoutes(routes) {
+  let scannedOrders = 0;
+  routes.forEach(function(route) {
+    if (route.OrderStatus.OrderStatus === 'DELIVERED') {
+      scannedOrders++;
+    }
+  })
+  return scannedOrders;  
 }
 
 export function TripParser(trip, hubID) {
@@ -89,15 +110,22 @@ export function TripParser(trip, hubID) {
 
   if(!trip) return {};
 
+  const routes = lodash.map(trip.UserOrderRoutes, (route) => {
+    return route;
+  });
+
   const orders = lodash.map(trip.UserOrderRoutes, (route) => {
     return OrderParser(route.UserOrder);
   });
 
   const WebstoreNames = GetWebstoreNameByCount(orders);
   const Weight = GetWeightTrip(orders);
+  const ScannedOrders = GetScannedRoutes(routes);
 
   return lodash.assign({}, trip, {
     WebstoreNames: WebstoreNames,
-    Weight: Weight
+    Weight: Weight,
+    ScannedOrders: ScannedOrders,
+    ListWebstore: GetWebstoreNameWithoutCount(orders)
   });
 }

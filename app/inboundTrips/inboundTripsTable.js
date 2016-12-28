@@ -17,12 +17,13 @@ import classnaming from 'classnames';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import styles from './styles.css';
 
-const ColumnsOrder = ['tripID', 'webstoreNames', 'weight', 'driver', 'status', 'numberPackages', 'remarks'];
+const ColumnsOrder = ['tripID', 'webstoreNames', 'weight', 'driver', 'driverPhone', 'status', 'verifiedOrders'];
 
 const ColumnsTitle = {
   containerNumber: "Container",
   district: "District",
   driver: "Assigned To",
+  driverPhone: "Phone",
   dropoff: "Next Destination",
   dropoffTime: "Dropoff Time",
   fleetName: "Fleet",
@@ -36,123 +37,12 @@ const ColumnsTitle = {
   numberPackages: "Number of Packages",
   remarks: "Remarks",
   tripID: "Trip ID",
-  weight: "Total Weight"
+  weight: "Total Weight",
+  scannedOrders: "Scanned Orders",
+  verifiedOrders: "Verified Orders"
 }
 
 let fleetList = {};
-
-function FindFilter(filters, attr) {
-  switch(attr) {
-    case 'fleetName':
-      return filters['fleet'];
-
-    case 'webstoreNames':
-      return filters['merchant'];
-
-    default:
-      return filters[attr];
-  }
-}
-
-const SearchCell = React.createClass({
-  render() {
-    return (
-      <td className={ClassName(tableStyles.td, tableStyles.search)}>
-        <Input styles={{input: tableStyles.searchInput}} base={{type:"text"}} onChange={this.props.onChange} onEnterKeyPressed={this.props.onEnterKeyPressed} base={{value: this.props.filter}} />
-      </td>
-    );
-  }
-});
-
-const DateCell = React.createClass({
-  getInitialState() {
-    return {showDate: false, txt: ''};
-  },
-  showPicker() {
-    this.setState({showDate: true});
-  },
-  hidePicker() {
-    this.setState({showDate: false});
-  },
-  handleSelect(range) {
-    const attr = this.props.attr;
-    const filters = {
-      ['start'+attr]: range.start.format(),
-      ['end'+attr]: range.end.format(),
-    };
-
-    this.props.changeFilter(filters);
-    this.setState({txt: `${range.start.format('DD/MM/YYYY')}-${range.end.format('DD/MM/YYYY')}`});
-  },
-  handleChange(e) {
-    this.setState({txt: e.target.value});
-  },
-  handleKeyDown(e) {
-    if (e.keyCode === 13) {
-      const attr = this.props.attr;
-      const range = _.map(this.state.txt.split('-'), (s) => (s.split('/')));
-
-      let filters;
-      if (range.length !== 2) {
-        filters = {
-          ['start'+attr]: '',
-          ['end'+attr]: '',
-        }
-      } else {
-        const [startDate, endDate] = _.map(range, (date) => {
-          return moment(date.join(''), "DDMMYYYY");
-        });
-
-        filters = {
-          ['start'+attr]: startDate.format(),
-          ['end'+attr]: endDate.format(),
-        }
-      }
-
-      this.setState({showDate: false});
-      this.props.changeFilter(filters);
-    }
-  },
-  render() {
-    return (
-      <td>
-        <input value={this.state.txt} className={tableStyles.searchInput} type="text" onFocus={this.showPicker} onChange={this.handleChange} onKeyDown={this.handleKeyDown} />
-        <DateRangePicker show={this.state.showDate} hidePicker={this.hidePicker} selectRange={this.handleSelect} />
-      </td>
-    );
-  }
-});
-
-function StateToStatus(state) {
-  const statusName = state.app.inboundTrips.filtersStatus;
-  return {
-    val: statusName,
-  }
-}
-
-function SelectDispatch(dispatch) {
-  return {
-    handleSelect: (val) => {
-      dispatch(InboundTrips.SetFiltersStatus(val.value));
-    }
-  }
-}
-
-const TrueSelect = connect(StateToStatus, SelectDispatch)(StatusDropdown);
-
-const TripStatusSelect = React.createClass({
-  selectVal(val) {
-    this.props.pickStatus(val);
-  },
-  render() {
-    const {statusList, statusName} = this.props;
-    return (
-      <td className={ClassName(tableStyles.td, tableStyles.search)} style={{width: 150}}>
-        <TrueSelect />
-      </td>
-    );
-  }
-});
 
 const Table = React.createClass({
   render() {
@@ -163,26 +53,16 @@ const Table = React.createClass({
     const Body = _.map(this.props.items, (item) => {
       const cells = _.map(ColumnsOrder, (columnKey) => {
         if (columnKey === 'tripID') {
-          return <td className={tableStyles.td} key={columnKey}>{item[columnKey]} <span onClick={this.props.showModals.bind(null, item.key)}>See details</span></td>;
+          return <td className={tableStyles.td} key={columnKey}>{item[columnKey]}</td>;
+        }
+        if (columnKey === 'verifiedOrders') {
+          return <td className={tableStyles.td} key={columnKey}><span className={styles.verifiedColumn} onClick={this.props.showModals.bind(null, item['key'])}>{item[columnKey]}</span></td>;
         }
         return <td className={tableStyles.td} key={columnKey}>{item[columnKey]}</td>;
       });
 
       return <tr className={tableStyles.tr} key={item.key}>{cells}</tr>;
     });
-
-    const changeFilter = this.props.filteringAction.changeFilter;
-    const Filters = _.map(ColumnsOrder, (columnKey) => {
-      return <SearchCell key={columnKey} attr={columnKey} onChange={changeFilter.bind(null, columnKey)} onEnterKeyPressed={this.props.filteringAction.fetchTrips} filter={FindFilter(this.props.filters, columnKey)} />
-    });
-
-    const changeFilterAndFetch = this.props.filteringAction.changeFilterAndFetch;
-    const Search = (
-      <tr>
-        {Filters.slice(0,7)}
-        <TripStatusSelect {...this.props.statusProps} />
-      </tr>
-    );
 
     if (this.props.isFetching) {
       return (
@@ -237,7 +117,8 @@ function ProcessTrip(trip) {
   return {
     containerNumber: trip.ContainerNumber,
     district: trip.District && trip.District.Name,
-    driver: trip.Driver && `${trip.Driver.FirstName} ${trip.Driver.LastName}`,
+    driver: trip.Driver && `${trip.Driver.FirstName} ${trip.Driver.LastName}` || '-',
+    driverPhone: trip.Driver && `${trip.Driver.CountryCode} ${trip.Driver.PhoneNumber}` || '-',
     dropoff: TripDropOff(trip),
     dropoffTime: formatDate(trip.DropoffTime),
     key: trip.TripID,
@@ -251,50 +132,55 @@ function ProcessTrip(trip) {
     fleetName: fleetName || '',
     numberPackages: trip.UserOrderRoutes.length,
     remarks: trip.Notes,
-    tripID: trip.TripID,
-    weight: trip.Weight
+    tripID: `Trip-${trip.TripID}`,
+    weight: trip.Weight,
+    scannedOrders: trip.ScannedOrders,
+    verifiedOrders: `${trip.ScannedOrders}/${trip.UserOrderRoutes.length} order(s) are verified`
   }
 }
 
-const TableStateful = React.createClass({
-  componentWillMount() {
-    this.props.initialLoad();
-  },
-  getInitialState() {
-    return this.props.filters;
-  },
-  fetchTrips() {
-    this.props.changeFilter(this.state);
-  },
-  pickStatus(val) {
-    this.setState({statusName: val, status: this.props.nameToID[val]}, () => {
-      this.fetchTrips();
-    });
-  },
-  changeFilter(attr, val) {
-    let attrName;
-    switch(attr) {
-      case 'fleetName':
-        attrName = 'fleet';
-        break;
-
-      case 'webstoreNames':
-        attrName = 'merchant';
-        break;
-
-      default:
-        attrName = attr;
+const VerifiedOrder = React.createClass({
+    render: function() {
+      var orderComponents = this.props.routes.map(function(route, idx) {
+        return (
+          <div key={idx} className={route.OrderStatus.OrderStatus === 'DELIVERED' ? 
+            styles.modalOrderMain : styles.modalOrderMainNotVerified}>
+            <table>
+              <tr>
+                <td className={styles.modalOrderID}>
+                  {route.UserOrder.UserOrderNumber}
+                </td>
+                <td rowSpan={2} className={styles.modalOrderVerified}>
+                  {route.OrderStatus.OrderStatus === 'DELIVERED' ? 'VERIFIED' : 'NOT VERIFIED'}
+                </td>
+              </tr>
+              <tr>
+                <td className={styles.modalOrderWeight}>
+                  Weight: {route.UserOrder.PackageWeight}
+                </td>
+              </tr>
+            </table>
+          </div>
+        );
+      });
+      return <div>{orderComponents}</div>;
     }
+});
 
-    this.setState({[attrName]: val});
-  },
-  changeFilterAndFetch(filters) {
-    this.setState(filters, () => {
-      this.fetchTrips();
-    });
+
+const TableStateful = React.createClass({
+  getInitialState() {
+    return {trip: this.props.trip, filters: this.props.filters};
   },
   closeModal() {
     this.props.closeModal();    
+  },
+  componentWillReceiveProps(nextProps) {
+    if (nextProps['trip']) {
+      this.setState({                
+          trip: nextProps['trip']
+      });
+    }
   },
   render() {
     const {filters, paginationAction, paginationState, statusParams, tripDetails, tripsIsFetching} = this.props;
@@ -334,11 +220,31 @@ const TableStateful = React.createClass({
           <ModalContainer onClose={this.closeModal}>
             <ModalDialog onClose={this.closeModal}>
               <div>
-                <div>
-                  <span className={styles.modalTitle}>
-                    Trip Details
-                  </span>
+                <div className={styles.modalTitle}>
+                  Trip-{this.state.trip.TripID}
                 </div> 
+                <div className={styles.topDesc}>
+                  <div className={styles.modalDesc}>
+                    <p className={styles.mainLabel}>
+                      From {this.state.trip.ListWebstore}
+                    </p>
+                    <p>
+                      {this.state.trip.UserOrderRoutes.length} items
+                    </p>
+                  </div>
+                  <div className={styles.modalDesc2}>
+                    <p>
+                      Total Weight
+                    </p>
+                    <p className={styles.weightLabel}>
+                      {this.state.trip.Weight}
+                    </p>                    
+                  </div>
+                <div style={{clear: 'both'}} />
+                </div>
+                <div className={styles.orderList}>
+                  <VerifiedOrder routes={this.state.trip.UserOrderRoutes} />
+                </div>
               </div>
             </ModalDialog>
           </ModalContainer>
@@ -350,7 +256,7 @@ const TableStateful = React.createClass({
 
 function StateToProps(state) {
   const {inboundTrips, driversStore} = state.app;
-  const {isFetching, limit, total, currentPage, trips, filters, showDetails} = inboundTrips;
+  const {isFetching, limit, total, currentPage, trips, filters, showDetails, tripActive} = inboundTrips;
 
   fleetList = driversStore.fleetList.dict;
 
@@ -361,6 +267,7 @@ function StateToProps(state) {
   }
 
   const statusList = state.app.containers.statusList;
+  const trip = TripParser(tripActive)
 
   return {
     paginationState, trips, tripsIsFetching: isFetching,
@@ -370,7 +277,8 @@ function StateToProps(state) {
       return memo;
     }, {}),
     filters,
-    showDetails
+    showDetails, 
+    trip
   };
 }
 
@@ -393,8 +301,8 @@ function DispatchToProps(dispatch, ownProps) {
     tripDetails(id) {
       dispatch(push(`/trips/${id}/`));
     },
-    showModals: () => {
-      dispatch(InboundTrips.ShowDetails());
+    showModals: (tripID) => {
+      dispatch(InboundTrips.ShowDetails(tripID));
     },
     closeModal: () => {
       dispatch(InboundTrips.HideDetails());
