@@ -26,7 +26,7 @@ const InboundTripPage = React.createClass({
     })
   },
   render() {
-    const title = this.props.isFetching ? `Inbound Trips` : `Inbound Trips (${this.props.total})`;
+    const title = this.props.isFetching ? `Inbound Trips` : this.props.total > 0 ? `Inbound Trips (${this.props.total})` : `Inbound Trips (All Done)`;
 
     return (
       <div>

@@ -1,6 +1,7 @@
 import lodash from 'lodash';
 import {push} from 'react-router-redux';
 import FetchGet from '../modules/fetch/get';
+import FetchPost from '../modules/fetch/post';
 import ModalActions from '../modules/modals/actions';
 import {TripParser} from '../modules/trips';
 import OrderStatusSelector from '../modules/orderStatus/selector';
@@ -288,5 +289,35 @@ export function ShowDetails(tripID) {
 export function HideDetails() {
   return (dispatch) => {
     dispatch({type: Constants.TRIPS_INBOUND_HIDE_DETAILS});
+  }
+}
+
+export function TripDeliver(tripID, reuse) {
+  return (dispatch, getState) => {
+    const {inboundTripDetails, userLogged} = getState().app;
+    const {token} = userLogged;
+
+    dispatch({type: modalAction.BACKDROP_SHOW});
+
+    const query = {
+      reusePackage: reuse ? true : false,
+    }
+
+    FetchPost(`/trip/${tripID}/markdeliver`, token, query).then((response) => {
+      if(!response.ok) {
+        return response.json().then(({error}) => {
+          throw error;
+        });
+      }
+
+      dispatch({type: modalAction.BACKDROP_HIDE});
+      dispatch(ModalActions.addMessage('Trip marked as delivered'));
+      dispatch(HideDetails());
+      dispatch(FetchList());
+    }).catch((e) => {
+      const message = (e && e.message) ? e.message : "Failed to mark trip as delivered";
+      dispatch({type: modalAction.BACKDROP_HIDE});
+      dispatch(ModalActions.addMessage(message));
+    });
   }
 }

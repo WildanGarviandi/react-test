@@ -88,7 +88,7 @@ export function GetWebstoreNameWithoutCount(orders) {
 }
 
 export function GetWeightTrip(orders) {
-  return `${lodash.sumBy(orders, 'PackageWeight')} kg`;
+  return `${lodash.sumBy(orders, 'PackageWeight')}`;
 }
 
 export function GetScannedRoutes(routes) {

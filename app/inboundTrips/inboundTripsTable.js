@@ -12,10 +12,13 @@ import StatusDropdown from '../views/base/statusDropdown';
 import {TripParser} from '../modules/trips';
 import {formatDate} from '../helper/time';
 import {modalAction} from '../modules/modals/constants';
+import ModalActions from '../modules/modals/actions';
 import stylesModal from '../views/base/modal.css';
 import classnaming from 'classnames';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import styles from './styles.css';
+import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered} from '../modules/trips';
+import {OrderParser} from '../modules/orders';
 
 const ColumnsOrder = ['tripID', 'webstoreNames', 'weight', 'driver', 'driverPhone', 'status', 'verifiedOrders'];
 
@@ -56,7 +59,12 @@ const Table = React.createClass({
           return <td className={tableStyles.td} key={columnKey}>{item[columnKey]}</td>;
         }
         if (columnKey === 'verifiedOrders') {
-          return <td className={tableStyles.td} key={columnKey}><span className={styles.verifiedColumn} onClick={this.props.showModals.bind(null, item['key'])}>{item[columnKey]}</span></td>;
+          return <td className={tableStyles.td + ' ' + styles.verifiedColumn} key={columnKey} onClick={this.props.showModals.bind(null, item['key'])}>
+            <span>
+              {item[columnKey]}
+            </span>
+            <img className={styles.imageNext} src="/img/icon-next.png" />
+          </td>;
         }
         return <td className={tableStyles.td} key={columnKey}>{item[columnKey]}</td>;
       });
@@ -74,13 +82,25 @@ const Table = React.createClass({
       );
     } else {
       if (this.props.items.length === 0) {
-        return (
-          <div style={{textAlign:'center'}}>
-            <img src="/img/orders-empty-state.png" />
-            <div style={{fontSize: 20}}>
-              You have no inbound trips
-            </div>
-          </div>
+        return (          
+          <table className={tableStyles.table}>
+            <thead><tr>{Headers}</tr></thead>
+            <tbody className={styles.noInbound}>
+              <tr>
+                <td colSpan={ColumnsOrder.length}>
+                  <div className={styles.noInboundDesc}>
+                    <img src="/img/image-inbound-trip-done.png" />
+                    <div style={{fontSize: 20}}>
+                      Awesome work guys!
+                    </div>
+                    <div style={{fontSize: 12, marginTop: 20}}>
+                      All trip orders are verified, you have scanned and verified all of the inbound orders.
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         );
       } else {
         return (
@@ -150,8 +170,15 @@ const VerifiedOrder = React.createClass({
                 <td className={styles.modalOrderID}>
                   {route.UserOrder.UserOrderNumber}
                 </td>
-                <td rowSpan={2} className={styles.modalOrderVerified}>
-                  {route.OrderStatus && route.OrderStatus.OrderStatus === 'DELIVERED' ? 'VERIFIED' : 'NOT VERIFIED'}
+                <td rowSpan={2}>
+                  <div className={route.OrderStatus && route.OrderStatus.OrderStatus === 'DELIVERED' ? 
+                    styles.modalOrderVerified : styles.modalOrderNotVerified}>
+                    <img className={styles.iconVerified} src={route.OrderStatus && route.OrderStatus.OrderStatus === 'DELIVERED' ? 
+                      "/img/icon-ready.png" : "/img/icon-not-ready.png"} />
+                    <span className={styles.verifiedStatus}>
+                      {route.OrderStatus && route.OrderStatus.OrderStatus === 'DELIVERED' ? 'VERIFIED' : 'NOT VERIFIED'}
+                    </span>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -179,6 +206,25 @@ const TableStateful = React.createClass({
     if (nextProps['trip']) {
       this.setState({                
           trip: nextProps['trip']
+      });
+    }
+  },
+  completeTrip(tripID) {
+    if(this.props.canMarkTripDelivered) {
+      if (this.props.trip.ScannedOrders < lodash.size(this.props.orders)) {
+        let mark = confirm('You have scanned only ' + this.props.trip.ScannedOrders + ' from ' + lodash.size(this.props.orders) +
+            ' orders. Continue to mark this trip as delivered?');
+        if (mark) {
+          this.props.deliverTrip(this.props.trip.TripID);
+        }
+      } else {
+        this.props.deliverTrip(this.props.trip.TripID);
+      }
+    } else {
+      this.props.askReuse({
+        message: "Do you want to reuse the container?",
+        action: this.props.reuse.bind(null, this.props.trip.TripID),
+        cancel: this.props.deliverTrip.bind(null, this.props.trip.TripID),
       });
     }
   },
@@ -217,18 +263,21 @@ const TableStateful = React.createClass({
         </div>
         {
           this.props.showDetails &&
-          <ModalContainer onClose={this.closeModal}>
-            <ModalDialog onClose={this.closeModal}>
+          <ModalContainer>
+            <ModalDialog>
               <div>
                 <div className={styles.modalTitle}>
-                  Trip-{this.state.trip.TripID}
+                  TRIP-{this.state.trip.TripID}
+                </div> 
+                <div onClick={this.closeModal} className={styles.modalClose}>
+                  X
                 </div> 
                 <div className={styles.topDesc}>
                   <div className={styles.modalDesc}>
                     <p className={styles.mainLabel}>
                       From {this.state.trip.ListWebstore}
                     </p>
-                    <p>
+                    <p className={styles.secondLabel}>
                       {this.state.trip.UserOrderRoutes.length} items
                     </p>
                   </div>
@@ -238,6 +287,7 @@ const TableStateful = React.createClass({
                     </p>
                     <p className={styles.weightLabel}>
                       {this.state.trip.Weight}
+                      <span className={styles.unitWeightLabel}> kg</span>
                     </p>                    
                   </div>
                 <div style={{clear: 'both'}} />
@@ -245,6 +295,15 @@ const TableStateful = React.createClass({
                 <div className={styles.orderList}>
                   <VerifiedOrder routes={this.state.trip.UserOrderRoutes} />
                 </div>
+                { this.state.trip.UserOrderRoutes.length - this.state.trip.ScannedOrders !== 0 && 
+                  <div className={styles.bottomNotes}>
+                    <span className={styles.completeNotes}>
+                      {`${this.state.trip.UserOrderRoutes.length - this.state.trip.ScannedOrders} `} 
+                      orders are still not verified yet! Click “Complete Orders” button if you wish complete this trip.
+                    </span>
+                    <button className={styles.completeButton} onClick={this.completeTrip.bind(null, this.state.trip.TripID)}>Complete Orders</button>
+                  </div>
+                }
               </div>
             </ModalDialog>
           </ModalContainer>
@@ -255,7 +314,8 @@ const TableStateful = React.createClass({
 });
 
 function StateToProps(state) {
-  const {inboundTrips, driversStore} = state.app;
+  const {inboundTrips, driversStore, userLogged} = state.app;
+  const {hubID, isCentralHub} = userLogged;
   const {isFetching, limit, total, currentPage, trips, filters, showDetails, tripActive} = inboundTrips;
 
   fleetList = driversStore.fleetList.dict;
@@ -267,7 +327,11 @@ function StateToProps(state) {
   }
 
   const statusList = state.app.containers.statusList;
-  const trip = TripParser(tripActive)
+  const trip = TripParser(tripActive);
+  const rawOrders = lodash.map(trip.UserOrderRoutes, (route) => {
+    return OrderParser(route.UserOrder);
+  });
+
 
   return {
     paginationState, trips, tripsIsFetching: isFetching,
@@ -278,7 +342,10 @@ function StateToProps(state) {
     }, {}),
     filters,
     showDetails, 
-    trip
+    trip,
+    canMarkTripDelivered: CanMarkTripDelivered(trip, rawOrders),
+    canMarkContainer: CanMarkContainer(trip, hubID),
+    orders: rawOrders
   };
 }
 
@@ -306,6 +373,15 @@ function DispatchToProps(dispatch, ownProps) {
     },
     closeModal: () => {
       dispatch(InboundTrips.HideDetails());
+    },
+    deliverTrip(tripID) {
+      dispatch(InboundTrips.TripDeliver(tripID));
+    },
+    askReuse(modal) {
+      dispatch(ModalActions.addConfirmation(modal));
+    },
+    reuse(tripID) {
+      dispatch(InboundTrips.TripDeliver(tripID, true));
     },
   };
 }

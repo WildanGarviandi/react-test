@@ -315,6 +315,13 @@
 
 .verifiedColumn {
   color: #f00;
+  width: 200px;
+}
+
+.imageNext {
+  width: 13px;
+  height: 13px;
+  float: right;
 }
 
 .modalTitle {
@@ -324,15 +331,32 @@
   margin-bottom: 20px;
 }
 
+.modalClose {
+  font-size: 26px;
+  float: right;
+  top: 10px;
+  position: absolute;
+  right: 20px;
+  cursor: pointer;
+}
+
 .modalDesc {
   float: left;
-  width: 450px;
+  width: 400px;
+  margin-left: 16px;
+}
+
+.modalOrderID {
+  font-size: 18px;
+  width: 400px;
+  font-weight: bold;
 }
 
 .modalDesc2 {
   float: right;
   font-size: 12px;
   line-height: 1.5em;
+  margin-right: 16px;
 }
 
 .topDesc {
@@ -340,24 +364,31 @@
   background-color: #ffffff;
   border: solid 1px #e8e8e8;
   padding: 10px;
+  margin-bottom: 30px;
+  width: 550px;
 }
 
 .mainLabel {
-  font-size: 16px;
+  font-size: 20px;
   font-weight: bold;
+  line-height: 1.5em;
+}
+
+.secondLabel {
+  font-size: 14px;
   line-height: 1.5em;
 }
 
 .weightLabel {
-  font-size: 24px;
+  font-size: 32px;
   font-weight: bold;
   line-height: 1.5em;
 }
 
-.modalOrderID {
-  font-size: 18px;
-  width: 450px;
+.unitWeightLabel {
+  font-size: 14px;
   font-weight: bold;
+  line-height: 1.5em;
 }
 
 .modalOrderWeight {
@@ -365,17 +396,41 @@
 }
 
 .modalOrderVerified {
+  width: 108px;
   float: right;
+  border-radius: 4px;
+  background-color: #ffffff;
   border: solid 1px #e8e8e8;
-  border-radius: 4px;  
-  padding: 8px;
+  padding: 12px;
+  font-family: Helvetica;
+  font-size: 12px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  color: #38b393;
+}
+
+.modalOrderNotVerified {
+  width: 108px;
+  float: right;
+  border-radius: 4px;
+  background-color: #ffffff;
+  border: solid 1px #e8e8e8;
+  padding: 12px;
+  font-family: Helvetica;
+  font-size: 12px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  color: #000000;
 }
 
 .modalOrderMainNotVerified {
   border-radius: 4px;
-  background-color: #eeeeee;
+  background-color: #e8e8e8;
   border: solid 1px #eeeeee;
   padding: 10px;
+  width: 550px;
 }
 
 .modalOrderMain {
@@ -383,4 +438,64 @@
   background-color: #ffffff;
   border: solid 1px #eeeeee;
   padding: 10px;
+  width: 550px;
+}
+
+.iconVerified {
+  width: 13px;
+  height: 13px;
+}
+
+.bottomNotes {
+  text-align: center;
+  margin-top: 5px;
+  font-family: Helvetica;
+  font-size: 12px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.33;
+  letter-spacing: 0.3px;
+  color: #000000;
+  width: 550px;
+}
+
+.verifiedStatus {
+  margin-left: 4px;
+}
+
+.noInbound {
+  background-color: #ffffff;
+  height: 300px;
+}
+
+.noInboundDesc {
+  margin-top: 120px;
+  margin-bottom: 120px;
+}
+
+.completeButton {
+  border-radius: 4px;
+  background-color: #38b393;
+  font-family: Helvetica;
+  font-size: 14px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  text-align: center;
+  color: #ffffff;
+  width: 160px;
+  height: 44px;
+  border: 0;
+  float: left;
+  cursor: pointer;
+}
+
+.completeNotes {
+  float: left;
+  width: 360px;
+  line-height: 2em;
+  text-align: left;
+  padding-left: 15px;
+  padding-right: 15px;
 }
