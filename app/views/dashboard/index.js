@@ -93,30 +93,30 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
         { config.features.menuTMS && (tmsMenu || !hubID) &&
           <div>
           <Accordion initialState={'collapsed'}>
-            <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[5,9,10]} iconName={'shopping-cart'} iconTitle={'My Orders'}>
-              <MenuItem active={activeMenuIdx == 5} to={'/myorders/open'}>
+            <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[7,8,9]} iconName={'shopping-cart'} iconTitle={'My Orders'}>
+              <MenuItem active={activeMenuIdx == 7} to={'/myorders/open'}>
                  <Glyph className={styles.menuGlyph} name={'open-file'}/>
                  <span>Open Orders ({counterOrder.countOpen})</span>
               </MenuItem>
-              <MenuItem active={activeMenuIdx == 9} to={'/myorders/ongoing'}>
+              <MenuItem active={activeMenuIdx == 8} to={'/myorders/ongoing'}>
                  <Glyph className={styles.menuGlyph} name={'open-file'}/>
                  <span>Ongoing Orders ({counterOrder.countInProgress})</span>
               </MenuItem>
-              <MenuItem active={activeMenuIdx == 10} to={'/myorders/completed'}>
+              <MenuItem active={activeMenuIdx == 9} to={'/myorders/completed'}>
                  <Glyph className={styles.menuGlyph} name={'open-file'}/>
                  <span>Completed Orders ({counterOrder.countFinished})</span>
               </MenuItem>
             </AccordionMenu>
           </Accordion>
-          <MenuItem active={activeMenuIdx == 6} to={'/mytrips'}>
+          <MenuItem active={activeMenuIdx == 10} to={'/mytrips'}>
            <Glyph className={styles.menuGlyph} name={'briefcase'}/>
            <span>My Trips</span>
           </MenuItem>
-          <MenuItem active={activeMenuIdx == 7} to={'/mycontacts'}>
+          <MenuItem active={activeMenuIdx == 11} to={'/mycontacts'}>
              <Glyph className={styles.menuGlyph} name={'book'}/>
              <span>My Contacts</span>
           </MenuItem>
-          <MenuItem active={activeMenuIdx == 8} to={'/mydrivers'}>
+          <MenuItem active={activeMenuIdx == 12} to={'/mydrivers'}>
             <Glyph className={styles.menuGlyph} name={'user'}/>
             <span>My Drivers</span>
           </MenuItem>
@@ -125,7 +125,7 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
       </ul>
       <div className={styles.logoutSection}>
         <a className={styles.logoutButton} onClick={handleLogout}>
-          <img src="/img/icon-outbound.png" className={styles.menuLogout} />
+          <img src="/img/icon-logout.png" className={styles.menuLogout} />
           <span>Logout</span>
         </a>
       </div>
@@ -148,15 +148,17 @@ const DashboardContent = ({children}) => {
 const menuPaths = [
   '/orders/pickup',
   '/trips/inbound',
-  '/orders/received',
+  '/inbound',
+  '/orders/update',
+  '/grouping',
   '/trips/outbound',
   '/history',
   '/myorders/open',
+  '/myorders/ongoing',
+  '/myorders/completed',
   '/mytrips',
   '/mycontacts',
-  '/mydrivers',
-  '/myorders/ongoing',
-  '/myorders/completed'
+  '/mydrivers'
 ];
 
 function GetActiveMenuIdx(path) {
