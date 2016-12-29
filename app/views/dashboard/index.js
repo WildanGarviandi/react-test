@@ -61,22 +61,30 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
         { hubID && !tmsMenu &&
           <div>
             <MenuItem active={activeMenuIdx == 0} to={'/orders/pickup'}>
-              <img src="/img/icon-pickup.png" className={styles.menuGlyph} />
+              <img src="/img/icon-pickup-orders.png" className={styles.menuGlyph} />
               <span>Pickup Orders</span>
             </MenuItem>
             <MenuItem active={activeMenuIdx == 1} to={'/trips/inbound'}>
+              <img src="/img/icon-inbound-trip.png" className={styles.menuGlyph} />
+              <span>Inbound Trip</span>
+            </MenuItem>
+            <MenuItem active={activeMenuIdx == 2} to={'/inbound'}>
               <img src="/img/icon-inbound.png" className={styles.menuGlyph} />
-              <span>Inbound Trips</span>
+              <span>Inbound</span>
             </MenuItem>
-            <MenuItem active={activeMenuIdx == 2} to={'/orders/received'}>
+            <MenuItem active={activeMenuIdx == 3} to={'/orders/update'}>
+              <img src="/img/icon-update-order.png" className={styles.menuGlyph} />
+              <span>Update Order</span>
+            </MenuItem>
+            <MenuItem active={activeMenuIdx == 4} to={'/grouping'}>
               <img src="/img/icon-grouping.png" className={styles.menuGlyph} />
-              <span>Received Orders</span>
+              <span>Grouping</span>
             </MenuItem>
-            <MenuItem active={activeMenuIdx == 3} to={'/trips/outbound'}>
+            <MenuItem active={activeMenuIdx == 5} to={'/trips/outbound'}>
               <img src="/img/icon-outbound.png" className={styles.menuGlyph} />
               <span>Outbound Trips</span>
             </MenuItem>
-            <MenuItem active={activeMenuIdx == 4} to={'/history'}>
+            <MenuItem active={activeMenuIdx == 6} to={'/history'}>
               <img src="/img/icon-outbound.png" className={styles.menuGlyph} />
               <span>Trips History</span>
             </MenuItem>
@@ -114,11 +122,13 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
           </MenuItem>
           </div>
         }
-          <MenuItem to={''} onClick={handleLogout}>
-              <img src="/img/icon-outbound.png" className={styles.menuGlyph} />
-            <span>Logout</span>
-          </MenuItem>
       </ul>
+      <div className={styles.logoutSection}>
+        <a className={styles.logoutButton} onClick={handleLogout}>
+          <img src="/img/icon-outbound.png" className={styles.menuLogout} />
+          <span>Logout</span>
+        </a>
+      </div>
       { 
         // hubID &&
         // <center className={styles.menuTitle}>
