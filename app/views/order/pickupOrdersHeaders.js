@@ -4,24 +4,25 @@ import {conf, pickupOrdersColumns} from './ordersColumns';
 import {Headers} from '../base/table';
 import HeadersRow from '../base/headers';
 import {CheckBox} from '../base/input';
+import {CheckboxHeader} from '../base/tableCell';
 import * as PickupOrders from '../../modules/pickupOrders';
 
 function stateToCheckbox(state) {
   const checkedAll = state.app.pickupOrders.checkedAll;
   return {
-    checked: checkedAll,
+    isChecked: checkedAll,
   }
 }
 
 function mapDispatchToCheckBox(dispatch) {
   return {
-    onChange: function() {
+    onToggle: function() {
       dispatch(PickupOrders.ToggleSelectAll());
     }
   }
 }
 
-const PickupOrdersCheckBox = connect(stateToCheckbox, mapDispatchToCheckBox)(CheckBox);
+const PickupOrdersCheckBox = connect(stateToCheckbox, mapDispatchToCheckBox)(CheckboxHeader);
 
 function HeaderComponent(type, item) {
   switch(type) {
@@ -37,7 +38,21 @@ function HeaderComponent(type, item) {
 
 function PickupOrdersHeaders() {
   const headers = Headers(conf, pickupOrdersColumns);
-  return <HeadersRow items={headers} components={HeaderComponent} />
+  return (
+    <thead>
+      <tr>
+        <PickupOrdersCheckBox />
+        <th>{'AWB'}<br/>{'(Web Order ID)'}</th>
+        <th>{'Merchant'}</th>
+        <th>{'Weight'}</th>
+        <th>{'Pick Up Address'}</th>
+        <th>{'City'}</th>
+        <th>{'ZIP Code'}</th>
+        <th>{'Deadline'}</th>
+        <th>{'Status'}</th>
+      </tr>
+    </thead>
+  );
 }
 
 export default PickupOrdersHeaders;

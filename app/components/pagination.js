@@ -1,20 +1,18 @@
 import React from 'react';
 import _ from 'underscore';
-import {Dropdown} from './form';
-import styles from './pagination.css';
+import {Dropdown} from '../views/base';
+import styles from '../views/base/pagination.css';
 
 function PaginationInfo(props) {
   var {limit, total, page} = props;
-  var infoString = '';
-
-  if(total == 0) {
-    infoString = `Showing 0 entries`;
-  } else {
-    infoString = `Showing ${(page-1)*limit+1} to ${page*limit > total ? total : page*limit} of ${total} entries`;
-  }
+  var infoString = `PAGE ${page} / ${Math.ceil(total/limit)}`;
 
   return (
-    <span className="pagination-info">{infoString}</span>
+    <span className={styles.paginationInfo}>
+      {infoString}
+      <img className={styles.leftArrow} src="/img/icon-previous.png" />
+      <img className={styles.rightArrow} src="/img/icon-next.png" />
+    </span>
   );
 }
 
@@ -31,11 +29,12 @@ const LimitSelector = React.createClass({
   },
   render() {
     return (
-      <span className="page-list">
+      <span className={styles.pageList}>
+        <span style={{opacity: 0.5}}>{'Show me'}</span>
         <span className="btn-group dropup">
           <Dropdown opened={this.state.opened} val={this.props.limit} options={[5, 10, 25, 50, 100, 200, 500, 1000]} onClick={this.toggleOpened} selectVal={this.setLimit} />
         </span>
-        {' records per page'}
+        <span style={{opacity: 0.5}}>{' per page'}</span>
       </span>
     );
   }
@@ -46,15 +45,14 @@ function PaginationDetail(props) {
 
   return (
     <div className={styles.paginationDetail}>
-      <PaginationInfo limit={limit} total={total} page={page} />
       <LimitSelector limit={limit} setLimit={setLimit} />
     </div>
   );
 }
-
+  
 const PaginationControl = React.createClass({
   setPage(x) {
-    if(x != this.props.currentPage) this.props.setPage(x);
+    if(x != this.props.currentPage && x >= 1 && x <= this.props.pagesCount) this.props.setPage(x);
   },
   render() {
     var {pagesCount, currentPage} = this.props;
@@ -68,37 +66,15 @@ const PaginationControl = React.createClass({
       );
     });
 
+    const infoString = `PAGE ${currentPage} / ${pagesCount}`;
+
     return (
       <div className={styles.paginationControl}>
-        <ul className={styles.paginationItem}>
-          <li className="page-first">
-            <a href="javascript:;" onClick={this.setPage.bind(this, 1)}>«</a>
-          </li>
-          <li className="page-pre">
-            <a href="javascript:;" onClick={this.setPage.bind(this, currentPage - 1)}>‹</a>
-          </li>
-          { 
-            minPage > 1 ? 
-            <li>
-              <a href="javascript:;">...</a>
-            </li> :
-            <li></li>
-          }
-          {pages}
-          { 
-            maxPage < 1 + pagesCount ? 
-            <li>
-              <a href="javascript:;">...</a>
-            </li> :
-            <li></li>
-          }
-          <li className="page-next">
-            <a href="javascript:;" onClick={this.setPage.bind(this, currentPage + 1)}>›</a>
-          </li>
-          <li className="page-last">
-            <a href="javascript:;" onClick={this.setPage.bind(this, pagesCount)}>»</a>
-          </li>
-        </ul>
+        <span className={styles.paginationInfo}>
+          {infoString}
+          <img className={styles.leftArrow} onClick={this.setPage.bind(this, currentPage - 1)} src="/img/icon-previous.png" />
+          <img className={styles.rightArrow} onClick={this.setPage.bind(this, currentPage + 1)} src="/img/icon-next.png" />
+        </span>
       </div>
     );
   }
@@ -125,12 +101,12 @@ const Pagination = React.createClass({
     var totalPages = this.countPages();
 
     return (
-      <div>
+      <div className={styles.paginationTable}>
         <div className="fixed-table-pagination" style={{display: 'block'}}>
           <PaginationDetail limit={limit} total={total} page={currentPage} setLimit={this.setLimit} />
           <PaginationControl pagesCount={totalPages} currentPage={currentPage} setPage={this.setPage} />
         </div>
-        <div style={{clear: 'both'}} />
+        <div style={{clear: 'both', marginBottom: 10}} />
       </div>
     );
   }

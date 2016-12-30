@@ -42,10 +42,10 @@ const Dropdown = React.createClass({
 
     return (
       <span className={styles.dropdownWrapper} onMouseUp={this.mouseUpHandler} onMouseDown={this.mouseDownHandler}>
-        <ButtonBase width={width} className={styles.dropdownBase + " " + className} onClick={onClick}>
+        <span width={width} className={styles.dropdownBase + " " + className} onClick={onClick}>
           <span className={styles.val}>{val}</span>
-          <Glyph name={opened ? "chevron-up" : "chevron-down"} />
-        </ButtonBase>
+          <img src="/img/icon-dropdown.png" className={styles.arrowDown} />
+        </span>
         {
           opened &&
           <div className={styles.optionsWrapper}>
