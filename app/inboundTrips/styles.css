@@ -449,6 +449,10 @@
   height: 20px;
 }
 
+.iconNotVerified {
+  font-size: 18px;
+}
+
 .bottomNotes {
   text-align: center;
   margin-top: 5px;
@@ -522,6 +526,11 @@
 }
 
 .verifiedValue {
+  margin-left: 6px; 
+  padding-top: 4px; 
+}
+
+.valueVehicle {
   margin-left: 6px; 
   padding-top: 4px; 
 }

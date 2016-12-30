@@ -73,7 +73,9 @@ const Table = React.createClass({
                 (item.driverVehicleID === 1 ? <img className={styles.imageVehicle} src="/img/icon-vehicle-motorcycle.png" /> :
                 <img className={styles.imageVehicle} src="/img/icon-vehicle-van.png" />)
               }
-              {item[columnKey]}
+              <span className={styles.valueVehicle}>
+                {item[columnKey]}
+              </span>
             </span>
             </td>;
         }
@@ -186,8 +188,10 @@ const VerifiedOrder = React.createClass({
                 <div className={route.OrderStatus && route.OrderStatus.OrderStatus === 'DELIVERED' ? 
                   styles.modalOrderVerified : styles.modalOrderNotVerified}>
                   <span className={styles.verifiedStatus}>
-                    <img className={styles.iconVerified} src={route.OrderStatus && route.OrderStatus.OrderStatus === 'DELIVERED' ? 
-                      "/img/icon-ready.png" : "/img/icon-not-ready.png"} />
+                    {route.OrderStatus && route.OrderStatus.OrderStatus === 'DELIVERED' ? 
+                      <img className={styles.iconVerified} src="/img/icon-ready.png" /> : 
+                      <span className={styles.iconNotVerified}>X</span>
+                    }
                     <span className={styles.verifiedValue}>
                       {route.OrderStatus && route.OrderStatus.OrderStatus === 'DELIVERED' ? 'VERIFIED' : 'NOT VERIFIED'}
                     </span>
