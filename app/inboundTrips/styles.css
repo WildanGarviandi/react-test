@@ -343,7 +343,7 @@
 .modalDesc {
   float: left;
   width: 400px;
-  margin-left: 16px;
+  margin-left: 6px;
 }
 
 .modalOrderID {
@@ -363,26 +363,26 @@
   border-radius: 4px;
   background-color: #ffffff;
   border: solid 1px #e8e8e8;
-  padding: 10px;
-  margin-bottom: 30px;
+  padding: 5px;
+  margin-bottom: 20px;
   width: 550px;
 }
 
 .mainLabel {
   font-size: 20px;
   font-weight: bold;
-  line-height: 1.5em;
+  line-height: 1.2em;
 }
 
 .secondLabel {
-  font-size: 14px;
+  font-size: 12px;
   line-height: 1.5em;
+  opacity: 0.5;
 }
 
 .weightLabel {
   font-size: 32px;
   font-weight: bold;
-  line-height: 1.5em;
 }
 
 .unitWeightLabel {
@@ -393,10 +393,12 @@
 
 .modalOrderWeight {
   font-size: 14px;
+  opacity: 0.5;
+  font-family: Helvetica;
 }
 
 .modalOrderVerified {
-  width: 108px;
+  width: 118px;
   float: right;
   border-radius: 4px;
   background-color: #ffffff;
@@ -411,7 +413,7 @@
 }
 
 .modalOrderNotVerified {
-  width: 108px;
+  width: 118px;
   float: right;
   border-radius: 4px;
   background-color: #ffffff;
@@ -423,11 +425,12 @@
   font-style: normal;
   font-stretch: normal;
   color: #000000;
+  opacity: 0.5;
 }
 
 .modalOrderMainNotVerified {
   border-radius: 4px;
-  background-color: #e8e8e8;
+  background-color: #dddddd;
   border: solid 1px #eeeeee;
   padding: 10px;
   width: 550px;
@@ -442,8 +445,8 @@
 }
 
 .iconVerified {
-  width: 13px;
-  height: 13px;
+  width: 20px;
+  height: 20px;
 }
 
 .bottomNotes {
@@ -462,6 +465,7 @@
 
 .verifiedStatus {
   margin-left: 4px;
+  display: inline-flex;
 }
 
 .noInbound {
@@ -498,4 +502,26 @@
   text-align: left;
   padding-left: 15px;
   padding-right: 15px;
+}
+
+.imageVehicle {
+  width: 20px;
+  height: 20px;
+  margin-right: 12px;
+}
+
+.driverColumn {
+  width: 200px;
+  text-align: left !important;
+}
+
+.inlineVehicle {
+  padding-right: 3px; 
+  padding-top: 3px; 
+  display: inline-flex;
+}
+
+.verifiedValue {
+  margin-left: 6px; 
+  padding-top: 4px; 
 }

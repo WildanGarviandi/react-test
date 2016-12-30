@@ -66,6 +66,17 @@ const Table = React.createClass({
             <img className={styles.imageNext} src="/img/icon-next.png" />
           </td>;
         }
+        if (columnKey === 'driver') {
+          return <td className={tableStyles.td + ' ' + styles.driverColumn} key={columnKey}>
+            <span className={styles.inlineVehicle}>
+              {item.driverVehicleID &&
+                (item.driverVehicleID === 1 ? <img className={styles.imageVehicle} src="/img/icon-vehicle-motorcycle.png" /> :
+                <img className={styles.imageVehicle} src="/img/icon-vehicle-van.png" />)
+              }
+              {item[columnKey]}
+            </span>
+            </td>;
+        }
         return <td className={tableStyles.td} key={columnKey}>{item[columnKey]}</td>;
       });
 
@@ -138,7 +149,8 @@ function ProcessTrip(trip) {
     containerNumber: trip.ContainerNumber,
     district: trip.District && trip.District.Name,
     driver: trip.Driver && `${trip.Driver.FirstName} ${trip.Driver.LastName}` || '-',
-    driverPhone: trip.Driver && `${trip.Driver.CountryCode} ${trip.Driver.PhoneNumber}` || '-',
+    driverVehicleID: trip.Driver && trip.Driver.Vehicle && trip.Driver.Vehicle.VehicleID,
+    driverPhone: trip.Driver && `${trip.Driver.CountryCode}${trip.Driver.PhoneNumber}` || '-',
     dropoff: TripDropOff(trip),
     dropoffTime: formatDate(trip.DropoffTime),
     key: trip.TripID,
@@ -160,38 +172,40 @@ function ProcessTrip(trip) {
 }
 
 const VerifiedOrder = React.createClass({
-    render: function() {
-      var orderComponents = this.props.routes.map(function(route, idx) {
-        return (
-          <div key={idx} className={route.OrderStatus && route.OrderStatus.OrderStatus === 'DELIVERED' ? 
-            styles.modalOrderMain : styles.modalOrderMainNotVerified}>
-            <table>
-              <tr>
-                <td className={styles.modalOrderID}>
-                  {route.UserOrder.UserOrderNumber}
-                </td>
-                <td rowSpan={2}>
-                  <div className={route.OrderStatus && route.OrderStatus.OrderStatus === 'DELIVERED' ? 
-                    styles.modalOrderVerified : styles.modalOrderNotVerified}>
+  render: function() {
+    var orderComponents = this.props.routes.map(function(route, idx) {
+      return (
+        <div key={idx} className={route.OrderStatus && route.OrderStatus.OrderStatus === 'DELIVERED' ? 
+          styles.modalOrderMain : styles.modalOrderMainNotVerified}>
+          <table>
+            <tr>
+              <td className={styles.modalOrderID}>
+                {route.UserOrder.UserOrderNumber}
+              </td>
+              <td rowSpan={2}>
+                <div className={route.OrderStatus && route.OrderStatus.OrderStatus === 'DELIVERED' ? 
+                  styles.modalOrderVerified : styles.modalOrderNotVerified}>
+                  <span className={styles.verifiedStatus}>
                     <img className={styles.iconVerified} src={route.OrderStatus && route.OrderStatus.OrderStatus === 'DELIVERED' ? 
                       "/img/icon-ready.png" : "/img/icon-not-ready.png"} />
-                    <span className={styles.verifiedStatus}>
+                    <span className={styles.verifiedValue}>
                       {route.OrderStatus && route.OrderStatus.OrderStatus === 'DELIVERED' ? 'VERIFIED' : 'NOT VERIFIED'}
                     </span>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td className={styles.modalOrderWeight}>
-                  Weight: {route.UserOrder.PackageWeight}
-                </td>
-              </tr>
-            </table>
-          </div>
-        );
-      });
-      return <div>{orderComponents}</div>;
-    }
+                  </span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td className={styles.modalOrderWeight}>
+                Weight: {route.UserOrder.PackageWeight} kg
+              </td>
+            </tr>
+          </table>
+        </div>
+      );
+    });
+    return <div>{orderComponents}</div>;
+  }
 });
 
 
@@ -282,7 +296,7 @@ const TableStateful = React.createClass({
                     </p>
                   </div>
                   <div className={styles.modalDesc2}>
-                    <p>
+                    <p className={styles.secondLabel}>
                       Total Weight
                     </p>
                     <p className={styles.weightLabel}>
