@@ -1,8 +1,10 @@
 import lodash from 'lodash';
 import React from 'react';
 import DateTime from 'react-datetime';
+import moment from 'moment';
 import {connect} from 'react-redux';
-import styles from './table.css';
+import styles from '../views/base/table.css';
+import tableStyles from './table.css';
 import {Glyph} from '../views/base';
 import {DropdownWithState2} from '../views/base/dropdown';
 import * as TripsHistoryService from './service';
@@ -127,13 +129,13 @@ function HubCell({currentHubID, district, hub, hubType, merchants}) {
     const markerType = hubType === "origin" ? "export" : "import"
 
     return (
-        <td className={styles.td}>
+        <td className={styles.td + ' ' + (hub && hub.HubID === currentHubID ? tableStyles.withIcon : '')}>
             {
                 hub && 
                 <span>
                 {
                     hub.HubID === currentHubID &&
-                    <Glyph className={styles.currentHubMarker} name={markerType} />
+                    <Glyph className={styles.currentHubMarker + ' ' + (hubType === 'origin' ? tableStyles.iconOrigin : tableStyles.iconDestination)} name={markerType} />
                 }
                 {
                     `${hub.Name}`
@@ -156,20 +158,50 @@ function HubCellState(store) {
 
 const HubCellWithState = connect(HubCellState)(HubCell);
 
+function AssignedTo(trip) {
+  return {
+    companyName: (trip.FleetManager && trip.FleetManager.CompanyDetail) ? trip.FleetManager.CompanyDetail.CompanyName : '',
+    driverDetail: (trip.Driver) ? trip.Driver.FirstName + ' ' + trip.Driver.LastName + ' / ' + trip.Driver.CountryCode + ' ' + trip.Driver.PhoneNumber : '',
+  };
+}
+
+function Weight(trip) {
+  var result = 0;
+
+  if (trip.UserOrderRoutes) {
+    trip.UserOrderRoutes.forEach(function(val, key) {
+      result += val.UserOrder.PackageWeight;
+    });
+  };
+
+  return result;
+}
+
+function Remarks(trip) {
+  var notes = '';
+
+  if (trip.Notes) {
+    notes = trip.Notes;
+    if (notes.length > 50) {
+      notes = notes.substring(0, 50) + ' ...';
+    };
+  };
+
+  return notes;
+}
+
 function TripHistoryRow({trip, goToDetails}) {
     return (
         <tr className={styles.tr} onClick={goToDetails.bind(null, trip)}>
+            <TextCell text={(trip.TripID) || '---'} />
             <HubCellWithState hub={trip.OriginHub} hubType="origin" />
             <HubCellWithState hub={trip.DestinationHub} district={trip.District} hubType="destination" />
-            <TextCell text={(trip.District && trip.District.Name) || '---'} />
-            <TextCell text={trip.PickupTime && formatDate(trip.PickupTime)} />
-            <TextCell text={trip.DropoffTime && formatDate(trip.DropoffTime)} />
-            <TextCell text={(trip.FleetManager && trip.FleetManager.CompanyDetail && trip.FleetManager.CompanyDetail.CompanyName) || '---'} />
-            <TextCell text={trip.DriverName || '---'} />
-            <TextCell text={trip.OrderStatus && trip.OrderStatus.OrderStatus} />
             <TextCell text={trip.TripType} />
+            <td className={styles.td}>{AssignedTo(trip).companyName}<br/>{AssignedTo(trip).driverDetail}</td>
+            <TextCell text={trip.OrderStatus && trip.OrderStatus.OrderStatus} />
             <TextCell text={trip.UserOrderRoutes.length} />
-            <TextCell text={trip.LogisticFee} />
+            <TextCell text={Weight(trip) + ' Kg'} />
+            <TextCell text={Remarks(trip)} />
         </tr>
     );
 }
@@ -187,17 +219,15 @@ const TripHistoryRowStateful = connect(undefined, TripHistoryRowDispatch)(TripHi
 function TripHistoryHeader() {
   return (
     <tr>
+      <TextHeader text="Trip ID" />
       <TextHeader text="Origin Hub" />
       <TextHeader text="Destination Hub" />
-      <TextHeader text="Destination District" />
-      <TextHeader text="Pickup Time" />
-      <TextHeader text="Dropoff Time" />
-      <TextHeader text="Fleet" />
-      <TextHeader text="Driver" />
+      <TextHeader text="Type" />
+      <TextHeader text="Assigned To" />
       <TextHeader text="Status" />
-      <TextHeader text="Trip Type" />
-      <TextHeader text="Total Packages" />
-      <TextHeader text="Fee" />
+      <TextHeader text="Quantity" />
+      <TextHeader text="Weight" />
+      <TextHeader text="Remarks" />
     </tr>
   );
 }
