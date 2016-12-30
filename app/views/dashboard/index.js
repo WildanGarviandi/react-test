@@ -85,7 +85,7 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
               <span>Outbound Trips</span>
             </MenuItem>
             <MenuItem active={activeMenuIdx == 6} to={'/history'}>
-              <img src="/img/icon-outbound.png" className={styles.menuGlyph} />
+              <img src="/img/icon-trip-history.png" className={styles.menuGlyph} />
               <span>Trips History</span>
             </MenuItem>
           </div>
