@@ -159,7 +159,9 @@ function HubCellState(store) {
 const HubCellWithState = connect(HubCellState)(HubCell);
 
 function AssignedTo(trip) {
+  var className = (trip.Driver && trip.Driver.Vehicle && trip.Driver.Vehicle.VehicleID === 1) ? tableStyles.iconVehicleMotor : tableStyles.iconVehicleMiniVan;
   return {
+    className: (trip.Driver) ? className : '',
     companyName: (trip.FleetManager && trip.FleetManager.CompanyDetail) ? trip.FleetManager.CompanyDetail.CompanyName : '',
     driverDetail: (trip.Driver) ? trip.Driver.FirstName + ' ' + trip.Driver.LastName + ' / ' + trip.Driver.CountryCode + ' ' + trip.Driver.PhoneNumber : '',
   };
@@ -170,7 +172,9 @@ function Weight(trip) {
 
   if (trip.UserOrderRoutes) {
     trip.UserOrderRoutes.forEach(function(val, key) {
-      result += val.UserOrder.PackageWeight;
+      if (val.UserOrder && val.UserOrder.PackageWeight) {
+        result += val.UserOrder.PackageWeight;
+      }
     });
   };
 
@@ -197,7 +201,7 @@ function TripHistoryRow({trip, goToDetails}) {
             <HubCellWithState hub={trip.OriginHub} hubType="origin" />
             <HubCellWithState hub={trip.DestinationHub} district={trip.District} hubType="destination" />
             <TextCell text={trip.TripType} />
-            <td className={styles.td}>{AssignedTo(trip).companyName}<br/>{AssignedTo(trip).driverDetail}</td>
+            <td className={styles.td + ' ' + AssignedTo(trip).className}>{AssignedTo(trip).companyName}<br/>{AssignedTo(trip).driverDetail}</td>
             <TextCell text={trip.OrderStatus && trip.OrderStatus.OrderStatus} />
             <TextCell text={trip.UserOrderRoutes.length} />
             <TextCell text={Weight(trip) + ' Kg'} />

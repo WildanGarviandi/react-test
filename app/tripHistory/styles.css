@@ -27,6 +27,7 @@
   margin-top: -4px !important;
   margin-left: 0px;
   padding: 12px;
+  color: #ff5a60;
 }
 
 .subtitle {
@@ -110,7 +111,7 @@
 }
 
 .modalLink:hover {
-  color: #ff5a60;
+  color: #2196f3;
 }
 
 .top2 {
