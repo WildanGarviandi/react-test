@@ -103,6 +103,7 @@ const Table = React.createClass({
         )
       }
     }
+
     return (
       <div style={style}>
         <Pagination {...pagination} {...PaginationActions} />
@@ -123,7 +124,6 @@ const Table = React.createClass({
         }
         <table className={styles.table}>
           <Headers />
-          <Filters /> 
           {bodyComponents}
         </table>
         <Pagination {...pagination} {...PaginationActions} />

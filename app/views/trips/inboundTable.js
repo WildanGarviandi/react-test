@@ -154,7 +154,7 @@ const TripStatusSelect = React.createClass({
 const Table = React.createClass({
   render() {
     const Headers = _.map(ColumnsOrder, (columnKey) => {
-      return <th className={tableStyles.th} key={columnKey}>{ColumnsTitle[columnKey]}</th>;
+      return <th key={columnKey}>{ColumnsTitle[columnKey]}</th>;
     });
 
     const Body = _.map(this.props.items, (item) => {
@@ -200,7 +200,6 @@ const Table = React.createClass({
         return (
           <table className={tableStyles.table}>
             <thead><tr>{Headers}</tr></thead>
-            <tbody>{Search}</tbody>
             <tbody>{Body}</tbody>
           </table>
         );
