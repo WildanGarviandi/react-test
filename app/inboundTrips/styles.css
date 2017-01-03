@@ -316,6 +316,7 @@
 .verifiedColumn {
   color: #f00;
   width: 200px;
+  cursor: pointer;
 }
 
 .imageNext {
