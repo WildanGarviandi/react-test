@@ -54,90 +54,89 @@ const AccordionMenu = React.createClass({
 const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, loggedName, counterOrder, tmsMenu, switchMenu}) => {
   return (
     <div className={styles.menuPanel}>
-      <h4 className={styles.menuTitle}>Etobee {tmsMenu ? 'TMS' : 'Hub'}</h4>
+      <img src="/img/logo.png" className={styles.menuLogo} />
       <h5 className={styles.menuTitle}>{loggedName}</h5>
       <h4 className={styles.compactTitle}>{tmsMenu ? 'E-TMS' : 'E-Hub'}</h4>
       <ul className={styles.menuList}>
         { hubID && !tmsMenu &&
           <div>
-          <Accordion initialState={'collapsed'}>
-            <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[0,1]} iconName={'list-alt'} iconTitle={'Inbound'}>
-              <MenuItem active={activeMenuIdx == 0} to={'/orders/pickup'}>
-                <Glyph className={styles.menuGlyph} name={'alert'}/>
-                <span>Pickup Orders</span>
-              </MenuItem>
-              <MenuItem active={activeMenuIdx == 1} to={'/trips/inbound'}>
-                <Glyph className={styles.menuGlyph} name={'tasks'}/>
-                <span>Inbound Trips</span>
-              </MenuItem>
-            </AccordionMenu>
-          </Accordion>
-          <Accordion initialState={'collapsed'}>
-            <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[2,3]} iconName={'barcode'} iconTitle={'Outbound'}>
-              <MenuItem active={activeMenuIdx == 2} to={'/orders/received'}>
-                <Glyph className={styles.menuGlyph} name={'transfer'}/>
-                <span>Received Orders</span>
-              </MenuItem>
-              <MenuItem active={activeMenuIdx == 3} to={'/trips/outbound'}>
-                <Glyph className={styles.menuGlyph} name={'road'}/>
-                <span>Outbound Trips</span>
-              </MenuItem>
-            </AccordionMenu>
-          </Accordion>
-          <MenuItem active={activeMenuIdx == 4} to={'/history'}>
-            <Glyph className={styles.menuGlyph} name={'folder-open'}/>
-            <span>Trips History</span>
-          </MenuItem>
+            <MenuItem active={activeMenuIdx == 0} to={'/orders/pickup'}>
+              <img src="/img/icon-pickup-orders.png" className={styles.menuGlyph} />
+              <span>Pickup Orders</span>
+            </MenuItem>
+            <MenuItem active={activeMenuIdx == 1} to={'/trips/inbound'}>
+              <img src="/img/icon-inbound-trip.png" className={styles.menuGlyph} />
+              <span>Inbound Trip</span>
+            </MenuItem>
+            <MenuItem active={activeMenuIdx == 2} to={'/inbound'}>
+              <img src="/img/icon-inbound.png" className={styles.menuGlyph} />
+              <span>Inbound</span>
+            </MenuItem>
+            <MenuItem active={activeMenuIdx == 3} to={'/orders/update'}>
+              <img src="/img/icon-update-order.png" className={styles.menuGlyph} />
+              <span>Update Order</span>
+            </MenuItem>
+            <MenuItem active={activeMenuIdx == 4} to={'/grouping'}>
+              <img src="/img/icon-grouping.png" className={styles.menuGlyph} />
+              <span>Grouping</span>
+            </MenuItem>
+            <MenuItem active={activeMenuIdx == 5} to={'/trips/outbound'}>
+              <img src="/img/icon-outbound.png" className={styles.menuGlyph} />
+              <span>Outbound Trips</span>
+            </MenuItem>
+            <MenuItem active={activeMenuIdx == 6} to={'/history'}>
+              <img src="/img/icon-trip-history.png" className={styles.menuGlyph} />
+              <span>Trips History</span>
+            </MenuItem>
           </div>
         }
         { config.features.menuTMS && (tmsMenu || !hubID) &&
           <div>
           <Accordion initialState={'collapsed'}>
-            <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[5,9,10]} iconName={'shopping-cart'} iconTitle={'My Orders'}>
-              <MenuItem active={activeMenuIdx == 5} to={'/myorders/open'}>
+            <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[7,8,9]} iconName={'shopping-cart'} iconTitle={'My Orders'}>
+              <MenuItem active={activeMenuIdx == 7} to={'/myorders/open'}>
                  <Glyph className={styles.menuGlyph} name={'open-file'}/>
                  <span>Open Orders ({counterOrder.countOpen})</span>
               </MenuItem>
-              <MenuItem active={activeMenuIdx == 9} to={'/myorders/ongoing'}>
+              <MenuItem active={activeMenuIdx == 8} to={'/myorders/ongoing'}>
                  <Glyph className={styles.menuGlyph} name={'open-file'}/>
                  <span>Ongoing Orders ({counterOrder.countInProgress})</span>
               </MenuItem>
-              <MenuItem active={activeMenuIdx == 10} to={'/myorders/completed'}>
+              <MenuItem active={activeMenuIdx == 9} to={'/myorders/completed'}>
                  <Glyph className={styles.menuGlyph} name={'open-file'}/>
                  <span>Completed Orders ({counterOrder.countFinished})</span>
               </MenuItem>
             </AccordionMenu>
           </Accordion>
-          <MenuItem active={activeMenuIdx == 6} to={'/mytrips'}>
+          <MenuItem active={activeMenuIdx == 10} to={'/mytrips'}>
            <Glyph className={styles.menuGlyph} name={'briefcase'}/>
            <span>My Trips</span>
           </MenuItem>
-          <MenuItem active={activeMenuIdx == 7} to={'/mycontacts'}>
+          <MenuItem active={activeMenuIdx == 11} to={'/mycontacts'}>
              <Glyph className={styles.menuGlyph} name={'book'}/>
              <span>My Contacts</span>
           </MenuItem>
-          <MenuItem active={activeMenuIdx == 8} to={'/mydrivers'}>
+          <MenuItem active={activeMenuIdx == 12} to={'/mydrivers'}>
             <Glyph className={styles.menuGlyph} name={'user'}/>
             <span>My Drivers</span>
           </MenuItem>
           </div>
         }
-          <MenuItem to={''} onClick={handleLogout}>
-            <Glyph className={styles.menuGlyph} name={'log-out'}/>
-            <span>Logout</span>
-          </MenuItem>
       </ul>
-      { hubID &&
-        <center className={styles.menuTitle}>
-          <a className={styles.switchLink} onClick={switchMenu}>
-            <span>Switch to {tmsMenu ? 'Hub' : 'TMS'}</span>
-          </a>
-        </center>
+      <div className={styles.logoutSection}>
+        <a className={styles.logoutButton} onClick={handleLogout}>
+          <img src="/img/icon-logout.png" className={styles.menuLogout} />
+          <span>Logout</span>
+        </a>
+      </div>
+      { 
+        // hubID &&
+        // <center className={styles.menuTitle}>
+        //   <a className={styles.switchLink} onClick={switchMenu}>
+        //     <span>Switch to {tmsMenu ? 'Hub' : 'TMS'}</span>
+        //   </a>
+        // </center>
       }
-      <button className={styles.toggleMenu} onClick={toggleCompact}>
-        <Glyph className={styles.glyphBackward} name={'backward'}/>
-        <Glyph className={styles.glyphForward} name={'forward'}/>
-      </button>
     </div>
   );
 }
@@ -149,15 +148,17 @@ const DashboardContent = ({children}) => {
 const menuPaths = [
   '/orders/pickup',
   '/trips/inbound',
-  '/orders/received',
+  '/inbound',
+  '/orders/update',
+  '/grouping',
   '/trips/outbound',
   '/history',
   '/myorders/open',
+  '/myorders/ongoing',
+  '/myorders/completed',
   '/mytrips',
   '/mycontacts',
-  '/mydrivers',
-  '/myorders/ongoing',
-  '/myorders/completed'
+  '/mydrivers'
 ];
 
 function GetActiveMenuIdx(path) {
@@ -191,7 +192,7 @@ const DashboardContainer = React.createClass({
     let {hubID, hubName, fleetName} = userLogged;
     let activeMenuIdx = GetActiveMenuIdx(routes[routes.length-1].path);
     let panelClass = classnaming('panel', {compact: this.state.isCompact});
-    const loggedName = hubID ? `${hubName} - ${fleetName}` : `${fleetName}`;
+    const loggedName = hubID ? `${fleetName} \n ${hubName}` : `${fleetName}`;
 
     return (
       <div style={{display: 'table', width: '100%', minHeight: '100%'}}>
