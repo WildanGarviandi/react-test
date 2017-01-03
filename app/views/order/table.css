@@ -93,3 +93,13 @@
     border: solid 1px #e8e8e8;
     text-align: center;
 }
+
+.emptyTableContainer {
+    text-align: center;
+    height: 500px;
+    vertical-align: middle;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}

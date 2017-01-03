@@ -9,7 +9,11 @@ import styles from './modal.css';
 
 const ModalMessage = React.createClass({
   componentDidMount() {
-    ReactDOM.findDOMNode(this.refs.elementForModalFocus).focus();
+    var thisClass = this;
+    setTimeout(function () {
+      ReactDOM.findDOMNode(thisClass.refs.elementForModalFocus).focus();
+      clearTimeout(this);
+    }, 100)
   },
   componentWillUnmount() {
     if (this.props.modal.backElementFocusID) {
@@ -30,20 +34,23 @@ const ModalMessage = React.createClass({
     const {message, width, onConfirm} = modal;
 
     return (
-      <Modal show={modal} width={width || 300}>
-        {message}
-        <span className={styles.closeBtn} onClick={this.handleClose}>X</span>
-        <button ref="elementForModalFocus" className={styles.focusBtn} type=""></button>
-        <div style={{clear: 'both'}} />
+      <Modal show={modal} width={width || 300} className={styles.modal}>
+        <div className={styles.messageContainer}>{message}</div>
+        <div className={styles.closeBtn} onClick={this.handleClose}>
+          <img src="/img/icon-close.png" width="24" height="24"/>
+        </div>
+        <button className={styles.focusBtn} type=""></button>
+        <div className={styles.btnContainer}>
         {
           onConfirm ?
           <span>
-            <ButtonBase onClick={this.doCancel} styles={styles.modalBtn}>No</ButtonBase>
+            <ButtonBase ref="elementForModalFocus" onClick={this.doCancel} styles={styles.modalBtn}>No</ButtonBase>
             <ButtonBase onClick={this.doConfirm} styles={styles.modalBtnY}>Yes</ButtonBase>
           </span>
           :
-          <ButtonBase onClick={this.handleClose} styles={styles.modalBtn}>Close</ButtonBase>
+          <ButtonBase ref="elementForModalFocus" onClick={this.handleClose} styles={styles.modalBtn}>Close</ButtonBase>
         }
+        </div>
         <div style={{clear: 'both'}} />
       </Modal>
     );

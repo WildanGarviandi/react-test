@@ -216,3 +216,8 @@
   background-color: #3eb881;
 }
 
+.actionContainer {
+  display: table;
+  width: 100%;
+  margin-bottom: 17px;
+}

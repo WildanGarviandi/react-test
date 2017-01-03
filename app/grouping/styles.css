@@ -1,0 +1,253 @@
+.modal {
+	background-color: #f1f1f1;
+	margin-left: -20px;
+	margin-right: -20px;
+	width: 550px;
+}
+
+.modalHeader {
+	background-color: white;
+	padding: 0 20px 16px;
+}
+
+.modalTitle {
+	font-size: 20px;
+	margin-top: 0;
+	text-align: center;
+}
+
+.modalInfo {
+	border: solid 1px #e8e8e8;
+	border-radius: 4px;
+	display: table;
+	width: 100%;
+}
+
+.smallText {
+	font-size: 12px;
+}
+
+.smallTextBold {
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.smallestText {
+	font-size: 10px;
+	width: 160px;
+}
+
+.bigText {
+	font-size: 20px;
+	margin: 4px 0;
+	font-weight: bold;
+}
+
+.mediumText {
+	font-size: 16px;
+	margin: 2px 0;
+	font-weight: bold;
+}
+
+.veryBigText {
+	font-size: 30px;
+	margin: 2px 0;
+	font-weight: 700;
+}
+
+.modalContent1 {
+	padding: 20px 20px 10px;
+}
+
+.modalContent2 {
+	background-color: white;
+	padding: 20px 20px;
+	margin-bottom: 10px;
+}
+
+.modalContent3 {
+	padding: 10px 15px;
+	background-color: white;
+	border-radius: 4px;
+	margin: 10px 0;
+}
+
+.modalFooter {
+	background-color: white;
+	text-align: center;
+	padding: 20px 20px 0;
+}
+
+.endButton {
+	font-size: 20px;
+	font-weight: 700;
+	background-color: #38b393;
+	box-shadow: none;
+	border: none;
+	border-radius: 4px;
+	color: white;
+	width: 100%;
+	height: 50px;
+	cursor: pointer;
+}
+
+.endButton:focus {
+	animation: blink .5s step-end infinite alternate;
+}
+
+.createTripButton {
+	font-size: 14px;
+	font-weight: 600;
+	background-color: #38b393;
+	box-shadow: none;
+	border: none;
+	border-radius: 4px;
+	color: white;
+	padding: 0 20px;
+	height: 45px;
+	cursor: pointer;
+}
+
+.createTripButton:disabled {
+	cursor: default;
+	background-color: #ceece4;
+}
+
+.createTripButton:active {
+	background-color: #87d1be;
+}
+
+.createTripButton:focus {
+	animation: blink .5s step-end infinite alternate;
+}
+
+@keyframes blink { 
+   50% { background-color: #87d1be; } 
+}
+
+.normalButton {
+	box-shadow: none;
+	border: solid 2px #e8e8e8;
+	background-color: white;
+	border-radius: 4px;
+	color: #38b393;
+	font-weight: 700;
+	height: 50px;
+	width: 110px;
+	cursor: pointer;
+}
+
+.input {
+	font-size: 20px;
+	font-weight: bold;
+	border: none;
+	padding-left: 0;
+	margin: 4px 0;
+}
+
+.input:hover {
+	border-bottom: solid 1px;
+}
+
+.inputWithBorder {
+	border-bottom: solid 1px;
+}
+
+.ordersContent {
+	height: 350px;
+	overflow: scroll;
+}
+
+.ordersContentEmpty {
+	display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+	padding: 0 25px;
+	height: 100%;
+	align-items: center;
+}
+
+.ordersContentEmpty div {
+	margin: 10px 0;
+}
+
+.modalContent4 {
+	padding: 5px 20px;
+	border-top: solid 1px #e8e8e8;
+	background-color: white;
+}
+
+.addOrderButton {
+	border: none;
+	box-shadow: none;
+	color: white;
+	padding: 7px 0;
+	width: 50px;
+	font-size: 14px;
+	font-weight: bold;
+	border-radius: 4px;
+	background-color: #2196f3;
+	width: 100px;
+	cursor: pointer;
+}
+
+.addOrderButton:active {
+	background-color: #79c0f7; 
+}
+
+.addOrderInput {
+	font-size: 14px;
+	font-weight: normal;
+	padding-left: 15px;
+    width: 350px;
+}
+
+.orderContent {
+	background-color: white;
+	display: table;
+	width: 100%;
+	margin-bottom: 10px;
+}
+
+.orderContentLeft {
+	width: 70%;
+	display: table-cell;
+	text-align: left;
+	padding: 15px;
+	vertical-align: middle;
+}
+
+.orderContentRight {
+	width: 29%;
+	display: table-cell;
+	text-align: right;
+	padding: 15px;
+	border-left: solid 1px #e8e8e8;
+	vertical-align: middle;
+}
+
+.successContent {
+	height: 200px;
+    line-height: 2;
+}
+
+.successContent div {
+	margin: 0;
+}
+
+.successIcon {
+	width: 80px;
+	height: 80px;
+}
+
+.closeModalButton {
+	position: absolute;
+	right: 10px;
+	top: 18px;
+	background-color: transparent;
+	box-shadow: none;
+	border: none;
+	font-size: 25px;
+	cursor: pointer;
+}

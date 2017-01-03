@@ -10,10 +10,10 @@ function addError(errorMessage) {
   });
 }
 
-function addConfirmation({action, cancel, message}) {
+function addConfirmation({action, cancel, message, backElementFocusID}) {
   return addModal({
     action, cancel, message,
-    onConfirm: true,
+    onConfirm: true, backElementFocusID
   });
 }
 
@@ -42,7 +42,7 @@ function doConfirm() {
 
     dispatch(closeModal());
     if(action) {
-      dispatch(action());
+      action();
     }
   }
 }

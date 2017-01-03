@@ -21,7 +21,7 @@ const Table = React.createClass({
     this.props.GetList();
   },
   render() {
-    const {Headers, Filters, Body, PaginationActions, isFetching, isFill, isPickup, items, pagination} = this.props;
+    const {Headers, Filters, Body, PaginationActions, isFetching, isFill, isPickup, isGroupingPage, items, pagination} = this.props;
     const style = isFetching ? {opacity: 0.5} : {};
 
     let btnText = "Group Orders";
@@ -79,20 +79,36 @@ const Table = React.createClass({
     if (!isFetching) {
       if (items.length === 0) {
         bodyComponents = (
-          <td colSpan={8}>
-            <div style={{textAlign:'center'}}>
-              <img src="/img/orders-empty-state.png" />
+          <td colSpan={12}>
+            <div className={styles.emptyTableContainer}>
               {
                 isPickup &&
-                <div style={{fontSize: 20}}>
-                  You have no pickup order
-                </div>
+                <span>
+                  <div style={{fontSize: 20}}>
+                    You have no pickup order
+                  </div>
+                </span>
               }
               {
-                !isPickup &&
-                <div style={{fontSize: 20}}>
-                  You have no received orders
-                </div>
+                !isPickup && !isGroupingPage &&
+                <span>
+                  <img src="/img/orders-empty-state.png" />
+                  <div style={{fontSize: 20}}>
+                    You have no received orders
+                  </div>
+                </span>
+              }
+              {
+                !isPickup && isGroupingPage &&
+                <span>
+                  <img src="/img/image-group-done.png" width="80" height="80" style={{marginBottom: 33}}/>
+                  <div style={{fontSize: 20, fontWeight: 'bold'}}>
+                    You have successfully create Bags/Trips for all of your orders!
+                  </div>
+                  <div style={{fontSize: 12, color: '#9C9C9C', marginTop: 12}}>
+                    Please go the outbound page to dispatch all of those bags/trips to your customer.
+                  </div>
+                </span>
               }
             </div>
           </td>
@@ -106,14 +122,16 @@ const Table = React.createClass({
 
     return (
       <div style={style}>
-        <Pagination {...pagination} {...PaginationActions} />
-        <ButtonWithLoading {...groupingOrdersBtnProps} />
+        {
+          !isGroupingPage &&
+          <ButtonWithLoading {...groupingOrdersBtnProps} />
+        }
         {
           isPickup &&
           <ButtonWithLoading {...markPickupBtnProps} />
         }
         {
-          !isPickup && !isFill &&
+          !isPickup && !isFill && !isGroupingPage &&
           <span className={styles2.finderWrapper}>
             <span className={styles2.finderLabel}>
               Jump to Order with AWB :
