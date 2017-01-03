@@ -56,7 +56,7 @@ const Table = React.createClass({
     const Body = _.map(this.props.items, (item) => {
       const cells = _.map(ColumnsOrder, (columnKey) => {
         if (columnKey === 'tripID') {
-          return <td className={tableStyles.td} key={columnKey}>{item[columnKey]}</td>;
+          return <td className={tableStyles.td + ' ' + styles.tripIDColumn} key={columnKey}>{item[columnKey]}</td>;
         }
         if (columnKey === 'verifiedOrders') {
           return <td className={tableStyles.td + ' ' + styles.verifiedColumn} key={columnKey} onClick={this.props.showModals.bind(null, item['key'])}>
@@ -74,7 +74,7 @@ const Table = React.createClass({
                 <img className={styles.imageVehicle} src="/img/icon-vehicle-van.png" />)
               }
               <span className={styles.valueVehicle}>
-                {item[columnKey]}
+                {item.assignedTo}
               </span>
             </span>
             </td>;
@@ -82,7 +82,7 @@ const Table = React.createClass({
         return <td className={tableStyles.td} key={columnKey}>{item[columnKey]}</td>;
       });
 
-      return <tr className={tableStyles.tr} key={item.key}>{cells}</tr>;
+      return <tr className={tableStyles.tr + ' ' + styles.rowInbound} key={item.key}>{cells}</tr>;
     });
 
     if (this.props.isFetching) {
@@ -144,13 +144,16 @@ function TripDropOff(trip) {
 
 function ProcessTrip(trip) {
   const parsedTrip = TripParser(trip);
-  const fleet = trip.FleetManager && fleetList[trip.FleetManager.UserID];
+  const fleet = trip.FleetManager;
   const fleetName = fleet && fleet.CompanyDetail && fleet.CompanyDetail.CompanyName;
+  const driverName = trip.Driver && `${trip.Driver.FirstName} ${trip.Driver.LastName}`;
+  const transportation = trip.ExternalTrip ? `${trip.ExternalTrip.Transportation} (${trip.ExternalTrip.AwbNumber})` : fleetName;
+  const assignedTo = transportation ? (driverName ? `${transportation} - ${driverName}` : `${transportation}`) : '-'; 
 
   return {
     containerNumber: trip.ContainerNumber,
     district: trip.District && trip.District.Name,
-    driver: trip.Driver && `${trip.Driver.FirstName} ${trip.Driver.LastName}` || '-',
+    driver: trip.Driver && `${trip.Driver.FirstName} ${trip.Driver.LastName}`,
     driverVehicleID: trip.Driver && trip.Driver.Vehicle && trip.Driver.Vehicle.VehicleID,
     driverPhone: trip.Driver && `${trip.Driver.CountryCode}${trip.Driver.PhoneNumber}` || '-',
     dropoff: TripDropOff(trip),
@@ -167,9 +170,10 @@ function ProcessTrip(trip) {
     numberPackages: trip.UserOrderRoutes.length,
     remarks: trip.Notes,
     tripID: `Trip-${trip.TripID}`,
-    weight: trip.Weight,
+    weight: `${trip.Weight} kg`,
     scannedOrders: trip.ScannedOrders,
-    verifiedOrders: `${trip.ScannedOrders}/${trip.UserOrderRoutes.length} order(s) are verified`
+    verifiedOrders: `${trip.ScannedOrders}/${trip.UserOrderRoutes.length} order(s) are verified`,
+    assignedTo: assignedTo
   }
 }
 

@@ -292,8 +292,8 @@
   background-color: #2196f3;
   border: 0;
   width: 160px;
-  height: 44px;
-  border-radius: 4px;
+  height: 43px;
+  border-radius: 0 5px 5px 0;
   color: #fff;
   cursor: pointer;
   padding: 5px;
@@ -302,7 +302,7 @@
 
 .searchInput {
   width: calc(100% - 180px);
-  border-radius: 4px;
+  border-radius: 5px 0 0 5px;
   background-color: #ffffff;
   border: solid 1px #e8e8e8;
   height: 40px;
@@ -533,4 +533,12 @@
 .valueVehicle {
   margin-left: 6px; 
   padding-top: 4px; 
+}
+
+.rowInbound {
+  cursor: default;
+}
+
+.tripIDColumn {
+  width: 70px;
 }
