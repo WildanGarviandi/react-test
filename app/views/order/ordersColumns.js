@@ -45,8 +45,6 @@ export const pickupOrdersColumns = ["IsChecked", "ID", "WebstoreName", "Weight",
 
 export const receivedOrdersColumns = ["IsChecked", "ID", "WebstoreName", "DropoffAddress", "DropoffCity", "DropoffState", "ZipCode", "DueTime", "NextDestination", "SuggestedVendors"];
 
-export const inboundOrdersColumns = ["ID", "WebstoreName", "PickupTime"];
-
 export const orderDetailsSummary = ["UserOrderNumber", "WebOrderID", "User", "PickupType", "RouteStatus", "PickupTime", "PickupAddress", "DropoffTime", "DropoffAddress", "DueTime", "NextDestination"];
 export const orderDetailsCost = ["PackageWeight", "PackageLength", "PackageWidth", "PackageHeight", "TotalValue", "IsCOD"];
 export const orderDetailsPricing = ["DeliveryFee", "FinalCost", "VAT", "IncludeInsurance", "UseExtraHelper", "EtobeeShare", "DriverShare", "LogisticShare"];

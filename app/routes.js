@@ -11,7 +11,7 @@ import PickupFillPage from './views/order/pickupFill';
 import PickupOrdersPage from './views/order/pickupOrders';
 import ReceivedFillPage from './views/order/receivedFill';
 import ReceivedOrdersPage from './views/order/receivedOrders';
-import InboundOrdersPage from './views/order/inboundOrders';
+import InboundOrdersPage from './inbound/inboundOrders';
 import MyTripsPage from './views/trips/myTrips';
 import TripDetailsPage from './views/trips/tripDetails';
 import TripManifestPage from './views/trips/tripManifest';
@@ -62,7 +62,7 @@ export default (
         <IndexRoute component={PickupOrdersPage} onEnter={requireAuth}/>
         <Route path="/orders/pickup" component={PickupOrdersPage} onEnter={requireAuth} />
         <Route path="/orders/received" component={ReceivedOrdersPage} onEnter={requireHubAuth}/>
-        <Route path="/orders/inbound" component={InboundOrdersPage} onEnter={requireHubAuth}/>
+        <Route path="/inbound" component={InboundOrdersPage} onEnter={requireHubAuth}/>
         <Route path="/orders/:id" component={OrderDetailsPage} onEnter={requireHubAuth}/>
         <Route path="/trips/inbound" component={MyTripsPage} onEnter={requireHubAuth}/>
         <Route path="/trips/outbound" component={MyTripsPage} onEnter={requireHubAuth}/>

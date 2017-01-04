@@ -1,24 +1,11 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {conf, inboundOrdersColumns} from './ordersColumns';
-import {Headers} from '../base/table';
-import HeadersRow from '../base/headers';
-import {CheckBox} from '../base/input';
-import {CheckboxHeader} from '../base/tableCell';
-import * as InboundOrders from '../../modules/inboundOrders';
-
-function stateToCheckbox(state) {
-  const {inboundOrders} = state.app;
-  return {
-  }
-}
-
-function mapDispatchToCheckBox(dispatch) {
-  return {
-  }
-}
-
-const InboundOrdersCheckBox = connect(stateToCheckbox, mapDispatchToCheckBox)(CheckboxHeader);
+import {conf, inboundOrdersColumns} from './inboundOrdersColumns';
+import {Headers} from '../views/base/table';
+import HeadersRow from '../views/base/headers';
+import {CheckBox} from '../views/base/input';
+import {CheckboxHeader} from '../views/base/tableCell';
+import * as InboundOrders from './inboundOrdersService';
 
 function HeaderComponent(type, item) {
   switch(type) {

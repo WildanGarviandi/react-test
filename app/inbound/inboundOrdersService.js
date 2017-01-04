@@ -1,0 +1,212 @@
+import lodash from 'lodash';
+import {push} from 'react-router-redux';
+import FetchGet from '../modules/fetch/get';
+import FetchPost from '../modules/fetch/post';
+import ModalActions from '../modules/modals/actions';
+import {modalAction} from '../modules/modals/constants';
+import {OrderParser} from '../modules/orders';
+import NotifActions from '../modules/notification/actions';
+
+const Constants = {
+  ORDERS_INBOUND_CURRENT_PAGE_SET: "inbound/currentPage/set",
+  ORDERS_INBOUND_FETCH_END: "inbound/fetch/end",
+  ORDERS_INBOUND_FETCH_START: "inbound/fetch/start",
+  ORDERS_INBOUND_LIMIT_SET: "inbound/limit/set",
+  ORDERS_INBOUND_SET: "inbound/set",
+  ORDERS_INBOUND_MARK_RECEIVED_START: "inbound/mark/start",
+  ORDERS_INBOUND_MARK_RECEIVED_END: "inbound/mark/end",
+  ORDERS_INBOUND_MARK_RECEIVED_SET: "inbound/mark/set"
+}
+
+//
+// Reducers
+//
+
+const initialState = {
+  currentPage: 1,
+  isFetching: false,
+  limit: 50,
+  orders: [],
+  total: 0,
+  isMarking: false,
+  isDuplicate: false,
+  duplicateOrders: []
+}
+
+export function Reducer (state = initialState, action) {
+  switch(action.type) {
+    case Constants.ORDERS_INBOUND_CURRENT_PAGE_SET: {
+      return lodash.assign({}, state, {currentPage: action.currentPage});
+    }
+
+    case Constants.ORDERS_INBOUND_FETCH_END: {
+      return lodash.assign({}, state, {isFetching: false});
+    }
+
+    case Constants.ORDERS_INBOUND_FETCH_START: {
+      return lodash.assign({}, state, {isFetching: true});
+    }
+
+    case Constants.ORDERS_INBOUND_LIMIT_SET: {
+      return lodash.assign({}, state, {limit: action.limit});
+    }
+
+    case Constants.ORDERS_INBOUND_SET: {
+      return lodash.assign({}, state, {
+        orders: action.orders,
+        total: action.total,
+      });
+    }
+
+    case Constants.ORDERS_INBOUND_MARK_RECEIVED_START: {
+      return lodash.assign({}, state, { 
+        isMarking: true,
+        isDuplicate: false,
+        duplicateOrders: []
+      });
+    }
+
+    case Constants.ORDERS_INBOUND_MARK_RECEIVED_END: {
+      return lodash.assign({}, state, { isMarking: false });
+    }
+
+    case Constants.ORDERS_INBOUND_MARK_RECEIVED_SET: {
+      return lodash.assign({}, state, { 
+        isDuplicate: action.isDuplicate || false, 
+        duplicateOrders: action.duplicateOrders || []
+      });
+    }
+
+    default: return state;
+  }
+}
+
+//
+// Actions
+//
+
+export function FetchList () {
+  return (dispatch, getState) => {
+    const {inboundOrders, userLogged} = getState().app;
+    const {token, hubID} = userLogged;
+    const {currentPage, filters, limit} = inboundOrders;
+
+    const query = lodash.assign({}, filters, {
+      limit: limit,
+      offset: (currentPage-1)*limit,
+    });
+
+    dispatch({
+      type: Constants.ORDERS_INBOUND_FETCH_START,
+    });
+
+    FetchGet('/order/orderInbound/' + hubID, token, query, true).then((response) => {
+      if(!response.ok) {
+        throw new Error();
+      }
+
+      response.json().then(({data}) => {
+        dispatch({
+          type: Constants.ORDERS_INBOUND_SET,
+          orders: lodash.map(data, OrderParser),
+          total: data.length,
+        });
+
+        dispatch({
+          type: Constants.ORDERS_INBOUND_FETCH_END,
+        });
+      });
+    }).catch(() => {
+      dispatch({
+        type: Constants.ORDERS_INBOUND_FETCH_END,
+      });
+
+      dispatch(ModalActions.addMessage("Failed to fetch inbound orders"));
+    });
+  }
+}
+
+
+export function SetCurrentPage (currentPage) {
+  return (dispatch) => {
+    dispatch({
+      type: Constants.ORDERS_INBOUND_CURRENT_PAGE_SET,
+      currentPage: currentPage,
+    });
+
+    dispatch(FetchList());
+  }
+}
+
+export function SetLimit (limit) {
+  return (dispatch) => {
+    dispatch({
+      type: Constants.ORDERS_INBOUND_LIMIT_SET,
+      limit: limit,
+    });
+
+    dispatch(SetCurrentPage(1));
+  }
+}
+
+export function MarkReceived (scannedID) {
+  return (dispatch, getState) => {
+    const { userLogged } = getState().app;
+    const { token } = userLogged;
+
+    if (/^TRIP-.*/.test(scannedID)) {
+      scannedID = '#' + scannedID;
+    }
+
+    const query = {
+      id: scannedID
+    }
+
+    dispatch({type: modalAction.BACKDROP_SHOW});
+    dispatch({
+      type: Constants.ORDERS_INBOUND_MARK_RECEIVED_START,
+    });
+
+    FetchPost(`/order/mark-deliver`, token, query).then((response) => {
+      if(!response.ok) {
+        return response.json().then(({error}) => {
+          throw error;
+        });
+      }
+
+      response.json().then(({data}) => {
+        if (data.duplicate) {
+          dispatch(NotifActions.addNotification(`Order ${scannedID} was found in more than one data`, 'warning', null, 10));
+
+          dispatch({
+            type: Constants.ORDERS_INBOUND_MARK_RECEIVED_SET,
+            isDuplicate: true,
+            duplicateOrders: data.rows
+          });
+        } else if (data.Trip) {
+          dispatch(NotifActions.addNotification(`Trip ID ${data.Trip.TripID} was received`, 'info', null, 4));
+
+          dispatch({
+            type: Constants.ORDERS_INBOUND_MARK_RECEIVED_SET
+          });
+        } else {
+          dispatch(NotifActions.addNotification(`Order ${scannedID} was received`, 'success', null, 4));
+
+          dispatch({
+            type: Constants.ORDERS_INBOUND_MARK_RECEIVED_SET
+          });
+        }
+      
+        dispatch({type: modalAction.BACKDROP_HIDE});
+        dispatch({ type: Constants.ORDERS_INBOUND_MARK_RECEIVED_END });
+      });
+
+    }).catch((e) => {
+      const message = (e && e.message) ? e.message : "Failed to mark order as received";
+      dispatch({type: modalAction.BACKDROP_HIDE});
+      dispatch({ type: Constants.ORDERS_INBOUND_MARK_RECEIVED_END });
+
+      dispatch(NotifActions.addNotification(`Order or Trip ${scannedID} was not found on Inbound`, 'error', null, 4));
+    });
+  };
+}

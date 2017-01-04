@@ -1,0 +1,219 @@
+.modal {
+  background-color: #f1f1f1;
+  margin-left: -20px;
+  margin-right: -20px;
+  width: 550px;
+}
+
+.modalHeader {
+  background-color: white;
+  padding: 0 20px 16px;
+  text-align: center;
+}
+
+.modalTitle {
+  font-size: 20px;
+  margin-top: 0;
+  text-align: center;
+}
+
+.modalInfo {
+  border: solid 1px #e8e8e8;
+  border-radius: 4px;
+  display: table;
+  width: 100%;
+}
+
+.smallText {
+  font-size: 12px;
+}
+
+.smallTextBold {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.smallestText {
+  font-size: 10px;
+  width: 160px;
+}
+
+.bigText {
+  font-size: 20px;
+  margin: 4px 0;
+  font-weight: bold;
+}
+
+.mediumText {
+  font-size: 16px;
+  margin: 2px 0;
+  font-weight: bold;
+}
+
+.veryBigText {
+  font-size: 30px;
+  margin: 2px 0;
+  font-weight: 700;
+}
+
+.modalContent1 {
+  padding: 20px 20px 10px;
+}
+
+.ordersContent {
+}
+
+.orderContent {
+  background-color: white;
+  display: table;
+  width: 100%;
+  margin-bottom: 10px;
+  cursor: pointer
+}
+
+.orderContent:hover {
+  background-color: lightgrey;
+}
+
+.orderContentLeft {
+  width: 70%;
+  display: table-cell;
+  text-align: left;
+  padding: 15px;
+  vertical-align: middle;
+}
+
+.orderContentRight {
+  width: 29%;
+  display: table-cell;
+  text-align: right;
+  padding: 15px;
+  border-left: solid 1px #e8e8e8;
+  vertical-align: middle;
+}
+
+.closeModalButton {
+  position: absolute;
+  right: 10px;
+  top: 18px;
+  background-color: transparent;
+  box-shadow: none;
+  border: none;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.actionContainer {
+  display: table;
+  width: 100%;
+  margin-bottom: 17px;
+}
+
+.verifyInputContainer {
+  display: table-cell;
+  width: calc(100% - 100px);
+}
+
+.verifyInput {
+  height: 40px;
+  width: calc(100% - 10px);
+  padding-left: 10px;
+  border: solid 1px lightgray;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  font-size: 13px;
+}
+
+.verifyInput::-webkit-input-placeholder {
+   color: #BFBFBF;
+}
+
+.verifyInput:-moz-placeholder { /* Firefox 18- */
+   color: #BFBFBF;  
+}
+
+.verifyInput::-moz-placeholder {  /* Firefox 19+ */
+   color: #BFBFBF;  
+}
+
+.verifyInput:-ms-input-placeholder {  
+   color: #BFBFBF;  
+}
+
+.verifyButton {
+  background-color: #2196F3;
+  color: white;
+  width: 100px;
+  height: 40px;
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  cursor: pointer;
+}
+
+.verifyButton:hover {
+  background-color: #63b5f6;
+}
+
+
+/* TABLE CSS */
+
+.table {
+  border-image-source: initial;
+  border-image-slice: initial;
+  border-image-width: initial;
+  border-image-outset: initial;
+  border-image-repeat: initial;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(221, 221, 221);
+
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 20px;
+
+  background-color: transparent;
+  border-collapse: collapse;
+  border-spacing: 0px;
+
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.table th {
+  border: solid 1px #e8e8e8;
+  padding: 12px;
+}
+
+.table td {
+  border: solid 1px #e8e8e8;
+  text-align: center;
+}
+
+.emptyTableContainer {
+  text-align: center;
+  height: 500px;
+  vertical-align: middle;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.fetchingText {
+  font-size: 20;
+  text-align: center;
+}
+
+.emptyTableSmallText {
+  font-size: 12px;
+  color: #9C9C9C;
+  margin-top: 12px;
+}
+
+.emptyTableImage {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 33px;
+}
