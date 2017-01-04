@@ -5,6 +5,7 @@ import moment from 'moment';
 import {connect} from 'react-redux';
 import styles from '../views/base/table.css';
 import tableStyles from './table.css';
+import styles2 from './styles.css';
 import {Glyph} from '../views/base';
 import {DropdownWithState2} from '../views/base/dropdown';
 import * as TripsHistoryService from './service';
@@ -15,17 +16,13 @@ import {formatDate} from '../helper/time';
 
 function InputCell({value, onChange, onKeyDown}) {
     return (
-        <td className={styles.td}>
-            <input className={styles.searchInput} type="text" value={value} onChange={onChange} onKeyDown={onKeyDown} />
-        </td>
+        <input className={styles.searchInput} type="text" value={value} onChange={onChange} onKeyDown={onKeyDown} />
     );
 }
 
 function FilterDateTimeCell({value, onChange}) {
     return (
-        <td className={styles.td + " createdDate"}>
-            <DateTime value={value} onChange={onChange} closeOnSelect={true} />
-        </td>
+        <DateTime value={value} onChange={onChange} closeOnSelect={true} />
     );
 }
 
@@ -61,9 +58,7 @@ function CheckBoxCell({checked, toggleChecked}) {
 
 function FilterStatusCell({value, handleSelect}) {
     return (
-        <td className={styles.td} style={{width: 100}}>
-            <StatusDropdown val={value} handleSelect={handleSelect} />
-        </td>
+        <StatusDropdown val={value} handleSelect={handleSelect} />
     );
 }
 
@@ -87,9 +82,7 @@ const FilterStatusCellWithState = connect(StoreToFiltersStatus, DispatchToFilter
 
 function FilterTripType({value, options, handleSelect}) {
     return (
-        <td className={styles.td} style={{width: 100}}>
-            <DropdownWithState2 val={value} options={options} handleSelect={handleSelect} />
-        </td>
+      <DropdownWithState2 val={value} options={options} handleSelect={handleSelect} />
     );
 }
 
@@ -129,7 +122,7 @@ function HubCell({currentHubID, district, hub, hubType, merchants}) {
     const markerType = hubType === "origin" ? "export" : "import"
 
     return (
-        <td className={styles.td + ' ' + (hub && hub.HubID === currentHubID ? tableStyles.withIcon : '')}>
+        <td className={styles.td + ' ' + tableStyles.withIcon}>
             {
                 hub && 
                 <span>
@@ -195,14 +188,17 @@ function Remarks(trip) {
 }
 
 function TripHistoryRow({trip, goToDetails}) {
+    const createdDate = moment(new Date(trip.CreatedDate)).format('MMM DD, YYYY. HH:mm');
+
     return (
         <tr className={styles.tr} onClick={goToDetails.bind(null, trip)}>
-            <TextCell text={(trip.TripID) || '---'} />
+            <TextCell text={'TRIP-' + (trip.TripID) || '---'} />
             <HubCellWithState hub={trip.OriginHub} hubType="origin" />
             <HubCellWithState hub={trip.DestinationHub} district={trip.District} hubType="destination" />
             <TextCell text={trip.TripType} />
-            <td className={styles.td + ' ' + AssignedTo(trip).className}>{AssignedTo(trip).companyName}<br/>{AssignedTo(trip).driverDetail}</td>
+            <td className={styles.td + ' ' + AssignedTo(trip).className + ' ' + tableStyles.withIcon}><b>{AssignedTo(trip).companyName}</b><br/>{AssignedTo(trip).driverDetail}</td>
             <TextCell text={trip.OrderStatus && trip.OrderStatus.OrderStatus} />
+            <TextCell text={createdDate} />
             <TextCell text={trip.UserOrderRoutes.length} />
             <TextCell text={Weight(trip) + ' Kg'} />
             <TextCell text={Remarks(trip)} />
@@ -213,7 +209,7 @@ function TripHistoryRow({trip, goToDetails}) {
 function TripHistoryRowDispatch(dispatch) {
     return {
         goToDetails: function (trip) {
-            dispatch(push('/history/' + trip.TripID));
+            dispatch(push('/trips/' + trip.TripID));
         }
     }
 }
@@ -229,6 +225,7 @@ function TripHistoryHeader() {
       <TextHeader text="Type" />
       <TextHeader text="Assigned To" />
       <TextHeader text="Status" />
+      <TextHeader text="Created Date" />
       <TextHeader text="Quantity" />
       <TextHeader text="Weight" />
       <TextHeader text="Remarks" />
@@ -270,6 +267,7 @@ function DateRangeDispatch(keyword) {
 
 const PickupDateFilter = connect(DateRangeBuilder('Pickup'), DateRangeDispatch('Pickup'))(Components.FilterDateTimeRangeCell);
 const DropoffDateFilter = connect(DateRangeBuilder('Dropoff'), DateRangeDispatch('Dropoff'))(Components.FilterDateTimeRangeCell);
+const CreatedDateDateFilter = connect(DateRangeBuilder('CreatedDate'), DateRangeDispatch('CreatedDate'))(Components.FilterDateTimeRangeCell);
 
 function TripHistoryFilters({filters, OnChangeBuilder, OnKeyDown}) {
     function TextFiltersProps(keyword) {
@@ -281,19 +279,46 @@ function TripHistoryFilters({filters, OnChangeBuilder, OnKeyDown}) {
     }
 
     return (
-        <tr>
-            <InputCell {...TextFiltersProps('origin')} />
-            <InputCell {...TextFiltersProps('destination')} />
-            <InputCell {...TextFiltersProps('district')} />
-            <PickupDateFilter />
-            <DropoffDateFilter />
-            <InputCell {...TextFiltersProps('fleet')} />
-            <InputCell {...TextFiltersProps('driver')} />
+      <div className='nb'>
+        <div className='row'>
+          <div className={styles2.colMd1in7 + ' ' + styles2.filterDropDown}>
+            <span>Trip ID</span>
+            <div>
+              <InputCell {...TextFiltersProps('tripID')} />
+            </div>
+          </div>
+          <div className={styles2.colMd1in7 + ' ' + styles2.filterDropDown}>
+            <span>Origin Hub</span>
+            <div>
+              <InputCell {...TextFiltersProps('origin')} />
+            </div>
+          </div>
+          <div className={styles2.colMd1in7 + ' ' + styles2.filterDropDown}>
+            <span>Destination Hub</span>
+            <div>
+              <InputCell {...TextFiltersProps('destination')} />
+            </div>
+          </div>
+          <div className={styles2.colMd1in7 + ' ' + styles2.filterDropDown}>
+            <span>Created Date</span>
+            <CreatedDateDateFilter />
+          </div>
+          <div className={styles2.colMd1in7 + ' ' + styles2.filterDropDown}>
+            <span>Fleet</span>
+            <div>
+              <InputCell {...TextFiltersProps('fleet')} />
+            </div>
+          </div>
+          <div className={styles2.colMd1in7 + ' ' + styles2.filterDropDown}>
+            <span>Status</span>
             <FilterStatusCellWithState />
+          </div>
+          <div className={styles2.colMd1in7 + ' ' + styles2.filterDropDown}>
+            <span>Trip Type</span>
             <FilterTripTypeWithState />
-            <TextCell />
-            <TextCell />
-        </tr>
+          </div>
+        </div>
+      </div>
     );
 }
 
@@ -338,10 +363,13 @@ function Table({trips}) {
   const filters = <TripHistoryFiltersWithState />;
 
   return (
-    <table className={styles.table}>
-      <thead>{headers}</thead>
-      <tbody>{body}</tbody>
-    </table>
+    <div>
+      {filters}
+      <table className={styles.table}>
+        <thead>{headers}</thead>
+        <tbody>{body}</tbody>
+      </table>
+    </div>
   );
 }
 

@@ -173,6 +173,126 @@
   padding: 5px;
 }
 
+.noMargin {
+  margin: 0 !important;
+}
+
+.noPadding {
+  padding: 0 !important;
+}
+
+.colMd1, .colMd2, .colMd3, .colMd4, .colMd5, .colMd6, .colMd7, .colMd8, .colMd9, .colMd10, .colMd11, .colMd12, .colMd1in7 {
+  padding-right: 15px;
+  padding-left: 15px; 
+  min-height: 1px;
+}
+
+.colMd1in7 {
+  width: 14.28571%;
+  float: left;
+}
+
+.colMd1 {
+  width: 8.33333%;
+  float: left;
+}
+
+.colMd2 {
+  width: 16.66667%;
+  float: left;
+}
+
+.colMd3 {
+  width: 25%;
+  float: left;
+}
+
+.colMd4 {
+  width: 33.33333%;
+  float: left;
+}
+
+.colMd5 {
+  width: 41.66667%;
+  float: left;
+}
+
+.colMd6 {
+  width: 50%;
+  float: left;
+}
+
+.colMd8 {
+  width: 66.66666%;
+  float: left;
+}
+
+.colMd9 {
+  width: 75%;
+  float: left;
+}
+
+.colMd12 {
+  width: 100%;
+  float: left;
+}
+
 .tableMessage .noPadding {
   padding: 0;
+}
+
+.filterDropDown span {
+  font-size: 12px;
+  color: #929292;
+}
+
+.filterDropDown div {
+  margin-top: 5px;
+  margin-bottom: 15px;
+}
+
+.filterDropDown input {
+  margin: 0px;
+  width: 100%;
+}
+.filterDropDown input {
+  padding: 16px 8px;
+  border: 1px solid #e8e8e8;
+}
+
+.filterDropDown > div > input {
+  border: 1px solid #e8e8e8;
+  border-right: 0px;
+  padding: 8px;
+  height: inherit;
+}
+
+.filterDropDown > div > span {
+  border: 1px solid #e8e8e8;
+  border-left: 0px;
+  background-color: #fff;
+}
+
+.filterDropDown > div > span > span {
+  top: 12px;
+}
+
+.filterDropDown > div > div {
+  border: 0px;
+  margin-top: 0px;
+}
+
+.filterDropDown > div > div > span {
+  padding: 8px;
+  border-bottom: 1px solid #e8e8e8;
+  background-color: #fff !important;
+  color: #929292 !important;
+}
+
+.filterDropDown > div > div > span:hover, .filterDropDown > div > div > span:focus {
+  background-image: url('/img/icon-checkmark.png');
+  background-repeat: no-repeat;
+  background-size: 25px;
+  background-position-x: 100%;
+  background-position-y: 50%;
 }
