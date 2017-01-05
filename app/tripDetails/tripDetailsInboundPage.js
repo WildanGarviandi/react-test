@@ -2,6 +2,7 @@ import lodash from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import classNaming from 'classnames';
+import moment from 'moment';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
 import {ContainerDetailsActions, StatusList} from '../modules';
@@ -265,8 +266,20 @@ const DetailPage = React.createClass({
             <div className="nb">
               <h3>#{'Trip-'+ trip.TripID} <span className={styles.orderStatus}>{trip.OrderStatus ? trip.OrderStatus.OrderStatus : ''}</span></h3>
             </div>
-            <div className={styles.mB30}>
-              <RemarksSetter trip={trip} />
+            <div className={styles.mB30 + ' ' + styles.displayFlex + ' nb'}>
+              <div className={styles.colMd6 + ' ' + styles.noPadding}>
+                <RemarksSetter trip={trip} />
+              </div>
+              <div className={styles.colMd6}>
+                {
+                  trip.PickupTime &&
+                  <p className={styles.title}>PICKUP TIME : {formatDate(trip.PickupTime)}</p>
+                }
+                {
+                  trip.DropoffTime &&
+                  <p className={styles.title}>DROPOFF TIME : {formatDate(trip.DropoffTime)}</p>
+                }
+              </div>
             </div>
             <div style={{clear: 'both'}} />
             <div className={styles.mB30 + " nb"}>
