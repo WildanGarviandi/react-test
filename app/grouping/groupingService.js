@@ -162,7 +162,7 @@ export function AddOrder (orderNumber, backElementFocusID) {
       });
 
       return response.json().then(({data}) => {
-        if(data.count < 1) {
+        if(data.count !== 1) {
           throw new Error(`${orderNumber} is not found`);
         }
 

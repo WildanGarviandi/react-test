@@ -69,7 +69,8 @@ const CreateTripModal = React.createClass({
         action: function () {
           thisClass.props.removeOrder(index);
         },
-        backElementFocusID: 'addOrder'
+        backElementFocusID: 'addOrder',
+        yesFocus: true
       });
     } else {
       this.props.addOrder(this.state.addOrderQuery, 'addOrder');
@@ -124,11 +125,11 @@ const CreateTripModal = React.createClass({
               <div className={groupingStyles.modalInfo}>
                 <div className={groupingStyles.orderContentLeft}>
                   <div className={groupingStyles.smallText}>Total Orders</div>
-                  <h2 className={groupingStyles.veryBigText}>{this.state.orders.length}</h2>
+                  <h2 className={groupingStyles.bigText}>{this.state.orders.length}</h2>
                 </div>
                 <div className={groupingStyles.orderContentRight}>
                   <div className={groupingStyles.smallText}>Total Weight (kg)</div>
-                  <h2 className={groupingStyles.veryBigText}>{totalWeight}</h2>
+                  <h2 className={groupingStyles.bigText}>{totalWeight}</h2>
                 </div>
                 <div style={{clear: 'both'}}></div>
               </div>

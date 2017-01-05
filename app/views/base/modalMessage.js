@@ -10,9 +10,11 @@ import styles from './modal.css';
 const ModalMessage = React.createClass({
   componentDidMount() {
     var thisClass = this;
-    setTimeout(function () {
-      ReactDOM.findDOMNode(thisClass.refs.elementForModalFocus).focus();
-      clearTimeout(this);
+    var timeout = setTimeout(function () {
+      (!thisClass.props.modal.onConfirm) ? ReactDOM.findDOMNode(thisClass.refs.elementForModalFocus).focus() :
+        (thisClass.props.modal.yesFocus) ? ReactDOM.findDOMNode(thisClass.refs.yesButton).focus() :
+        ReactDOM.findDOMNode(thisClass.refs.noButton).focus();
+      clearTimeout(timeout);
     }, 100)
   },
   componentWillUnmount() {
@@ -29,6 +31,16 @@ const ModalMessage = React.createClass({
   doConfirm() {
     this.props.doConfirm();
   },
+  keyDownNoButton(e) {
+    if ([39, 37].indexOf(e.keyCode) !== -1) {
+      ReactDOM.findDOMNode(this.refs.yesButton).focus()
+    }
+  },
+  keyDownYesButton(e) {
+    if ([39, 37].indexOf(e.keyCode) !== -1) {
+      ReactDOM.findDOMNode(this.refs.noButton).focus()
+    }
+  },
   render() {
     const {modal, show} = this.props;
     const {message, width, onConfirm} = modal;
@@ -44,8 +56,8 @@ const ModalMessage = React.createClass({
         {
           onConfirm ?
           <span>
-            <ButtonBase ref="elementForModalFocus" onClick={this.doCancel} styles={styles.modalBtn}>No</ButtonBase>
-            <ButtonBase onClick={this.doConfirm} styles={styles.modalBtnY}>Yes</ButtonBase>
+            <ButtonBase ref="noButton" onClick={this.doCancel} styles={styles.modalBtn} onKeyDown={this.keyDownNoButton}>No</ButtonBase>
+            <ButtonBase ref="yesButton" onClick={this.doConfirm} styles={styles.modalBtnY} onKeyDown={this.keyDownYesButton}>Yes</ButtonBase>
           </span>
           :
           <ButtonBase ref="elementForModalFocus" onClick={this.handleClose} styles={styles.modalBtn}>Close</ButtonBase>

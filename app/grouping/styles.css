@@ -167,15 +167,15 @@
 }
 
 .ordersContent {
-  height: 350px;
+  height: 300px;
   overflow: scroll;
 }
 
 .ordersContentEmpty {
   display: flex;
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
   padding: 0 25px;
   height: 100%;
   align-items: center;
@@ -213,7 +213,7 @@
   font-size: 14px;
   font-weight: normal;
   padding-left: 15px;
-    width: 350px;
+  width: 350px;
 }
 
 .orderContent {
@@ -227,7 +227,7 @@
   width: 70%;
   display: table-cell;
   text-align: left;
-  padding: 15px;
+  padding: 5px 15px;
   vertical-align: middle;
 }
 
@@ -235,7 +235,7 @@
   width: 29%;
   display: table-cell;
   text-align: right;
-  padding: 15px;
+  padding: 5px 15px;
   border-left: solid 1px #e8e8e8;
   vertical-align: middle;
 }
