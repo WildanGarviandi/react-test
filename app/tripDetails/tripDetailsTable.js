@@ -1,13 +1,11 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {ButtonBase, DropdownTypeAhead, Input, Rows} from '../views/base';
-import orderRemove from '../modules/containers/actions/orderRemove';
-import orderToggleAll from '../modules/containers/actions/orderToggleAll';
-import orderToggle from '../modules/containers/actions/orderToggle';
+import {orderRemove, orderToggleAll, orderToggle} from './TripDetailsAction';
 import tableStyles from '../views/base/table.css';
 import styles from './styles.css';
 import classNaming from 'classnames';
-import * as TripDetails from '../modules/inboundTripDetails';
+import * as TripDetails from './tripDetailsService';
 import { FormattedNumber } from 'react-intl';
 
 export const BaseHeader = React.createClass({

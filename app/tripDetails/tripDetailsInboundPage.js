@@ -7,23 +7,16 @@ import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
 import {ContainerDetailsActions, StatusList} from '../modules';
 import districtsFetch from '../modules/districts/actions/districtsFetch';
-import {ButtonBase, ButtonWithLoading, Input, InputWithDefault, Modal, Page} from '../views/base';
-import DistrictAndDriver from '../views/container/districtAndDriver';
+import {ButtonBase, ButtonWithLoading, Input, InputWithDefault, Modal, Page, Glyph} from '../views/base';
 import {OrderTable} from './tripDetailsTable';
-import * as TripDetails from '../modules/trips/actions/details';
-import * as TripDetailsTrue from '../modules/inboundTripDetails';
+import * as TripDetails from './tripDetailsService';
 import ModalActions from '../modules/modals/actions';
 import Accordion from '../views/base/accordion';
-import NextDestinationSetter from '../views/container/nextDestinationSetter';
-import TransportSetter from '../views/container/secondSetting';
-import RemarksSetter from '../views/container/remarksSetter';
+import RemarksSetter from '../components/remarksSetter';
 import styles from './styles.css';
-import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered} from '../modules/trips';
+import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered, TripParser} from '../modules/trips';
 import {formatDate} from '../helper/time';
-import {TripParser} from '../modules/trips';
-import {Glyph} from '../views/base';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
-import * as OrdersDetails from '../modules/orders/actions/details';
 
 const columns = ['id', 'id2', 'pickup', 'time', 'CODValue', 'CODStatus', 'orderStatus', 'routeStatus', 'isSuccess', 'action'];
 const nonFillColumn = columns.slice(0, columns.length - 1);
@@ -528,10 +521,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(ContainerDetailsActions.clearContainer(id));
     },
     containerDetailsFetch: function(id) {
-      dispatch(TripDetailsTrue.FetchDetails(id));
+      dispatch(TripDetails.FetchDetails(id));
     },
     driverDeassign: function() {
-      dispatch(TripDetailsTrue.Deassign(ownProps.params.id));
+      dispatch(TripDetails.Deassign(ownProps.params.id));
     },
     goToFillContainer: function(id) {
       dispatch(push('/trips/' + id + '/fillPickup'));
@@ -540,28 +533,28 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(StatusList.fetch());
     },
     markReceived: function(scannedID, backElementFocusID, scanUpdateToggle) {
-      dispatch(TripDetailsTrue.OrderReceived(scannedID, backElementFocusID, scanUpdateToggle));
+      dispatch(TripDetails.OrderReceived(scannedID, backElementFocusID, scanUpdateToggle));
     },
     deliverTrip: function(tripID, orders) {
-      dispatch(TripDetailsTrue.TripDeliver(tripID));
+      dispatch(TripDetails.TripDeliver(tripID));
     },
     askReuse: function(modal) {
       dispatch(ModalActions.addConfirmation(modal));
     },
     reuse: function(tripID) {
-      dispatch(TripDetailsTrue.TripDeliver(tripID, true));
+      dispatch(TripDetails.TripDeliver(tripID, true));
     },
     exportManifest: function() {
-      dispatch(TripDetailsTrue.ExportManifest(ownProps.params.id));
+      dispatch(TripDetails.ExportManifest(ownProps.params.id));
     },
     UpdateOrder: function(id, order){
-      dispatch(OrdersDetails.editOrder(id, order, true));
+      dispatch(TripDetails.editOrder(id, order, true));
     },
     StopEditOrder: function() {
-      dispatch(TripDetailsTrue.StopEditOrder());
+      dispatch(TripDetails.StopEditOrder());
     },
     revertSuccessEditing: function(){
-      dispatch(OrdersDetails.revertSuccessEditing());
+      dispatch(TripDetails.revertSuccessEditing());
     }
   };
 };

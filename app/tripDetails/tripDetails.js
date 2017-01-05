@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import InboundDetails from './tripDetailsInboundPage';
 import OutboundDetails from './tripDetailsOutboundPage';
 import {GetTripType} from '../modules/trips';
-import * as TripDetailsTrue from '../modules/inboundTripDetails';
+import * as TripDetails from './tripDetailsService';
 
 const ThisPage = React.createClass({
   componentWillMount() {
@@ -44,7 +44,7 @@ function StateToProps(store) {
 function DispatchToProps(dispatch) {
   return {
     detailsFetch: function(id) {
-      dispatch(TripDetailsTrue.FetchDetails(id));
+      dispatch(TripDetails.FetchDetails(id));
     },
   }
 }
