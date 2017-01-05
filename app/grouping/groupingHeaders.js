@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {conf, groupingColumns} from '../views/order/ordersColumns';
+import {conf, groupingColumns} from './groupingColumns';
 import {Headers} from '../views/base/table';
 import HeadersRow from '../views/base/headers';
 import {CheckBox} from '../views/base/input';

@@ -68,11 +68,13 @@
   background-color: #4cc38e !important;
 }
 
-.modalBtn:focus {
+.modalBtn:focus,
+.modalBtn:hover {
   background-color: #ff8b8f;
 }
 
-.modalBtnY:focus {
+.modalBtnY:focus,
+.modalBtnY:hover {
   background-color: #81d5af !important;
 }
 

@@ -3,12 +3,10 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
 import GroupingTable from './groupingTable';
-import styles from '../views/order/styles.css';
 import groupingStyles from './styles.css';
 import {ButtonWithLoading, Input, Page, InputWithDefault} from '../views/base';
 import * as Grouping from './groupingService';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
-import * as OrdersDetails from '../modules/orders/actions/details';
 import ReactDOM from 'react-dom';
 import ModalActions from '../modules/modals/actions';
 
@@ -26,24 +24,16 @@ const CreateTripModal = React.createClass({
     };
   },
   componentDidMount() {
-    if (document.getElementById('addOrder')) {
-      document.getElementById('addOrder').focus();
-    }
+    document.getElementById('addOrder') && document.getElementById('addOrder').focus();
   },
   componentWillReceiveProps(nextProps) {
     this.setState({
-      orders: nextProps.addedOrders
-    });
-    this.setState({
+      orders: nextProps.addedOrders,
       isSuccessCreating: nextProps['isSuccessCreating']
     });
   },
   componentDidUpdate() {
-    if (this.state.isSuccessCreating) {
-      if (document.getElementById('gotItButton')) {
-        document.getElementById('gotItButton').focus();
-      }
-    }
+    this.state.isSuccessCreating && document.getElementById('gotItButton') && document.getElementById('gotItButton').focus();
   },
   closeModal() {
     const thisClass = this;
@@ -90,9 +80,7 @@ const CreateTripModal = React.createClass({
   },
   componentWillUnmount() {
     this.closeModal();
-    if (document.getElementById("prepareBtn")) {
-      document.getElementById("prepareBtn").focus();
-    }
+    document.getElementById("prepareBtn") && document.getElementById("prepareBtn").focus();
   },
   render() {
     const {createdTrip} = this.props;
@@ -105,11 +93,15 @@ const CreateTripModal = React.createClass({
         <div className={groupingStyles.orderContent} key={index}>
           <div className={groupingStyles.orderContentLeft}>
             <div className={groupingStyles.smallText}>To</div>
-            <div className={groupingStyles.mediumText}>{order.DropoffAddress.FirstName + ' ' + order.DropoffAddress.LastName}</div>
-            <div className={groupingStyles.smallText}>
-              {order.DropoffAddress.Address1 + ', ' + order.DropoffAddress.Address2 + ', ' + order.DropoffAddress.City + ', ' +
-                order.DropoffAddress.ZipCode}
-            </div>
+            { order.DropoffAddress &&
+              <div>
+                <div className={groupingStyles.mediumText}>{order.DropoffAddress.FirstName + ' ' + order.DropoffAddress.LastName}</div>
+                <div className={groupingStyles.smallText}>
+                  {order.DropoffAddress.Address1 + ', ' + order.DropoffAddress.Address2 + ', ' + order.DropoffAddress.City + ', ' +
+                    order.DropoffAddress.ZipCode}
+                </div>
+              </div>
+            }
           </div>
           <div className={groupingStyles.orderContentRight}>
             <div style={{textAlign: 'center'}}>
@@ -124,7 +116,7 @@ const CreateTripModal = React.createClass({
     return (
       <ModalDialog>
         <button className={groupingStyles.closeModalButton} onClick={this.closeModal}>
-          <img src="/img/icon-close.png" width="24" height="24"/></button>
+          <img src="/img/icon-close.png" className={groupingStyles.closeButtonImage}/></button>
         { !this.state.isSuccessCreating &&
           <div className={groupingStyles.modal}>
             <div className={groupingStyles.modalHeader}>
@@ -146,7 +138,7 @@ const CreateTripModal = React.createClass({
               <Input id={'addOrder'} className={groupingStyles.input + ' ' + groupingStyles.addOrderInput} 
                 placeholder={'Write the EDS here to manually verify...'} base={{value: this.state.addOrderQuery}}
                 type={'text'} onChange={this.stateChange('addOrderQuery')} onEnterKeyPressed={this.addOrder} />
-              <div style={{float: 'right'}}>
+              <div className={groupingStyles.modalContentRight}>
                 <button className={groupingStyles.addOrderButton} onClick={this.addOrder}>Add</button>
               </div>
               <div style={{clear: 'both'}}></div>
@@ -171,7 +163,7 @@ const CreateTripModal = React.createClass({
             </div>
             
             <div className={groupingStyles.modalFooter}>
-              <div style={{float: 'left', textAlign: 'left'}}>
+              <div className={groupingStyles.modalFooterLeft}>
                 <div className={groupingStyles.smallText}>
                   {
                     (!canCreate) &&
@@ -185,7 +177,7 @@ const CreateTripModal = React.createClass({
                   }
                 </div>
               </div>
-              <div style={{float: 'right'}}>
+              <div className={groupingStyles.modalFooterRight}>
                 <button className={groupingStyles.createTripButton} onClick={this.createTrip}
                   disabled={!canCreate}>Create Trip</button>
               </div>
@@ -242,20 +234,16 @@ const GroupingPage = React.createClass({
     this.props.doneCreateTrip()
   },
   render() {
-    const {isGrouping} = this.props;
-    const inputVerifyStyles = {
-      container: styles.verifyInputContainer,
-      input: styles.verifyInput
-    };
+    const {isGrouping, total} = this.props;
     return (
-      <Page title="GROUPING" count={{itemName: 'Items', done: 'All Done', value: 0}}>
+      <Page title="GROUPING" count={{itemName: 'Items', done: 'All Done', value: total}}>
         {
           this.state.showModal &&
           <ModalContainer onClose={this.closeModal}>
             <CreateTripModal {...this.props} onClose={this.closeModal}/>
           </ModalContainer>
         }
-        <div className={styles.actionContainer}>
+        <div className={groupingStyles.actionContainer}>
           <button className={groupingStyles.createTripButton} onClick={this.openModal} id="prepareBtn">Prepare Bag</button>
         </div>
         <GroupingTable />
@@ -266,11 +254,9 @@ const GroupingPage = React.createClass({
 
 function mapStateToProps (state) {
   const {grouping, orderDetails} = state.app;
-  const userLogged = state.app.userLogged;
   const {total, isGrouping, trip, addedOrders, isSuccessCreating, createdTrip} = grouping;
 
   return {
-    userLogged,
     total,
     isGrouping,
     trip,
