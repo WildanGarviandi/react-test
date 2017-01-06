@@ -137,7 +137,7 @@ const CreateTripModal = React.createClass({
 
             <div className={groupingStyles.modalContent4}>
               <Input id={'addOrder'} className={groupingStyles.input + ' ' + groupingStyles.addOrderInput} 
-                placeholder={'Write the EDS here to manually verify...'} base={{value: this.state.addOrderQuery}}
+                base={{value: this.state.addOrderQuery, placeholder: 'Write the EDS here to manually verify...'}}
                 type={'text'} onChange={this.stateChange('addOrderQuery')} onEnterKeyPressed={this.addOrder} />
               <div className={groupingStyles.modalContentRight}>
                 <button className={groupingStyles.addOrderButton} onClick={this.addOrder}>Add</button>
