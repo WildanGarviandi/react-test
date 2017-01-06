@@ -25,12 +25,12 @@ const Table = React.createClass({
       </td>
     );
     if (!isFetching) {
-      if (items.length === 0) {
+      if (true) {
         bodyComponents = (
           <td colSpan={12}>
             <div className={styles.emptyTableContainer}>
               <span>
-                <img src="/img/orders-empty-state.png" />
+                <img src="/img/image-inbound-trip-done.png" className={styles.emptyTableImage}/>
                 <div className={styles.bigText}>
                   Awesome work guys!
                 </div>

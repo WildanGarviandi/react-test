@@ -9,10 +9,6 @@ import * as InboundOrders from './inboundOrdersService';
 
 function HeaderComponent(type, item) {
   switch(type) {
-    case "Checkbox": {
-      return <InboundOrdersCheckBox />;
-    }
-
     default: {
       return <span>{item.header.title}</span>;
     }

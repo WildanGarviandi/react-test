@@ -9,6 +9,7 @@ import * as InboundOrders from './inboundOrdersService';
 import {formatDate, formatDateHourOnly} from '../helper/time';
 import {CheckboxCell} from '../views/base/tableCell';
 import styles from '../views/base/table.css';
+import inboundStyles from './styles.css';
 import ReactInterval from 'react-interval';
 import moment from 'moment';
 
@@ -51,8 +52,12 @@ const Interval = React.createClass({
     clearInterval(this.interval);
   },
   render() {
+    let time = this.state.time;
+    if (time < 0) {
+      time *= -1;
+    }
     return (
-      <span>{formatDateHourOnly(this.state.time)}</span>
+      <span>{formatDateHourOnly(time)}</span>
     )
   }
 });
@@ -73,21 +78,19 @@ function BodyComponent(type, keyword, item, index) {
 
     case "Datetime": {
       switch(keyword) {
-        case "PickupTime": {
+        case "Deadline": {
+          const deadline = moment(new Date(item['CutOffTime'])).add(6, 'hour');
 
-          // const deadline = moment(moment(new Date(item[keyword])).diff(moment()));
-          // console.log(moment(new Date(item[keyword])).valueOf(), moment().valueOf(), deadline.valueOf());
-          
-          const date = moment(new Date(item[keyword]));
-          const dateTest = date.diff(moment([date.get('year'), date.get('month'), date.get('date'), 0, 0, 0, 0]));
-          const now = moment();
-          const nowTest = now.diff(moment([now.get('year'), now.get('month'), now.get('date'), 0, 0, 0, 0]));
-
-          const deadline = nowTest - dateTest;
-
-          // console.log(dateTest, nowTest, deadline);
-
-          return <Interval startTime={deadline} down={true} />
+          return (
+            <span>
+              { item[keyword] >= 0 &&
+                <Interval startTime={item[keyword]} down={true} />
+              }
+              { item[keyword] < 0 &&
+                <TextCell text={deadline.fromNow()} />
+              }
+            </span>
+          )
         }
         default: {
           return <TextCell text={formatDate(item[keyword])} />
@@ -105,17 +108,19 @@ function InboundOrdersBody({items}) {
   const body = Body(conf, inboundOrdersColumns);
 
   const rows = lodash.map(items, (item, idx) => {
+    
+    const date = moment(new Date(item['CutOffTime']));
+    const now = moment();
+    const deadline = date.add(6, 'hour');
+
+    item.Deadline = deadline.diff(now);
+
     const cells = lodash.map(body, (column) => {
       const cell = BodyComponent(column.type, column.keyword, item, idx);
-      const className = styles.td + ' ' + styles[column.keyword];
+      const className = styles.td + ' ' + styles[column.keyword]  + ' ' + 
+                        ((item.Deadline < 0 && column.keyword === 'Deadline') ? inboundStyles.redCell : '');
 
-      let style = {};
-      if (item.IsChecked && column.type !== "Checkbox") {
-        style.color = '#fff';
-        style.backgroundColor = '#ff5a60';
-      }
-
-      return <td key={column.keyword} style={style} className={className}>{cell}</td>;
+      return <td key={column.keyword} className={className}>{cell}</td>;
     });
 
     return <tr key={idx} className={styles.tr}>{cells}</tr>

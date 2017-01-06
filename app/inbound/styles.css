@@ -103,6 +103,11 @@
   cursor: pointer;
 }
 
+.closeButtonImage {
+  width: 24px;
+  height: 24px;
+}
+
 .actionContainer {
   display: table;
   width: 100%;
@@ -111,7 +116,7 @@
 
 .verifyInputContainer {
   display: table-cell;
-  width: calc(100% - 100px);
+  width: calc(100%);
 }
 
 .verifyInput {
@@ -144,17 +149,24 @@
   background-color: #2196F3;
   color: white;
   width: 100px;
-  height: 40px;
+  height: 42px;
   display: table-cell;
   text-align: center;
   vertical-align: middle;
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
   cursor: pointer;
+  border: none;
+  box-shadow: none;
 }
 
 .verifyButton:hover {
   background-color: #63b5f6;
+}
+
+.verifyButton:disabled {
+  background-color: #63b5f6;
+  cursor: default;
 }
 
 
@@ -202,12 +214,12 @@
 }
 
 .fetchingText {
-  font-size: 20;
+  font-size: 20px !important;
   text-align: center;
 }
 
 .emptyTableSmallText {
-  font-size: 12px;
+  font-size: 15px;
   color: #9C9C9C;
   margin-top: 12px;
 }
@@ -216,4 +228,13 @@
   width: 80px;
   height: 80px;
   margin-bottom: 33px;
+}
+
+.redCell {
+  background-color: red !important;
+  color: white !important;
+}
+
+.redCell span {
+  color: white !important;
 }

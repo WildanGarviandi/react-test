@@ -108,8 +108,8 @@ export function FetchList () {
       response.json().then(({data}) => {
         dispatch({
           type: Constants.ORDERS_INBOUND_SET,
-          orders: lodash.map(data, OrderParser),
-          total: data.length,
+          orders: lodash.map(data.rows, OrderParser),
+          total: data.count,
         });
 
         dispatch({
@@ -124,6 +124,35 @@ export function FetchList () {
       dispatch(ModalActions.addMessage("Failed to fetch inbound orders"));
     });
   }
+}
+
+function ReFetchList () {
+  return (dispatch, getState) => {
+    const {inboundOrders, userLogged} = getState().app;
+    const {token, hubID} = userLogged;
+    const {currentPage, filters, limit} = inboundOrders;
+
+    const query = lodash.assign({}, filters, {
+      limit: limit,
+      offset: (currentPage-1)*limit,
+    });
+
+    FetchGet('/order/orderInbound/' + hubID, token, query, true).then((response) => {
+      if(!response.ok) {
+        throw new Error();
+      }
+
+      response.json().then(({data}) => {
+        dispatch({
+          type: Constants.ORDERS_INBOUND_SET,
+          orders: lodash.map(data.rows, OrderParser),
+          total: data.count,
+        });
+      });
+    }).catch(() => {
+      dispatch(ModalActions.addMessage("Failed to fetch inbound orders"));
+    });
+  };
 }
 
 
@@ -199,6 +228,7 @@ export function MarkReceived (scannedID) {
       
         dispatch({type: modalAction.BACKDROP_HIDE});
         dispatch({ type: Constants.ORDERS_INBOUND_MARK_RECEIVED_END });
+        dispatch(ReFetchList());
       });
 
     }).catch((e) => {

@@ -10,9 +10,7 @@ import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 
 const DuplicateModal = React.createClass({
   componentWillUnmount() {
-    if (document.getElementById('markReceivedInput')) {
-      document.getElementById('markReceivedInput').focus();
-    }
+    document.getElementById('markReceivedInput') && document.getElementById('markReceivedInput').focus();
   },
   closeModal() {
     this.props.closeModal();
@@ -28,6 +26,12 @@ const DuplicateModal = React.createClass({
         <div className={styles.orderContent} key={index} onClick={thisComponent.pickOrder.bind(null, order.UserOrderNumber)}>
           <div className={styles.orderContentLeft}>
             <div className={styles.smallText}>To</div>
+            { order.DropoffAddress &&
+              <div>
+                <div className={styles.bigText}>{order.DropoffAddress.FirstName + ' ' + order.DropoffAddress.LastName}</div>
+                <div className={styles.mediumText}>{order.DropoffAddress.City}</div>
+              </div>
+            }
           </div>
           <div className={styles.orderContentRight}>
             <div style={{textAlign: 'center'}}>
@@ -42,7 +46,7 @@ const DuplicateModal = React.createClass({
     return (
       <ModalDialog>
         <button className={styles.closeModalButton} onClick={this.closeModal}>
-          <img src="/img/icon-close.png" width="24" height="24"/></button>
+          <img src="/img/icon-close.png" className={groupingStyles.closeButtonImage}/></button>
         <div className={styles.modal}>
           <div className={styles.modalHeader}>
             <h2 className={styles.modalTitle}>Please pick the right one</h2>
@@ -79,6 +83,9 @@ const InboundOrdersPage = React.createClass({
     })
   },
   markReceived(val) {
+    if (val === '') {
+      return;
+    }
     this.props.markReceived(val);
     this.setState({
       orderMarked: "",
@@ -93,7 +100,7 @@ const InboundOrdersPage = React.createClass({
       input: styles.verifyInput
     };
     return (
-      <Page title="Inbound Orders" additional="Deliver this order to next destination">
+      <Page title="Inbound Orders" count={{itemName: 'Items', done: 'All Done', value: this.props.total}}>
         {
           this.state.isDuplicate &&
           <ModalContainer onClose={this.closeModal}>
@@ -102,9 +109,9 @@ const InboundOrdersPage = React.createClass({
         }
         <div className={styles.actionContainer}>
           <Input styles={inputVerifyStyles} onChange={this.changeMark} onEnterKeyPressed={this.markReceived} ref="markReceived" 
-            base={{value: this.state.orderMarked}} id="markReceivedInput" 
-            placeholder={'Scan EDS, WebOrderID, or TripID...'} />
-          <div onClick={this.markReceived.bind(null, this.state.orderMarked)} className={styles.verifyButton}>Verify</div>
+            base={{value: this.state.orderMarked, placeholder: 'Scan EDS, WebOrderID, or TripID...'}} id="markReceivedInput" />
+          <button onClick={this.markReceived.bind(null, this.state.orderMarked)} className={styles.verifyButton} 
+            disabled={this.state.orderMarked === ''} >Verify</button>
         </div>
         <InboundOrdersTable />
       </Page>
@@ -115,12 +122,13 @@ const InboundOrdersPage = React.createClass({
 function mapStateToProps (state) {
   const { inboundOrders } = state.app;
   const userLogged = state.app.userLogged;
-  const { duplicateOrders, isDuplicate } = inboundOrders;
+  const { duplicateOrders, isDuplicate, total } = inboundOrders;
 
   return {
     userLogged,
     duplicateOrders,
-    isDuplicate
+    isDuplicate,
+    total
   }
 }
 
