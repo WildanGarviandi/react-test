@@ -61,6 +61,9 @@ const CreateTripModal = React.createClass({
     this.closeModal();
   },
   addOrder() {
+    if (this.state.addOrderQuery === "") {
+      return;
+    }
     const thisClass = this;
     const index = lodash.findIndex(this.state.orders, {'UserOrderNumber': this.state.addOrderQuery});
     if (index > -1) {
@@ -140,7 +143,7 @@ const CreateTripModal = React.createClass({
                 base={{value: this.state.addOrderQuery, placeholder: 'Write the EDS here to manually verify...'}}
                 type={'text'} onChange={this.stateChange('addOrderQuery')} onEnterKeyPressed={this.addOrder} />
               <div className={groupingStyles.modalContentRight}>
-                <button className={groupingStyles.addOrderButton} onClick={this.addOrder}>Add</button>
+                <button className={groupingStyles.addOrderButton} onClick={this.addOrder} disabled={this.state.addOrderQuery === ""}>Add</button>
               </div>
               <div style={{clear: 'both'}}></div>
             </div>

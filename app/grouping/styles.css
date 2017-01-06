@@ -209,6 +209,11 @@
   background-color: #79c0f7; 
 }
 
+.addOrderButton:disabled {
+  cursor: default;
+  background-color: #79c0f7;
+}
+
 .addOrderInput {
   font-size: 14px;
   font-weight: normal;
