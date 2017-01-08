@@ -13,6 +13,27 @@ export function LinkCell({onClick, text, to}) {
   return <Link to={to} className={styles.link}>{text}</Link>;
 }
 
+export function OrderIDLinkCell({onClick, eds, id, to, isChecked, item}) {
+  let style = {
+    textAlign: 'center',
+    color: '#000',
+    display: 'inline-block'
+  }
+
+  if (item && item.IsChecked) {
+    style.color = '#fff';
+    style.backgroundColor = '#ff5a60';
+  }
+
+  return (
+    <Link to={to} className={styles.link}>
+      <span style={style}>
+        {eds}<br />{id}
+      </span>
+    </Link>
+  );
+}
+
 export const CheckBoxCell = CheckBox;
 
 export default function Body({columns, items, components}) {

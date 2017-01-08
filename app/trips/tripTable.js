@@ -12,6 +12,7 @@ import {formatDate} from '../helper/time';
 import {ButtonBase} from '../views/base';
 import DriverSetter from './driverSetter';
 import OrderTable from './orderTable';
+import {CheckboxHeader as CheckboxHeaderBase, CheckboxCell} from '../views/base/tableCell';
 
 function StoreBuilder(keyword) {
     return (store) => {
@@ -81,7 +82,7 @@ function DropdownDispatchBuilder(filterKeyword) {
 
 function CheckboxDispatch(dispatch, props) {
     return {
-        onChange: () => {
+        onToggle: () => {
             dispatch(TripService.ToggleChecked(props.tripID));
         }
     }
@@ -89,13 +90,13 @@ function CheckboxDispatch(dispatch, props) {
  
 function CheckboxHeaderStore(store) {
     return {
-        value: store.app.myTrips.selectedAll,
+        isChecked: store.app.myTrips.selectedAll,
     }
 }
  
 function CheckboxHeaderDispatch(dispatch) {
     return {
-        onChange: () => {
+        onToggle: () => {
             dispatch(TripService.ToggleCheckedAll());
         }
     }
@@ -133,8 +134,8 @@ function ConnectDropdownBuilder(keyword) {
     return connect(DropdownStoreBuilder(keyword), DropdownDispatchBuilder(keyword));
 }
 
-const CheckboxHeader = connect(CheckboxHeaderStore, CheckboxHeaderDispatch)(Table.CheckBoxHeader);
-const CheckboxRow = connect(undefined, CheckboxDispatch)(Table.CheckBoxCell);
+const CheckboxHeader = connect(CheckboxHeaderStore, CheckboxHeaderDispatch)(CheckboxHeaderBase);
+const CheckboxRow = connect(undefined, CheckboxDispatch)(CheckboxCell);
 const ContainerNumberFilter = ConnectBuilder('containerNumber')(Table.InputCell);
 const StatusFilter = ConnectDropdownBuilder('statusName')(Table.FilterDropdown);
 const MerchantFilter = ConnectBuilder('merchant')(Table.InputCell);
@@ -146,7 +147,7 @@ const OrderFilter = ConnectBuilder('order')(Table.InputCell);
 
 function TripHeader() {
     return (
-        <tr className={styles.tr}>
+        <tr>
             <CheckboxHeader />
             <Table.TextHeader text="Trip Number" />
             <Table.TextHeader text="Status" />
@@ -238,8 +239,8 @@ const TripRow = React.createClass({
         const { trip, expandedTrip } = this.props;
         const { isEdit, isHover } = this.state;
         return (
-           <tr className={styles.tr} onMouseEnter={this.onMouseOver} onMouseLeave={this.onMouseOut}>
-                <CheckboxRow checked={trip.IsChecked} tripID={trip.TripID} />
+           <tr className={styles.tr + (trip.IsChecked && (' ' + styles.selected))} onMouseEnter={this.onMouseOver} onMouseLeave={this.onMouseOut}>
+                <td><CheckboxRow isChecked={trip.IsChecked} tripID={trip.TripID} /></td>
                 <Table.LinkCell to={'/mytrips/detail/' + trip.TripID} text={trip.ContainerNumber} />
                 <Table.TextCell text={trip.OrderStatus && trip.OrderStatus.OrderStatus} />
                 <Table.TextCell text={trip.TripMerchant } />
@@ -333,7 +334,6 @@ function TripTable({trips}) {
   return (
     <table className={styles.table}>
       <thead>{headers}</thead>
-      <tbody><TripFilter /></tbody>
       <TripBodyContainer trips={trips} />
     </table>
   );
