@@ -12,6 +12,7 @@ import styles from '../views/base/table.css';
 import inboundStyles from './styles.css';
 import ReactInterval from 'react-interval';
 import moment from 'moment';
+import configEnv from '../../config.json';
 
 function mapDispatchToLink(dispatch, ownParams) {
   return {
@@ -79,7 +80,7 @@ function BodyComponent(type, keyword, item, index) {
     case "Datetime": {
       switch(keyword) {
         case "Deadline": {
-          const deadline = moment(new Date(item['CutOffTime'])).add(6, 'hour');
+          const deadline = moment(new Date(item['CutOffTime'])).add(configEnv.inboundDeadlineFromCutOffTime, 'hour');
 
           return (
             <span>
@@ -111,7 +112,7 @@ function InboundOrdersBody({items}) {
     
     const date = moment(new Date(item['CutOffTime']));
     const now = moment();
-    const deadline = date.add(6, 'hour');
+    const deadline = date.add(configEnv.inboundDeadlineFromCutOffTime, 'hour');
 
     item.Deadline = deadline.diff(now);
 

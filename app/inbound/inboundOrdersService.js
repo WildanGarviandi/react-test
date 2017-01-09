@@ -87,42 +87,11 @@ export function Reducer (state = initialState, action) {
 
 export function FetchList () {
   return (dispatch, getState) => {
-    const {inboundOrders, userLogged} = getState().app;
-    const {token, hubID} = userLogged;
-    const {currentPage, filters, limit} = inboundOrders;
-
-    const query = lodash.assign({}, filters, {
-      limit: limit,
-      offset: (currentPage-1)*limit,
-    });
-
     dispatch({
       type: Constants.ORDERS_INBOUND_FETCH_START,
     });
 
-    FetchGet('/order/orderInbound/' + hubID, token, query, true).then((response) => {
-      if(!response.ok) {
-        throw new Error();
-      }
-
-      response.json().then(({data}) => {
-        dispatch({
-          type: Constants.ORDERS_INBOUND_SET,
-          orders: lodash.map(data.rows, OrderParser),
-          total: data.count,
-        });
-
-        dispatch({
-          type: Constants.ORDERS_INBOUND_FETCH_END,
-        });
-      });
-    }).catch(() => {
-      dispatch({
-        type: Constants.ORDERS_INBOUND_FETCH_END,
-      });
-
-      dispatch(ModalActions.addMessage("Failed to fetch inbound orders"));
-    });
+    dispatch(ReFetchList());
   }
 }
 
@@ -148,8 +117,16 @@ function ReFetchList () {
           orders: lodash.map(data.rows, OrderParser),
           total: data.count,
         });
+
+        dispatch({
+          type: Constants.ORDERS_INBOUND_FETCH_END,
+        });
       });
     }).catch(() => {
+      dispatch({
+        type: Constants.ORDERS_INBOUND_FETCH_END,
+      });
+
       dispatch(ModalActions.addMessage("Failed to fetch inbound orders"));
     });
   };

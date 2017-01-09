@@ -34,7 +34,7 @@ const DuplicateModal = React.createClass({
             }
           </div>
           <div className={styles.orderContentRight}>
-            <div style={{textAlign: 'center'}}>
+            <div className={styles.textCenter}>
               <div className={styles.smallTextBold}>{order.UserOrderNumber}</div>
               <div className={styles.smallText}>({order.WebOrderID})</div>
             </div>
@@ -46,7 +46,8 @@ const DuplicateModal = React.createClass({
     return (
       <ModalDialog>
         <button className={styles.closeModalButton} onClick={this.closeModal}>
-          <img src="/img/icon-close.png" className={groupingStyles.closeButtonImage}/></button>
+          <img src="/img/icon-close.png" className={groupingStyles.closeButtonImage}/>
+        </button>
         <div className={styles.modal}>
           <div className={styles.modalHeader}>
             <h2 className={styles.modalTitle}>Please pick the right one</h2>

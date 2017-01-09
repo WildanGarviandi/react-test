@@ -36,14 +36,6 @@ export function OrderIDLinkCell({onClick, eds, id, to, isChecked, item}) {
 
 export const CheckBoxCell = CheckBox;
 
-export const IntervalCell = React.createClass({
-  render() {
-    return (
-      <span></span>
-    );
-  }
-});
-
 export default function Body({columns, items, components}) {
   const rows = lodash.map(items, (item, idx) => {
     const cells = lodash.map(columns, (column) => {

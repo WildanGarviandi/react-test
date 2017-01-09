@@ -52,7 +52,7 @@ const Input = React.createClass({
     }
   },
   render() {
-    let { base, notes, id, styles = {}, placeholder } = this.props;
+    let { base, notes, id, styles = {} } = this.props;
 
     var classes = classNaming(
       this.props.className,

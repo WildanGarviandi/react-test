@@ -6,6 +6,7 @@ import InboundOrdersBody from './inboundOrdersBody';
 import InboundOrdersHeaders from './inboundOrdersHeaders';
 import * as InboundOrders from './inboundOrdersService';
 import {ButtonWithLoading, Input, Pagination} from '../views/base';
+import {inboundOrdersColumns} from './inboundOrdersColumns';
 
 const Table = React.createClass({
   getInitialState() {
@@ -18,16 +19,16 @@ const Table = React.createClass({
     const {Headers, Filters, Body, PaginationActions, isFetching, items, pagination} = this.props;
 
     let bodyComponents = (
-      <td colSpan={8}>
+      <td colSpan={inboundOrdersColumns.length}>
         <div className={styles.fetchingText}>
           Fetching data...
         </div>
       </td>
     );
     if (!isFetching) {
-      if (true) {
+      if (items.length === 0) {
         bodyComponents = (
-          <td colSpan={12}>
+          <td colSpan={inboundOrdersColumns.length}>
             <div className={styles.emptyTableContainer}>
               <span>
                 <img src="/img/image-inbound-trip-done.png" className={styles.emptyTableImage}/>
