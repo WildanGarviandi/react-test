@@ -3,7 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
 import GroupingTable from './groupingTable';
-import groupingStyles from './styles.css';
+import styles from './styles.css';
 import {ButtonWithLoading, Input, Page, InputWithDefault} from '../views/base';
 import * as Grouping from './groupingService';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
@@ -14,8 +14,8 @@ const CreateTripModal = React.createClass({
   getInitialState() {
     return {
       addOrderQuery: '',
-      orders: this.props.addedOrders,
-      isSuccessCreating: false
+      orders: this.props.addedOrders || [],
+      isSuccessCreating: false,
     }
   },
   stateChange(key) {
@@ -27,6 +27,10 @@ const CreateTripModal = React.createClass({
     document.getElementById('addOrder') && document.getElementById('addOrder').focus();
   },
   componentWillReceiveProps(nextProps) {
+    if (!nextProps['isDuplicate'] && !nextProps['isSuccessCreating']) {
+      document.getElementById('addOrder') && document.getElementById('addOrder').focus();
+    }
+
     this.setState({
       orders: nextProps.addedOrders,
       isSuccessCreating: nextProps['isSuccessCreating']
@@ -47,7 +51,9 @@ const CreateTripModal = React.createClass({
     if (this.state.orders.length > 0) {
       this.props.askClose({
         message: 'Are you sure to close? Your changes will be lost.',
-        action: close,
+        action: function () {
+          close();
+        },
         backElementFocusID: 'addOrder'
       });
     } else {
@@ -64,97 +70,125 @@ const CreateTripModal = React.createClass({
     if (this.state.addOrderQuery === "") {
       return;
     }
-    const thisClass = this;
-    const index = lodash.findIndex(this.state.orders, {'UserOrderNumber': this.state.addOrderQuery});
-    if (index > -1) {
-      this.props.askRemove({
-        message: `Remove order ${this.state.addOrderQuery} ?`,
-        action: function () {
-          thisClass.props.removeOrder(index);
-        },
-        backElementFocusID: 'addOrder',
-        yesFocus: true
-      });
-    } else {
-      this.props.addOrder(this.state.addOrderQuery, 'addOrder');
-    }
-    this.setState({
-      addOrderQuery: ''
-    })
+    this.setState({addOrderQueryCopy: this.state.addOrderQuery});
+    this.setState({addOrderQuery: ''});
+    this.props.addOrder(this.state.addOrderQuery, 'addOrder');
+  },
+  chooseOrder(val) {
+    this.props.addOrder(val, 'addOrder');
   },
   componentWillUnmount() {
-    this.closeModal();
     document.getElementById("prepareBtn") && document.getElementById("prepareBtn").focus();
   },
   render() {
-    const {createdTrip} = this.props;
+    const {createdTrip, isDuplicate, duplicateOrders} = this.props;
     const canCreate = this.state.orders.length > 0;
     var totalWeight = 0;
 
     const ordersContent = this.state.orders.map(function (order, index) {
       totalWeight += order.PackageWeight;
       return (
-        <div className={groupingStyles.orderContent} key={index}>
-          <div className={groupingStyles.orderContentLeft}>
-            <div className={groupingStyles.smallText}>To</div>
+        <div className={styles.orderContent} key={index}>
+          <div className={styles.orderContentLeft}>
+            <div className={styles.smallText}>To</div>
             { order.DropoffAddress &&
               <div>
-                <div className={groupingStyles.mediumText}>{order.DropoffAddress.FirstName + ' ' + order.DropoffAddress.LastName}</div>
-                <div className={groupingStyles.smallText}>
+                <div className={styles.mediumText}>{order.DropoffAddress.FirstName + ' ' + order.DropoffAddress.LastName}</div>
+                <div className={styles.smallText}>
                   {order.DropoffAddress.Address1 + ', ' + order.DropoffAddress.Address2 + ', ' + order.DropoffAddress.City + ', ' +
                     order.DropoffAddress.ZipCode}
                 </div>
               </div>
             }
           </div>
-          <div className={groupingStyles.orderContentRight}>
+          <div className={styles.orderContentRight}>
             <div style={{textAlign: 'center'}}>
-              <div className={groupingStyles.smallTextBold}>{order.UserOrderNumber}</div>
-              <div className={groupingStyles.smallTextBold}>({order.WebOrderID})</div>
+              <div className={styles.smallTextBold}>{order.UserOrderNumber}</div>
+              <div className={styles.smallTextBold}>({order.WebOrderID})</div>
             </div>
           </div>
         </div>
       );
     });
 
+    var duplicateOrdersContent = [];
+
+    if (isDuplicate) {
+      const thisComponent = this;
+      duplicateOrdersContent = duplicateOrders.map(function (order, index) {
+        return (
+          <div className={styles.orderContent + ' ' + styles.orderContentHover} key={index} 
+            onClick={thisComponent.chooseOrder.bind(null, order.UserOrderNumber)}>
+            <div className={styles.orderContentLeft}>
+              <div className={styles.smallText}>To</div>
+              { order.DropoffAddress &&
+                <div>
+                  <div className={styles.bigText}>{order.DropoffAddress.FirstName + ' ' + order.DropoffAddress.LastName}</div>
+                  <div className={styles.mediumText}>{order.DropoffAddress.City}</div>
+                </div>
+              }
+            </div>
+            <div className={styles.orderContentRight}>
+              <div style={{textAlign: 'center'}}>
+                <div className={styles.smallTextBold}>{order.UserOrderNumber}</div>
+                <div className={styles.smallText}>({order.WebOrderID})</div>
+              </div>
+            </div>
+          </div>
+        );
+      });
+    }
+
     return (
       <ModalDialog>
-        <button className={groupingStyles.closeModalButton} onClick={this.closeModal}>
-          <img src="/img/icon-close.png" className={groupingStyles.closeButtonImage}/></button>
-        { !this.state.isSuccessCreating &&
-          <div className={groupingStyles.modal}>
-            <div className={groupingStyles.modalHeader}>
-              <h2 className={groupingStyles.modalTitle}>Add Orders to Bag</h2>
-              <div className={groupingStyles.modalInfo}>
-                <div className={groupingStyles.orderContentLeft}>
-                  <div className={groupingStyles.smallText}>Total Orders</div>
-                  <h2 className={groupingStyles.bigText}>{this.state.orders.length}</h2>
+        { isDuplicate &&
+          <div className={styles.modal}>
+            <div className={styles.modalHeader}>
+              <h2 className={styles.modalTitle}>Please pick the right one</h2>
+              <div className={styles.smallText}>
+                Order <strong>{this.state.addOrderQueryCopy}</strong> was found in more than one data</div>
+            </div>
+            <div className={styles.modalContent1 + ' ' + styles.ordersContent}>
+              {duplicateOrdersContent}
+            </div>
+          </div>
+        }
+        { !this.state.isSuccessCreating && !isDuplicate &&
+          <div className={styles.modal}>
+            <button className={styles.closeModalButton} onClick={this.closeModal}>
+              <img src="/img/icon-close.png" className={styles.closeButtonImage}/></button>
+            <div className={styles.modalHeader}>
+              <h2 className={styles.modalTitle}>Add Orders to Bag</h2>
+              <div className={styles.modalInfo}>
+                <div className={styles.orderContentLeft}>
+                  <div className={styles.smallText}>Total Orders</div>
+                  <h2 className={styles.bigText}>{this.state.orders.length}</h2>
                 </div>
-                <div className={groupingStyles.orderContentRight}>
-                  <div className={groupingStyles.smallText}>Total Weight (kg)</div>
-                  <h2 className={groupingStyles.bigText}>{totalWeight}</h2>
+                <div className={styles.orderContentRight}>
+                  <div className={styles.smallText}>Total Weight (kg)</div>
+                  <h2 className={styles.bigText}>{totalWeight}</h2>
                 </div>
                 <div style={{clear: 'both'}}></div>
               </div>
             </div>
 
-            <div className={groupingStyles.modalContent4}>
-              <Input id={'addOrder'} className={groupingStyles.input + ' ' + groupingStyles.addOrderInput} 
+            <div className={styles.modalContent4}>
+              <Input id={'addOrder'} className={styles.input + ' ' + styles.addOrderInput} 
                 base={{value: this.state.addOrderQuery, placeholder: 'Write the EDS here to manually verify...'}}
                 type={'text'} onChange={this.stateChange('addOrderQuery')} onEnterKeyPressed={this.addOrder} />
-              <div className={groupingStyles.modalContentRight}>
-                <button className={groupingStyles.addOrderButton} onClick={this.addOrder} disabled={this.state.addOrderQuery === ""}>Add</button>
+              <div className={styles.modalContentRight}>
+                <button className={styles.addOrderButton} onClick={this.addOrder} disabled={this.state.addOrderQuery === ""}>Add</button>
               </div>
               <div style={{clear: 'both'}}></div>
             </div>
 
-            <div className={groupingStyles.modalContent1 + ' ' + groupingStyles.ordersContent}>
+            <div className={styles.modalContent1 + ' ' + styles.ordersContent}>
               {
                 (!canCreate) &&
-                <div className={groupingStyles.ordersContentEmpty}>
+                <div className={styles.ordersContentEmpty}>
                   <img src="/img/icon-scan-input.png" width="80" height="80"/>
-                  <div className={groupingStyles.mediumText}>Waiting for order input</div>
-                  <div className={groupingStyles.smallText}>Please scan the order that you want to put on this bag/trip 
+                  <div className={styles.mediumText}>Waiting for order input</div>
+                  <div className={styles.smallText}>Please scan the order that you want to put on this bag/trip 
                     or do it manually by typing the order id on the input box above</div>
                 </div>
               }
@@ -166,9 +200,9 @@ const CreateTripModal = React.createClass({
               }
             </div>
             
-            <div className={groupingStyles.modalFooter}>
-              <div className={groupingStyles.modalFooterLeft}>
-                <div className={groupingStyles.smallText}>
+            <div className={styles.modalFooter}>
+              <div className={styles.modalFooterLeft}>
+                <div className={styles.smallText}>
                   {
                     (!canCreate) &&
                     <span>You have not filled this bag / trip with orders.<br/>
@@ -181,29 +215,29 @@ const CreateTripModal = React.createClass({
                   }
                 </div>
               </div>
-              <div className={groupingStyles.modalFooterRight}>
-                <button className={groupingStyles.createTripButton} onClick={this.createTrip}
+              <div className={styles.modalFooterRight}>
+                <button className={styles.createTripButton} onClick={this.createTrip}
                   disabled={!canCreate}>Create Trip</button>
               </div>
             </div>
           </div> 
         }   
         { this.state.isSuccessCreating &&
-          <div className={groupingStyles.modal}>
-            <div className={groupingStyles.modalHeader}>
-              <h2 className={groupingStyles.modalTitle}>Success</h2>
-              <div className={groupingStyles.successContent + ' ' + groupingStyles.ordersContentEmpty}>
-                <img className={groupingStyles.successIcon} src={"/img/icon-success.png"} />
-                <div className={groupingStyles.mediumText}>You have successfully created a new trip</div>
-                <div className={groupingStyles.smallText}>
+          <div className={styles.modal}>
+            <div className={styles.modalHeader}>
+              <h2 className={styles.modalTitle}>Success</h2>
+              <div className={styles.successContent + ' ' + styles.ordersContentEmpty}>
+                <img className={styles.successIcon} src={"/img/icon-success.png"} />
+                <div className={styles.mediumText}>You have successfully created a new trip</div>
+                <div className={styles.smallText}>
                   This trip is ready to be dispatch, please dispatch it on the outbound page.
                 </div>
-                <div className={groupingStyles.bigText}>TRIP-ID - {this.props.createdTrip.TripID}</div>
+                <div className={styles.bigText}>TRIP-ID - {this.props.createdTrip.TripID}</div>
               </div>
             </div>
-            <div className={groupingStyles.modalFooter}>
-              <button className={groupingStyles.endButton} onClick={this.closeModal} id="gotItButton">
-                <span className={groupingStyles.mediumText}>Got It</span></button>
+            <div className={styles.modalFooter}>
+              <button className={styles.endButton} onClick={this.closeModal} id="gotItButton">
+                <span className={styles.mediumText}>Got It</span></button>
             </div>
           </div>
         }
@@ -243,12 +277,12 @@ const GroupingPage = React.createClass({
       <Page title="GROUPING" count={{itemName: 'Items', done: 'All Done', value: total}}>
         {
           this.state.showModal &&
-          <ModalContainer onClose={this.closeModal}>
+          <ModalContainer>
             <CreateTripModal {...this.props} onClose={this.closeModal}/>
           </ModalContainer>
         }
-        <div className={groupingStyles.actionContainer}>
-          <button className={groupingStyles.createTripButton} onClick={this.openModal} id="prepareBtn">Prepare Bag</button>
+        <div className={styles.actionContainer}>
+          <button className={styles.createTripButton} onClick={this.openModal} id="prepareBtn">Prepare Bag</button>
         </div>
         <GroupingTable />
       </Page>
@@ -258,7 +292,7 @@ const GroupingPage = React.createClass({
 
 function mapStateToProps (state) {
   const {grouping, orderDetails} = state.app;
-  const {total, isGrouping, trip, addedOrders, isSuccessCreating, createdTrip} = grouping;
+  const {total, isGrouping, trip, addedOrders, isSuccessCreating, createdTrip, duplicateOrders, isDuplicate} = grouping;
 
   return {
     total,
@@ -266,7 +300,9 @@ function mapStateToProps (state) {
     trip,
     isSuccessCreating,
     addedOrders,
-    createdTrip
+    createdTrip,
+    duplicateOrders,
+    isDuplicate
   }
 }
 

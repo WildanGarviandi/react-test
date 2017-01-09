@@ -17,7 +17,8 @@ const Constants = {
   GROUPING_CREATE_TRIP_START: "grouping/trip/create/start",
   GROUPING_CREATE_TRIP_END: "grouping/trip/create/end",
   GROUPING_TRIP_SET: "grouping/trip/set",
-  GROUPING_ORDER_ADD: "grouping/order/add",
+  GROUPING_ORDER_ADD_START: "grouping/order/add/start",
+  GROUPING_ORDER_ADD_END: "grouping/order/add/end",
   GROUPING_ORDER_REMOVE: "grouping/order/remove"
 }
 
@@ -35,7 +36,9 @@ const initialState = {
   isGroupingPage: true,
   addedOrders: [],
   isSuccessCreating: false,
-  createdTrip: {}
+  createdTrip: {},
+  duplicateOrders: [],
+  isDuplicate: false
 }
 
 export function Reducer(state = initialState, action) {
@@ -80,8 +83,23 @@ export function Reducer(state = initialState, action) {
       return lodash.assign({}, state, {trip: action.trip});
     }
 
-    case Constants.GROUPING_ORDER_ADD: {
-      return lodash.assign({}, state, {addedOrders: state.addedOrders.concat([action.order])});
+    case Constants.GROUPING_ORDER_ADD_START: {
+      return lodash.assign({}, state, {
+        isDuplicate: false,
+        duplicateOrders: []
+      })
+    }
+
+    case Constants.GROUPING_ORDER_ADD_END: {
+      if (!action.duplicate) {
+        return lodash.assign({}, state, {addedOrders: state.addedOrders.concat([action.order])});
+      } else {
+        return lodash.assign({}, state, {
+          duplicateOrders: action.order,
+          isDuplicate: true
+        });
+      }
+
     }
 
     case Constants.GROUPING_ORDER_REMOVE: {
@@ -143,6 +161,7 @@ export function AddOrder (orderNumber, backElementFocusID) {
   return (dispatch, getState) => {
     const {userLogged, grouping} = getState().app;
     const {token} = userLogged;
+    const {addedOrders} = grouping;
 
     const query = {
       userOrderNumber: orderNumber,
@@ -150,6 +169,10 @@ export function AddOrder (orderNumber, backElementFocusID) {
 
     dispatch({
       type: modalAction.BACKDROP_SHOW,
+    });
+
+    dispatch({
+      type: Constants.GROUPING_ORDER_ADD_START,
     });
 
     FetchGet('/order/received', token, query).then((response) => {
@@ -162,14 +185,32 @@ export function AddOrder (orderNumber, backElementFocusID) {
       });
 
       return response.json().then(({data}) => {
-        if(data.count !== 1) {
+        if (data.count < 1) {
           throw new Error(`${orderNumber} is not found`);
+        } else if (data.count > 1) {
+          dispatch({
+            type: Constants.GROUPING_ORDER_ADD_END,
+            duplicate: true,
+            order: data.rows
+          });
+        } else {
+          const index = lodash.findIndex(addedOrders, {'UserOrderNumber': data.rows[0].UserOrderNumber});
+          if (index > -1) {
+            dispatch(ModalActions.addConfirmation({
+              message: `Remove order ${data.rows[0].UserOrderNumber} ?`,
+              action: function () {
+                dispatch(RemoveOrder(index));
+              },
+              backElementFocusID: 'addOrder',
+              yesFocus: true
+            }));
+          } else {
+            dispatch({
+              type: Constants.GROUPING_ORDER_ADD_END,
+              order: data.rows[0]
+            });
+          }
         }
-
-        dispatch({
-          type: Constants.GROUPING_ORDER_ADD,
-          order: data.rows[0]
-        });
         
       });
     }).catch((e) => {

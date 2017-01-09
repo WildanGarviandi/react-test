@@ -18,7 +18,7 @@ const ModalMessage = React.createClass({
     }, 100)
   },
   componentWillUnmount() {
-    if (this.props.modal.backElementFocusID) {
+    if (document.getElementById(this.props.modal.backElementFocusID)) {
       document.getElementById(this.props.modal.backElementFocusID).focus();
     }
   },
