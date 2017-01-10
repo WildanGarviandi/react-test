@@ -9,7 +9,7 @@ import {ContainerDetailsActions, StatusList} from '../modules';
 import districtsFetch from '../modules/districts/actions/districtsFetch';
 import {ButtonBase, ButtonWithLoading, Input, Modal, Page, Glyph} from '../views/base';
 import DistrictAndDriver from '../views/container/districtAndDriver';
-import {OrderTable} from './TripDetailsTable';
+import {OrderTable} from './tripDetailsTable';
 import * as TripDetails from './tripDetailsService';
 import ModalActions from '../modules/modals/actions';
 import Accordion from '../views/base/accordion';

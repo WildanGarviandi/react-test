@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {ButtonBase, DropdownTypeAhead, Input, Rows} from '../views/base';
-import {orderRemove, orderToggleAll, orderToggle} from './TripDetailsAction';
+import {orderRemove, orderToggleAll, orderToggle} from './tripDetailsAction';
 import tableStyles from '../views/base/table.css';
 import styles from './styles.css';
 import classNaming from 'classnames';
