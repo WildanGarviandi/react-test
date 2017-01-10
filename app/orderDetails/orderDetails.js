@@ -7,7 +7,7 @@ import styles from './styles.css';
 import Accordion from '../views/base/accordion';
 import {ButtonWithLoading, Input, Page, Glyph} from '../views/base';
 import {InputWithDefault, CheckBox} from '../views/base/input';
-import * as OrdersDetails from './OrderDetailsService';
+import * as OrdersDetails from './orderDetailsService';
 import {formatDate} from '../helper/time';
 
 const conf = {
