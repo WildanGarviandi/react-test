@@ -308,7 +308,7 @@ const mapStateToProps = (state, ownProps) => {
     TotalWeight += order.PackageWeight;
 
     return {
-      id: order.WebOrderID + ' / ' + order.UserOrderNumber,
+      id: `${order.UserOrderNumber} (${order.WebOrderID})`,
       id2: order.User.FirstName + ' ' + order.User.LastName,
       pickup: order.PickupAddress && order.PickupAddress.Address1,
       dropoff: Recipient ,
