@@ -27,9 +27,10 @@ function GroupingHeaders() {
         <th>AWB<br/>(Web Order ID)</th>
         <th>Merchant</th>
         <th>Weight</th>
-        <th>Pick Up Address</th>
+        <th>Drop Off Address</th>
         <th>City</th>
         <th>ZIP Code</th>
+        <th>Suggested Destination</th>
       </tr>
     </thead>
   );
