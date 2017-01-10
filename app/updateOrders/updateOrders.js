@@ -3,46 +3,82 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
 import UpdateOrdersTable from './updateOrdersTable';
-import styles from '../views/order/styles.css';
-import updateStyles from './styles.css';
+import styles from './styles.css';
 import {ButtonWithLoading, Input, Page, InputWithDefault} from '../views/base';
 import * as UpdateOrders from './updateOrdersService';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
-import * as OrdersDetails from '../modules/orders/actions/details';
 import ReactDOM from 'react-dom';
+import FontAwesome from 'react-fontawesome';
+
+function calculatePricing (pricingData, editedData, isPricingByWeight) {
+  const {weight = 0, length = 0, height = 0, width = 0} = editedData;
+
+  if (isPricingByWeight) {
+    const volumeWeight = (height * length * width) / 6000;
+    if (volumeWeight > weight) {
+      return volumeWeight * pricingData;
+    } else {
+      return weight * pricingData;
+    }
+  } else {
+    const priceData = pricingData.find((price) => {
+      return (weight < price.weight) && (height < price.height) && (length < price.length) && (width < price.width);
+    });
+    return (priceData) ? priceData.price : 0;
+  }
+}
 
 const InputRow = React.createClass({
   getInitialState() {
     return {
-      hover: false
+      selectedValue: this.props.value
     };
   },
-  onMouseEnterHandler: function() {
-    this.setState({
-      hover: true
-    });
+  handleSelect(value) {
+    this.setState({selectedValue: value})
   },
-  onMouseLeaveHandler: function() {
-    this.setState({
-      hover: false
-    });
-  },
-  handleEnter: function () {
-    this.props.onEnterKeyPressed();
-  },
-  handleSelect: function () {
-
+  handleInputSelect(text) {
   },
   render() {
-    const {isEditing, label, value, onChange, type, icon, id} = this.props;
-    let stylesLabel = styles.itemLabelHover;
-    let stylesValue = styles.itemValueHover;
+    const thisClass = this;
+    const {isEditing, label, value, onChange, type, id, width, selectItems, customStyle} = this.props;
+    let widthStyle;
+    (width === 25) ? widthStyle = styles.modalContent25 :
+    (width === 50) ? widthStyle = styles.modalContent50 : widthStyle = styles.modalContent100;
+
+    let radioContent = [];
+    if (type === 'select') {
+      radioContent = lodash.map(selectItems, (item, index) => {
+        return (
+          <div style={{flex: 1 / selectItems.length}} key={index} onClick={thisClass.handleSelect.bind(null, item.value)}
+            className={styles.radioContainer}>
+            { this.state.selectedValue === item.value &&
+              <img src="/img/icon-checkmark-on.png" className={styles.radioImage}/>
+            }
+            {
+              this.state.selectedValue !== item.value &&
+              <img src="/img/icon-checkmark-off.png" className={styles.radioImage} />
+            }
+            <span className={styles.radioLabel}>{item.label}</span>
+          </div>
+        );
+      });
+    }
 
     return (
-      <div className={updateStyles.modalContent3}>
-        <div className={updateStyles.smallText}>{label}</div>
-        <InputWithDefault id={id} className={updateStyles.input} currentText={value} type={type} onChange={this.props.onChange}
-          handleSelect={this.handleSelect} handleEnter={this.handleEnter} />
+      <div className={customStyle + ' ' + styles.inputRowContainer + ' ' + widthStyle}>
+        <div className={styles.inputRowLabel}>{label}</div>
+        <div className={styles.modalContent3}>
+          { type === 'text' &&
+            <InputWithDefault id={id} className={styles.input} currentText={value} type={type} onChange={this.props.onChange}
+              handleSelect={this.handleInputSelect} handleEnter={this.props.onEnterKeyPressed} />
+          }
+          { type === 'select' &&
+            <div className={styles.selectInput}>
+              {radioContent}
+            </div>
+          }
+        </div>
       </div>
     );
   }
@@ -52,11 +88,15 @@ const UpdateModal = React.createClass({
   getInitialState() {
     return {
       scannedOrder: this.props.scannedOrder || {},
-      PackageWidth: this.props.scannedOrder.PackageWidth,
-      PackageHeight: this.props.scannedOrder.PackageHeight,
-      PackageLength: this.props.scannedOrder.PackageLength,
-      DeliveryFee: this.props.scannedOrder.OrderCost,
-      editDelivery: false
+      PackageWidth: this.props.scannedOrder.PackageWidth || "0",
+      PackageHeight: this.props.scannedOrder.PackageHeight || "0",
+      PackageLength: this.props.scannedOrder.PackageLength || "0",
+      PackageWeight: this.props.scannedOrder.PackageWeight || "0",
+      TotalValue: this.props.scannedOrder.TotalValue || "0",
+      PaymentType: this.props.scannedOrder.PaymentType,
+      DeliveryFee: this.props.scannedOrder.OrderCost || "0",
+      editDelivery: false,
+      noPricing: false
     }
   },
   stateChange(key) {
@@ -64,32 +104,69 @@ const UpdateModal = React.createClass({
       this.setState({[key]: value});
     };
   },
-  componentWillReceiveProps(nextProps) {
-    if ((nextProps['isEditing'])) {
-      if (document.getElementById('packageLength')) {
-        document.getElementById('packageLength').focus();
-      }
+  stateChangeAndCalculate(key) {
+    return (value) => {
+      this.setState({
+        [key]: value
+      });
+      this.calculatePricing(key, value);
     }
+  },
+  calculatePricing(key, value) {
+    const editedData = {
+      weight: (key === 'PackageWeight') ? parseInt(value) : parseInt(this.state.PackageWeight),
+      height: (key === 'PackageHeight') ? parseInt(value) : parseInt(this.state.PackageHeight),
+      length: (key === 'PackageLength') ? parseInt(value) : parseInt(this.state.PackageLength),
+      width: (key === 'PackageWidth') ? parseInt(value) : parseInt(this.state.PackageWidth)
+    }
+    const deliveryFee = calculatePricing(this.props.scannedPricing, editedData, this.props.isPricingByWeight);
+    if (deliveryFee !== 0) {
+      this.setState({
+        DeliveryFee: deliveryFee,
+        noPricing: false
+      });
+    } else {
+      this.setState({
+        DeliveryFee: this.state.scannedOrder.OrderCost,
+        noPricing: true
+      })
+    }
+  },
+  componentDidMount() {
+    document.getElementById('packageLength') && document.getElementById('packageLength').focus();
+  },
+  componentWillReceiveProps(nextProps) {
+    nextProps.isEditing && document.getElementById('packageLength') && document.getElementById('packageLength').focus();
+
+    if (nextProps.scannedPricing === 0) {
+      this.setState({noPricing: true});
+    }
+
     if (this.state.scannedOrder.UserOrderID !== nextProps.scannedOrder) {
       this.setState({
-        scannedOrder: nextProps['scannedOrder'],
-        PackageWidth: nextProps['scannedOrder'].PackageWidth,
-        PackageHeight: nextProps['scannedOrder'].PackageHeight,
-        PackageLength: nextProps['scannedOrder'].PackageLength,
-        PackageWeight: nextProps['scannedOrder'].PackageWeight,
-        DeliveryFee: nextProps['scannedOrder'].OrderCost
+        scannedOrder: nextProps.scannedOrder,
+        PackageWidth: nextProps.scannedOrder.PackageWidth || "0",
+        PackageHeight: nextProps.scannedOrder.PackageHeight || "0",
+        PackageLength: nextProps.scannedOrder.PackageLength || "0",
+        PackageWeight: nextProps.scannedOrder.PackageWeight || "0",
+        TotalValue: nextProps.scannedOrder.TotalValue || "0",
+        DeliveryFee: nextProps.scannedOrder.OrderCost || "0",
+        PaymentType: nextProps.scannedOrder.PaymentType,
       });
     }
     this.setState({
-      isSuccessEditing: nextProps['isSuccessEditing']
+      isSuccessEditing: nextProps.isSuccessEditing
     });
+  },
+  componentWillUnmount() {
+    document.getElementById('findOrder') && document.getElementById('findOrder').focus();
   },
   closeModal() {
     this.setState({showModal: false, scannedOrder: {}});    
     this.props.StopEditOrder();
   },
   updateOrder() {
-    let updatedFields = ['PackageLength', 'PackageHeight', 'PackageWidth', 'PackageWeight', 'DeliveryFee'];
+    let updatedFields = ['PackageLength', 'PackageHeight', 'PackageWidth', 'PackageWeight', 'TotalValue', 'PaymentType', 'DeliveryFee'];
     let currentData = lodash.assign({}, this.state);
     let updatedData = {}
     updatedFields.forEach(function(field) {
@@ -106,98 +183,137 @@ const UpdateModal = React.createClass({
   editDelivery() {
     this.setState({
       editDelivery: true
-    })
+    });
+    let timeout = setTimeout(() => {
+      document.getElementById('deliveryFee').focus();
+      clearTimeout(timeout);
+    }, 100);
   },
   saveDelivery() {
-    this.setState({
-      editDelivery: false
-    });
+    this.setState({editDelivery: false});
+  },
+  showNoPricingInfo() {
+    this.setState({showNoPricingInfo: true});
+  },
+  hideNoPricingInfo() {
+    this.setState({showNoPricingInfo: false});
+  },
+  doNothing() {
   },
   render() {
     const scannedOrder = this.state.scannedOrder;
+    const defaultPaymentValues = [{
+      label: 'Wallet',
+      value: 1
+    }, {
+      label: 'COD',
+      value: 2
+    }];
+
     return (
-      <ModalDialog onClose={this.closeModal}>
-        { !this.state.isSuccessEditing &&
-          <div className={updateStyles.modal}>
-            <div className={updateStyles.modalHeader}>
-              <h2 className={updateStyles.modalTitle}>{scannedOrder.UserOrderNumber} ({scannedOrder.WebOrderID})</h2>
-              <div className={updateStyles.modalInfo}>
-                <div style={{float: 'left'}}>
-                  <div className={updateStyles.smallText}>From</div>
-                  <h2 className={updateStyles.bigText}>{scannedOrder.WebstoreName}</h2>
-                </div>
-                <div style={{float: 'right', textAlign: 'right'}}>
-                  <div className={updateStyles.smallText}>Destination Area</div>
-                  <h2 className={updateStyles.bigText}>{scannedOrder.DropoffCity}</h2>
-                </div>
-                <div style={{clear: 'both'}}></div>
-              </div>
-            </div>
-
-            <div className={updateStyles.modalContent1}>
-              <span style={{fontWeight: '800', float: 'left', fontSize: 10, marginLeft: 20, marginTop: -3}}>RE-MEASUREMENT</span>
-              <span style={{fontSize: 10, float: 'right', marginRight: 20}}>Press Enter after you edit the measurement for fast edit</span>
-              <div style={{clear: 'both'}}></div>
-              <InputRow id={'packageLength'} label={'Length (cm)'} icon={'icon-volume'} value={scannedOrder.PackageLength} 
-                type={'text'} onChange={this.stateChange('PackageLength')} onEnterKeyPressed={this.updateOrder} />
-              <InputRow id={'packageWidth'} label={'Width (cm)'} icon={'icon-volume'} value={scannedOrder.PackageWidth} 
-                type={'text'} onChange={this.stateChange('PackageWidth')} onEnterKeyPressed={this.updateOrder} />
-              <InputRow id={'packageHeight'} label={'Height (cm)'} icon={'icon-volume'} value={scannedOrder.PackageHeight} 
-                type={'text'} onChange={this.stateChange('PackageHeight')} onEnterKeyPressed={this.updateOrder} />
-              <InputRow label={'Weight (kg)'} icon={'icon-weight'} value={scannedOrder.PackageWeight} 
-                type={'text'} onChange={this.stateChange('PackageWeight')} onEnterKeyPressed={this.updateOrder} />
-            </div>
-
-            <div className={updateStyles.modalContent2}>
-              <div style={{float: 'left'}}>
-                <div className={updateStyles.smallText}>Volume Weight</div>
-                <h2 className={updateStyles.bigText}>
-                {((this.state.PackageLength * this.state.PackageWidth * this.state.PackageHeight) / 6000).toFixed(1)} kg</h2>
-              </div>
-              <div style={{float: 'right'}}>
-                <div className={updateStyles.smallestText}>
-                  Automatically calculated based on the length, width, and height above</div>
-              </div>
-              <div style={{clear: 'both', height: 20}}></div>
-
-              <div style={{float: 'left'}}>
-                <div className={updateStyles.smallText}>Delivery Fee</div>
-                { !this.state.editDelivery && 
-                  <h2 className={updateStyles.bigText}>Rp. {scannedOrder.OrderCost}</h2>
-                }
-                { this.state.editDelivery &&
-                  <span>
-                    <span className={updateStyles.bigText}>Rp. </span>
-                    <InputWithDefault id={'deliveryFee'} className={updateStyles.input + ' ' + updateStyles.inputWithBorder} currentText={scannedOrder.OrderCost} 
-                      type={'text'} onChange={this.stateChange('DeliveryFee')} onEnterKeyPressed={this.updateOrder} />
-                  </span>
+      <ModalDialog>
+        <button className={styles.closeModalButton} onClick={this.closeModal}>
+          <img src="/img/icon-close.png" className={styles.closeButtonImage}/>
+        </button>
+        <div className={styles.modal}>
+          <div className={styles.modalHeader}>
+            <h2 className={styles.modalTitle}>{scannedOrder.UserOrderNumber} ({scannedOrder.WebOrderID})</h2>
+            <div className={styles.modalInfo}>
+              <div className={styles.orderContentLeft}>
+                <div className={styles.smallText}>From</div>
+                {
+                  scannedOrder.User &&
+                  <h2 className={styles.bigText}>
+                    {scannedOrder.User.FirstName} {scannedOrder.User.LastName}</h2>
                 }
               </div>
-              <div style={{float:'right'}}>
-                { !this.state.editDelivery &&
-                  <button className={updateStyles.normalButton} onClick={this.editDelivery}>EDIT</button>
-                }
-                { this.state.editDelivery &&
-                  <button className={updateStyles.normalButton} onClick={this.saveDelivery}>SAVE</button>
+              <div className={styles.orderContentRight}>
+                <div className={styles.smallText}>Destination Area</div>
+                {
+                  scannedOrder.DropoffAddress &&
+                  <h2 className={styles.bigText}>{scannedOrder.DropoffAddress.City}</h2>
                 }
               </div>
-              <div style={{clear: 'both'}}></div>
+              <div className={styles.clearfix}></div>
             </div>
-            
-            <div className={updateStyles.modalFooter}>
-              <button className={updateStyles.saveButton} onClick={this.updateOrder}>Update</button>
-            </div>
-          </div> 
-        }   
-        { this.state.isSuccessEditing &&
-          <div>
-            <img className={styles.successIcon} src={"/img/icon-success.png"} />
-            <div className={styles.updateSuccess}>
-              Update Order Success
-            </div> 
-            <button className={styles.saveButton} onClick={this.confirmSuccess}>OK</button>
           </div>
-        }
+
+          <div className={styles.modalContent1}>
+            <InputRow id={'packageLength'} label={'Length (cm)'} value={this.state.PackageLength} 
+              type={'text'} onChange={this.stateChangeAndCalculate('PackageLength')} onEnterKeyPressed={this.updateOrder} width={25}/>
+            <InputRow id={'packageWidth'} label={'Width (cm)'} value={this.state.PackageWidth} 
+              type={'text'} onChange={this.stateChangeAndCalculate('PackageWidth')} onEnterKeyPressed={this.updateOrder} width={25} />
+            <InputRow id={'packageHeight'} label={'Height (cm)'} value={this.state.PackageHeight} 
+              type={'text'} onChange={this.stateChangeAndCalculate('PackageHeight')} onEnterKeyPressed={this.updateOrder} width={25} />
+            <InputRow id={'packageWeight'} label={'Weight (kg)'} value={this.state.PackageWeight} 
+              type={'text'} onChange={this.stateChangeAndCalculate('PackageWeight')} onEnterKeyPressed={this.updateOrder} width={25} />
+            <InputRow id={'totalValue'} label={'Package Value (rupiah)'} value={this.state.TotalValue} 
+              type={'text'} onChange={this.stateChange('TotalValue')} onEnterKeyPressed={this.updateOrder} width={50} />
+            <InputRow id={'paymentType'} label={'Payment Type'} value={this.state.PaymentType} selectItems={defaultPaymentValues}
+              type={'select'} onChange={this.stateChange('PaymentType')} width={50} customStyle={styles.customStyle}/>
+          </div>
+
+          <div className={styles.modalContent2}>
+            <div className={styles.orderContentLeft}>
+              <div className={styles.smallText}>Volume Weight</div>
+              <h2 className={styles.bigText}>
+              {((this.state.PackageLength * this.state.PackageWidth * this.state.PackageHeight) / 6000).toFixed(1)} kg</h2>
+            </div>
+            <div className={styles.orderContentRight}>
+              <div className={styles.smallestText}>
+                Automatically calculated based on the length, width, and height above</div>
+            </div>
+            <div className={styles.clearfix + ' ' + styles.emptySpace}></div>
+
+            <div className={styles.orderContentLeft}>
+              { !this.state.noPricing &&
+                <div className={styles.smallText}>Delivery Fee</div>
+              }
+              { this.state.noPricing &&
+                <div className={styles.smallText + ' ' + styles.redText}>
+                  <span onMouseOver={this.showNoPricingInfo} onMouseLeave={this.hideNoPricingInfo}>
+                    Delivery Fee &nbsp;
+                    <FontAwesome name="exclamation-circle" /> &nbsp;
+                  </span>
+                  { this.state.showNoPricingInfo &&
+                    <span className={styles.verySmallText + ' ' + styles.infoText}>
+                      Please manually edit to change the delivery fee.
+                    </span>
+                  }
+                </div>
+              }
+              { !this.state.editDelivery && 
+                <div>
+                  { scannedOrder.OrderCost !== this.state.DeliveryFee &&
+                    <h2 className={styles.bigTextThinStrike}>Rp. {scannedOrder.OrderCost}</h2>                    
+                  }
+                  <h2 className={styles.bigText}>Rp. {this.state.DeliveryFee}</h2>
+                </div>
+              }
+              { this.state.editDelivery &&
+                <span>
+                  <span className={styles.bigText}>Rp. </span>
+                  <InputWithDefault id={'deliveryFee'} className={styles.input + ' ' + styles.inputWithBorder} 
+                    currentText={this.state.DeliveryFee} type={'text'} onChange={this.stateChange('DeliveryFee')} 
+                    handleSelect={this.doNothing} handleEnter={this.saveDelivery} />
+                </span>
+              }
+            </div>
+            <div style={{float:'right'}}>
+              { !this.state.editDelivery &&
+                <button className={styles.normalButton} onClick={this.editDelivery}>EDIT</button>
+              }
+              { this.state.editDelivery &&
+                <button className={styles.normalButton} onClick={this.saveDelivery}>SAVE</button>
+              }
+            </div>
+            <div className={styles.clearfix}></div>
+          </div>
+          
+          <div className={styles.modalFooter}>
+            <button className={styles.saveButton} onClick={this.updateOrder}>Update</button>
+          </div>
+        </div>
       </ModalDialog>
     )
   }
@@ -207,9 +323,11 @@ const UpdateOrdersPage = React.createClass({
   getInitialState() {
     return {
       findOrderQuery: '',
-      showModal: false,
-      scannedOrder: this.props.scannedOrder || {}
+      showModal: false
     }
+  },
+  componentDidMount() {
+    document.getElementById('findOrder') && document.getElementById('findOrder').focus();
   },
   changeFindOrder(val) {
     this.setState({
@@ -226,14 +344,6 @@ const UpdateOrdersPage = React.createClass({
     if ((nextProps['isEditing'])) {
       this.openModal();
     }
-    if (this.state.scannedOrder.UserOrderID !== nextProps.scannedOrder) {
-      this.setState({
-        scannedOrder: nextProps['scannedOrder']
-      });
-    }
-    this.setState({
-      isSuccessEditing: nextProps['isSuccessEditing']
-    });
   },
   openModal() {
     this.setState({
@@ -241,7 +351,7 @@ const UpdateOrdersPage = React.createClass({
     });
   },
   closeModal() {
-    this.setState({showModal: false, scannedOrder: {}});    
+    this.setState({showModal: false});    
     this.props.StopEditOrder();
   },
   render() {
@@ -250,19 +360,18 @@ const UpdateOrdersPage = React.createClass({
       container: styles.verifyInputContainer,
       input: styles.verifyInput
     };
-    const scannedOrder = this.state.scannedOrder;
     return (
       <Page title="Update Orders" count={{itemName: 'Items', done: 'All Done', value: this.props.total}}>
         {
           this.state.showModal && isEditing &&
           <ModalContainer onClose={this.closeModal}>
-            <UpdateModal {...this.props} order={scannedOrder}/>
+            <UpdateModal {...this.props} order={this.props.scannedOrder}/>
           </ModalContainer>
         }
-        <div className={styles.verifyContainer}>
+        <div className={styles.actionContainer}>
           <Input styles={inputVerifyStyles} onChange={this.changeFindOrder} onEnterKeyPressed={this.findOrder} ref="findOrder" 
-            base={{value: this.state.findOrderQuery}} id="findOrder" 
-            placeholder={'Write the web order ID or EDS/AWB here to update it manually....'} />
+            base={{value: this.state.findOrderQuery, placeholder: 'Write the web order ID or EDS/AWB here to update it manually....'}} 
+            id="findOrder" />
           <div onClick={this.submitReceived} className={styles.verifyButton}>Submit</div>
         </div>
         <UpdateOrdersTable />
@@ -272,30 +381,31 @@ const UpdateOrdersPage = React.createClass({
 });
 
 function mapStateToProps (state) {
-  const {updateOrders, orderDetails} = state.app;
+  const {updateOrders} = state.app;
   const userLogged = state.app.userLogged;
-  const {total, isEditing, scannedOrder} = updateOrders;
-  const isSuccessEditing = orderDetails.isSuccessEditing;
+  const {total, isEditing, scannedOrder, isSuccessEditing, scannedPricing, isPricingByWeight} = updateOrders;
 
   return {
     userLogged,
     total,
     isEditing,
     scannedOrder,
-    isSuccessEditing
+    isSuccessEditing,
+    scannedPricing,
+    isPricingByWeight
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     UpdateOrder: function(id, order){
-      dispatch(OrdersDetails.editOrder(id, order, true));
+      dispatch(UpdateOrders.UpdateOrder(id, order, true));
     },
     StopEditOrder: function() {
       dispatch(UpdateOrders.StopEditOrder());
     },
     revertSuccessEditing: function() {
-      dispatch(OrdersDetails.revertSuccessEditing());
+      dispatch(UpdateOrders.RevertSuccessEditing());
     },
     findOrder: function(query) {
       dispatch(UpdateOrders.StartEditOrder(query));

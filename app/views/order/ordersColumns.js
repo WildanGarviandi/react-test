@@ -18,10 +18,10 @@ export const conf = {
   OrderCost: {title: "Order Cost"},
   DeliveryFee: {title: "Delivery Fee"},
   OrderStatus: {filterType: "StatusDropdown", title: "Order Status", cellType: "Status"},
-  PackageHeight: {title: "Package Height", cellType: "String"},
-  PackageLength: {title: "Package Length", cellType: "String"},
-  PackageWeight: {title: "Package Weight", cellType: "String"},
-  PackageWidth: {title: "Package Width", cellType: "String"},
+  PackageHeight: {title: "Package Height"},
+  PackageLength: {title: "Package Length"},
+  PackageWeight: {title: "Package Weight"},
+  PackageWidth: {title: "Package Width"},
   PickupAddress: {filterType: "String", title: "Pickup Address", cellType: "String"},
   PickupCity: {filterType: "String", title: "City", cellType: "String"},
   PickupState: {filterType: "String", title: "State", cellType: "String"},
@@ -42,8 +42,8 @@ export const conf = {
 }
 
 export const pickupOrdersColumns = ["IsChecked", "ID", "WebstoreName", "Weight", "PickupAddress", "PickupCity", "ZipCode", "PickupTime", "OrderStatus"];
+
 export const receivedOrdersColumns = ["IsChecked", "ID", "WebstoreName", "DropoffAddress", "DropoffCity", "DropoffState", "ZipCode", "DueTime", "NextDestination", "SuggestedVendors"];
-export const updateOrdersColumns = ["ID", "PackageLength", "PackageWidth", "PackageHeight", "PackageWeight", "PickupTime"];
 
 export const orderDetailsSummary = ["UserOrderNumber", "WebOrderID", "User", "PickupType", "RouteStatus", "PickupTime", "PickupAddress", "DropoffTime", "DropoffAddress", "DueTime", "NextDestination"];
 export const orderDetailsCost = ["PackageWeight", "PackageLength", "PackageWidth", "PackageHeight", "TotalValue", "IsCOD"];

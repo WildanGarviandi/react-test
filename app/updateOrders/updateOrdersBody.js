@@ -3,23 +3,14 @@ import React from 'react';
 import {push} from 'react-router-redux';
 import {connect} from 'react-redux';
 import {Body} from '../views/base/table';
-import {conf, updateOrdersColumns} from '../views/order/ordersColumns';
+import {conf, updateOrdersColumns} from './updateOrdersColumns';
 import BodyRow, {CheckBoxCell, LinkCell, TextCell, OrderIDLinkCell} from '../views/base/cells';
 import * as UpdateOrders from './updateOrdersService';
 import {formatDate, formatDateHourOnly} from '../helper/time';
 import {CheckboxCell} from '../views/base/tableCell';
-import styles from '../views/base/table.css';
+import tableStyles from '../views/base/table.css';
+import styles from './styles.css';
 import moment from 'moment';
-
-function mapDispatchToCheckBox(dispatch, ownProps) {
-  return {
-    onToggle: function(val) {
-      dispatch(UpdateOrders.ToggleSelectOne(ownProps.item.UserOrderID));
-    }
-  }
-}
-
-const UpdateOrdersCheckBox = connect(undefined, mapDispatchToCheckBox)(CheckboxCell);
 
 function mapDispatchToLink(dispatch, ownParams) {
   return {
@@ -60,8 +51,12 @@ const Interval = React.createClass({
     clearInterval(this.interval);
   },
   render() {
+    let time = this.state.time;
+    if (time < 0) {
+      time *= -1;
+    }
     return (
-      <span>{formatDateHourOnly(this.state.time)}</span>
+      <span>{formatDateHourOnly(time)}</span>
     )
   }
 });
@@ -73,7 +68,7 @@ const UpdateRowClass = React.createClass({
   render() {
     const {idx, cells} = this.props;
     return (
-      <tr className={styles.tr} onClick={this.startEditOrder}>{cells}</tr>
+      <tr className={tableStyles.tr} onClick={this.startEditOrder}>{cells}</tr>
     );
   }
 });
@@ -100,41 +95,6 @@ function BodyComponent(type, keyword, item, index) {
       }
     }
 
-    case "Status": {
-      let color, status, imgUrl;
-
-      if(item["OrderStatus"] === "DELIVERED") {
-        color = "#C33";
-        status = 'VERIFIED';
-        imgUrl = item.IsChecked ? '/img/icon-ready-white.png' : '/img/icon-ready.png';
-      } else if(item["OrderStatus"] !== "DELIVERED") {
-        color = "#000";
-        status = 'NOT VERIVIED';
-        imgUrl = item.IsChecked ? '/img/icon-not-ready-white.png' : '/img/icon-not-ready.png';
-      }
-
-      const imgStyle = {
-        width: 24,
-        height: 24,
-        display: 'inline-block',
-        float: 'left'
-      }
-
-      return (
-        <span style={{display: 'inline-block'}}>
-          <img src={imgUrl} style={imgStyle}/>
-          &nbsp;&nbsp;
-          <span style={{lineHeight: '25px'}}>
-            <TextCell text={status} />
-          </span>
-        </span>
-      );
-    }
-
-    case "Checkbox": {
-      return <UpdateOrdersCheckBox isChecked={item[keyword]} item={item} />
-    }
-
     case "Link": {
       return <UpdateOrdersLink text={item[keyword]} item={item} to={'/orders/' + item.UserOrderID}/>
     }
@@ -143,27 +103,24 @@ function BodyComponent(type, keyword, item, index) {
       return <UpdateOrdersLink eds={item.UserOrderNumber} id={item.WebOrderID} item={item} to={'/orders/' + item.UserOrderID}/>
     }
 
-    case "Datetime": {
+   case "Datetime": {
       switch(keyword) {
-        case "PickupTime": {
-          let color, back;
+        case "Deadline": {
+          const deadline = moment(new Date(item.Deadline));
 
-          // const deadline = moment(moment(new Date(item[keyword])).diff(moment()));
-          // console.log(moment(new Date(item[keyword])).valueOf(), moment().valueOf(), deadline.valueOf());
-          
-          const date = moment(new Date(item[keyword]));
-          const dateTest = date.diff(moment([date.get('year'), date.get('month'), date.get('date'), 0, 0, 0, 0]));
-          const now = moment();
-          const nowTest = now.diff(moment([now.get('year'), now.get('month'), now.get('date'), 0, 0, 0, 0]));
-
-          const deadline = nowTest - dateTest;
-
-          // console.log(dateTest, nowTest, deadline);
-
-          return <Interval startTime={deadline} down={true} />
+          return (
+            <span>
+              { item.DeadlineDiff >= 0 &&
+                <Interval startTime={item[keyword]} down={true} />
+              }
+              { item.DeadlineDiff < 0 &&
+                <TextCell text={deadline.fromNow()} />
+              }
+            </span>
+          )
         }
         default: {
-          return <TextCell text={formatDateHourOnly(item[keyword])} />
+          return <TextCell text={formatDate(item[keyword])} />
         }
       }
     }
@@ -178,17 +135,17 @@ function UpdateOrdersBody({items}) {
   const body = Body(conf, updateOrdersColumns);
 
   const rows = lodash.map(items, (item, idx) => {
+    const deadline = moment(new Date(item.Deadline));
+    const now = moment();
+
+    item.DeadlineDiff = deadline.diff(now);
+
     const cells = lodash.map(body, (column) => {
       const cell = BodyComponent(column.type, column.keyword, item, idx);
-      const className = styles.td + ' ' + styles[column.keyword];
+      const className = tableStyles.td + ' ' + tableStyles[column.keyword]  + ' ' + 
+                        ((item.DeadlineDiff < 0 && column.keyword === 'Deadline') ? styles.redCell : '');
 
-      let style = {};
-      if (item.IsChecked && column.type !== "Checkbox") {
-        style.color = '#fff';
-        style.backgroundColor = '#ff5a60';
-      }
-
-      return <td key={column.keyword} style={style} className={className}>{cell}</td>;
+      return <td key={column.keyword} className={className}>{cell}</td>;
     });
 
     return <UpdateRow key={idx} cells={cells} item={item} />
