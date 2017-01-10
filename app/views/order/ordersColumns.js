@@ -42,7 +42,6 @@ export const conf = {
 }
 
 export const pickupOrdersColumns = ["IsChecked", "ID", "WebstoreName", "Weight", "PickupAddress", "PickupCity", "ZipCode", "PickupTime", "OrderStatus"];
-
 export const receivedOrdersColumns = ["IsChecked", "ID", "WebstoreName", "DropoffAddress", "DropoffCity", "DropoffState", "ZipCode", "DueTime", "NextDestination", "SuggestedVendors"];
 
 export const orderDetailsSummary = ["UserOrderNumber", "WebOrderID", "User", "PickupType", "RouteStatus", "PickupTime", "PickupAddress", "DropoffTime", "DropoffAddress", "DueTime", "NextDestination"];

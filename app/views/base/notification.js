@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { addNotification } from '../../modules/notification/actions';
 import NotificationSystem from 'react-notification-system';
 import NotifActions from '../../modules/notification/actions';
+import lodash from 'lodash';
 
 /**
  * Overriding style
@@ -58,6 +59,10 @@ class NotificationContainer extends Component {
   }
  
   render() {
+    if (this.props.notification.style) {
+      style.NotificationItem.DefaultStyle = lodash.assign(style.NotificationItem.DefaultStyle, this.props.notification.style);
+    }
+
     return (
       <NotificationSystem ref="notificationSystem" style={style} />
     );

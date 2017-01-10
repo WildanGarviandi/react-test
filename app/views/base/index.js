@@ -15,11 +15,11 @@ import baseStyle from './index.css';
 
 const ButtonBase = React.createClass({
   render() {
-    var { children, onClick, styles, type, width } = this.props;
+    var { children, onClick, styles, type, width, onKeyDown } = this.props;
     var btnClass = classNaming(baseStyle.btnBase, styles);
 
     return (
-      <button className={btnClass} onClick={onClick} type={type} style={{width: width}}>{children}</button>
+      <input className={btnClass} onClick={onClick} type="submit" style={{width: width}} value={children} onKeyDown={onKeyDown} />
     );
   }
 });

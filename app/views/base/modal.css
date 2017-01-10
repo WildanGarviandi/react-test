@@ -40,37 +40,49 @@
 
 .modal {
   border-radius: 10px;
-  width: 1000px;
   background-color: #fff;
   position: relative;
-  padding: 20px;
+  padding: 20px 20px 50px;
   left: 0;
   right: 0;
   top: 100px;
   margin: 0 auto;
-  width: 500px;
+  width: 300px;
   margin-bottom: 70px;
+  min-width: 300px;
+  min-height: 100px;
 }
 
 .modalBtn,
 .modalBtnY {
   padding: 8px;
-  display: inline-block;
-  margin-left: 4px;
-  float: right;
+  min-width: 50px;
+  min-width: 100px;
+  height: 100%;
+  font-size: 14px;
+  min-height: 40px;
+  margin: 0 10px;
 }
 
 .modalBtnY {
   background-color: #4cc38e !important;
 }
 
+.modalBtn:focus,
+.modalBtn:hover {
+  background-color: #ff8b8f;
+}
+
+.modalBtnY:focus,
+.modalBtnY:hover {
+  background-color: #81d5af !important;
+}
+
 .closeBtn {
   position: absolute;
-  top: 5px;
-  right: 5px;
+  top: 10px;
+  right: 10px;
   font-size: 16px;
-  border: solid 1px #c33;
-  border-radius: 5px;
   display: inline-block;
   height: 20px;
   line-height: 23px;
@@ -95,4 +107,19 @@
   border: none;
   background: none;
   outline: none;
+}
+
+.btnContainer {
+  clear: both;
+  position: absolute;
+  bottom: 10px;
+  min-height: 40px;
+  display: flex;
+  width: calc(100% - 40px);
+  justify-content: center;
+}
+
+.messageContainer {
+  text-align: center;
+  margin-top: 10px;
 }

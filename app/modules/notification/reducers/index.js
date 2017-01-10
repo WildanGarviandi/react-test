@@ -6,7 +6,8 @@ function reducer (state = {}, action) {
       return Object.assign({}, state, {
         message: action.message,
         level: action.level,
-        position: action.position
+        position: action.position,
+        style: action.style
       });
     case notifAction.REMOVE_NOTIFICATION:
       return Object.assign({}, state, {
