@@ -105,5 +105,3 @@ export function orderToggleAll (active) {
 export function orderToggle (id) {
   return ({type: actionTypes.ORDER_PREPARE_TOGGLE, id: id});
 }
-
-export {orderRemove, orderToggleAll, orderToggle};
