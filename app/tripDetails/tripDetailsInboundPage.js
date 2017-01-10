@@ -256,150 +256,136 @@ const DetailPage = React.createClass({
         {
           !this.props.notFound && !isFetching &&
           <Page title={'Trip Details'} backButton="true">
-            <div className="nb">
-              <h3>#{'Trip-'+ trip.TripID} <span className={styles.orderStatus}>{trip.OrderStatus ? trip.OrderStatus.OrderStatus : ''}</span></h3>
-            </div>
-            <div className={styles.mB30 + ' ' + styles.displayFlex + ' nb'}>
-              <div className={styles.colMd6 + ' ' + styles.noPadding}>
-                <RemarksSetter trip={trip} />
+            <div className={styles.mainDetails}>
+              <div className="nb">
+                <span className={styles.tripID}>#{'TRIP-'+ trip.TripID} 
+                <span className={styles.orderStatus}>{trip.OrderStatus ? trip.OrderStatus.OrderStatus : ''}</span></span>
               </div>
-              <div className={styles.colMd6}>
-                {
-                  trip.PickupTime &&
-                  <p className={styles.title}>PICKUP TIME : {formatDate(trip.PickupTime)}</p>
-                }
-                {
-                  trip.DropoffTime &&
-                  <p className={styles.title}>DROPOFF TIME : {formatDate(trip.DropoffTime)}</p>
-                }
-              </div>
-            </div>
-            <div style={{clear: 'both'}} />
-            <div className={styles.mB30 + " nb"}>
-              <div className="row">
-                <div className={styles.colMd6 + ' ' + styles.noPadding}>
-                  <div className={styles.colMd6}>
-                    <p className={styles.title}>{tripType}</p>
-                    <p><Glyph name={'arrow-right'} className={styles.glyph} /> Inbound, {tripOrigin}</p>
-                  </div>
-                  <div className={styles.colMd6}>
-                    {
-                      haveSet ?
-                      <div>
-                        {
-                          trip.Driver &&
-                          <div>
-                            <p className={styles.title}>Fleet : {companyName}</p>
-                            <p>{driverName}</p>
-                          </div>
-                        }
-                        {
-                          trip.ExternalTrip &&
-                          <p className={styles.title}>3PL : {trip.ExternalTrip.Transportation}</p>
-                        }
-                      </div>
-                      :
-                      <div>
-                        <p className={styles.title}>3PL / Fleet :</p>
-                        <p>No Driver Yet</p>
-                      </div>
-                    }
-                  </div>
+              <div className={styles.mB30 + ' ' + styles.displayFlex + ' nb'}>
+                <div className={styles.colMd6 + ' ' + styles.noPadding + ' ' + styles.margin20}>
+                  <RemarksSetter trip={trip} />
                 </div>
-                <div className={styles.colMd6 + ' ' + styles.noPadding}>
-                  <div className={styles.colMd4 + ' '+ styles.actionButtoninside}>
-                    {
-                      reusable &&
-                      <ButtonWithLoading styles={{base: styles.greenBtn}} textBase={'Clear and Reuse Container'} textLoading={'Clearing Container'} isLoading={emptying.isInProcess} onClick={this.clearContainer} />
-                    }
-                    {
-                      canDeassignDriver &&
-                      <ButtonWithLoading styles={{base: styles.greenBtn}} textBase="Cancel Assignment" textLoading="Deassigning" onClick={this.deassignDriver} isLoading={isDeassigning} />
-                    }
-                    {
-                      (canMarkTripDelivered || canMarkContainer) &&
-                      <ButtonWithLoading styles={{base: styles.greenBtn}} textBase={'Complete Trip'} textLoading={'Clearing Container'} isLoading={false} onClick={this.deliverTrip} />
-                    }
-                  </div>
-                  <div className={styles.colMd4}>
-                    <a href={'/trips/' + trip.TripID + '/manifest#'} className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} target="_blank">Print Manifest</a>
-                  </div>
-                  <div className={styles.colMd4}>
-                    <a onClick={this.exportManifest} className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} target="_blank">Excel Manifest</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div style={{clear: 'both'}} />
-            
-              <div className={styles.infoArea + ' ' + styles.mB30 + " nb"}>
-                <div className={styles.colMd6 + ' ' + styles.noPadding + ' ' + styles.stats}>
-                  <p className={styles.title}>STATS</p>
-                  <div className={styles.colMd4 + ' ' + styles.noPadding}>
-                    <h3>{TotalWeight}<small> Kg</small></h3>
-                    <p>Weight</p>
-                  </div>
-                  <div className={styles.colMd4 + ' ' + styles.noPadding}>
-                    <h3><small>#</small>{orders.length}</h3>
-                    <p>Orders</p>
-                  </div>
-                  <div className={styles.colMd4 + ' ' + styles.noPadding}>
-                    <h3><small>Rp </small>{totalDeliveryFee || 0}</h3>
-                    <p>Delivery Fee</p>
-                  </div>
-                </div>
-                <div className={styles.colMd1}>
-                </div>
-                <div className={styles.colMd5 + ' ' + styles.noPadding + ' ' + styles.cod}>
-                  <p className={styles.title}>COD</p>
-                  <div className={styles.colMd6 + ' ' + styles.noPadding}>
-                    <h3><small>#</small>{CODCount}</h3>
-                    <p>COD Orders</p>
-                  </div>
-                  <div className={styles.colMd6 + ' ' + styles.noPadding}>
-                    <h3><small>Rp </small>{TotalCODValue}</h3>
-                    <p>COD Value</p>
-                  </div>
-                </div>
-              </div>
-            
-            <div className={styles.displayFlex + ' nb'}>
-              <div className={styles.colMd6 + ' ' + styles.noPadding}>
-                <span style={{display: 'block', marginTop: 0, marginBottom: 20}}>
-                  <span style={{display: 'inline-block', verticalAlign: 'middle'}}>
-                    <label className={styles.title}>ORDERS IN THIS TRIP</label>
-                  </span>
+                <div className={styles.colMd6 + ' ' + styles.margin20}>
                   {
-                    fillAble &&
-                    <ButtonWithLoading textBase={'+ Add Order'} onClick={this.goToFillContainer} 
-                      styles={{base: styles.normalBtn + ' ' + styles.addOrderBtn}} />
+                    trip.PickupTime &&
+                    <p className={styles.title}>PICKUP TIME : {formatDate(trip.PickupTime)}</p>
                   }
-                </span>
+                  {
+                    trip.DropoffTime &&
+                    <p className={styles.title}>DROPOFF TIME : {formatDate(trip.DropoffTime)}</p>
+                  }
+                </div>
+              </div>
+              <div style={{clear: 'both'}} />
+              <div className={styles.mB30 + " nb"}>
+                <div className="row">
+                  <div className={styles.colMd6 + ' ' + styles.noPadding}>
+                    <div className={styles.colMd6}>
+                      <p className={styles.title}>{tripType}</p>
+                      <p><Glyph name={'arrow-right'} className={styles.glyph} /> Inbound, {tripOrigin}</p>
+                    </div>
+                    <div className={styles.colMd6}>
+                      {
+                        haveSet ?
+                        <div>
+                          {
+                            trip.Driver &&
+                            <div>
+                              <p className={styles.title}>Fleet : {companyName}</p>
+                              <p>{driverName}</p>
+                            </div>
+                          }
+                          {
+                            trip.ExternalTrip &&
+                            <p className={styles.title}>3PL : {trip.ExternalTrip.Transportation}</p>
+                          }
+                        </div>
+                        :
+                        <div>
+                          <p className={styles.title}>3PL / Fleet :</p>
+                          <p>No Driver Yet</p>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                  <div className={styles.colMd6 + ' ' + styles.noPadding}>
+                    <div className={styles.colMd4 + ' '+ styles.actionButtoninside}>
+                      {
+                        reusable &&
+                        <ButtonWithLoading styles={{base: styles.greenBtn}} textBase={'Clear and Reuse Container'} textLoading={'Clearing Container'} isLoading={emptying.isInProcess} onClick={this.clearContainer} />
+                      }
+                      {
+                        canDeassignDriver &&
+                        <ButtonWithLoading styles={{base: styles.greenBtn}} textBase="Cancel Assignment" textLoading="Deassigning" onClick={this.deassignDriver} isLoading={isDeassigning} />
+                      }
+                      {
+                        (canMarkTripDelivered || canMarkContainer) &&
+                        <ButtonWithLoading styles={{base: styles.greenBtn}} textBase={'Complete Trip'} textLoading={'Clearing Container'} isLoading={false} onClick={this.deliverTrip} />
+                      }
+                    </div>
+                    <div className={styles.colMd4}>
+                      <a href={'/trips/' + trip.TripID + '/manifest#'} className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} target="_blank">Print Manifest</a>
+                    </div>
+                    <div className={styles.colMd4}>
+                      <a onClick={this.exportManifest} className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} target="_blank">Excel Manifest</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div style={{clear: 'both'}} />
+              
+                <div className={styles.infoArea + ' ' + styles.mB30 + " nb"}>
+                  <div className={styles.colMd6 + ' ' + styles.noPadding + ' ' + styles.stats}>
+                    <p className={styles.title}>STATS</p>
+                    <div className={styles.colMd4 + ' ' + styles.noPadding}>
+                      <h3>{TotalWeight}<small> Kg</small></h3>
+                      <p>Weight</p>
+                    </div>
+                    <div className={styles.colMd4 + ' ' + styles.noPadding}>
+                      <h3><small>#</small>{orders.length}</h3>
+                      <p>Orders</p>
+                    </div>
+                    <div className={styles.colMd4 + ' ' + styles.noPadding}>
+                      <h3><small>Rp </small>{totalDeliveryFee || 0}</h3>
+                      <p>Delivery Fee</p>
+                    </div>
+                  </div>
+                  <div className={styles.colMd1}>
+                  </div>
+                  <div className={styles.colMd5 + ' ' + styles.noPadding + ' ' + styles.cod}>
+                    <p className={styles.title}>COD</p>
+                    <div className={styles.colMd6 + ' ' + styles.noPadding}>
+                      <h3><small>#</small>{CODCount}</h3>
+                      <p>COD Orders</p>
+                    </div>
+                    <div className={styles.colMd6 + ' ' + styles.noPadding}>
+                      <h3><small>Rp </small>{TotalCODValue}</h3>
+                      <p>COD Value</p>
+                    </div>
+                  </div>
+                </div>
+              
+              <div className={styles.displayFlex + ' nb'}>
+                <div className={styles.colMd6 + ' ' + styles.noPadding}>
+                  <span style={{display: 'block', marginTop: 0, marginBottom: 20}}>
+                    <span style={{display: 'inline-block', verticalAlign: 'middle'}}>
+                      <label className={styles.title}>ORDERS IN THIS TRIP</label>
+                    </span>
+                    {
+                      fillAble &&
+                      <ButtonWithLoading textBase={'+ Add Order'} onClick={this.goToFillContainer} 
+                        styles={{base: styles.normalBtn + ' ' + styles.addOrderBtn}} />
+                    }
+                  </span>
+                </div>
               </div>
               {
-                orders.length > 0 && canMarkOrderReceived &&
-                <div className={styles.colMd6 + ' ' + styles.noPadding}>
-                  <div className={styles.finderWrapper + ' form-group'}>
-                    <div className={styles.colMd4}>
-                      <label className={styles.formLabel + ' control-label'} onKeyDown={this.jumpTo}>RECEIVED ORDER : </label>
-                    </div>
-                    <div className={styles.colMd8 + ' ' + styles.noPadding}>
-                      <div className={styles.formInput + ' input-group'}>
-                        <Input onChange={this.changeMark} className="form-control" onEnterKeyPressed={this.markReceived} ref="markReceived" base={{value:this.state.orderMarked}} 
-                        id="markReceivedInput" />
-                        <div className={styles.btnAddon + ' input-group-addon'}><a onClick={this.submitReceived} className={styles.submitButton}>Submit</a></div>
-                      </div>
-                    </div>
-                  </div>
+                orders.length > 0 &&
+                <div style={{position: 'relative'}}>
+                  <OrderTable isInbound={true} columns={fillAble ? columns : nonFillColumn} headers={headers} items={orders} statusList={statusList} />
                 </div>
               }
             </div>
-            {
-              orders.length > 0 &&
-              <div style={{position: 'relative'}}>
-                <OrderTable isInbound={true} columns={fillAble ? columns : nonFillColumn} headers={headers} items={orders} statusList={statusList} />
-              </div>
-            }
           </Page>
         }
       </div>

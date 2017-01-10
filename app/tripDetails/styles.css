@@ -132,6 +132,7 @@ p.title {
   font-size: 14px;
   color: #888;
   font-weight: bold;
+  margin-left: 10px;
 }
 
 .formInput {
@@ -208,4 +209,25 @@ p.title {
   background-size: 25px;
   background-position-x: 100%;
   background-position-y: 50%;
+}
+
+.mainDetails {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 4px;
+}
+
+.tripID {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.margin20 {
+  margin-top: 20px;
+}
+
+.submitButton {
+  cursor: pointer;
+  color: #ffffff !important;
+  text-decoration: none !important;
 }

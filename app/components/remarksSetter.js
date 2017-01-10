@@ -6,11 +6,12 @@ import {ButtonBase, ButtonWithLoading} from '../views/base';
 import { TextareaWithDefault } from './form';
 
 import styles from './RemarksSetter.css';
+import * as TripDetails from '../tripDetails/tripDetailsService';
 
 const RemarksSetter = React.createClass({
   getInitialState() {
     return {
-      showEdit: false,
+      showEdit: true,
       edit: {
         remarks: ""
       }
@@ -25,16 +26,6 @@ const RemarksSetter = React.createClass({
   cancelChangingRemarks() {
     this.props.cancelChangingRemarks();
   },
-  showEdit() {
-    this.setState({
-      showEdit: true
-    });
-  },
-  hideEdit() {
-    this.setState({
-      showEdit: false
-    });
-  },
   changeState(key) {
     return (value) => {
       this.setState({
@@ -48,7 +39,7 @@ const RemarksSetter = React.createClass({
     const { isChangingRemarks, trip, isTripEditing } = this.props;
 
     return (
-      <div className={styles.remarksContainer} onMouseLeave={this.hideEdit} onMouseEnter={this.showEdit}>
+      <div className={styles.remarksContainer}>
         <span className={styles.remarksTitle}>Remarks / Notes:</span>
         {
           !isChangingRemarks &&

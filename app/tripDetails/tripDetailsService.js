@@ -733,7 +733,7 @@ export function OrderReceived(scannedID, backElementFocusID, scanUpdateToggle) {
       type: Constants.TRIPS_INBOUND_DETAILS_ORDER_RECEIVED_START,
     });
 
-    FetchPost(`/order/${scannedOrder.UserOrderID}/markdeliver`, token).then((response) => {
+    FetchPost(`/order/${scannedOrder.UserOrderID}/mark-deliver`, token).then((response) => {
       if(!response.ok) {
         return response.json().then(({error}) => {
           throw error;
