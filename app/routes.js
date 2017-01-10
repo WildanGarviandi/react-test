@@ -6,7 +6,7 @@ import App from './views/app';
 import ContainerQRCodePage from './views/container/qrcode';
 import DashboardPage from './views/dashboard';
 import LoginPage from './views/login';
-import OrderDetailsPage from './views/order/orderDetails';
+import OrderDetailsPage from './orderDetails/orderDetails';
 import PickupFillPage from './views/order/pickupFill';
 import PickupOrdersPage from './views/order/pickupOrders';
 import ReceivedFillPage from './views/order/receivedFill';
