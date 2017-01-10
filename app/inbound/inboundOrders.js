@@ -46,7 +46,7 @@ const DuplicateModal = React.createClass({
     return (
       <ModalDialog>
         <button className={styles.closeModalButton} onClick={this.closeModal}>
-          <img src="/img/icon-close.png" className={groupingStyles.closeButtonImage}/>
+          <img src="/img/icon-close.png" className={styles.closeButtonImage}/>
         </button>
         <div className={styles.modal}>
           <div className={styles.modalHeader}>
