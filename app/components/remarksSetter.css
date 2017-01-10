@@ -1,0 +1,53 @@
+.remarksContainer {
+  width: 500px;
+  position: relative;
+}
+
+.remarksTitle {
+  margin-right: 10px;
+}
+
+.remarksContent {
+  margin-top: 5px;
+}
+
+.remarksContent textarea {
+  width: 85%;
+  height: 70px;
+}
+
+.remarksText {
+  margin-right: 10px;
+}
+
+.remarksCancel {
+  background-color: grey;
+  width: 60px;
+  height: 30px;
+  position: absolute;
+  top: 20px;
+  right: 0;
+}
+
+.remarksCancel:hover {
+  background-color: darkgrey;
+}
+
+.remarksSave {
+  margin-left: 286px;
+  width: 60px;
+  height: 30px;
+  position: absolute;
+  top: 60px;
+  right: 0;
+}
+
+.remarksEdit {
+  margin-top: 5px;
+  text-decoration: underline;
+  background-color: transparent;
+}
+
+.remarksEdit:hover {
+  background-color: darkgrey;
+}

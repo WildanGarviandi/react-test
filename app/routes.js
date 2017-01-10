@@ -13,7 +13,7 @@ import ReceivedFillPage from './views/order/receivedFill';
 import ReceivedOrdersPage from './views/order/receivedOrders';
 import MyTripsPage from './views/trips/myTrips';
 import InboundTripsPage from './inboundTrips/inboundTripsPage';
-import TripDetailsPage from './views/trips/tripDetails';
+import TripDetailsPage from './tripDetails/tripDetails';
 import TripManifestPage from './views/trips/tripManifest';
 import MyAssignedTripsPage from './trips/tripPage';
 import MyAssignedTripsDetailPage from './trips/tripDetails';
