@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { addNotification } from '../../modules/notification/actions';
 import NotificationSystem from 'react-notification-system';
 import NotifActions from '../../modules/notification/actions';
+import lodash from 'lodash';
 import Sound from 'react-sound';
 
 /**
@@ -60,6 +61,10 @@ class NotificationContainer extends Component {
  
   render() {
     const { withSound, level } = this.props.notification;
+    
+    if (this.props.notification.style) {
+      style.NotificationItem.DefaultStyle = lodash.assign(style.NotificationItem.DefaultStyle, this.props.notification.style);
+    }
     return (
       <span>
         <NotificationSystem ref="notificationSystem" style={style} />
