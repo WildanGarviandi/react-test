@@ -45,7 +45,7 @@ export function FetchList() {
         const {token} = userLogged;
         
         dispatch({type: modalAction.BACKDROP_SHOW});
-        FetchGet('/fleet/nearbyfleets', token, {}, true).then((response) => {
+        FetchGet('/fleet/nearby-fleets', token, {}, true).then((response) => {
             if(!response.ok) {
                 return response.json().then(({error}) => {
                     throw error;

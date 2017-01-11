@@ -464,11 +464,15 @@ const Fleet = React.createClass({
             <img src={fleet.FleetManagerID === this.props.selectedFleet ? "/img/icon-radio-on.png" : "/img/icon-radio-off.png"} />
           </div>
           <div className={styles.maskName}>
-            <span className={styles.vendorName}>{fleet.CompanyDetail && fleet.CompanyDetail.CompanyName}</span>
+            <span className={styles.vendorName}>
+              {fleet.FleetManager && fleet.FleetManager.CompanyDetail && fleet.FleetManager.CompanyDetail.CompanyName}
+            </span>
           </div>
           <div className={styles.maskLoad}>
             <img className={styles.vendorLoadImage} src="/img/icon-grouping.png" />
-            <span className={styles.vendorLoad}>{fleet.currentLoad}/{fleet.CompanyDetail.OrderVolumeLimit} kg</span>
+            <span className={styles.vendorLoad}>
+              {fleet.CurrentLoad} / {fleet.FleetManager && fleet.FleetManager.CompanyDetail.OrderVolumeLimit} kg
+            </span>
           </div>
         </div>
       );
@@ -597,7 +601,7 @@ const Driver = React.createClass({
             </tr>
             <tr className={styles.driverMaskLoad}>
               <img className={styles.vendorLoadImage} src="/img/icon-location.png" />
-              <span className={styles.vendorLoad}>{driver.DistanceToNearestPickup} km</span>
+              <span className={styles.vendorLoad}>{driver.DistanceToNearestPickup || 'N/A'} km</span>
             </tr>
           </table>
         </div>
