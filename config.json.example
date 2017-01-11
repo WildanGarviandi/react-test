@@ -7,5 +7,13 @@
   "locale": "id",
   "features": {
     "menuTMS": true
-  }
+  },
+  "defaultPaymentValues": [{
+    "label": "Wallet",
+    "value": 1
+  }, {
+    "label": "COD",
+    "value": 2
+  }],
+  "volumetricFactor": 6000
 }

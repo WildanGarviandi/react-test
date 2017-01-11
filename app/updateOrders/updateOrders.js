@@ -9,17 +9,14 @@ import * as UpdateOrders from './updateOrdersService';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import ReactDOM from 'react-dom';
 import FontAwesome from 'react-fontawesome';
+import configEnv from '../../config.json';
 
 function calculatePricing (pricingData, editedData, isPricingByWeight) {
   const {weight = 0, length = 0, height = 0, width = 0} = editedData;
 
   if (isPricingByWeight) {
-    const volumeWeight = (height * length * width) / 6000;
-    if (volumeWeight > weight) {
-      return volumeWeight * pricingData;
-    } else {
-      return weight * pricingData;
-    }
+    const volumeWeight = (height * length * width) / configEnv.volumetricFactor;
+    return (volumeWeight > weight) ? volumeWeight * pricingData : weight * pricingData;
   } else {
     const priceData = pricingData.find((price) => {
       return (weight < price.weight) && (height < price.height) && (length < price.length) && (width < price.width);
@@ -120,17 +117,8 @@ const UpdateModal = React.createClass({
       width: (key === 'PackageWidth') ? parseInt(value) : parseInt(this.state.PackageWidth)
     }
     const deliveryFee = calculatePricing(this.props.scannedPricing, editedData, this.props.isPricingByWeight);
-    if (deliveryFee !== 0) {
-      this.setState({
-        DeliveryFee: deliveryFee,
-        noPricing: false
-      });
-    } else {
-      this.setState({
-        DeliveryFee: this.state.scannedOrder.OrderCost,
-        noPricing: true
-      })
-    }
+    this.setState((deliveryFee !== 0) ? {DeliveryFee: deliveryFee, noPricing: false} : 
+                                        {DeliveryFee: this.state.scannedOrder.OrderCost, noPricing: true});
   },
   componentDidMount() {
     document.getElementById('packageLength') && document.getElementById('packageLength').focus();
@@ -138,9 +126,8 @@ const UpdateModal = React.createClass({
   componentWillReceiveProps(nextProps) {
     nextProps.isEditing && document.getElementById('packageLength') && document.getElementById('packageLength').focus();
 
-    if (nextProps.scannedPricing === 0) {
-      this.setState({noPricing: true});
-    }
+    (nextProps.scannedPricing === 0 || nextProps.scannedPricing.length === 0) ? 
+      this.setState({noPricing: true}) : this.setState({noPricing: false});
 
     if (this.state.scannedOrder.UserOrderID !== nextProps.scannedOrder) {
       this.setState({
@@ -198,17 +185,9 @@ const UpdateModal = React.createClass({
   hideNoPricingInfo() {
     this.setState({showNoPricingInfo: false});
   },
-  doNothing() {
-  },
   render() {
     const scannedOrder = this.state.scannedOrder;
-    const defaultPaymentValues = [{
-      label: 'Wallet',
-      value: 1
-    }, {
-      label: 'COD',
-      value: 2
-    }];
+    const defaultPaymentValues = configEnv.defaultPaymentValues;
 
     return (
       <ModalDialog>
@@ -223,8 +202,7 @@ const UpdateModal = React.createClass({
                 <div className={styles.smallText}>From</div>
                 {
                   scannedOrder.User &&
-                  <h2 className={styles.bigText}>
-                    {scannedOrder.User.FirstName} {scannedOrder.User.LastName}</h2>
+                  <h2 className={styles.bigText}>{scannedOrder.User.FirstName} {scannedOrder.User.LastName}</h2>
                 }
               </div>
               <div className={styles.orderContentRight}>
@@ -257,7 +235,9 @@ const UpdateModal = React.createClass({
             <div className={styles.orderContentLeft}>
               <div className={styles.smallText}>Volume Weight</div>
               <h2 className={styles.bigText}>
-              {((this.state.PackageLength * this.state.PackageWidth * this.state.PackageHeight) / 6000).toFixed(1)} kg</h2>
+                {((this.state.PackageLength * this.state.PackageWidth * this.state.PackageHeight) / 
+                    configEnv.volumetricFactor).toFixed(1)} kg
+              </h2>
             </div>
             <div className={styles.orderContentRight}>
               <div className={styles.smallestText}>
@@ -295,11 +275,11 @@ const UpdateModal = React.createClass({
                   <span className={styles.bigText}>Rp. </span>
                   <InputWithDefault id={'deliveryFee'} className={styles.input + ' ' + styles.inputWithBorder} 
                     currentText={this.state.DeliveryFee} type={'text'} onChange={this.stateChange('DeliveryFee')} 
-                    handleSelect={this.doNothing} handleEnter={this.saveDelivery} />
+                    handleSelect={this.saveDelivery} handleEnter={this.saveDelivery} />
                 </span>
               }
             </div>
-            <div style={{float:'right'}}>
+            <div className={styles.orderContentRight}>
               { !this.state.editDelivery &&
                 <button className={styles.normalButton} onClick={this.editDelivery}>EDIT</button>
               }
