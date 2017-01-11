@@ -272,7 +272,8 @@ const RegisterPage = React.createClass({
   },
   handleSubmit(event) {
     event.preventDefault();
-    if (!this.state.validConfirmPassword || !this.state.validPhoneNumber || !this.state.validEmail) {
+    if (!this.state.validConfirmPassword || !this.state.validPhoneNumber || !this.state.validEmail || 
+    !this.state.cityID || !this.state.stateID || !this.state.countryID) {
       alert ('Please fill all fields with valid value');
       return;
     } else {

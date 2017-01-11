@@ -4,6 +4,7 @@ import fetchPost from '../../fetch/post';
 import fetchGet from '../../fetch/get';
 import lodash from 'lodash';
 import fetch from 'isomorphic-fetch';
+import {modalAction} from '../../modals/constants';
 
 const Constants = {
     BASE: "register/defaultSet/",
@@ -78,10 +79,12 @@ export default function Reducer(store = initialStore, action) {
 export function Register(registerData) {
   return (dispatch) => {
     dispatch({ type: Constants.REGISTER_START });
+    dispatch({type: modalAction.BACKDROP_SHOW});
     fetchPost('/fleet/register', '', registerData).then((response) => {
       if(response.ok) {
         response.json().then((response) => {
           dispatch({ type: Constants.REGISTER_SUCCESS});
+          dispatch({type: modalAction.BACKDROP_SHOW});
           alert('Registration success!');
           dispatch(push('/'));
         });
@@ -93,6 +96,7 @@ export function Register(registerData) {
     }).catch((e) => {
         const message = (e && e.message) ? e.message : "Failed to register";
         dispatch({ type: Constants.REGISTER_FAILED, message: message });
+        dispatch({type: modalAction.BACKDROP_SHOW});
     });
   }
 }
