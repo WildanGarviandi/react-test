@@ -25,6 +25,7 @@ import stateList from './states/stateService';
 import tripsHistory from './tripHistory/service';
 import myDrivers from './drivers/driverService';
 import cityList from './cities/cityService';
+import dashboard from './dashboard/dashboardService';
 
 export default combineReducers({ 
   userLogged: authReducers,
@@ -53,4 +54,5 @@ export default combineReducers({
   tripsHistory,
   myDrivers,
   cityList,
+  dashboard
 });

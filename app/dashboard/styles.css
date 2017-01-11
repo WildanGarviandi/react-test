@@ -1,0 +1,297 @@
+.panel {
+  height: 100%;
+  display: table-row;
+}
+
+.panel > * {
+  display: table-cell;
+}
+
+.content {
+  padding: 20px;
+  padding-left: 260px;
+  background-color: #f1f1f1;
+}
+
+.compact .content {
+  padding-left: 80px;
+}
+
+.menuPanel {
+  background-color: #f1f1f1;
+  width: 240px;
+  height: calc(100% - 60px);
+  position: fixed;
+  top: 0;
+  color: #000;
+  z-index: 0;
+  overflow-y: auto;
+  -webkit-transition: border 0.5s ease-out;
+  -o-transition: border 0.5s ease-out;
+  transition: border 0.5s ease-out;
+}
+
+.compact .menuPanel {
+  width: 60px;
+}
+
+.menuList {
+  width: 100%;
+}
+
+.menuItem {
+  display: block;
+  border-left: solid 8px rgba(0,0,0,0);
+  -webkit-transition: border 0.5s ease-out;
+  -o-transition: border 0.5s ease-out;
+  transition: border 0.5s ease-out;
+
+  height: 54px;
+  line-height: 54px;
+  cursor: pointer;
+
+  text-indent: 35px;
+
+  position: relative;
+  font-family: Helvetica;
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  color: #000000;
+}
+
+.menuItem.active,
+.menuItem:hover, .accWrapper:hover .accItem {
+  border-left: solid 8px #2196f3;
+  background-image: -webkit-linear-gradient(right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.05));
+  background-image: -o-linear-gradient(right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.05));
+  background-image: linear-gradient(to left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.05));
+}
+
+.button {
+  display: block;
+  height: 40px;
+  width: 80%;
+  position: relative;
+  font-size: 14px;
+  text-align: center;
+  margin: 10px auto;
+}
+
+.menuTitle, .compactTitle {
+  white-space: pre-wrap;
+  font-family: Helvetica;
+  font-size: 12px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.67;
+  text-align: center;
+  color: #000;
+
+  padding: 15px 16px 17px;
+  border-radius: 4px;
+  border: solid 1px #ccc;
+  margin: 12px 16px;
+}
+
+.compact .menuTitle {
+  display: none;
+}
+
+.compactTitle {
+  display: none;
+}
+
+.compact .compactTitle {
+  display: block;
+  margin-left: 0;
+}
+
+.scanLabel {
+  font-size: 14px;
+}
+
+.scanInput {
+  display: inline-block;
+  height: 22px;
+  width: 402px;
+}
+
+.scanBtn {
+  float: right;
+  margin-top: 10px;
+  height: 30px;
+  font-size: 14px;
+  width: 80px;
+}
+
+.link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  font-family: Helvetica;
+  font-size: 12px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  color: #000000;
+}
+
+.menuGlyph {
+  position: absolute;
+  top: 50%;
+  margin-top: -8px;
+  left: 5px;
+  font-size: 17px;
+}
+
+.menuGlyph.chevron {
+  left: auto;
+  right: 10px;
+}
+
+.compact .menuItem .menuGlyph.chevron {
+  left: auto;
+  right: 7px;
+}
+
+.compact .menuItem span {
+  display: none;
+}
+
+.compact .menuItem .menuGlyph {
+  left: -18px;
+  display: inline-block;
+}
+
+.compact .accItem .menuGlyph {
+  left: -25px;
+}
+
+.compact .menuAccordion .menuGlyph {
+  left: -18px;
+}
+
+.toggleMenu {
+  position: fixed;
+  bottom: 0;
+  margin: 0 auto;
+  display: block;
+  height: 30px;
+  width: inherit;
+  background-color: #ff5a60;
+  border: none;
+  border-top: solid 1px #222;
+  color: #fff;
+  cursor: pointer;
+  padding: 0;
+}
+
+.toggleMenu:focus {
+  outline: 0;
+}
+
+.glyphBackward {
+  position: relative;
+  left: -4px;
+}
+
+.glyphBackward, .compact .glyphForward {
+  display: inline-block;
+}
+
+.compact .glyphBackward, .glyphForward {
+  display: none;
+}
+
+.logoutBtn {
+  display: block;
+  width: 90%;
+  margin: 10px auto;
+  color: #000;
+}
+
+.menuAccordion {
+  /*background-color: #0E181C;*/
+  background-color: #270e28;
+}
+
+.menuAccordion .menuItem {
+  border-top: solid 1px rgba(66, 63, 62, 1);
+  border-left: none;
+}
+
+.menuAccordion .menuItem.active {
+  background-color: #0E181C;
+}
+
+/*a:focus, a:hover {
+  color: #fff;
+}
+*/
+.menuAccordion .menuItem .link {
+  position: relative;
+}
+
+.menuAccordion .menuItem .link span:last-of-type {
+  position: absolute;
+  left: 35px;
+  text-indent: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  line-height: 16px;
+}
+
+.switchLink {
+  text-align: center;
+  margin-top: 5px;
+  background-color: #ff5a60;
+  cursor: pointer;
+  position: fixed;
+  bottom: 30px;
+  left: 35px;
+  padding: 5px;
+  box-sizing: border-box;
+  border-radius: 5px;
+}
+
+.menuLogo {
+  width: 60px;
+  height: 60px;
+  display: block;
+  margin: 20px auto 0;
+}
+
+.logoutButton {
+  color: #ff5a60;
+  cursor: pointer;
+  position: fixed;
+  bottom: 20px;
+  left: 50px;
+}
+
+.menuLogout {
+  position: absolute;
+  left: -35px;
+  top: -5px;
+}
+
+.counterNumber {
+  font-family: Helvetica;
+  font-size: 16px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  text-align: right;
+  color: #ffffff;  
+  border-radius: 24px;
+  background-color: #2196f3;
+  float: right;
+  line-height: 1.5em;
+  margin-top: 15px;
+  text-indent: 5px;
+  padding-right: 10px;
+  padding-left: 5px;
+}
