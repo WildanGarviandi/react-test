@@ -296,3 +296,12 @@
   background-position-x: 100%;
   background-position-y: 50%;
 }
+
+.datePicker {
+  margin: 0px !important;
+}
+
+.datePicker input {
+  height: 34px;
+  padding: 6px 8px;
+}

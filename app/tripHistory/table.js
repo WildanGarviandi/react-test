@@ -22,7 +22,7 @@ function InputCell({value, onChange, onKeyDown}) {
 
 function FilterDateTimeCell({value, onChange}) {
     return (
-        <DateTime value={value} onChange={onChange} closeOnSelect={true} />
+        <DateTime value={value} type="text" onChange={onChange} closeOnSelect={true} />
     );
 }
 
@@ -301,7 +301,9 @@ function TripHistoryFilters({filters, OnChangeBuilder, OnKeyDown}) {
           </div>
           <div className={styles2.colMd1in7 + ' ' + styles2.filterDropDown}>
             <span>Created Date</span>
-            <CreatedDateDateFilter />
+            <div className={styles2.datePicker}>
+              <CreatedDateDateFilter />
+            </div>
           </div>
           <div className={styles2.colMd1in7 + ' ' + styles2.filterDropDown}>
             <span>Fleet</span>

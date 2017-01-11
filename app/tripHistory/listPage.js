@@ -15,7 +15,7 @@ const LinkComponents = React.createClass({
     render: function() {
         let linkComponents = this.props.message.TripID.map(function(trip) {
             return (
-                <a href={"/history/" + trip} target={"_blank"}>{trip} </a>
+                <a href={"/trips/" + trip} target={"_blank"}>{trip} </a>
             );
         });
         return <div>{linkComponents}</div>;
