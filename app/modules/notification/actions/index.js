@@ -1,11 +1,13 @@
 import {notifAction} from '../constants';
 
-function addNotification (message, level, position) {
+function addNotification (message, level, position, timeout, withSound) {
   return {
     type: notifAction.ADD_NOTIFICATION,
     message,
     level,
-    position
+    position,
+    timeout,
+    withSound
   };
 }
 

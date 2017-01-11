@@ -182,7 +182,7 @@ export function MarkReceived (scannedID) {
 
       response.json().then(({data}) => {
         if (data.duplicate) {
-          dispatch(NotifActions.addNotification(`Order ${scannedID} was found in more than one data`, 'warning', null, 10));
+          dispatch(NotifActions.addNotification(`Order ${scannedID} was found in more than one data`, 'warning', null, 10, true));
 
           dispatch({
             type: Constants.ORDERS_INBOUND_MARK_RECEIVED_SET,
@@ -190,13 +190,13 @@ export function MarkReceived (scannedID) {
             duplicateOrders: data.rows
           });
         } else if (data.Trip) {
-          dispatch(NotifActions.addNotification(`Trip ID ${data.Trip.TripID} was received`, 'info', null, 4));
+          dispatch(NotifActions.addNotification(`Trip ID ${data.Trip.TripID} was received`, 'info', null, 4, true));
 
           dispatch({
             type: Constants.ORDERS_INBOUND_MARK_RECEIVED_SET
           });
         } else {
-          dispatch(NotifActions.addNotification(`Order ${scannedID} was received`, 'success', null, 4));
+          dispatch(NotifActions.addNotification(`Order ${scannedID} was received`, 'success', null, 4, true));
 
           dispatch({
             type: Constants.ORDERS_INBOUND_MARK_RECEIVED_SET
@@ -213,7 +213,7 @@ export function MarkReceived (scannedID) {
       dispatch({type: modalAction.BACKDROP_HIDE});
       dispatch({ type: Constants.ORDERS_INBOUND_MARK_RECEIVED_END });
 
-      dispatch(NotifActions.addNotification(`Order or Trip ${scannedID} was not found on Inbound`, 'error', null, 4));
+      dispatch(NotifActions.addNotification(message, 'error', null, 10, true));
     });
   };
 }
