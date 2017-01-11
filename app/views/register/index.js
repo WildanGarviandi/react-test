@@ -155,6 +155,7 @@ const Register = ({input, handleInputChange, handleSubmit, registerState, countr
    .value();
 
   var callback = function () {
+    
   };
 
   return (
@@ -220,15 +221,9 @@ const RegisterPage = React.createClass({
   },
   componentWillReceiveProps(nextProps) {
     this.setState({
-      validPhoneNumber: nextProps['isPhoneValid']
-    });
-    this.setState({
-      validEmail: nextProps['isEmailValid']
-    });
-    this.setState({
-      validRegistration: nextProps['isSuccess']
-    });
-    this.setState({
+      validPhoneNumber: nextProps['isPhoneValid'],
+      validEmail: nextProps['isEmailValid'],
+      validRegistration: nextProps['isSuccess'],
       invalidMessage: nextProps['messageFailed']
     });
   },
@@ -255,17 +250,15 @@ const RegisterPage = React.createClass({
         this.props.checkEmail(val);
       }
       if (key === 'confirmPassword') { 
+        this.setState({['validConfirmPassword']: false});
         if (val === this.state.password) {
           this.setState({['validConfirmPassword']: true});
-        } else {
-          this.setState({['validConfirmPassword']: false});
         }
       }
       if (key === 'password') { 
+        this.setState({['validConfirmPassword']: false});
         if (val === this.state.confirmPassword) {
           this.setState({['validConfirmPassword']: true});
-        } else {
-          this.setState({['validConfirmPassword']: false});
         }
       }
     };
