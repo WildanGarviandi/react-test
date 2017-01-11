@@ -9,7 +9,7 @@ import * as StateService from '../states/stateService';
 import * as CityService from '../cities/cityService';
 import * as OrderService from '../orders/orderService';
 import * as DashboardService from './dashboardService';
-import * as FleetService from '../../nearbyFleets/nearbyFleetService';
+import * as FleetService from '../nearbyFleets/nearbyFleetService';
 import {Glyph} from '../views/base';
 import Accordion from '../views/base/accordion';
 import styles from './styles.css';
