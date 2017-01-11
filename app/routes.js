@@ -26,6 +26,8 @@ import ManageContactsPage from './contacts/contactManagePage';
 import MyDriverPage from './drivers/driverPage';
 import ManageDriversPage from './drivers/driverManagePage';
 import MyDriverOrdersPage from './drivers/driverOrderPage';
+import MyOutbondTripsPage from './outboundTrips/outboundTripsPage';
+import OutboundTripsManifestPage from './outboundTrips/outboundTripsManifest';
 
 function requireAuth(nextState, replace, callback) {
   checkAuth(store).then(function(result) {
@@ -63,7 +65,7 @@ export default (
         <Route path="/orders/received" component={ReceivedOrdersPage} onEnter={requireHubAuth}/>
         <Route path="/orders/:id" component={OrderDetailsPage} onEnter={requireHubAuth}/>
         <Route path="/trips/inbound" component={MyTripsPage} onEnter={requireHubAuth}/>
-        <Route path="/trips/outbound" component={MyTripsPage} onEnter={requireHubAuth}/>
+        <Route path="/trips/outbound" component={MyOutbondTripsPage} onEnter={requireHubAuth}/>
         <Route path="/trips/:id" component={TripDetailsPage} onEnter={requireHubAuth}/>
         <Route path="/trips/:tripID/fillReceived" component={ReceivedFillPage} onEnter={requireHubAuth}/>
         <Route path="/trips/:tripID/fillPickup" component={PickupFillPage} onEnter={requireHubAuth}/>
@@ -85,7 +87,7 @@ export default (
         <Route path="/mydrivers/edit/:id" component={ManageDriversPage} onEnter={requireAuth} />
         <Route path="/mydrivers/orders/:id" component={MyDriverOrdersPage} onEnter={requireAuth}/>
       </Route>
-      <Route path="/trips/:tripID/manifest" component={TripManifestPage} onEnter={requireAuth} />
+      <Route path="/trips/:tripID/manifest" component={OutboundTripsManifestPage} onEnter={requireAuth} />
       <Route path="/qrcode/:id" component={ContainerQRCodePage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/*" component={LoginPage} />
