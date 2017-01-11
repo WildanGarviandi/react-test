@@ -7,5 +7,6 @@
   "locale": "id",
   "features": {
     "menuTMS": true
-  }
+  },
+  "inboundDeadlineFromCutOffTime": 6
 }
