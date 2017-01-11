@@ -9,13 +9,13 @@ import * as UpdateOrders from './updateOrdersService';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import ReactDOM from 'react-dom';
 import FontAwesome from 'react-fontawesome';
-import configEnv from '../../config.json';
+import config from '../config/configValues.json';
 
 function calculatePricing (pricingData, editedData, isPricingByWeight) {
   const {weight = 0, length = 0, height = 0, width = 0} = editedData;
 
   if (isPricingByWeight) {
-    const volumeWeight = (height * length * width) / configEnv.volumetricFactor;
+    const volumeWeight = (height * length * width) / config.volumetricFactor;
     return (volumeWeight > weight) ? volumeWeight * pricingData : weight * pricingData;
   } else {
     const priceData = pricingData.find((price) => {
@@ -187,7 +187,7 @@ const UpdateModal = React.createClass({
   },
   render() {
     const scannedOrder = this.state.scannedOrder;
-    const defaultPaymentValues = configEnv.defaultPaymentValues;
+    const defaultPaymentValues = config.defaultPaymentValues;
 
     return (
       <ModalDialog>
@@ -236,7 +236,7 @@ const UpdateModal = React.createClass({
               <div className={styles.smallText}>Volume Weight</div>
               <h2 className={styles.bigText}>
                 {((this.state.PackageLength * this.state.PackageWidth * this.state.PackageHeight) / 
-                    configEnv.volumetricFactor).toFixed(1)} kg
+                    config.volumetricFactor).toFixed(1)} kg
               </h2>
             </div>
             <div className={styles.orderContentRight}>

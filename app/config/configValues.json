@@ -9,5 +9,13 @@
         "key": 4, "value": "Big Truck"
     }, {
         "key": 5, "value": "Bicycle"
-    }]
+    }],
+    "defaultPaymentValues": [{
+        "label": "Wallet",
+        "value": 1
+    }, {
+        "label": "COD",
+        "value": 2
+    }],
+    "volumetricFactor": 6000
 }
