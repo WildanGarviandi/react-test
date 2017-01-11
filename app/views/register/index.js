@@ -24,7 +24,11 @@ const BasicInput = (props) => {
   return (
     <div style={{clear: 'both'}}>
       <span className={styles.itemValue}>
-        {props.prefix}
+        { props.prefix &&
+          <div className={styles.prefix}>
+            {props.prefix}
+          </div>
+        }
         <Input {...props} styles={inputStyles} className={inputStyles.input} />
       </span>
     </div>
