@@ -176,7 +176,7 @@ export function StartEditOrder(orderID) {
 
     dispatch({type:modalAction.BACKDROP_SHOW});
 
-    FetchGet('/order/unscanned', token, query)
+    FetchGet('/order/can-be-updated', token, query)
     .then(function(response) {
       return response.json();
     }).then(function({data}) {
