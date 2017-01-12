@@ -565,6 +565,7 @@ export function AssignDriver(tripID, driverID) {
     };
 
     dispatch({ type: Constants.TRIPS_OUTBOUND_DETAILS_DRIVER_START });
+    dispatch({type:modalAction.BACKDROP_SHOW});
     FetchPost(`/trip/${tripID}/driver`, token, body).then((response) => {
       if(!response.ok) {
         return response.json().then(({error}) => {
@@ -578,6 +579,7 @@ export function AssignDriver(tripID, driverID) {
           type: Constants.TRIPS_OUTBOUND_DETAILS_DRIVER_SET,
           driver: data.result,
         });
+        dispatch({type:modalAction.BACKDROP_HIDE});
 
         window.location.reload(false); 
       });
@@ -602,6 +604,8 @@ export function AssignFleet(tripID, fleetManagerID) {
     dispatch({
       type: Constants.TRIPS_OUTBOUND_DETAILS_FLEET_START,
     });
+
+    dispatch({type:modalAction.BACKDROP_SHOW});
 
     if(fleet) {
       FetchDelete(`/trip/${tripID}/fleetmanager`, token, {}, true).then((response) => {
@@ -628,6 +632,7 @@ export function AssignFleet(tripID, fleetManagerID) {
             type: Constants.TRIPS_OUTBOUND_DETAILS_FLEET_SET,
             fleet: data.result,
           });
+          dispatch({type:modalAction.BACKDROP_HIDE});
         });
 
         dispatch(FetchList());
@@ -638,6 +643,7 @@ export function AssignFleet(tripID, fleetManagerID) {
         });
 
         dispatch(ModalActions.addMessage(message));
+        dispatch({type:modalAction.BACKDROP_HIDE});
       });
     } else {
       FetchPost(`/trip/${tripID}/fleetmanager`, token, body, true).then((response) => {
@@ -656,6 +662,8 @@ export function AssignFleet(tripID, fleetManagerID) {
             type: Constants.TRIPS_OUTBOUND_DETAILS_FLEET_SET,
             fleet: data.result,
           });
+
+          dispatch({type:modalAction.BACKDROP_HIDE});
         });
 
         dispatch(FetchList());
@@ -666,6 +674,7 @@ export function AssignFleet(tripID, fleetManagerID) {
         });
 
         dispatch(ModalActions.addMessage(message));
+        dispatch({type:modalAction.BACKDROP_HIDE});
       });
     }
   }
