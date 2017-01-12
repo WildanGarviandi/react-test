@@ -1,7 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {Input, Page} from '../views/base';
-import * as InboundTrips from '../modules/inboundTrips';
 import * as OutboundTripsService from './outboundTripsService';
 import MyTripsTable from './outboundTripsTable';
 import FleetsFetch from '../modules/drivers/actions/fleetsFetch';
@@ -41,13 +40,13 @@ function StateToProps(state, ownProps) {
 function DispatchToPage(dispatch) {
   return {
     gotoContainer: (containerNumber) => {
-      dispatch(InboundTrips.GoToContainer(containerNumber));
+      dispatch(OutboundTripsService.GoToContainer(containerNumber));
     },
     fleetsFetch: () => {
       dispatch(FleetsFetch());
     },
     ResetFilterInbound: () => {
-      dispatch(InboundTrips.ResetFilter());
+      dispatch(OutboundTripsService.ResetFilterInbound());
     },
     ResetFilterOutbound: () => {
       dispatch(OutboundTripsService.ResetFilter());

@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import moment from 'moment';
 import tripManifestStyle from './outboundTripsManifest.css';
-import * as TripDetailsTrue from '../modules/inboundTripDetails';
+import * as OutboundTrips from './outboundTripsService';
 import QRCode from 'qrcode.react';
 
 const TripManifestPage = React.createClass({
@@ -149,8 +149,8 @@ const TripManifestPage = React.createClass({
 });
 
 function StateToProps(store) {
-  const {inboundTripDetails} = store.app;
-  const {isFetching, orders, trip} = inboundTripDetails;
+  const {outboundTripsService} = store.app;
+  const {isFetching, orders, trip} = outboundTripsService;
 
   return {
     isFetching,
@@ -162,7 +162,7 @@ function StateToProps(store) {
 function DispatchToProps(dispatch) {
   return {
     detailsFetch: function(id) {
-      dispatch(TripDetailsTrue.FetchDetails(id));
+      dispatch(OutboundTrips.FetchDetails(id));
     },
   }
 }

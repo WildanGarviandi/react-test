@@ -26,7 +26,7 @@ import ManageContactsPage from './contacts/contactManagePage';
 import MyDriverPage from './drivers/driverPage';
 import ManageDriversPage from './drivers/driverManagePage';
 import MyDriverOrdersPage from './drivers/driverOrderPage';
-import MyOutbondTripsPage from './outboundTrips/outboundTripsPage';
+import MyOutboundTripsPage from './outboundTrips/outboundTripsPage';
 import OutboundTripsManifestPage from './outboundTrips/outboundTripsManifest';
 
 function requireAuth(nextState, replace, callback) {
@@ -65,7 +65,7 @@ export default (
         <Route path="/orders/received" component={ReceivedOrdersPage} onEnter={requireHubAuth}/>
         <Route path="/orders/:id" component={OrderDetailsPage} onEnter={requireHubAuth}/>
         <Route path="/trips/inbound" component={MyTripsPage} onEnter={requireHubAuth}/>
-        <Route path="/trips/outbound" component={MyOutbondTripsPage} onEnter={requireHubAuth}/>
+        <Route path="/trips/outbound" component={MyOutboundTripsPage} onEnter={requireHubAuth}/>
         <Route path="/trips/:id" component={TripDetailsPage} onEnter={requireHubAuth}/>
         <Route path="/trips/:tripID/fillReceived" component={ReceivedFillPage} onEnter={requireHubAuth}/>
         <Route path="/trips/:tripID/fillPickup" component={PickupFillPage} onEnter={requireHubAuth}/>

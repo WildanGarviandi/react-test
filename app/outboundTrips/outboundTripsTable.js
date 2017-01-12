@@ -498,10 +498,10 @@ const FleetInModal = React.createClass({
 
     if (this.props.isFetching) {
       return (
-        <div style={{textAlign:'center'}}>
-          <div style={{fontSize: 20}}>
-            Fetching data....
-          </div>
+        <div className={styles.searchLoadingArea + ' text-center'}>
+          <img src="/img/icon-search-color.png" />
+          <h3>Searching......</h3>
+          <p>We will search for the best vendor suitable for the job, based on their location to the drop off area and zip code</p>
         </div>
       );
     } else {
@@ -661,6 +661,25 @@ function Weight(trip) {
   };
 
   return result;
+}
+
+function DstHub(trip) {
+  if(trip && trip.DestinationHub) {
+    var text = 'Hub -- ' + trip.DestinationHub.Name;
+    
+    return text;
+  }
+
+  return;
+}
+
+function DstDistrict(trip) {
+  if(trip && trip.District) {
+    var text = 'District -- ' + trip.District.Name;
+    return text;
+  }
+
+  return;
 }
 
 function ProcessTrip(trip) {
@@ -832,6 +851,8 @@ const TableStateful = React.createClass({
       driverInModalSelected: this.driverInModalSelected
     }
 
+    const nextDestination = DstHub(trip) || DstDistrict(trip);
+    
     return (
       <div>
         <div style={{opacity: tripsIsFetching ? 0.5 : 1}}>
@@ -873,7 +894,7 @@ const TableStateful = React.createClass({
                     { this.state.isNotLastMile &&
                       <div className={styles.modalInfoNotLastMile}>
                         <small>Since its not a last mile, we suggest that you send this orders to</small>
-                        <p>{trip.nextDestination}</p>
+                        <p>{nextDestination}</p>
                       </div>
                     }
                   </div>
@@ -1114,6 +1135,7 @@ function DispatchToProps(dispatch, ownProps) {
     },
     fetchListOnModal: (tripID) => {
       dispatch(OutboundTrips.FetchListNearbyDrivers(tripID));
+      dispatch(OutboundTrips.FetchDetails(tripID));
       dispatch(OutboundTrips.FetchListNearbyFleets());
     },
     changeFilter: (filters) => {

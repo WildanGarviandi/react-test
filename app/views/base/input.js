@@ -52,7 +52,7 @@ const Input = React.createClass({
     }
   },
   render() {
-    let { base, notes, id, styles = {}, placeholder } = this.props;
+    let { base, notes, id, styles = {} } = this.props;
 
     var classes = classNaming(
       this.props.className,
@@ -62,7 +62,7 @@ const Input = React.createClass({
     return (
       <span className={styles.container}>
         <input {...base} className={classes} onChange={this.handleChange} onKeyDown={this.handleEnterKey} 
-          id={id} placeholder={placeholder} ref={id} />
+          id={id} />
         <span className={styles.notes}>{notes}</span>
       </span>
     );
