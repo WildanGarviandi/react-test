@@ -399,6 +399,8 @@ const Table = React.createClass({
     const {Headers, Body, PaginationActions, isFetching, isFill, isPickup, items, pagination} = this.props;
     const style = isFetching ? {opacity: 0.5} : {};
 
+    console.log(this.props.filters)
+
     let bodyComponents = (
       <td colSpan={8}>
         <div style={{fontSize: 20, textAlign:'center'}}>
@@ -409,24 +411,44 @@ const Table = React.createClass({
 
     if (!isFetching) {
       if (items.length === 0) {
-        bodyComponents = (
-          <tbody className={styles.noOrder}>
-            <tr>
-              <td colSpan={pickupOrdersColumns.length}>
-                <div className={styles.noOrderDesc}>
-                  <img src="/img/image-ok.png" />
-                  <div style={{fontSize: 20}}>
-                    All of the orders are ready to be picked!
+        if (!lodash.isEmpty(this.props.filters)) {          
+          bodyComponents = (
+            <tbody className={styles.noOrder}>
+              <tr>
+                <td colSpan={pickupOrdersColumns.length}>
+                  <div className={styles.noOrderDesc}>
+                    <img src="/img/image-ok.png" />
+                    <div style={{fontSize: 20}}>
+                      Orders not found
+                    </div>
+                    <div style={{fontSize: 12, marginTop: 20}}>
+                      Please choose another filter to get the orders.
+                    </div>
                   </div>
-                  <div style={{fontSize: 12, marginTop: 20}}>
-                    Please open the “Ready to be picked” section to assign all of those orders to your drivers / vendor partners.
+                </td>
+              </tr>
+            </tbody>
+          );
+        } else {
+          bodyComponents = (
+            <tbody className={styles.noOrder}>
+              <tr>
+                <td colSpan={pickupOrdersColumns.length}>
+                  <div className={styles.noOrderDesc}>
+                    <img src="/img/image-ok.png" />
+                    <div style={{fontSize: 20}}>
+                      All of the orders are ready to be picked!
+                    </div>
+                    <div style={{fontSize: 12, marginTop: 20}}>
+                      Please open the “Ready to be picked” section to assign all of those orders to your drivers / vendor partners.
+                    </div>
                   </div>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        );
-      } else {
+                </td>
+              </tr>
+            </tbody>
+          );
+        }
+      } else {        
         bodyComponents = (
           <Body items={items} />
         )
@@ -453,7 +475,7 @@ const Table = React.createClass({
 */
 function mapStateToPickupOrders(state, ownProps) {
   const {pickupOrders} = state.app;
-  const {currentPage, isFetching, isGrouping, limit, orders, selected, total, isMarkingPickup, showModal} = pickupOrders;
+  const {currentPage, isFetching, isGrouping, limit, orders, selected, total, isMarkingPickup, showModal, filters} = pickupOrders;
   const {cities} = state.app.cityList;
   const {fleets} = state.app.nearbyFleets;
   cities.forEach(function(city) {
@@ -474,7 +496,8 @@ function mapStateToPickupOrders(state, ownProps) {
     isPickup: true,
     isFill: ownProps.isFill,
     showModal: showModal,
-    fleets: fleets
+    fleets: fleets,
+    filters: filters
   }
 }
 

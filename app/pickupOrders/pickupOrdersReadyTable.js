@@ -385,26 +385,49 @@ const Table = React.createClass({
       );
     } else {
       if (this.props.items.length === 0) {
-        return (
-          <table className={styles.table}>
-            <thead><tr>{Headers}</tr></thead>
-            <tbody className={styles.noOrder}>
-              <tr>
-                <td colSpan={ColumnsOrder.length}>
-                  <div className={styles.noOrderDesc}>
-                    <img src="/img/image-ok-ready.png" />
-                    <div style={{fontSize: 20}}>
-                      You have assigned all orders!
+        if (!lodash.isEmpty(this.props.filters)) {
+          return (
+            <table className={styles.table}>
+              <thead><tr>{Headers}</tr></thead>
+              <tbody className={styles.noOrder}>
+                <tr>
+                  <td colSpan={ColumnsOrder.length}>
+                    <div className={styles.noOrderDesc}>
+                      <img src="/img/image-ok-ready.png" />
+                      <div style={{fontSize: 20}}>
+                        Orders not found
+                      </div>
+                      <div style={{fontSize: 12, marginTop: 20}}>
+                        Please choose another filter to get the orders.
+                      </div>
                     </div>
-                    <div style={{fontSize: 12, marginTop: 20}}>
-                      Please open the Inbound Menu to see the the pickup status .
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          );
+        } else {
+          return (
+            <table className={styles.table}>
+              <thead><tr>{Headers}</tr></thead>
+              <tbody className={styles.noOrder}>
+                <tr>
+                  <td colSpan={ColumnsOrder.length}>
+                    <div className={styles.noOrderDesc}>
+                      <img src="/img/image-ok-ready.png" />
+                      <div style={{fontSize: 20}}>
+                        You have assigned all orders!
+                      </div>
+                      <div style={{fontSize: 12, marginTop: 20}}>
+                        Please open the Inbound Menu to see the the pickup status .
+                      </div>
                     </div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        );
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          );
+        }
       } else {
         return (
           <table className={styles.table}>
@@ -809,7 +832,7 @@ const TableStateful = React.createClass({
       items: trips,
       toDetails: tripDetails,
       filteringAction, statusProps,
-      filters: this.state,
+      filters: filters,
       isFetching: tripsIsFetching,
       showModals: this.props.showModals
     }
