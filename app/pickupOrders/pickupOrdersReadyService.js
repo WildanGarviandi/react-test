@@ -373,13 +373,13 @@ export function HideDetails() {
   }
 }
 
-export function SplitTrip(id) {
+export function SplitTrip(id, vehicleID) {
   return (dispatch, getState) => {
     const {userLogged} = getState().app;
     const {token} = userLogged;
 
     const query = {
-      vehicleID: config.vehicleType.Motorcycle
+      vehicleID: vehicleID
     }
 
     dispatch({type: modalAction.BACKDROP_SHOW});
