@@ -84,7 +84,7 @@ export function Register(registerData) {
       if(response.ok) {
         response.json().then((response) => {
           dispatch({ type: Constants.REGISTER_SUCCESS});
-          dispatch({type: modalAction.BACKDROP_SHOW});
+          dispatch({type: modalAction.BACKDROP_HIDE});
           alert('Registration success!');
           dispatch(push('/'));
         });
@@ -96,7 +96,7 @@ export function Register(registerData) {
     }).catch((e) => {
         const message = (e && e.message) ? e.message : "Failed to register";
         dispatch({ type: Constants.REGISTER_FAILED, message: message });
-        dispatch({type: modalAction.BACKDROP_SHOW});
+        dispatch({type: modalAction.BACKDROP_HIDE});
     });
   }
 }

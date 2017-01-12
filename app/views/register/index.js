@@ -265,9 +265,32 @@ const RegisterPage = React.createClass({
   },
   handleSubmit(event) {
     event.preventDefault();
-    if (!this.state.validConfirmPassword || !this.state.validPhoneNumber || !this.state.validEmail || 
-    !this.state.cityID || !this.state.stateID || !this.state.countryID) {
-      alert ('Please fill all fields with valid value');
+    let errorMessage = []
+    if (!this.state.validPhoneNumber) {
+      errorMessage.push('Please fill phone number with valid value');
+    } 
+    if (!this.state.validEmail) {
+      errorMessage.push('Please fill email with valid value');
+    } 
+    if (!this.state.countryID) {
+      errorMessage.push('Please fill country');
+    } 
+    if (!this.state.stateID) {
+      errorMessage.push('Please fill state');
+    } 
+    if (!this.state.cityID) {
+      errorMessage.push('Please fill city');
+    } 
+    if (!this.state.validConfirmPassword) {      
+      errorMessage.push('Please match the passwords');
+    } 
+    if (!this.state['g-recaptcha-response']) {
+      errorMessage.push('Please check recaptcha verification');
+    } 
+    if (!this.state.validPhoneNumber || !this.state.validEmail || !this.state.countryID || !this.state.stateID 
+      || !this.state.cityID || !this.state.validConfirmPassword || !this.state['g-recaptcha-response']) {
+      let error = errorMessage.join(', ')
+      this.setState({['invalidMessage']: error});
       return;
     } else {
       this.props.register(this.state);
