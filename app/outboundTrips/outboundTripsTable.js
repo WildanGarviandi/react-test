@@ -17,6 +17,7 @@ import StatusDropdown from '../views/base/statusDropdown';
 import {TripParser} from '../modules/trips';
 import {modalAction} from '../modules/modals/constants';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import dateTimeStyles from '../views/container/datetime.css';
 import stylesModal from '../views/base/modal.css';
 import classnaming from 'classnames';
 
