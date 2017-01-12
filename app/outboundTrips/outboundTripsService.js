@@ -6,6 +6,7 @@ import ModalActions from '../modules/modals/actions';
 import FetchDrivers from '../modules/drivers/actions/driversFetch';
 import {TripParser} from '../modules/trips';
 import OrderStatusSelector from '../modules/orderStatus/selector';
+import {modalAction} from '../modules/modals/constants';
 
 const Constants = {
   TRIPS_OUTBOUND_CURRENTPAGE_SET: "outbound/currentPage/set",
