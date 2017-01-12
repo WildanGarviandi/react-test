@@ -588,6 +588,7 @@ export function AssignDriver(tripID, driverID) {
       const message = (e && e.message) ? e.message : "Failed to set driver";
       dispatch({ type: Constants.TRIPS_OUTBOUND_DETAILS_DRIVER_END });
       dispatch(ModalActions.addMessage(message));
+      dispatch({type:modalAction.BACKDROP_HIDE});
     });
   }
 }

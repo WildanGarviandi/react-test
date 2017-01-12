@@ -799,12 +799,15 @@ const TableStateful = React.createClass({
   },
   driverSet() {
     this.props.DriverSet(this.state.trip.key, this.state.driver.UserID);
+    this.closeModal();
   },
   fleetSet() {
     this.props.FleetSet(this.state.trip.key, this.state.fleet.FleetManagerID);
+    this.closeModal();
   },
   thirdPartyLogisticSave() {
     this.props.ThirdPartyLogisticSave(this.state.trip.key);
+    this.closeModal();
   },
   render() {
     const {filters, paginationAction, paginationState, statusParams, tripDetails, tripsIsFetching} = this.props;
