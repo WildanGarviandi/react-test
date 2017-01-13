@@ -491,7 +491,7 @@ const Fleet = React.createClass({
       let capacity = fleet.FleetManager && fleet.FleetManager.CompanyDetail.OrderVolumeLimit;
       if (fleet.FleetManagerID === this.props.selectedFleet) {
         vendorLoad = styles.vendorLoadSelected;
-        availableLoad = parseInt(availableLoad) + parseInt(this.props.weight);
+        availableLoad = parseInt(availableLoad) + parseInt(this.props.sumOrders);
         rowStyle = styles.vendorInformationSelected;
         selectedFleetName = fleet.FleetManager && fleet.FleetManager.CompanyDetail && fleet.FleetManager.CompanyDetail.CompanyName;
         if (availableLoad > capacity) {
@@ -516,7 +516,7 @@ const Fleet = React.createClass({
           <div className={styles.maskLoad}>
             <img className={styles.vendorLoadImage} src="/img/icon-grouping.png" />
             <span className={vendorLoad}>
-              {availableLoad} / {capacity} kg
+              {availableLoad} / {capacity}
             </span>
           </div>
         </div>
@@ -579,7 +579,7 @@ export const AssignVendor = React.createClass({
         <div className={styles.vendorList}>
           { fleetList.length > 0 &&
             <div>
-              <Fleet chooseFleet={this.chooseFleet} selectedFleet={this.state.selectedFleet} weight={this.props.trip.Weight} />
+              <Fleet chooseFleet={this.chooseFleet} selectedFleet={this.state.selectedFleet} sumOrders={this.props.trip.UserOrderRoutes.length} />
             </div>
           }
           { fleetList.length === 0 &&

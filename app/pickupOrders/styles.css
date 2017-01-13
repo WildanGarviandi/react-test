@@ -482,6 +482,7 @@
   background-color: #ffffff;
   vertical-align: middle;
   height: 72px;
+  cursor: pointer;
 }
 
 .vendorInformationSelected {
@@ -490,6 +491,7 @@
   height: 72px;
   border-radius: 4px;
   border: solid 2px #38b393;
+  cursor: pointer;
 }
 
 .vendorInformationSelectedExceed {
@@ -498,6 +500,7 @@
   height: 72px;
   border-radius: 4px;
   border: solid 2px #ff5a60;
+  cursor: pointer;
 }
 
 .vendorInformationNone {
