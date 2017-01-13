@@ -90,7 +90,7 @@ const UpdateModal = React.createClass({
       PackageLength: this.props.scannedOrder.PackageLength || "0",
       PackageWeight: this.props.scannedOrder.PackageWeight || "0",
       TotalValue: this.props.scannedOrder.TotalValue || "0",
-      PaymentType: this.props.scannedOrder.PaymentType,
+      IsCOD: this.props.scannedOrder.IsCOD,
       DeliveryFee: this.props.scannedOrder.OrderCost || "0",
       editDelivery: false,
       noPricing: false
@@ -138,7 +138,7 @@ const UpdateModal = React.createClass({
         PackageWeight: nextProps.scannedOrder.PackageWeight || "0",
         TotalValue: nextProps.scannedOrder.TotalValue || "0",
         DeliveryFee: nextProps.scannedOrder.OrderCost || "0",
-        PaymentType: nextProps.scannedOrder.PaymentType,
+        IsCOD: nextProps.scannedOrder.IsCOD,
       });
     }
     this.setState({
@@ -153,7 +153,7 @@ const UpdateModal = React.createClass({
     this.props.StopEditOrder();
   },
   updateOrder() {
-    let updatedFields = ['PackageLength', 'PackageHeight', 'PackageWidth', 'PackageWeight', 'TotalValue', 'PaymentType', 'DeliveryFee'];
+    let updatedFields = ['PackageLength', 'PackageHeight', 'PackageWidth', 'PackageWeight', 'TotalValue', 'IsCOD', 'DeliveryFee'];
     let currentData = lodash.assign({}, this.state);
     let updatedData = {}
     updatedFields.forEach(function(field) {
@@ -187,7 +187,7 @@ const UpdateModal = React.createClass({
   },
   render() {
     const scannedOrder = this.state.scannedOrder;
-    const defaultPaymentValues = config.defaultPaymentValues;
+    const defaultCODValues = config.defaultCODValues;
 
     return (
       <ModalDialog>
@@ -227,8 +227,8 @@ const UpdateModal = React.createClass({
               type={'text'} onChange={this.stateChangeAndCalculate('PackageWeight')} onEnterKeyPressed={this.updateOrder} width={25} />
             <InputRow id={'totalValue'} label={'Package Value (rupiah)'} value={this.state.TotalValue} 
               type={'text'} onChange={this.stateChange('TotalValue')} onEnterKeyPressed={this.updateOrder} width={50} />
-            <InputRow id={'paymentType'} label={'Payment Type'} value={this.state.PaymentType} selectItems={defaultPaymentValues}
-              type={'select'} onChange={this.stateChange('PaymentType')} width={50} customStyle={styles.customStyle}/>
+            <InputRow id={'isCOD'} label={'Is COD'} value={this.state.IsCOD} selectItems={defaultCODValues}
+              type={'select'} onChange={this.stateChange('IsCOD')} width={50} customStyle={styles.customStyle}/>
           </div>
 
           <div className={styles.modalContent2}>

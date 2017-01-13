@@ -10,12 +10,12 @@
     }, {
         "key": 5, "value": "Bicycle"
     }],
-    "defaultPaymentValues": [{
-        "label": "Wallet",
-        "value": 1
-    }, {
+    "defaultCODValues": [{
         "label": "COD",
-        "value": 2
+        "value": true
+    }, {
+        "label": "Non COD",
+        "value": false
     }],
     "volumetricFactor": 6000
 }
