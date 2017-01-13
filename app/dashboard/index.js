@@ -65,32 +65,32 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
             <MenuItem active={activeMenuIdx == 0} to={'/orders/pickup'}>
               <img src="/img/icon-pickup-orders.png" className={styles.menuGlyph} />
               <span>Pickup Orders </span>
-              <span className={styles.counterNumber}>{count.pickup}</span>
+              <span className={styles.counterNumber}>{count && count.pickup}</span>
             </MenuItem>
             <MenuItem active={activeMenuIdx == 1} to={'/trips/inbound'}>
               <img src="/img/icon-inbound-trip.png" className={styles.menuGlyph} />
               <span>Inbound Trip </span>
-              <span className={styles.counterNumber}>{count.inboundTrip}</span>
+              <span className={styles.counterNumber}>{count && count.inboundTrip}</span>
             </MenuItem>
             <MenuItem active={activeMenuIdx == 2} to={'/inbound'}>
               <img src="/img/icon-inbound.png" className={styles.menuGlyph} />
               <span>Inbound </span>
-              <span className={styles.counterNumber}>{count.unscannedOrders}</span>
+              <span className={styles.counterNumber}>{count && count.unscannedOrders}</span>
             </MenuItem>
             <MenuItem active={activeMenuIdx == 3} to={'/orders/update'}>
               <img src="/img/icon-update-order.png" className={styles.menuGlyph} />
               <span>Update Order </span>
-              <span className={styles.counterNumber}>{count.updateOrders}</span>
+              <span className={styles.counterNumber}>{count && count.updateOrders}</span>
             </MenuItem>
             <MenuItem active={activeMenuIdx == 4} to={'/grouping'}>
               <img src="/img/icon-grouping.png" className={styles.menuGlyph} />
               <span>Grouping </span>
-              <span className={styles.counterNumber}>{count.receivedOrders}</span>
+              <span className={styles.counterNumber}>{count && count.receivedOrders}</span>
             </MenuItem>
             <MenuItem active={activeMenuIdx == 5} to={'/trips/outbound'}>
               <img src="/img/icon-outbound.png" className={styles.menuGlyph} />
               <span>Outbound Trips </span>
-              <span className={styles.counterNumber}>{count.outboundTrip}</span>
+              <span className={styles.counterNumber}>{count && count.outboundTrip}</span>
             </MenuItem>
             <MenuItem active={activeMenuIdx == 6} to={'/history'}>
               <img src="/img/icon-trip-history.png" className={styles.menuGlyph} />
