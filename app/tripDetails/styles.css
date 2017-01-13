@@ -162,6 +162,10 @@ p.title {
 
 .greenBtn {
   background-color: #38b393 !important;
+  border: 0;
+  border-radius: 4px;
+  padding: 10px;
+  color: #fff !important;
 }
 
 .filterDropDown span {

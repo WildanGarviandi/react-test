@@ -377,14 +377,6 @@ export const AssignDriver = React.createClass({
 const DetailPage = React.createClass({
   getInitialState() {
     return {
-      driver: '', 
-      district: {
-        isChanging: false,
-      },
-      orderMarked: "",
-      scanUpdateToggle: false,
-      scannedOrder: this.props.scannedOrder || {},
-      isSuccessEditing: false,
       showVendor: true,
       showDriver: false
     };
@@ -404,9 +396,6 @@ const DetailPage = React.createClass({
   closeModal() {
     this.props.hideAssignModal();
   },
-  changeToggle() {
-    this.setState({scanUpdateToggle: !this.state.scanUpdateToggle});    
-  },
   clearContainer() {
     if(confirm('Are you sure you want to empty and reuse this container?')) {
       this.setState({showModal: true});
@@ -415,60 +404,19 @@ const DetailPage = React.createClass({
   },
   componentWillMount() {
     this.props.fetchStatusList();
-    this.props.StopEditOrder();
     this.props.FetchFleetList();
-  },
-  goToFillContainer() {
-    const {trip} = this.props;
-    this.props.goToFillContainer(trip.TripID);
-  },
-  pickDriver(val) {
-    const driver = _.find(this.props.drivers, (driver) => (val == PrepareDriver(driver.Driver)));
-    this.setState({driverID: driver.Driver.UserID, driver: val});
-  },
-  finalizeDriver() {
-    this.props.driverPick(this.props.container.ContainerID,this.state.driverID);
   },
   deassignDriver() {
     if(confirm('Are you sure you want to deassign driver on this container?')) {
       this.props.driverDeassign();
     }
   },
-  changeMark(val) {
-    this.setState({
-      orderMarked: val,
-    })
-  },
-  markReceived(val) {
-    this.props.markReceived(val, "markReceivedInput", this.state.scanUpdateToggle);
-    this.setState({
-      orderMarked: "",
-    });
-  },
-  submitReceived() {
-    this.props.markReceived(this.state.orderMarked, null, this.state.scanUpdateToggle);
-    this.setState({
-      orderMarked: "",
-    });
-  },
-  componentWillReceiveProps(nextProps) {
-    if ((nextProps['isEditing'])) {
-      this.openModal();
-      if (document.getElementById('packageVolume')) {
-        document.getElementById('packageVolume').focus();
-      }
-    }
-    if (this.state.scannedOrder.UserOrderID !== nextProps.scannedOrder) {
-      this.setState({
-        scannedOrder: nextProps['scannedOrder'],
-      });
-    }
-    this.setState({
-      isSuccessEditing: nextProps['isSuccessEditing'],
-    });
-  },
   exportManifest() {
     this.props.exportManifest();
+  },
+  goToFillContainer() {
+    const {trip} = this.props;
+    this.props.goToFillContainer(trip.TripID);
   },
   deliverTrip() {
     if(this.props.canMarkTripDelivered) {
@@ -502,20 +450,31 @@ const DetailPage = React.createClass({
       this.setState({[key]: value});
     };
   },
-  updateOrder() {
-    let updatedFields = ['PackageVolume', 'PackageWeight', 'DeliveryFee']
-    let currentData = lodash.assign({}, this.state);
-    let updatedData = {}
-    updatedFields.forEach(function(field) {
-      if (typeof currentData[field] !== 'undefined') {
-        updatedData[field] = parseInt(currentData[field]);
+  assignDriver() {
+    if (!selectedDriver) {
+      alert('Please select driver first');
+      return;
+    }
+    if (isDriverExceed) {
+      if (confirm('Are you sure you want to assign ' + this.props.trip.Weight + ' kg to ' + selectedDriverName + '?')) {
+        this.props.DriverSet(this.props.trip.TripID, selectedDriver);
       } 
-    });
-    this.props.UpdateOrder(this.props.scannedOrder.UserOrderID, updatedData);
+    } else {
+      this.props.DriverSet(this.props.trip.TripID, selectedDriver);
+    }
   },
-  confirmSuccess() {
-    this.closeModal();
-    this.props.revertSuccessEditing();
+  assignFleet() {
+    if (!selectedFleet) {
+      alert('Please select fleet first');
+      return;
+    }
+    if (isFleetExceed) {
+      if (confirm('Are you sure you want to assign ' + this.props.trip.Weight + ' kg to ' + selectedFleetName + '?')) {
+        this.props.FleetSet(this.props.trip.TripID, selectedFleet);
+      } 
+    } else {
+      this.props.FleetSet(this.props.trip.TripID, selectedFleet);
+    }
   },
   render() {
     const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, fillAble, hasDriver, isFetching, isInbound, orders, reusable, statusList, TotalCODValue, CODCount, totalDeliveryFee, trip, TotalWeight} = this.props;
@@ -886,6 +845,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     FetchFleetList: function() {
       dispatch(TripDetails.FetchFleetList());
+    },
+    DriverSet(tripID, driverID) {
+      dispatch(TripDetails.AssignDriver(tripID, driverID));
+    },
+    FleetSet(tripID, fleetID) {
+      dispatch(TripDetails.AssignFleet(tripID, fleetID));
     },
   };
 };

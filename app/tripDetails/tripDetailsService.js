@@ -401,54 +401,6 @@ export function Reducer(state = initialState, action) {
 // Actions
 //
 
-export function ChangeFleetEnd() {
-  return ({
-    type: Constants.TRIPS_INBOUND_DETAILS_FLEET_CHANGED,
-  });
-}
-
-export function ChangeFleetStart() {
-  return ({
-    type: Constants.TRIPS_INBOUND_DETAILS_FLEET_CHANGING,
-  });
-}
-
-export function DeassignFleet(tripID) {
-  return (dispatch, getState) => {
-    const {tripDetails, userLogged} = getState().app;
-    const {token} = userLogged;
-    const {fleet} = tripDetails;
-
-    dispatch({
-      type: Constants.TRIPS_INBOUND_DETAILS_DEASSIGN_START,
-    });
-
-    return FetchDelete(`/trip/${tripID}/fleetmanager`, token, {}, true).then((response) => {
-      if(!response.ok) {
-        return response.json().then(({error}) => {
-          throw error;
-        });
-      }
-
-      dispatch({
-        type: Constants.TRIPS_INBOUND_DETAILS_FLEET_SET,
-        fleet: null,
-      });
-
-      dispatch({
-        type: Constants.TRIPS_INBOUND_DETAILS_DEASSIGN_END,
-      });
-    }).catch((e) => {
-      const message = (e && e.message) ? e.message : "Failed to deassign fleet";
-      dispatch({
-        type: Constants.TRIPS_INBOUND_DETAILS_DEASSIGN_END,
-      });
-
-      dispatch(ModalActions.addMessage(message));
-    });
-  }
-}
-
 export function Deassign(tripID) {
   return (dispatch, getState) => {
     const {userLogged} = getState().app;
@@ -494,124 +446,6 @@ export function Deassign(tripID) {
         type: Constants.TRIPS_INBOUND_DETAILS_DEASSIGN_END,
       });
 
-      dispatch(ModalActions.addMessage(message));
-    });
-  }
-}
-
-export function AssignFleet(tripID, fleetManagerID) {
-  return (dispatch, getState) => {
-    const {tripDetails, userLogged} = getState().app;
-    const {token} = userLogged;
-    const {fleet} = tripDetails;
-
-    const body = {
-      fleetManagerID: fleetManagerID,
-    };
-
-    dispatch({
-      type: Constants.TRIPS_INBOUND_DETAILS_FLEET_START,
-    });
-
-    if(fleet) {
-      FetchDelete(`/trip/${tripID}/fleetmanager`, token, {}, true).then((response) => {
-        if(!response.ok) {
-          return response.json().then(({error}) => {
-            throw error;
-          });
-        }
-
-        return FetchPost(`/trip/${tripID}/fleetmanager`, token, body, true);
-      }).then((response) => {
-        if(!response.ok) {
-          return response.json().then(({error}) => {
-            throw error;
-          });
-        }
-
-        response.json().then(({data}) => {
-          dispatch({
-            type: Constants.TRIPS_INBOUND_DETAILS_FLEET_END,
-          });
-
-          dispatch({
-            type: Constants.TRIPS_INBOUND_DETAILS_FLEET_SET,
-            fleet: data.result,
-          });
-
-          dispatch(FetchDrivers(data.result.UserID));
-          dispatch(ChangeFleetEnd());
-        });
-      }).catch((e) => {
-        const message = (e && e.message) ? e.message : "Failed to assign fleet";
-        dispatch({
-          type: Constants.TRIPS_INBOUND_DETAILS_FLEET_END,
-        });
-
-        dispatch(ModalActions.addMessage(message));
-      });
-    } else {
-      FetchPost(`/trip/${tripID}/fleetmanager`, token, body, true).then((response) => {
-        if(!response.ok) {
-          return response.json().then(({error}) => {
-            throw error;
-          });
-        }
-
-        response.json().then(({data}) => {
-          dispatch({
-            type: Constants.TRIPS_INBOUND_DETAILS_FLEET_END,
-          });
-
-          dispatch({
-            type: Constants.TRIPS_INBOUND_DETAILS_FLEET_SET,
-            fleet: data.result,
-          });
-
-          dispatch(FetchDrivers(data.result.UserID));
-          dispatch(ChangeFleetEnd());
-        });
-      }).catch((e) => {
-        const message = (e && e.message) ? e.message : "Failed to assign fleet";
-        dispatch({
-          type: Constants.TRIPS_INBOUND_DETAILS_FLEET_END,
-        });
-
-        dispatch(ModalActions.addMessage(message));
-      });
-    }
-  }
-}
-
-export function AssignDriver(tripID, driverID) {
-  return (dispatch, getState) => {
-    const {userLogged} = getState().app;
-    const {token} = userLogged;
-
-    const body = {
-      DriverID: driverID,
-    };
-
-    dispatch({ type: Constants.TRIPS_INBOUND_DETAILS_DRIVER_START });
-    FetchPost(`/trip/${tripID}/driver`, token, body).then((response) => {
-      if(!response.ok) {
-        return response.json().then(({error}) => {
-          throw error;
-        });
-      }
-
-      dispatch({ type: Constants.TRIPS_INBOUND_DETAILS_DRIVER_END });
-      response.json().then(({data}) => {
-        dispatch({
-          type: Constants.TRIPS_INBOUND_DETAILS_DRIVER_SET,
-          driver: data.result,
-        });
-
-        window.location.reload(false); 
-      });
-    }).catch((e) => {
-      const message = (e && e.message) ? e.message : "Failed to set driver";
-      dispatch({ type: Constants.TRIPS_INBOUND_DETAILS_DRIVER_END });
       dispatch(ModalActions.addMessage(message));
     });
   }
@@ -742,72 +576,6 @@ export function OrderRemove(tripID, orderID) {
       });
 
       dispatch(ModalActions.addMessage(message));
-    });
-  }
-}
-
-export function OrderReceived(scannedID, backElementFocusID, scanUpdateToggle) {
-  return (dispatch, getState) => {
-    const {tripDetails, userLogged} = getState().app;
-    const {token} = userLogged;
-    const {orders} = tripDetails;
-
-    const allowedRouteStatus = ['BOOKED', 'PICKUP', 'ACCEPTED', 'IN-TRANSIT'];
-    const scannedOrder = lodash.find(orders, (order) => {
-      return order.OrderStatus.OrderStatusID !== 5 &&
-        (order.UserOrderNumber === scannedID || order.WebOrderID === scannedID);
-    });
-
-    if(!scannedOrder) {
-      dispatch(ModalActions.addMessage(`Order ${scannedID} was not found`, backElementFocusID));
-      dispatch({
-        type: Constants.TRIPS_INBOUND_DETAILS_END_EDIT_ORDER,
-      });
-      return;
-    }
-    
-    if (allowedRouteStatus.indexOf(scannedOrder.Status) === -1) {
-      dispatch(ModalActions.addMessage('Only allow route statuses: ' + allowedRouteStatus.join(', '), 
-        backElementFocusID));
-      dispatch({
-        type: Constants.TRIPS_INBOUND_DETAILS_END_EDIT_ORDER,
-      });
-      return;
-    }
-
-    dispatch({type: modalAction.BACKDROP_SHOW});
-    dispatch({
-      type: Constants.TRIPS_INBOUND_DETAILS_ORDER_RECEIVED_START,
-    });
-
-    FetchPost(`/order/${scannedOrder.UserOrderID}/mark-deliver`, token).then((response) => {
-      if(!response.ok) {
-        return response.json().then(({error}) => {
-          throw error;
-        });
-      }
-
-      dispatch({type: modalAction.BACKDROP_HIDE});
-      dispatch({ type: Constants.TRIPS_INBOUND_DETAILS_ORDER_RECEIVED_END });
-      dispatch(NotifActions.addNotification(`Order ${scannedID} has been received`, 'success'));
-      dispatch({
-        type: Constants.TRIPS_INBOUND_DETAILS_ORDER_RECEIVED_SET,
-        orderID: scannedOrder.UserOrderID,
-      });
-      if (scanUpdateToggle) {
-        dispatch({
-          type: Constants.TRIPS_INBOUND_DETAILS_START_EDIT_ORDER,
-          scannedOrder: scannedOrder
-        });
-      }
-    }).catch((e) => {
-      const message = (e && e.message) ? e.message : "Failed to mark order as received";
-      dispatch({type: modalAction.BACKDROP_HIDE});
-      dispatch({ type: Constants.TRIPS_INBOUND_DETAILS_ORDER_RECEIVED_END });
-      dispatch(ModalActions.addMessage(message, backElementFocusID));
-      dispatch({
-        type: Constants.TRIPS_INBOUND_DETAILS_END_EDIT_ORDER,
-      });
     });
   }
 }
@@ -1064,27 +832,6 @@ export function ExportManifest(tripID) {
     }
 }
 
-export function StartEditOrder(orderID) {
-  return (dispatch, getState) => {
-    const {userLogged} = getState().app;
-    const {token} = userLogged;
-    dispatch({type:modalAction.BACKDROP_SHOW});
-    FetchGet('/order/' + orderID, token).then(function(response) {
-      response.json().then(function({data}) {
-        dispatch({type:modalAction.BACKDROP_HIDE});
-        dispatch({
-          type: Constants.TRIPS_INBOUND_DETAILS_START_EDIT_ORDER,
-          scannedOrder: data
-        });
-      });
-    });
-  }
-}
-
-export function StopEditOrder() {
-  return {type: Constants.TRIPS_INBOUND_DETAILS_END_EDIT_ORDER};
-}
-
 export function EditTrip (tripID, editData) {
   return (dispatch, getState) => {
     const { userLogged } = getState().app;
@@ -1137,86 +884,6 @@ export function CancelChangingRemarks () {
       type: Constants.TRIPS_INBOUND_DETAILS_REMARKS_CHANGED
     });
   };
-}
-
-export const startEditing = () => {
-  return {type: Constants.EDIT_ORDER_START};
-}
-
-export const endEditing = () => {
-  return {type: Constants.EDIT_ORDER_END};
-}
-
-export const revertSuccessEditing = () => {
-  return {type: Constants.REVERT_SUCCESS_EDITING};
-}
-
-export const editOrder = (id, order, fromInbound) => {
-  return (dispatch, getState) => {
-    const {userLogged, orderDetails} = getState().app;
-    const {token} = userLogged;
-
-    const postBody = {
-      UpdateData: order,
-    }
-
-    dispatch({ type: Constants.UPDATE_ORDERS_START });
-    dispatch({ type: modalAction.BACKDROP_SHOW });
-    fetchPost('/order/' + id, token, postBody).then((response) => {
-      if(response.ok) {
-        response.json().then(function({data}) {
-          dispatch({
-            type: Constants.DETAILS_SET,
-            order: lodash.assign({}, orderDetails.order, order),
-          });
-          dispatch({ type: Constants.UPDATE_ORDERS_END });
-          dispatch({ type: Constants.EDIT_ORDER_END });
-          dispatch({ type: modalAction.BACKDROP_HIDE });
-        });
-        if (fromInbound) {
-          dispatch({ type: Constants.SUCCESS_EDITING });
-        }
-      } else {
-        dispatch({ type: Constants.UPDATE_ORDERS_END });
-        dispatch({ type: modalAction.BACKDROP_HIDE });
-        response.json().then(({error}) => {
-          dispatch(ModalActions.addMessage('Failed to edit order details. ' + error.message));
-        });
-      }
-    }).catch(() => { 
-      dispatch({ type: Constants.UPDATE_ORDERS_END });
-      dispatch({ type: modalAction.BACKDROP_HIDE });
-      dispatch(ModalActions.addMessage('Network error'));
-    });
-  }
-}
-
-export const fetchDetailsOrder = (id) => {
-  return (dispatch, getState) => {
-    const {userLogged} = getState().app;
-    const {token} = userLogged;
-
-    dispatch({ type: Constants.DETAILS_FETCH_START });
-    fetchGet('/order/' + id, token).then(function(response) {
-      if(!response.ok) {
-        return response.json().then(({error}) => {
-          throw error;
-        });
-      }
-
-      response.json().then(function({data}) {
-        dispatch({
-          type: Constants.DETAILS_SET,
-          order: OrderParser(data),
-        });
-        dispatch({ type: Constants.DETAILS_FETCH_END });
-      });
-    }).catch((e) => {
-      const message = (e && e.message) ? e.message : "Failed to fetch order details";
-      dispatch({ type: Constants.DETAILS_FETCH_END });
-      dispatch(ModalActions.addMessage(message));
-    });
-  }
 }
 
 export function ShowAssignModal(tripID) {
@@ -1288,6 +955,90 @@ export function FetchDriverList() {
     }).catch((e) => {
       dispatch({type: Constants.SET_DRIVER_FETCH_END});
       dispatch(ModalActions.addMessage(e.message));
+    });
+  }
+}
+
+export function AssignFleet(tripID, fleetManagerID) {
+  return (dispatch, getState) => {
+    const {tripDetails, userLogged} = getState().app;
+    const {token} = userLogged;
+    const {trip} = tripDetails;
+    const body = {
+      fleetManagerID: fleetManagerID,
+    };
+    dispatch({type: modalAction.BACKDROP_SHOW});
+    if (trip.FleetManager) {
+      FetchDelete(`/trip/${tripID}/fleetmanager`, token, {}, true).then((response) => {
+        if(!response.ok) {
+          return response.json().then(({error}) => {
+            throw error;
+          });
+        }
+        return FetchPost(`/trip/${tripID}/fleetmanager`, token, body, true);
+      }).then((response) => {
+        if(!response.ok) {
+          return response.json().then(({error}) => {
+            throw error;
+          });
+        }
+        response.json().then(({data}) => {
+          dispatch({type: modalAction.BACKDROP_HIDE});
+          dispatch(HideAssignModal());
+          dispatch(ModalActions.addMessage('Assign vendor success'));
+          window.location.reload(false);
+        });
+      }).catch((e) => {
+        const message = (e && e.message) ? e.message : "Failed to assign fleet";
+        dispatch({type: modalAction.BACKDROP_HIDE});
+        dispatch(ModalActions.addMessage(message));
+      });
+    } else {
+      FetchPost(`/trip/${tripID}/fleetmanager`, token, body, true).then((response) => {
+        if(!response.ok) {
+          return response.json().then(({error}) => {
+            throw error;
+          });
+        }
+        response.json().then(({data}) => {
+          dispatch({type: modalAction.BACKDROP_HIDE});
+          dispatch(HideAssignModal());
+          dispatch(ModalActions.addMessage('Assign vendor success'));
+          window.location.reload(false);
+        });
+      }).catch((e) => {
+        const message = (e && e.message) ? e.message : "Failed to assign fleet";
+        dispatch({type: modalAction.BACKDROP_HIDE});
+        dispatch(ModalActions.addMessage(message));
+      });
+    }
+  }
+}
+
+export function AssignDriver(tripID, driverID) {
+  return (dispatch, getState) => {
+    const {userLogged} = getState().app;
+    const {token} = userLogged;
+    const body = {
+      DriverID: driverID,
+    };
+    dispatch({type: modalAction.BACKDROP_SHOW});
+    FetchPost(`/trip/${tripID}/driver`, token, body).then((response) => {
+      if(!response.ok) {
+        return response.json().then(({error}) => {
+          throw error;
+        });
+      }
+      response.json().then(({data}) => {
+        dispatch(ModalActions.addMessage('Assign driver success'));
+        window.location.reload(false);
+        dispatch({type: modalAction.BACKDROP_HIDE});
+        dispatch(HideAssignModal());
+      });
+    }).catch((e) => {
+      const message = (e && e.message) ? e.message : "Failed to set driver";
+      dispatch({type: modalAction.BACKDROP_HIDE});
+      dispatch(ModalActions.addMessage(message));
     });
   }
 }
