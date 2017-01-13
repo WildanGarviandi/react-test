@@ -9,6 +9,7 @@ import {fetchXhr} from '../modules/fetch/getXhr';
 import ModalActions from '../modules/modals/actions';
 import NotifActions from '../modules/notification/actions';
 import {modalAction} from '../modules/modals/constants';
+import config from '../config/configValues.json';
 
 const Constants = {
   TRIPS_INBOUND_DETAILS_DEASSIGN_END: "inbound/details/deassign/end",
@@ -80,7 +81,12 @@ const Constants = {
   REVERT_SUCCESS_EDITING: "REVERT_SUCCESS_EDITING",
 
   TRIPS_DETAILS_SHOW_MODAL: "TRIPS_DETAILS_SHOW_MODAL",
-  TRIPS_DETAILS_HIDE_MODAL: "TRIPS_DETAILS_HIDE_MODAL"
+  TRIPS_DETAILS_HIDE_MODAL: "TRIPS_DETAILS_HIDE_MODAL",
+  SET_FLEETS: "SET_FLEETS",
+  SET_DRIVERS: "SET_DRIVERS",
+  SET_DRIVER_FETCH_START: "SET_DRIVER_FETCH_START",
+  SET_DRIVER_FETCH_END: "SET_DRIVER_FETCH_END",
+  RESET_DRIVERS: "RESET_DRIVERS"
 }
 
 const initialState = {
@@ -101,7 +107,10 @@ const initialState = {
   scannedOrder: '',
   isTripEditing: false,
   isChangingRemarks: false,
-  showModal: false
+  showModal: false,
+  fleets: [],
+  drivers: [],
+  isFetchingDriver: false
 }
 
 export function OrderParser(order) {
@@ -359,6 +368,29 @@ export function Reducer(state = initialState, action) {
       return lodash.assign({}, state, {
         showModal: false
       });
+    }
+
+    case Constants.SET_FLEETS: {
+      return lodash.assign({}, state, {
+        fleets: action.fleets,
+      });
+    }
+
+    case Constants.SET_DRIVERS: {
+        return lodash.assign({}, state, {
+            drivers: action.drivers
+        });
+    }
+    case Constants.RESET_DRIVERS: {
+        return lodash.assign({}, state, {
+            drivers: []
+        });
+    }
+    case Constants.SET_DRIVER_FETCH_START: {
+      return lodash.assign({}, state, {isFetchingDriver: true});
+    }
+    case Constants.SET_DRIVER_FETCH_END: {
+      return lodash.assign({}, state, {isFetchingDriver: false});
     }
 
     default: return state;
@@ -1188,7 +1220,7 @@ export const fetchDetailsOrder = (id) => {
 }
 
 export function ShowAssignModal(tripID) {
-  return (dispatch, getState) => {    
+  return (dispatch, getState) => {  
     dispatch({
       type: Constants.TRIPS_DETAILS_SHOW_MODAL,
     });
@@ -1197,5 +1229,65 @@ export function ShowAssignModal(tripID) {
 export function HideAssignModal() {
   return (dispatch) => {
     dispatch({type: Constants.TRIPS_DETAILS_HIDE_MODAL});
+    dispatch({type: Constants.RESET_DRIVERS});
+  }
+}
+
+export function FetchFleetList() {
+  return (dispatch, getState) => {
+    const {userLogged} = getState().app;
+    const {token} = userLogged;
+        
+    dispatch({type: modalAction.BACKDROP_SHOW});
+    FetchGet('/fleet/nearby-fleets', token, {}, true).then((response) => {
+      if(!response.ok) {
+        return response.json().then(({error}) => {
+          throw error;
+        })
+      }
+
+      return response.json().then(({data}) => {
+        dispatch({type: modalAction.BACKDROP_HIDE});
+        dispatch({
+          type: Constants.SET_FLEETS,
+          fleets: data
+        })
+      });
+    }).catch((e) => {
+      dispatch({type: modalAction.BACKDROP_HIDE});
+      dispatch(ModalActions.addMessage(e.message));
+    });
+  }
+}
+
+export function FetchDriverList() {
+  return (dispatch, getState) => {
+    const {userLogged, tripDetails} = getState().app;
+    const {token} = userLogged;
+    const {trip} = tripDetails;  
+    const query = {
+      tripID: trip.TripID,
+      limit: config.driverLimit,
+      offset: 0
+    };
+        
+    dispatch({type: Constants.SET_DRIVER_FETCH_START});
+    FetchGet('/drivers', token, query, true).then((response) => {
+      if(!response.ok) {
+        return response.json().then(({error}) => {
+          throw error;
+        })
+      }
+      return response.json().then(({data}) => {
+        dispatch({type: Constants.SET_DRIVER_FETCH_END});
+        dispatch({
+          type: Constants.SET_DRIVERS,
+          drivers: data
+        })
+      });
+    }).catch((e) => {
+      dispatch({type: Constants.SET_DRIVER_FETCH_END});
+      dispatch(ModalActions.addMessage(e.message));
+    });
   }
 }
