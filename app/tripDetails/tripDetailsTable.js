@@ -266,10 +266,10 @@ export const OrderTable = React.createClass({
       return matchOrderStatus && matchRouteStatus;
     });
 
-    const SearchRow = _.map(columns, (column) => {
+    const SearchRow = _.map(columns, (column, idx) => {
       if(column === "orderStatus") {
         return (
-          <div className={styles.colMd3 + ' ' + styles.filterDropDown}>
+          <div key={idx} className={styles.colMd3 + ' ' + styles.filterDropDown}>
             <span>Order Status</span>
             <OrderStatusSelect key={column} statusList={statusList} statusName={this.state.orderStatus} pickStatus={this.pickStatus.bind(null, column)} />
           </div>
@@ -278,7 +278,7 @@ export const OrderTable = React.createClass({
 
       if(column === "routeStatus") {
         return (
-          <div className={styles.colMd3 + ' ' + styles.filterDropDown}>
+          <div key={idx} className={styles.colMd3 + ' ' + styles.filterDropDown}>
             <span>Route Status</span>
             <OrderStatusSelect key={column} statusList={statusList} statusName={this.state.routeStatus} pickStatus={this.pickStatus.bind(null, column)} />
           </div>
