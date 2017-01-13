@@ -231,3 +231,51 @@ p.title {
   color: #ffffff !important;
   text-decoration: none !important;
 }
+
+.modalTitle {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+}
+.modalClose {
+  font-size: 26px;
+  float: right;
+  top: 10px;
+  position: absolute;
+  right: 20px;
+  cursor: pointer;
+}
+
+.toggleAssign {
+  font-family: Helvetica;
+  font-size: 16px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  color: #000000;
+  cursor: pointer;
+  width: calc(50% - 2px);
+  float: left;
+  text-align: center;
+}
+
+.toggleAssignActive {
+  font-family: Helvetica;
+  font-size: 16px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  color: #000000;
+  border-bottom: 6px solid #2196f3;
+  cursor: pointer;
+  width: calc(50% - 2px);
+  float: left;
+  text-align: center;
+  padding-bottom: 16px;
+}
+
+.arbitToggleAssign {
+  color: #e8e8e8;
+  height: 64px;
+  float: left;
+}

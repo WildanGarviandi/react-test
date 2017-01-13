@@ -70,8 +70,8 @@ const RemarksSetter = React.createClass({
 });
 
 const mapStateToProps = (state, ownProps) => {
-  const { inboundTripDetails } = state.app;
-  const { isChangingRemarks, isTripEditing } = inboundTripDetails;
+  const { tripDetails } = state.app;
+  const { isChangingRemarks, isTripEditing } = tripDetails;
 
   return {
     isChangingRemarks,

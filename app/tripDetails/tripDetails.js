@@ -30,9 +30,9 @@ const ThisPage = React.createClass({
 });
 
 function StateToProps(store) {
-  const {inboundTripDetails, userLogged} = store.app;
+  const {tripDetails, userLogged} = store.app;
   const {hubID} = userLogged;
-  const {trip} = inboundTripDetails;
+  const {trip} = tripDetails;
   const tripType = GetTripType(trip, hubID);
 
   return {

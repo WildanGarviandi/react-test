@@ -78,6 +78,9 @@ const Constants = {
   UPDATE_ORDERS_END: "UPDATE_ORDERS_END",
   SUCCESS_EDITING: "SUCCESS_EDITING",
   REVERT_SUCCESS_EDITING: "REVERT_SUCCESS_EDITING",
+
+  TRIPS_DETAILS_SHOW_MODAL: "TRIPS_DETAILS_SHOW_MODAL",
+  TRIPS_DETAILS_HIDE_MODAL: "TRIPS_DETAILS_HIDE_MODAL"
 }
 
 const initialState = {
@@ -97,7 +100,8 @@ const initialState = {
   isEditing: false,
   scannedOrder: '',
   isTripEditing: false,
-  isChangingRemarks: false
+  isChangingRemarks: false,
+  showModal: false
 }
 
 export function OrderParser(order) {
@@ -346,6 +350,17 @@ export function Reducer(state = initialState, action) {
       return lodash.assign({}, state, {isChangingRemarks: false});
     }
 
+    case Constants.TRIPS_DETAILS_SHOW_MODAL: {
+      return lodash.assign({}, state, {
+        showModal: true,
+      });
+    }
+    case Constants.TRIPS_DETAILS_HIDE_MODAL: {
+      return lodash.assign({}, state, {
+        showModal: false
+      });
+    }
+
     default: return state;
   }
 }
@@ -368,9 +383,9 @@ export function ChangeFleetStart() {
 
 export function DeassignFleet(tripID) {
   return (dispatch, getState) => {
-    const {inboundTripDetails, userLogged} = getState().app;
+    const {tripDetails, userLogged} = getState().app;
     const {token} = userLogged;
-    const {fleet} = inboundTripDetails;
+    const {fleet} = tripDetails;
 
     dispatch({
       type: Constants.TRIPS_INBOUND_DETAILS_DEASSIGN_START,
@@ -454,9 +469,9 @@ export function Deassign(tripID) {
 
 export function AssignFleet(tripID, fleetManagerID) {
   return (dispatch, getState) => {
-    const {inboundTripDetails, userLogged} = getState().app;
+    const {tripDetails, userLogged} = getState().app;
     const {token} = userLogged;
-    const {fleet} = inboundTripDetails;
+    const {fleet} = tripDetails;
 
     const body = {
       fleetManagerID: fleetManagerID,
@@ -575,10 +590,10 @@ export function SetTrip(trip, haveDone) {
     let orders, driver, externalTrip, fleet;
 
     if(haveDone) {
-      orders = getState().app.inboundTripDetails.orders;
-      driver = getState().app.inboundTripDetails.driver;
-      externalTrip = getState().app.inboundTripDetails.externalTrip;
-      fleet = getState().app.inboundTripDetails.fleet;
+      orders = getState().app.tripDetails.orders;
+      driver = getState().app.tripDetails.driver;
+      externalTrip = getState().app.tripDetails.externalTrip;
+      fleet = getState().app.tripDetails.fleet;
     } else {
       orders = _.map(trip.UserOrderRoutes, (route) => {
         return _.assign({}, route.UserOrder, {
@@ -605,7 +620,7 @@ export function SetTrip(trip, haveDone) {
       externalTrip: externalTrip,
       fleet: trip.FleetManager,
       orders: orders,
-      trip: lodash.assign({}, getState().app.inboundTripDetails.trip, trip),
+      trip: lodash.assign({}, getState().app.tripDetails.trip, trip),
     });
 
     if(trip.FleetManager) {
@@ -701,9 +716,9 @@ export function OrderRemove(tripID, orderID) {
 
 export function OrderReceived(scannedID, backElementFocusID, scanUpdateToggle) {
   return (dispatch, getState) => {
-    const {inboundTripDetails, userLogged} = getState().app;
+    const {tripDetails, userLogged} = getState().app;
     const {token} = userLogged;
-    const {orders} = inboundTripDetails;
+    const {orders} = tripDetails;
 
     const allowedRouteStatus = ['BOOKED', 'PICKUP', 'ACCEPTED', 'IN-TRANSIT'];
     const scannedOrder = lodash.find(orders, (order) => {
@@ -767,7 +782,7 @@ export function OrderReceived(scannedID, backElementFocusID, scanUpdateToggle) {
 
 export function TripDeliver(tripID, reuse) {
   return (dispatch, getState) => {
-    const {inboundTripDetails, userLogged} = getState().app;
+    const {tripDetails, userLogged} = getState().app;
     const {token} = userLogged;
 
     dispatch({type: modalAction.BACKDROP_SHOW});
@@ -786,7 +801,7 @@ export function TripDeliver(tripID, reuse) {
       dispatch({type: modalAction.BACKDROP_HIDE});
       dispatch(ModalActions.addMessage('Trip marked as delivered'));
 
-      const newTrip = lodash.assign({}, inboundTripDetails.trip, {
+      const newTrip = lodash.assign({}, tripDetails.trip, {
         OrderStatus: {
           OrderStatus: "DELIVERED",
         },
@@ -794,9 +809,9 @@ export function TripDeliver(tripID, reuse) {
 
       dispatch({
         type: Constants.TRIPS_INBOUND_DETAILS_TRIP_SET,
-        driver: inboundTripDetails.driver,
-        fleet: inboundTripDetails.fleet,
-        orders: inboundTripDetails.orders,
+        driver: tripDetails.driver,
+        fleet: tripDetails.fleet,
+        orders: tripDetails.orders,
         trip: newTrip,
       });
 
@@ -826,7 +841,7 @@ export function SetExternalTrip(externalTrip) {
 
 export function UpdateExternalTrip(newExternalTrip) {
   return (dispatch, getState) => {
-    const {externalTrip} = getState().app.inboundTripDetails;
+    const {externalTrip} = getState().app.tripDetails;
 
     if(!externalTrip) {
       dispatch(SetExternalTrip(newExternalTrip));
@@ -838,9 +853,9 @@ export function UpdateExternalTrip(newExternalTrip) {
 
 export function CreateExternalTrip(tripID) {
   return (dispatch, getState) => {
-    const {inboundTripDetails, userLogged} = getState().app;
+    const {tripDetails, userLogged} = getState().app;
     const {token} = userLogged;
-    const {externalTrip} = inboundTripDetails;
+    const {externalTrip} = tripDetails;
 
     if(!externalTrip) {
       dispatch(ModalActions.addMessage("Can't create external trip without any information"));
@@ -894,9 +909,9 @@ export function CreateExternalTrip(tripID) {
 
 export function SaveEdit3PL(tripID) {
   return (dispatch, getState) => {
-    const {inboundTripDetails, userLogged} = getState().app;
+    const {tripDetails, userLogged} = getState().app;
     const {token} = userLogged;
-    const {externalTrip} = inboundTripDetails;
+    const {externalTrip} = tripDetails;
 
     if(!externalTrip) {
       dispatch(ModalActions.addMessage("Can't create external trip without any information"));
@@ -1169,5 +1184,18 @@ export const fetchDetailsOrder = (id) => {
       dispatch({ type: Constants.DETAILS_FETCH_END });
       dispatch(ModalActions.addMessage(message));
     });
+  }
+}
+
+export function ShowAssignModal(tripID) {
+  return (dispatch, getState) => {    
+    dispatch({
+      type: Constants.TRIPS_DETAILS_SHOW_MODAL,
+    });
+  }
+}
+export function HideAssignModal() {
+  return (dispatch) => {
+    dispatch({type: Constants.TRIPS_DETAILS_HIDE_MODAL});
   }
 }

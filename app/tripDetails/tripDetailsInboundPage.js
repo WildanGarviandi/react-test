@@ -77,8 +77,7 @@ const DetailPage = React.createClass({
     this.setState({showModal: true});
   },
   closeModal() {
-    this.setState({showModal: false, scannedOrder: {}});    
-    this.props.StopEditOrder();
+    this.props.hideAssignModal();
   },
   changeToggle() {
     this.setState({scanUpdateToggle: !this.state.scanUpdateToggle});    
@@ -225,27 +224,32 @@ const DetailPage = React.createClass({
           <h3>Fetching Trip Details...</h3>
         }
         {
-          this.state.showModal && isEditing &&
-          <ModalContainer onClose={this.closeModal}>
-            <ModalDialog onClose={this.closeModal}>
-              { !this.state.isSuccessEditing &&
-                <div style={{clear: 'both'}}>
-                  <InputRow id={'packageVolume'} label={'Package Volume'} icon={'icon-volume'} value={this.state.scannedOrder.PackageVolume} type={'text'} onChange={this.stateChange('PackageVolume') } />
-                  <InputRow label={'Package Weight'} icon={'icon-weight'} value={this.state.scannedOrder.PackageWeight} type={'text'} onChange={this.stateChange('PackageWeight') } />
-                  <InputRow label={'Delivery Fee'} icon={'icon-delivery-fee'} value={this.state.scannedOrder.OrderCost} type={'text'} onChange={this.stateChange('DeliveryFee') } />
-                  <div style={{clear: 'both'}} />
-                  <button className={styles.saveButton} onClick={this.updateOrder}>SUBMIT</button>
-                </div> 
-              }   
-              { this.state.isSuccessEditing &&
+          this.props.showModal &&
+          <ModalContainer>
+            <ModalDialog>
+              <div>
                 <div>
-                  <img className={styles.successIcon} src={"/img/icon-success.png"} />
-                  <div className={styles.updateSuccess}>
-                    Update Order Success
+                  <div className={styles.modalTitle}>
+                    Assign Trip
+                  </div>
+                  <div onClick={this.closeModal} className={styles.modalClose}>
+                    X
                   </div> 
-                  <button className={styles.saveButton} onClick={this.confirmSuccess}>OK</button>
-                </div>
-              }
+                  <div className={styles.toggleAssignMain}>
+                    <div onClick={this.activateVendor} className={this.state.showVendor ? styles.toggleAssignActive : styles.toggleAssign}>Assign to Driver</div>
+                    <div className={styles.arbitToggleAssign}> | </div>
+                    <div onClick={this.activateDriver} className={this.state.showDriver ? styles.toggleAssignActive : styles.toggleAssign}>Assign to Vendor</div>
+                  </div>
+                  { this.state.showVendor &&
+                    <AssignDriver trip={this.props.trip} assignDriver={this.assignDriver} 
+                      splitTrip={this.splitTrip} isFetchingDriver={this.props.isFetchingDriver} />
+                  }
+                  {
+                    this.state.showDriver &&
+                    <AssignVendor trip={this.props.trip} assignFleet={this.assignFleet} />
+                  }
+                </div> 
+              </div>
             </ModalDialog>
           </ModalContainer>
         }
@@ -285,6 +289,7 @@ const DetailPage = React.createClass({
                       <p><Glyph name={'arrow-right'} className={styles.glyph} /> Inbound, {tripOrigin}</p>
                     </div>
                     <div className={styles.colMd6}>
+                      <button onClick={this.props.showAssignModal}>Edit</button>
                       {
                         haveSet ?
                         <div>
@@ -394,9 +399,9 @@ const DetailPage = React.createClass({
 });
 
 const mapStateToProps = (state, ownProps) => {
-  const {inboundTripDetails, userLogged, orderDetails} = state.app;
+  const {tripDetails, userLogged, orderDetails} = state.app;
   const {hubID, isCentralHub} = userLogged;
-  const {isDeassigning, isFetching, orders: rawOrders, isEditing, scannedOrder} = inboundTripDetails;
+  const {isDeassigning, isFetching, orders: rawOrders, isEditing, scannedOrder, showModal} = tripDetails;
   const trip = ownProps.trip;
   const isSuccessEditing = orderDetails.isSuccessEditing;
   const containerID = ownProps.params.id;
@@ -491,7 +496,8 @@ const mapStateToProps = (state, ownProps) => {
     isEditing,
     scannedOrder,
     isSuccessEditing,
-    isCentralHub
+    isCentralHub,
+    showModal
   }
 }
 
@@ -541,6 +547,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     revertSuccessEditing: function(){
       dispatch(TripDetails.revertSuccessEditing());
+    },
+    showAssignModal: function() {
+      dispatch(TripDetails.ShowAssignModal())
+    },
+    hideAssignModal: function() {
+      dispatch(TripDetails.HideAssignModal())
     }
   };
 };
