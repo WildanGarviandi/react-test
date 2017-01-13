@@ -29,8 +29,8 @@ const PickupOrdersPage = React.createClass({
     this.props.ResetFilterReady();
     this.props.GetList();
     this.props.GetListReady();
-    this.props.CheckAutoGroup();
-    this.checkAutoGroup();
+    //this.props.CheckAutoGroup();
+    //this.checkAutoGroup();
     if (!this.props.userLogged.hubID) {
       window.location.href ='/myorders/open';
     }

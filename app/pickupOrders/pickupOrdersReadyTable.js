@@ -287,7 +287,7 @@ export const FilterReady = React.createClass({
         <MerchantFilter />
         <CityFilter />
         <ZipFilter />
-        <AutoGroupButton disabled={!this.props.isAutoGroupActive} />
+        {/* <AutoGroupButton disabled={!this.props.isAutoGroupActive} /> */}
         <ManualGroupButton disabled={!this.props.isGroupActive} />
       </div>
     );
