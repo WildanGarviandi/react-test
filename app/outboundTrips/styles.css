@@ -337,6 +337,485 @@
   padding: 0;
 }
 
+.colMd1, .colMd2, .colMd3, .colMd4, .colMd5, .colMd6, .colMd7, .colMd8, .colMd9, .colMd10, .colMd11, .colMd12 {
+  padding-right: 15px;
+  padding-left: 15px; 
+  min-height: 1px;
+}
+
+.colMd1 {
+  width: 8.33333%;
+  float: left;
+}
+
+.colMd2 {
+  width: 16.66667%;
+  float: left;
+}
+
+.colMd3 {
+  width: 25%;
+  float: left;
+}
+
+.colMd4 {
+  width: 33.33333%;
+  float: left;
+}
+
+.colMd5 {
+  width: 41.66667%;
+  float: left;
+}
+
+.colMd6 {
+  width: 50%;
+  float: left;
+}
+
+.colMd8 {
+  width: 66.66666%;
+  float: left;
+}
+
+.colMd9 {
+  width: 75%;
+  float: left;
+}
+
+.colMd12 {
+  width: 100%;
+  float: left;
+}
+
+td.withIcon {
+  position: relative;
+  padding-left: 40px;
+  text-align: left;
+}
+
+.iconVehicleMotor {
+  background-image: url('/img/icon-vehicle-motor.png');
+  background-repeat: no-repeat;
+  background-size: 30px;
+  background-position: 5px;
+  text-align: left !important;
+  background-position-y: center;
+}
+
+.iconVehicleMiniVan {
+  background-image: url('/img/icon-vehicle-van.png');
+  background-repeat: no-repeat;
+  background-size: 30px;
+  background-position: 5px;
+  text-align: left !important;
+  background-position-y: center;
+}
+
+.filterDropDown span {
+  font-size: 12px;
+  color: #929292;
+}
+
+.filterDropDown span.title {
+  margin-bottom: 5px;
+  display: block;
+  margin-top: 3px;
+}
+
+.filterDropDown div {
+  margin-top: 5px;
+  margin-bottom: 15px;
+}
+
+.filterDropDown input {
+  margin: 0px;
+  width: 100%;
+}
+
+.filterDropDown input {
+  padding: 16px 8px;
+  border: 1px solid #e8e8e8;
+}
+
+.filterDropDown > div > input {
+  border: 1px solid #e8e8e8;
+  border-right: 0px;
+  padding: 8px;
+  height: inherit;
+}
+
+.filterDropDown > div > span {
+  border: 1px solid #e8e8e8;
+  border-left: 0px;
+  background-color: #fff;
+}
+
+.filterDropDown > div > span > span {
+  top: 12px;
+}
+
+.filterDropDown > div > div {
+  border: 0px;
+  margin-top: 0px;
+}
+
+.filterDropDown > div > div > span {
+  padding: 8px;
+  border-bottom: 1px solid #e8e8e8;
+  background-color: #fff !important;
+  color: #929292 !important;
+}
+
+.filterDropDown > div > div > span:hover, .filterDropDown > div > div > span:focus {
+  background-image: url('/img/icon-checkmark.png');
+  background-repeat: no-repeat;
+  background-size: 25px;
+  background-position-x: 100%;
+  background-position-y: 50%;
+}
+
+@media (max-width:1300px) {
+  .btnPrintOnTable a, .btnAssignOnTable button {
+    padding: 5px 0 !important;
+  }
+
+  .btnPrintOnTable {
+    width: 40%;
+    float: left;
+    padding: 0;
+  }
+
+  .btnAssignOnTable {
+    width: 60%;
+    float: left;
+    padding: 0;
+  }
+}
+
+@media (min-width:769px) and (max-width:991px) {
+  .btnPrintOnTable a, .btnAssignOnTable button {
+    padding: 5px 0 !important;
+  }
+
+  .btnPrintOnTable {
+    width: 100%;
+    float: left;
+    padding: 0;
+  }
+
+  .btnAssignOnTable {
+    width: 100%;
+    float: left;
+    padding: 0;
+  }
+}
+
+@media (max-width:768px) {
+  .btnPrintOnTable a, .btnAssignOnTable button {
+    padding: 5px 0 !important;
+  }
+
+  .btnPrintOnTable {
+    width: 100%;
+    float: left;
+    padding: 0;
+  }
+
+  .btnAssignOnTable {
+    width: 100%;
+    float: left;
+    padding: 0;
+  }
+}
+
+/* ********************************* */
+/* MODAL CSS */
+
+.driverDistance {
+  margin-top: -10px;
+  margin-bottom: -10px;
+}
+
+.closeModalButton {
+  position: absolute;
+  right: 10px;
+  top: 18px;
+  background-color: transparent;
+  box-shadow: none;
+  border: none;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.closeButtonImage {
+  width: 24px;
+  height: 24px;
+}
+
+.verySmallText {
+  font-size: 10px;
+}
+
+.smallText {
+  font-size: 12px;
+}
+
+.smallestText {
+  font-size: 10px;
+  width: 160px;
+}
+
+.mediumText {
+  font-size: 16px;
+}
+
+.bigText {
+  font-size: 20px;
+  margin: 4px 0;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.bigTextThinStrike {
+  font-size: 20px;
+  margin: 4px 0;
+  text-decoration: line-through;
+  display: inline-block;
+  margin-right: 10px;
+  font-weight: 500;
+}
+
+.redText {
+  color: red;
+  cursor: pointer;
+}
+
+.baseline {
+  display: flex;
+  align-items: baseline;
+  height: 20px;
+}
+
+.baseline span {
+  margin: 0 !important;
+}
+
+.isLastMileImage {
+  width: 24px;
+  height: 24px;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.hubSetter {
+  text-align: center;
+  margin: 20px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.districtsWrapper {
+  margin: 20px;
+}
+
+.districtsWrapper input {
+  height: 44px;
+}
+
+.buttonWrapper button {
+  height: 44px;
+}
+
+.centerItems {
+  display: flex;
+  align-items: center;
+}
+
+
+.searchLoadingArea {
+  width: 400px;
+  margin: auto;
+  margin-top: 50px;
+}
+
+.listInModal {
+  position: relative;
+  padding: 15px;
+  background: #fff;
+  border: 1px solid #e8e8e8; 
+  border-radius: 5px;
+  margin-bottom: 8px;
+  height: 72px;
+}
+
+.listInModal .checkedFleet {
+  position: absolute;
+  display: block;
+  border: 2.5px solid #bbb;
+  border-radius: 100%;
+  height: 20px;
+  width: 20px;
+  top: 25px;
+  float: left;
+  left: 20px;
+  z-index: 5;
+  transition: border .25s linear;
+  -webkit-transition: border .25s linear;
+  cursor: pointer;
+}
+
+.listInModal input[type="radio"] {
+  opacity: 0;
+  position: absolute;
+  float: left;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  left: 0;
+  top: 0;
+  margin: 0;
+}
+
+.listInModal .checkedFleet::before {
+  background: none;
+  display: block;
+  content: '';
+  border-radius: 100%;
+  height: 10px;
+  width: 10px;
+  top: 5px;
+  left: 5px;
+  margin: 3px;
+  transition: background 0.25s linear;
+  -webkit-transition: background 0.25s linear;
+}
+
+.listInModal input[type="radio"]:checked ~ .checkedFleet {
+  top: 24px;
+  border: 2.5px solid #38b393;
+  transition: border .25s linear;
+  -webkit-transition: border .25s linear;
+}
+
+.listInModal input[type="radio"]:checked ~ .checkedFleet::before {
+  background: #38b393;
+}
+
+.listInModal.active {
+  border: 2px solid #38b393;
+  padding: 14px;
+}
+
+.active.activeRed {
+  border: 2px solid red !important;
+}
+
+.listInModal input[type="radio"]:checked ~ .ovl {
+  color: #38b393;
+}
+
+.listInModal > img {
+  margin-left: 50px;
+  margin-right: 15px;
+  width: 40px;
+  height: 40px;
+}
+
+.listInModal .ovl {
+  font-weight: bold;
+  padding: 0 15px;
+  border: 1px solid #e8e8e8;
+  border-radius: 5px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  right: 12px;
+  top: 12px;
+}
+
+.listInModal .ovl > img {
+  margin-right: 10px;
+}
+
+.listInModal .vendorName {
+  display: -webkit-inline-box;
+}
+
+.listInModal .vendorName b {
+  font-size: 18px;
+}
+
+.iconVehicleOnModal {
+  margin-top: -20px;
+}
+
+.infoList {
+  opacity: 0.7;
+  font-size: 10px;
+}
+
+.infoWeight {
+  opacity: 0.6;
+  font-size: 14px;
+}
+
+.infoLocation {
+  width: 123px;
+  height: 40px !important;
+  right: 16px !important;
+  top: 20px !important;
+}
+
+.active .infoWeight {
+  opacity: 1;
+  font-weight: bold;
+}
+
+.datetimeWrapper > div {
+  width: 100%;
+}
+
+.datetimeWrapper > div > div {
+  position: fixed;
+  left: inherit;
+}
+
+.detailRow {
+  margin-bottom: 15px;
+}
+
+.uploadButtonText {
+  padding-top: 10px !important;
+}
+
+.uploadButton, .uploadButton label {
+  padding: 0;
+  margin: 0;
+}
+
+.uploadButton label {
+  padding-top: 10px;
+  color: #fff;
+  background-color: #2196f3; 
+}
+
+.uploadButton label:hover {
+  color: #fff;
+  background-color: #1682d8; 
+}
+
+.uploadButton input {
+  width: 100%;
+  padding: 0; 
+  height: 10px;
+}
+
 .modalDialog {
   border-radius: 5px !important;
   padding: 0 !important;
@@ -345,7 +824,7 @@
 
 .modalHeader {
   margin: 0;
-  padding: 15px;
+  padding: 18px;
   border-bottom: 1px solid #e8e8e8;
   text-align: center;
 }
@@ -436,13 +915,23 @@
 }
 
 .modalNo {
-  width: 80px;
+  width: 94px;
+  height: 44px;
+  display: flex !important;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 20px !important;
   border: 0 !important;
   background-color: #ff5a60 !important;
 }
 
 .modalYes {
-  width: 80px;
+  width: 94px;
+  height: 44px;
+  display: flex !important;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 20px !important;
   border: 0 !important;
   background-color: #38b393 !important;
   margin-left: 15px !important;
@@ -454,6 +943,9 @@
   background: #fff;
   text-align: center;
   height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .modalDialog > a {
@@ -490,6 +982,7 @@
   color: #838383;
   border-left: 1px solid #e8e8e8;
   border-right: 1px solid #e8e8e8;
+  cursor: pointer;
 }
 
 .tabs__labels > li.active {
@@ -504,6 +997,7 @@
 
 .tabs__labels > li:hover {
   cursor: pointer;
+  color: #23527c !important;
   padding-bottom: 9px;
   border-bottom: 6px solid #2196f3;
   transition: 0.3s;
@@ -565,6 +1059,11 @@
   font-style: normal;
   font-stretch: normal;
   color: #000000;
+  margin-bottom: 8px;
+}
+
+.inputForm input {
+  height: 44px !important;
 }
 
 .red {
@@ -628,312 +1127,4 @@
 .colMd12 {
   width: 100%;
   float: left;
-}
-
-.datetimeWrapper > div {
-  width: 100%;
-}
-
-.datetimeWrapper > div > div {
-  position: fixed;
-  left: inherit;
-}
-
-.detailRow {
-  margin-bottom: 15px;
-}
-
-.uploadButtonText {
-  padding-top: 10px !important;
-}
-
-.uploadButton, .uploadButton label {
-  padding: 0;
-  margin: 0;
-}
-
-.uploadButton label {
-  padding-top: 10px;
-  color: #fff;
-  background-color: #2196f3; 
-}
-
-.uploadButton label:hover {
-  color: #fff;
-  background-color: #1682d8; 
-}
-
-.uploadButton input {
-  width: 100%;
-  padding: 0; 
-  height: 10px;
-}
-
-.searchLoadingArea {
-  width: 400px;
-  margin: auto;
-  margin-top: 50px;
-}
-
-.ListInModal {
-  position: relative;
-  padding: 15px;
-  background: #fff;
-  border: 1px solid #e8e8e8; 
-  border-radius: 5px;
-  margin-bottom: 15px;
-}
-
-.ListInModal .checkedFleet {
-  position: absolute;
-  display: block;
-  border: 2.5px solid #bbb;
-  border-radius: 100%;
-  height: 20px;
-  width: 20px;
-  top: 25px;
-  float: left;
-  left: 20px;
-  z-index: 5;
-  transition: border .25s linear;
-  -webkit-transition: border .25s linear;
-}
-
-.ListInModal input[type="radio"] {
-  opacity: 0;
-  position: absolute;
-  float: left;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-  left: 0;
-  top: 0;
-  margin: 0;
-}
-
-.ListInModal .checkedFleet::before {
-  background: none;
-  display: block;
-  content: '';
-  border-radius: 100%;
-  height: 10px;
-  width: 10px;
-  top: 5px;
-  left: 5px;
-  margin: 3px;
-  transition: background 0.25s linear;
-  -webkit-transition: background 0.25s linear;
-}
-
-.ListInModal input[type="radio"]:checked ~ .checkedFleet {
-  top: 24px;
-  border: 2.5px solid #38b393;
-  transition: border .25s linear;
-  -webkit-transition: border .25s linear;
-}
-
-.ListInModal input[type="radio"]:checked ~ .checkedFleet::before {
-  background: #38b393;
-}
-
-.ListInModal.active {
-  border: 2px solid #38b393;
-  padding: 14px;
-}
-
-.ListInModal input[type="radio"]:checked ~ .ovl {
-  color: #38b393;
-}
-
-.ListInModal > img {
-  margin-left: 50px;
-  margin-right: 15px;
-  width: 40px;
-  height: 40px;
-}
-
-.ListInModal .ovl {
-  font-weight: bold;
-  float: right;
-  padding: 8px 15px;
-  border: 1px solid #e8e8e8;
-  border-radius: 5px;
-}
-
-.ListInModal .ovl > img {
-  margin-right: 10px;
-}
-
-.ListInModal .vendorName {
-  display: -webkit-inline-box;
-}
-
-.ListInModal .vendorName b {
-  font-size: 18px;
-}
-
-.iconVehicleOnModal {
-  margin-top: -20px;
-}
-
-.infoList {
-  opacity: 0.5;
-  font-size: 12px;
-}
-
-.infoWeight {
-  opacity: 0.6;
-  font-size: 14px;
-}
-
-.active .infoWeight {
-  opacity: 1;
-  font-weight: bold;
-  color: #ffa500;
-}
-
-td.withIcon {
-  position: relative;
-  padding-left: 40px;
-  text-align: left;
-}
-
-.iconVehicleMotor {
-  background-image: url('/img/icon-vehicle-motor.png');
-  background-repeat: no-repeat;
-  background-size: 30px;
-  background-position: 5px;
-  text-align: left !important;
-  background-position-y: center;
-}
-
-.iconVehicleMiniVan {
-  background-image: url('/img/icon-vehicle-van.png');
-  background-repeat: no-repeat;
-  background-size: 30px;
-  background-position: 5px;
-  text-align: left !important;
-  background-position-y: center;
-}
-
-.filterDropDown span {
-  font-size: 12px;
-  color: #929292;
-}
-
-.filterDropDown span.title {
-  margin-bottom: 5px;
-  display: block;
-  margin-top: 3px;
-}
-
-.filterDropDown div {
-  margin-top: 5px;
-  margin-bottom: 15px;
-}
-
-.filterDropDown input {
-  margin: 0px;
-  width: 100%;
-}
-
-.filterDropDown input {
-  padding: 16px 8px;
-  border: 1px solid #e8e8e8;
-}
-
-.filterDropDown > div > input {
-  border: 1px solid #e8e8e8;
-  border-right: 0px;
-  padding: 8px;
-  height: inherit;
-}
-
-.filterDropDown > div > span {
-  border: 1px solid #e8e8e8;
-  border-left: 0px;
-  background-color: #fff;
-}
-
-.filterDropDown > div > span > span {
-  top: 12px;
-}
-
-.filterDropDown > div > div {
-  border: 0px;
-  margin-top: 0px;
-}
-
-.filterDropDown > div > div > span {
-  padding: 8px;
-  border-bottom: 1px solid #e8e8e8;
-  background-color: #fff !important;
-  color: #929292 !important;
-}
-
-.filterDropDown > div > div > span:hover, .filterDropDown > div > div > span:focus {
-  background-image: url('/img/icon-checkmark.png');
-  background-repeat: no-repeat;
-  background-size: 25px;
-  background-position-x: 100%;
-  background-position-y: 50%;
-}
-
-.driverDistance {
-  margin-top: -10px;
-  margin-bottom: -10px;
-}
-
-@media (max-width:1300px) {
-  .btnPrintOnTable a, .btnAssignOnTable button {
-    padding: 5px 0 !important;
-  }
-
-  .btnPrintOnTable {
-    width: 40%;
-    float: left;
-    padding: 0;
-  }
-
-  .btnAssignOnTable {
-    width: 60%;
-    float: left;
-    padding: 0;
-  }
-}
-
-@media (min-width:769px) and (max-width:991px) {
-  .btnPrintOnTable a, .btnAssignOnTable button {
-    padding: 5px 0 !important;
-  }
-
-  .btnPrintOnTable {
-    width: 100%;
-    float: left;
-    padding: 0;
-  }
-
-  .btnAssignOnTable {
-    width: 100%;
-    float: left;
-    padding: 0;
-  }
-}
-
-@media (max-width:768px) {
-  .btnPrintOnTable a, .btnAssignOnTable button {
-    padding: 5px 0 !important;
-  }
-
-  .btnPrintOnTable {
-    width: 100%;
-    float: left;
-    padding: 0;
-  }
-
-  .btnAssignOnTable {
-    width: 100%;
-    float: left;
-    padding: 0;
-  }
 }

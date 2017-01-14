@@ -71,11 +71,13 @@
   height: 100%;
   text-align: center;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .caret {
   position: relative;
-  top: 8px;
 }
 
 .typeBox {

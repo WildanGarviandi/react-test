@@ -6,6 +6,8 @@ import MyTripsTable from './outboundTripsTable';
 import FleetsFetch from '../modules/drivers/actions/fleetsFetch';
 import styles from './styles.css';
 import formStyles from '../components/form.css';
+import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import AssignTripModal from './outboundTripsModal';
 
 const ContainerPage = React.createClass({
   componentWillMount() {
@@ -20,20 +22,29 @@ const ContainerPage = React.createClass({
     return (
       <div>
         <Page title={title}>
-        <MyTripsTable key={this.props.lastPath} lastPath={this.props.lastPath} />
+          <MyTripsTable key={this.props.lastPath} lastPath={this.props.lastPath} />
         </Page>
+        {
+          this.props.isAssigning &&
+          <ModalContainer>
+            <AssignTripModal />
+          </ModalContainer>
+        }
       </div>
     );
   }
 });
 
 function StateToProps(state, ownProps) {
+  const {outboundTripsService} = state.app;
   const routes = ownProps.routes;
   const paths = routes[routes.length-1].path.split('/');
   const lastPath = paths[paths.length-1];
+  const {isAssigning} = outboundTripsService;
 
   return {
     lastPath,
+    isAssigning
   };
 };
 
