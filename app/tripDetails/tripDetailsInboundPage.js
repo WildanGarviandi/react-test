@@ -482,7 +482,7 @@ const DetailPage = React.createClass({
   render() {
     const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, fillAble, hasDriver, isFetching, isInbound, orders, reusable, statusList, TotalCODValue, CODCount, totalDeliveryFee, trip, TotalWeight} = this.props;
 
-    const {canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, isDeassigning, isEditing, scannedOrder} = this.props;
+    const {canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, isDeassigning, isEditing, scannedOrder, canDeassignFleet} = this.props;
 
     const successfullScan = lodash.filter(this.props.orders, {'isSuccess': 'Yes'});
 
@@ -578,27 +578,20 @@ const DetailPage = React.createClass({
                     </div>
                     <div className={styles.colMd6}>
                       {
-                        canDeassignDriver &&
-                        <ButtonWithLoading styles={{base: styles.greenBtn}} textBase="Cancel Assignment" textLoading="Deassigning" onClick={this.deassignDriver} isLoading={isDeassigning} />
-                      }
-                      {
-                        canDeassignFleet &&
+                        (canDeassignDriver || canDeassignFleet) &&
                         <ButtonWithLoading styles={{base: styles.greenBtn}} textBase="Cancel Assignment" textLoading="Deassigning" onClick={this.deassignDriver} isLoading={isDeassigning} />
                       }
                       {
                         haveSet ?
                         <div>
                           {
-                            trip.Driver &&
-                            <div>
-                              <p className={styles.title}>Fleet : {companyName}</p>
-                              <p>{driverName}</p>
-                            </div>
-                          }
-                          {
                             trip.FleetManager &&
                             <div>
                               <p className={styles.title}>Fleet : {trip.FleetManager.CompanyDetail && trip.FleetManager.CompanyDetail.CompanyName}</p>
+                              {
+                                trip.Driver &&
+                                <p>{driverName}</p>
+                              }
                             </div>
                           }
                           {

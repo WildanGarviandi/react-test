@@ -11,7 +11,7 @@
     "motorcycleMaxWeight": 25,
     "vanMaxWeight": 250,
     "autoGroupInterval": 60000,
-    "driverLimit": 10000,
+    "driverLimit": 3,
     "deadline": {
         "day": 86400000,
         "3hours":  10800000
