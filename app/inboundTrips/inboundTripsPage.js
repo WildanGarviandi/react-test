@@ -30,7 +30,7 @@ const InboundTripPage = React.createClass({
 
     return (
       <div>
-        <Page title={title}>
+        <Page title="Inbound Trips" count={{itemName: 'Items', done: 'All Done', value: this.props.total}}>
           <div>
             <span>
               <Input base={{placeholder:"Search Trip ID here ..."}} className={styles.searchInput} onChange={this.onChange} onEnterKeyPressed={this.gotoTrip} />
