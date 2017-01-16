@@ -81,7 +81,7 @@ const Fleet = React.createClass({
       let capacity = fleet.FleetManager && fleet.FleetManager.CompanyDetail.OrderVolumeLimit;
       if (fleet.FleetManagerID === this.props.selectedFleet) {
         vendorLoad = styles.vendorLoadSelected;
-        availableLoad = parseInt(availableLoad) + parseInt(this.props.weight);
+        availableLoad = parseInt(availableLoad) + parseInt(this.props.sumOrders);
         rowStyle = styles.vendorInformationSelected;
         selectedFleetName = fleet.FleetManager && fleet.FleetManager.CompanyDetail && fleet.FleetManager.CompanyDetail.CompanyName;
         if (availableLoad > capacity) {
@@ -106,7 +106,7 @@ const Fleet = React.createClass({
           <div className={styles.maskLoad}>
             <img className={styles.vendorLoadImage} src="/img/icon-grouping.png" />
             <span className={vendorLoad}>
-              {availableLoad} / {capacity} kg
+              {availableLoad} / {capacity}
             </span>
           </div>
         </div>
@@ -169,7 +169,7 @@ export const AssignVendor = React.createClass({
         <div className={styles.vendorList}>
           { fleetList.length > 0 &&
             <div>
-              <Fleet chooseFleet={this.chooseFleet} selectedFleet={this.state.selectedFleet} weight={this.props.trip.Weight} />
+              <Fleet chooseFleet={this.chooseFleet} selectedFleet={this.state.selectedFleet} sumOrders={this.props.trip.UserOrderRoutes.length} />
             </div>
           }
           { fleetList.length === 0 &&
@@ -476,6 +476,9 @@ const DetailPage = React.createClass({
       this.props.FleetSet(this.props.trip.TripID, selectedFleet);
     }
   },
+  splitTrip() {
+    this.props.SplitTrip(this.props.trip.TripID, selectedVehicleID);
+  },
   render() {
     const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, fillAble, hasDriver, isFetching, isInbound, orders, reusable, statusList, TotalCODValue, CODCount, totalDeliveryFee, trip, TotalWeight} = this.props;
 
@@ -495,7 +498,7 @@ const DetailPage = React.createClass({
     }
 
     const canSet = trip.DestinationHub || trip.District;
-    const haveSet = trip.Driver || trip.ExternalTrip;
+    const haveSet = trip.Driver || trip.FleetManager || trip.ExternalTrip;
 
     const driverName = trip.Driver ? 
       trip.Driver.FirstName + ' ' + trip.Driver.LastName + ' | ' + trip.Driver.CountryCode + ' ' +trip.Driver.PhoneNumber : 'No Driver Yet';
@@ -579,6 +582,10 @@ const DetailPage = React.createClass({
                         <ButtonWithLoading styles={{base: styles.greenBtn}} textBase="Cancel Assignment" textLoading="Deassigning" onClick={this.deassignDriver} isLoading={isDeassigning} />
                       }
                       {
+                        canDeassignFleet &&
+                        <ButtonWithLoading styles={{base: styles.greenBtn}} textBase="Cancel Assignment" textLoading="Deassigning" onClick={this.deassignDriver} isLoading={isDeassigning} />
+                      }
+                      {
                         haveSet ?
                         <div>
                           {
@@ -586,6 +593,12 @@ const DetailPage = React.createClass({
                             <div>
                               <p className={styles.title}>Fleet : {companyName}</p>
                               <p>{driverName}</p>
+                            </div>
+                          }
+                          {
+                            trip.FleetManager &&
+                            <div>
+                              <p className={styles.title}>Fleet : {trip.FleetManager.CompanyDetail && trip.FleetManager.CompanyDetail.CompanyName}</p>
                             </div>
                           }
                           {
@@ -760,6 +773,7 @@ const mapStateToProps = (state, ownProps) => {
     reusable: reusable,
     emptying: emptying || {},
     canDeassignDriver: (trip.Driver && trip.OrderStatus.OrderStatusID == 2) || false,
+    canDeassignFleet: (trip.FleetManager && trip.OrderStatus.OrderStatusID == 2) || false,
     driverState: {
       isDeassigning: state.app.driversStore.driverDeassignment,
       isPicking: state.app.driversStore.driverList.isLoading,
@@ -852,6 +866,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     FleetSet(tripID, fleetID) {
       dispatch(TripDetails.AssignFleet(tripID, fleetID));
     },
+    SplitTrip(id, vehicleID) {
+      dispatch(TripDetails.SplitTrip(id, vehicleID));
+    }
   };
 };
 

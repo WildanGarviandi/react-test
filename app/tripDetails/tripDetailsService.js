@@ -1042,3 +1042,28 @@ export function AssignDriver(tripID, driverID) {
     });
   }
 }
+
+export function SplitTrip(id, vehicleID) {
+  return (dispatch, getState) => {
+    const {userLogged} = getState().app;
+    const {token} = userLogged;
+    const query = {
+      vehicleID: vehicleID
+    }
+
+    dispatch({type: modalAction.BACKDROP_SHOW});
+    FetchPost('/trip/split/' + id, token, query, true).then((response) => {
+      if(!response.ok) {
+        throw new Error();
+      }
+      response.json().then(({data}) => {
+        dispatch(ModalActions.addMessage("Success splitting trip"));
+        dispatch(FetchDetails(data[0].TripID));
+        dispatch({type: modalAction.BACKDROP_HIDE});
+      });
+    }).catch(() => {
+      dispatch(ModalActions.addMessage("Failed in splitting trip"));
+      dispatch({type: modalAction.BACKDROP_HIDE});
+    });
+  }
+}
