@@ -6,6 +6,7 @@ import Table from './table';
 import TripParser from './parser';
 import * as TripsHistoryService from './service';
 import styles from './styles.css';
+import tableStyle from '../views/base/table.css';
 import {Glyph} from '../views/base';
 import {ButtonWithLoading, ButtonBase} from '../components/button';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
@@ -14,7 +15,7 @@ const LinkComponents = React.createClass({
     render: function() {
         let linkComponents = this.props.message.TripID.map(function(trip) {
             return (
-                <a href={"/history/" + trip} target={"_blank"}>{trip} </a>
+                <a href={"/trips/" + trip} target={"_blank"}>{trip} </a>
             );
         });
         return <div>{linkComponents}</div>;
@@ -26,12 +27,12 @@ const FilterMessage = React.createClass({
         const {messages} = this.props;
         let messageComponents = messages.map(function(message) {
             return (
-                <tr>
+                <tr className={tableStyle.tr}>
                     <td>
                         {message.UserOrderNumber}
                     </td>
                     { message.Found ?
-                        <td>
+                        <td className={styles.noPadding}>
                             <LinkComponents message={message} />
                         </td> :
                         <td>
@@ -117,14 +118,14 @@ const TripHistoryPage = React.createClass({
                         <div className={styles.top2} onClick={this.toggleOpen}>
                           <h4 className={styles.title}>
                             <Glyph name='chevron-down' className={styles.glyphFilter} />
-                            {'Search Order (' + this.state.ids.length + ' keywords)'}
+                            {(this.state.ids.length ? 'Search multiple orders (' + this.state.ids.length + ' keywords)' : 'Search multiple orders')}
                           </h4>
                         </div> :
                         <div className={styles.panel}>
                           <div className={styles.top} onClick={this.toggleOpen}>
                             <h4 className={styles.title}>
                               <Glyph name='chevron-up' className={styles.glyphFilter} />
-                              {'Web Order ID or User Order Number:'}
+                              {'Search multiple orders:'}
                             </h4>
                           </div>
                           <div className={styles.bottom}>
@@ -139,18 +140,18 @@ const TripHistoryPage = React.createClass({
                         </div>
                         }
                     </div>
-                <Pagination {...paginationState} {...PaginationAction} />
                 <Table trips={trips} />
+                <Pagination {...paginationState} {...PaginationAction} />
                 {
                   this.state.showModal &&
                   <ModalContainer onClose={this.closeModal}>
                     <ModalDialog onClose={this.closeModal}>
                         <div>
-                            <table className={styles.tableMessage}>
+                            <table className={tableStyle.table + ' ' + styles.tableMessage}>
                                 <thead>
                                     <tr>
-                                        <td>EDS Number</td>
-                                        <td>Related Trips</td>
+                                        <th>EDS Number</th>
+                                        <th>Related Trips</th>
                                     </tr>
                                 </thead>
                                 <FilterMessage messages={this.state.filteredOrders} />
