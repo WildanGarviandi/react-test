@@ -146,6 +146,7 @@ const HubSetterClass = React.createClass({
   },
   pickHub () {
     this.props.SetHub(this.state.selected.key || this.props.nextHubID)
+    this.props.onSelect && this.props.onSelect()
   },
   render () {
     const {hubs, isFetching, isUpdating, nextHub} = this.props

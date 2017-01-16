@@ -32,7 +32,7 @@ const DetailRow = React.createClass({
       case 'image' :
         return (
           <div className={styles.imageUploaderWrapper}>
-            <ImageUploader currentImageUrl={value} updateImageUrl={(data) => this.props.onChange(data)} />
+            <ImageUploader currentImageUrl={value} updateImageUrl={(data) => this.props.onChange(data)} withoutPreview={true} />
           </div>
         )
       default :
@@ -163,9 +163,6 @@ const FleetInModal = React.createClass({
         <div key={key} className={styles.listInModal + ' ' + (selected === key ? styles.active : '')}>
           <Radio value={key} />
           <div className={styles.checkedFleet} onClick={this.select.bind(null, key)}></div>
-          { item.FleetManager &&
-            <img src={item.FleetManager.PictureUrl} />
-          }
           <div className={styles.vendorName}>
             <div className={styles.mediumText}>
               <strong>
@@ -430,8 +427,8 @@ const AssignTripModalClass = React.createClass({
       }
     }
   },
-  componentWillReceiveProps(nextProps) {
-    this.setState({isHubAssigning: nextProps.isHubAssigning})
+  onHubSet() {
+    this.setState({isHubAssigning: false})
   },
   render() {
     const trip = this.props.trip
@@ -555,7 +552,7 @@ const AssignTripModalClass = React.createClass({
             { this.state.isHubAssigning &&
               <div>
                 <div className={styles.modalBody}>
-                  <HubSetter trip={trip} nextDestination={DstHub(trip) || DstDistrict(trip)} />
+                  <HubSetter trip={trip} nextDestination={DstHub(trip) || DstDistrict(trip)} onSelect={this.onHubSet}/>
                 </div>
                 <div className={styles.modalFooter}>
                   <p><small>Please set the destination hub for this trip.</small></p>

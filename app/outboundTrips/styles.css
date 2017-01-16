@@ -526,8 +526,17 @@ td.withIcon {
 /* MODAL CSS */
 
 .driverDistance {
-  margin-top: -10px;
-  margin-bottom: -10px;
+  text-align: left;
+  position: absolute;
+  right: 12px;
+  top: 0;
+}
+
+.infoLocation {
+  min-width: 123px;
+  height: 40px !important;
+  right: 16px !important;
+  top: 20px !important;
 }
 
 .closeModalButton {
@@ -640,12 +649,14 @@ td.withIcon {
 
 .listInModal {
   position: relative;
-  padding: 15px;
+  padding: 15px 60px;
   background: #fff;
   border: 1px solid #e8e8e8; 
   border-radius: 5px;
   margin-bottom: 8px;
   height: 72px;
+  display: flex;
+  align-items: center;
 }
 
 .listInModal .checkedFleet {
@@ -731,7 +742,6 @@ td.withIcon {
   align-items: center;
   position: absolute;
   right: 12px;
-  top: 12px;
 }
 
 .listInModal .ovl > img {
@@ -758,13 +768,6 @@ td.withIcon {
 .infoWeight {
   opacity: 0.6;
   font-size: 14px;
-}
-
-.infoLocation {
-  min-width: 123px;
-  height: 40px !important;
-  right: 16px !important;
-  top: 20px !important;
 }
 
 .active .infoWeight {

@@ -29,8 +29,7 @@ const ImageUploader = React.createClass({
   render() {
     return (
       <div>
-        {
-          typeof this.props.currentImageUrl === "string" &&
+        { !this.props.withoutPreview && typeof this.props.currentImageUrl === "string" &&
           <span className={styles.textIndent}>
             <ImagePreview imageUrl={this.props.currentImageUrl} />
           </span>

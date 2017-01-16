@@ -375,16 +375,15 @@ export function FetchListNearbyFleets() {
       }
 
       response.json().then(({data}) => {
+        dispatch({type: modalAction.BACKDROP_HIDE});
         dispatch({
           type: Constants.NEARBY_FLEETS_SET,
           fleets: data,
           total: data.length,
         });
-
         dispatch({
           type: Constants.NEARBY_FLEETS_FETCH_END,
         });
-        dispatch({type: modalAction.BACKDROP_HIDE});
       });
     }).catch(() => {
       dispatch({
@@ -421,6 +420,7 @@ export function FetchListNearbyDrivers(tripID) {
       }
 
       response.json().then(({data}) => {
+        dispatch({type: modalAction.BACKDROP_HIDE});
         dispatch({
           type: Constants.NEARBY_DRIVERS_SET,
           drivers: data,
@@ -430,7 +430,6 @@ export function FetchListNearbyDrivers(tripID) {
         dispatch({
           type: Constants.NEARBY_DRIVERS_FETCH_END,
         });
-        dispatch({type: modalAction.BACKDROP_HIDE});
       });
     }).catch(() => {
       dispatch({
@@ -589,11 +588,11 @@ export function AssignDriver(tripID, driverID) {
 
       dispatch({ type: Constants.TRIPS_OUTBOUND_DETAILS_DRIVER_END });
       response.json().then(({data}) => {
+        dispatch({type: modalAction.BACKDROP_HIDE});
         dispatch({
           type: Constants.TRIPS_OUTBOUND_DETAILS_DRIVER_SET,
           driver: data.result
         });
-        dispatch({type: modalAction.BACKDROP_HIDE});
 
         dispatch(FetchList());
       });
@@ -648,9 +647,9 @@ export function AssignFleet(tripID, fleetManagerID) {
             fleet: data.result
           });
           dispatch({type: modalAction.BACKDROP_HIDE});
-        });
 
-        dispatch(FetchList());
+          dispatch(FetchList());
+        });
       }).catch((e) => {
         const message = (e && e.message) ? e.message : 'Failed to assign fleet';
         dispatch({
@@ -679,9 +678,9 @@ export function AssignFleet(tripID, fleetManagerID) {
           });
 
           dispatch({type:modalAction.BACKDROP_HIDE});
-        });
 
-        dispatch(FetchList());
+          dispatch(FetchList());
+        });
       }).catch((e) => {
         const message = (e && e.message) ? e.message : 'Failed to assign fleet';
         dispatch({
@@ -739,6 +738,7 @@ export function CreateExternalTrip(externalData) {
           throw error;
         });
       }
+      dispatch({type: modalAction.BACKDROP_HIDE});
       dispatch({type: Constants.TRIPS_OUTBOUND_DETAILS_EXTERNALTRIP_SET});
     }).catch((e) => {
       const message = (e && e.message) ? e.message : 'Failed to mark trip as delivered';
