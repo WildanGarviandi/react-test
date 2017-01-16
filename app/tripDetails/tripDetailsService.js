@@ -391,7 +391,7 @@ export function DeassignFleet(tripID) {
       dispatch({
         type: Constants.TRIPS_INBOUND_DETAILS_DEASSIGN_END,
       });
-      
+
       window.location.reload(false);
     }).catch((e) => {
       const message = (e && e.message) ? e.message : "Failed to deassign fleet";
@@ -951,6 +951,7 @@ export function SaveEdit3PL(tripID) {
             DepartureTime: new Date(data.ExternalTrip.DepartureTime),
           })
         });
+        window.location.reload(false);
       });
     }).catch((e) => {
       const message = (e && e.message) ? e.message : 'Failed to mark trip as delivered';
@@ -1231,6 +1232,7 @@ export function SaveEdit3PL(tripID) {
             DepartureTime: new Date(data.ExternalTrip.DepartureTime),
           })
         });
+        window.location.reload(false);
       });
     }).catch((e) => {
       const message = (e && e.message) ? e.message : 'Failed to mark trip as delivered';

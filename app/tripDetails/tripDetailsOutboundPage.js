@@ -44,7 +44,7 @@ const DetailRow = React.createClass({
         return (
           <span className={styles.inputForm}>
             <span className={styles.datetimeWrapper}>
-              <DateTime onChange={this.props.onChange} className={styles.inputForm}
+              <DateTime onChange={this.props.onChange} className={styles.inputForm} defaultValue={value}
                 dateFormat='DD MMM YYYY' timeFormat='HH:mm:ss' viewMode='days' />
             </span>
           </span>
@@ -58,7 +58,7 @@ const DetailRow = React.createClass({
       default :
         return (
           <div className={styles.inputForm}>
-            <Input className={'form-control'} base={{placeholder: placeholder, value: value}}
+            <Input className={'form-control'} base={{placeholder: placeholder, defaultValue: value}}
               onChange={(data) => this.props.onChange(data)} type={type}/>
           </div>
         )
@@ -145,7 +145,7 @@ const DetailPage = React.createClass({
   },
   onChange(key) {
     return (val) => {
-      this.setState({[key]: val})
+      this.props.update({[key]: val});
     }
   },
   saveEditThirdPartyLogistic() {
@@ -261,7 +261,7 @@ const DetailPage = React.createClass({
                           placeholder="Write the transportation here..." value={trip.ExternalTrip && trip.ExternalTrip.Transportation} 
                           isEditing={true} type="text" onChange={this.onChange('Transportation')} />
                         <DetailRow label="DEPARTURE TIME" className={styles.colMd6 + ' ' + styles.detailRow} 
-                          value={trip.DepartureTime && formatDate(trip.DepartureTime)} isEditing={true} type="datetime" onChange={this.onChange('DepartureTime')} />
+                          value={trip.ExternalTrip && trip.ExternalTrip.DepartureTime && formatDate(trip.ExternalTrip.DepartureTime)} isEditing={true} type="datetime" onChange={this.onChange('DepartureTime')} />
                         <DetailRow label="ETA" className={styles.colMd6 + ' ' + styles.detailRow} 
                           value={trip.ExternalTrip && trip.ExternalTrip.ArrivalTime && formatDate(trip.ExternalTrip.ArrivalTime)} isEditing={true} type="datetime" onChange={this.onChange('ArrivalTime')} />
                         <DetailRow label="FEE" className={styles.colMd6 + ' ' + styles.detailRow} 
@@ -282,7 +282,7 @@ const DetailPage = React.createClass({
                             value={trip.ExternalTrip && trip.ExternalTrip.PictureUrl} isEditing={true} type="image" onChange={this.onChange('PictureUrl')}/>
                         </div>
                       </div>
-                      <div className="pull-right">
+                      <div className={styles.mT30 + " pull-right"}>
                         <button className="btn btn-md btn-success" onClick={this.saveEditThirdPartyLogistic}>Save Changes</button>
                       </div>
                     </div>
@@ -339,7 +339,7 @@ const DetailPage = React.createClass({
                           {
                             trip.ExternalTrip &&
                             <div>
-                              <p className={styles.title}>3PL : {trip.ExternalTrip.Transportation}</p>
+                              <p className={styles.title}>3PL : {trip.ExternalTrip.Sender + ' - ' + trip.ExternalTrip.Transportation + ' (' + trip.ExternalTrip.AwbNumber + ')'}</p>
                               <button className={styles.greenBtn + ' ' + styles.cancelButton} onClick={this.openExternalTrip}>Edit 3PL</button>
                             </div>
                           }
@@ -580,6 +580,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     saveEditThirdPartyLogistic: () => {
       dispatch(TripDetails.SaveEdit3PL(ownProps.trip.TripID));
+    },
+    update: (externalTrip) => {
+      dispatch(TripDetails.UpdateExternalTrip(externalTrip));
     },
   };
 };

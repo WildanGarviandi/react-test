@@ -110,6 +110,10 @@ p.title {
   margin-bottom: 30px;
 }
 
+.mT30 {
+  margin-top: 30px;
+}
+
 .actionButtoninside button {
   padding: 6px 12px;
   color: #fff;
@@ -262,10 +266,9 @@ p.title {
 .modalTabPanel {
   padding: 15px;
   background: #ffffff;
-  height: 300px;
-  max-height: 400px;
+  height: 470px;
   overflow-y: auto;
-  width: 450px;
+  width: 550px;
 }
 
 .detailRow {
@@ -302,6 +305,10 @@ p.title {
 
 .datetimeWrapper {
   position: relative;
+}
+
+.datetimeWrapper > div {
+  width: 100%;
 }
 
 .imageUploaderWrapper {
