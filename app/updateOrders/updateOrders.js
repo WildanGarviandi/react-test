@@ -159,6 +159,9 @@ const UpdateModal = React.createClass({
     updatedFields.forEach(function(field) {
       if (typeof currentData[field] !== 'undefined') {
         updatedData[field] = parseInt(currentData[field]);
+        if (isNaN(updatedData[field])) {
+          updatedData[field] = currentData[field]
+        }
       } 
     });
     this.props.UpdateOrder(this.props.scannedOrder.UserOrderID, updatedData);
