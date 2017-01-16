@@ -212,7 +212,7 @@ const Driver = React.createClass({
       if (driver.UserID === this.props.selectedDriver) {
         rowStyle = styles.vendorInformationSelected;
         driverWeightStyle = styles.driverWeightSelected;
-        availableWeight = parseInt(availableWeight) + parseInt(this.props.weight);
+        availableWeight = parseFloat(availableWeight) + parseFloat(this.props.weight);
         selectedDriverName = driver.FirstName + ' ' + driver.LastName;
         if (availableWeight > capacity) {
           driverWeightStyle = styles.driverWeightSelectedExceed;
