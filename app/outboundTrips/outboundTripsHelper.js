@@ -122,7 +122,7 @@ export function ProcessTrip (trip) {
     numberPackages: trip.UserOrderRoutes.length,
     weight: Weight(trip),
     remarks: Remarks(trip),
-    deadline: moment(new Date(trip.CreatedDate)).add(config.outboundDeadlineFromCreated, 'hours').format('MMM DD, HH:mm'),
+    deadline: moment(new Date(trip.CreatedDate)).add(config.outboundDeadlineFromCreated, 'hours'),
     actions: trip.TripID,
     isActionDisabled: AssignedTo(trip).isActionDisabled,
     vehicleID: trip.Driver && trip.Driver.Vehicle && trip.Driver.Vehicle.VehicleID
@@ -147,7 +147,7 @@ const HubSetterClass = React.createClass({
 
     return (
       <div className={styles.hubSetter}>
-        <span>Next Hub : </span>
+        <span>Destination Hub : </span>
         {
           isFetching &&
           <span>Fetching Hub List...</span>

@@ -6,12 +6,11 @@ import {push} from 'react-router-redux';
 import * as OutboundTrips from './outboundTripsService';
 import {Input, Pagination} from '../views/base';
 import {DropdownWithState2} from '../views/base/dropdown';
-import DateRangePicker from '../views/base/dateRangePicker';
 import tableStyles from '../views/base/table.css';
 import styles from './styles.css';
 import {Glyph} from '../views/base/glyph';
 import StatusDropdown from '../views/base/statusDropdown';
-
+import {Interval} from './outboundTripsModal';
 import {ProcessTrip} from './outboundTripsHelper';
 
 const ColumnsOrder = ['tripID', 'nextDestination', 'tripType', 'fleet', 
@@ -59,69 +58,10 @@ const SearchCell = React.createClass({
   }
 });
 
-const DateCell = React.createClass({
-  getInitialState() {
-    return {showDate: false, txt: ''};
-  },
-  showPicker() {
-    this.setState({showDate: true});
-  },
-  hidePicker() {
-    this.setState({showDate: false});
-  },
-  handleSelect(range) {
-    const attr = this.props.attr;
-    const filters = {
-      ['start'+attr]: range.start.format(),
-      ['end'+attr]: range.end.format(),
-    };
-
-    this.props.changeFilter(filters);
-    this.setState({txt: `${range.start.format('DD/MM/YYYY')}-${range.end.format('DD/MM/YYYY')}`});
-  },
-  handleChange(e) {
-    this.setState({txt: e.target.value});
-  },
-  handleKeyDown(e) {
-    if (e.keyCode === 13) {
-      const attr = this.props.attr;
-      const range = lodash.map(this.state.txt.split('-'), (s) => (s.split('/')));
-
-      let filters;
-      if (range.length !== 2) {
-        filters = {
-          ['start'+attr]: '',
-          ['end'+attr]: '',
-        }
-      } else {
-        const [startDate, endDate] = lodash.map(range, (date) => {
-          return moment(date.join(''), "DDMMYYYY");
-        });
-
-        filters = {
-          ['start'+attr]: startDate.format(),
-          ['end'+attr]: endDate.format(),
-        }
-      }
-
-      this.setState({showDate: false});
-      this.props.changeFilter(filters);
-    }
-  },
-  render() {
-    return (
-      <td>
-        <input value={this.state.txt} className={tableStyles.searchInput} type="text" onFocus={this.showPicker} onChange={this.handleChange} onKeyDown={this.handleKeyDown} />
-        <DateRangePicker show={this.state.showDate} hidePicker={this.hidePicker} selectRange={this.handleSelect} />
-      </td>
-    );
-  }
-});
-
 function StateToStatus(state) {
   const statusName = state.app.outboundTrips.filtersStatus;
   return {
-    val: statusName,
+    val: statusName
   }
 }
 
@@ -242,13 +182,15 @@ const Table = React.createClass({
           }
 
           case 'weight': {
-            return <td className={tableStyles.td} key={columnKey}>{item[columnKey]} Kg</td>;
+            return (
+              <td className={tableStyles.td} key={columnKey}>{item.weight} Kg</td>
+            );
           }
 
           case 'actions': {
             const btnPrint = (
               <div className={styles.btnPrintOnTable}>
-                <a href={"/trips/" + item[columnKey] + "/manifest#"} className="btn btn-sm btn-default" target="_blank">
+                <a href={"/trips/" + item.actions + "/manifest#"} className="btn btn-sm btn-default" target="_blank">
                   <Glyph name={"print"} />
                 </a>
               </div>
@@ -262,6 +204,15 @@ const Table = React.createClass({
             );
             const btnAction = (<div className='nb'>{btnPrint}{btnAssign}</div>)
             return <td className={tableStyles.td} key={columnKey}>{btnAction}</td>;
+          }
+
+          case 'deadline': {
+            const deadlineDiff = item.deadline.diff(moment());
+            const itemComponent = (deadlineDiff > 0) ? <Interval startTime={deadlineDiff} />: <span>{item.deadline.fromNow()}</span>;
+            
+            return (
+              <td className={tableStyles.td + ((deadlineDiff > 0) ? '' : ' ' + styles.redColumn)} key={columnKey}>{itemComponent}</td>
+            )
           }
 
           default: {
@@ -305,43 +256,44 @@ const Table = React.createClass({
       }
     });
 
-    const changeFilterAndFetch = this.props.filteringAction.changeFilterAndFetch;
     const Search = (
       <div className='row'>
         {Filters}
       </div>
     );
 
-    if (this.props.isFetching) {
-      return (
-        <div style={{textAlign:'center'}}>
-          <div style={{fontSize: 20}}>
-            Fetching data....
-          </div>
-        </div>
-      );
-    } else {
-      if (this.props.items.length === 0) {
-        return (
-          <div style={{textAlign:'center'}}>
-            <img src="/img/orders-empty-state.png" />
-            <div style={{fontSize: 20}}>
-              You have no outbound trips
-            </div>
-          </div>
-        );
-      } else {
-        return (
-          <div>
-            {Search}
-            <table className={tableStyles.table}>
-              <thead><tr>{Headers}</tr></thead>
-              <tbody>{Body}</tbody>
-            </table>
-          </div>
-        );
-      }
-    }
+    return (
+      <div>
+        {Search}
+        <table className={tableStyles.table}>
+          <thead><tr>{Headers}</tr></thead>
+          { this.props.isFetching &&
+            <tbody>
+              <td colSpan={ColumnsOrder.length}>
+                <div className={styles.fetchingText}>
+                  Fetching data....
+                </div>
+              </td>
+            </tbody>
+          }
+          { !this.props.isFetching && this.props.items.length > 0 &&
+            <tbody>{Body}</tbody>
+          }
+          { !this.props.isFetching && this.props.items.length === 0 &&
+            <tbody>
+              <td colSpan={ColumnsOrder.length}>
+                <div className={styles.emptyTableContainer}>
+                  <img src="/img/image-all-assigned.png" className={styles.emptyTableImage}/>
+                  <div className={styles.bigText}>
+                    There are no active outbound trips
+                  </div>
+                </div>
+              </td>
+            </tbody>
+          }
+        </table>
+      </div>
+    );
   }
 });
 
@@ -393,13 +345,13 @@ const TableStateful = React.createClass({
     const statusProps = {
       pickStatus: this.pickStatus,
       statusList: this.props.statusList,
-      statusName: this.state.statusName,
+      statusName: this.state.statusName
     }
 
     const filteringAction = {
       changeFilter: this.changeFilter,
       changeFilterAndFetch: this.changeFilterAndFetch,
-      fetchTrips: this.fetchTrips,
+      fetchTrips: this.fetchTrips
     }
 
     const trips = lodash.map(this.props.trips, ProcessTrip);

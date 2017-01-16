@@ -38,7 +38,7 @@ const DetailRow = React.createClass({
       default :
         return (
           <div className={styles.inputForm}>
-            <Input className={'form-control'} base={{placeholder: placeholder}}
+            <Input className={'form-control'} base={{placeholder: placeholder, value: value}}
               onChange={(data) => this.props.onChange(data)} type={type}/>
           </div>
         )
@@ -347,7 +347,8 @@ const AssignTripModalClass = React.createClass({
       selectedDriver: '',
       Fee: 0,
       isExternalDataValid: false,
-      isHubAssign: false
+      isHubAssigning: false,
+      AwbNumber: ' '
     }
   },
   isLastMile() {
@@ -360,7 +361,7 @@ const AssignTripModalClass = React.createClass({
     this.setState({
       isLastMile: false,
       isLastMileAssigning: false,
-      isHubAssign: true
+      isHubAssigning: true
     })
   },
   fleetInModalSelected(key) {
@@ -416,6 +417,9 @@ const AssignTripModalClass = React.createClass({
         this.setState({isExternalDataValid: true})
       }
     }
+  },
+  componentWillReceiveProps(nextProps) {
+    this.setState({isHubAssigning: nextProps.isHubAssigning})
   },
   render() {
     const trip = this.props.trip
@@ -501,7 +505,7 @@ const AssignTripModalClass = React.createClass({
                 </div>
                 <div className="row">
                   <div className={styles.modalInfoDestination}>
-                    <div className={styles.smallText}>Destination Area</div>
+                    <div className={styles.smallText}>Destination Hub</div>
                     <div className={styles.bigText}>{nextDestination || '-'}</div>
                   </div>
                   { !this.state.isLastMileAssigning && !this.state.isLastMile &&
@@ -514,6 +518,7 @@ const AssignTripModalClass = React.createClass({
                 </div>
               </div>
             </div>
+
             { this.state.isLastMileAssigning &&
               <div>
                 <div className={styles.modalBody}>
@@ -535,18 +540,18 @@ const AssignTripModalClass = React.createClass({
               </div>
             }
 
-            { this.state.isHubAssign &&
+            { this.state.isHubAssigning &&
               <div>
                 <div className={styles.modalBody}>
                   <HubSetter trip={trip} nextDestination={DstHub(trip) || DstDistrict(trip)} />
                 </div>
                 <div className={styles.modalFooter}>
-                  <p><small>Please set the next hub for this trip.</small></p>
+                  <p><small>Please set the destination hub for this trip.</small></p>
                 </div>
               </div>
             }
 
-            { !this.state.isLastMileAssigning && !this.state.isHubAssign &&
+            { !this.state.isLastMileAssigning && !this.state.isHubAssigning &&
               <div className="nb">
                 <Tabs selected={0}>
                   <Pane label="Assign To My Driver">
@@ -598,21 +603,19 @@ const AssignTripModalClass = React.createClass({
                       <div className={styles.modalTabPanel}>
                         <div className="row">
                           <DetailRow label="3PL NAME" className={styles.colMd12 + ' ' + styles.detailRow} 
-                            placeholder="Write the 3PL name here..." value={trip.ExternalTrip && trip.ExternalTrip.Sender} 
+                            placeholder="Write the 3PL name here..." value={this.state.Sender} 
                             isEditing={true} type="text" onChange={this.onChange('Sender')} />
                           <DetailRow label="TRANSPORTATION" className={styles.colMd12 + ' ' + styles.detailRow} 
-                            placeholder="Write the transportation here..." value={trip.ExternalTrip && trip.ExternalTrip.Transportation} 
+                            placeholder="Write the transportation here..." value={this.state.Transportation} 
                             isEditing={true} type="text" onChange={this.onChange('Transportation')} />
                           <DetailRow label="DEPARTURE TIME" className={styles.colMd6 + ' ' + styles.detailRow} 
-                            value={trip.DepartureTime && formatDate(trip.DepartureTime)} isEditing={true} type="datetime" 
-                            onChange={this.onChange('DepartureTime')} />
+                            value={this.state.DepartureTime} isEditing={true} type="datetime" onChange={this.onChange('DepartureTime')} />
                           <DetailRow label="ETA" className={styles.colMd6 + ' ' + styles.detailRow} 
-                            value={trip.ExternalTrip && trip.ExternalTrip.ArrivalTime && formatDate(trip.ExternalTrip.ArrivalTime)} 
-                            isEditing={true} type="datetime" onChange={this.onChange('ArrivalTime')} />
+                            value={this.state.ArrivalTime} isEditing={true} type="datetime" onChange={this.onChange('ArrivalTime')} />
                           <DetailRow label="FEE" className={styles.colMd6 + ' ' + styles.detailRow} 
-                            value={trip.ExternalTrip && trip.ExternalTrip.Fee} isEditing={true} type="number" onChange={this.onChange('Fee')} />
+                            value={this.state.Fee} isEditing={true} type="number" onChange={this.onChange('Fee')} />
                           <DetailRow label="AWB NUMBER" className={styles.colMd6 + ' ' + styles.detailRow} 
-                            value={trip.ExternalTrip && trip.ExternalTrip.AwbNumber} isEditing={true} type="text" 
+                            value={this.state.AwbNumber} isEditing={true} type="text" 
                             onChange={this.onChange('AwbNumber')} />
                           <div className={styles.colMd3}></div>
                           <div className={styles.colMd9 + ' ' + styles.centerItems}>
@@ -625,7 +628,7 @@ const AssignTripModalClass = React.createClass({
                               }
                             </div>
                             <DetailRow className={styles.colMd6 + ' ' + styles.detailRow + ' ' + styles.uploadButton} 
-                              value={trip.PictureUrl} isEditing={true} type="image" onChange={this.onChange('PictureUrl')}/>
+                              value={this.state.PictureUrl} isEditing={true} type="image" onChange={this.onChange('PictureUrl')}/>
                           </div>
                         </div>
                       </div>
@@ -666,13 +669,14 @@ const AssignTripModalClass = React.createClass({
 
 function ModalStateToProps (state) {
   const {outboundTripsService} = state.app
-  const {trip, nearbyfleets, nearbyDrivers, isSuccessAssigning} = outboundTripsService
+  const {trip, nearbyfleets, nearbyDrivers, isSuccessAssigning, isHubAssigning} = outboundTripsService
 
   return {
     trip,
     nearbyfleets,
     nearbyDrivers,
-    isSuccessAssigning
+    isSuccessAssigning,
+    isHubAssigning
   }
 }
 

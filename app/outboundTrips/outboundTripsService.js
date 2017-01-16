@@ -96,7 +96,7 @@ const initialState = {
   suggestLastMileFleet: null,
   prev3PL: null,
   isAssigning: false,
-  isHubUpdating: false,
+  isHubAssigning: false,
   isSuccessAssigning: false
 }
 
@@ -279,11 +279,11 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.HUB_UPDATE_START: {
-      return lodash.merge({}, state, {isHubUpdating: true});
+      return lodash.merge({}, state, {isHubAssigning: true});
     }
 
     case Constants.HUB_UPDATE_END: {
-      return lodash.merge({}, state, {isHubUpdating: false});
+      return lodash.merge({}, state, {isHubAssigning: false});
     }
 
     default: return state;

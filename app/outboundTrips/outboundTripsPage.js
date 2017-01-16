@@ -19,7 +19,8 @@ const ContainerPage = React.createClass({
     const title = "Outbound";
     return (
       <div>
-        <Page title={title}>
+        <Page title={title} 
+          count={{itemName: 'trip', done: 'All Done', value: this.props.total, isLoading: this.props.isFetching}}>
           <MyTripsTable key={this.props.lastPath} lastPath={this.props.lastPath} />
         </Page>
         {
@@ -38,11 +39,13 @@ function StateToProps(state, ownProps) {
   const routes = ownProps.routes;
   const paths = routes[routes.length-1].path.split('/');
   const lastPath = paths[paths.length-1];
-  const {isAssigning} = outboundTripsService;
+  const {isAssigning, total, isFetching} = outboundTripsService;
 
   return {
     lastPath,
-    isAssigning
+    isAssigning,
+    total,
+    isFetching
   };
 };
 

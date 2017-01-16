@@ -1176,8 +1176,8 @@ td.withIcon {
 }
 
 .vehicleLogoOnTable {
-  width: 30px;
   height: 30px;
+  margin-right: 3px;
 }
 
 .tripWithDriverCell {
@@ -1185,4 +1185,36 @@ td.withIcon {
   justify-content: center;
   align-items: center;
   width: 150px;
+}
+
+.redColumn {
+  background-color: red;
+  color: white;
+}
+
+.emptyTableContainer {
+  text-align: center;
+  height: 500px;
+  vertical-align: middle;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.fetchingText {
+  font-size: 20px !important;
+  text-align: center;
+}
+
+.emptyTableSmallText {
+  font-size: 15px;
+  color: #9C9C9C;
+  margin-top: 12px;
+}
+
+.emptyTableImage {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 33px;
 }
