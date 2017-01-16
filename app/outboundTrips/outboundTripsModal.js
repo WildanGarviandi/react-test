@@ -161,15 +161,29 @@ const FleetInModal = React.createClass({
 
       return (
         <div key={key} className={styles.listInModal + ' ' + (selected === key ? styles.active : '')}>
-          <Radio value={key} onClick={this.select.bind(null, key)}/>
-          <div className={styles.checkedFleet}></div>
-          <img src={item.FleetManager.PictureUrl} />
+          <Radio value={key} />
+          <div className={styles.checkedFleet} onClick={this.select.bind(null, key)}></div>
+          { item.FleetManager &&
+            <img src={item.FleetManager.PictureUrl} />
+          }
           <div className={styles.vendorName}>
-            <div className={styles.mediumText}><strong>{item.FleetManager.CompanyDetail.CompanyName}</strong></div>
+            <div className={styles.mediumText}>
+              <strong>
+                { item.FleetManager && item.FleetManager.CompanyDetail &&
+                  item.FleetManager.CompanyDetail.CompanyName}
+                { (!item.FleetManager || !item.FleetManager.CompanyDetail) && 'No Name'}
+              </strong>
+            </div>
           </div>
           <div className={styles.ovl}>
             <img src='/img/icon-grouping.png' />
-            <span className={styles.bigText}>{currentLoad + '/' + item.FleetManager.CompanyDetail.OrderVolumeLimit}</span>
+            <span className={styles.bigText}>
+              { item.FleetManager && item.FleetManager.CompanyDetail &&
+                currentLoad + '/' + item.FleetManager.CompanyDetail.OrderVolumeLimit}
+              { (!item.FleetManager || !item.FleetManager.CompanyDetail) &&
+                currentLoad + '/-'
+              }
+            </span>
           </div>
         </div>
       )
@@ -186,10 +200,9 @@ const FleetInModal = React.createClass({
     } else {
       if (this.props.items.length === 0) {
         return (
-          <div style={{textAlign:'center'}}>
-            <img src="/img/orders-empty-state.png" />
-            <div style={{fontSize: 20}}>
-              You have no outbound trips
+          <div className={styles.centerItems}>
+            <div className={styles.mediumText}>
+              No fleets found
             </div>
           </div>
         )
@@ -221,7 +234,7 @@ const DriverInModal = React.createClass({
     const selected = (this.props.selected) ? this.props.selected : this.state.selected
 
     const Drivers = lodash.map(this.props.items, (item, key) => {
-      const currentLoad = (selected === key) ? item.CurrentWeight + weight : item.CurrentWeight
+      const currentLoad = (selected === key) ? parseFloat(item.CurrentWeight) + parseFloat(weight) : parseFloat(item.CurrentWeight)
       const isOverload = currentLoad > item.TotalCapability
       const imgSrc = (item.Vehicle && item.Vehicle.VehicleID === 1) ? '/img/icon-vehicle-motor.png' : '/img/icon-vehicle-van.png'
 
@@ -274,10 +287,9 @@ const DriverInModal = React.createClass({
     } else {
       if (this.props.items.length === 0) {
         return (
-          <div style={{textAlign:'center'}}>
-            <img src="/img/orders-empty-state.png" />
-            <div style={{fontSize: 20}}>
-              You have no outbound trips
+          <div className={styles.centerItems}>
+            <div className={styles.mediumText}>
+              No drivers found
             </div>
           </div>
         )
@@ -510,7 +522,7 @@ const AssignTripModalClass = React.createClass({
                   </div>
                   { !this.state.isLastMileAssigning && !this.state.isLastMile &&
                     <div className={styles.modalInfoNotLastMile}>
-                      <div className={styles.smallText}>Since its not a last mile, we suggest that you send this orders to</div>
+                      <div className={styles.smallText}>Since its not a last mile, we suggest that you send this trip to</div>
                       <EmptySpace height={5} />
                       <div className={styles.smallText}><strong><ul>{suggestionComponents}</ul></strong></div>
                     </div>

@@ -627,6 +627,8 @@ td.withIcon {
 .centerItems {
   display: flex;
   align-items: center;
+  justify-content: center;
+  height: 100%;
 }
 
 
@@ -759,7 +761,7 @@ td.withIcon {
 }
 
 .infoLocation {
-  width: 123px;
+  min-width: 123px;
   height: 40px !important;
   right: 16px !important;
   top: 20px !important;
@@ -1217,4 +1219,8 @@ td.withIcon {
   width: 80px;
   height: 80px;
   margin-bottom: 33px;
+}
+
+.textCenter {
+  text-align: center;
 }

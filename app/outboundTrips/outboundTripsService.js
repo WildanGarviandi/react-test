@@ -320,6 +320,7 @@ export function FetchList() {
       offset: (currentPage-1)*limit,
     });
 
+    dispatch({type: modalAction.BACKDROP_SHOW});
     dispatch({
       type: Constants.TRIPS_OUTBOUND_FETCH_START,
     });
@@ -339,11 +340,13 @@ export function FetchList() {
         dispatch({
           type: Constants.TRIPS_OUTBOUND_FETCH_END,
         });
+        dispatch({type: modalAction.BACKDROP_HIDE});
       });
     }).catch(() => {
       dispatch({
         type: Constants.TRIPS_OUTBOUND_FETCH_END,
       });
+      dispatch({type: modalAction.BACKDROP_HIDE});
 
       dispatch(ModalActions.addMessage('Failed to fetch outbound trips'));
     });
@@ -355,10 +358,13 @@ export function FetchListNearbyFleets() {
     const {userLogged} = getState().app;
     const {token} = userLogged;
 
-    const query = '';
+    const query = {
+      limit: 10000
+    };
 
     const isHubAPI = true;
 
+    dispatch({type: modalAction.BACKDROP_SHOW});
     dispatch({
       type: Constants.NEARBY_FLEETS_FETCH_START,
     });
@@ -378,11 +384,13 @@ export function FetchListNearbyFleets() {
         dispatch({
           type: Constants.NEARBY_FLEETS_FETCH_END,
         });
+        dispatch({type: modalAction.BACKDROP_HIDE});
       });
     }).catch(() => {
       dispatch({
         type: Constants.NEARBY_FLEETS_FETCH_END,
       });
+      dispatch({type: modalAction.BACKDROP_HIDE});
 
       dispatch(ModalActions.addMessage('Failed to fetch nearby vendor'));
     });
@@ -396,11 +404,13 @@ export function FetchListNearbyDrivers(tripID) {
     const {currentPage, filters, limit} = outboundTrips;
 
     const query = {
-      tripID: tripID
+      tripID: tripID,
+      limit: 10000
     };
 
     const isHubAPI = true;
 
+    dispatch({type: modalAction.BACKDROP_SHOW});
     dispatch({
       type: Constants.NEARBY_DRIVERS_FETCH_START,
     });
@@ -420,11 +430,13 @@ export function FetchListNearbyDrivers(tripID) {
         dispatch({
           type: Constants.NEARBY_DRIVERS_FETCH_END,
         });
+        dispatch({type: modalAction.BACKDROP_HIDE});
       });
     }).catch(() => {
       dispatch({
         type: Constants.NEARBY_DRIVERS_FETCH_END,
       });
+      dispatch({type: modalAction.BACKDROP_HIDE});
 
       dispatch(ModalActions.addMessage('Failed to fetch nearby driver'));
     });
@@ -516,6 +528,7 @@ function SetTrip(trip, haveDone) {
 
     dispatch({ type: Constants.TRIPS_OUTBOUND_DETAILS_FETCH_END });
     dispatch({ type: Constants.TRIPS_OUTBOUND_ASSIGNING_START});
+    dispatch({type: modalAction.BACKDROP_HIDE});
 
     if(trip.FleetManager) {
       dispatch(FetchDrivers(trip.FleetManager.UserID));
@@ -531,6 +544,7 @@ export function FetchDetails(tripID) {
       suggestLastMileFleet: 1
     };
 
+    dispatch({type: modalAction.BACKDROP_SHOW});
     dispatch({ type: Constants.TRIPS_OUTBOUND_DETAILS_FETCH_START });
     FetchGet('/trip/' + tripID, token, params).then((response) => {
       if(!response.ok) {
@@ -549,6 +563,7 @@ export function FetchDetails(tripID) {
     }).catch((e) => {
       const message = (e && e.message) ? e.message : 'Failed to fetch trip details';
       dispatch({ type: Constants.TRIPS_OUTBOUND_DETAILS_FETCH_END });
+      dispatch({type: modalAction.BACKDROP_HIDE});
       dispatch(ModalActions.addMessage(message));
     });
   }

@@ -12,6 +12,12 @@ import {Glyph} from '../views/base/glyph';
 import StatusDropdown from '../views/base/statusDropdown';
 import {Interval} from './outboundTripsModal';
 import {ProcessTrip} from './outboundTripsHelper';
+import config from '../config/configValues.json';
+
+let vehicles = {}
+lodash.each(config.vehicle, (vehicle) => {
+  vehicles[vehicle.value.toUpperCase()] = vehicle.key;
+})
 
 const ColumnsOrder = ['tripID', 'nextDestination', 'tripType', 'fleet', 
   'status', 'numberPackages', 'weight', 'remarks', 'deadline', 'actions'];
@@ -153,7 +159,7 @@ const Table = React.createClass({
           case 'fleet': {
             let vehicleLogoSrc = '';
             if (item.driver) {
-              vehicleLogoSrc = (item.vehicleID === 1) ? '/img/icon-vehicle-motor.png' : '/img/icon-vehicle-van.png'
+              vehicleLogoSrc = (item.vehicleID === vehicles.MOTORCYCLE) ? '/img/icon-vehicle-motor.png' : '/img/icon-vehicle-van.png'
             }
             const itemWith3PL = (
               <p>

@@ -11,6 +11,11 @@ import {ButtonWithLoading} from '../views/base'
 import {DropdownWithState} from '../views/base/dropdown'
 import config from '../config/configValues.json'
 
+let vehicles = {}
+lodash.each(config.vehicle, (vehicle) => {
+  vehicles[vehicle.value.toUpperCase()] = vehicle.key;
+})
+
 export function FullAddress (address) {
   const Addr = address.Address1 && address.Address2 && (address.Address1.length < address.Address2.length) ? address.Address2 : address.Address1
   return lodash.chain([Addr])
@@ -32,8 +37,8 @@ export function TripDropOff (trip) {
 }
 
 export function AssignedTo (trip) {
-  var className = (trip.Driver && trip.Driver.Vehicle && trip.Driver.Vehicle.VehicleID === 1) ? styles.iconVehicleMotor : styles.iconVehicleMiniVan
-  var isActionDisabled = ((trip.FleetManager && trip.FleetManager.CompanyDetail) || (trip.Driver) || (trip.ExternalTrip)) ? true : false
+  var className = (trip.Driver && trip.Driver.Vehicle && trip.Driver.Vehicle.VehicleID === vehicles.MOTORCYCLE) ? styles.iconVehicleMotor : styles.iconVehicleMiniVan
+  var isActionDisabled = ((trip.FleetManager && trip.FleetManager.CompanyDetail) || (trip.Driver) || (trip.ExternalTrip))
 
   return {
     className: (trip.Driver && trip.Driver.Vehicle) ? className : '',
@@ -159,7 +164,7 @@ const HubSetterClass = React.createClass({
               <DropdownWithState options={hubs} handleSelect={this.selectHub} initialValue={nextHub} />
             </span>
             <div className={classNaming(styles.buttonWrapper)}>
-              <ButtonWithLoading textBase='Set as Destination' textLoading='Setting Destination'
+              <ButtonWithLoading textBase='Set Destination' textLoading='Setting Destination'
                 disabled={!this.state.selected.key && !this.props.nextHubID}
                 onClick={this.pickHub} isLoading={isUpdating} styles={{base: styles.normalBtn}} />
             </div>
