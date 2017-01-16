@@ -1,12 +1,10 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {Input, Page} from '../views/base';
+import {Page} from '../views/base';
 import * as OutboundTripsService from './outboundTripsService';
 import MyTripsTable from './outboundTripsTable';
 import FleetsFetch from '../modules/drivers/actions/fleetsFetch';
-import styles from './styles.css';
-import formStyles from '../components/form.css';
-import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import {ModalContainer} from 'react-modal-dialog';
 import AssignTripModal from './outboundTripsModal';
 
 const ContainerPage = React.createClass({

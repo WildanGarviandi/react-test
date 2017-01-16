@@ -1,32 +1,18 @@
 import lodash from 'lodash';
-import ClassName from 'classnames';
 import moment from 'moment';
 import React from 'react';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
-import {Button} from 'react-bootstrap';
 import * as OutboundTrips from './outboundTripsService';
-import {DropdownTypeAhead, Input, Pagination, ButtonWithLoading} from '../views/base';
+import {Input, Pagination} from '../views/base';
 import {DropdownWithState2} from '../views/base/dropdown';
 import DateRangePicker from '../views/base/dateRangePicker';
 import tableStyles from '../views/base/table.css';
 import styles from './styles.css';
 import {Glyph} from '../views/base/glyph';
 import StatusDropdown from '../views/base/statusDropdown';
-import {modalAction} from '../modules/modals/constants';
-import dateTimeStyles from '../views/container/datetime.css';
-import stylesModal from '../views/base/modal.css';
-import classnaming from 'classnames';
 
-import DateTime from 'react-datetime';
-import {InputWithDefault} from '../views/base/input';
-import {RadioGroup, Radio} from '../components/form';
-import {formatDate, formatDateHourOnly} from '../helper/time';
-import ImagePreview from '../views/base/imagePreview';
-import ImageUploader from '../views/base/imageUploader';
-
-import {FullAddress, TripDropOff, AssignedTo, Remarks, Weight, DstHub, DstDistrict, ProcessTrip} from './outboundTripsHelper';
-import {Inverval} from './outboundTripsModal';
+import {ProcessTrip} from './outboundTripsHelper';
 
 const ColumnsOrder = ['tripID', 'nextDestination', 'tripType', 'fleet', 
   'status', 'numberPackages', 'weight', 'remarks', 'deadline', 'actions'];
@@ -45,7 +31,7 @@ const ColumnsTitle = {
   tripNumber: "Trip Number",
   tripType: "Type",
   webstoreNames: "Webstore",
-  numberPackages: "Quantity",
+  numberPackages: "Qty",
   weight: "Weight",
   remarks: "Remarks",
   deadline: "Deadline", 
@@ -99,7 +85,7 @@ const DateCell = React.createClass({
   handleKeyDown(e) {
     if (e.keyCode === 13) {
       const attr = this.props.attr;
-      const range = _.map(this.state.txt.split('-'), (s) => (s.split('/')));
+      const range = lodash.map(this.state.txt.split('-'), (s) => (s.split('/')));
 
       let filters;
       if (range.length !== 2) {
@@ -108,7 +94,7 @@ const DateCell = React.createClass({
           ['end'+attr]: '',
         }
       } else {
-        const [startDate, endDate] = _.map(range, (date) => {
+        const [startDate, endDate] = lodash.map(range, (date) => {
           return moment(date.join(''), "DDMMYYYY");
         });
 
@@ -189,7 +175,6 @@ const TripStatusSelect = React.createClass({
     this.props.pickStatus(val);
   },
   render() {
-    const {statusList, statusName} = this.props;
     return (
       <TrueSelect />
     );
@@ -198,8 +183,8 @@ const TripStatusSelect = React.createClass({
 
 const Table = React.createClass({
   render() {
-    const Headers = _.map(ColumnsOrder, (columnKey) => {
-      switch(columnKey) {
+    const Headers = lodash.map(ColumnsOrder, (columnKey) => {
+      switch (columnKey) {
         case "tripID": {
           return <th key={columnKey} className={styles.thTripID}>{ColumnsTitle[columnKey]}</th>;
         }
@@ -218,35 +203,64 @@ const Table = React.createClass({
       }
     });
 
-    const Body = _.map(this.props.items, (item) => {
-      const cells = _.map(ColumnsOrder, (columnKey) => {
-        switch(columnKey) {
-          case "tripID": {
+    const Body = lodash.map(this.props.items, (item) => {
+      const cells = lodash.map(ColumnsOrder, (columnKey) => {
+        switch (columnKey) {
+          case 'tripID': {
             return <td className={tableStyles.td + ' ' + styles.clickable} key={columnKey} onClick={this.props.toDetails.bind(null, item.key)}>{item[columnKey]}</td>;
           }
 
-          case "fleet": {
-            const textValue = (item[columnKey].thirdPartyLogistic) ? <p><b>{item[columnKey].thirdPartyLogistic}</b><br/>{item[columnKey].awbNumber}</p> : <p><b>{item[columnKey].companyName}</b><br/>{item[columnKey].driverDetail}</p>;
+          case 'fleet': {
+            let vehicleLogoSrc = '';
+            if (item.driver) {
+              vehicleLogoSrc = (item.vehicleID === 1) ? '/img/icon-vehicle-motor.png' : '/img/icon-vehicle-van.png'
+            }
+            const itemWith3PL = (
+              <p>
+                <b>{item.fleet.thirdPartyLogistic}</b>
+                <br />
+                {item.fleet.awbNumber}
+              </p>
+            )
+            const itemNot3PL = (
+              <span className={styles.tripWithDriverCell}>
+                { item.driver &&
+                  <img src={vehicleLogoSrc} className={styles.vehicleLogoOnTable} />
+                }
+                <p>
+                  <b>{item.fleet.companyName}</b>
+                  <br />
+                  {item.fleet.driverDetail}
+                </p>
+              </span>
+            )
+            const textValue = (item.fleet.thirdPartyLogistic) ? itemWith3PL : itemNot3PL;
 
-            return <td className={tableStyles.td + ' ' + item[columnKey].className + ' ' + styles.withIcon} key={columnKey}>{textValue}</td>;
+            return (
+              <td className={tableStyles.td} key={columnKey}>{textValue}</td>
+            );
           }
 
-          case "weight": {
+          case 'weight': {
             return <td className={tableStyles.td} key={columnKey}>{item[columnKey]} Kg</td>;
           }
 
-          case "actions": {
-            const btnPrint = <div className={styles.btnPrintOnTable}>
+          case 'actions': {
+            const btnPrint = (
+              <div className={styles.btnPrintOnTable}>
                 <a href={"/trips/" + item[columnKey] + "/manifest#"} className="btn btn-sm btn-default" target="_blank">
                   <Glyph name={"print"} />
                 </a>
-              </div>;
-            const btnAssign = <div className={styles.btnAssignOnTable}>
+              </div>
+            );
+            const btnAssign = (
+              <div className={styles.btnAssignOnTable}>
                 <button className={styles.btnAssign + " btn btn-sm btn-success"} disabled={item.isActionDisabled} onClick={this.props.openModal.bind(null, item)}>
                   Assign
                 </button>
-              </div>;
-            const btnAction = <div className='nb'>{btnPrint}{btnAssign}</div>
+              </div>
+            );
+            const btnAction = (<div className='nb'>{btnPrint}{btnAssign}</div>)
             return <td className={tableStyles.td} key={columnKey}>{btnAction}</td>;
           }
 
@@ -260,8 +274,8 @@ const Table = React.createClass({
     });
 
     const changeFilter = this.props.filteringAction.changeFilter;
-    const Filters = _.map(ColumnsOrder, (columnKey) => {
-      switch(columnKey) {
+    const Filters = lodash.map(ColumnsOrder, (columnKey) => {
+      switch (columnKey) {
         case "nextDestination": {
           return (
             <div key={columnKey} className={styles.colMd3 + ' ' +styles.filterDropDown}>
@@ -293,10 +307,8 @@ const Table = React.createClass({
 
     const changeFilterAndFetch = this.props.filteringAction.changeFilterAndFetch;
     const Search = (
-      <div className='nb'>
-        <div className='row'>
-          {Filters}
-        </div>
+      <div className='row'>
+        {Filters}
       </div>
     );
 
@@ -376,7 +388,7 @@ const TableStateful = React.createClass({
   render() {
     const {filters, paginationAction, paginationState, statusParams, tripDetails, tripsIsFetching} = this.props;
 
-    const paginationProps = _.assign({}, paginationAction, paginationState);
+    const paginationProps = lodash.assign({}, paginationAction, paginationState);
 
     const statusProps = {
       pickStatus: this.pickStatus,
@@ -390,7 +402,7 @@ const TableStateful = React.createClass({
       fetchTrips: this.fetchTrips,
     }
 
-    const trips = _.map(this.props.trips, ProcessTrip);
+    const trips = lodash.map(this.props.trips, ProcessTrip);
 
     const tableProps = {
       items: trips,
@@ -425,9 +437,11 @@ function StateToProps(state) {
   const statusList = state.app.containers.statusList;
 
   return {
-    paginationState, trips, tripsIsFetching: isFetching,
-    statusList: _.chain(statusList).map((key, val) => [val, key]).sortBy((arr) => (arr[1])).map((arr) => (arr[0])).value(),
-    nameToID: _.reduce(statusList, (memo, key, val) => {
+    paginationState, 
+    trips, 
+    tripsIsFetching: isFetching,
+    statusList: lodash.chain(statusList).map((key, val) => [val, key]).sortBy((arr) => (arr[1])).map((arr) => (arr[0])).value(),
+    nameToID: lodash.reduce(statusList, (memo, key, val) => {
       memo[val] = key;
       return memo;
     }, {}),
@@ -458,16 +472,7 @@ function DispatchToProps(dispatch, ownProps) {
     },
     tripDetails(id) {
       dispatch(push(`/trips/${id}`));
-    },
-    DriverSet(tripID, driverID) {
-      dispatch(OutboundTrips.AssignDriver(tripID, driverID));
-    },
-    FleetSet(tripID, fleetManagerID) {
-      dispatch(OutboundTrips.AssignFleet(tripID, fleetManagerID));
-    },
-    update: (trip) => {
-      dispatch(OutboundTrips.UpdateExternalTrip(trip));
-    },
+    }
   };
 }
 
