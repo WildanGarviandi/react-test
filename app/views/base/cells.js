@@ -28,7 +28,7 @@ export function OrderIDLinkCell({onClick, eds, id, to, isChecked, item}) {
   return (
     <Link to={to} className={styles.link}>
       <span style={style}>
-        {eds}<br />{id}
+        {eds}<br />({id})
       </span>
     </Link>
   );

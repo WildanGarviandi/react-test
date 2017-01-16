@@ -14,6 +14,7 @@ import {Reducer as pickupOrders} from './modules/pickupOrders';
 // import receivedOrders from './modules/orders/reducers/received';
 import {Reducer as receivedOrders} from './modules/receivedOrders';
 import {Reducer as grouping} from './grouping/groupingService';
+import {Reducer as inboundOrders} from './inbound/inboundOrdersService';
 import orderDetails from './modules/orders/reducers/details';
 // import outboundTrips from './modules/trips/reducers/outbound';
 import tripDetails from './modules/trips/reducers/details';
@@ -45,6 +46,7 @@ export default combineReducers({
   pickupOrders,
   receivedOrders,
   grouping,
+  inboundOrders,
   tripDetails,
   myTrips,
   myOrders,

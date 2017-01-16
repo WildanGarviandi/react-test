@@ -7,7 +7,9 @@ function reducer (state = {}, action) {
         message: action.message,
         level: action.level,
         position: action.position,
-        style: action.style
+        style: action.style,
+        timeout: action.timeout,
+        withSound: action.withSound
       });
     case notifAction.REMOVE_NOTIFICATION:
       return Object.assign({}, state, {

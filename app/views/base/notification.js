@@ -5,6 +5,7 @@ import { addNotification } from '../../modules/notification/actions';
 import NotificationSystem from 'react-notification-system';
 import NotifActions from '../../modules/notification/actions';
 import lodash from 'lodash';
+import Sound from 'react-sound';
 
 /**
  * Overriding style
@@ -27,13 +28,13 @@ let style = {
   }
 };
 
-function createNotification (component, message, level, position) {
+function createNotification (component, message, level, position, timeout) {
   if (message) {
     component.notificationSystem.addNotification({
       message,
       level: level || 'info',
       position: position || 'tr',
-      autoDismiss: 2,
+      autoDismiss: timeout || 2,
       onRemove: function () {
         component.props.removeNotification();
       }
@@ -49,22 +50,37 @@ class NotificationContainer extends Component {
  
   componentDidMount() {
     this.notificationSystem = this.refs.notificationSystem;
-    const { message, level, position } = this.props.notification;
-    createNotification (this, message, level, position);
+    const { message, level, position, timeout } = this.props.notification;
+    createNotification (this, message, level, position, timeout);
   }
 
   componentWillReceiveProps(newProps) {
-    const { message, level, position } = newProps.notification;
-    createNotification (this, message, level, position);
+    const { message, level, position, timeout } = newProps.notification;
+    createNotification (this, message, level, position, timeout);
   }
  
   render() {
+    const { withSound, level } = this.props.notification;
+    
     if (this.props.notification.style) {
       style.NotificationItem.DefaultStyle = lodash.assign(style.NotificationItem.DefaultStyle, this.props.notification.style);
     }
-
     return (
-      <NotificationSystem ref="notificationSystem" style={style} />
+      <span>
+        <NotificationSystem ref="notificationSystem" style={style} />
+        { withSound && level === 'error' &&
+          <Sound url="/sound/system-fault.mp3" playStatus={Sound.status.PLAYING} />
+        }
+        { withSound && level === 'success' &&
+          <Sound url="/sound/coins.mp3" playStatus={Sound.status.PLAYING} />
+        }
+        { withSound && level === 'info' &&
+          <Sound url="/sound/job-done.mp3" playStatus={Sound.status.PLAYING} />
+        }
+        { withSound && level === 'warning' &&
+          <Sound url="/sound/may-i-have-your-attention.mp3" playStatus={Sound.status.PLAYING} />
+        }
+      </span>
     );
   }
 }

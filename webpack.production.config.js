@@ -33,6 +33,10 @@ module.exports = {
       {
         test: /\.woff$/, 
         loader: "file-loader"
+      },
+      {
+        test: /\.mp3$/,
+        loader: 'file'
       }
     ]
   },
