@@ -47,7 +47,7 @@ const InputRow = React.createClass({
     if (type === 'select') {
       radioContent = lodash.map(selectItems, (item, index) => {
         return (
-          <div style={{flex: 1 / selectItems.length}} key={index} onClick={thisClass.handleSelect.bind(null, item.value)}
+          <div style={{flex: (index === 0) ? 0.4 : 0.6 }} key={index} onClick={thisClass.handleSelect.bind(null, item.value)}
             className={styles.radioContainer}>
             { this.state.selectedValue === item.value &&
               <img src="/img/icon-checkmark-on.png" className={styles.radioImage}/>
