@@ -451,6 +451,38 @@ export function Deassign(tripID) {
   }
 }
 
+export function DeassignFleet(tripID) {
+  return (dispatch, getState) => {
+    const {userLogged} = getState().app;
+    const {token} = userLogged;
+
+    dispatch({
+      type: Constants.TRIPS_INBOUND_DETAILS_DEASSIGN_START,
+    });
+
+    FetchDelete(`/trip/${tripID}/fleetmanager`, token, {}, true).then((response) => {
+      if(!response.ok) {
+        return response.json().then(({error}) => {
+          throw error;
+        });
+      }
+
+      dispatch({
+        type: Constants.TRIPS_INBOUND_DETAILS_DEASSIGN_END,
+      });
+
+      window.location.reload(false);
+    }).catch((e) => {
+      const message = (e && e.message) || "Failed to deassign";
+      dispatch({
+        type: Constants.TRIPS_INBOUND_DETAILS_DEASSIGN_END,
+      });
+
+      dispatch(ModalActions.addMessage(message));
+    });
+  }
+}
+
 export function SetTrip(trip, haveDone) {
   return (dispatch, getState) => {
     let orders, driver, externalTrip, fleet;

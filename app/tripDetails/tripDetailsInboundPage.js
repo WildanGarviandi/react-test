@@ -407,8 +407,13 @@ const DetailPage = React.createClass({
     this.props.FetchFleetList();
   },
   deassignDriver() {
-    if(confirm('Are you sure you want to deassign driver on this container?')) {
+    if(confirm('Are you sure you want to cancel assignment on this trip?')) {
       this.props.driverDeassign();
+    }
+  },
+  deassignFleet() {
+    if(confirm('Are you sure you want to cancel assignment on this trip?')) {
+      this.props.fleetDeassign();
     }
   },
   exportManifest() {
@@ -578,8 +583,13 @@ const DetailPage = React.createClass({
                     </div>
                     <div className={styles.colMd6}>
                       {
-                        (canDeassignDriver || canDeassignFleet) &&
-                        <ButtonWithLoading styles={{base: styles.greenBtn}} textBase="Cancel Assignment" textLoading="Deassigning" onClick={this.deassignDriver} isLoading={isDeassigning} />
+                        (canDeassignDriver || canDeassignFleet) &&                        
+                        <ButtonWithLoading 
+                          styles={{base: styles.greenBtn}} 
+                          textBase="Cancel Assignment" 
+                          textLoading="Deassigning" 
+                          onClick={canDeassignDriver ? this.deassignDriver : this.deassignFleet} 
+                          isLoading={isDeassigning} />
                       }
                       {
                         haveSet ?
@@ -602,7 +612,7 @@ const DetailPage = React.createClass({
                         :
                         <div>
                           <p className={styles.title}>3PL / Fleet :</p>
-                          <p>No Driver Yet</p>
+                          <p>Not assigned yet</p>
                           <button className={styles.greenBtn} onClick={this.props.showAssignModal}>Assign Trip</button>
                         </div>
                       }
@@ -766,7 +776,7 @@ const mapStateToProps = (state, ownProps) => {
     reusable: reusable,
     emptying: emptying || {},
     canDeassignDriver: (trip.Driver && trip.OrderStatus.OrderStatusID == 2) || false,
-    canDeassignFleet: (trip.FleetManager && trip.OrderStatus.OrderStatusID == 2) || false,
+    canDeassignFleet: (trip.FleetManager) || false,
     driverState: {
       isDeassigning: state.app.driversStore.driverDeassignment,
       isPicking: state.app.driversStore.driverList.isLoading,
@@ -812,6 +822,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     driverDeassign: function() {
       dispatch(TripDetails.Deassign(ownProps.params.id));
+    },
+    fleetDeassign: function() {
+      dispatch(TripDetails.DeassignFleet(ownProps.params.id));
     },
     goToFillContainer: function(id) {
       dispatch(push('/trips/' + id + '/fillPickup'));
