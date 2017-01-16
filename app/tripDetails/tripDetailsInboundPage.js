@@ -18,6 +18,9 @@ import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered, TripParser
 import {formatDate} from '../helper/time';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import config from '../config/configValues.json';
+import DateTime from 'react-datetime';
+import ImagePreview from '../views/base/imagePreview';
+import dateTimeStyles from '../views/container/datetime.css';
 
 const columns = ['id', 'id2', 'pickup', 'time', 'CODValue', 'CODStatus', 'orderStatus', 'routeStatus', 'isSuccess', 'action'];
 const nonFillColumn = columns.slice(0, columns.length - 1);
@@ -374,11 +377,31 @@ export const AssignDriver = React.createClass({
   }
 });
 
+const DetailRow = React.createClass({
+  render() {
+    const {isEditing, label, type, value, className, placeholder} = this.props;
+    return (
+      <div style={{clear: 'both'}}>
+        <span className={styles.itemLabel}>{label}</span>
+        <span className={styles.itemValue}> 
+        {
+          type === "image" ?
+          <ImagePreview imageUrl={value} />
+          :
+          value
+        }
+        </span>
+      </div>
+    );
+  }
+});
+
 const DetailPage = React.createClass({
   getInitialState() {
     return {
       showVendor: true,
-      showDriver: false
+      showDriver: false,
+      showModalExternalTrip: false
     };
   },
   activateVendor() {
@@ -395,6 +418,12 @@ const DetailPage = React.createClass({
   },
   closeModal() {
     this.props.hideAssignModal();
+  },
+  openExternalTrip() {
+    this.setState({showModalExternalTrip: true});
+  },
+  closeExternalTrip() {
+    this.setState({showModalExternalTrip: false});
   },
   clearContainer() {
     if(confirm('Are you sure you want to empty and reuse this container?')) {
@@ -454,6 +483,11 @@ const DetailPage = React.createClass({
     return (value) => {
       this.setState({[key]: value});
     };
+  },
+  onChange(key) {
+    return (val) => {
+      this.props.update({[key]: val});
+    }
   },
   assignDriver() {
     if (!selectedDriver) {
@@ -515,6 +549,36 @@ const DetailPage = React.createClass({
         {
           isFetching &&
           <h3>Fetching Trip Details...</h3>
+        }
+        {
+          this.state.showModalExternalTrip &&
+          <ModalContainer>
+            <ModalDialog>
+              <div>
+                <div>
+                  <div className={styles.modalTitle}>
+                    External Trip Details
+                  </div>
+                  <div onClick={this.closeExternalTrip} className={styles.modalClose}>
+                    X
+                  </div> 
+                  <div>
+                    <div className={styles.modalTabPanel}>
+                      <div className="row">
+                        <DetailRow label="3PL NAME" className={styles.colMd12 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.Sender} type="text" />
+                        <DetailRow label="TRANSPORTATION" className={styles.colMd12 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.Transportation} type="text" />
+                        <DetailRow label="DEPARTURE TIME" className={styles.colMd6 + ' ' + styles.detailRow} value={trip.DepartureTime && formatDate(trip.DepartureTime)} type="datetime" />
+                        <DetailRow label="ETA" className={styles.colMd6 + ' ' + styles.detailRow + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.ArrivalTime && formatDate(trip.ExternalTrip.ArrivalTime)} type="datetime" />
+                        <DetailRow label="FEE" className={styles.colMd6 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.Fee} type="number" />
+                        <DetailRow label="AWB NUMBER" className={styles.colMd6 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.AwbNumber} type="text" />
+                        <DetailRow label="IMAGE" className={styles.colMd6 + ' ' + styles.detailRow + ' ' + styles.uploadButton} value={trip.ExternalTrip && trip.ExternalTrip.PictureUrl} type="image" />
+                      </div>
+                    </div>
+                  </div>
+                </div> 
+              </div>
+            </ModalDialog>
+          </ModalContainer>
         }
         {
           this.props.showModal &&
@@ -606,7 +670,10 @@ const DetailPage = React.createClass({
                           }
                           {
                             trip.ExternalTrip &&
-                            <p className={styles.title}>3PL : {trip.ExternalTrip.Transportation}</p>
+                            <div>
+                              <p className={styles.title}>3PL : {trip.ExternalTrip.Transportation}</p>
+                              <button className={styles.greenBtn} onClick={this.openExternalTrip}>Show Details</button>
+                            </div>
                           }
                         </div>
                         :
@@ -638,8 +705,7 @@ const DetailPage = React.createClass({
                   </div>
                 </div>
               </div>
-              <div style={{clear: 'both'}} />
-              
+              <div style={{clear: 'both'}} />              
                 <div className={styles.infoArea + ' ' + styles.mB30 + " nb"}>
                   <div className={styles.colMd6 + ' ' + styles.noPadding + ' ' + styles.stats}>
                     <p className={styles.title}>STATS</p>
@@ -874,6 +940,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     SplitTrip(id, vehicleID) {
       dispatch(TripDetails.SplitTrip(id, vehicleID));
+    },
+    update: (trip) => {
+      dispatch(TripDetails.UpdateExternalTrip(trip));
     }
   };
 };

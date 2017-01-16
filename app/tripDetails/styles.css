@@ -815,3 +815,68 @@ p.title {
   font-weight: bold;
   opacity: 0.6;
 }
+
+.modalTabPanel {
+  padding: 15px;
+  background: #ffffff;
+  height: 300px;
+  max-height: 400px;
+  overflow-y: auto;
+  width: 450px;
+}
+
+.detailRow {
+  margin-bottom: 15px;
+}
+
+.itemLabel {
+  display: block;
+  padding: 5px;
+  width: 180px;
+  float: left;
+  line-height: 32px;
+  font-weight: bold;
+}
+
+.itemValue {
+  padding: 5px;
+  display: block;
+  line-height: 32px;
+  text-indent: 0;
+  margin-left: 20px;
+}
+
+.itemValue input {
+  border-radius: 3px;
+  border: solid 1px #ccc;
+  display: inline-block;
+  height: 28px;
+  width: 280px;
+  position: relative;
+  left: 10px;
+  text-indent: 10px;
+}
+
+.datetimeWrapper {
+  position: relative;
+}
+
+.imageUploaderWrapper {
+  float: left;
+  padding: 5px;
+  position: relative;
+  text-indent: 0;
+}
+
+.imageUploaderWrapper::before {
+  content: ':';
+  position: absolute;
+  left: 0px;
+  top: 10px;
+  text-indent: 0;
+}
+
+.receiptThumbnail {
+  max-width: 400px;
+  max-height: 400px;
+}
