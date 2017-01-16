@@ -391,6 +391,8 @@ export function DeassignFleet(tripID) {
       dispatch({
         type: Constants.TRIPS_INBOUND_DETAILS_DEASSIGN_END,
       });
+      
+      window.location.reload(false);
     }).catch((e) => {
       const message = (e && e.message) ? e.message : "Failed to deassign fleet";
       dispatch({
@@ -1167,6 +1169,72 @@ export const fetchDetailsOrder = (id) => {
     }).catch((e) => {
       const message = (e && e.message) ? e.message : "Failed to fetch order details";
       dispatch({ type: Constants.DETAILS_FETCH_END });
+      dispatch(ModalActions.addMessage(message));
+    });
+  }
+}
+
+export function SaveEdit3PL(tripID) {
+  return (dispatch, getState) => {
+    const {inboundTripDetails, userLogged} = getState().app;
+    const {token} = userLogged;
+    const {externalTrip} = inboundTripDetails;
+
+    if(!externalTrip) {
+      dispatch(ModalActions.addMessage("Can't create external trip without any information"));
+      return;
+    }
+
+    let missingInformation = [];
+    const mandatoryInformation = [
+      {key: 'AwbNumber', value: 'AWB Number'},
+      {key: 'Sender', value: 'Sender'},
+      {key: 'Fee', value: 'Fee'},
+      {key: 'Transportation', value: 'Transportation'},
+      {key: 'DepartureTime', value: 'Departure Time'},
+      {key: 'ArrivalTime', value: 'Arrival Time'},
+      {key: 'PictureUrl', value: 'Receipt'}
+    ];
+
+    mandatoryInformation.forEach(function(x) {
+      if (!externalTrip[x.key]) {
+        missingInformation.push(x.value);
+      }
+    });
+
+    if (missingInformation.length > 0) {
+      dispatch(ModalActions.addMessage("Can't create external trip. Missing " + missingInformation.join() + " information."));
+      return;
+    }
+
+    const body = lodash.assign({}, externalTrip, {
+      ArrivalTime: new moment(externalTrip.ArrivalTime).utc(),
+      DepartureTime: new moment(externalTrip.DepartureTime).utc(),
+      TripID: tripID,
+    });
+
+    dispatch({type:modalAction.BACKDROP_SHOW});
+    FetchPost(`/external-trip/${externalTrip.ExternalTripID}`, token, body).then((response) => {
+      if(!response.ok) {
+        return response.json().then(({error}) => {
+          throw error;
+        });
+      }
+
+      return response.json().then(({data}) => {
+        dispatch({type: modalAction.BACKDROP_HIDE});
+        dispatch(StopEdit3PL());
+        dispatch({
+          type: Constants.TRIPS_INBOUND_DETAILS_EXTERNALTRIP_SET,
+          externalTrip: lodash.assign(data.ExternalTrip, {
+            ArrivalTime: new Date(data.ExternalTrip.ArrivalTime),
+            DepartureTime: new Date(data.ExternalTrip.DepartureTime),
+          })
+        });
+      });
+    }).catch((e) => {
+      const message = (e && e.message) ? e.message : 'Failed to mark trip as delivered';
+      dispatch({type: modalAction.BACKDROP_HIDE});
       dispatch(ModalActions.addMessage(message));
     });
   }

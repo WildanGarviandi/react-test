@@ -11,12 +11,20 @@ import {ButtonBase, ButtonWithLoading, Input, Modal, Page, Glyph} from '../views
 import DistrictAndDriver from '../views/container/districtAndDriver';
 import {OrderTable} from './tripDetailsTable';
 import * as TripDetails from './tripDetailsService';
+import * as OutboundTrips from '../outboundTrips/outboundTripsService';
+import AssignTripModal from '../outboundTrips/outboundTripsModal';
 import ModalActions from '../modules/modals/actions';
 import Accordion from '../views/base/accordion';
 import RemarksSetter from '../components/remarksSetter';
 import styles from './styles.css';
 import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered} from '../modules/trips';
 import {formatDate} from '../helper/time';
+import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import ImagePreview from '../views/base/imagePreview';
+import ImageUploader from '../views/base/imageUploader';
+import {InputWithDefault} from '../views/base/input';
+import DateTime from 'react-datetime';
+import dateTimeStyles from '../views/container/datetime.css';
 
 const columns = ['id', 'id2', 'dropoff', 'time', 'CODValue', 'CODStatus', 'orderStatus', 'routeStatus', 'action'];
 const nonFillColumn = columns.slice(0, columns.length - 1);
@@ -27,10 +35,64 @@ const headers = [{
   CODValue: 'Value', CODStatus: 'COD'
 }];
 
+const DetailRow = React.createClass({
+  generateTypeContent () {
+    const {type, value, placeholder} = this.props
+
+    switch (type) {
+      case 'datetime' :
+        return (
+          <span className={styles.inputForm}>
+            <span className={styles.datetimeWrapper}>
+              <DateTime onChange={this.props.onChange} className={styles.inputForm}
+                dateFormat='DD MMM YYYY' timeFormat='HH:mm:ss' viewMode='days' />
+            </span>
+          </span>
+        )
+      case 'image' :
+        return (
+          <div className={styles.imageUploaderWrapper}>
+            <ImageUploader currentImageUrl={value} updateImageUrl={(data) => this.props.onChange(data)} />
+          </div>
+        )
+      default :
+        return (
+          <div className={styles.inputForm}>
+            <Input className={'form-control'} base={{placeholder: placeholder, value: value}}
+              onChange={(data) => this.props.onChange(data)} type={type}/>
+          </div>
+        )
+    }
+  },
+  render() {
+    const {isEditing, label, type, value, className, placeholder} = this.props;
+    return (
+      <div className={className}>
+        <div className={styles.inputLabel}>{label}</div>
+        {
+          !isEditing &&
+          <span className={styles.inputForm}>
+          {
+            type === 'image'
+            ? <ImagePreview imageUrl={value} />
+            : value
+          }
+          </span>
+        }
+        {
+          isEditing &&
+          this.generateTypeContent()
+        }
+      </div>
+    )
+  }
+});
+
 const DetailPage = React.createClass({
   getInitialState() {
     return {
       showModal: false,
+      showModalExternalTrip: false,
       driver: '', 
       district: {
         isChanging: false,
@@ -62,9 +124,32 @@ const DetailPage = React.createClass({
     this.props.driverPick(this.props.container.ContainerID,this.state.driverID);
   },
   deassignDriver() {
-    if(confirm('Are you sure you want to deassign driver on this container?')) {
+    if(confirm('Are you sure you want to cancel assignment on this trip?')) {
       this.props.driverDeassign();
     }
+  },
+  deassignFleet() {
+    if(confirm('Are you sure you want to cancel assignment on this trip?')) {
+      this.props.fleetDeassign();
+    }
+  },
+  showAssignModal() {
+    const {trip} = this.props;
+    this.props.fetchListOnModal(trip.TripID);
+  },
+  openExternalTrip() {
+    this.setState({showModalExternalTrip: true});
+  },
+  closeExternalTrip() {
+    this.setState({showModalExternalTrip: false});
+  },
+  onChange(key) {
+    return (val) => {
+      this.setState({[key]: val})
+    }
+  },
+  saveEditThirdPartyLogistic() {
+    this.props.saveEditThirdPartyLogistic();
   },
   changeMark(val) {
     this.setState({
@@ -92,7 +177,10 @@ const DetailPage = React.createClass({
     this.props.exportManifest();
   },
   render() {
-    const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, fillAble, hasDriver, isFetching, isInbound, orders, reusable, statusList, TotalCODValue, CODCount, totalDeliveryFee, trip, TotalWeight} = this.props;
+    const {activeDistrict, backToContainer, canDeassignDriver, canDeassignFleet, 
+          container, districts, driverState, driversName, fillAble, hasDriver, 
+          isFetching, isInbound, orders, reusable, statusList, TotalCODValue, 
+          CODCount, totalDeliveryFee, trip, TotalWeight, isSaving3PL} = this.props;
 
     const {canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, 
           isDeassigning, isChangingRemarks, isTripEditing} = this.props;
@@ -128,7 +216,7 @@ const DetailPage = React.createClass({
     }
 
     const canSet = trip.DestinationHub || trip.District;
-    const haveSet = trip.Driver || trip.ExternalTrip;
+    const haveSet = trip.Driver || trip.FleetManager || trip.ExternalTrip;
 
     const driverName = trip.Driver ? 
       trip.Driver.FirstName + ' ' + trip.Driver.LastName + ' | ' + trip.Driver.CountryCode + ' ' +trip.Driver.PhoneNumber : 'No Driver Yet';
@@ -144,6 +232,65 @@ const DetailPage = React.createClass({
         {
           this.props.notFound && !isFetching &&
           <h3>Failed Fetching Container Details</h3>
+        }
+        {
+          this.props.isAssigning &&
+          <ModalContainer>
+            <AssignTripModal />
+          </ModalContainer>
+        }
+        {
+          this.state.showModalExternalTrip &&
+          <ModalContainer>
+            <ModalDialog>
+              <div>
+                <div>
+                  <div className={styles.modalTitle}>
+                    Edit 3PL
+                  </div>
+                  <div onClick={this.closeExternalTrip} className={styles.modalClose}>
+                    X
+                  </div> 
+                  <div>
+                    <div className={'nb ' + styles.modalTabPanel}>
+                      <div className="row">
+                        <DetailRow label="3PL NAME" className={styles.colMd12 + ' ' + styles.detailRow} 
+                          placeholder="Write the 3PL name here..." value={trip.ExternalTrip && trip.ExternalTrip.Sender} 
+                          isEditing={true} type="text" onChange={this.onChange('Sender')} />
+                        <DetailRow label="TRANSPORTATION" className={styles.colMd12 + ' ' + styles.detailRow} 
+                          placeholder="Write the transportation here..." value={trip.ExternalTrip && trip.ExternalTrip.Transportation} 
+                          isEditing={true} type="text" onChange={this.onChange('Transportation')} />
+                        <DetailRow label="DEPARTURE TIME" className={styles.colMd6 + ' ' + styles.detailRow} 
+                          value={trip.DepartureTime && formatDate(trip.DepartureTime)} isEditing={true} type="datetime" onChange={this.onChange('DepartureTime')} />
+                        <DetailRow label="ETA" className={styles.colMd6 + ' ' + styles.detailRow} 
+                          value={trip.ExternalTrip && trip.ExternalTrip.ArrivalTime && formatDate(trip.ExternalTrip.ArrivalTime)} isEditing={true} type="datetime" onChange={this.onChange('ArrivalTime')} />
+                        <DetailRow label="FEE" className={styles.colMd6 + ' ' + styles.detailRow} 
+                          value={trip.ExternalTrip && trip.ExternalTrip.Fee} isEditing={true} type="number" onChange={this.onChange('Fee')} />
+                        <DetailRow label="AWB NUMBER" className={styles.colMd6 + ' ' + styles.detailRow} 
+                          value={trip.ExternalTrip && trip.ExternalTrip.AwbNumber} isEditing={true} type="text" 
+                          onChange={this.onChange('AwbNumber')} />
+                        <div className={styles.colMd12 + ' ' + styles.centerItems}>
+                          <div className={styles.uploadButtonText + ' ' + styles.colMd2 + ' ' + styles.noPadding}>
+                            { !trip.ExternalTrip && trip.ExternalTrip.PictureUrl &&
+                              <p>Upload your receipt here</p>
+                            }
+                            { trip.ExternalTrip && trip.ExternalTrip.PictureUrl &&
+                              <a href={trip.ExternalTrip && trip.ExternalTrip.PictureUrl} target="_blank">Uploaded</a>
+                            }
+                          </div>
+                          <DetailRow className={styles.colMd10 + ' ' + styles.detailRow + ' ' + styles.uploadButton} 
+                            value={trip.ExternalTrip && trip.ExternalTrip.PictureUrl} isEditing={true} type="image" onChange={this.onChange('PictureUrl')}/>
+                        </div>
+                      </div>
+                      <div className="pull-right">
+                        <button className="btn btn-md btn-success" onClick={this.saveEditThirdPartyLogistic}>Save Changes</button>
+                      </div>
+                    </div>
+                  </div>
+                </div> 
+              </div>
+            </ModalDialog>
+          </ModalContainer>
         }
         {
           !this.props.notFound && !isFetching &&
@@ -180,22 +327,38 @@ const DetailPage = React.createClass({
                         haveSet ?
                         <div>
                           {
-                            trip.Driver &&
+                            trip.FleetManager &&
                             <div>
-                              <p className={styles.title}>FLEET : {companyName}</p>
-                              <p>{driverName}</p>
+                              <p className={styles.title}>Fleet : {trip.FleetManager.CompanyDetail && trip.FleetManager.CompanyDetail.CompanyName}</p>
+                              {
+                                trip.Driver &&
+                                <p>{driverName}</p>
+                              }
                             </div>
                           }
                           {
                             trip.ExternalTrip &&
-                            <p className={styles.title}>3PL : {trip.ExternalTrip.Transportation}</p>
+                            <div>
+                              <p className={styles.title}>3PL : {trip.ExternalTrip.Transportation}</p>
+                              <button className={styles.greenBtn + ' ' + styles.cancelButton} onClick={this.openExternalTrip}>Edit 3PL</button>
+                            </div>
                           }
                         </div>
                         :
                         <div>
                           <p className={styles.title}>3PL / Fleet :</p>
-                          <p>No Driver Yet</p>
+                          <p>Not assigned yet</p>
+                          <button className={styles.greenBtn + ' ' + styles.cancelButton} onClick={this.showAssignModal}>Assign Trip</button>
                         </div>
+                      }
+                      {
+                        (canDeassignDriver || canDeassignFleet) &&
+                        <ButtonWithLoading
+                         styles={{base: styles.greenBtn + ' ' + styles.cancelButton}}
+                         textBase="Cancel Assignment" 
+                         textLoading="Deassigning" 
+                         onClick={canDeassignDriver ? this.deassignDriver : this.deassignFleet} 
+                         isLoading={isDeassigning} />
                       }
                     </div>
                   </div>
@@ -204,10 +367,6 @@ const DetailPage = React.createClass({
                       {
                         reusable &&
                         <ButtonWithLoading styles={{base: styles.greenBtn}} textBase={'Clear and Reuse Container'} textLoading={'Clearing Container'} isLoading={emptying.isInProcess} onClick={this.clearContainer} />
-                      }
-                      {
-                        canDeassignDriver &&
-                        <ButtonWithLoading styles={{base: styles.greenBtn}} textBase="Cancel Assignment" textLoading="Deassigning" onClick={this.deassignDriver} isLoading={isDeassigning} />
                       }
                     </div>
                     <div className={styles.colMd4}>
@@ -275,9 +434,10 @@ const DetailPage = React.createClass({
 });
 
 const mapStateToProps = (state, ownProps) => {
-  const {inboundTripDetails, userLogged} = state.app;
+  const {inboundTripDetails, outboundTripsService, userLogged} = state.app;
   const {hubID} = userLogged;
-  const {isDeassigning, isFetching, orders: rawOrders, isChangingRemarks, isTripEditing} = inboundTripDetails;
+  const {isDeassigning, isFetching, orders: rawOrders, isChangingRemarks, isTripEditing, isSaving3PL} = inboundTripDetails;
+  const {isAssigning} = outboundTripsService;
   const trip = ownProps.trip;
   const containerID = ownProps.params.id;
   const {containers, statusList} = state.app.containers;
@@ -344,6 +504,7 @@ const mapStateToProps = (state, ownProps) => {
     reusable: reusable,
     emptying: emptying || {},
     canDeassignDriver: (trip.Driver && trip.OrderStatus.OrderStatusID == 2) || false,
+    canDeassignFleet: (trip.FleetManager) || false,
     driverState: {
       isDeassigning: state.app.driversStore.driverDeassignment,
       isPicking: state.app.driversStore.driverList.isLoading,
@@ -365,7 +526,9 @@ const mapStateToProps = (state, ownProps) => {
     canMarkTripDelivered: CanMarkTripDelivered(trip, rawOrders),
     canMarkContainer: CanMarkContainer(trip, hubID),
     isChangingRemarks,
-    isTripEditing
+    isTripEditing,
+    isSaving3PL,
+    isAssigning
   }
 }
 
@@ -385,6 +548,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     driverDeassign: function() {
       dispatch(TripDetails.Deassign(ownProps.params.id));
+    },
+    fleetDeassign: function() {
+      dispatch(TripDetails.DeassignFleet(ownProps.params.id));
     },
     goToFillContainer: function(id) {
       dispatch(push('/trips/' + id + '/fillReceived'));
@@ -406,6 +572,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     exportManifest: function() {
       dispatch(TripDetails.ExportManifest(ownProps.params.id));
+    },
+    fetchListOnModal: (tripID) => {
+      dispatch(OutboundTrips.FetchListNearbyDrivers(tripID));
+      dispatch(OutboundTrips.FetchDetails(tripID));
+      dispatch(OutboundTrips.FetchListNearbyFleets());
+    },
+    saveEditThirdPartyLogistic: () => {
+      dispatch(TripDetails.SaveEdit3PL(ownProps.trip.TripID));
     },
   };
 };

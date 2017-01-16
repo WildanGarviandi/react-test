@@ -52,6 +52,11 @@
   float: left;
 }
 
+.colMd10 {
+  width: 83.33333%;
+  float: left;
+}
+
 .colMd12 {
   width: 100%;
   float: left;
@@ -187,10 +192,6 @@ p.title {
   background-color: #fff;
 }
 
-.filterDropDown > div > span > span {
-  top: 12px;
-}
-
 .filterDropDown > div > div {
   border: 0px;
   margin-top: 0px;
@@ -230,4 +231,153 @@ p.title {
   cursor: pointer;
   color: #ffffff !important;
   text-decoration: none !important;
+}
+
+.modalTitle {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.modalClose {
+  font-size: 26px;
+  float: right;
+  top: 10px;
+  position: absolute;
+  right: 20px;
+  cursor: pointer;
+}
+
+.cancelButton {
+  padding: 6px 12px;
+  color: #fff !important;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.42857143;
+  border-radius: 4px;
+  border: none;
+}
+
+.modalTabPanel {
+  padding: 15px;
+  background: #ffffff;
+  height: 300px;
+  max-height: 400px;
+  overflow-y: auto;
+  width: 450px;
+}
+
+.detailRow {
+  margin-bottom: 15px;
+}
+
+.itemLabel {
+  display: block;
+  padding: 5px;
+  width: 180px;
+  float: left;
+  line-height: 32px;
+  font-weight: bold;
+}
+
+.itemValue {
+  padding: 5px;
+  display: block;
+  line-height: 32px;
+  text-indent: 0;
+  margin-left: 20px;
+}
+
+.itemValue input {
+  border-radius: 3px;
+  border: solid 1px #ccc;
+  display: inline-block;
+  height: 28px;
+  width: 280px;
+  position: relative;
+  left: 10px;
+  text-indent: 10px;
+}
+
+.datetimeWrapper {
+  position: relative;
+}
+
+.imageUploaderWrapper {
+  float: left;
+  padding: 5px;
+  position: relative;
+  text-indent: 0;
+}
+
+.imageUploaderWrapper::before {
+  content: ':';
+  position: absolute;
+  left: 0px;
+  top: 10px;
+  text-indent: 0;
+}
+
+.receiptThumbnail {
+  max-width: 400px;
+  max-height: 400px;
+}
+
+.inputLabel {
+  opacity: 0.5;
+  font-family: Helvetica;
+  font-size: 10px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  color: #000000;
+  margin-bottom: 8px;
+}
+
+.inputForm input {
+  height: 44px !important;
+}
+
+.centerItems {
+  align-items: center;
+}
+
+.uploadButtonText {
+  padding-top: 20px !important;
+  text-align: left;
+}
+
+.uploadButton, .uploadButton label {
+  padding: 0;
+  margin: 0;
+}
+
+.uploadButton > div {
+  width: 100%;
+}
+
+.uploadButton label {
+  padding-top: 10px;
+  color: #fff;
+  background-color: #2196f3;
+  float: right;
+  width: 50%; 
+}
+
+.uploadButton label:hover {
+  color: #fff;
+  background-color: #1682d8; 
+}
+
+.uploadButton input {
+  width: 100%;
+  padding: 0; 
+  height: 10px;
+}
+
+.modalDialog {
+  border-radius: 5px !important;
+  padding: 0 !important;
+  width: 570px !important;
 }
