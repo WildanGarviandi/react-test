@@ -116,3 +116,25 @@
     border: solid 1px #e8e8e8;
     text-align: center;
 }
+
+.cellButton {
+    border-radius: 4px !important;
+    background-color: #38b393 !important;
+    font-family: Helvetica !important;
+    font-size: 12px !important;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    text-align: center !important;
+    color: #ffffff !important;
+    height: 32px !important;
+}
+
+.detailsID {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.detailsInfo {
+    font-size: 10px;
+}

@@ -8,7 +8,7 @@ import DashboardPage from './views/dashboard';
 import LoginPage from './views/login';
 import OrderDetailsPage from './orderDetails/orderDetails';
 import PickupFillPage from './views/order/pickupFill';
-import PickupOrdersPage from './views/order/pickupOrders';
+import PickupOrdersPage from './pickupOrders/pickupOrdersPage';
 import ReceivedFillPage from './views/order/receivedFill';
 import ReceivedOrdersPage from './views/order/receivedOrders';
 import GroupingPage from './grouping/grouping';

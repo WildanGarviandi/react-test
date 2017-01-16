@@ -2,6 +2,12 @@
   color: #482647;
   font-size: 16px;
   font-weight: bold;
+  font-family: Helvetica;
+  font-size: 16px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  color: #000000;
   text-transform: uppercase;
   margin-top: 0;
   display: inline-block;

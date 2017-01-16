@@ -1,6 +1,6 @@
 import React from 'react';
 import Collection from './collection';
-import { Dropdown, DropdownTypeAhead } from './dropdown';
+import { Dropdown, DropdownTypeAhead, DropdownWithState } from './dropdown';
 import { Glyph } from './glyph';
 import Infograph from './infograph';
 import { CheckBox, Input, InputWithDefault } from './input';
@@ -47,4 +47,22 @@ const ButtonWithLoading = React.createClass({
   }
 })
 
-export { ButtonAtRightTop, ButtonBase, ButtonAction, ButtonWithLoading, CheckBox, Collection, Dropdown, DropdownTypeAhead, Glyph, Infograph, Input, InputWithDefault, Modal, ModalMessage, Page, PageTitle, Pagination, Rows, Tables, NotificationContainer };
+const ButtonStandard = React.createClass({
+  render() {
+    const {textBase, textLoading, isLoading, onClick, styles = {}, base, urlImage} = this.props;
+    const btnClass = classNaming(baseStyle.btnBase, {[baseStyle.loading]: isLoading}, styles.base);
+
+    return (
+      <button {...base} className={btnClass} onClick={onClick}>
+        { urlImage &&
+          <img src={urlImage} className={baseStyle.buttonImage} />
+        }
+        <span className={baseStyle.buttonTitle}>
+          {textBase}
+        </span>
+      </button>
+    );
+  }
+})
+
+export { ButtonAtRightTop, ButtonBase, ButtonAction, ButtonWithLoading, ButtonStandard, CheckBox, Collection, Dropdown, DropdownTypeAhead, DropdownWithState, Glyph, Infograph, Input, InputWithDefault, Modal, ModalMessage, Page, PageTitle, Pagination, Rows, Tables, NotificationContainer };

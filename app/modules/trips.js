@@ -101,6 +101,23 @@ export function GetScannedRoutes(routes) {
   return scannedOrders;  
 }
 
+export function GetWebstoreNameWithMores(orders) {
+  var arrayOfWebstore = [];
+  var WebstoreNames = lodash.countBy(orders, 'WebstoreName');
+  for (var p in WebstoreNames) {
+      if (WebstoreNames.hasOwnProperty(p)) {
+          arrayOfWebstore.push(p);
+      }
+  }
+  if (arrayOfWebstore.length === 1) {
+    return arrayOfWebstore[0];
+  } else if (arrayOfWebstore.length === 2) {
+    return arrayOfWebstore[0] + ' and ' + arrayOfWebstore[1];
+  } else {
+    return arrayOfWebstore[0] + ' and ' + (arrayOfWebstore.length - 1) + ' merchants';
+  }
+}
+
 export function TripParser(trip, hubID) {
   function GroupToString(colls) {
     return lodash.reduce(colls, (results, val, key) => {
@@ -126,6 +143,7 @@ export function TripParser(trip, hubID) {
     WebstoreNames: WebstoreNames,
     Weight: Weight,
     ScannedOrders: ScannedOrders,
-    ListWebstore: GetWebstoreNameWithoutCount(orders)
+    ListWebstore: GetWebstoreNameWithoutCount(orders),
+    ListWebstoreMores: GetWebstoreNameWithMores(orders)
   });
 }
