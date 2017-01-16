@@ -425,4 +425,75 @@ const TextareaWithDefault = React.createClass({
   }
 });
 
-export {Form, CheckBox, Input, InputWithDefault, InputWithState, Dropdown, DropdownTypeAhead, DropdownWithState, DropdownWithState2, Textarea, TextareaWithDefault };
+const Radio = React.createClass({
+  displayName: 'Radio',
+
+  contextTypes: {
+    radioGroup: React.PropTypes.object
+  },
+
+  render: function() {
+    const {name, selectedValue, onChange} = this.context.radioGroup;
+    const optional = {};
+    if(selectedValue !== undefined) {
+      optional.checked = (this.props.value === selectedValue);
+    }
+    if(typeof onChange === 'function') {
+      optional.onChange = onChange.bind(null, this.props.value);
+    }
+
+    return (
+      <input
+        {...this.props}
+        type="radio"
+        name={name}
+        {...optional} />
+    );
+  }
+});
+
+const RadioGroup = React.createClass({
+  displayName: 'RadioGroup',
+
+  propTypes: {
+    name: React.PropTypes.string,
+    selectedValue: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.number,
+      React.PropTypes.bool,
+    ]),
+    onChange: React.PropTypes.func,
+    children: React.PropTypes.node.isRequired,
+    Component: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.func,
+      React.PropTypes.object,
+    ])
+  },
+
+  getDefaultProps: function() {
+    return {
+      Component: "div"
+    };
+  },
+
+  childContextTypes: {
+    radioGroup: React.PropTypes.object
+  },
+
+  getChildContext: function() {
+    const {name, selectedValue, onChange} = this.props;
+    return {
+      radioGroup: {
+        name, selectedValue, onChange
+      }
+    }
+  },
+
+  render: function() {
+    const {Component, name, selectedValue, onChange, children} = this.props;
+    return <Component>{children}</Component>;
+  }
+});
+
+export {Form, CheckBox, Input, InputWithDefault, InputWithState, Dropdown, DropdownTypeAhead, DropdownWithState, DropdownWithState2, Textarea, TextareaWithDefault, RadioGroup, Radio };

@@ -14,11 +14,11 @@ const PageTitle = ({additional, title, backButton, count}) => {
       <h2 className={styles.contentTitle}>{title}</h2>
       {additional && <h3 className={styles.additionalTitle}><em>-- {additional}</em></h3>}
       {
-        count && (parseInt(count.value) > 0) &&
+        count && (parseInt(count.value) > 0) && !count.isLoading &&
         <span className={styles.countItem}>{count.value} {count.itemName}</span>
       }
       {
-        count && (parseInt(count.value) == 0) &&
+        count && (parseInt(count.value) == 0) && !count.isLoading &&
         <span className={styles.countItem + ' ' + styles.countItemZero}>{count.done}</span>
       }
     </span>
