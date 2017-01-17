@@ -566,15 +566,17 @@ const AssignTripModalClass = React.createClass({
             { this.state.isLastMileAssigning &&
               <div>
                 <div className={styles.modalBody}>
-                  <div className={styles.isLastMile + " nb"}>
+                  <div className={styles.isLastMile}>
                     <p>Is this a last mile trip?</p>
                     <div className={styles.buttonContainer}>
-                      <button className={styles.modalNo + " btn btn-md btn-danger"} onClick={this.isNotLastMile}>
-                        <img src="/img/icon-no.png" className={styles.isLastMileImage} /> NO
-                      </button>
-                      <button className={styles.modalYes + " btn btn-md btn-success"} onClick={this.isLastMile}>
-                        <img src="/img/icon-ok.png" className={styles.isLastMileImage} /> YES
-                      </button>
+                      <div className={styles.modalNo} onClick={this.isNotLastMile}>
+                        <img src="/img/icon-no.png" className={styles.isLastMileImage} />
+                        <div>NO</div>
+                      </div>
+                      <div className={styles.modalYes} onClick={this.isLastMile}>
+                        <img src="/img/icon-ok.png" className={styles.isLastMileImage} />
+                        <div>YES</div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -634,15 +636,13 @@ const AssignTripModalClass = React.createClass({
                       }
                       <div className={styles.modalTabPanel}>
                         { this.state.isFleetSet &&
-                          <div>
-                            <DriverInModal {...fleetDriverProps} />
-                          </div>
+                          <DriverInModal {...fleetDriverProps} />
                         }
                         { !this.state.isFleetSet &&
                           <FleetInModal {...fleetsProps} />
                         }
                       </div>
-                      <div className={styles.modalFooter}>
+                      <div className={styles.modalFooter + ' ' + styles.textCenter}>
                         { !this.state.isFleetSet &&
                           <p><small>Please choose a vendor that you want to do this trip.</small></p>
                         }
@@ -657,7 +657,7 @@ const AssignTripModalClass = React.createClass({
                             disabled={!this.state.isFleetSet || (this.props.nearbyFleets.drivers.length === 0) || !this.state.isFleetDriverSet}>
                             Choose Driver</button>
                         }
-                        { this.state.isLastMile &&
+                        { this.state.isLastMile && this.state.isFleetSet &&
                           <div>
                             <button className={"btn btn-md btn-success" + ' ' + styles.fleetDriverButton} onClick={this.fleetSetWithoutDriver}>
                               Choose without driver </button>

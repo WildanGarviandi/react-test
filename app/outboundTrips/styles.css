@@ -747,6 +747,7 @@ td.withIcon {
   align-items: center;
   position: absolute;
   right: 12px;
+  top: 12px;
   align-self: center;
 }
 
@@ -921,26 +922,30 @@ td.withIcon {
 }
 
 .modalNo {
-  width: 94px;
+  width: 70px;
   height: 44px;
-  display: flex !important;
+  padding: 0 10px;
+  border: none;
+  background-color: #ff5a60;
+  color: white;
+  cursor: pointer;
+  display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 10px 20px !important;
-  border: 0 !important;
-  background-color: #ff5a60 !important;
 }
 
 .modalYes {
-  width: 94px;
+  width: 70px;
   height: 44px;
-  display: flex !important;
+  padding: 0 10px;
+  border: none;
+  background-color: #38b393;
+  margin-left: 15px;
+  cursor: pointer;
+  color: white;
+  display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 10px 20px !important;
-  border: 0 !important;
-  background-color: #38b393 !important;
-  margin-left: 15px !important;
 }
 
 .modalFooter {
@@ -1033,6 +1038,10 @@ td.withIcon {
   margin: 0;
   width: 65%;
   float: left;
+}
+
+.tabs__content .modalFooter p small {
+  width: 100%;
 }
 
 .tabs__content .modalFooter button {
