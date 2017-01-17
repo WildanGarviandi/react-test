@@ -7,6 +7,7 @@ import ModalActions from '../modules/modals/actions';
 import {modalAction} from '../modules/modals/constants';
 import {TripParser} from '../modules/trips';
 import config from '../config/configValues.json';
+import * as NearbyFleets from '../nearbyFleets/nearbyFleetService';
 
 const Constants = {
   BASE_ORDERS_PICKUP_READY: "pickupReady/defaultSet/",
@@ -338,13 +339,21 @@ export function ResetFilter() {
 
 export function ShowAssignModal(tripID) {
   return (dispatch, getState) => {
-    const {pickupOrdersReady} = getState().app;
-    const {trips} = pickupOrdersReady;
+    const {pickupOrdersReady, userLogged} = getState().app;
+    const {token} = userLogged;
+    let params =  {
+      suggestLastMileFleet: 1
+    };
+
+    FetchGet('/trip/' + tripID, token, params).then((response) => {
+      response.json().then(function({data}) {
+        dispatch({
+          type: Constants.ORDERS_PICKUP_READY_SHOW_MODAL,
+          trip: TripParser(data),
+        });
+      });
+    })
     
-    dispatch({
-      type: Constants.ORDERS_PICKUP_READY_SHOW_MODAL,
-      trip: TripParser(lodash.find(trips, {TripID: tripID})),
-    });
   }
 }
 
@@ -467,9 +476,8 @@ export function AssignFleet(tripID, fleetManagerID) {
 
         response.json().then(({data}) => {
           dispatch({type: modalAction.BACKDROP_HIDE});
-          dispatch(HideAssignModal());
           dispatch(ModalActions.addMessage('Assign vendor success'));
-          dispatch(FetchList());
+          dispatch(NearbyFleets.FetchDriverFleet(fleetManagerID));
         });
       }).catch((e) => {
         const message = (e && e.message) ? e.message : "Failed to assign fleet";
@@ -487,9 +495,8 @@ export function AssignFleet(tripID, fleetManagerID) {
 
         response.json().then(({data}) => {
           dispatch({type: modalAction.BACKDROP_HIDE});
-          dispatch(HideAssignModal());
           dispatch(ModalActions.addMessage('Assign vendor success'));
-          dispatch(FetchList());
+          dispatch(NearbyFleets.FetchDriverFleet(fleetManagerID));
         });
       }).catch((e) => {
         const message = (e && e.message) ? e.message : "Failed to assign fleet";
@@ -523,6 +530,7 @@ export function AssignDriver(tripID, driverID) {
         dispatch(FetchList());
         dispatch({type: modalAction.BACKDROP_HIDE});
         dispatch(HideAssignModal());
+        window.location.reload(false);
       });
     }).catch((e) => {
       const message = (e && e.message) ? e.message : "Failed to set driver";

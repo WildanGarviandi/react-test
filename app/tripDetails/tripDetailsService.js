@@ -86,7 +86,8 @@ const Constants = {
   SET_DRIVERS: "SET_DRIVERS",
   SET_DRIVER_FETCH_START: "SET_DRIVER_FETCH_START",
   SET_DRIVER_FETCH_END: "SET_DRIVER_FETCH_END",
-  RESET_DRIVERS: "RESET_DRIVERS"
+  RESET_DRIVERS: "RESET_DRIVERS",
+  SET_DRIVERS_VENDORS: "SET_DRIVERS_VENDORS"
 }
 
 const initialState = {
@@ -110,7 +111,8 @@ const initialState = {
   showModal: false,
   fleets: [],
   drivers: [],
-  isFetchingDriver: false
+  isFetchingDriver: false,
+  driversVendors: []
 }
 
 export function OrderParser(order) {
@@ -381,16 +383,25 @@ export function Reducer(state = initialState, action) {
             drivers: action.drivers
         });
     }
+
     case Constants.RESET_DRIVERS: {
         return lodash.assign({}, state, {
             drivers: []
         });
     }
+
     case Constants.SET_DRIVER_FETCH_START: {
       return lodash.assign({}, state, {isFetchingDriver: true});
     }
+
     case Constants.SET_DRIVER_FETCH_END: {
       return lodash.assign({}, state, {isFetchingDriver: false});
+    }
+
+    case Constants.SET_DRIVERS_VENDORS: {
+        return lodash.assign({}, state, {
+            driversVendors: action.drivers
+        });
     }
 
     default: return state;
@@ -916,186 +927,4 @@ export function CancelChangingRemarks () {
       type: Constants.TRIPS_INBOUND_DETAILS_REMARKS_CHANGED
     });
   };
-}
-
-export function ShowAssignModal(tripID) {
-  return (dispatch, getState) => {  
-    dispatch({
-      type: Constants.TRIPS_DETAILS_SHOW_MODAL,
-    });
-  }
-}
-export function HideAssignModal() {
-  return (dispatch) => {
-    dispatch({type: Constants.TRIPS_DETAILS_HIDE_MODAL});
-    dispatch({type: Constants.RESET_DRIVERS});
-  }
-}
-
-export function FetchFleetList() {
-  return (dispatch, getState) => {
-    const {userLogged} = getState().app;
-    const {token} = userLogged;
-        
-    dispatch({type: modalAction.BACKDROP_SHOW});
-    FetchGet('/fleet/nearby-fleets', token, {}, true).then((response) => {
-      if(!response.ok) {
-        return response.json().then(({error}) => {
-          throw error;
-        })
-      }
-
-      return response.json().then(({data}) => {
-        dispatch({type: modalAction.BACKDROP_HIDE});
-        dispatch({
-          type: Constants.SET_FLEETS,
-          fleets: data
-        })
-      });
-    }).catch((e) => {
-      dispatch({type: modalAction.BACKDROP_HIDE});
-      dispatch(ModalActions.addMessage(e.message));
-    });
-  }
-}
-
-export function FetchDriverList() {
-  return (dispatch, getState) => {
-    const {userLogged, tripDetails} = getState().app;
-    const {token} = userLogged;
-    const {trip} = tripDetails;  
-    const query = {
-      tripID: trip.TripID,
-      limit: config.driverLimit,
-      offset: 0
-    };
-        
-    dispatch({type: Constants.SET_DRIVER_FETCH_START});
-    FetchGet('/drivers', token, query, true).then((response) => {
-      if(!response.ok) {
-        return response.json().then(({error}) => {
-          throw error;
-        })
-      }
-      return response.json().then(({data}) => {
-        dispatch({type: Constants.SET_DRIVER_FETCH_END});
-        dispatch({
-          type: Constants.SET_DRIVERS,
-          drivers: data
-        })
-      });
-    }).catch((e) => {
-      dispatch({type: Constants.SET_DRIVER_FETCH_END});
-      dispatch(ModalActions.addMessage(e.message));
-    });
-  }
-}
-
-export function AssignFleet(tripID, fleetManagerID) {
-  return (dispatch, getState) => {
-    const {tripDetails, userLogged} = getState().app;
-    const {token} = userLogged;
-    const {trip} = tripDetails;
-    const body = {
-      fleetManagerID: fleetManagerID,
-    };
-    dispatch({type: modalAction.BACKDROP_SHOW});
-    if (trip.FleetManager) {
-      FetchDelete(`/trip/${tripID}/fleetmanager`, token, {}, true).then((response) => {
-        if(!response.ok) {
-          return response.json().then(({error}) => {
-            throw error;
-          });
-        }
-        return FetchPost(`/trip/${tripID}/fleetmanager`, token, body, true);
-      }).then((response) => {
-        if(!response.ok) {
-          return response.json().then(({error}) => {
-            throw error;
-          });
-        }
-        response.json().then(({data}) => {
-          dispatch({type: modalAction.BACKDROP_HIDE});
-          dispatch(HideAssignModal());
-          dispatch(ModalActions.addMessage('Assign vendor success'));
-          window.location.reload(false);
-        });
-      }).catch((e) => {
-        const message = (e && e.message) ? e.message : "Failed to assign fleet";
-        dispatch({type: modalAction.BACKDROP_HIDE});
-        dispatch(ModalActions.addMessage(message));
-      });
-    } else {
-      FetchPost(`/trip/${tripID}/fleetmanager`, token, body, true).then((response) => {
-        if(!response.ok) {
-          return response.json().then(({error}) => {
-            throw error;
-          });
-        }
-        response.json().then(({data}) => {
-          dispatch({type: modalAction.BACKDROP_HIDE});
-          dispatch(HideAssignModal());
-          dispatch(ModalActions.addMessage('Assign vendor success'));
-          window.location.reload(false);
-        });
-      }).catch((e) => {
-        const message = (e && e.message) ? e.message : "Failed to assign fleet";
-        dispatch({type: modalAction.BACKDROP_HIDE});
-        dispatch(ModalActions.addMessage(message));
-      });
-    }
-  }
-}
-
-export function AssignDriver(tripID, driverID) {
-  return (dispatch, getState) => {
-    const {userLogged} = getState().app;
-    const {token} = userLogged;
-    const body = {
-      DriverID: driverID,
-    };
-    dispatch({type: modalAction.BACKDROP_SHOW});
-    FetchPost(`/trip/${tripID}/driver`, token, body).then((response) => {
-      if(!response.ok) {
-        return response.json().then(({error}) => {
-          throw error;
-        });
-      }
-      response.json().then(({data}) => {
-        dispatch(ModalActions.addMessage('Assign driver success'));
-        window.location.reload(false);
-        dispatch({type: modalAction.BACKDROP_HIDE});
-        dispatch(HideAssignModal());
-      });
-    }).catch((e) => {
-      const message = (e && e.message) ? e.message : "Failed to set driver";
-      dispatch({type: modalAction.BACKDROP_HIDE});
-      dispatch(ModalActions.addMessage(message));
-    });
-  }
-}
-
-export function SplitTrip(id, vehicleID) {
-  return (dispatch, getState) => {
-    const {userLogged} = getState().app;
-    const {token} = userLogged;
-    const query = {
-      vehicleID: vehicleID
-    }
-
-    dispatch({type: modalAction.BACKDROP_SHOW});
-    FetchPost('/trip/split/' + id, token, query, true).then((response) => {
-      if(!response.ok) {
-        throw new Error();
-      }
-      response.json().then(({data}) => {
-        dispatch(ModalActions.addMessage("Success splitting trip"));
-        dispatch(FetchDetails(data[0].TripID));
-        dispatch({type: modalAction.BACKDROP_HIDE});
-      });
-    }).catch(() => {
-      dispatch(ModalActions.addMessage("Failed in splitting trip"));
-      dispatch({type: modalAction.BACKDROP_HIDE});
-    });
-  }
 }

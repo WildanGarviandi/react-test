@@ -235,7 +235,6 @@ function DispatchToProps(dispatch) {
       dispatch(CityService.FetchList());
       dispatch(StateService.FetchList());
       dispatch(OrderService.FetchCountOrder());
-      dispatch(FleetService.FetchList());
     },
     logout: function() {
       dispatch(LogoutAction.logout());
