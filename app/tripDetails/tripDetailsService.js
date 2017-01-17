@@ -807,6 +807,7 @@ export function SaveEdit3PL(tripID) {
             DepartureTime: new Date(data.ExternalTrip.DepartureTime),
           })
         });
+        window.location.reload(false);
       });
     }).catch((e) => {
       const message = (e && e.message) ? e.message : 'Failed to mark trip as delivered';
@@ -927,4 +928,151 @@ export function CancelChangingRemarks () {
       type: Constants.TRIPS_INBOUND_DETAILS_REMARKS_CHANGED
     });
   };
+}
+
+export const startEditing = () => {
+  return {type: Constants.EDIT_ORDER_START};
+}
+
+export const endEditing = () => {
+  return {type: Constants.EDIT_ORDER_END};
+}
+
+export const revertSuccessEditing = () => {
+  return {type: Constants.REVERT_SUCCESS_EDITING};
+}
+
+export const editOrder = (id, order, fromInbound) => {
+  return (dispatch, getState) => {
+    const {userLogged, orderDetails} = getState().app;
+    const {token} = userLogged;
+
+    const postBody = {
+      UpdateData: order,
+    }
+
+    dispatch({ type: Constants.UPDATE_ORDERS_START });
+    dispatch({ type: modalAction.BACKDROP_SHOW });
+    fetchPost('/order/' + id, token, postBody).then((response) => {
+      if(response.ok) {
+        response.json().then(function({data}) {
+          dispatch({
+            type: Constants.DETAILS_SET,
+            order: lodash.assign({}, orderDetails.order, order),
+          });
+          dispatch({ type: Constants.UPDATE_ORDERS_END });
+          dispatch({ type: Constants.EDIT_ORDER_END });
+          dispatch({ type: modalAction.BACKDROP_HIDE });
+        });
+        if (fromInbound) {
+          dispatch({ type: Constants.SUCCESS_EDITING });
+        }
+      } else {
+        dispatch({ type: Constants.UPDATE_ORDERS_END });
+        dispatch({ type: modalAction.BACKDROP_HIDE });
+        response.json().then(({error}) => {
+          dispatch(ModalActions.addMessage('Failed to edit order details. ' + error.message));
+        });
+      }
+    }).catch(() => { 
+      dispatch({ type: Constants.UPDATE_ORDERS_END });
+      dispatch({ type: modalAction.BACKDROP_HIDE });
+      dispatch(ModalActions.addMessage('Network error'));
+    });
+  }
+}
+
+export const fetchDetailsOrder = (id) => {
+  return (dispatch, getState) => {
+    const {userLogged} = getState().app;
+    const {token} = userLogged;
+
+    dispatch({ type: Constants.DETAILS_FETCH_START });
+    fetchGet('/order/' + id, token).then(function(response) {
+      if(!response.ok) {
+        return response.json().then(({error}) => {
+          throw error;
+        });
+      }
+
+      response.json().then(function({data}) {
+        dispatch({
+          type: Constants.DETAILS_SET,
+          order: OrderParser(data),
+        });
+        dispatch({ type: Constants.DETAILS_FETCH_END });
+      });
+    }).catch((e) => {
+      const message = (e && e.message) ? e.message : "Failed to fetch order details";
+      dispatch({ type: Constants.DETAILS_FETCH_END });
+      dispatch(ModalActions.addMessage(message));
+    });
+  }
+}
+
+export function SaveEdit3PL(tripID) {
+  return (dispatch, getState) => {
+    const {inboundTripDetails, userLogged} = getState().app;
+    const {token} = userLogged;
+    const {externalTrip} = inboundTripDetails;
+
+    if(!externalTrip) {
+      dispatch(ModalActions.addMessage("Can't create external trip without any information"));
+      return;
+    }
+
+    let missingInformation = [];
+    const mandatoryInformation = [
+      {key: 'AwbNumber', value: 'AWB Number'},
+      {key: 'Sender', value: 'Sender'},
+      {key: 'Fee', value: 'Fee'},
+      {key: 'Transportation', value: 'Transportation'},
+      {key: 'DepartureTime', value: 'Departure Time'},
+      {key: 'ArrivalTime', value: 'Arrival Time'},
+      {key: 'PictureUrl', value: 'Receipt'}
+    ];
+
+    mandatoryInformation.forEach(function(x) {
+      if (!externalTrip[x.key]) {
+        missingInformation.push(x.value);
+      }
+    });
+
+    if (missingInformation.length > 0) {
+      dispatch(ModalActions.addMessage("Can't create external trip. Missing " + missingInformation.join() + " information."));
+      return;
+    }
+
+    const body = lodash.assign({}, externalTrip, {
+      ArrivalTime: new moment(externalTrip.ArrivalTime).utc(),
+      DepartureTime: new moment(externalTrip.DepartureTime).utc(),
+      TripID: tripID,
+    });
+
+    dispatch({type:modalAction.BACKDROP_SHOW});
+    FetchPost(`/external-trip/${externalTrip.ExternalTripID}`, token, body).then((response) => {
+      if(!response.ok) {
+        return response.json().then(({error}) => {
+          throw error;
+        });
+      }
+
+      return response.json().then(({data}) => {
+        dispatch({type: modalAction.BACKDROP_HIDE});
+        dispatch(StopEdit3PL());
+        dispatch({
+          type: Constants.TRIPS_INBOUND_DETAILS_EXTERNALTRIP_SET,
+          externalTrip: lodash.assign(data.ExternalTrip, {
+            ArrivalTime: new Date(data.ExternalTrip.ArrivalTime),
+            DepartureTime: new Date(data.ExternalTrip.DepartureTime),
+          })
+        });
+        window.location.reload(false);
+      });
+    }).catch((e) => {
+      const message = (e && e.message) ? e.message : 'Failed to mark trip as delivered';
+      dispatch({type: modalAction.BACKDROP_HIDE});
+      dispatch(ModalActions.addMessage(message));
+    });
+  }
 }
