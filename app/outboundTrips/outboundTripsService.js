@@ -17,14 +17,17 @@ const Constants = {
   TRIPS_OUTBOUND_LIMIT_SET: 'outbound/limit/set',
   TRIPS_OUTBOUND_SET: 'outbound/trips/set',
   TRIPS_OUTBOUND_RESET_FILTER: 'outbound/trips/resetFilter',
-  NEARBY_FLEETS_CURRENTPAGE_SET: 'nearbyfleets/currentPage/set',
-  NEARBY_FLEETS_FETCH_END: 'nearbyfleets/fetch/end',
-  NEARBY_FLEETS_FETCH_START: 'nearbyfleets/fetch/start',
-  NEARBY_FLEETS_FILTERS_SET: 'nearbyfleets/filters/set',
-  NEARBY_FLEETS_FILTERS_STATUS_SET: 'nearbyfleets/filtersStatus/set',
-  NEARBY_FLEETS_LIMIT_SET: 'nearbyfleets/limit/set',
-  NEARBY_FLEETS_SET: 'nearbyfleets/trips/set',
-  NEARBY_FLEETS_RESET_FILTER: 'nearbyfleets/trips/resetFilter',
+  NEARBY_FLEETS_CURRENTPAGE_SET: 'nearbyFleets/currentPage/set',
+  NEARBY_FLEETS_FETCH_END: 'nearbyFleets/fetch/end',
+  NEARBY_FLEETS_FETCH_START: 'nearbyFleets/fetch/start',
+  NEARBY_FLEETS_FILTERS_SET: 'nearbyFleets/filters/set',
+  NEARBY_FLEETS_FILTERS_STATUS_SET: 'nearbyFleets/filtersStatus/set',
+  NEARBY_FLEETS_LIMIT_SET: 'nearbyFleets/limit/set',
+  NEARBY_FLEETS_SET: 'nearbyFleets/trips/set',
+  NEARBY_FLEETS_RESET_FILTER: 'nearbyFleets/trips/resetFilter',
+  NEARBY_FLEETS_DRIVERS_FETCH_END: 'nearbyFLeets/drivers/fetch/end',
+  NEARBY_FLEETS_DRIVERS_FETCH_START: 'nearbyFLeets/drivers/fetch/start',
+  NEARBY_FLEETS_DRIVERS_SET: 'nearbyFLeets/drivers/trips/set',
 
   NEARBY_DRIVERS_CURRENTPAGE_SET: 'nearbyDrivers/currentPage/set',
   NEARBY_DRIVERS_FETCH_END: 'nearbyDrivers/fetch/end',
@@ -74,10 +77,12 @@ const initialState = {
   limit: 100,
   total: 0,
   trips: [],
-  nearbyfleets: {
+  nearbyFleets: {
     isFetching: false,
     fleets: [],
     total: 0,
+    drivers: [],
+    isDriverFetching: false
   },
   nearbyDrivers: {
     isFetching: false,
@@ -147,7 +152,7 @@ export function Reducer(state = initialState, action) {
 
     case Constants.NEARBY_FLEETS_FETCH_END: {
       return lodash.merge({}, state, {
-        nearbyfleets: {
+        nearbyFleets: {
           isFetching: false
         }
       });
@@ -155,7 +160,7 @@ export function Reducer(state = initialState, action) {
 
     case Constants.NEARBY_FLEETS_FETCH_START: {
       return lodash.merge({}, state, {
-        nearbyfleets: {
+        nearbyFleets: {
           isFetching: true
         }
       });
@@ -163,9 +168,33 @@ export function Reducer(state = initialState, action) {
 
     case Constants.NEARBY_FLEETS_SET: {
       return lodash.merge({}, state, {
-        nearbyfleets: {
+        nearbyFleets: {
           fleets: action.fleets,
           total: action.total
+        }
+      });
+    }
+
+    case Constants.NEARBY_FLEETS_DRIVERS_FETCH_END: {
+      return lodash.merge({}, state, {
+        nearbyFleets: {
+          isDriverFetching: false
+        }
+      });
+    }
+
+    case Constants.NEARBY_FLEETS_DRIVERS_FETCH_START: {
+      return lodash.merge({}, state, {
+        nearbyFleets: {
+          isDriverFetching: true
+        }
+      });
+    }
+
+    case Constants.NEARBY_FLEETS_DRIVERS_SET: {
+      return lodash.merge({}, state, {
+        nearbyFleets: {
+          drivers: action.drivers
         }
       });
     }
@@ -396,6 +425,43 @@ export function FetchListNearbyFleets() {
   }
 }
 
+export function FetchListFleetDrivers (fleetID) {
+  return (dispatch, getState) => {
+    const {userLogged} = getState().app;
+    const {token} = userLogged;
+
+    dispatch({type: modalAction.BACKDROP_SHOW});
+    dispatch({
+      type: Constants.NEARBY_FLEETS_DRIVERS_FETCH_START
+    });
+
+    FetchGet('/fleet/' + fleetID + '/drivers', token).then((response) => {
+      if(!response.ok) {
+        throw new Error();
+      }
+
+      response.json().then(({data}) => {
+        dispatch({type: modalAction.BACKDROP_HIDE});
+        dispatch({
+          type: Constants.NEARBY_FLEETS_DRIVERS_SET,
+          drivers: data.rows
+        });
+
+        dispatch({
+          type: Constants.NEARBY_FLEETS_DRIVERS_FETCH_END
+        });
+      });
+    }).catch(() => {
+      dispatch({
+        type: Constants.NEARBY_FLEETS_DRIVERS_FETCH_END
+      });
+      dispatch({type: modalAction.BACKDROP_HIDE});
+
+      dispatch(ModalActions.addMessage('Failed to fetch nearby driver'));
+    });
+  }
+}
+
 export function FetchListNearbyDrivers(tripID) {
   return (dispatch, getState) => {
     const {outboundTrips, userLogged} = getState().app;
@@ -605,7 +671,7 @@ export function AssignDriver(tripID, driverID) {
   }
 }
 
-export function AssignFleet(tripID, fleetManagerID) {
+export function AssignFleet(tripID, fleetManagerID, driverID) {
   return (dispatch, getState) => {
     const {outboundTripsService, userLogged} = getState().app;
     const {token} = userLogged;
@@ -638,6 +704,7 @@ export function AssignFleet(tripID, fleetManagerID) {
         }
 
         response.json().then(({data}) => {
+          dispatch({type: modalAction.BACKDROP_HIDE})
           dispatch({
             type: Constants.TRIPS_OUTBOUND_DETAILS_FLEET_END,
           });
@@ -646,9 +713,12 @@ export function AssignFleet(tripID, fleetManagerID) {
             type: Constants.TRIPS_OUTBOUND_DETAILS_FLEET_SET,
             fleet: data.result
           });
-          dispatch({type: modalAction.BACKDROP_HIDE});
-
-          dispatch(FetchList());
+          
+          if (driverID) {
+            dispatch(AssignDriver(tripID, driverID))
+          } else {
+            dispatch(FetchList())
+          }
         });
       }).catch((e) => {
         const message = (e && e.message) ? e.message : 'Failed to assign fleet';
@@ -668,6 +738,7 @@ export function AssignFleet(tripID, fleetManagerID) {
         }
 
         response.json().then(({data}) => {
+          dispatch({type: modalAction.BACKDROP_HIDE})
           dispatch({
             type: Constants.TRIPS_OUTBOUND_DETAILS_FLEET_END,
           });
@@ -677,9 +748,11 @@ export function AssignFleet(tripID, fleetManagerID) {
             fleet: data.result,
           });
 
-          dispatch({type:modalAction.BACKDROP_HIDE});
-
-          dispatch(FetchList());
+          if (driverID) {
+            dispatch(AssignDriver(tripID, driverID))
+          } else {
+            dispatch(FetchList())
+          }
         });
       }).catch((e) => {
         const message = (e && e.message) ? e.message : 'Failed to assign fleet';
@@ -803,24 +876,25 @@ export function setHub(tripID, hubID) {
     dispatch({type: modalAction.BACKDROP_SHOW});
     dispatch({type: Constants.HUB_UPDATE_START});
     FetchPost(`/trip/${tripID}/setdestination`, token, query).then((response) => {
-      if (response.ok) {
-        response.json().then(({data}) => {
-          dispatch({
-            type: Constants.TRIPS_OUTBOUND_DETAILS_TRIP_SET,
-            trip: data
-          });
-          dispatch({type: Constants.HUB_UPDATE_END});
-          dispatch({type: modalAction.BACKDROP_HIDE});
+      if (!response.ok) {
+        return response.json().then(({error}) => {
+          throw error;
         });
-      } else {
-        dispatch({type: modalAction.BACKDROP_HIDE});
-        dispatch({type: Constants.HUB_UPDATE_END});
-        dispatch(ModalActions.addMessage(`Failed to set next destination`));
       }
-    }).catch(() => {
+
+      response.json().then(({data}) => {
+        dispatch({
+          type: Constants.TRIPS_OUTBOUND_DETAILS_TRIP_SET,
+          trip: data
+        });
+        dispatch({type: Constants.HUB_UPDATE_END});
+        dispatch({type: modalAction.BACKDROP_HIDE});
+      });
+    }).catch((e) => {
+      const message = (e && e.message) ? e.message : 'Failed to set hub';
       dispatch({type: Constants.HUB_UPDATE_END});
       dispatch({type: modalAction.BACKDROP_HIDE});
-      dispatch(ModalActions.addMessage(`Network error while setting destination`));
+      dispatch(ModalActions.addMessage(message));
     });
   }
 }

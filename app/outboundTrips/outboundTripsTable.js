@@ -214,7 +214,7 @@ const Table = React.createClass({
 
           case 'deadline': {
             const deadlineDiff = item.deadline.diff(moment());
-            const itemComponent = (deadlineDiff > 0) ? <Interval startTime={deadlineDiff} />: <span>{item.deadline.fromNow()}</span>;
+            const itemComponent = (deadlineDiff > 0) ? <Interval startTime={deadlineDiff} down={true} />: <span>{item.deadline.fromNow()}</span>;
             
             return (
               <td className={tableStyles.td + ((deadlineDiff > 0) ? '' : ' ' + styles.redColumn)} key={columnKey}>{itemComponent}</td>
