@@ -476,7 +476,6 @@ export function AssignFleet(tripID, fleetManagerID) {
 
         response.json().then(({data}) => {
           dispatch({type: modalAction.BACKDROP_HIDE});
-          dispatch(ModalActions.addMessage('Assign vendor success'));
           dispatch(NearbyFleets.FetchDriverFleet(fleetManagerID));
         });
       }).catch((e) => {
@@ -495,7 +494,6 @@ export function AssignFleet(tripID, fleetManagerID) {
 
         response.json().then(({data}) => {
           dispatch({type: modalAction.BACKDROP_HIDE});
-          dispatch(ModalActions.addMessage('Assign vendor success'));
           dispatch(NearbyFleets.FetchDriverFleet(fleetManagerID));
         });
       }).catch((e) => {
