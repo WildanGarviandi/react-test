@@ -29,6 +29,7 @@ import cityList from './cities/cityService';
 import {Reducer as pickupOrders} from './pickupOrders/pickupOrdersService';
 import {Reducer as pickupOrdersReady} from './pickupOrders/pickupOrdersReadyService';
 import nearbyFleets from './nearbyFleets/nearbyFleetService';
+import dashboard from './dashboard/dashboardService';
 
 export default combineReducers({ 
   userLogged: authReducers,
@@ -59,5 +60,6 @@ export default combineReducers({
   tripsHistory,
   myDrivers,
   cityList,
-  nearbyFleets
+  nearbyFleets,
+  dashboard
 });

@@ -4,7 +4,7 @@ import checkAuth from './modules/auth/actions/checkAuth';
 import store from './store';
 import App from './views/app';
 import ContainerQRCodePage from './views/container/qrcode';
-import DashboardPage from './views/dashboard';
+import DashboardPage from './dashboard';
 import LoginPage from './views/login';
 import OrderDetailsPage from './orderDetails/orderDetails';
 import PickupFillPage from './views/order/pickupFill';
