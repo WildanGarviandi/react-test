@@ -435,7 +435,11 @@ export function FetchListFleetDrivers (fleetID) {
       type: Constants.NEARBY_FLEETS_DRIVERS_FETCH_START
     });
 
-    FetchGet('/fleet/' + fleetID + '/drivers', token).then((response) => {
+    const query = {
+      limit: 'all'
+    }
+
+    FetchGet('/fleet/' + fleetID + '/drivers', token, query).then((response) => {
       if(!response.ok) {
         throw new Error();
       }
