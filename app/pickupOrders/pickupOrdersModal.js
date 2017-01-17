@@ -473,8 +473,8 @@ export const AssignDriverVendor = React.createClass({
 const PickupOrdersModal = React.createClass({
   getInitialState() {
     return ({
-      showVendor: true,
-      showDriver: false
+      showVendor: false,
+      showDriver: true
     });
   },
   activateVendor() {
@@ -491,6 +491,7 @@ const PickupOrdersModal = React.createClass({
   },
   closeModal() {
     this.props.CloseModal();   
+    this.activateDriver();
   },
   assignDriver() {
     if (!selectedDriver) {
