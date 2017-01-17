@@ -43,7 +43,8 @@ export default function Reducer(store = initialStore, action) {
 
         case Constants.RESET_DRIVER_VENDORS: {
             return lodash.assign({}, store, {
-                driversVendors: []
+                driversVendors: [],
+                fleets: []
             });
         }
 

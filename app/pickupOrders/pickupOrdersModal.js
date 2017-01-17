@@ -563,7 +563,7 @@ const PickupOrdersModal = React.createClass({
                     <AssignVendor trip={this.props.trip} assignFleet={this.assignFleet} />
                   }
                   {
-                    this.state.showVendor && (selectedFleet || this.props.trip.FleetManager) &&
+                    this.state.showVendor && selectedFleet &&
                     <AssignDriverVendor trip={this.props.trip} assignDriver={this.assignDriverVendor} />
                   }
                 </div> 
