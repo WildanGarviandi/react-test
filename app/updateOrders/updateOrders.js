@@ -33,6 +33,7 @@ const InputRow = React.createClass({
   },
   handleSelect(value) {
     this.setState({selectedValue: value})
+    this.props.onChange(value)
   },
   handleInputSelect(text) {
   },
