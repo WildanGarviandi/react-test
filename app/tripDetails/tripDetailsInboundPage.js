@@ -7,7 +7,7 @@ import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
 import {ContainerDetailsActions, StatusList} from '../modules';
 import districtsFetch from '../modules/districts/actions/districtsFetch';
-import {ButtonBase, ButtonWithLoading, Input, InputWithDefault, Modal, Page, Glyph} from '../views/base';
+import {ButtonBase, ButtonWithLoading, Input, InputWithDefault, Modal, Page, Glyph, DropdownTypeAhead} from '../views/base';
 import {OrderTable} from './tripDetailsTable';
 import * as TripDetails from './tripDetailsService';
 import ModalActions from '../modules/modals/actions';
@@ -17,6 +17,10 @@ import styles from './styles.css';
 import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered, TripParser} from '../modules/trips';
 import {formatDate} from '../helper/time';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import config from '../config/configValues.json';
+import DateTime from 'react-datetime';
+import ImagePreview from '../views/base/imagePreview';
+import dateTimeStyles from '../views/container/datetime.css';
 
 const columns = ['id', 'id2', 'pickup', 'time', 'CODValue', 'CODStatus', 'orderStatus', 'routeStatus', 'isSuccess', 'action'];
 const nonFillColumn = columns.slice(0, columns.length - 1);
@@ -26,6 +30,17 @@ const headers = [{
   time: 'Pickup Time', orderStatus: 'Order Status',routeStatus: 'Route Status', action: 'Action',
   CODValue: 'Value', isSuccess: 'Scanned', CODStatus: 'COD'
 }];
+
+let fleetList = [];
+let driverList = [];
+let cityList = {}; 
+let selectedDriver = null;
+let selectedDriverName = null;
+let selectedFleet = null;
+let selectedFleetName = null;
+let isDriverExceed = false;
+let isFleetExceed = false;
+let selectedVehicleID = 1;
 
 const InputRow = React.createClass({
   getInitialState() {
@@ -59,29 +74,356 @@ const InputRow = React.createClass({
   }
 });
 
+
+const Fleet = React.createClass({
+  render: function() {
+    var fleetComponents = fleetList.map(function(fleet, idx) {
+      let vendorLoad = styles.vendorLoad;
+      let availableLoad = fleet.CurrentLoad;
+      let rowStyle = styles.vendorInformation;
+      let capacity = fleet.FleetManager && fleet.FleetManager.CompanyDetail.OrderVolumeLimit;
+      if (fleet.FleetManagerID === this.props.selectedFleet) {
+        vendorLoad = styles.vendorLoadSelected;
+        availableLoad = parseInt(availableLoad) + parseInt(this.props.sumOrders);
+        rowStyle = styles.vendorInformationSelected;
+        selectedFleetName = fleet.FleetManager && fleet.FleetManager.CompanyDetail && fleet.FleetManager.CompanyDetail.CompanyName;
+        if (availableLoad > capacity) {
+          vendorLoad = styles.vendorLoadSelectedExceed;
+          rowStyle = styles.vendorInformationSelectedExceed;
+          isFleetExceed = true;
+        } else {
+          isFleetExceed = false;
+        }
+      }
+      return (
+        <div key={idx} onClick={this.props.chooseFleet.bind(null, fleet.FleetManagerID)} 
+          className={rowStyle}>
+          <div className={styles.maskInput}>
+            <img src={fleet.FleetManagerID === this.props.selectedFleet ? "/img/icon-radio-on.png" : "/img/icon-radio-off.png"} />
+          </div>
+          <div className={styles.maskName}>
+            <span className={styles.vendorName}>
+              {fleet.FleetManager && fleet.FleetManager.CompanyDetail && fleet.FleetManager.CompanyDetail.CompanyName}
+            </span>
+          </div>
+          <div className={styles.maskLoad}>
+            <img className={styles.vendorLoadImage} src="/img/icon-grouping.png" />
+            <span className={vendorLoad}>
+              {availableLoad} / {capacity}
+            </span>
+          </div>
+        </div>
+      );
+    }.bind(this));
+    return <div>{fleetComponents}</div>;
+  }
+});
+
+export const AssignVendor = React.createClass({
+  getInitialState() {
+    return ({
+      selectedFleet: selectedFleet
+    });
+  },
+  chooseFleet(id) {
+    selectedFleet = id;
+    this.setState({selectedFleet: id});
+  },
+  render() {
+    return (
+      <div>
+        <div className={styles.mainAssignBox}>
+          <div>
+            <div className={styles.modalDesc}>
+              <div className={styles.mainLabelWebstore}>
+                {this.props.trip.ListWebstoreMores}
+              </div>
+              <div className={styles.secondLabel}>
+                {this.props.trip.PickupAddress && this.props.trip.PickupAddress.City}
+              </div>
+            </div>
+            <div className={styles.borderDesc} />
+            <div className={styles.modalDesc2}>
+              <div className={styles.secondLabel}>
+                Total Weight
+              </div>
+              <div className={styles.mainLabel}>
+                {this.props.trip.Weight} kg
+              </div>                    
+            </div>
+            <div className={styles.borderDesc} />
+            <div className={styles.modalDesc3}>
+              <div className={styles.secondLabel}>
+                Quantity
+              </div>
+              <div className={styles.mainLabel}>
+                {this.props.trip.UserOrderRoutes.length}
+              </div>                    
+            </div>
+            <div className={styles.borderDesc} />
+            <div className={styles.modalDesc4}>
+              <div className={styles.secondLabel}>
+                Please choose a vendor that you want to assign with this trip.
+              </div>               
+            </div>
+          </div>
+          <div style={{clear: 'both'}} />
+        </div>
+        <div className={styles.vendorList}>
+          { fleetList.length > 0 &&
+            <div>
+              <Fleet chooseFleet={this.chooseFleet} selectedFleet={this.state.selectedFleet} sumOrders={this.props.trip.UserOrderRoutes.length} />
+            </div>
+          }
+          { fleetList.length === 0 &&
+            <div className={styles.noTransportation}>
+              No vendor found for this trip
+            </div>
+          }
+        </div>
+        <div>
+          { !this.state.selectedFleet &&
+            <div className={styles.notesBelow}>
+              Please select a vendor for this trip and click on button to continue.
+            </div>
+          }
+          { this.state.selectedFleet &&
+            <div className={styles.notesBelow}>
+              You have selected a vendor for this trip! Please click on this button to continue.
+            </div>
+          }
+          <div>
+            <button disabled={!this.state.selectedFleet} className={styles.buttonAssign} onClick={this.props.assignFleet}>Assign to Vendor</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+});
+
+const Driver = React.createClass({
+  render: function() {
+    var driverComponents = driverList.map(function(driver, idx) {
+      let rowStyle = styles.vendorInformation;
+      let driverWeightStyle = styles.driverWeight;
+      let availableWeight = driver.CurrentWeight;
+      let capacity = driver.Vehicle && driver.Vehicle.VehicleID === config.vehicleType.Motorcycle 
+        ? config.motorcycleMaxWeight : config.vanMaxWeight;
+      if (driver.UserID === this.props.selectedDriver) {
+        rowStyle = styles.vendorInformationSelected;
+        driverWeightStyle = styles.driverWeightSelected;
+        availableWeight = parseFloat(availableWeight) + parseFloat(this.props.weight);
+        selectedDriverName = driver.FirstName + ' ' + driver.LastName;
+        if (availableWeight > capacity) {
+          driverWeightStyle = styles.driverWeightSelectedExceed;
+          rowStyle = styles.vendorInformationSelectedExceed;
+          isDriverExceed = true;
+        } else {
+          isDriverExceed = false;
+        }
+      }
+      return (
+        <div key={driver.UserID} onClick={this.props.chooseDriver.bind(null, driver.UserID)} className={rowStyle}>
+          <div className={styles.driverInput}>
+            <img src={driver.UserID === this.props.selectedDriver ? "/img/icon-radio-on.png" : "/img/icon-radio-off.png"} />
+          </div>
+          <div className={styles.driverPicture}>
+            <img src={driver.Vehicle && driver.Vehicle.VehicleID === config.vehicleType.Motorcycle ? 
+              "/img/icon-vehicle-motorcycle.png" : "/img/icon-vehicle-van.png"} />
+          </div>
+          <table className={styles.driverMaskName}>
+            <tr>
+              <span className={styles.driverName}>{driver.FirstName} {driver.LastName}</span>
+            </tr>
+            <tr>
+              <span className={driverWeightStyle}>Available Weight: {availableWeight}/{capacity} kg</span>
+            </tr>
+          </table>
+          <table className={styles.driverLocation}>
+            <tr>
+              From Pickup Location
+            </tr>
+            <tr className={styles.driverMaskLoad}>
+              <img className={styles.vendorLoadImage} src="/img/icon-location.png" />
+              <span className={styles.vendorLoad}>{driver.DistanceToNearestPickup || 'N/A'} km</span>
+            </tr>
+          </table>
+        </div>
+      );
+    }.bind(this));
+    return <div>{driverComponents}</div>;
+  }
+});
+
+export const AssignDriver = React.createClass({
+  getInitialState() {
+    return ({
+      selectedVehicle: 'Motorcycle',
+      allowNoSeparate: false,
+      selectedDriver: selectedDriver,
+    });
+  },
+  chooseVehicle(vehicle) {
+    this.setState({selectedVehicle: vehicle.value});
+    selectedVehicleID = vehicle.key;
+  },
+  noSeparate() {
+    this.setState({allowNoSeparate: true});
+  },
+  chooseDriver(id) {
+    selectedDriver = id;
+    this.setState({selectedDriver: id});
+  },
+  render() {
+    const vehicleList = config.vehicle;
+    return (
+      <div>
+        <div className={styles.mainAssignBox}>
+          <div>
+            <div className={styles.modalDesc}>
+              <div className={styles.mainLabelWebstore}>
+                {this.props.trip.ListWebstoreMores}
+              </div>
+              <div className={styles.secondLabel}>
+                {this.props.trip.PickupAddress && this.props.trip.PickupAddress.City}
+              </div>
+            </div>
+            <div className={styles.borderDesc} />
+            <div className={styles.modalDesc2}>
+              <div className={styles.secondLabel}>
+                Total Weight
+              </div>
+              <div className={styles.mainLabel}>
+                {this.props.trip.Weight} kg
+              </div>                    
+            </div>
+            <div className={styles.borderDesc} />
+            <div className={styles.modalDesc3}>
+              <div className={styles.secondLabel}>
+                Quantity
+              </div>
+              <div className={styles.mainLabel}>                
+                {this.props.trip.UserOrderRoutes && this.props.trip.UserOrderRoutes.length}
+              </div>                    
+            </div>
+            <div className={styles.borderDesc} />
+            <div className={styles.modalDesc4}>
+              <div className={styles.secondLabel}>
+                Vehicle
+              </div>
+              <div className={styles.secondLabelVehicle}>              
+                <DropdownTypeAhead options={vehicleList} selectVal={this.chooseVehicle} val={this.state.selectedVehicle} />
+              </div>            
+            </div>
+          </div>
+          <div style={{clear: 'both'}} />
+          { this.props.trip.Weight > config.motorcycleMaxWeight && this.state.selectedVehicle === 'Motorcycle' 
+            && !this.state.allowNoSeparate &&
+              <div className={styles.modalDescBottom}>
+                This trip is too big. Take {config.motorcycleMaxWeight} kg only and separate the rest?
+                <div style={{clear: 'both'}} />
+                <button className={styles.buttonSplitNo} onClick={this.noSeparate}>No</button>
+                <button className={styles.buttonSplitYes} onClick={this.props.splitTrip}>Yes</button>
+              </div>
+          }
+          { this.props.trip.Weight > config.vanMaxWeight && this.state.selectedVehicle === 'Van' 
+            && !this.state.allowNoSeparate &&
+              <div className={styles.modalDescBottom}>
+                This trip is too big. Take {config.vanMaxWeight} kg only and separate the rest?
+                <div style={{clear: 'both'}} />
+                <button className={styles.buttonSplitNo} onClick={this.noSeparate}>No</button>
+                <button className={styles.buttonSplitYes} onClick={this.props.splitTrip}>Yes</button>
+              </div>
+          }
+          <div style={{clear: 'both'}} />
+        </div>
+        <div className={styles.driverList}>
+          { this.props.isFetchingDriver &&
+            <div className={styles.searchingDriver}>
+              <img className={styles.searchingIcon} src="/img/icon-search-color.png" />
+              <br />
+              <span className={styles.searchingSpan}>
+                Searching....
+              </span>
+              <br />
+              <div className={styles.searchingNotes}>
+                We will search for the best driver suitable for the job, based on their location to the pickup location
+              </div>
+            </div>
+          }
+          { !this.props.isFetchingDriver && driverList.length > 0 &&
+            <Driver selectedVehicle={this.state.selectedVehicle} noSplit={this.state.allowNoSeparate} 
+              chooseDriver={this.chooseDriver} selectedDriver={this.state.selectedDriver} weight={this.props.trip.Weight} />
+          }
+          { !this.props.isFetchingDriver && driverList.length === 0 &&
+            <div className={styles.noTransportation}>
+              No driver found for this trip
+            </div>
+          }
+        </div>
+        <div>
+          { this.props.trip.Weight > config.motorcycleMaxWeight && this.state.selectedVehicle === 'Motorcycle' 
+            && !this.state.allowNoSeparate &&
+            <div className={styles.notesBelow}>
+              Please choose if you want to divide this trip or not before you can continue
+            </div>
+          }
+          <div>
+            <button disabled={!this.state.selectedDriver} className={styles.buttonAssign} onClick={this.props.assignDriver}>Assign to Driver</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+});
+
+const DetailRow = React.createClass({
+  render() {
+    const {isEditing, label, type, value, className, placeholder} = this.props;
+    return (
+      <div style={{clear: 'both'}}>
+        <span className={styles.itemLabel}>{label}</span>
+        <span className={styles.itemValue}> 
+        {
+          type === "image" ?
+          <ImagePreview imageUrl={value} />
+          :
+          value
+        }
+        </span>
+      </div>
+    );
+  }
+});
+
 const DetailPage = React.createClass({
   getInitialState() {
     return {
-      showModal: false,
-      driver: '', 
-      district: {
-        isChanging: false,
-      },
-      orderMarked: "",
-      scanUpdateToggle: false,
-      scannedOrder: this.props.scannedOrder || {},
-      isSuccessEditing: false
+      showVendor: true,
+      showDriver: false,
+      showModalExternalTrip: false
     };
   },
-  openModal() {
-    this.setState({showModal: true});
+  activateVendor() {
+    this.setState({showVendor: true});
+    this.setState({showDriver: false});
+    selectedFleet = null;
+    selectedDriver = null;
+  },
+  activateDriver() {
+    this.setState({showVendor: false});
+    this.setState({showDriver: true});
+    selectedFleet = null;
+    selectedDriver = null;
   },
   closeModal() {
-    this.setState({showModal: false, scannedOrder: {}});    
-    this.props.StopEditOrder();
+    this.props.hideAssignModal();
   },
-  changeToggle() {
-    this.setState({scanUpdateToggle: !this.state.scanUpdateToggle});    
+  openExternalTrip() {
+    this.setState({showModalExternalTrip: true});
+  },
+  closeExternalTrip() {
+    this.setState({showModalExternalTrip: false});
   },
   clearContainer() {
     if(confirm('Are you sure you want to empty and reuse this container?')) {
@@ -91,59 +433,24 @@ const DetailPage = React.createClass({
   },
   componentWillMount() {
     this.props.fetchStatusList();
-    this.props.StopEditOrder();
+    this.props.FetchFleetList();
+  },
+  deassignDriver() {
+    if(confirm('Are you sure you want to cancel assignment on this trip?')) {
+      this.props.driverDeassign();
+    }
+  },
+  deassignFleet() {
+    if(confirm('Are you sure you want to cancel assignment on this trip?')) {
+      this.props.fleetDeassign();
+    }
+  },
+  exportManifest() {
+    this.props.exportManifest();
   },
   goToFillContainer() {
     const {trip} = this.props;
     this.props.goToFillContainer(trip.TripID);
-  },
-  pickDriver(val) {
-    const driver = _.find(this.props.drivers, (driver) => (val == PrepareDriver(driver.Driver)));
-    this.setState({driverID: driver.Driver.UserID, driver: val});
-  },
-  finalizeDriver() {
-    this.props.driverPick(this.props.container.ContainerID,this.state.driverID);
-  },
-  deassignDriver() {
-    if(confirm('Are you sure you want to deassign driver on this container?')) {
-      this.props.driverDeassign();
-    }
-  },
-  changeMark(val) {
-    this.setState({
-      orderMarked: val,
-    })
-  },
-  markReceived(val) {
-    this.props.markReceived(val, "markReceivedInput", this.state.scanUpdateToggle);
-    this.setState({
-      orderMarked: "",
-    });
-  },
-  submitReceived() {
-    this.props.markReceived(this.state.orderMarked, null, this.state.scanUpdateToggle);
-    this.setState({
-      orderMarked: "",
-    });
-  },
-  componentWillReceiveProps(nextProps) {
-    if ((nextProps['isEditing'])) {
-      this.openModal();
-      if (document.getElementById('packageVolume')) {
-        document.getElementById('packageVolume').focus();
-      }
-    }
-    if (this.state.scannedOrder.UserOrderID !== nextProps.scannedOrder) {
-      this.setState({
-        scannedOrder: nextProps['scannedOrder'],
-      });
-    }
-    this.setState({
-      isSuccessEditing: nextProps['isSuccessEditing'],
-    });
-  },
-  exportManifest() {
-    this.props.exportManifest();
   },
   deliverTrip() {
     if(this.props.canMarkTripDelivered) {
@@ -177,25 +484,44 @@ const DetailPage = React.createClass({
       this.setState({[key]: value});
     };
   },
-  updateOrder() {
-    let updatedFields = ['PackageVolume', 'PackageWeight', 'DeliveryFee']
-    let currentData = lodash.assign({}, this.state);
-    let updatedData = {}
-    updatedFields.forEach(function(field) {
-      if (typeof currentData[field] !== 'undefined') {
-        updatedData[field] = parseInt(currentData[field]);
-      } 
-    });
-    this.props.UpdateOrder(this.props.scannedOrder.UserOrderID, updatedData);
+  onChange(key) {
+    return (val) => {
+      this.props.update({[key]: val});
+    }
   },
-  confirmSuccess() {
-    this.closeModal();
-    this.props.revertSuccessEditing();
+  assignDriver() {
+    if (!selectedDriver) {
+      alert('Please select driver first');
+      return;
+    }
+    if (isDriverExceed) {
+      if (confirm('Are you sure you want to assign ' + this.props.trip.Weight + ' kg to ' + selectedDriverName + '?')) {
+        this.props.DriverSet(this.props.trip.TripID, selectedDriver);
+      } 
+    } else {
+      this.props.DriverSet(this.props.trip.TripID, selectedDriver);
+    }
+  },
+  assignFleet() {
+    if (!selectedFleet) {
+      alert('Please select fleet first');
+      return;
+    }
+    if (isFleetExceed) {
+      if (confirm('Are you sure you want to assign ' + this.props.trip.Weight + ' kg to ' + selectedFleetName + '?')) {
+        this.props.FleetSet(this.props.trip.TripID, selectedFleet);
+      } 
+    } else {
+      this.props.FleetSet(this.props.trip.TripID, selectedFleet);
+    }
+  },
+  splitTrip() {
+    this.props.SplitTrip(this.props.trip.TripID, selectedVehicleID);
   },
   render() {
     const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, fillAble, hasDriver, isFetching, isInbound, orders, reusable, statusList, TotalCODValue, CODCount, totalDeliveryFee, trip, TotalWeight} = this.props;
 
-    const {canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, isDeassigning, isEditing, scannedOrder} = this.props;
+    const {canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, isDeassigning, isEditing, scannedOrder, canDeassignFleet} = this.props;
 
     const successfullScan = lodash.filter(this.props.orders, {'isSuccess': 'Yes'});
 
@@ -211,7 +537,7 @@ const DetailPage = React.createClass({
     }
 
     const canSet = trip.DestinationHub || trip.District;
-    const haveSet = trip.Driver || trip.ExternalTrip;
+    const haveSet = trip.Driver || trip.FleetManager || trip.ExternalTrip;
 
     const driverName = trip.Driver ? 
       trip.Driver.FirstName + ' ' + trip.Driver.LastName + ' | ' + trip.Driver.CountryCode + ' ' +trip.Driver.PhoneNumber : 'No Driver Yet';
@@ -225,27 +551,62 @@ const DetailPage = React.createClass({
           <h3>Fetching Trip Details...</h3>
         }
         {
-          this.state.showModal && isEditing &&
-          <ModalContainer onClose={this.closeModal}>
-            <ModalDialog onClose={this.closeModal}>
-              { !this.state.isSuccessEditing &&
-                <div style={{clear: 'both'}}>
-                  <InputRow id={'packageVolume'} label={'Package Volume'} icon={'icon-volume'} value={this.state.scannedOrder.PackageVolume} type={'text'} onChange={this.stateChange('PackageVolume') } />
-                  <InputRow label={'Package Weight'} icon={'icon-weight'} value={this.state.scannedOrder.PackageWeight} type={'text'} onChange={this.stateChange('PackageWeight') } />
-                  <InputRow label={'Delivery Fee'} icon={'icon-delivery-fee'} value={this.state.scannedOrder.OrderCost} type={'text'} onChange={this.stateChange('DeliveryFee') } />
-                  <div style={{clear: 'both'}} />
-                  <button className={styles.saveButton} onClick={this.updateOrder}>SUBMIT</button>
-                </div> 
-              }   
-              { this.state.isSuccessEditing &&
+          this.state.showModalExternalTrip &&
+          <ModalContainer>
+            <ModalDialog>
+              <div>
                 <div>
-                  <img className={styles.successIcon} src={"/img/icon-success.png"} />
-                  <div className={styles.updateSuccess}>
-                    Update Order Success
+                  <div className={styles.modalTitle}>
+                    External Trip Details
+                  </div>
+                  <div onClick={this.closeExternalTrip} className={styles.modalClose}>
+                    X
                   </div> 
-                  <button className={styles.saveButton} onClick={this.confirmSuccess}>OK</button>
-                </div>
-              }
+                  <div>
+                    <div className={styles.modalTabPanel3pL}>
+                      <div className="row">
+                        <DetailRow label="3PL NAME" className={styles.colMd12 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.Sender} type="text" />
+                        <DetailRow label="TRANSPORTATION" className={styles.colMd12 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.Transportation} type="text" />
+                        <DetailRow label="DEPARTURE TIME" className={styles.colMd6 + ' ' + styles.detailRow} value={trip.ExternalTrip&& trip.ExternalTrip.DepartureTime && formatDate(trip.ExternalTrip.DepartureTime)} type="datetime" />
+                        <DetailRow label="ETA" className={styles.colMd6 + ' ' + styles.detailRow + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.ArrivalTime && formatDate(trip.ExternalTrip.ArrivalTime)} type="datetime" />
+                        <DetailRow label="FEE" className={styles.colMd6 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.Fee} type="number" />
+                        <DetailRow label="AWB NUMBER" className={styles.colMd6 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.AwbNumber} type="text" />
+                        <DetailRow label="IMAGE" className={styles.colMd6 + ' ' + styles.detailRow + ' ' + styles.uploadButton} value={trip.ExternalTrip && trip.ExternalTrip.PictureUrl} type="image" />
+                      </div>
+                    </div>
+                  </div>
+                </div> 
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
+        {
+          this.props.showModal &&
+          <ModalContainer>
+            <ModalDialog>
+              <div>
+                <div>
+                  <div className={styles.modalTitle}>
+                    Assign Trip
+                  </div>
+                  <div onClick={this.closeModal} className={styles.modalClose}>
+                    X
+                  </div> 
+                  <div className={styles.toggleAssignMain}>
+                    <div onClick={this.activateVendor} className={this.state.showVendor ? styles.toggleAssignActive : styles.toggleAssign}>Assign to Driver</div>
+                    <div className={styles.arbitToggleAssign}> | </div>
+                    <div onClick={this.activateDriver} className={this.state.showDriver ? styles.toggleAssignActive : styles.toggleAssign}>Assign to Vendor</div>
+                  </div>
+                  { this.state.showVendor &&
+                    <AssignDriver trip={this.props.trip} assignDriver={this.assignDriver} 
+                      splitTrip={this.splitTrip} isFetchingDriver={this.props.isFetchingDriver} />
+                  }
+                  {
+                    this.state.showDriver &&
+                    <AssignVendor trip={this.props.trip} assignFleet={this.assignFleet} />
+                  }
+                </div> 
+              </div>
             </ModalDialog>
           </ModalContainer>
         }
@@ -289,22 +650,38 @@ const DetailPage = React.createClass({
                         haveSet ?
                         <div>
                           {
-                            trip.Driver &&
+                            trip.FleetManager &&
                             <div>
-                              <p className={styles.title}>Fleet : {companyName}</p>
-                              <p>{driverName}</p>
+                              <p className={styles.title}>Fleet : {trip.FleetManager.CompanyDetail && trip.FleetManager.CompanyDetail.CompanyName}</p>
+                              {
+                                trip.Driver &&
+                                <p>{driverName}</p>
+                              }
                             </div>
                           }
                           {
                             trip.ExternalTrip &&
-                            <p className={styles.title}>3PL : {trip.ExternalTrip.Transportation}</p>
+                            <div>
+                              <p className={styles.title}>3PL : {trip.ExternalTrip.Transportation}</p>
+                              <button className={styles.greenBtn} onClick={this.openExternalTrip}>Show Details</button>
+                            </div>
                           }
                         </div>
                         :
                         <div>
                           <p className={styles.title}>3PL / Fleet :</p>
-                          <p>No Driver Yet</p>
+                          <p>Not assigned yet</p>
+                          <button className={styles.greenBtn} onClick={this.props.showAssignModal}>Assign Trip</button>
                         </div>
+                      }
+                      {
+                        (canDeassignDriver || canDeassignFleet) &&                        
+                        <ButtonWithLoading 
+                          styles={{base: styles.greenBtn}} 
+                          textBase="Cancel Assignment" 
+                          textLoading="Deassigning" 
+                          onClick={canDeassignDriver ? this.deassignDriver : this.deassignFleet} 
+                          isLoading={isDeassigning} />
                       }
                     </div>
                   </div>
@@ -313,10 +690,6 @@ const DetailPage = React.createClass({
                       {
                         reusable &&
                         <ButtonWithLoading styles={{base: styles.greenBtn}} textBase={'Clear and Reuse Container'} textLoading={'Clearing Container'} isLoading={emptying.isInProcess} onClick={this.clearContainer} />
-                      }
-                      {
-                        canDeassignDriver &&
-                        <ButtonWithLoading styles={{base: styles.greenBtn}} textBase="Cancel Assignment" textLoading="Deassigning" onClick={this.deassignDriver} isLoading={isDeassigning} />
                       }
                       {
                         (canMarkTripDelivered || canMarkContainer) &&
@@ -332,8 +705,7 @@ const DetailPage = React.createClass({
                   </div>
                 </div>
               </div>
-              <div style={{clear: 'both'}} />
-              
+              <div style={{clear: 'both'}} />              
                 <div className={styles.infoArea + ' ' + styles.mB30 + " nb"}>
                   <div className={styles.colMd6 + ' ' + styles.noPadding + ' ' + styles.stats}>
                     <p className={styles.title}>STATS</p>
@@ -394,14 +766,17 @@ const DetailPage = React.createClass({
 });
 
 const mapStateToProps = (state, ownProps) => {
-  const {inboundTripDetails, userLogged, orderDetails} = state.app;
+  const {tripDetails, userLogged, orderDetails} = state.app;
   const {hubID, isCentralHub} = userLogged;
-  const {isDeassigning, isFetching, orders: rawOrders, isEditing, scannedOrder} = inboundTripDetails;
+  const {isDeassigning, isFetching, orders: rawOrders, isEditing, scannedOrder, showModal, fleets, drivers, isFetchingDriver} = tripDetails;
   const trip = ownProps.trip;
   const isSuccessEditing = orderDetails.isSuccessEditing;
   const containerID = ownProps.params.id;
   const {containers, statusList} = state.app.containers;
   const container = containers[containerID];
+
+  fleetList = fleets;
+  driverList = drivers;
 
   if(isFetching) {
     return {isFetching: true};
@@ -414,7 +789,6 @@ const mapStateToProps = (state, ownProps) => {
   const emptying = false;
   const reusable = false;
   const fillAble = trip.OrderStatus && (trip.OrderStatus.OrderStatusID === 1 || trip.OrderStatus.OrderStatusID === 9);
-  const {drivers} = state.app;
 
   const containerOrders = lodash.map(trip.UserOrderRoutes, (route) => {
     return route;
@@ -460,7 +834,7 @@ const mapStateToProps = (state, ownProps) => {
   console.log('mark', CanMarkTripDelivered(trip, rawOrders), CanMarkContainer(trip, hubID));
 
   return {
-    trip: trip,
+    trip: TripParser(trip),
     orders: orders,
     container: container,
     isFetching: isFetching,
@@ -468,6 +842,7 @@ const mapStateToProps = (state, ownProps) => {
     reusable: reusable,
     emptying: emptying || {},
     canDeassignDriver: (trip.Driver && trip.OrderStatus.OrderStatusID == 2) || false,
+    canDeassignFleet: (trip.FleetManager) || false,
     driverState: {
       isDeassigning: state.app.driversStore.driverDeassignment,
       isPicking: state.app.driversStore.driverList.isLoading,
@@ -491,7 +866,9 @@ const mapStateToProps = (state, ownProps) => {
     isEditing,
     scannedOrder,
     isSuccessEditing,
-    isCentralHub
+    isCentralHub,
+    showModal,
+    isFetchingDriver
   }
 }
 
@@ -511,6 +888,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     driverDeassign: function() {
       dispatch(TripDetails.Deassign(ownProps.params.id));
+    },
+    fleetDeassign: function() {
+      dispatch(TripDetails.DeassignFleet(ownProps.params.id));
     },
     goToFillContainer: function(id) {
       dispatch(push('/trips/' + id + '/fillPickup'));
@@ -541,6 +921,28 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     revertSuccessEditing: function(){
       dispatch(TripDetails.revertSuccessEditing());
+    },
+    showAssignModal: function() {
+      dispatch(TripDetails.ShowAssignModal());
+      dispatch(TripDetails.FetchDriverList());
+    },
+    hideAssignModal: function() {
+      dispatch(TripDetails.HideAssignModal());
+    },
+    FetchFleetList: function() {
+      dispatch(TripDetails.FetchFleetList());
+    },
+    DriverSet(tripID, driverID) {
+      dispatch(TripDetails.AssignDriver(tripID, driverID));
+    },
+    FleetSet(tripID, fleetID) {
+      dispatch(TripDetails.AssignFleet(tripID, fleetID));
+    },
+    SplitTrip(id, vehicleID) {
+      dispatch(TripDetails.SplitTrip(id, vehicleID));
+    },
+    update: (trip) => {
+      dispatch(TripDetails.UpdateExternalTrip(trip));
     }
   };
 };

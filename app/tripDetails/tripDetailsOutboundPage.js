@@ -7,7 +7,7 @@ import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
 import {ContainerDetailsActions, StatusList} from '../modules';
 import districtsFetch from '../modules/districts/actions/districtsFetch';
-import {ButtonBase, ButtonWithLoading, Input, Modal, Page, Glyph} from '../views/base';
+import {ButtonBase, ButtonWithLoading, Input, Modal, Page, Glyph, DropdownTypeAhead} from '../views/base';
 import DistrictAndDriver from '../views/container/districtAndDriver';
 import {OrderTable} from './tripDetailsTable';
 import * as TripDetails from './tripDetailsService';
@@ -15,8 +15,10 @@ import ModalActions from '../modules/modals/actions';
 import Accordion from '../views/base/accordion';
 import RemarksSetter from '../components/remarksSetter';
 import styles from './styles.css';
-import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered} from '../modules/trips';
+import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered, TripParser} from '../modules/trips';
 import {formatDate} from '../helper/time';
+import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import config from '../config/configValues.json';
 
 const columns = ['id', 'id2', 'dropoff', 'time', 'CODValue', 'CODStatus', 'orderStatus', 'routeStatus', 'action'];
 const nonFillColumn = columns.slice(0, columns.length - 1);
@@ -35,11 +37,24 @@ const DetailPage = React.createClass({
       district: {
         isChanging: false,
       },
-      orderMarked: ""
+      orderMarked: "",
+      showVendor: true,
+      showDriver: false
     };
+  },activateVendor() {
+    this.setState({showVendor: true});
+    this.setState({showDriver: false});
+    selectedFleet = null;
+    selectedDriver = null;
+  },
+  activateDriver() {
+    this.setState({showVendor: false});
+    this.setState({showDriver: true});
+    selectedFleet = null;
+    selectedDriver = null;
   },
   closeModal() {
-    this.setState({showModal: false});
+    this.props.hideAssignModal();
   },
   clearContainer() {
     if(confirm('Are you sure you want to empty and reuse this container?')) {
@@ -90,6 +105,32 @@ const DetailPage = React.createClass({
   },
   exportManifest() {
     this.props.exportManifest();
+  },
+  assignDriver() {
+    if (!selectedDriver) {
+      alert('Please select driver first');
+      return;
+    }
+    if (isDriverExceed) {
+      if (confirm('Are you sure you want to assign ' + this.props.trip.Weight + ' kg to ' + selectedDriverName + '?')) {
+        this.props.DriverSet(this.props.trip.TripID, selectedDriver);
+      } 
+    } else {
+      this.props.DriverSet(this.props.trip.TripID, selectedDriver);
+    }
+  },
+  assignFleet() {
+    if (!selectedFleet) {
+      alert('Please select fleet first');
+      return;
+    }
+    if (isFleetExceed) {
+      if (confirm('Are you sure you want to assign ' + this.props.trip.Weight + ' kg to ' + selectedFleetName + '?')) {
+        this.props.FleetSet(this.props.trip.TripID, selectedFleet);
+      } 
+    } else {
+      this.props.FleetSet(this.props.trip.TripID, selectedFleet);
+    }
   },
   render() {
     const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, fillAble, hasDriver, isFetching, isInbound, orders, reusable, statusList, TotalCODValue, CODCount, totalDeliveryFee, trip, TotalWeight} = this.props;
@@ -205,10 +246,6 @@ const DetailPage = React.createClass({
                         reusable &&
                         <ButtonWithLoading styles={{base: styles.greenBtn}} textBase={'Clear and Reuse Container'} textLoading={'Clearing Container'} isLoading={emptying.isInProcess} onClick={this.clearContainer} />
                       }
-                      {
-                        canDeassignDriver &&
-                        <ButtonWithLoading styles={{base: styles.greenBtn}} textBase="Cancel Assignment" textLoading="Deassigning" onClick={this.deassignDriver} isLoading={isDeassigning} />
-                      }
                     </div>
                     <div className={styles.colMd4}>
                       <a href={'/trips/' + trip.TripID + '/manifest#'} className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} target="_blank">Print Manifest</a>
@@ -275,9 +312,9 @@ const DetailPage = React.createClass({
 });
 
 const mapStateToProps = (state, ownProps) => {
-  const {inboundTripDetails, userLogged} = state.app;
+  const {tripDetails, userLogged} = state.app;
   const {hubID} = userLogged;
-  const {isDeassigning, isFetching, orders: rawOrders, isChangingRemarks, isTripEditing} = inboundTripDetails;
+  const {isDeassigning, isFetching, orders: rawOrders, isChangingRemarks, isTripEditing, showModal, fleets, drivers, isFetchingDriver} = tripDetails;
   const trip = ownProps.trip;
   const containerID = ownProps.params.id;
   const {containers, statusList} = state.app.containers;
@@ -294,7 +331,6 @@ const mapStateToProps = (state, ownProps) => {
   const emptying = false;
   const reusable = false;
   const fillAble = trip.OrderStatus && (trip.OrderStatus.OrderStatusID === 1 || trip.OrderStatus.OrderStatusID === 9);
-  const {drivers} = state.app;
 
   const containerOrders = lodash.map(trip.UserOrderRoutes, (route) => {
     return route;
@@ -336,7 +372,7 @@ const mapStateToProps = (state, ownProps) => {
   const isInbound = paths[2] === 'inbound';
 
   return {
-    trip: trip,
+    trip: TripParser(trip),
     orders: orders,
     container: container,
     isFetching: isFetching,
@@ -365,7 +401,9 @@ const mapStateToProps = (state, ownProps) => {
     canMarkTripDelivered: CanMarkTripDelivered(trip, rawOrders),
     canMarkContainer: CanMarkContainer(trip, hubID),
     isChangingRemarks,
-    isTripEditing
+    isTripEditing,
+    showModal,
+    isFetchingDriver
   }
 }
 
@@ -407,6 +445,22 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     exportManifest: function() {
       dispatch(TripDetails.ExportManifest(ownProps.params.id));
     },
+    showAssignModal: function() {
+      dispatch(TripDetails.ShowAssignModal());
+      dispatch(TripDetails.FetchDriverList());
+    },
+    hideAssignModal: function() {
+      dispatch(TripDetails.HideAssignModal());
+    },
+    FetchFleetList: function() {
+      dispatch(TripDetails.FetchFleetList());
+    },
+    DriverSet(tripID, driverID) {
+      dispatch(TripDetails.AssignDriver(tripID, driverID));
+    },
+    FleetSet(tripID, fleetID) {
+      dispatch(TripDetails.AssignFleet(tripID, fleetID));
+    }
   };
 };
 
