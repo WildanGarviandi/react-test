@@ -30,7 +30,7 @@ function ButtonAction(props) {
 
 const ButtonWithLoading = React.createClass({
   render() {
-    const {textBase, textLoading, isLoading, onClick, styles = {}, base} = this.props;
+    const {textBase, textLoading, isLoading, onClick, styles = {}, base, disabled} = this.props;
     const btnClass = classNaming(baseStyle.btnBase, {[baseStyle.loading]: isLoading}, styles.base);
     const spinnerClass = classNaming(baseStyle.spinner, styles.spinner);
 
@@ -42,7 +42,7 @@ const ButtonWithLoading = React.createClass({
     }
 
     return (
-      <button {...base} className={btnClass} onClick={onClick}>{textBase}</button>
+      <button {...base} className={btnClass} onClick={onClick} disabled={disabled}>{textBase}</button>
     );
   }
 })
@@ -65,4 +65,12 @@ const ButtonStandard = React.createClass({
   }
 })
 
-export { ButtonAtRightTop, ButtonBase, ButtonAction, ButtonWithLoading, ButtonStandard, CheckBox, Collection, Dropdown, DropdownTypeAhead, DropdownWithState, Glyph, Infograph, Input, InputWithDefault, Modal, ModalMessage, Page, PageTitle, Pagination, Rows, Tables, NotificationContainer };
+const EmptySpace = React.createClass({
+  render() {
+    return (
+      <div style={{height: this.props.height, clear: 'both'}}></div>
+    );
+  }
+})
+
+export { ButtonAtRightTop, ButtonBase, ButtonAction, ButtonWithLoading, ButtonStandard, CheckBox, Collection, Dropdown, DropdownTypeAhead, DropdownWithState, Glyph, Infograph, Input, InputWithDefault, Modal, ModalMessage, Page, PageTitle, Pagination, Rows, Tables, NotificationContainer, EmptySpace };
