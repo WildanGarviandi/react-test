@@ -1,0 +1,350 @@
+.modal {
+  background-color: #e8e8e8;
+  margin-left: -20px;
+  margin-right: -20px;
+  width: 500px;
+}
+
+.modalHeader {
+  background-color: white;
+  padding: 0 20px 16px;
+}
+
+.modalTitle {
+  font-size: 20px;
+  margin-top: 0;
+  text-align: center;
+}
+
+.modalInfo {
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: 10px;
+  padding-bottom: 14px;
+  border: solid 1px #e8e8e8;
+  border-radius: 4px;
+}
+
+.verySmallText {
+  font-size: 10px;
+}
+
+.smallText {
+  font-size: 12px;
+}
+
+.smallestText {
+  font-size: 10px;
+  width: 160px;
+}
+
+.bigText {
+  font-size: 20px;
+  margin: 4px 0;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.bigTextThinStrike {
+  font-size: 20px;
+  margin: 4px 0;
+  text-decoration: line-through;
+  display: inline-block;
+  margin-right: 10px;
+  font-weight: 500;
+}
+
+.redText {
+  color: red;
+  cursor: pointer;
+}
+
+.infoText {
+  color: black;
+}
+
+.modalContent1 {
+  padding: 20px 12px 10px;
+}
+
+.modalContent2 {
+  background-color: white;
+  padding: 20px 20px;
+  margin-bottom: 10px;
+}
+
+.modalContent3 {
+  padding: 10px 15px;
+  background-color: white;
+  border-radius: 4px;
+  margin: 10px 8px;
+  height: 30px;
+}
+
+.modalContent25 {
+  width: 25%;
+}
+
+.modalContent50 {
+  width: 50%;
+}
+
+.modalContent100 {
+  width: 100%;
+}
+
+.orderContentLeft {
+  float: left;
+}
+
+.orderContentRight {
+  float: right;
+  text-align: right;
+}
+
+.clearfix {
+  clear: both;
+}
+
+.emptySpace {
+  height: 20px;
+}
+
+.modalFooter {
+  background-color: white;
+  text-align: center;
+  padding: 20px 20px 0;
+}
+
+.saveButton {
+  font-size: 20px;
+  font-weight: 700;
+  background-color: #38b393;
+  box-shadow: none;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  width: 100%;
+  height: 50px;
+  cursor: pointer;
+}
+
+.normalButton {
+  box-shadow: none;
+  border: solid 2px #e8e8e8;
+  background-color: white;
+  border-radius: 4px;
+  color: #38b393;
+  font-weight: 700;
+  height: 50px;
+  width: 110px;
+  cursor: pointer;
+}
+
+.input {
+  font-size: 20px;
+  font-weight: bold;
+  border: none;
+  padding-left: 0;
+  margin: 4px 0;
+  width: 100%;
+}
+
+.input:hover {
+  border-bottom: solid 1px;
+}
+
+.inputWithBorder {
+  border-bottom: solid 1px;
+  width: 80% !important;
+}
+
+.inputRowContainer {
+  display: inline-block;
+}
+
+.inputRowLabel {
+  text-transform: uppercase;
+  margin-left: 20px;
+  font-size: 10px;
+  font-weight: bold;
+  color: #7d7d7d;
+}
+
+.radioContainer {
+  cursor: pointer;
+}
+
+.radioImage {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+}
+
+.radioLabel {
+  font-size: 17px;
+  font-weight: bold;
+  vertical-align: middle;
+  margin-left: 4px;
+}
+
+.closeModalButton {
+  position: absolute;
+  right: 10px;
+  top: 18px;
+  background-color: transparent;
+  box-shadow: none;
+  border: none;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.closeButtonImage {
+  width: 24px;
+  height: 24px;
+}
+
+.actionContainer {
+  display: table;
+  width: 100%;
+  margin-bottom: 17px;
+}
+
+.verifyInputContainer {
+  display: table-cell;
+  width: calc(100% - 100px);
+}
+
+.verifyInput {
+  height: 40px;
+  width: calc(100% - 10px);
+  padding-left: 10px;
+  border: solid 1px lightgray;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  font-size: 13px;
+}
+
+.verifyInput::-webkit-input-placeholder {
+   color: #BFBFBF;
+}
+
+.verifyInput:-moz-placeholder { /* Firefox 18- */
+   color: #BFBFBF;  
+}
+
+.verifyInput::-moz-placeholder {  /* Firefox 19+ */
+   color: #BFBFBF;  
+}
+
+.verifyInput:-ms-input-placeholder {  
+   color: #BFBFBF;  
+}
+
+.verifyButton {
+  background-color: #2196F3;
+  color: white;
+  width: 100px;
+  height: 42px;
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  cursor: pointer;
+  border: none;
+  box-shadow: none;
+}
+
+.verifyButton:hover {
+  background-color: #63b5f6;
+}
+
+.verifyButton:disabled {
+  background-color: #63b5f6;
+  cursor: default;
+}
+
+
+/* TABLE CSS */
+
+.table {
+  border-image-source: initial;
+  border-image-slice: initial;
+  border-image-width: initial;
+  border-image-outset: initial;
+  border-image-repeat: initial;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(221, 221, 221);
+
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 20px;
+
+  background-color: transparent;
+  border-collapse: collapse;
+  border-spacing: 0px;
+
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.table th {
+  border: solid 1px #e8e8e8;
+  padding: 12px;
+}
+
+.table td {
+  border: solid 1px #e8e8e8;
+  text-align: center;
+}
+
+.emptyTableContainer {
+  text-align: center;
+  height: 500px;
+  vertical-align: middle;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.fetchingText {
+  font-size: 20px;
+  text-align: center;
+}
+
+.emptyTableBigText {
+  width: 100%;
+}
+
+.emptyTableSmallText {
+  font-size: 12px;
+  color: #9C9C9C;
+  margin-top: 12px;
+}
+
+.emptyTableImage {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 33px;
+}
+
+.redCell {
+  background-color: red !important;
+  color: white !important;
+}
+
+.redCell span {
+  color: white !important;
+}
+
+.customStyle {
+  position: absolute;
+  width: calc(50% - 10px);
+}
+
+.selectInput {
+  display: flex;
+  margin-top: 3px;
+}

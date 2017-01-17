@@ -16,5 +16,13 @@
         "day": 86400000,
         "3hours":  10800000
     },
-    "inboundDeadlineFromCutOffTime": 6
+    "inboundDeadlineFromCutOffTime": 6,
+    "defaultCODValues": [{
+        "label": "COD",
+        "value": true
+    }, {
+        "label": "Non COD",
+        "value": false
+    }],
+    "volumetricFactor": 6000
 }

@@ -15,6 +15,7 @@ import {Reducer as outboundTrips} from './modules/outboundTrips';
 import {Reducer as receivedOrders} from './modules/receivedOrders';
 import {Reducer as grouping} from './grouping/groupingService';
 import {Reducer as inboundOrders} from './inbound/inboundOrdersService';
+import {Reducer as updateOrders} from './updateOrders/updateOrdersService';
 import orderDetails from './modules/orders/reducers/details';
 // import outboundTrips from './modules/trips/reducers/outbound';
 import hubs from './modules/hubs/reducers';
@@ -50,6 +51,7 @@ export default combineReducers({
   receivedOrders,
   grouping,
   inboundOrders,
+  updateOrders,
   myTrips,
   myOrders,
   myContacts,
