@@ -563,11 +563,11 @@ const DetailPage = React.createClass({
                     X
                   </div> 
                   <div>
-                    <div className={styles.modalTabPanel}>
+                    <div className={styles.modalTabPanel3pL}>
                       <div className="row">
                         <DetailRow label="3PL NAME" className={styles.colMd12 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.Sender} type="text" />
                         <DetailRow label="TRANSPORTATION" className={styles.colMd12 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.Transportation} type="text" />
-                        <DetailRow label="DEPARTURE TIME" className={styles.colMd6 + ' ' + styles.detailRow} value={trip.DepartureTime && formatDate(trip.DepartureTime)} type="datetime" />
+                        <DetailRow label="DEPARTURE TIME" className={styles.colMd6 + ' ' + styles.detailRow} value={trip.ExternalTrip&& trip.ExternalTrip.DepartureTime && formatDate(trip.ExternalTrip.DepartureTime)} type="datetime" />
                         <DetailRow label="ETA" className={styles.colMd6 + ' ' + styles.detailRow + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.ArrivalTime && formatDate(trip.ExternalTrip.ArrivalTime)} type="datetime" />
                         <DetailRow label="FEE" className={styles.colMd6 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.Fee} type="number" />
                         <DetailRow label="AWB NUMBER" className={styles.colMd6 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.AwbNumber} type="text" />
@@ -647,15 +647,6 @@ const DetailPage = React.createClass({
                     </div>
                     <div className={styles.colMd6}>
                       {
-                        (canDeassignDriver || canDeassignFleet) &&                        
-                        <ButtonWithLoading 
-                          styles={{base: styles.greenBtn}} 
-                          textBase="Cancel Assignment" 
-                          textLoading="Deassigning" 
-                          onClick={canDeassignDriver ? this.deassignDriver : this.deassignFleet} 
-                          isLoading={isDeassigning} />
-                      }
-                      {
                         haveSet ?
                         <div>
                           {
@@ -682,6 +673,15 @@ const DetailPage = React.createClass({
                           <p>Not assigned yet</p>
                           <button className={styles.greenBtn} onClick={this.props.showAssignModal}>Assign Trip</button>
                         </div>
+                      }
+                      {
+                        (canDeassignDriver || canDeassignFleet) &&                        
+                        <ButtonWithLoading 
+                          styles={{base: styles.greenBtn}} 
+                          textBase="Cancel Assignment" 
+                          textLoading="Deassigning" 
+                          onClick={canDeassignDriver ? this.deassignDriver : this.deassignFleet} 
+                          isLoading={isDeassigning} />
                       }
                     </div>
                   </div>

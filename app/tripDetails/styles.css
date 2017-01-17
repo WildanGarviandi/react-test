@@ -825,6 +825,15 @@ p.title {
   width: 450px;
 }
 
+.modalTabPanel3pL {
+  padding: 15px;
+  background: #ffffff;
+  height: 300px;
+  max-height: 400px;
+  overflow-y: auto;
+  width: 450px;
+}
+
 .detailRow {
   margin-bottom: 15px;
 }
