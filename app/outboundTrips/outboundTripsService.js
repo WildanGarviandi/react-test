@@ -265,7 +265,7 @@ export function Reducer(state = initialState, action) {
     case Constants.TRIPS_OUTBOUND_DETAILS_DRIVER_SET: {
       return lodash.assign({}, state, {
         driver: action.driver,
-        isSuccessAssigning: true
+        isSuccessAssigning: action.isSuccessAssigning
       });
     }
 
@@ -280,7 +280,7 @@ export function Reducer(state = initialState, action) {
     case Constants.TRIPS_OUTBOUND_DETAILS_FLEET_SET: {
       return lodash.assign({}, state, {
         fleet: action.fleet,
-        isSuccessAssigning: true
+        isSuccessAssigning: action.isSuccessAssigning
       });
     }
 
@@ -325,8 +325,8 @@ export function Reducer(state = initialState, action) {
 
 export function AddFilters(newFilters) {
   return (dispatch, getState) => {
-    const {outboundTrips} = getState().app;
-    const {filters} = outboundTrips;
+    const {outboundTripsService} = getState().app;
+    const {filters} = outboundTripsService;
 
     dispatch({
       type: Constants.TRIPS_OUTBOUND_FILTERS_SET,
@@ -339,9 +339,9 @@ export function AddFilters(newFilters) {
 
 export function FetchList() {
   return (dispatch, getState) => {
-    const {outboundTrips, userLogged} = getState().app;
+    const {outboundTripsService, userLogged} = getState().app;
     const {token} = userLogged;
-    const {currentPage, filters, limit} = outboundTrips;
+    const {currentPage, filters, limit} = outboundTripsService;
 
     const query = lodash.assign({}, filters, {
       limit: limit,
@@ -468,9 +468,8 @@ export function FetchListFleetDrivers (fleetID) {
 
 export function FetchListNearbyDrivers(tripID) {
   return (dispatch, getState) => {
-    const {outboundTrips, userLogged} = getState().app;
+    const {outboundTripsService, userLogged} = getState().app;
     const {token} = userLogged;
-    const {currentPage, filters, limit} = outboundTrips;
 
     const query = {
       tripID: tripID,
@@ -650,7 +649,7 @@ export function AssignDriver(tripID, driverID) {
     dispatch({ type: Constants.TRIPS_OUTBOUND_DETAILS_DRIVER_START });
     dispatch({type:modalAction.BACKDROP_SHOW});
     FetchPost(`/trip/${tripID}/driver`, token, body).then((response) => {
-      if(!response.ok) {
+      if (!response.ok) {
         return response.json().then(({error}) => {
           throw error;
         });
@@ -661,10 +660,9 @@ export function AssignDriver(tripID, driverID) {
         dispatch({type: modalAction.BACKDROP_HIDE});
         dispatch({
           type: Constants.TRIPS_OUTBOUND_DETAILS_DRIVER_SET,
-          driver: data.result
+          driver: data.result,
+          isSuccessAssigning: true
         });
-
-        dispatch(FetchList());
       });
     }).catch((e) => {
       const message = (e && e.message) ? e.message : 'Failed to set driver';
@@ -691,9 +689,9 @@ export function AssignFleet(tripID, fleetManagerID, driverID) {
 
     dispatch({type:modalAction.BACKDROP_SHOW});
 
-    if(fleet) {
+    if (fleet) {
       FetchDelete(`/trip/${tripID}/fleetmanager`, token, {}, true).then((response) => {
-        if(!response.ok) {
+        if (!response.ok) {
           return response.json().then(({error}) => {
             throw error;
           });
@@ -701,7 +699,7 @@ export function AssignFleet(tripID, fleetManagerID, driverID) {
 
         return FetchPost(`/trip/${tripID}/fleetmanager`, token, body, true);
       }).then((response) => {
-        if(!response.ok) {
+        if (!response.ok) {
           return response.json().then(({error}) => {
             throw error;
           });
@@ -710,18 +708,17 @@ export function AssignFleet(tripID, fleetManagerID, driverID) {
         response.json().then(({data}) => {
           dispatch({type: modalAction.BACKDROP_HIDE})
           dispatch({
-            type: Constants.TRIPS_OUTBOUND_DETAILS_FLEET_END,
+            type: Constants.TRIPS_OUTBOUND_DETAILS_FLEET_END
           });
 
           dispatch({
             type: Constants.TRIPS_OUTBOUND_DETAILS_FLEET_SET,
-            fleet: data.result
+            fleet: data.result,
+            isSuccessAssigning: (driverID == undefined)
           });
-          
+
           if (driverID) {
             dispatch(AssignDriver(tripID, driverID))
-          } else {
-            dispatch(FetchList())
           }
         });
       }).catch((e) => {
@@ -744,18 +741,17 @@ export function AssignFleet(tripID, fleetManagerID, driverID) {
         response.json().then(({data}) => {
           dispatch({type: modalAction.BACKDROP_HIDE})
           dispatch({
-            type: Constants.TRIPS_OUTBOUND_DETAILS_FLEET_END,
+            type: Constants.TRIPS_OUTBOUND_DETAILS_FLEET_END
           });
 
           dispatch({
             type: Constants.TRIPS_OUTBOUND_DETAILS_FLEET_SET,
             fleet: data.result,
+            isSuccessAssigning: (driverID == undefined)
           });
 
           if (driverID) {
             dispatch(AssignDriver(tripID, driverID))
-          } else {
-            dispatch(FetchList())
           }
         });
       }).catch((e) => {
@@ -863,8 +859,12 @@ export function ResetFilterInbound() {
 }
 
 export function EndAssigning () {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const {outboundTripsService} = getState().app;
+    const {isSuccessAssigning} = outboundTripsService;
+
     dispatch({type: Constants.TRIPS_OUTBOUND_ASSIGNING_END});
+    (isSuccessAssigning) && dispatch(FetchList());
   }
 }
 

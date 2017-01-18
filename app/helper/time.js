@@ -18,5 +18,12 @@ export function formatDate(datetime) {
 }
 
 export function formatDateHourOnly (datetime) {
-	return moment(new Date(datetime)).format('HH:mm:ss');
+	return moment.utc(new Date(datetime)).format('HH:mm:ss');
+}
+
+export function formatDateHourOnlyLocal (datetime) {
+	return moment.utc(new Date(datetime)).format('HH:mm:ss');
+}
+export function formatDateHourOnlyMoment (momentDate) {
+	return momentDate.format('HH:mm:ss');
 }

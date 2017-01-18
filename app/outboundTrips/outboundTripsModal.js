@@ -357,13 +357,14 @@ export { Interval }
 const AssignTripModalClass = React.createClass({
   getInitialState () {
     return {
-      isLastMileAssigning: true, 
+      isLastMileAssigning: true,
       isLastMile: false,
       isNotLastMile: false,
       isFleetSet: false,
-      selectedFleet: '',
+      selectedFleet: null,
       isDriverSet: false,
-      selectedDriver: '',
+      selectedDriver: null,
+      selectedFleetDriver: null,
       Fee: 0,
       isExternalDataValid: false,
       isHubAssigning: false,
@@ -387,7 +388,8 @@ const AssignTripModalClass = React.createClass({
     this.state.fleet = this.props.nearbyFleets.fleets[key]
     this.setState({
       selectedFleet: key,
-      isFleetSet: true
+      isFleetSet: true,
+      selectedFleetDriver: null
     })
     this.props.fetchFleetDriver(this.state.fleet.FleetManagerID)
   },
@@ -662,7 +664,7 @@ const AssignTripModalClass = React.createClass({
                             <button className={"btn btn-md btn-success" + ' ' + styles.fleetDriverButton} onClick={this.fleetSetWithoutDriver}>
                               Choose without driver </button>
                             <button className={"btn btn-md btn-success" + ' ' + styles.fleetDriverButton} onClick={this.fleetSet} 
-                              disabled={!this.state.selectedFleetDriver}>Choose Driver</button>
+                              disabled={this.state.selectedFleetDriver === null}>Choose Driver</button>
                           </div>
                         }
                       </div>
