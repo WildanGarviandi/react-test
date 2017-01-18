@@ -3,6 +3,8 @@ import {connect} from 'react-redux';
 import {Link} from 'react-router';
 
 import {AppLoadedActions, LogoutAction} from '../modules';
+import checkAuth from '../modules/auth/actions/checkAuth';
+import store from '../store';
 import FetchStatusList from '../modules/containers/actions/statusFetch';
 import * as ContactService from '../contacts/contactService';
 import * as StateService from '../states/stateService';
@@ -16,8 +18,10 @@ import styles from './styles.css';
 import _ from 'underscore';
 import config from '../../config.json';
 import {push} from 'react-router-redux';
+import ModalActions from '../modules/modals/actions';
 
 var classnaming = require('classnames/bind').bind(styles);
+let interval = null;
 
 const MenuItem = ({active, children, to, onClick}) => {
   let className = classnaming('menuItem', {active: active});
@@ -184,6 +188,7 @@ const DashboardContainer = React.createClass({
   },
   componentWillMount() {
     this.props.initialLoad();
+    this.checkAuth();
   },
   toggleCompact() {
     this.setState({isCompact: !this.state.isCompact});
@@ -194,6 +199,11 @@ const DashboardContainer = React.createClass({
   switchMenu() {
     this.setState({tmsMenu: !this.state.tmsMenu});
     this.props.switchMenu(!this.state.tmsMenu);
+  },
+  checkAuth() {
+    interval = setInterval(function() {
+      this.props.checkAuth();
+    }.bind(this), 10000);
   },
   render() {
     let {routes, userLogged} = this.props;
@@ -250,6 +260,15 @@ function DispatchToProps(dispatch) {
     },
     logout: function() {
       dispatch(LogoutAction.logout());
+    },
+    checkAuth: function() {
+      checkAuth(store).then(function(result) {
+        if(!result.ok) {
+          dispatch(ModalActions.addMessage('Your session has been expired. Please login again.'));
+          clearInterval(interval);
+          dispatch(push('/login'));
+        }
+      })
     },
     switchMenu: function(tmsMenu) {
       if (tmsMenu) {

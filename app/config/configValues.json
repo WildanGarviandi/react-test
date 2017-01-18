@@ -25,5 +25,6 @@
         "value": false
     }],
     "volumetricFactor": 6000,
-    "outboundDeadlineFromCreated": 3
+    "outboundDeadlineFromCreated": 3,
+    "defaultMainPage": "/orders/pickup"
 }

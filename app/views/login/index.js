@@ -5,6 +5,9 @@ import classNaming from 'classnames';
 import {LoginAction} from '../../modules/';
 import {ButtonWithLoading, CheckBox, Input} from '../base';
 import styles from './styles.css';
+import store from '../../store';
+import {push} from 'react-router-redux';
+import config from '../../config/configValues.json'
 
 const LoginCheckBox = (props) => {
   var checkboxStyle = {
@@ -99,6 +102,11 @@ const LoginPage = React.createClass({
     event.preventDefault();
     this.props.login(this.state.email, this.state.password);
   },
+  componentWillMount() {
+    if (this.props.token) {
+      store.dispatch(push(config.defaultMainPage));
+    }
+  },
   render() {
     const {loginState} = this.props;
 
@@ -109,14 +117,15 @@ const LoginPage = React.createClass({
 });
 
 const mapStateToProps = (state) => {
-  const {isFetching, isValid, message} = state.app.userLogged;
+  const {isFetching, isValid, message, token} = state.app.userLogged;
 
   return {
     loginState: {
       isFetching: isFetching,
       isError: (!isFetching && !isValid),
       message: message
-    }
+    },
+    token
   };
 }
 
