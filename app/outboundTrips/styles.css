@@ -1236,6 +1236,7 @@ td.withIcon {
 .emptyTableImage {
   width: 80px;
   height: 80px;
+  margin: 0 auto;
   margin-bottom: 33px;
 }
 
