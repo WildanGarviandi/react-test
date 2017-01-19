@@ -543,3 +543,7 @@
 .tripIDColumn {
   width: 70px;
 }
+
+.link, .link:hover {
+    color: #33c;
+}

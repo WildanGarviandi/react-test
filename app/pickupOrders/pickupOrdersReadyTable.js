@@ -162,8 +162,11 @@ const ZipFilter = connectFilterText('zipCode', 'ZIP Code')(FilterText);
 */
 function mapDispatchToLink(dispatch, ownParams) {
   return {
-    onClick: function() {
+    onClickModals: function() {
       dispatch(PickupOrdersReady.ShowDetails(parseInt(ownParams.item.tripID)));
+    },
+    onClickDetails: function() {
+      dispatch(push(`/trips/${parseInt(ownParams.item.tripID)}/`));
     }
   }
 }
@@ -369,7 +372,7 @@ const Table = React.createClass({
         return <td key={columnKey} className={tableStyles.td} key={columnKey}>{item[columnKey]}</td>;
       });
 
-      return <tr className={tableStyles.tr} key={item.key}>{cells}</tr>;
+      return <tr className={tableStyles.tr + ' ' + styles.noPointer} key={item.key}>{cells}</tr>;
     });
 
     if (this.props.isFetching) {

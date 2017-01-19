@@ -345,7 +345,7 @@ function PickupOrdersBody({items}) {
       return <td key={column.keyword} style={style} className={className}>{cell}</td>;
     });
 
-    return <tr key={idx} className={stylesTable.tr}>{cells}</tr>
+    return <tr key={idx} className={stylesTable.tr + ' ' + styles.noPointer}>{cells}</tr>
   });
 
   return (

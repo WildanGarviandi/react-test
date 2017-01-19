@@ -51,14 +51,14 @@ export function ButtonCell({value, onClick}) {
   );
 }
 
-export function IDCell({text, onClick}) {
+export function IDCell({text, onClickDetails, onClickModals}) {
   return (
-    <div onClick={onClick} style={{textAlign: 'center'}}>
-      <div className={styles.detailsID}>
-        {text}
+    <div style={{textAlign: 'center'}}>
+      <div onClick={onClickDetails} className={styles.detailsID}>
+        TRIP-{text}
       </div>
-      <div className={styles.detailsInfo}>
-        (click to see details)
+      <div onClick={onClickModals} className={styles.detailsInfo}>
+        (Quick look)
       </div>
     </div>
   );

@@ -133,8 +133,10 @@
 .detailsID {
     font-weight: bold;
     font-size: 14px;
+    cursor: pointer;
 }
 
 .detailsInfo {
     font-size: 10px;
+    cursor: pointer;
 }

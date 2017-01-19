@@ -19,6 +19,7 @@ import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import styles from './styles.css';
 import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered} from '../modules/trips';
 import {OrderParser} from '../modules/orders';
+import {Link} from 'react-router';
 
 const ColumnsOrder = ['tripID', 'webstoreNames', 'weight', 'driver', 'driverPhone', 'status', 'verifiedOrders'];
 
@@ -56,7 +57,9 @@ const Table = React.createClass({
     const Body = _.map(this.props.items, (item) => {
       const cells = _.map(ColumnsOrder, (columnKey) => {
         if (columnKey === 'tripID') {
-          return <td className={tableStyles.td + ' ' + styles.tripIDColumn} key={columnKey}>{item[columnKey]}</td>;
+          return <td className={tableStyles.td + ' ' + styles.tripIDColumn} key={columnKey}>
+            <Link to={`/trips/${item.key}`} className={styles.link}>{item[columnKey]}</Link>
+          </td>;
         }
         if (columnKey === 'verifiedOrders') {
           return <td className={tableStyles.td + ' ' + styles.verifiedColumn} key={columnKey} onClick={this.props.showModals.bind(null, item['key'])}>

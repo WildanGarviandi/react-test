@@ -124,7 +124,7 @@ function InboundOrdersBody({items}) {
       return <td key={column.keyword} className={className}>{cell}</td>;
     });
 
-    return <tr key={idx} className={styles.tr}>{cells}</tr>
+    return <tr key={idx} className={styles.tr + ' ' + inboundStyles.noPointer}>{cells}</tr>
   });
 
   return (
