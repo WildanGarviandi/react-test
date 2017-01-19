@@ -10,6 +10,7 @@ import ModalActions from '../modules/modals/actions';
 import NotifActions from '../modules/notification/actions';
 import {modalAction} from '../modules/modals/constants';
 import config from '../config/configValues.json';
+import * as DashboardService from '../dashboard/dashboardService';
 
 const Constants = {
   TRIPS_INBOUND_DETAILS_DEASSIGN_END: "inbound/details/deassign/end",
@@ -643,6 +644,7 @@ export function TripDeliver(tripID, reuse) {
 
       dispatch({type: modalAction.BACKDROP_HIDE});
       dispatch(ModalActions.addMessage('Trip marked as delivered'));
+      dispatch(DashboardService.FetchCount());
 
       const newTrip = lodash.assign({}, tripDetails.trip, {
         OrderStatus: {
