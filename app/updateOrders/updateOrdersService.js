@@ -217,6 +217,7 @@ export function UpdateOrder (id, order) {
 
     const postBody = {
       UpdateData: order,
+      scanReweight: 1
     }
 
     dispatch({ type: Constants.ORDERS_UPDATE_START });
