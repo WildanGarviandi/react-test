@@ -25,6 +25,7 @@ import * as TripDetails from '../modules/inboundTripDetails';
 import config from '../config/configValues.json';
 import Countdown from 'react-cntdwn';
 import PickupOrdersModal from './pickupOrdersModal';
+import {Link} from 'react-router';
 
 const ColumnsOrder = ['checkbox', 'tripID', 'webstoreNames', 'weight', 'quantity', 'pickup', 'pickupCity', 'pickupZip', 'deadline', 'action'];
 
@@ -305,7 +306,9 @@ const Table = React.createClass({
           if (item.isTrip) {
             return <td key={columnKey} className={tableStyles.td}><PickupOrdersID item={item} text={item[columnKey]} /></td>;
           } else {
-            return <td key={columnKey} className={tableStyles.td}>{item['orderID']}</td>;
+            return <td key={columnKey} className={tableStyles.td}>
+              <Link to={`/orders/${item.key}`} className={styles.link}>{item['orderID']}</Link>
+            </td>;
           }
         }
         if (columnKey === 'weight') {

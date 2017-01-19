@@ -918,3 +918,7 @@
 .noPointer {
   cursor: default !important;
 }
+
+.link, .link:hover {
+    color: #33c;
+}
