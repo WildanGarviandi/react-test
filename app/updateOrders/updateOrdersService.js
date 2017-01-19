@@ -192,6 +192,12 @@ export function StartEditOrder (orderID) {
 
     FetchGet('/order/can-be-updated', token, query)
     .then(function (response) {
+      if(!response.ok) {
+        return response.json().then(({error}) => {
+          throw error;
+        });
+      }
+
       return response.json();
     }).then(function ({data}) {
       if (data.rows.length > 1) {
@@ -216,6 +222,11 @@ export function StartEditOrder (orderID) {
       } else {
         FetchGet('/order/' + data.rows[0].UserOrderID, token)
         .then(function (response) {
+          if(!response.ok) {
+            return response.json().then(({error}) => {
+              throw error;
+            });
+          }
           return response.json();
         }).then(function ({data}) {
           dispatch({
