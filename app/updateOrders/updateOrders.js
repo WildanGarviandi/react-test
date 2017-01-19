@@ -1,15 +1,14 @@
 import lodash from 'lodash';
 import React from 'react';
 import {connect} from 'react-redux';
-import {push} from 'react-router-redux';
 import UpdateOrdersTable from './updateOrdersTable';
 import styles from './styles.css';
-import {ButtonWithLoading, Input, Page, InputWithDefault} from '../views/base';
+import {Input, Page, InputWithDefault, InputWithDefaultNumberFormatted} from '../views/base';
 import * as UpdateOrders from './updateOrdersService';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
-import ReactDOM from 'react-dom';
 import FontAwesome from 'react-fontawesome';
 import config from '../config/configValues.json';
+import ModalActions from '../modules/modals/actions';
 
 function calculatePricing (pricingData, editedData, isPricingByWeight) {
   const {weight = 0, length = 0, height = 0, width = 0} = editedData;
@@ -50,13 +49,8 @@ const InputRow = React.createClass({
         return (
           <div style={{flex: (index === 0) ? 0.4 : 0.6 }} key={index} onClick={thisClass.handleSelect.bind(null, item.value)}
             className={styles.radioContainer}>
-            { this.state.selectedValue === item.value &&
-              <img src="/img/icon-checkmark-on.png" className={styles.radioImage}/>
-            }
-            {
-              this.state.selectedValue !== item.value &&
-              <img src="/img/icon-checkmark-off.png" className={styles.radioImage} />
-            }
+            <input type="radio" name="select" value={item.value} onChange={thisClass.handleSelect.bind(null, item.value)}
+              checked={(this.state.selectedValue === item.value)} className={styles.radioImage} />
             <span className={styles.radioLabel}>{item.label}</span>
           </div>
         );
@@ -70,6 +64,10 @@ const InputRow = React.createClass({
           { type === 'text' &&
             <InputWithDefault id={id} className={styles.input} currentText={value} type={type} onChange={this.props.onChange}
               handleSelect={this.handleInputSelect} handleEnter={this.props.onEnterKeyPressed} />
+          }
+          { type === 'price' &&
+            <InputWithDefaultNumberFormatted format={{thousandSeparator: '.', decimalSeparator: ',', prefix: 'Rp '}} onChange={this.props.onChange} 
+              currentText={value} className={styles.input} id={id} handleEnter={this.props.onEnterKeyPressed} />
           }
           { type === 'select' &&
             <div className={styles.selectInput}>
@@ -86,13 +84,13 @@ const UpdateModal = React.createClass({
   getInitialState() {
     return {
       scannedOrder: this.props.scannedOrder || {},
-      PackageWidth: this.props.scannedOrder.PackageWidth || "0",
-      PackageHeight: this.props.scannedOrder.PackageHeight || "0",
-      PackageLength: this.props.scannedOrder.PackageLength || "0",
-      PackageWeight: this.props.scannedOrder.PackageWeight || "0",
-      TotalValue: this.props.scannedOrder.TotalValue || "0",
+      PackageWidth: this.props.scannedOrder.PackageWidth || '0',
+      PackageHeight: this.props.scannedOrder.PackageHeight || '0',
+      PackageLength: this.props.scannedOrder.PackageLength || '0',
+      PackageWeight: this.props.scannedOrder.PackageWeight || '0',
+      TotalValue: this.props.scannedOrder.TotalValue || '0',
+      OrderCost: this.props.scannedOrder.OrderCost || '0',
       IsCOD: this.props.scannedOrder.IsCOD,
-      DeliveryFee: this.props.scannedOrder.OrderCost || "0",
       editDelivery: false,
       noPricing: false
     }
@@ -105,7 +103,7 @@ const UpdateModal = React.createClass({
   stateChangeAndCalculate(key) {
     return (value) => {
       this.setState({
-        [key]: value
+        [key]: (value !== '') ? value : '0'
       });
       this.calculatePricing(key, value);
     }
@@ -118,30 +116,20 @@ const UpdateModal = React.createClass({
       width: (key === 'PackageWidth') ? parseInt(value) : parseInt(this.state.PackageWidth)
     }
     const deliveryFee = calculatePricing(this.props.scannedPricing, editedData, this.props.isPricingByWeight);
-    this.setState((deliveryFee !== 0) ? {DeliveryFee: deliveryFee, noPricing: false} : 
-                                        {DeliveryFee: this.state.scannedOrder.OrderCost, noPricing: true});
+    this.setState((deliveryFee !== 0) ? {OrderCost: deliveryFee, noPricing: false} : 
+                                        {OrderCost: this.state.scannedOrder.OrderCost, noPricing: true});
   },
   componentDidMount() {
-    document.getElementById('packageLength') && document.getElementById('packageLength').focus();
+    if (document.getElementById('packageLength')) {
+      document.getElementById('packageLength').focus()
+      document.getElementById('packageLength').select()
+    }
   },
   componentWillReceiveProps(nextProps) {
-    nextProps.isEditing && document.getElementById('packageLength') && document.getElementById('packageLength').focus();
 
     (nextProps.scannedPricing === 0 || nextProps.scannedPricing.length === 0) ? 
       this.setState({noPricing: true}) : this.setState({noPricing: false});
 
-    if (this.state.scannedOrder.UserOrderID !== nextProps.scannedOrder) {
-      this.setState({
-        scannedOrder: nextProps.scannedOrder,
-        PackageWidth: nextProps.scannedOrder.PackageWidth || "0",
-        PackageHeight: nextProps.scannedOrder.PackageHeight || "0",
-        PackageLength: nextProps.scannedOrder.PackageLength || "0",
-        PackageWeight: nextProps.scannedOrder.PackageWeight || "0",
-        TotalValue: nextProps.scannedOrder.TotalValue || "0",
-        DeliveryFee: nextProps.scannedOrder.OrderCost || "0",
-        IsCOD: nextProps.scannedOrder.IsCOD,
-      });
-    }
     this.setState({
       isSuccessEditing: nextProps.isSuccessEditing
     });
@@ -150,11 +138,38 @@ const UpdateModal = React.createClass({
     document.getElementById('findOrder') && document.getElementById('findOrder').focus();
   },
   closeModal() {
-    this.setState({showModal: false, scannedOrder: {}});    
-    this.props.StopEditOrder();
+    let changed = false;
+    let updatedFields = ['PackageLength', 'PackageHeight', 'PackageWidth', 'PackageWeight', 'TotalValue', 'IsCOD', 'OrderCost'];
+    updatedFields.forEach((field) => {
+      let data = parseInt(this.state[field])
+      if (isNaN(data)) {
+        data = this.state[field]
+      }
+      if (this.props.scannedOrder[field] != data) {
+        changed = true
+      }
+    })
+
+    const thisClass = this;
+    function close () {
+      thisClass.setState({showModal: false, scannedOrder: {}});
+      thisClass.props.StopEditOrder();
+    }
+
+    if (changed) {
+      this.props.askClose({
+        message: 'Are you sure to close? Your changes will be lost.',
+        action: function () {
+          close()
+        },
+        backElementFocusID: 'addOrder'
+      })
+    } else {
+      close()
+    }
   },
   updateOrder() {
-    let updatedFields = ['PackageLength', 'PackageHeight', 'PackageWidth', 'PackageWeight', 'TotalValue', 'IsCOD', 'DeliveryFee'];
+    let updatedFields = ['PackageLength', 'PackageHeight', 'PackageWidth', 'PackageWeight', 'TotalValue', 'IsCOD', 'OrderCost'];
     let currentData = lodash.assign({}, this.state);
     let updatedData = {}
     updatedFields.forEach(function(field) {
@@ -177,6 +192,7 @@ const UpdateModal = React.createClass({
     });
     let timeout = setTimeout(() => {
       document.getElementById('deliveryFee').focus();
+      document.getElementById('deliveryFee').select();
       clearTimeout(timeout);
     }, 100);
   },
@@ -230,7 +246,7 @@ const UpdateModal = React.createClass({
             <InputRow id={'packageWeight'} label={'Weight (kg)'} value={this.state.PackageWeight} 
               type={'text'} onChange={this.stateChangeAndCalculate('PackageWeight')} onEnterKeyPressed={this.updateOrder} width={25} />
             <InputRow id={'totalValue'} label={'Package Value (rupiah)'} value={this.state.TotalValue} 
-              type={'text'} onChange={this.stateChange('TotalValue')} onEnterKeyPressed={this.updateOrder} width={50} />
+              type={'price'} onChange={this.stateChangeAndCalculate('TotalValue')} onEnterKeyPressed={this.updateOrder} width={50} />
             <InputRow id={'isCOD'} label={'Is COD'} value={this.state.IsCOD} selectItems={defaultCODValues}
               type={'select'} onChange={this.stateChange('IsCOD')} width={50} customStyle={styles.customStyle}/>
           </div>
@@ -268,17 +284,17 @@ const UpdateModal = React.createClass({
               }
               { !this.state.editDelivery && 
                 <div>
-                  { scannedOrder.OrderCost !== this.state.DeliveryFee &&
+                  { scannedOrder.OrderCost !== this.state.OrderCost &&
                     <h2 className={styles.bigTextThinStrike}>Rp. {scannedOrder.OrderCost}</h2>                    
                   }
-                  <h2 className={styles.bigText}>Rp. {this.state.DeliveryFee}</h2>
+                  <h2 className={styles.bigText}>Rp. {this.state.OrderCost}</h2>
                 </div>
               }
               { this.state.editDelivery &&
                 <span>
-                  <span className={styles.bigText}>Rp. </span>
-                  <InputWithDefault id={'deliveryFee'} className={styles.input + ' ' + styles.inputWithBorder} 
-                    currentText={this.state.DeliveryFee} type={'text'} onChange={this.stateChange('DeliveryFee')} 
+                  <InputWithDefaultFormatted format={{thousandSeparator: '.', decimalSeparator: ',', prefix: 'Rp '}}
+                    id={'deliveryFee'} className={styles.input + ' ' + styles.inputWithBorder} 
+                    currentText={this.state.OrderCost} type={'price'} onChange={this.stateChangeAndCalculate('OrderCost')} 
                     handleSelect={this.saveDelivery} handleEnter={this.saveDelivery} />
                 </span>
               }
@@ -393,6 +409,9 @@ function mapDispatchToProps (dispatch) {
     },
     findOrder: function(query) {
       dispatch(UpdateOrders.StartEditOrder(query));
+    },
+    askClose: function (modal) {
+      dispatch(ModalActions.addConfirmation(modal));
     }
   }
 }

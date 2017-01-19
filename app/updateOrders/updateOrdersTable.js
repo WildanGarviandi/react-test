@@ -19,28 +19,36 @@ const Table = React.createClass({
     const {Headers, Filters, Body, PaginationActions, isFetching, items, pagination} = this.props;
 
     let bodyComponents = (
-      <td colSpan={updateOrdersColumns.length}>
-        <div className={styles.fetchingText}>
-          Fetching data...
-        </div>
-      </td>
+      <tbody>
+        <tr>
+          <td colSpan={updateOrdersColumns.length}>
+            <div className={styles.fetchingText}>
+              Fetching data...
+            </div>
+          </td>
+        </tr>
+      </tbody>
     );
     if (!isFetching) {
       if (items.length === 0) {
         bodyComponents = (
-          <td colSpan={updateOrdersColumns.length}>
-            <div className={styles.emptyTableContainer}>
-              <span>
-                <img src="/img/image-scan-done.png" className={styles.emptyTableImage}/>
-                <div className={styles.bigText + ' ' + styles.emptyTableBigText}>
-                  Awesome work guys!
+          <tbody>
+            <tr>
+              <td colSpan={updateOrdersColumns.length}>
+                <div className={styles.emptyTableContainer}>
+                  <span>
+                    <img src="/img/image-scan-done.png" className={styles.emptyTableImage}/>
+                    <div className={styles.bigText + ' ' + styles.emptyTableBigText}>
+                      Awesome work guys!
+                    </div>
+                    <div className={styles.emptyTableSmallText}>
+                      You have update all of the orders measurement
+                    </div>
+                  </span>
                 </div>
-                <div className={styles.emptyTableSmallText}>
-                  You have update all of the orders measurement
-                </div>
-              </span>
-            </div>
-          </td>
+              </td>
+            </tr>
+          </tbody>
         );
       } else {
         bodyComponents = (
