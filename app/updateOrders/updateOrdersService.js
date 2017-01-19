@@ -6,6 +6,7 @@ import ModalActions from '../modules/modals/actions';
 import {OrderParser} from '../modules/orders';
 import {modalAction} from '../modules/modals/constants';
 import NotifActions from '../modules/notification/actions';
+import * as DashboardService from '../dashboard/dashboardService';
 
 const Constants = {
   ORDERS_UPDATE_CURRENT_PAGE_SET: "update/currentPage/set",

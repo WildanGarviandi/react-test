@@ -6,6 +6,7 @@ import ModalActions from '../modules/modals/actions';
 import {TripParser} from '../modules/trips';
 import OrderStatusSelector from '../modules/orderStatus/selector';
 import {modalAction} from '../modules/modals/constants';
+import * as DashboardService from '../dashboard/dashboardService';
 
 const Constants = {
   TRIPS_INBOUND_CURRENTPAGE_SET: "inbound/currentPage/set",
@@ -314,6 +315,7 @@ export function TripDeliver(tripID, reuse) {
       dispatch(ModalActions.addMessage('Trip marked as delivered'));
       dispatch(HideDetails());
       dispatch(FetchList());
+      dispatch(DashboardService.FetchCount());
     }).catch((e) => {
       const message = (e && e.message) ? e.message : "Failed to mark trip as delivered";
       dispatch({type: modalAction.BACKDROP_HIDE});
