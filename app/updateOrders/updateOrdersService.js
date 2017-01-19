@@ -6,6 +6,7 @@ import ModalActions from '../modules/modals/actions';
 import {OrderParser} from '../modules/orders';
 import {modalAction} from '../modules/modals/constants';
 import NotifActions from '../modules/notification/actions';
+import Promise from 'bluebird';
 
 const Constants = {
   ORDERS_UPDATE_CURRENT_PAGE_SET: "update/currentPage/set",
@@ -36,7 +37,9 @@ const initialState = {
   scannedPricing: {},
   isUpdating: false,
   isSuccessEditing: false,
-  isPricingByWeight: true
+  isPricingByWeight: true,
+  duplicateOrders: [],
+  isDuplicate: false
 }
 
 export function Reducer(state = initialState, action) {
@@ -65,19 +68,30 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.ORDERS_UPDATE_START_EDIT_ORDER: {
-      return lodash.assign({}, state, {
-        isEditing: true, 
-        scannedOrder: action.scannedOrder || state.scannedOrder,
-        scannedPricing: action.pricing || 0,
-        isPricingByWeight: action.isPricingByWeight
-      });
+      if (!action.duplicate) {
+        return lodash.assign({}, state, {
+          isEditing: true,
+          isDuplicate: false,
+          scannedOrder: action.scannedOrder || state.scannedOrder,
+          scannedPricing: action.pricing || 0,
+          isPricingByWeight: action.isPricingByWeight
+        });
+      } else {
+        return lodash.assign({}, state, {
+          isEditing: true,
+          duplicateOrders: action.orders,
+          isDuplicate: true
+        })
+      }
     }
 
     case Constants.ORDERS_UPDATE_END_EDIT_ORDER: {
       return lodash.assign({}, state, {
         isEditing: false,
         scannedOrder: {},
-        scannedPricing: 0
+        scannedPricing: 0,
+        isDuplicate: false,
+        duplicateOrders: []
       });
     }
 
@@ -165,7 +179,7 @@ export function SetLimit(limit) {
   }
 }
 
-export function StartEditOrder(orderID) {
+export function StartEditOrder (orderID) {
   return (dispatch, getState) => {
     const {userLogged} = getState().app;
     const {token} = userLogged;
@@ -174,34 +188,71 @@ export function StartEditOrder(orderID) {
       orderID: orderID
     };
 
-    dispatch({type:modalAction.BACKDROP_SHOW});
+    dispatch({type: modalAction.BACKDROP_SHOW});
 
     FetchGet('/order/can-be-updated', token, query)
-    .then(function(response) {
-      return response.json();
-    }).then(function({data}) {
-      return FetchGet('/order/' + data.rows[0].UserOrderID, token)
-    }).then(function(response) {
-      return response.json();
-    }).then(function({data}) {
-      dispatch({
-        type: Constants.ORDERS_UPDATE_START_EDIT_ORDER,
-        scannedOrder: data
-      });
-
-      const queryPricing = {
-        merchantID: data.User.UserID,
-        serviceTypeID: data.PickupType,
-        zipcodePickup: data.PickupAddress.ZipCode,
-        zipcodeDropoff: data.DropoffAddress.ZipCode
+    .then(function (response) {
+      if(!response.ok) {
+        return response.json().then(({error}) => {
+          throw error;
+        });
       }
-      return FetchGet('/merchant-pricing/rules', token, queryPricing, true);
-    }).then(function(response) {
-      return response.json();
-    }).then(function({data}) {
-      dispatch({type:modalAction.BACKDROP_HIDE});
 
-      dispatch(mapPricing(data));
+      return response.json();
+    }).then(function ({data}) {
+      if (data.rows.length > 1) {
+        let requests = data.rows.map((order) => {
+          return FetchGet('/order/' + order.UserOrderID, token)
+          .then((response) => {
+            return response.json()
+          }).then(({data}) => {
+            return data
+          })
+        })
+
+        Promise.all(requests)
+        .then((orders) => {
+          dispatch({type: modalAction.BACKDROP_HIDE})
+          dispatch({
+            type: Constants.ORDERS_UPDATE_START_EDIT_ORDER,
+            duplicate: true,
+            orders: orders
+          })
+        })
+      } else {
+        FetchGet('/order/' + data.rows[0].UserOrderID, token)
+        .then(function (response) {
+          if(!response.ok) {
+            return response.json().then(({error}) => {
+              throw error;
+            });
+          }
+          return response.json();
+        }).then(function ({data}) {
+          dispatch({
+            type: Constants.ORDERS_UPDATE_START_EDIT_ORDER,
+            scannedOrder: data
+          });
+
+          const queryPricing = {
+            merchantID: data.User.UserID,
+            serviceTypeID: data.PickupType,
+            zipcodePickup: data.PickupAddress.ZipCode,
+            zipcodeDropoff: data.DropoffAddress.ZipCode
+          }
+          return FetchGet('/merchant-pricing/rules', token, queryPricing, true);
+        }).then(function (response) {
+          return response.json();
+        }).then(function ({data}) {
+          dispatch({type: modalAction.BACKDROP_HIDE});
+          dispatch(mapPricing(data));
+        });
+      }
+    }).catch((e) => { 
+      const message = e.message || "Failed to fetch order details";
+      dispatch({ type: Constants.ORDERS_UPDATE_END_EDIT_ORDER });
+      dispatch({ type: modalAction.BACKDROP_HIDE });
+      dispatch(ModalActions.addMessage(message));
     });
   }
 }
@@ -223,24 +274,23 @@ export function UpdateOrder (id, order) {
     dispatch({ type: modalAction.BACKDROP_SHOW });
 
     FetchPost('/order/' + id, token, postBody).then((response) => {
-      if(response.ok) {
-        response.json().then(function({data}) {
-          dispatch({ type: Constants.ORDERS_UPDATE_END });
-          dispatch({ type: Constants.ORDERS_UPDATE_END_EDIT_ORDER });
-          dispatch({ type: modalAction.BACKDROP_HIDE });
-          dispatch(NotifActions.addNotification(`Order ${data.result.UserOrderNumber} was successfully updated`, 'success', null, 4));
-        });
-      } else {
-        dispatch({ type: Constants.ORDERS_UPDATE_END });
-        dispatch({ type: modalAction.BACKDROP_HIDE });
-        response.json().then(({error}) => {
-          dispatch(ModalActions.addMessage('Failed to edit order details. ' + error.message));
+      if(!response.ok) {
+        return response.json().then(({error}) => {
+          throw error;
         });
       }
-    }).catch(() => { 
-      dispatch({ type: Constants.UPDATE_ORDERS_END });
+
+      response.json().then(function({data}) {
+        dispatch({ type: Constants.ORDERS_UPDATE_END });
+        dispatch({ type: Constants.ORDERS_UPDATE_END_EDIT_ORDER });
+        dispatch({ type: modalAction.BACKDROP_HIDE });
+        dispatch(NotifActions.addNotification(`Order ${data.result.UserOrderNumber} was successfully updated`, 'success', null, 4));
+      });
+    }).catch((e) => { 
+      const message = e.message || "Failed to update order";
+      dispatch({ type: Constants.ORDERS_UPDATE_END_EDIT_ORDER });
       dispatch({ type: modalAction.BACKDROP_HIDE });
-      dispatch(ModalActions.addMessage('Network error'));
+      dispatch(ModalActions.addMessage(message));
     });
   }
 }

@@ -205,115 +205,161 @@ const UpdateModal = React.createClass({
   hideNoPricingInfo() {
     this.setState({showNoPricingInfo: false});
   },
+  chooseOrder(val) {
+    this.props.findOrder(val);
+  },
   render() {
+    const {isDuplicate, duplicateOrders} = this.props;
     const scannedOrder = this.state.scannedOrder;
     const defaultCODValues = config.defaultCODValues;
 
+    let duplicateOrdersContent = [];
+
+    if (isDuplicate) {
+      const thisComponent = this;
+      duplicateOrdersContent = duplicateOrders.map(function (order, index) {
+        return (
+          <div className={styles.orderContent + ' ' + styles.orderContentHover} key={index} 
+            onClick={thisComponent.chooseOrder.bind(null, order.UserOrderNumber)}>
+            <div className={styles.orderContentLeft}>
+              <div className={styles.smallText}>To</div>
+              { order.DropoffAddress &&
+                <div>
+                  <div className={styles.bigText}>{order.DropoffAddress.FirstName + ' ' + order.DropoffAddress.LastName}</div>
+                  <div className={styles.mediumText}>{order.DropoffAddress.City}</div>
+                </div>
+              }
+            </div>
+            <div className={styles.orderContentRight}>
+              <div style={{textAlign: 'center'}}>
+                <div className={styles.smallTextBold}>{order.UserOrderNumber}</div>
+                <div className={styles.smallText}>({order.WebOrderID})</div>
+              </div>
+            </div>
+          </div>
+        );
+      });
+    }
+
     return (
       <ModalDialog>
-        <button className={styles.closeModalButton} onClick={this.closeModal}>
-          <img src="/img/icon-close.png" className={styles.closeButtonImage}/>
-        </button>
-        <div className={styles.modal}>
-          <div className={styles.modalHeader}>
-            <h2 className={styles.modalTitle}>{scannedOrder.UserOrderNumber} ({scannedOrder.WebOrderID})</h2>
-            <div className={styles.modalInfo}>
+        { isDuplicate &&
+          <div className={styles.modal}>
+            <div className={styles.modalHeader}>
+              <h2 className={styles.modalTitle}>Please pick the right one</h2>
+              <div className={styles.smallText}>
+                Order <strong>{this.state.addOrderQueryCopy}</strong> was found in more than one data</div>
+            </div>
+            <div className={styles.modalContent1 + ' ' + styles.ordersContent}>
+              {duplicateOrdersContent}
+            </div>
+          </div>
+        }
+        { !isDuplicate &&
+          <div className={styles.modal}>
+            <button className={styles.closeModalButton} onClick={this.closeModal}>
+              <img src="/img/icon-close.png" className={styles.closeButtonImage}/>
+            </button>
+            <div className={styles.modalHeader}>
+              <h2 className={styles.modalTitle}>{scannedOrder.UserOrderNumber} ({scannedOrder.WebOrderID})</h2>
+              <div className={styles.modalInfo}>
+                <div className={styles.orderContentLeft}>
+                  <div className={styles.smallText}>From</div>
+                  {
+                    scannedOrder.User &&
+                    <h2 className={styles.bigText}>{scannedOrder.User.FirstName} {scannedOrder.User.LastName}</h2>
+                  }
+                </div>
+                <div className={styles.orderContentRight}>
+                  <div className={styles.smallText}>Destination Area</div>
+                  {
+                    scannedOrder.DropoffAddress &&
+                    <h2 className={styles.bigText}>{scannedOrder.DropoffAddress.City}</h2>
+                  }
+                </div>
+                <div className={styles.clearfix}></div>
+              </div>
+            </div>
+
+            <div className={styles.modalContent1}>
+              <InputRow id={'packageLength'} label={'Length (cm)'} value={this.state.PackageLength} 
+                type={'text'} onChange={this.stateChangeAndCalculate('PackageLength')} onEnterKeyPressed={this.updateOrder} width={25}/>
+              <InputRow id={'packageWidth'} label={'Width (cm)'} value={this.state.PackageWidth} 
+                type={'text'} onChange={this.stateChangeAndCalculate('PackageWidth')} onEnterKeyPressed={this.updateOrder} width={25} />
+              <InputRow id={'packageHeight'} label={'Height (cm)'} value={this.state.PackageHeight} 
+                type={'text'} onChange={this.stateChangeAndCalculate('PackageHeight')} onEnterKeyPressed={this.updateOrder} width={25} />
+              <InputRow id={'packageWeight'} label={'Weight (kg)'} value={this.state.PackageWeight} 
+                type={'text'} onChange={this.stateChangeAndCalculate('PackageWeight')} onEnterKeyPressed={this.updateOrder} width={25} />
+              <InputRow id={'totalValue'} label={'Package Value (rupiah)'} value={this.state.TotalValue} 
+                type={'price'} onChange={this.stateChangeAndCalculate('TotalValue')} onEnterKeyPressed={this.updateOrder} width={50} />
+              <InputRow id={'isCOD'} label={'Is COD'} value={this.state.IsCOD} selectItems={defaultCODValues}
+                type={'select'} onChange={this.stateChange('IsCOD')} width={50} customStyle={styles.customStyle}/>
+            </div>
+
+            <div className={styles.modalContent2}>
               <div className={styles.orderContentLeft}>
-                <div className={styles.smallText}>From</div>
-                {
-                  scannedOrder.User &&
-                  <h2 className={styles.bigText}>{scannedOrder.User.FirstName} {scannedOrder.User.LastName}</h2>
+                <div className={styles.smallText}>Volume Weight</div>
+                <h2 className={styles.bigText}>
+                  {((this.state.PackageLength * this.state.PackageWidth * this.state.PackageHeight) / 
+                      config.volumetricFactor).toFixed(1)} kg
+                </h2>
+              </div>
+              <div className={styles.orderContentRight}>
+                <div className={styles.smallestText}>
+                  Automatically calculated based on the length, width, and height above</div>
+              </div>
+              <div className={styles.clearfix + ' ' + styles.emptySpace}></div>
+
+              <div className={styles.orderContentLeft}>
+                { !this.state.noPricing &&
+                  <div className={styles.smallText}>Delivery Fee</div>
+                }
+                { this.state.noPricing &&
+                  <div className={styles.smallText + ' ' + styles.redText}>
+                    <span onMouseOver={this.showNoPricingInfo} onMouseLeave={this.hideNoPricingInfo}>
+                      Delivery Fee &nbsp;
+                      <FontAwesome name="exclamation-circle" /> &nbsp;
+                    </span>
+                    { this.state.showNoPricingInfo &&
+                      <span className={styles.verySmallText + ' ' + styles.infoText}>
+                        Please manually edit to change the delivery fee.
+                      </span>
+                    }
+                  </div>
+                }
+                { !this.state.editDelivery && 
+                  <div>
+                    { scannedOrder.OrderCost !== this.state.OrderCost &&
+                      <h2 className={styles.bigTextThinStrike}>Rp. {scannedOrder.OrderCost}</h2>                    
+                    }
+                    <h2 className={styles.bigText}>Rp. {this.state.OrderCost}</h2>
+                  </div>
+                }
+                { this.state.editDelivery &&
+                  <span>
+                    <InputWithDefaultFormatted format={{thousandSeparator: '.', decimalSeparator: ',', prefix: 'Rp '}}
+                      id={'deliveryFee'} className={styles.input + ' ' + styles.inputWithBorder} 
+                      currentText={this.state.OrderCost} type={'price'} onChange={this.stateChangeAndCalculate('OrderCost')} 
+                      handleSelect={this.saveDelivery} handleEnter={this.saveDelivery} />
+                  </span>
                 }
               </div>
               <div className={styles.orderContentRight}>
-                <div className={styles.smallText}>Destination Area</div>
-                {
-                  scannedOrder.DropoffAddress &&
-                  <h2 className={styles.bigText}>{scannedOrder.DropoffAddress.City}</h2>
+                { !this.state.editDelivery &&
+                  <button className={styles.normalButton} onClick={this.editDelivery}>EDIT</button>
+                }
+                { this.state.editDelivery &&
+                  <button className={styles.normalButton} onClick={this.saveDelivery}>SAVE</button>
                 }
               </div>
               <div className={styles.clearfix}></div>
             </div>
-          </div>
-
-          <div className={styles.modalContent1}>
-            <InputRow id={'packageLength'} label={'Length (cm)'} value={this.state.PackageLength} 
-              type={'text'} onChange={this.stateChangeAndCalculate('PackageLength')} onEnterKeyPressed={this.updateOrder} width={25}/>
-            <InputRow id={'packageWidth'} label={'Width (cm)'} value={this.state.PackageWidth} 
-              type={'text'} onChange={this.stateChangeAndCalculate('PackageWidth')} onEnterKeyPressed={this.updateOrder} width={25} />
-            <InputRow id={'packageHeight'} label={'Height (cm)'} value={this.state.PackageHeight} 
-              type={'text'} onChange={this.stateChangeAndCalculate('PackageHeight')} onEnterKeyPressed={this.updateOrder} width={25} />
-            <InputRow id={'packageWeight'} label={'Weight (kg)'} value={this.state.PackageWeight} 
-              type={'text'} onChange={this.stateChangeAndCalculate('PackageWeight')} onEnterKeyPressed={this.updateOrder} width={25} />
-            <InputRow id={'totalValue'} label={'Package Value (rupiah)'} value={this.state.TotalValue} 
-              type={'price'} onChange={this.stateChangeAndCalculate('TotalValue')} onEnterKeyPressed={this.updateOrder} width={50} />
-            <InputRow id={'isCOD'} label={'Is COD'} value={this.state.IsCOD} selectItems={defaultCODValues}
-              type={'select'} onChange={this.stateChange('IsCOD')} width={50} customStyle={styles.customStyle}/>
-          </div>
-
-          <div className={styles.modalContent2}>
-            <div className={styles.orderContentLeft}>
-              <div className={styles.smallText}>Volume Weight</div>
-              <h2 className={styles.bigText}>
-                {((this.state.PackageLength * this.state.PackageWidth * this.state.PackageHeight) / 
-                    config.volumetricFactor).toFixed(1)} kg
-              </h2>
+            
+            <div className={styles.modalFooter}>
+              <button className={styles.saveButton} onClick={this.updateOrder}>Update</button>
             </div>
-            <div className={styles.orderContentRight}>
-              <div className={styles.smallestText}>
-                Automatically calculated based on the length, width, and height above</div>
-            </div>
-            <div className={styles.clearfix + ' ' + styles.emptySpace}></div>
-
-            <div className={styles.orderContentLeft}>
-              { !this.state.noPricing &&
-                <div className={styles.smallText}>Delivery Fee</div>
-              }
-              { this.state.noPricing &&
-                <div className={styles.smallText + ' ' + styles.redText}>
-                  <span onMouseOver={this.showNoPricingInfo} onMouseLeave={this.hideNoPricingInfo}>
-                    Delivery Fee &nbsp;
-                    <FontAwesome name="exclamation-circle" /> &nbsp;
-                  </span>
-                  { this.state.showNoPricingInfo &&
-                    <span className={styles.verySmallText + ' ' + styles.infoText}>
-                      Please manually edit to change the delivery fee.
-                    </span>
-                  }
-                </div>
-              }
-              { !this.state.editDelivery && 
-                <div>
-                  { scannedOrder.OrderCost !== this.state.OrderCost &&
-                    <h2 className={styles.bigTextThinStrike}>Rp. {scannedOrder.OrderCost}</h2>                    
-                  }
-                  <h2 className={styles.bigText}>Rp. {this.state.OrderCost}</h2>
-                </div>
-              }
-              { this.state.editDelivery &&
-                <span>
-                  <InputWithDefaultFormatted format={{thousandSeparator: '.', decimalSeparator: ',', prefix: 'Rp '}}
-                    id={'deliveryFee'} className={styles.input + ' ' + styles.inputWithBorder} 
-                    currentText={this.state.OrderCost} type={'price'} onChange={this.stateChangeAndCalculate('OrderCost')} 
-                    handleSelect={this.saveDelivery} handleEnter={this.saveDelivery} />
-                </span>
-              }
-            </div>
-            <div className={styles.orderContentRight}>
-              { !this.state.editDelivery &&
-                <button className={styles.normalButton} onClick={this.editDelivery}>EDIT</button>
-              }
-              { this.state.editDelivery &&
-                <button className={styles.normalButton} onClick={this.saveDelivery}>SAVE</button>
-              }
-            </div>
-            <div className={styles.clearfix}></div>
           </div>
-          
-          <div className={styles.modalFooter}>
-            <button className={styles.saveButton} onClick={this.updateOrder}>Update</button>
-          </div>
-        </div>
+        }
       </ModalDialog>
     )
   }
@@ -383,7 +429,7 @@ const UpdateOrdersPage = React.createClass({
 function mapStateToProps (state) {
   const {updateOrders} = state.app;
   const userLogged = state.app.userLogged;
-  const {total, isEditing, scannedOrder, isSuccessEditing, scannedPricing, isPricingByWeight} = updateOrders;
+  const {total, isEditing, scannedOrder, isSuccessEditing, scannedPricing, isPricingByWeight, isDuplicate, duplicateOrders} = updateOrders;
 
   return {
     userLogged,
@@ -392,7 +438,9 @@ function mapStateToProps (state) {
     scannedOrder,
     isSuccessEditing,
     scannedPricing,
-    isPricingByWeight
+    isPricingByWeight,
+    isDuplicate,
+    duplicateOrders
   }
 }
 
