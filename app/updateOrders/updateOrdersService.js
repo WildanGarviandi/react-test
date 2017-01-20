@@ -219,7 +219,7 @@ export function StartEditOrder (orderID) {
             orders: orders
           })
         })
-      } else {
+      } else if (data.rows.length === 1) {
         FetchGet('/order/' + data.rows[0].UserOrderID, token)
         .then(function (response) {
           if(!response.ok) {
@@ -247,6 +247,16 @@ export function StartEditOrder (orderID) {
           dispatch({type: modalAction.BACKDROP_HIDE});
           dispatch(mapPricing(data));
         });
+      } else {
+        const message = 'Order not found',
+          level = 'error',
+          position = null,
+          style = null,
+          timeout = 5,
+          withSound = true
+        dispatch(NotifActions.addNotification(message, level, position, style, timeout, withSound))
+        dispatch({type: modalAction.BACKDROP_HIDE})
+        dispatch({type: Constants.ORDERS_UPDATE_END_EDIT_ORDER})
       }
     }).catch((e) => { 
       const message = e.message || "Failed to fetch order details";
