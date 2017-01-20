@@ -65,7 +65,7 @@ const SearchCell = React.createClass({
 });
 
 function StateToStatus(state) {
-  const statusName = state.app.outboundTrips.filtersStatus;
+  const statusName = state.app.outboundTripsService.filtersStatus;
   return {
     val: statusName
   }
@@ -110,7 +110,7 @@ function TripTypeDropDownDispatch(dispatch) {
 
 function TripTypeDropDownState(state) {
   return {
-    val: state.app.outboundTrips.filters.tripType,
+    val: state.app.outboundTripsService.filters.tripType,
   }
 }
 

@@ -10,7 +10,7 @@ import orders from './modules/orders/reducers';
 import {Reducer as inboundTripDetails} from './modules/inboundTripDetails';
 import {Reducer as tripDetails} from './tripDetails/tripDetailsService.js';
 import {Reducer as inboundTrips} from './inboundTrips/inboundTripsService';
-import {Reducer as outboundTrips} from './modules/outboundTrips';
+// import {Reducer as outboundTrips} from './modules/outboundTrips';
 // import {Reducer as pickupOrders} from './modules/pickupOrders';
 import {Reducer as outboundTripsService} from './outboundTrips/outboundTripsService';
 // import receivedOrders from './modules/orders/reducers/received';
@@ -49,7 +49,6 @@ export default combineReducers({
   inboundTrips,
   orderDetails,
   orders,
-  outboundTrips,
   outboundTripsService,
   pickupOrders,
   pickupOrdersReady,
