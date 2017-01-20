@@ -337,7 +337,7 @@ const UpdateModal = React.createClass({
                 }
                 { this.state.editDelivery &&
                   <span>
-                    <InputWithDefaultFormatted format={{thousandSeparator: '.', decimalSeparator: ',', prefix: 'Rp '}}
+                    <InputWithDefaultNumberFormatted format={{thousandSeparator: '.', decimalSeparator: ',', prefix: 'Rp '}}
                       id={'deliveryFee'} className={styles.input + ' ' + styles.inputWithBorder} 
                       currentText={this.state.OrderCost} type={'price'} onChange={this.stateChangeAndCalculate('OrderCost')} 
                       handleSelect={this.saveDelivery} handleEnter={this.saveDelivery} />
