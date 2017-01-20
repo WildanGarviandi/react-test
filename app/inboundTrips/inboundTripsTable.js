@@ -20,7 +20,7 @@ import styles from './styles.css';
 import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered} from '../modules/trips';
 import {OrderParser} from '../modules/orders';
 
-const ColumnsOrder = ['tripID', 'webstoreNames', 'weight', 'driver', 'driverPhone', 'status', 'verifiedOrders'];
+const ColumnsOrder = ['tripID', 'origin', 'tripType', 'weight', 'driver', 'driverPhone', 'status', 'verifiedOrders'];
 
 const ColumnsTitle = {
   containerNumber: "Container",
@@ -42,7 +42,9 @@ const ColumnsTitle = {
   tripID: "Trip ID",
   weight: "Total Weight",
   scannedOrders: "Scanned Orders",
-  verifiedOrders: "Verified Orders"
+  verifiedOrders: "Verified Orders",
+  tripType: "Trip Type",
+  origin: "Origin"
 }
 
 let fleetList = {};
@@ -142,6 +144,21 @@ function TripDropOff(trip) {
   return destinationHub || dropoffAddress || "";
 }
 
+export function GetTripType(trip) {
+  if (!trip) return "-";
+
+  if (!trip.OriginHub) {
+    return 'First Leg';
+  }
+
+  if (trip.OriginHub) {
+    return 'Interhub';
+  }
+
+  return "";
+}
+
+
 function ProcessTrip(trip) {
   const parsedTrip = TripParser(trip);
   const fleet = trip.FleetManager;
@@ -173,7 +190,9 @@ function ProcessTrip(trip) {
     weight: `${trip.Weight} kg`,
     scannedOrders: trip.ScannedOrders,
     verifiedOrders: `${trip.ScannedOrders}/${trip.UserOrderRoutes.length} order(s) are verified`,
-    assignedTo: assignedTo
+    assignedTo: assignedTo,
+    tripType: GetTripType(trip),
+    origin: trip.OriginHub ? `Hub ${trip.OriginHub.Name}` : parsedTrip.WebstoreNames
   }
 }
 
