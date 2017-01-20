@@ -95,16 +95,18 @@ const UpdateModal = React.createClass({
       noPricing: false
     }
   },
-  stateChange(key) {
+  stateChange(key, type) {
     return (value) => {
-      this.setState({[key]: value});
+      if (type === 'price') {
+        this.setState({[key]: (value !== '') ? value : '0'});
+      } else {
+        this.setState({[key]: value});
+      }
     };
   },
   stateChangeAndCalculate(key) {
     return (value) => {
-      this.setState({
-        [key]: (value !== '') ? value : '0'
-      });
+      this.setState({[key]: (value !== '') ? value : '0'});
       this.calculatePricing(key, value);
     }
   },
@@ -115,8 +117,8 @@ const UpdateModal = React.createClass({
       length: (key === 'PackageLength') ? parseInt(value) : parseInt(this.state.PackageLength),
       width: (key === 'PackageWidth') ? parseInt(value) : parseInt(this.state.PackageWidth)
     }
-    const deliveryFee = calculatePricing(this.props.scannedPricing, editedData, this.props.isPricingByWeight);
-    this.setState((deliveryFee !== 0) ? {OrderCost: deliveryFee, noPricing: false} : 
+    const orderCost = calculatePricing(this.props.scannedPricing, editedData, this.props.isPricingByWeight);
+    this.setState((orderCost !== 0) ? {OrderCost: orderCost, noPricing: false} : 
                                         {OrderCost: this.state.scannedOrder.OrderCost, noPricing: true});
   },
   componentDidMount() {
@@ -291,7 +293,7 @@ const UpdateModal = React.createClass({
               <InputRow id={'packageWeight'} label={'Weight (kg)'} value={this.state.PackageWeight} 
                 type={'text'} onChange={this.stateChangeAndCalculate('PackageWeight')} onEnterKeyPressed={this.updateOrder} width={25} />
               <InputRow id={'totalValue'} label={'Package Value (rupiah)'} value={this.state.TotalValue} 
-                type={'price'} onChange={this.stateChangeAndCalculate('TotalValue')} onEnterKeyPressed={this.updateOrder} width={50} />
+                type={'price'} onChange={this.stateChange('TotalValue', 'price')} onEnterKeyPressed={this.updateOrder} width={50} />
               <InputRow id={'isCOD'} label={'Is COD'} value={this.state.IsCOD} selectItems={defaultCODValues}
                 type={'select'} onChange={this.stateChange('IsCOD')} width={50} customStyle={styles.customStyle}/>
             </div>
@@ -308,8 +310,7 @@ const UpdateModal = React.createClass({
                 <div className={styles.smallestText}>
                   Automatically calculated based on the length, width, and height above</div>
               </div>
-              <div className={styles.clearfix + ' ' + styles.emptySpace}></div>
-
+              <div className={styles.clearfix}></div>
               <div className={styles.orderContentLeft}>
                 { !this.state.noPricing &&
                   <div className={styles.smallText}>Delivery Fee</div>
@@ -338,9 +339,9 @@ const UpdateModal = React.createClass({
                 { this.state.editDelivery &&
                   <span>
                     <InputWithDefaultNumberFormatted format={{thousandSeparator: '.', decimalSeparator: ',', prefix: 'Rp '}}
-                      id={'deliveryFee'} className={styles.input + ' ' + styles.inputWithBorder} 
-                      currentText={this.state.OrderCost} type={'price'} onChange={this.stateChangeAndCalculate('OrderCost')} 
-                      handleSelect={this.saveDelivery} handleEnter={this.saveDelivery} />
+                      id={'deliveryFee'} className={styles.input + ' ' + styles.inputWithBorder}
+                      currentText={this.state.OrderCost} type={'price'} onChange={this.stateChange('OrderCost', 'price')}
+                      handleEnter={this.saveDelivery} />
                   </span>
                 }
               </div>
