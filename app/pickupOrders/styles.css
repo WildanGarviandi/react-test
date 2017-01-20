@@ -914,3 +914,22 @@
   font-weight: bold;
   opacity: 0.6;
 }
+
+.noPointer {
+  cursor: default !important;
+}
+
+.link {
+  font-weight: bold;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.tripColumn {
+  min-width: 100px;
+  text-align: left !important;
+}

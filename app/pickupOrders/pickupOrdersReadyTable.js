@@ -25,6 +25,7 @@ import * as TripDetails from '../modules/inboundTripDetails';
 import config from '../config/configValues.json';
 import Countdown from 'react-cntdwn';
 import PickupOrdersModal from './pickupOrdersModal';
+import {Link} from 'react-router';
 
 const ColumnsOrder = ['checkbox', 'tripID', 'webstoreNames', 'weight', 'quantity', 'pickup', 'pickupCity', 'pickupZip', 'deadline', 'action'];
 
@@ -162,8 +163,11 @@ const ZipFilter = connectFilterText('zipCode', 'ZIP Code')(FilterText);
 */
 function mapDispatchToLink(dispatch, ownParams) {
   return {
-    onClick: function() {
+    onClickModals: function() {
       dispatch(PickupOrdersReady.ShowDetails(parseInt(ownParams.item.tripID)));
+    },
+    onClickDetails: function() {
+      dispatch(push(`/trips/${parseInt(ownParams.item.tripID)}/`));
     }
   }
 }
@@ -300,9 +304,11 @@ const Table = React.createClass({
       const cells = _.map(ColumnsOrder, (columnKey) => {
         if (columnKey === 'tripID') {
           if (item.isTrip) {
-            return <td key={columnKey} className={tableStyles.td}><PickupOrdersID item={item} text={item[columnKey]} /></td>;
+            return <td key={columnKey} className={tableStyles.td + ' ' + styles.tripColumn}><PickupOrdersID item={item} text={item[columnKey]} /></td>;
           } else {
-            return <td key={columnKey} className={tableStyles.td}>{item['orderID']}</td>;
+            return <td key={columnKey} className={tableStyles.td + ' ' + styles.tripColumn}>
+              <Link to={`/orders/${item.key}`} className={styles.link}>{item['orderID']}</Link>
+            </td>;
           }
         }
         if (columnKey === 'weight') {
@@ -368,8 +374,8 @@ const Table = React.createClass({
         }
         return <td key={columnKey} className={tableStyles.td} key={columnKey}>{item[columnKey]}</td>;
       });
-
-      return <tr className={tableStyles.tr} key={item.key}>{cells}</tr>;
+      
+      return <tr className={tableStyles.tr + ' ' + styles.noPointer} key={item.key}>{cells}</tr>;
     });
 
     if (this.props.isFetching) {

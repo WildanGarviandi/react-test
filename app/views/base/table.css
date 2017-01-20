@@ -48,6 +48,14 @@
     background-color: #fff;
 }
 
+.tr:hover .detailsID {
+    color: #33c;
+}
+
+.tr:hover a {
+    color: #33c;
+}
+
 .td {
     height: 20px;
     font-size: 12px;
@@ -132,9 +140,27 @@
 
 .detailsID {
     font-weight: bold;
-    font-size: 14px;
+    font-size: 12px;
+    cursor: pointer;
+    float: left;
+}
+
+.detailsID:hover {
+    text-decoration: underline;
 }
 
 .detailsInfo {
     font-size: 10px;
+    cursor: pointer;
+    float: left;
+    margin-right: 12px;
+}
+
+.detailsSearchIcon {
+    width: 15px;
+    height: 15px;
+}
+
+.hoverUnderline:hover {
+    text-decoration: underline;
 }

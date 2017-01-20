@@ -345,7 +345,7 @@ function PickupOrdersBody({items}) {
       return <td key={column.keyword} style={style} className={className}>{cell}</td>;
     });
 
-    return <tr key={idx} className={stylesTable.tr}>{cells}</tr>
+    return <tr key={idx} className={stylesTable.tr + ' ' + styles.noPointer}>{cells}</tr>
   });
 
   return (
@@ -398,8 +398,6 @@ const Table = React.createClass({
   render() {
     const {Headers, Body, PaginationActions, isFetching, isFill, isPickup, items, pagination} = this.props;
     const style = isFetching ? {opacity: 0.5} : {};
-
-    console.log(this.props.filters)
 
     let bodyComponents = (
       <td colSpan={8}>

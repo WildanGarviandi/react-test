@@ -308,6 +308,7 @@
 
 .clickable:hover {
   cursor: pointer;
+  text-decoration: underline;
 }
 
 .btnAssign {

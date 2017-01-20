@@ -350,3 +350,7 @@
   height: 80px;
   margin-bottom: 33px;
 }
+
+.noPointer {
+  cursor: default;
+}

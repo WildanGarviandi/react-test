@@ -9,6 +9,7 @@ import * as Grouping from './groupingService';
 import {formatDate, formatDateHourOnly} from '../helper/time';
 import {CheckboxCell} from '../views/base/tableCell';
 import styles from '../views/base/table.css';
+import groupingStyle from './styles.css';
 import moment from 'moment';
 
 function mapDispatchToLink(dispatch, ownParams) {
@@ -62,7 +63,7 @@ function GroupingBody({items}) {
       return <td key={column.keyword} style={style} className={className}>{cell}</td>;
     });
 
-    return <tr className={styles.tr} key={idx}>{cells}</tr>
+    return <tr className={styles.tr + ' ' + groupingStyle.noPointer} key={idx}>{cells}</tr>
   });
 
   return (
