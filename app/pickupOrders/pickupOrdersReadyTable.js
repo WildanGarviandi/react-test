@@ -374,7 +374,7 @@ const Table = React.createClass({
         }
         return <td key={columnKey} className={tableStyles.td} key={columnKey}>{item[columnKey]}</td>;
       });
-
+      
       return <tr className={tableStyles.tr + ' ' + styles.noPointer} key={item.key}>{cells}</tr>;
     });
 

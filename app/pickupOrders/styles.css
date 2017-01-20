@@ -919,6 +919,12 @@
   cursor: default !important;
 }
 
-.link, .link:hover {
-    color: #33c;
+.link {
+  font-weight: bold;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.link:hover {
+  text-decoration: underline;
 }

@@ -399,8 +399,6 @@ const Table = React.createClass({
     const {Headers, Body, PaginationActions, isFetching, isFill, isPickup, items, pagination} = this.props;
     const style = isFetching ? {opacity: 0.5} : {};
 
-    console.log(this.props.filters)
-
     let bodyComponents = (
       <td colSpan={8}>
         <div style={{fontSize: 20, textAlign:'center'}}>

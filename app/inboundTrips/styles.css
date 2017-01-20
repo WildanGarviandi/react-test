@@ -544,6 +544,10 @@
   width: 70px;
 }
 
-.link, .link:hover {
-    color: #33c;
+.link {
+  color: #33c;
+}
+
+.link:hover {
+  text-decoration: underline;
 }

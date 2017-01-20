@@ -5,6 +5,7 @@ import {Link} from 'react-router';
 import {CheckBox} from './input';
 import styles from './table.css';
 import {ButtonStandard} from './index';
+import ReactTooltip from 'react-tooltip'
 
 export function TextCell({text}) {
   return <span>{text}</span>;
@@ -17,7 +18,7 @@ export function LinkCell({onClick, text, to}) {
 export function OrderIDLinkCell({onClick, eds, id, to, isChecked, item}) {
   let style = {
     textAlign: 'center',
-    color: '#000',
+    color: '#33c',
     display: 'inline-block'
   }
 
@@ -28,7 +29,7 @@ export function OrderIDLinkCell({onClick, eds, id, to, isChecked, item}) {
 
   return (
     <Link to={to} className={styles.link}>
-      <span style={style}>
+      <span style={style} className={styles.hoverUnderline}>
         {eds}<br />({id})
       </span>
     </Link>
@@ -54,11 +55,12 @@ export function ButtonCell({value, onClick}) {
 export function IDCell({text, onClickDetails, onClickModals}) {
   return (
     <div style={{textAlign: 'center'}}>
+      <ReactTooltip />
+      <div data-tip="Quick look" onClick={onClickModals} className={styles.detailsInfo}>
+        <img className={styles.detailsSearchIcon} src="/img/icon-search-color.png" />
+      </div>
       <div onClick={onClickDetails} className={styles.detailsID}>
         TRIP-{text}
-      </div>
-      <div onClick={onClickModals} className={styles.detailsInfo}>
-        (Quick look)
       </div>
     </div>
   );
