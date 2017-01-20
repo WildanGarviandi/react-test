@@ -7,6 +7,7 @@ import {OrderParser} from '../modules/orders';
 import OrderStatusSelector from '../modules/orderStatus/selector';
 import {modalAction} from '../modules/modals/constants';
 import NotifActions from '../modules/notification/actions';
+import * as DashboardService from '../dashboard/dashboardService';
 
 const Constants = {
   GROUPING_CURRENT_PAGE_SET: "grouping/currentPage/set",
@@ -310,6 +311,7 @@ export function CreateTrip () {
             success: true,
             createdTrip: data.trip
           });
+          dispatch(DashboardService.FetchCount());
         });
       } else {
         response.json().then(({error}) => {

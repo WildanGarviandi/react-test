@@ -8,6 +8,7 @@ import {modalAction} from '../modules/modals/constants';
 import {TripParser} from '../modules/trips';
 import config from '../config/configValues.json';
 import * as NearbyFleets from '../nearbyFleets/nearbyFleetService';
+import * as DashboardService from '../dashboard/dashboardService';
 
 const Constants = {
   BASE_ORDERS_PICKUP_READY: "pickupReady/defaultSet/",
@@ -405,6 +406,7 @@ export function SplitTrip(id, vehicleID) {
           trip: TripParser(data[0]),
         });
         dispatch({type: modalAction.BACKDROP_HIDE});
+        dispatch(DashboardService.FetchCount());
       });
     }).catch(() => {
       dispatch(ModalActions.addMessage("Failed in splitting trip"));
@@ -477,6 +479,7 @@ export function AssignFleet(tripID, fleetManagerID) {
         response.json().then(({data}) => {
           dispatch({type: modalAction.BACKDROP_HIDE});
           dispatch(NearbyFleets.FetchDriverFleet(fleetManagerID));
+          dispatch(DashboardService.FetchCount());
         });
       }).catch((e) => {
         const message = (e && e.message) ? e.message : "Failed to assign fleet";
@@ -495,6 +498,7 @@ export function AssignFleet(tripID, fleetManagerID) {
         response.json().then(({data}) => {
           dispatch({type: modalAction.BACKDROP_HIDE});
           dispatch(NearbyFleets.FetchDriverFleet(fleetManagerID));
+          dispatch(DashboardService.FetchCount());
         });
       }).catch((e) => {
         const message = (e && e.message) ? e.message : "Failed to assign fleet";
@@ -607,6 +611,7 @@ export function GroupOrders() {
     FetchPost('/trip/firstLeg', token, body).then((response) => {
       if(response.ok) {
         dispatch({type: modalAction.BACKDROP_HIDE});
+        dispatch(DashboardService.FetchCount());
 
         response.json().then(({data}) => {
           dispatch(push('/trips/' + data.TripID));

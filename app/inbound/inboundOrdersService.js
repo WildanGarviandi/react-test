@@ -6,6 +6,7 @@ import ModalActions from '../modules/modals/actions';
 import {modalAction} from '../modules/modals/constants';
 import {OrderParser} from '../modules/orders';
 import NotifActions from '../modules/notification/actions';
+import * as DashboardService from '../dashboard/dashboardService';
 
 const Constants = {
   ORDERS_INBOUND_CURRENT_PAGE_SET: "inbound/currentPage/set",
@@ -206,6 +207,7 @@ export function MarkReceived (scannedID) {
         dispatch({type: modalAction.BACKDROP_HIDE});
         dispatch({ type: Constants.ORDERS_INBOUND_MARK_RECEIVED_END });
         dispatch(ReFetchList());
+        dispatch(DashboardService.FetchCount());
       });
 
     }).catch((e) => {

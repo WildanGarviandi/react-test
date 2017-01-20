@@ -7,6 +7,7 @@ import FetchDrivers from '../modules/drivers/actions/driversFetch';
 import {TripParser} from '../modules/trips';
 import OrderStatusSelector from '../modules/orderStatus/selector';
 import {modalAction} from '../modules/modals/constants';
+import * as DashboardService from '../dashboard/dashboardService';
 
 const Constants = {
   TRIPS_OUTBOUND_CURRENTPAGE_SET: 'outbound/currentPage/set',
@@ -663,6 +664,8 @@ export function AssignDriver(tripID, driverID) {
           driver: data.result,
           isSuccessAssigning: true
         });
+        dispatch(FetchList());
+        dispatch(DashboardService.FetchCount());
       });
     }).catch((e) => {
       const message = (e && e.message) ? e.message : 'Failed to set driver';
@@ -718,7 +721,10 @@ export function AssignFleet(tripID, fleetManagerID, driverID) {
           });
 
           if (driverID) {
-            dispatch(AssignDriver(tripID, driverID))
+            dispatch(AssignDriver(tripID, driverID));
+          } else {
+            dispatch(FetchList())
+            dispatch(DashboardService.FetchCount());
           }
         });
       }).catch((e) => {

@@ -3,6 +3,7 @@ import fetchGet from '../modules/fetch/get';
 import fetchPost from '../modules/fetch/post';
 import ModalActions from '../modules/modals/actions';
 import {modalAction} from '../modules/modals/constants';
+import * as DashboardService from '../dashboard/dashboardService';
 
 const Constants = {
   DETAILS_FETCH_END: "DETAILS_FETCH_END",
@@ -151,6 +152,7 @@ export const editOrder = (id, order, fromInbound) => {
         if (fromInbound) {
           dispatch({ type: Constants.SUCCESS_EDITING });
         }
+        dispatch(DashboardService.FetchCount());
       } else {
         dispatch({ type: Constants.UPDATE_ORDERS_END });
         dispatch({ type: modalAction.BACKDROP_HIDE });
