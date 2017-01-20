@@ -32,8 +32,10 @@ import ManageDriversPage from './drivers/driverManagePage';
 import MyDriverOrdersPage from './drivers/driverOrderPage';
 import MyOutboundTripsPage from './outboundTrips/outboundTripsPage';
 import OutboundTripsManifestPage from './outboundTrips/outboundTripsManifest';
+import {modalAction} from './modules/modals/constants';
 
 function requireAuth(nextState, replace, callback) {
+  store.dispatch({type: modalAction.BACKDROP_SHOW});
   checkAuth(store).then(function(result) {
     if(!result.ok) {
       replace({
@@ -41,12 +43,14 @@ function requireAuth(nextState, replace, callback) {
         state: { nextPathname: nextState.location.pathname }
       });
     }
+    store.dispatch({type: modalAction.BACKDROP_HIDE});
 
     callback();
   });
 }
 
 function requireHubAuth(nextState, replace, callback) {
+  store.dispatch({type: modalAction.BACKDROP_SHOW});
   checkAuth(store).then(function(result) {
     if(!result.ok || !result.data.hub) {
       replace({
@@ -54,6 +58,7 @@ function requireHubAuth(nextState, replace, callback) {
         state: { nextPathname: nextState.location.pathname }
       });
     }
+    store.dispatch({type: modalAction.BACKDROP_HIDE});
 
     callback();
   });

@@ -2,12 +2,12 @@ import * as actionTypes from '../constants';
 import fetchPost from '../../fetch/post';
 import fetchGet from '../../fetch/get';
 import {modalAction} from '../../modals/constants';
+import ModalActions from '../../modals/actions';
 
 export default (store) => {
   const {token} = store.getState().app.userLogged;
 
   store.dispatch({type: actionTypes.CHECK_AUTH, token: token});
-  store.dispatch({type: modalAction.BACKDROP_SHOW});
   return fetchPost('/is-authenticated', token).then((response) => {
     if(response.ok) {
       return fetchGet('/features', token, {}, true).then((featuresResponse) => {
@@ -20,19 +20,16 @@ export default (store) => {
                 user: response.data.user,
                 order: featuresResponse.data.order
               });
-              store.dispatch({type: modalAction.BACKDROP_HIDE});
               return { ok: true, data: response.data };
             });
           });
         } else {
           store.dispatch({type: actionTypes.AUTH_INVALID});
-          store.dispatch({type: modalAction.BACKDROP_HIDE});
           return { ok: false };
         }
       });
     } else {
       store.dispatch({type: actionTypes.AUTH_INVALID});
-      store.dispatch({type: modalAction.BACKDROP_HIDE});
       return { ok: false };
     }
   });
