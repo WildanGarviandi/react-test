@@ -928,3 +928,8 @@
 .link:hover {
   text-decoration: underline;
 }
+
+.tripColumn {
+  min-width: 100px;
+  text-align: left !important;
+}

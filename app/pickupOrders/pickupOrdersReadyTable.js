@@ -304,9 +304,9 @@ const Table = React.createClass({
       const cells = _.map(ColumnsOrder, (columnKey) => {
         if (columnKey === 'tripID') {
           if (item.isTrip) {
-            return <td key={columnKey} className={tableStyles.td}><PickupOrdersID item={item} text={item[columnKey]} /></td>;
+            return <td key={columnKey} className={tableStyles.td + ' ' + styles.tripColumn}><PickupOrdersID item={item} text={item[columnKey]} /></td>;
           } else {
-            return <td key={columnKey} className={tableStyles.td}>
+            return <td key={columnKey} className={tableStyles.td + ' ' + styles.tripColumn}>
               <Link to={`/orders/${item.key}`} className={styles.link}>{item['orderID']}</Link>
             </td>;
           }
