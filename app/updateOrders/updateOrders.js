@@ -126,24 +126,26 @@ const UpdateModal = React.createClass({
   },
   componentWillReceiveProps(nextProps) {
     nextProps.isEditing && document.getElementById('packageLength') && document.getElementById('packageLength').focus();
+    nextProps.isEditing && document.getElementById('packageLength') && document.getElementById('packageLength').select();
 
     (nextProps.scannedPricing === 0 || nextProps.scannedPricing.length === 0) ? 
       this.setState({noPricing: true}) : this.setState({noPricing: false});
 
-    if (this.state.scannedOrder.UserOrderID !== nextProps.scannedOrder) {
+    if (!nextProps.isDuplicate && this.state.isDuplicate) {
       this.setState({
         scannedOrder: nextProps.scannedOrder,
-        PackageWidth: nextProps.scannedOrder.PackageWidth || "0",
-        PackageHeight: nextProps.scannedOrder.PackageHeight || "0",
-        PackageLength: nextProps.scannedOrder.PackageLength || "0",
-        PackageWeight: nextProps.scannedOrder.PackageWeight || "0",
-        TotalValue: nextProps.scannedOrder.TotalValue || "0",
-        DeliveryFee: nextProps.scannedOrder.OrderCost || "0",
-        IsCOD: nextProps.scannedOrder.IsCOD,
-      });
+        PackageWidth: nextProps.scannedOrder.PackageWidth || '0',
+        PackageHeight: nextProps.scannedOrder.PackageHeight || '0',
+        PackageLength: nextProps.scannedOrder.PackageLength || '0',
+        PackageWeight: nextProps.scannedOrder.PackageWeight || '0',
+        TotalValue: nextProps.scannedOrder.TotalValue || '0',
+        OrderCost: nextProps.scannedOrder.OrderCost || '0',
+        IsCOD: nextProps.scannedOrder.IsCOD
+      })
     }
     this.setState({
-      isSuccessEditing: nextProps.isSuccessEditing
+      isSuccessEditing: nextProps.isSuccessEditing,
+      isDuplicate: nextProps.isDuplicate
     });
   },
   componentWillUnmount() {
