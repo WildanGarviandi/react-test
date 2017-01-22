@@ -207,6 +207,10 @@
   background: none;
 }
 
+.radioImage:focus {
+  outline: rgb(77, 144, 254) solid 1px;
+}
+
 .radioLabel {
   font-size: 17px;
   font-weight: bold;
