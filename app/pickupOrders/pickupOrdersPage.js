@@ -12,8 +12,8 @@ import config from '../config/configValues.json';
 const PickupOrdersPage = React.createClass({
   getInitialState() {
     return ({
-      showReady: false,
-      showNotReady: true
+      showReady: true,
+      showNotReady: false
     });
   },
   activateReady() {
@@ -44,16 +44,16 @@ const PickupOrdersPage = React.createClass({
     return (
       <Page title="Pickup Orders">
         <div className={styles.toggleReady}>
-          <span onClick={this.activateNotReady} 
-            className={this.state.showNotReady ? styles.togglePickupActive : styles.togglePickup}>
-            Not ready to be picked 
-            <span className={styles.blueSpan}> ({this.props.totalNotReady}) </span>
-          </span>
-          <span className={styles.arbitTogglePickup}> | </span>
           <span onClick={this.activateReady} 
             className={this.state.showReady ? styles.togglePickupActive : styles.togglePickup}>
             Ready to be picked 
             <span className={styles.blueSpan}> ({this.props.totalReady}) </span>
+          </span>
+          <span className={styles.arbitTogglePickup}> | </span>
+          <span onClick={this.activateNotReady} 
+            className={this.state.showNotReady ? styles.togglePickupActive : styles.togglePickup}>
+            Not ready to be picked 
+            <span className={styles.blueSpan}> ({this.props.totalNotReady}) </span>
           </span>
         </div>
         <div className={styles.mainTable}>
