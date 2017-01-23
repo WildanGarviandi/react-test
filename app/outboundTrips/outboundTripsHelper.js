@@ -104,9 +104,10 @@ export function ProcessTrip (trip) {
     tripType = 'Last Mile';
     nextDestination = 'Dropoff';
     isAssigned = true;
-  } else if (trip.DestinationHub) {
-    tripType = 'Hub';
-    nextDestination = trip.DestinationHub && `Hub ${trip.DestinationHub.Name}`;
+    if (trip.DestinationHub) {
+      tripType = 'Hub';
+      nextDestination = trip.DestinationHub && `Hub ${trip.DestinationHub.Name}`;
+    }
   } else {
     tripType = 'No Destination Yet';
     nextDestination = '-';
