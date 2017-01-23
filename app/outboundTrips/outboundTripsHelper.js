@@ -97,14 +97,19 @@ export function DstDistrict (trip) {
 export function ProcessTrip (trip) {
   const parsedTrip = TripParser(trip)
   const dropoff = TripDropOff(trip)
-  let tripType
+  let tripType, nextDestination;
+  let isAssigned = false;
 
-  if (trip.District) {
-    tripType = 'Last Mile'
+  if (trip.FleetManager || trip.Driver || trip.ExternalTrip) {
+    tripType = 'Last Mile';
+    nextDestination = 'Dropoff';
+    isAssigned = true;
   } else if (trip.DestinationHub) {
-    tripType = 'Hub'
+    tripType = 'Hub';
+    nextDestination = trip.DestinationHub && `Hub ${trip.DestinationHub.Name}`;
   } else {
-    tripType = 'No Destination Yet'
+    tripType = 'No Destination Yet';
+    nextDestination = '-';
   }
 
   return {
@@ -113,7 +118,7 @@ export function ProcessTrip (trip) {
     tripID: 'TRIP-' + trip.TripID,
     fleet: AssignedTo(trip),
     driver: trip.Driver && `${trip.Driver.FirstName} ${trip.Driver.LastName}`,
-    nextDestination: tripType === 'Last Mile' ? trip.District && `District ${trip.District.Name} - ${trip.District.City}` : trip.DestinationHub && `Hub ${trip.DestinationHub.Name}`,
+    nextDestination: nextDestination,
     dropoffCity: dropoff.city,
     dropoffState: dropoff.state,
     dropoffTime: moment(new Date(trip.DropoffTime)).format('DD MMM YYYY HH:mm:ss'),
@@ -130,7 +135,8 @@ export function ProcessTrip (trip) {
     deadline: moment(new Date(trip.CreatedDate)).add(config.outboundDeadlineFromCreated, 'hours'),
     actions: trip.TripID,
     isActionDisabled: AssignedTo(trip).isActionDisabled,
-    vehicleID: trip.Driver && trip.Driver.Vehicle && trip.Driver.Vehicle.VehicleID
+    vehicleID: trip.Driver && trip.Driver.Vehicle && trip.Driver.Vehicle.VehicleID,
+    isAssigned: isAssigned
   }
 }
 
