@@ -418,8 +418,8 @@ const DetailPage = React.createClass({
                     </div>
                     <div className={styles.colMd4}>
                       <button type="button" className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} onClick={this.toggle}>
-                        Print Manifest
-                        <div className={styles.arrowDown} />
+                        <div className={styles.manifestSpan}>Print Manifest</div>
+                        <div className={this.state.isMenuOpen ? styles.arrowUp : styles.arrowDown} />
                       </button>
                       { this.state.isMenuOpen &&
                         <ul>
