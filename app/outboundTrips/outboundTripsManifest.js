@@ -132,6 +132,7 @@ const TripManifestPage = React.createClass({
                 <table className={tripManifestStyle.orderTable}>
                   <thead>
                     <tr>
+                      <th>No</th>
                       <th>Order Number</th>
                       <th>Package Number</th>
                       <th>Webstore</th>
@@ -145,6 +146,7 @@ const TripManifestPage = React.createClass({
                       orders.map((order, i)=> {
                         return (
                           <tr key={i}>
+                            <td>{i + 1}</td>
                             <td>{order.UserOrderNumber}</td>
                             <td>{order.WebOrderID}</td>
                             <td>{order.User && `${order.User.FirstName} ${order.User.LastName}`}</td>
