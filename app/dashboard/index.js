@@ -259,6 +259,7 @@ function DispatchToProps(dispatch) {
       dispatch(FleetService.FetchList());
     },
     logout: function() {
+      clearInterval(interval);
       dispatch(LogoutAction.logout());
     },
     checkAuth: function() {
