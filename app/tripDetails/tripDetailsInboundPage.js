@@ -303,6 +303,8 @@ const DetailPage = React.createClass({
                     </div>
                   </div>
                   <div className={styles.colMd6 + ' ' + styles.noPadding}>
+                    <div className={styles.colMd4}>
+                    </div>
                     <div className={styles.colMd4 + ' '+ styles.actionButtoninside}>
                       {
                         reusable &&
@@ -312,8 +314,6 @@ const DetailPage = React.createClass({
                         (canMarkTripDelivered || canMarkContainer) &&
                         <ButtonWithLoading styles={{base: styles.greenBtn}} textBase={'Complete Trip'} textLoading={'Clearing Container'} isLoading={false} onClick={this.deliverTrip} />
                       }
-                    </div>
-                    <div className={styles.colMd4}>
                     </div>
                     <div className={styles.colMd4}>
                       <button type="button" className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} onClick={this.toggle}>

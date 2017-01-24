@@ -408,13 +408,13 @@ const DetailPage = React.createClass({
                     </div>
                   </div>
                   <div className={styles.colMd6 + ' ' + styles.noPadding}>
+                    <div className={styles.colMd4}>
+                    </div>
                     <div className={styles.colMd4 + ' '+ styles.actionButtoninside}>
                       {
                         reusable &&
                         <ButtonWithLoading styles={{base: styles.greenBtn}} textBase={'Clear and Reuse Container'} textLoading={'Clearing Container'} isLoading={emptying.isInProcess} onClick={this.clearContainer} />
                       }
-                    </div>
-                    <div className={styles.colMd4}>
                     </div>
                     <div className={styles.colMd4}>
                       <button type="button" className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} onClick={this.toggle}>
