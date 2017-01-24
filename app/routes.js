@@ -32,6 +32,7 @@ import ManageDriversPage from './drivers/driverManagePage';
 import MyDriverOrdersPage from './drivers/driverOrderPage';
 import MyOutboundTripsPage from './outboundTrips/outboundTripsPage';
 import OutboundTripsManifestPage from './outboundTrips/outboundTripsManifest';
+import OutboundTripsCoverManifestPage from './outboundTrips/outboundTripsCoverManifest';
 import {modalAction} from './modules/modals/constants';
 
 function requireAuth(nextState, replace, callback) {
@@ -100,6 +101,7 @@ export default (
         <Route path="/mydrivers/orders/:id" component={MyDriverOrdersPage} onEnter={requireAuth}/>
       </Route>
       <Route path="/trips/:tripID/manifest" component={OutboundTripsManifestPage} onEnter={requireAuth} />
+      <Route path="/trips/:tripID/coverManifest" component={OutboundTripsCoverManifestPage} onEnter={requireAuth} />
       <Route path="/qrcode/:id" component={ContainerQRCodePage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/*" component={LoginPage} />
