@@ -1,9 +1,12 @@
+import lodash from 'lodash';
 import React from 'react';
 import {connect} from 'react-redux';
 import moment from 'moment';
 import tripManifestStyle from './outboundTripsManifest.css';
 import * as OutboundTrips from './outboundTripsService';
 import QRCode from 'qrcode.react';
+import {formatDate} from '../helper/time';
+import NumberFormat from 'react-number-format';
 
 const TripManifestPage = React.createClass({
   componentWillMount() {
@@ -44,6 +47,33 @@ const TripManifestPage = React.createClass({
 
     const { isFetching, orders, trip } = this.props;
 
+    const CODOrders = lodash.filter(orders, (order) => order.IsCOD);
+    const TotalCODValue = lodash.reduce(CODOrders, (sum, order) => sum + order.TotalValue, 0);
+    const CODCount = CODOrders.length;
+    let tripType, nextDestination, assignedTo;
+    if (trip) {
+      if (trip.FleetManager) {
+        assignedTo = trip.FleetManager.CompanyDetail.CompanyName;
+      } else if (trip.ExternalTrip) {
+        assignedTo = trip.ExternalTrip.Transportation + ' - ' + trip.ExternalTrip.AwbNumber;
+      } else {
+        assignedTo = '-';
+      }
+      if (trip.DestinationHub && trip.OriginHub) {
+        tripType = 'Interhub';
+        nextDestination = `Hub ${trip.DestinationHub.Name} (${assignedTo})`;
+      } else if (!trip.OriginHub && trip.DestinationHub) {
+        tripType = 'First Leg';
+        nextDestination = `Hub ${trip.DestinationHub.Name} (${assignedTo})`;
+      } else if (trip.Driver || trip.FleetManager || trip.ExternalTrip) {
+        tripType = 'Last Mile';
+        nextDestination = `${assignedTo}`;
+      } else {
+        tripType = 'No Destination Yet'
+      }
+    }
+    
+
     return (
       <div>
         {
@@ -66,27 +96,35 @@ const TripManifestPage = React.createClass({
                 <div>
                   <QRCode
                     value={'TRIP-' + trip.TripID + ''}
-                    size={80}
+                    size={60}
                     className={tripManifestStyle.qrcode}
                   />
                   </div>
-                <p>Trip ID</p>
-                <h2>#TRIP-{trip.TripID}</h2>
+                <h4>#TRIP-{trip.TripID}</h4>
+                <h5>Total: {trip.UserOrderRoutes.length} orders</h5>
+                <h6>Pickup Time: {formatDate(trip.PickupTime)}</h6>
               </div>
               <div className={tripManifestStyle.addressCardContainer}>
                 <div className={tripManifestStyle.addressCard}>
                   <p>From</p>
                   {
-                    trip.PickupAddress !== null &&
+                    trip.PickupAddress &&
                     this.generateAddressMarkup(trip.PickupAddress)
                   }
                 </div>
                 <div className={tripManifestStyle.addressCard}>
                   <p>To</p>
-                  {
-                    trip.DropoffAddress !== null &&
-                    this.generateAddressMarkup(trip.DropoffAddress)
-                  }
+                  {tripType + ' - ' + nextDestination}
+                </div>
+              </div>
+              <div className={tripManifestStyle.codContainer}>
+                <div className={tripManifestStyle.addressCard}>
+                  <h2>Total COD Orders</h2>
+                  {CODCount}
+                </div>
+                <div className={tripManifestStyle.addressCard}>
+                  <h2>Total COD Value</h2>
+                  <NumberFormat displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp '} value={TotalCODValue} />
                 </div>
               </div>
               {
@@ -96,7 +134,9 @@ const TripManifestPage = React.createClass({
                     <tr>
                       <th>Order Number</th>
                       <th>Package Number</th>
-                      <th>From</th>
+                      <th>Webstore</th>
+                      <th>COD Status</th>
+                      <th>Value</th>
                       <th>To</th>
                     </tr>
                   </thead>
@@ -107,22 +147,28 @@ const TripManifestPage = React.createClass({
                           <tr key={i}>
                             <td>{order.UserOrderNumber}</td>
                             <td>{order.WebOrderID}</td>
+                            <td>{order.User && `${order.User.FirstName} ${order.User.LastName}`}</td>
+                            <td>{order.IsCOD ? 'COD' : '-'}</td>
+                            {
+                              order.IsCOD && 
+                              <td>
+                                <NumberFormat displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp '} value={order.TotalValue} />
+                              </td>
+                            }
+                            {
+                              !order.IsCOD &&
+                              <td>
+                                -
+                              </td>
+                            }
                             <td>
                               {
-                                order.PickupAddress !== null &&
+                                order.DropoffAddress &&
                                 <div>
-                                  <p className={tripManifestStyle.semiBold}>{order.PickupAddress.FirstName + ' ' + order.PickupAddress.LastName}</p>
-                                  <p className={tripManifestStyle.semiBold}>{order.PickupAddress.PickupMobile}</p>
-                                  <div className={tripManifestStyle.translucentBlack}>{this.generateAddressMarkup(order.PickupAddress)}</div>
-                                </div>
-                              }
-                            </td>
-                            <td>
-                              {
-                                order.DropoffAddress !== null &&
-                                <div>
-                                  <p className={tripManifestStyle.semiBold}>{order.DropoffAddress.FirstName + ' ' + order.DropoffAddress.LastName}</p>
-                                  <p className={tripManifestStyle.semiBold}>{order.DropoffAddress.PickupMobile}</p>
+                                  <p className={tripManifestStyle.semiBold}>
+                                    {order.DropoffAddress.FirstName + ' ' + order.DropoffAddress.LastName} 
+                                    ({order.DropoffAddress.CountryCode + order.DropoffAddress.MobileNumber})
+                                  </p>
                                   <div className={tripManifestStyle.translucentBlack}>{this.generateAddressMarkup(order.DropoffAddress)}</div>
                                 </div>
                               }
