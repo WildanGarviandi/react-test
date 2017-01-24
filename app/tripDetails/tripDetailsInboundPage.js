@@ -24,7 +24,6 @@ import dateTimeStyles from '../views/container/datetime.css';
 import PickupOrdersModal from '../pickupOrders/pickupOrdersModal';
 import * as PickupOrdersReady from '../pickupOrders//pickupOrdersReadyService';
 import * as NearbyFleets from '../nearbyFleets/nearbyFleetService';
-import DropdownMenu from 'react-dd-menu';
 
 const columns = ['id', 'id2', 'pickup', 'time', 'CODValue', 'CODStatus', 'orderStatus', 'routeStatus', 'isSuccess', 'action'];
 const nonFillColumn = columns.slice(0, columns.length - 1);
@@ -95,9 +94,6 @@ const DetailPage = React.createClass({
   },
   toggle() {
     this.setState({ isMenuOpen: !this.state.isMenuOpen });
-  },
-  close() {
-    this.setState({ isMenuOpen: false });
   },
   openExternalTrip() {
     this.setState({showModalExternalTrip: true});
@@ -193,16 +189,6 @@ const DetailPage = React.createClass({
       trip.Driver.FirstName + ' ' + trip.Driver.LastName + ' | ' + trip.Driver.CountryCode + ' ' +trip.Driver.PhoneNumber : 'No Driver Yet';
     const companyName = trip.Driver && trip.Driver.Driver && trip.Driver.Driver.FleetManager && trip.Driver.Driver.FleetManager.CompanyDetail ? 
       trip.Driver.Driver.FleetManager.CompanyDetail.CompanyName : '';
-
-    let menuOptions = {
-      isOpen: this.state.isMenuOpen,
-      close: this.close,
-      toggle: <button type="button" className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} onClick={this.toggle}>
-        Print Manifest
-        <div className={styles.arrowDown} />
-      </button>,
-      align: 'right'
-    };
 
     return (
       <div>
@@ -330,17 +316,23 @@ const DetailPage = React.createClass({
                     <div className={styles.colMd4}>
                     </div>
                     <div className={styles.colMd4}>
-                      <DropdownMenu {...menuOptions}>
-                        <li>
-                          <a href={'/trips/' + trip.TripID + '/manifest#'} className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} target="_blank">Detailed</a>
-                        </li>
-                        <li>
-                          <a href={'/trips/' + trip.TripID + '/coverManifest#'} className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} target="_blank">Cover</a>
-                        </li>
-                        <li>
-                          <a onClick={this.exportManifest} className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} target="_blank">Excel</a>
-                        </li>
-                      </DropdownMenu>
+                      <button type="button" className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} onClick={this.toggle}>
+                        Print Manifest
+                        <div className={styles.arrowDown} />
+                      </button>
+                      { this.state.isMenuOpen &&
+                        <ul>
+                          <li>
+                            <a href={'/trips/' + trip.TripID + '/manifest#'} className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} target="_blank">Detailed</a>
+                          </li>
+                          <li>
+                            <a href={'/trips/' + trip.TripID + '/coverManifest#'} className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} target="_blank">Cover</a>
+                          </li>
+                          <li>
+                            <a onClick={this.exportManifest} className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} target="_blank">Excel</a>
+                          </li>
+                        </ul>
+                      }
                     </div>
                   </div>
                 </div>
