@@ -99,23 +99,7 @@ const DetailPage = React.createClass({
         isChanging: false,
       },
       orderMarked: "",
-      showVendor: true,
-      showDriver: false
     };
-  },activateVendor() {
-    this.setState({showVendor: true});
-    this.setState({showDriver: false});
-    selectedFleet = null;
-    selectedDriver = null;
-  },
-  activateDriver() {
-    this.setState({showVendor: false});
-    this.setState({showDriver: true});
-    selectedFleet = null;
-    selectedDriver = null;
-  },
-  closeModal() {
-    this.props.hideAssignModal();
   },
   clearContainer() {
     if(confirm('Are you sure you want to empty and reuse this container?')) {
@@ -126,17 +110,6 @@ const DetailPage = React.createClass({
   componentWillMount() {
     this.props.fetchStatusList();
   },
-  goToFillContainer() {
-    const {trip} = this.props;
-    this.props.goToFillContainer(trip.TripID);
-  },
-  pickDriver(val) {
-    const driver = _.find(this.props.drivers, (driver) => (val == PrepareDriver(driver.Driver)));
-    this.setState({driverID: driver.Driver.UserID, driver: val});
-  },
-  finalizeDriver() {
-    this.props.driverPick(this.props.container.ContainerID,this.state.driverID);
-  },
   deassignDriver() {
     if(confirm('Are you sure you want to cancel assignment on this trip?')) {
       this.props.driverDeassign();
@@ -146,10 +119,6 @@ const DetailPage = React.createClass({
     if(confirm('Are you sure you want to cancel assignment on this trip?')) {
       this.props.fleetDeassign();
     }
-  },
-  showAssignModal() {
-    const {trip} = this.props;
-    this.props.fetchListOnModal(trip.TripID);
   },
   openExternalTrip() {
     this.setState({showModalExternalTrip: true});
@@ -165,56 +134,12 @@ const DetailPage = React.createClass({
   saveEditThirdPartyLogistic() {
     this.props.saveEditThirdPartyLogistic();
   },
-  changeMark(val) {
-    this.setState({
-      orderMarked: val,
-    })
-  },
-  markReceived(val) {
-    this.props.markReceived(val);
-    this.setState({
-      orderMarked: "",
-    });
-  },
-  deliverTrip() {
-    if(this.props.canMarkTripDelivered) {
-      this.props.deliverTrip(this.props.trip.TripID);
-    } else {
-      this.props.askReuse({
-        message: "Do you want to reuse the container?",
-        action: this.props.reuse.bind(null, this.props.trip.TripID),
-        cancel: this.props.deliverTrip.bind(null, this.props.trip.TripID),
-      });
-    }
+  showAssignModal() {
+    const {trip} = this.props;
+    this.props.fetchListOnModal(trip.TripID);
   },
   exportManifest() {
     this.props.exportManifest();
-  },
-  assignDriver() {
-    if (!selectedDriver) {
-      alert('Please select driver first');
-      return;
-    }
-    if (isDriverExceed) {
-      if (confirm('Are you sure you want to assign ' + this.props.trip.Weight + ' kg to ' + selectedDriverName + '?')) {
-        this.props.DriverSet(this.props.trip.TripID, selectedDriver);
-      } 
-    } else {
-      this.props.DriverSet(this.props.trip.TripID, selectedDriver);
-    }
-  },
-  assignFleet() {
-    if (!selectedFleet) {
-      alert('Please select fleet first');
-      return;
-    }
-    if (isFleetExceed) {
-      if (confirm('Are you sure you want to assign ' + this.props.trip.Weight + ' kg to ' + selectedFleetName + '?')) {
-        this.props.FleetSet(this.props.trip.TripID, selectedFleet);
-      } 
-    } else {
-      this.props.FleetSet(this.props.trip.TripID, selectedFleet);
-    }
   },
   render() {
     const {activeDistrict, backToContainer, canDeassignDriver, canDeassignFleet, 
@@ -225,14 +150,21 @@ const DetailPage = React.createClass({
     const {canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, 
           isDeassigning, isChangingRemarks, isTripEditing} = this.props;
 
-    const tripType = trip.DestinationHub ? 'INTERHUB' : 'LAST LEG';
-    let tripDestination;
+    let tripType, tripDestination;
+
     if (trip.DestinationHub) {
-      tripDestination = `Hub ${trip.DestinationHub.Name}`;
-    } else if (trip.District) {
-      tripDestination = `District ${trip.District.Name}`;
+      tripType = 'Interhub';
+      tripDestination = trip.DestinationHub && `Hub ${trip.DestinationHub.Name}`;
+    } else if (trip.FleetManager || trip.Driver || trip.ExternalTrip) {
+      tripType = 'Last Mile';
+      tripDestination = 'Dropoff';
+      if (trip.DestinationHub) {
+        tripType = 'Interhub';
+        tripDestination = trip.DestinationHub && `Hub ${trip.DestinationHub.Name}`;
+      }
     } else {
-      tripDestination = 'No Destination Yet';
+      tripType = 'No Destination Yet';
+      tripDestination = '-';
     }
 
     let nextSuggestion = [];
