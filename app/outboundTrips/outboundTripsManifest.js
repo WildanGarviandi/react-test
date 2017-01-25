@@ -69,7 +69,8 @@ const TripManifestPage = React.createClass({
         tripType = 'Last Mile';
         nextDestination = `${assignedTo}`;
       } else {
-        tripType = 'No Destination Yet'
+        tripType = 'No Destination Yet';
+        nextDestination = '';
       }
     }
     
