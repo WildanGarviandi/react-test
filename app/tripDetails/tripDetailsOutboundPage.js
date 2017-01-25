@@ -525,7 +525,7 @@ const mapStateToProps = (state, ownProps) => {
     })
   });
 
-  const CODOrders = _.filter(orders, (order) => order.IsCOD);
+  const CODOrders = _.filter(orders, (order) => order.IsCOD === 'Yes');
 
   // if (!trip.ContainerNumber) {
   //   return {notFound: true, isFetching};
