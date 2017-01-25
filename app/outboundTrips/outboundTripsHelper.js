@@ -100,7 +100,13 @@ export function ProcessTrip (trip) {
   let tripType, nextDestination;
   let isAssigned = false;
 
-  if (trip.FleetManager || trip.Driver || trip.ExternalTrip) {
+  if (trip.DestinationHub) {
+    tripType = 'Hub';
+    nextDestination = trip.DestinationHub && `Hub ${trip.DestinationHub.Name}`;
+    if (trip.FleetManager || trip.Driver || trip.ExternalTrip) {
+      isAssigned = true;
+    }
+  } else if (trip.FleetManager || trip.Driver || trip.ExternalTrip) {
     tripType = 'Last Mile';
     nextDestination = 'Dropoff';
     isAssigned = true;
