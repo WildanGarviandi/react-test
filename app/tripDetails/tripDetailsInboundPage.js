@@ -25,13 +25,13 @@ import PickupOrdersModal from '../pickupOrders/pickupOrdersModal';
 import * as PickupOrdersReady from '../pickupOrders//pickupOrdersReadyService';
 import * as NearbyFleets from '../nearbyFleets/nearbyFleetService';
 
-const columns = ['id', 'id2', 'pickup', 'time', 'CODValue', 'CODStatus', 'orderStatus', 'routeStatus', 'isSuccess', 'action'];
+const columns = ['id', 'id2', 'pickup', 'time', 'CODValue', 'IsCOD', 'orderStatus', 'routeStatus', 'isSuccess', 'action'];
 const nonFillColumn = columns.slice(0, columns.length - 1);
 const headers = [{
   id: 'EDS / WebOrderID', id2: 'Webstore',
   pickup: 'Pickup Address', dropoff: 'Recipient',
   time: 'Pickup Time', orderStatus: 'Order Status',routeStatus: 'Route Status', action: 'Action',
-  CODValue: 'Value', isSuccess: 'Scanned', CODStatus: 'COD'
+  CODValue: 'Value', isSuccess: 'Scanned', CODStatus: 'COD', IsCOD: 'COD Status'
 }];
 
 const InputRow = React.createClass({
@@ -412,7 +412,7 @@ const mapStateToProps = (state, ownProps) => {
     const Recipient = order.RecipientName + '\n' + (order.DropoffAddress ? order.DropoffAddress.City + ' ' + order.DropoffAddress.ZipCode : '');
     TotalWeight += order.PackageWeight;
 
-    return {
+    return lodash.assign({}, order, {
       id: `${order.UserOrderNumber} (${order.WebOrderID})`,
       id2: order.User.FirstName + ' ' + order.User.LastName,
       pickup: order.PickupAddress && order.PickupAddress.Address1,
@@ -426,12 +426,13 @@ const mapStateToProps = (state, ownProps) => {
       DeliveryFee: order.DeliveryFee,
       tripID: trip.TripID,
       isSuccess: order.Status === 'DELIVERED' ? 'Yes' : 'No',
+      IsCOD: order.IsCOD ? 'Yes': 'No',
       CODStatus: (order.CODPaymentUserOrder && order.CODPaymentUserOrder.CODPayment) ?
                   order.CODPaymentUserOrder.CODPayment.Status : 'No'
-    }
+    })
   });
 
-  const CODOrders = _.filter(containerOrders, (order) => order.IsCOD);
+  const CODOrders = _.filter(orders, (order) => order.IsCOD);
 
   // if (!trip.ContainerNumber) {
   //   return {notFound: true, isFetching};

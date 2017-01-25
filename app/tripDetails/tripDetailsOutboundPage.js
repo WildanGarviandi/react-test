@@ -27,13 +27,13 @@ import {InputWithDefault} from '../views/base/input';
 import DateTime from 'react-datetime';
 import dateTimeStyles from '../views/container/datetime.css';
 
-const columns = ['id', 'id2', 'dropoff', 'time', 'CODValue', 'CODStatus', 'orderStatus', 'routeStatus', 'action'];
+const columns = ['id', 'id2', 'dropoff', 'time', 'CODValue', 'IsCOD', 'orderStatus', 'routeStatus', 'action'];
 const nonFillColumn = columns.slice(0, columns.length - 1);
 const headers = [{
   id: 'EDS / WebOrderID', id2: 'Webstore',
   pickup: 'Pickup Address', dropoff: 'Recipient',
   time: 'Pickup Time', orderStatus: 'Order Status',routeStatus: 'Route Status', action: 'Action',
-  CODValue: 'Value', CODStatus: 'COD'
+  CODValue: 'Value', CODStatus: 'COD', IsCOD: 'COD Status'
 }];
 
 const DetailRow = React.createClass({
@@ -506,7 +506,7 @@ const mapStateToProps = (state, ownProps) => {
     const Recipient = order.RecipientName + '\n' + (order.DropoffAddress ? order.DropoffAddress.City + ' ' + order.DropoffAddress.ZipCode : '');
     TotalWeight += order.PackageWeight;
 
-    return {
+    return lodash.assign({}, order, {
       id: `${order.UserOrderNumber} (${order.WebOrderID})`,
       id2: order.User.FirstName + ' ' + order.User.LastName,
       pickup: order.PickupAddress && order.PickupAddress.Address1,
@@ -519,12 +519,13 @@ const mapStateToProps = (state, ownProps) => {
       CODValue: order.IsCOD ? order.TotalValue : 0,
       DeliveryFee: order.DeliveryFee,
       tripID: trip.TripID,
+      IsCOD: order.IsCOD ? 'Yes': 'No',
       CODStatus: (order.CODPaymentUserOrder && order.CODPaymentUserOrder.CODPayment) ?
                   order.CODPaymentUserOrder.CODPayment.Status : 'No'
-    }
+    })
   });
 
-  const CODOrders = _.filter(containerOrders, (order) => order.IsCOD);
+  const CODOrders = _.filter(orders, (order) => order.IsCOD);
 
   // if (!trip.ContainerNumber) {
   //   return {notFound: true, isFetching};
