@@ -222,6 +222,20 @@ const Table = React.createClass({
             )
           }
 
+          case 'nextSuggestion': {
+            const suggestionComponents = item.nextSuggestion.map(function(suggestion, idx) {
+              return (
+                <li key={ idx }>{suggestion}</li>
+              )
+            })
+
+            return (
+              <td className={tableStyles.td} key={columnKey}>
+                <ul>{suggestionComponents}</ul>
+              </td>
+            )
+          }
+
           default: {
             return <td className={tableStyles.td} key={columnKey}>{item[columnKey]}</td>;
           }

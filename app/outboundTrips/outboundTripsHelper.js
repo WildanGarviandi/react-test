@@ -96,11 +96,11 @@ export function DstDistrict (trip) {
 
 export function NextSuggestion (trip) {
   if (trip) {
-    var nextSuggestion = '';
+    var nextSuggestion = [];
     for (var p in trip.NextDestinationSuggestion) {
       if (trip.NextDestinationSuggestion.hasOwnProperty(p) && p !== 'NO_SUGGESTION') {
-        nextSuggestion += p + ' (' + trip.NextDestinationSuggestion[p] + 
-          (trip.NextDestinationSuggestion[p] > 1 ? ' orders' : ' order') + ')' + '\n';
+        nextSuggestion.push(p + ' (' + trip.NextDestinationSuggestion[p] + 
+          (trip.NextDestinationSuggestion[p] > 1 ? ' orders' : ' order') + ')');
       }
     }
 
