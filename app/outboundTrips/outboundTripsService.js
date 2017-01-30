@@ -347,6 +347,7 @@ export function FetchList() {
       limit: limit,
       nonDelivered: true,
       offset: (currentPage-1)*limit,
+      suggestLastMileFleet: 1
     });
 
     dispatch({type: modalAction.BACKDROP_SHOW});
