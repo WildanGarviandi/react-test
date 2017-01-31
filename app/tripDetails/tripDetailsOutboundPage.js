@@ -147,6 +147,10 @@ const DetailPage = React.createClass({
   exportManifest() {
     this.props.exportManifest();
   },
+  goToFillContainer() {
+    const {trip} = this.props;
+    this.props.goToFillContainer(trip.TripID);
+  },
   render() {
     const {activeDistrict, backToContainer, canDeassignDriver, canDeassignFleet, 
           container, districts, driverState, driversName, fillAble, hasDriver, 
