@@ -3,7 +3,7 @@ import Collection from './collection';
 import { Dropdown, DropdownTypeAhead, DropdownWithState } from './dropdown';
 import { Glyph } from './glyph';
 import Infograph from './infograph';
-import { CheckBox, Input, InputWithDefault } from './input';
+import { CheckBox, Input, InputWithDefault, InputWithDefaultNumberFormatted } from './input';
 import ModalMessage from './modalMessage';
 import Page, { ButtonAtRightTop, PageTitle } from './page';
 import { Pagination } from './pagination';
@@ -73,4 +73,4 @@ const EmptySpace = React.createClass({
   }
 })
 
-export { ButtonAtRightTop, ButtonBase, ButtonAction, ButtonWithLoading, ButtonStandard, CheckBox, Collection, Dropdown, DropdownTypeAhead, DropdownWithState, Glyph, Infograph, Input, InputWithDefault, Modal, ModalMessage, Page, PageTitle, Pagination, Rows, Tables, NotificationContainer, EmptySpace };
+export { ButtonAtRightTop, ButtonBase, ButtonAction, ButtonWithLoading, ButtonStandard, CheckBox, Collection, Dropdown, DropdownTypeAhead, DropdownWithState, Glyph, Infograph, Input, InputWithDefault, InputWithDefaultNumberFormatted, Modal, ModalMessage, Page, PageTitle, Pagination, Rows, Tables, NotificationContainer, EmptySpace };

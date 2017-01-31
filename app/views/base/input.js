@@ -1,6 +1,7 @@
 import React from 'react';
 import classNaming from 'classnames';
 import styles from '../../components/form.css';
+import NumberFormat from 'react-number-format';
 
 const CheckBox = React.createClass({
   getInitialState() {
@@ -114,4 +115,31 @@ const InputWithDefault = React.createClass({
   }
 });
 
-export {CheckBox, Input, InputWithDefault, InputWithState};
+const InputWithDefaultNumberFormatted = React.createClass({
+  getInitialState () {
+    return {
+      currentText: this.props.currentText || ''
+    }
+  },
+  setText (e, value) {
+    this.setState({currentText: value || '0'})
+    if (this.props.onChange) {
+      this.props.onChange(value)
+    }
+  },
+  handleEnterKey (e) {
+    if (e.keyCode === 13 && this.props.handleEnter) {
+      this.props.handleEnter(this.props.currentText);
+    }
+  },
+  render () {
+    const {id} = this.props
+    const classes = classNaming(
+      this.props.className,
+      styles.input
+    )
+    return <NumberFormat {...this.props.format} onChange={this.setText} onKeyDown={this.handleEnterKey} className={classes} id={id} value={this.state.currentText} />
+  }
+})
+
+export {CheckBox, Input, InputWithDefault, InputWithState, InputWithDefaultNumberFormatted};

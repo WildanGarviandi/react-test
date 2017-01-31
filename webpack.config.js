@@ -63,5 +63,11 @@ module.exports = {
     historyApiFallback: true,
     inline: true,
     hot: true
-  } 
+  },
+
+  resolve: {
+    alias: {
+      soundmanager2: 'soundmanager2/script/soundmanager2-nodebug-jsmin.js'
+    }
+  }
 }
