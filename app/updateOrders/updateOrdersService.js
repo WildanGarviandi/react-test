@@ -295,6 +295,7 @@ export function UpdateOrder (id, order) {
         dispatch({ type: Constants.ORDERS_UPDATE_END });
         dispatch({ type: Constants.ORDERS_UPDATE_END_EDIT_ORDER });
         dispatch({ type: modalAction.BACKDROP_HIDE });
+        dispatch(DashboardService.FetchCount());
         dispatch(NotifActions.addNotification(`Order ${data.result.UserOrderNumber} was successfully updated`, 'success', null, 4));
       });
     }).catch((e) => { 
