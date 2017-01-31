@@ -100,9 +100,14 @@ const DetailPage = React.createClass({
       },
       orderMarked: "",
       showVendor: true,
-      showDriver: false
+      showDriver: false,
+      isMenuOpen: false
     };
-  },activateVendor() {
+  },
+  toggle() {
+    this.setState({ isMenuOpen: !this.state.isMenuOpen });
+  },
+  activateVendor() {
     this.setState({showVendor: true});
     this.setState({showDriver: false});
     selectedFleet = null;
@@ -403,6 +408,8 @@ const DetailPage = React.createClass({
                     </div>
                   </div>
                   <div className={styles.colMd6 + ' ' + styles.noPadding}>
+                    <div className={styles.colMd4}>
+                    </div>
                     <div className={styles.colMd4 + ' '+ styles.actionButtoninside}>
                       {
                         reusable &&
@@ -410,10 +417,23 @@ const DetailPage = React.createClass({
                       }
                     </div>
                     <div className={styles.colMd4}>
-                      <a href={'/trips/' + trip.TripID + '/manifest#'} className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} target="_blank">Print Manifest</a>
-                    </div>
-                    <div className={styles.colMd4}>
-                      <a onClick={this.exportManifest} className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} target="_blank">Excel Manifest</a>
+                      <button type="button" className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} onClick={this.toggle}>
+                        <div className={styles.manifestSpan}>Print Manifest</div>
+                        <div className={this.state.isMenuOpen ? styles.arrowUp : styles.arrowDown} />
+                      </button>
+                      { this.state.isMenuOpen &&
+                        <ul>
+                          <li>
+                            <a href={'/trips/' + trip.TripID + '/manifest#'} className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} target="_blank">Detailed</a>
+                          </li>
+                          <li>
+                            <a href={'/trips/' + trip.TripID + '/coverManifest#'} className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} target="_blank">Cover</a>
+                          </li>
+                          <li>
+                            <a onClick={this.exportManifest} className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} target="_blank">Excel</a>
+                          </li>
+                        </ul>
+                      }
                     </div>
                   </div>
                 </div>
