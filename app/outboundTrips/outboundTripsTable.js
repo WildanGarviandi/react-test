@@ -182,6 +182,12 @@ const Table = React.createClass({
             )
             const textValue = (item.fleet.thirdPartyLogistic) ? itemWith3PL : itemNot3PL;
 
+            if (!item.isAssigned) {
+              return (
+                <td className={tableStyles.td} key={columnKey}>-</td>
+              );
+            }
+
             return (
               <td className={tableStyles.td} key={columnKey}>{textValue}</td>
             );
