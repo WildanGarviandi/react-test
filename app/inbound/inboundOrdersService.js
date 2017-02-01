@@ -161,6 +161,10 @@ export function MarkReceived (scannedID) {
     const { userLogged } = getState().app;
     const { token } = userLogged;
 
+    if (scannedID.toUpperCase().includes('TRIP-')) {
+      scannedID = scannedID.toUpperCase();
+    }
+
     if (/^TRIP-.*/.test(scannedID)) {
       scannedID = '#' + scannedID;
     }
