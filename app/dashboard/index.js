@@ -57,7 +57,7 @@ const AccordionMenu = React.createClass({
   }
 })
 
-const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, loggedName, counterOrder, count, tmsMenu, switchMenu}) => {
+const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, loggedName, counterOrder, count, tmsMenu, switchMenu, isCentralHub}) => {
   return (
     <div className={styles.menuPanel}>
       <img src="/img/logo.png" className={styles.menuLogo} />
@@ -81,11 +81,13 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
               <span>Inbound </span>
               <span className={styles.counterNumber}>{count && count.unscannedOrders}</span>
             </MenuItem>
-            <MenuItem active={activeMenuIdx == 3} to={'/orders/update'}>
-              <img src="/img/icon-update-order.png" className={styles.menuGlyph} />
-              <span>Update Order </span>
-              <span className={styles.counterNumber}>{count && count.updateOrders}</span>
-            </MenuItem>
+            { config.features.menuUpdateOrder && isCentralHub &&
+              <MenuItem active={activeMenuIdx == 3} to={'/orders/update'}>
+                <img src="/img/icon-update-order.png" className={styles.menuGlyph} />
+                <span>Update Order </span>
+                <span className={styles.counterNumber}>{count && count.updateOrders}</span>
+              </MenuItem>
+            }
             <MenuItem active={activeMenuIdx == 4} to={'/grouping'}>
               <img src="/img/icon-grouping.png" className={styles.menuGlyph} />
               <span>Grouping </span>
@@ -207,7 +209,7 @@ const DashboardContainer = React.createClass({
   },
   render() {
     let {routes, userLogged} = this.props;
-    let {hubID, hubName, fleetName} = userLogged;
+    let {hubID, hubName, fleetName, isCentralHub} = userLogged;
     let activeMenuIdx = GetActiveMenuIdx(routes[routes.length-1].path);
     let panelClass = classnaming('panel', {compact: this.state.isCompact});
     const loggedName = hubID ? `${fleetName} \n ${hubName}` : `${fleetName}`;
@@ -224,7 +226,8 @@ const DashboardContainer = React.createClass({
             counterOrder={this.props.counterOrder}
             count={this.props.count}
             tmsMenu={this.state.tmsMenu}
-            switchMenu={this.switchMenu} />
+            switchMenu={this.switchMenu}
+            isCentralHub={isCentralHub} />
           <DashboardContent>{this.props.children}</DashboardContent>
         </div>
       </div>
