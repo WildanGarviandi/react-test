@@ -324,7 +324,7 @@ function mapPricing (pricing) {
           const hasPackageDimensionData = (price.WebstoreUser) && 
                 (price.WebstoreUser.PackageDimension) && 
                 price.WebstoreUser.PackageDimension[0];
-          
+
           if (hasPackageDimensionData) {
             const dimension = price.WebstoreUser.PackageDimension[0];
             return {
@@ -337,7 +337,7 @@ function mapPricing (pricing) {
           }
         });
       } else {
-        let price = pricing[0].Price;
+        price = pricing[0].Price;
       }
       dispatch({
         type: Constants.ORDERS_UPDATE_START_EDIT_ORDER,
