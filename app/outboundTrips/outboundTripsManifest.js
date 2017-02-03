@@ -61,10 +61,12 @@ const TripManifestPage = React.createClass({
       }
       if (trip.DestinationHub && trip.OriginHub) {
         tripType = 'Interhub';
-        nextDestination = `Hub ${trip.DestinationHub.Name} (${assignedTo})`;
+        let hubAddress = `${trip.DestinationHub.Address1} ${trip.DestinationHub.Address2}`;
+        nextDestination = `Hub ${trip.DestinationHub.Name} - ${hubAddress} (${assignedTo})`;
       } else if (!trip.OriginHub && trip.DestinationHub) {
         tripType = 'First Leg';
-        nextDestination = `Hub ${trip.DestinationHub.Name} (${assignedTo})`;
+        let hubAddress = `${trip.DestinationHub.Address1} ${trip.DestinationHub.Address2}`;
+        nextDestination = `Hub ${trip.DestinationHub.Name} - ${hubAddress} (${assignedTo})`;
       } else if (trip.Driver || trip.FleetManager || trip.ExternalTrip) {
         tripType = 'Last Mile';
         nextDestination = `${assignedTo}`;
