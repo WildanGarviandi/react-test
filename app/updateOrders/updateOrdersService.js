@@ -278,7 +278,8 @@ export function UpdateOrder (id, order) {
     const {token} = userLogged;
 
     const postBody = {
-      UpdateData: order,
+      updateData: order,
+      scanReweight: 1
     }
 
     dispatch({ type: Constants.ORDERS_UPDATE_START });
