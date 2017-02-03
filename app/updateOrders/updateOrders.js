@@ -9,6 +9,7 @@ import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import FontAwesome from 'react-fontawesome';
 import config from '../config/configValues.json';
 import ModalActions from '../modules/modals/actions';
+import NumberFormat from 'react-number-format';
 
 function calculatePricing (pricingData, editedData, isPricingByWeight) {
   const {weight = 0, length = 0, height = 0, width = 0} = editedData;
@@ -107,17 +108,17 @@ const UpdateModal = React.createClass({
   stateChangeAndCalculate(key) {
     return (value) => {
       this.setState({[key]: (value !== '') ? value : '0'});
-      this.calculatePricing(key, value);
+      this.calculatePricing(key, value, this.props.scannedPricing, this.props.isPricingByWeight);
     }
   },
-  calculatePricing(key, value) {
+  calculatePricing(key, value, scannedPricing, isPricingByWeight) {
     const editedData = {
       weight: (key === 'PackageWeight') ? parseInt(value) : parseInt(this.state.PackageWeight),
       height: (key === 'PackageHeight') ? parseInt(value) : parseInt(this.state.PackageHeight),
       length: (key === 'PackageLength') ? parseInt(value) : parseInt(this.state.PackageLength),
       width: (key === 'PackageWidth') ? parseInt(value) : parseInt(this.state.PackageWidth)
     }
-    const orderCost = calculatePricing(this.props.scannedPricing, editedData, this.props.isPricingByWeight);
+    const orderCost = calculatePricing(scannedPricing, editedData, isPricingByWeight);
     this.setState((orderCost !== 0) ? {OrderCost: orderCost, noPricing: false} : 
                                         {OrderCost: this.state.scannedOrder.OrderCost, noPricing: true});
   },
@@ -131,8 +132,12 @@ const UpdateModal = React.createClass({
     nextProps.isEditing && document.getElementById('packageLength') && document.getElementById('packageLength').focus();
     nextProps.isEditing && document.getElementById('packageLength') && document.getElementById('packageLength').select();
 
-    (nextProps.scannedPricing === 0 || nextProps.scannedPricing.length === 0) ? 
-      this.setState({noPricing: true}) : this.setState({noPricing: false});
+    if (nextProps.scannedPricing === 0 || nextProps.scannedPricing.length === 0) {
+      this.setState({noPricing: true});
+    } else {
+      this.setState({noPricing: false});
+      this.calculatePricing(null, null, nextProps.scannedPricing, nextProps.isPricingByWeight);
+    }
 
     if (!nextProps.isDuplicate && this.state.isDuplicate) {
       this.setState({
@@ -348,7 +353,9 @@ const UpdateModal = React.createClass({
                     { scannedOrder.OrderCost !== this.state.OrderCost &&
                       <h2 className={styles.bigTextThinStrike}>Rp. {scannedOrder.OrderCost}</h2>                    
                     }
-                    <h2 className={styles.bigText}>Rp. {this.state.OrderCost}</h2>
+                    <h2 className={styles.bigText}>
+                      <NumberFormat value={this.state.OrderCost} displayType={'text'} thousandSeparator={'.'} prefix={'Rp '} />
+                    </h2>
                   </div>
                 }
                 { this.state.editDelivery &&
