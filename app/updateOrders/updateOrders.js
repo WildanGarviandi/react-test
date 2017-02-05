@@ -93,7 +93,8 @@ const UpdateModal = React.createClass({
       OrderCost: this.props.scannedOrder.OrderCost || '0',
       IsCOD: this.props.scannedOrder.IsCOD,
       editDelivery: false,
-      noPricing: false
+      noPricing: false,
+      orderCostAutoUpdateDone: false
     }
   },
   stateChange(key, type) {
@@ -129,14 +130,16 @@ const UpdateModal = React.createClass({
     }
   },
   componentWillReceiveProps(nextProps) {
-    nextProps.isEditing && document.getElementById('packageLength') && document.getElementById('packageLength').focus();
-    nextProps.isEditing && document.getElementById('packageLength') && document.getElementById('packageLength').select();
-
     if (nextProps.scannedPricing === 0 || nextProps.scannedPricing.length === 0) {
       this.setState({noPricing: true});
     } else {
-      this.setState({noPricing: false});
-      this.calculatePricing(null, null, nextProps.scannedPricing, nextProps.isPricingByWeight);
+      if (!this.state.orderCostAutoUpdateDone) {
+        this.setState({
+          noPricing: false,
+          orderCostAutoUpdateDone: true
+        });
+        this.calculatePricing(null, null, nextProps.scannedPricing, nextProps.isPricingByWeight);
+      }
     }
 
     if (!nextProps.isDuplicate && this.state.isDuplicate) {
