@@ -205,7 +205,7 @@ const DashboardContainer = React.createClass({
   checkAuth() {
     interval = setInterval(function() {
       this.props.checkAuth();
-    }.bind(this), 30000);
+    }.bind(this), 10000);
   },
   render() {
     let {routes, userLogged} = this.props;

@@ -560,11 +560,11 @@ const PickupOrdersModal = React.createClass({
                       splitTrip={this.splitTrip} isFetchingDriver={this.props.isFetchingDriver} />
                   }
                   {
-                    this.state.showVendor && !selectedFleet &&
+                    this.state.showVendor && driverVendorList.length === 0 &&
                     <AssignVendor trip={this.props.trip} assignFleet={this.assignFleet} />
                   }
                   {
-                    this.state.showVendor && selectedFleet &&
+                    this.state.showVendor && driverVendorList.length > 0 &&
                     <AssignDriverVendor trip={this.props.trip} assignDriver={this.assignDriverVendor} />
                   }
                 </div> 
