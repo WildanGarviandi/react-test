@@ -133,7 +133,7 @@ export const editOrder = (id, order, fromInbound) => {
     const {token} = userLogged;
 
     const postBody = {
-      UpdateData: order,
+      updateData: order,
     }
 
     dispatch({ type: Constants.UPDATE_ORDERS_START });
