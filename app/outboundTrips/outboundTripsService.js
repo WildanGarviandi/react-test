@@ -152,7 +152,7 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.NEARBY_FLEETS_FETCH_END: {
-      return lodash.merge({}, state, {
+      return lodash.assign({}, state, {
         nearbyFleets: {
           isFetching: false
         }
@@ -160,7 +160,7 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.NEARBY_FLEETS_FETCH_START: {
-      return lodash.merge({}, state, {
+      return lodash.assign({}, state, {
         nearbyFleets: {
           isFetching: true
         }
@@ -168,7 +168,7 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.NEARBY_FLEETS_SET: {
-      return lodash.merge({}, state, {
+      return lodash.assign({}, state, {
         nearbyFleets: {
           fleets: action.fleets,
           total: action.total
@@ -177,7 +177,7 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.NEARBY_FLEETS_DRIVERS_FETCH_END: {
-      return lodash.merge({}, state, {
+      return lodash.assign({}, state, {
         nearbyFleets: {
           isDriverFetching: false
         }
@@ -185,7 +185,7 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.NEARBY_FLEETS_DRIVERS_FETCH_START: {
-      return lodash.merge({}, state, {
+      return lodash.assign({}, state, {
         nearbyFleets: {
           isDriverFetching: true
         }
@@ -193,7 +193,7 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.NEARBY_FLEETS_DRIVERS_SET: {
-      return lodash.merge({}, state, {
+      return lodash.assign({}, state, {
         nearbyFleets: {
           drivers: action.drivers
         }
@@ -201,7 +201,7 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.NEARBY_DRIVERS_FETCH_END: {
-      return lodash.merge({}, state, {
+      return lodash.assign({}, state, {
         nearbyDrivers: {
           isFetching: false
         }
@@ -209,7 +209,7 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.NEARBY_DRIVERS_FETCH_START: {
-      return lodash.merge({}, state, {
+      return lodash.assign({}, state, {
         nearbyDrivers: {
           isFetching: true
         }
@@ -217,7 +217,7 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.NEARBY_DRIVERS_SET: {
-      return lodash.merge({}, state, {
+      return lodash.assign({}, state, {
         nearbyDrivers: {
           drivers: action.drivers,
           total: action.total
@@ -226,7 +226,7 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.TRIPS_OUTBOUND_DETAILS_TRIP_SET: {
-      return lodash.merge({}, state, {
+      return lodash.assign({}, state, {
         driver: action.driver,
         externalTrip: action.externalTrip,
         fleet: action.fleet,
@@ -309,11 +309,11 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.HUB_UPDATE_START: {
-      return lodash.merge({}, state, {isHubAssigning: true});
+      return lodash.assign({}, state, {isHubAssigning: true});
     }
 
     case Constants.HUB_UPDATE_END: {
-      return lodash.merge({}, state, {isHubAssigning: false});
+      return lodash.assign({}, state, {isHubAssigning: false});
     }
 
     default: return state;
