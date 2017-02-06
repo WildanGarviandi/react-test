@@ -122,7 +122,7 @@ const InputWithDefaultNumberFormatted = React.createClass({
     }
   },
   setText (e, value) {
-    this.setState({currentText: value || '0'})
+    this.setState({currentText: parseFloat(value) || '0'})
     if (this.props.onChange) {
       this.props.onChange(value)
     }
