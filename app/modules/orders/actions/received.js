@@ -6,6 +6,7 @@ import fetchPost from '../../fetch/post';
 import ModalActions from '../../modals/actions';
 import {push} from 'react-router-redux';
 import {modalAction} from '../../modals/constants';
+import * as DashboardService from '../../../dashboard/dashboardService';
 
 export const setLimit = (limit) => {
   return (dispatch) => {
@@ -208,6 +209,7 @@ export const fillTrip = (tripID) => {
         response.json().then(function({data}) {
           dispatch({ type: Constants.RECEIVED_ORDERS_GROUP_END });
           dispatch(push('/trips/' + tripID));
+          dispatch(DashboardService.FetchCount());
         });
       } else {
         dispatch({ type: Constants.RECEIVED_ORDERS_GROUP_END });
