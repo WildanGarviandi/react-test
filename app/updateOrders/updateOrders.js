@@ -447,7 +447,7 @@ const UpdateOrdersPage = React.createClass({
           <Input styles={inputVerifyStyles} onChange={this.changeFindOrder} onEnterKeyPressed={this.findOrder} ref="findOrder" 
             base={{value: this.state.findOrderQuery, placeholder: 'Write the web order ID or EDS/AWB here to update it manually....'}} 
             id="findOrder" />
-          <div onClick={this.submitReceived} className={styles.verifyButton}>Submit</div>
+          <div onClick={this.findOrder} className={styles.verifyButton}>Submit</div>
         </div>
         <UpdateOrdersTable />
       </Page>
