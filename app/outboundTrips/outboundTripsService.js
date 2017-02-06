@@ -790,8 +790,7 @@ export function CreateExternalTrip(externalData) {
       {key: 'Fee', value: 'Fee'},
       {key: 'Transportation', value: 'Transportation'},
       {key: 'DepartureTime', value: 'Departure Time'},
-      {key: 'ArrivalTime', value: 'Arrival Time'},
-      {key: 'PictureUrl', value: 'Receipt'}
+      {key: 'ArrivalTime', value: 'Arrival Time'}
     ];
 
     mandatoryInformation.forEach(function(x) {
@@ -799,6 +798,16 @@ export function CreateExternalTrip(externalData) {
         missingInformation.push(x.value);
       }
     });
+
+    if (externalData.ArrivalTime <= externalData.DepartureTime) {
+      dispatch(ModalActions.addMessage("Arrival Time should be later than Departure Time"));
+      return;
+    }
+
+    if (externalData.Fee < 1) {
+      dispatch(ModalActions.addMessage("Fee should be more than 0"));
+      return;
+    }
 
     if (missingInformation.length > 0) {
       dispatch(ModalActions.addMessage("Can't create external trip. Missing " + missingInformation.join() + ' information.'));
