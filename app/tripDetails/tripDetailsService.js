@@ -611,6 +611,7 @@ export function OrderRemove(tripID, orderID) {
           type: Constants.TRIPS_INBOUND_DETAILS_ORDER_REMOVE_SET,
           orderID: orderID,
         });
+        dispatch(DashboardService.FetchCount());
       });
     }).catch((e) => {
       const message = (e && e.message) ? e.message : "Failed to remove order";

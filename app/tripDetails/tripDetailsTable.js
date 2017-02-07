@@ -170,7 +170,7 @@ const StatusCell = React.createClass({
   }
 });
 
-const DeleteCell = React.createClass({
+const DeleteCellInbound = React.createClass({
   handleDelete() {
     const {orderRemove, item, tripID} = this.props;
     orderRemove(item.tripID, item.id3);
@@ -198,6 +198,30 @@ const DeleteCell = React.createClass({
   }
 });
 
+const DeleteCell = React.createClass({
+  handleDelete() {
+    const {orderRemove, item, tripID} = this.props;
+    orderRemove(item.tripID, item.id3);
+  },
+  render() {
+    const {item} = this.props;
+    const {isSuccess, isDeleting} = item;
+
+    return (
+      <td className={tableStyles.td} style={{width: '60px', textAlign: 'center'}}>
+        {
+          isDeleting &&
+          <span>Deleting ...</span>
+        }
+        {
+          !isDeleting &&
+          <ButtonBase onClick={this.handleDelete}>Remove</ButtonBase>
+        }
+      </td>
+    );
+  }
+});
+
 const DeleteCellState = (state) => {
   return {};
 }
@@ -210,6 +234,7 @@ const DeleteCellDispatch = (dispatch) => {
   }
 }
 
+const DeleteCellContainerInbound = connect(DeleteCellState, DeleteCellDispatch)(DeleteCellInbound);
 const DeleteCellContainer = connect(DeleteCellState, DeleteCellDispatch)(DeleteCell);
 
 const ContainerTable = React.createClass({
@@ -252,7 +277,7 @@ export const OrderTable = React.createClass({
     let {columns, headers, items, statusList, isInbound} = this.props;
     let {orderStatus, routeStatus} = this.state;
     let Header = Rows(React.DOM.thead, BaseHeader, {}, columns, function() {});
-    let Body = Rows(React.DOM.tbody, isInbound ? BaseCellInboundDetailsContainer : BaseCell, {action: DeleteCellContainer}, columns, function() {}, undefined, 
+    let Body = Rows(React.DOM.tbody, isInbound ? BaseCellInboundDetailsContainer : BaseCell, {action: isInbound ? DeleteCellContainerInbound : DeleteCellContainer}, columns, function() {}, undefined, 
       {
         column: 'isSuccess',
         condition: 'Yes',
