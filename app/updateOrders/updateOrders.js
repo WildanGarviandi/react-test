@@ -133,13 +133,9 @@ const UpdateModal = React.createClass({
     if (nextProps.scannedPricing === 0 || nextProps.scannedPricing.length === 0) {
       this.setState({noPricing: true});
     } else {
-      if (!this.state.orderCostAutoUpdateDone) {
-        this.setState({
-          noPricing: false,
-          orderCostAutoUpdateDone: true
-        });
-        this.calculatePricing(null, null, nextProps.scannedPricing, nextProps.isPricingByWeight);
-      }
+      this.setState({
+        noPricing: false
+      });
     }
 
     if (!nextProps.isDuplicate && this.state.isDuplicate) {
@@ -213,8 +209,12 @@ const UpdateModal = React.createClass({
   },
   editDelivery() {
     this.setState({
-      editDelivery: true
+      editDelivery: true,
+      orderCostAutoUpdateDone: true
     });
+    if (!this.state.orderCostAutoUpdateDone) {
+      this.calculatePricing(null, null, this.props.scannedPricing, this.props.isPricingByWeight);
+    }
     let timeout = setTimeout(() => {
       document.getElementById('deliveryFee').focus();
       document.getElementById('deliveryFee').select();
