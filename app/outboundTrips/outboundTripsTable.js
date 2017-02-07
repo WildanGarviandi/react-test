@@ -20,7 +20,7 @@ lodash.each(config.vehicle, (vehicle) => {
 })
 
 const ColumnsOrder = ['tripID', 'nextDestination', 'tripType', 'fleet', 
-  'status', 'numberPackages', 'weight', 'remarks', 'deadline', 'actions'];
+  'status', 'nextSuggestion', 'numberPackages', 'weight', 'remarks', 'deadline', 'actions'];
 
 const ColumnsTitle = {
   containerNumber: "Container",
@@ -37,6 +37,7 @@ const ColumnsTitle = {
   tripType: "Type",
   webstoreNames: "Webstore",
   numberPackages: "Qty",
+  nextSuggestion: "Suggested Destination",
   weight: "Weight",
   remarks: "Remarks",
   deadline: "Deadline", 
@@ -224,6 +225,20 @@ const Table = React.createClass({
             
             return (
               <td className={tableStyles.td + ((deadlineDiff > 0) ? '' : ' ' + styles.redColumn)} key={columnKey}>{itemComponent}</td>
+            )
+          }
+
+          case 'nextSuggestion': {
+            const suggestionComponents = item.nextSuggestion.map(function(suggestion, idx) {
+              return (
+                <li key={ idx }>{suggestion}</li>
+              )
+            })
+
+            return (
+              <td className={tableStyles.td} key={columnKey}>
+                <ul>{suggestionComponents}</ul>
+              </td>
             )
           }
 

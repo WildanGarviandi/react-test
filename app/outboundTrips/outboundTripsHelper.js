@@ -94,6 +94,22 @@ export function DstDistrict (trip) {
   return
 }
 
+export function NextSuggestion (trip) {
+  if (trip) {
+    var nextSuggestion = [];
+    for (var p in trip.NextDestinationSuggestion) {
+      if (trip.NextDestinationSuggestion.hasOwnProperty(p) && p !== 'NO_SUGGESTION') {
+        nextSuggestion.push(p + ' (' + trip.NextDestinationSuggestion[p] + 
+          (trip.NextDestinationSuggestion[p] > 1 ? ' orders' : ' order') + ')');
+      }
+    }
+
+    return nextSuggestion;
+  }
+
+  return
+}
+
 export function ProcessTrip (trip) {
   const parsedTrip = TripParser(trip)
   const dropoff = TripDropOff(trip)
@@ -137,6 +153,7 @@ export function ProcessTrip (trip) {
     tripType: tripType,
     webstoreNames: parsedTrip.WebstoreNames,
     numberPackages: trip.UserOrderRoutes.length,
+    nextSuggestion: NextSuggestion(trip),
     weight: Weight(trip),
     remarks: Remarks(trip),
     deadline: moment(new Date(trip.CreatedDate)).add(config.outboundDeadlineFromCreated, 'hours'),
