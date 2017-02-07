@@ -210,15 +210,17 @@ export const fillTrip = (tripID) => {
           dispatch({ type: Constants.RECEIVED_ORDERS_GROUP_END });
           dispatch(push('/trips/' + tripID));
           dispatch(DashboardService.FetchCount());
-        });
+        });      
       } else {
-        dispatch({ type: Constants.RECEIVED_ORDERS_GROUP_END });
-        dispatch(ModalActions.addMessage('Failed to add orders'));
+        return response.json().then(({error}) => {
+          throw error;
+        });
       }
-    }).catch(() => { 
+    }).catch((e) => { 
+      const message = e.message || "Failed to add orders";
       dispatch({type: modalAction.BACKDROP_HIDE});
       dispatch({ type: Constants.RECEIVED_ORDERS_GROUP_END });
-      dispatch(ModalActions.addMessage('Network error'));
+      dispatch(ModalActions.addMessage(message));
     });
   }
 }
