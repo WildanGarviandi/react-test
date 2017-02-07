@@ -447,7 +447,7 @@ const AssignTripModalClass = React.createClass({
   },
   componentDidUpdate () {
     const {Fee, Transportation, ArrivalTime, DepartureTime, Sender, PictureUrl, AwbNumber, isExternalDataValid} = this.state
-    if ((Fee < 0) || !Transportation || !ArrivalTime || !DepartureTime || !PictureUrl || !Sender || !AwbNumber) {
+    if ((Fee < 0) || !Transportation || !ArrivalTime || !DepartureTime || !Sender) {
       if (isExternalDataValid) {
         this.setState({isExternalDataValid: false})
       }
