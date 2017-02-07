@@ -15,7 +15,8 @@ function calculatePricing (pricingData, editedData, isPricingByWeight) {
   const {weight = 0, length = 0, height = 0, width = 0} = editedData;
 
   if (isPricingByWeight) {
-    const volumeWeight = (height * length * width) / config.volumetricFactor;
+    let volumeWeight = (height * length * width) / config.volumetricFactor;
+    volumeWeight = Number(volumeWeight.toFixed(1));
     return (volumeWeight > weight) ? volumeWeight * pricingData : weight * pricingData;
   } else {
     const priceData = pricingData.find((price) => {
@@ -100,7 +101,7 @@ const UpdateModal = React.createClass({
   stateChange(key, type) {
     return (value) => {
       if (type === 'price') {
-        this.setState({[key]: (value !== '') ? value : '0'});
+        this.setState({[key]: (value !== '') ? parseFloat(value) : '0'});
       } else {
         this.setState({[key]: value});
       }
@@ -108,19 +109,20 @@ const UpdateModal = React.createClass({
   },
   stateChangeAndCalculate(key) {
     return (value) => {
-      this.setState({[key]: (value !== '') ? value : '0'});
+      value = value.replace(/,/g, '.');
+      this.setState({[key]: (value !== '') ? parseFloat(value) : '0'});
       this.calculatePricing(key, value, this.props.scannedPricing, this.props.isPricingByWeight);
     }
   },
   calculatePricing(key, value, scannedPricing, isPricingByWeight) {
     const editedData = {
-      weight: (key === 'PackageWeight') ? parseInt(value) : parseInt(this.state.PackageWeight),
-      height: (key === 'PackageHeight') ? parseInt(value) : parseInt(this.state.PackageHeight),
-      length: (key === 'PackageLength') ? parseInt(value) : parseInt(this.state.PackageLength),
-      width: (key === 'PackageWidth') ? parseInt(value) : parseInt(this.state.PackageWidth)
+      weight: (key === 'PackageWeight') ? parseFloat(value) : parseFloat(this.state.PackageWeight),
+      height: (key === 'PackageHeight') ? parseFloat(value) : parseFloat(this.state.PackageHeight),
+      length: (key === 'PackageLength') ? parseFloat(value) : parseFloat(this.state.PackageLength),
+      width: (key === 'PackageWidth') ? parseFloat(value) : parseFloat(this.state.PackageWidth)
     }
     const orderCost = calculatePricing(scannedPricing, editedData, isPricingByWeight);
-    this.setState((orderCost !== 0) ? {OrderCost: orderCost, noPricing: false} : 
+    this.setState((orderCost !== 0) ? {OrderCost: parseFloat(Number(orderCost).toFixed(0)), noPricing: false} : 
                                         {OrderCost: this.state.scannedOrder.OrderCost, noPricing: true});
   },
   componentDidMount() {
@@ -162,7 +164,7 @@ const UpdateModal = React.createClass({
     let changed = false;
     let updatedFields = ['PackageLength', 'PackageHeight', 'PackageWidth', 'PackageWeight', 'TotalValue', 'IsCOD', 'OrderCost'];
     updatedFields.forEach((field) => {
-      let data = parseInt(this.state[field])
+      let data = parseFloat(this.state[field])
       if (isNaN(data)) {
         data = this.state[field]
       }
@@ -195,7 +197,7 @@ const UpdateModal = React.createClass({
     let updatedData = {}
     updatedFields.forEach(function(field) {
       if (typeof currentData[field] !== 'undefined') {
-        updatedData[field] = parseInt(currentData[field]);
+        updatedData[field] = parseFloat(currentData[field]);
         if (isNaN(updatedData[field])) {
           updatedData[field] = currentData[field]
         }
@@ -357,7 +359,8 @@ const UpdateModal = React.createClass({
                       <h2 className={styles.bigTextThinStrike}>Rp. {scannedOrder.OrderCost}</h2>                    
                     }
                     <h2 className={styles.bigText}>
-                      <NumberFormat value={this.state.OrderCost} displayType={'text'} thousandSeparator={'.'} prefix={'Rp '} />
+                      <NumberFormat value={this.state.OrderCost} displayType={'text'} 
+                        thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp '} />
                     </h2>
                   </div>
                 }
@@ -444,7 +447,7 @@ const UpdateOrdersPage = React.createClass({
           <Input styles={inputVerifyStyles} onChange={this.changeFindOrder} onEnterKeyPressed={this.findOrder} ref="findOrder" 
             base={{value: this.state.findOrderQuery, placeholder: 'Write the web order ID or EDS/AWB here to update it manually....'}} 
             id="findOrder" />
-          <div onClick={this.submitReceived} className={styles.verifyButton}>Submit</div>
+          <div onClick={this.findOrder} className={styles.verifyButton}>Submit</div>
         </div>
         <UpdateOrdersTable />
       </Page>
