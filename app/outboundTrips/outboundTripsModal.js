@@ -372,6 +372,7 @@ const AssignTripModalClass = React.createClass({
     }
   },
   isLastMile () {
+    this.props.SetHub(this.props.trip.TripID);
     this.setState({
       isLastMile: true,
       isLastMileAssigning: false
@@ -771,6 +772,9 @@ function ModalDispatchToProps (dispatch, ownProps) {
     },
     fetchFleetDriver(fleetManagerID) {
       dispatch(OutboundTrips.FetchListFleetDrivers(fleetManagerID))
+    },
+    SetHub: (tripID) => {
+      dispatch(OutboundTrips.setHub(tripID, null))
     }
   }
 }
