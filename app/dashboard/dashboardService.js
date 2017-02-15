@@ -8,12 +8,14 @@ import moment from 'moment';
 const Constants = {
   BASE: "dashboard/defaultSet/",
   SET_COUNT: "dashboard/setCount",
+  SET_COUNT_TMS: "dashboard/setCountTMS",
 }
 
 const initialStore = {
   currentPage: 1,
   limit: 100,
   count: [],
+  countTMS: []
 }
 
 export default function Reducer(store = initialStore, action) {
@@ -27,6 +29,12 @@ export default function Reducer(store = initialStore, action) {
     case Constants.SET_COUNT: {
       return lodash.assign({}, store, {
           count: action.count,
+      });
+    }
+
+    case Constants.SET_COUNT_TMS: {
+      return lodash.assign({}, store, {
+          countTMS: action.count,
       });
     }
 
@@ -47,6 +55,29 @@ export function FetchCount() {
       return response.json().then(({data}) => {
         dispatch({
           type: Constants.SET_COUNT,
+          count: data,
+        })
+        dispatch({type: modalAction.BACKDROP_HIDE});
+      });
+    })
+    .catch((e) => {
+      dispatch({type: modalAction.BACKDROP_HIDE});
+      dispatch(ModalActions.addMessage(e.message));
+    });
+  }
+}
+
+export function FetchCountTMS() {
+  return (dispatch, getState) => {
+    const {userLogged} = getState().app;
+    const {token} = userLogged;
+    let params = {};
+
+    dispatch({type: modalAction.BACKDROP_SHOW});
+    FetchGet('/trip/counter', token, params).then((response) => {
+      return response.json().then(({data}) => {
+        dispatch({
+          type: Constants.SET_COUNT_TMS,
           count: data,
         })
         dispatch({type: modalAction.BACKDROP_HIDE});

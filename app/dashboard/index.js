@@ -57,7 +57,7 @@ const AccordionMenu = React.createClass({
   }
 })
 
-const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, loggedName, counterOrder, count, tmsMenu, switchMenu, isCentralHub}) => {
+const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, loggedName, counterOrder, count, countTMS, tmsMenu, switchMenu, isCentralHub}) => {
   return (
     <div className={styles.menuPanel}>
       <img src="/img/logo.png" className={styles.menuLogo} />
@@ -102,54 +102,61 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
               <img src="/img/icon-trip-history.png" className={styles.menuGlyph} />
               <span>Trips History</span>
             </MenuItem>
+            <MenuItem onClick={handleLogout} to={'/'}>
+                <img src="/img/icon-logout.png" className={styles.menuGlyph} />
+                <span>Logout</span>
+            </MenuItem>
           </div>
         }
         { config.features.menuTMS && (tmsMenu || !hubID) &&
           <div>
-          <Accordion initialState={'collapsed'}>
-            <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[7,8,9]} iconName={'shopping-cart'} iconTitle={'My Orders'}>
-              <MenuItem active={activeMenuIdx == 7} to={'/myorders/open'}>
-                 <Glyph className={styles.menuGlyph} name={'open-file'}/>
-                 <span>Open Orders ({counterOrder.countOpen})</span>
+            <div className={styles.titlePanel}>
+              <span className={styles.titleMenu}>
+                My Jobs
+              </span>
+              <hr className={styles.menuSeparator} />
+              <MenuItem active={activeMenuIdx == 7} to={'/mytrips'}>
+                <img src="/img/icon-my-trips.png" className={styles.menuGlyph} />
+                <span>My Trips</span>
+                <span className={styles.counterNumber}>{countTMS && countTMS.NotAssigned}</span>
               </MenuItem>
-              <MenuItem active={activeMenuIdx == 8} to={'/myorders/ongoing'}>
-                 <Glyph className={styles.menuGlyph} name={'open-file'}/>
-                 <span>Ongoing Orders ({counterOrder.countInProgress})</span>
+              <MenuItem active={activeMenuIdx == 8} to={'/myongoingtrips'}>
+                <img src="/img/icon-ongoing-trips.png" className={styles.menuGlyph} />
+                <span>My Ongoing Trips</span>
+                <span className={styles.counterNumber}>{countTMS && countTMS.NotDelivered}</span>
               </MenuItem>
-              <MenuItem active={activeMenuIdx == 9} to={'/myorders/completed'}>
-                 <Glyph className={styles.menuGlyph} name={'open-file'}/>
-                 <span>Completed Orders ({counterOrder.countFinished})</span>
+            </div>
+            { /*<div className={styles.titlePanel}>
+              <span className={styles.titleMenu}>
+                Others
+              </span>
+              <hr className={styles.menuSeparator} />
+              <MenuItem active={activeMenuIdx == 12} to={'/mycontacts'}>
+                <img src="/img/icon-trip-history.png" className={styles.menuGlyph} />
+                <span>My Contacts</span>
               </MenuItem>
-            </AccordionMenu>
-          </Accordion>
-          <MenuItem active={activeMenuIdx == 10} to={'/mytrips'}>
-           <Glyph className={styles.menuGlyph} name={'briefcase'}/>
-           <span>My Trips</span>
-          </MenuItem>
-          <MenuItem active={activeMenuIdx == 11} to={'/mycontacts'}>
-             <Glyph className={styles.menuGlyph} name={'book'}/>
-             <span>My Contacts</span>
-          </MenuItem>
-          <MenuItem active={activeMenuIdx == 12} to={'/mydrivers'}>
-            <Glyph className={styles.menuGlyph} name={'user'}/>
-            <span>My Drivers</span>
-          </MenuItem>
+              <MenuItem active={activeMenuIdx == 13} to={'/mydrivers'}>
+                <img src="/img/icon-trip-history.png" className={styles.menuGlyph} />
+                <span>My Drivers</span>
+              </MenuItem>
+            </div> */ }
+            <div className={styles.titlePanel}>
+              <MenuItem onClick={handleLogout} to={'/'}>
+                  <img src="/img/icon-logout.png" className={styles.menuGlyph} />
+                  <span>Logout</span>
+              </MenuItem>
+            </div>
           </div>
         }
       </ul>
-      <div className={styles.logoutSection}>
-        <a className={styles.logoutButton} onClick={handleLogout}>
-          <img src="/img/icon-logout.png" className={styles.menuLogout} />
-          <span>Logout</span>
-        </a>
-      </div>
       { 
-        // hubID &&
-        // <center className={styles.menuTitle}>
-        //   <a className={styles.switchLink} onClick={switchMenu}>
-        //     <span>Switch to {tmsMenu ? 'Hub' : 'TMS'}</span>
-        //   </a>
-        // </center>
+         hubID &&
+         <div>
+           <a className={styles.switchLink} onClick={switchMenu}>
+              <img src="/img/icon-switch.png" className={styles.menuSwitch} />
+             <span>Switch to {tmsMenu ? 'Hub' : 'TMS'}</span>
+           </a>
+         </div>
       }
     </div>
   );
@@ -167,12 +174,8 @@ const menuPaths = [
   '/grouping',
   '/trips/outbound',
   '/history',
-  '/myorders/open',
-  '/myorders/ongoing',
-  '/myorders/completed',
   '/mytrips',
-  '/mycontacts',
-  '/mydrivers'
+  '/myongoingtrips',
 ];
 
 function GetActiveMenuIdx(path) {
@@ -189,7 +192,7 @@ const DashboardContainer = React.createClass({
     return {isCompact: false, tmsMenu: this.props.hubID};
   },
   componentWillMount() {
-    this.props.initialLoad();
+    this.props.initialLoad(this.props.userLogged.hubID);
     this.checkAuth();
   },
   toggleCompact() {
@@ -225,6 +228,7 @@ const DashboardContainer = React.createClass({
             loggedName={loggedName} 
             counterOrder={this.props.counterOrder}
             count={this.props.count}
+            countTMS={this.props.countTMS}
             tmsMenu={this.state.tmsMenu}
             switchMenu={this.switchMenu}
             isCentralHub={isCentralHub} />
@@ -238,7 +242,7 @@ const DashboardContainer = React.createClass({
 function StoreToDashboard(store) {
     const userLogged = store.app.userLogged;
     const {countOpen, countInProgress, countFinished} = store.app.myOrders;
-    const {count} = store.app.dashboard;
+    const {count, countTMS} = store.app.dashboard;
     return {
       userLogged: userLogged,
       counterOrder: {
@@ -246,20 +250,24 @@ function StoreToDashboard(store) {
         countInProgress: countInProgress,
         countFinished: countFinished
       },
-      count: count
+      count: count,
+      countTMS: countTMS
     }
 }
 
 function DispatchToProps(dispatch) {
   return {
-    initialLoad() {
+    initialLoad(hubID) {
       dispatch(FetchStatusList());
       dispatch(ContactService.FetchList());
       dispatch(CityService.FetchList());
       dispatch(StateService.FetchList());
       dispatch(OrderService.FetchCountOrder());
-      dispatch(DashboardService.FetchCount());
-      dispatch(FleetService.FetchList());
+      dispatch(DashboardService.FetchCountTMS());
+      if (hubID) {
+        dispatch(DashboardService.FetchCount());
+        dispatch(FleetService.FetchList());
+      }
     },
     logout: function() {
       clearInterval(interval);
