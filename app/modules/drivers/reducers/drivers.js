@@ -18,6 +18,7 @@ const DriverListReducer = CollHelper.CollReducer({
 const inititalFleetDriversState = {
   dict: {},
   active: 0,
+  driverList: []
 }
 
 function FleetDriversReducer(state = inititalFleetDriversState, action) {
@@ -31,6 +32,7 @@ function FleetDriversReducer(state = inititalFleetDriversState, action) {
         dict: lodash.assign({}, state.dict, {
           [action.fleetID]: lodash.map(action.list, (driver) => (driver.UserID)),
         }),
+        driverList: action.list
       });
     }
 

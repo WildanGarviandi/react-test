@@ -3,6 +3,7 @@ import styles from './form.css';
 import {Glyph} from '../views/base/glyph';
 import {ButtonBase} from './button';
 import classNaming from 'classnames';
+import {DropdownWithState2 as Dropdown2} from '../views/base/dropdown';
 
 const Form = React.createClass({
   displayName: 'Form',
@@ -438,6 +439,19 @@ const FilterTop = React.createClass({
   }
 });
 
+const FilterTop2 = React.createClass({
+  render() {
+    return (
+      <div className={styles.filterTop}>
+        <div className={styles.filterTitle}>{this.props.title}</div>
+        <div>
+          <Dropdown2 val={this.props.value} options={this.props.options} handleSelect={this.props.handleSelect} />
+        </div>
+      </div>
+    );
+  }
+});
+
 const Radio = React.createClass({
   displayName: 'Radio',
 
@@ -522,4 +536,4 @@ const RadioGroup = React.createClass({
   }
 });
 
-export {Form, CheckBox, FilterTop, FilterText, Input, InputWithDefault, InputWithState, Dropdown, DropdownTypeAhead, DropdownWithState, DropdownWithState2, Textarea, TextareaWithDefault, RadioGroup, Radio };
+export {Form, CheckBox, FilterTop, FilterTop2, FilterText, Input, InputWithDefault, InputWithState, Dropdown, DropdownTypeAhead, DropdownWithState, DropdownWithState2, Textarea, TextareaWithDefault, RadioGroup, Radio };

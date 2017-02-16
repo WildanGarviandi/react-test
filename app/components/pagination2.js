@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'underscore';
 import {Dropdown} from '../views/base';
-import styles from './pagination.css';
+import styles from './pagination2.css';
 
 function PaginationInfo(props) {
   var {limit, total, page} = props;
@@ -80,7 +80,7 @@ const PaginationControl = React.createClass({
   }
 });
 
-const Pagination = React.createClass({
+const Pagination2 = React.createClass({
   countPages() {
     return Math.ceil(this.props.total / this.props.limit);
   },
@@ -102,9 +102,9 @@ const Pagination = React.createClass({
 
     return (
       <div className={styles.paginationTable}>
-        <div className="fixed-table-pagination" style={{display: 'block'}}>
-          <PaginationDetail limit={limit} total={total} page={currentPage} setLimit={this.setLimit} />
+        <div style={{display: 'block'}}>
           <PaginationControl pagesCount={totalPages} currentPage={currentPage} setPage={this.setPage} />
+          <PaginationDetail limit={limit} total={total} page={currentPage} setLimit={this.setLimit} />
         </div>
         <div style={{clear: 'both', marginBottom: 10}} />
       </div>
@@ -112,4 +112,4 @@ const Pagination = React.createClass({
   }
 });
 
-export {Pagination};
+export {Pagination2};
