@@ -104,7 +104,7 @@ const LoginPage = React.createClass({
   },
   componentWillMount() {
     if (this.props.token) {
-      if (!this.props.hubID) {
+      if (this.props.hubID) {
         store.dispatch(push(config.defaultMainPageTMS));
       } else {
         store.dispatch(push(config.defaultMainPage));

@@ -17,6 +17,7 @@ import Accordion from '../views/base/accordion';
 import styles from './styles.css';
 import _ from 'underscore';
 import config from '../../config.json';
+import configValues from '../config/configValues.json';
 import {push} from 'react-router-redux';
 import ModalActions from '../modules/modals/actions';
 
@@ -284,9 +285,9 @@ function DispatchToProps(dispatch) {
     },
     switchMenu: function(tmsMenu) {
       if (tmsMenu) {
-        dispatch(push('/myorders/open'));
+        dispatch(push(configValues.defaultMainPageTMS));
       } else {
-        dispatch(push('/orders/pickup'));
+        dispatch(push(configValues.defaultMainPage));
       }
     }
   }
