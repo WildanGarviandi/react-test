@@ -300,7 +300,7 @@ const TripRow = React.createClass({
     const parsedTrip = TripParser(trip);
     const cardValueStatus = styles['cardValueStatus' + trip.OrderStatus.OrderStatusID];
     return (
-      <tr className={styles.tr + (trip.IsChecked && (' ' + styles.selected)) + (this.state.isHover && (' ' + styles.hovered))} 
+      <tr className={styles.tr + ' ' + styles.card + (trip.IsChecked && (' ' + styles.selected)) + (this.state.isHover && (' ' + styles.hovered))} 
         onMouseEnter={this.onMouseOver} onMouseLeave={this.onMouseOut}>
         <td><CheckboxRow isChecked={trip.IsChecked} tripID={trip.TripID} /></td>
         <td onClick={()=>{this.expandTrip(trip)}}><div className={styles.cardSeparator} /></td>
