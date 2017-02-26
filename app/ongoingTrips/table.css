@@ -185,8 +185,7 @@ tbody:last-child .tr:nth-of-type(odd).hovered, .hovered {
   padding-right: 10px;
 }
 
-tbody:last-child .tr:nth-of-type(odd) .td,
-td {
+.card {
   background-color: #fff;
   color: #000;
 }
