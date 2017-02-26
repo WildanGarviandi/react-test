@@ -19,7 +19,6 @@ import InboundTripsPage from './inboundTrips/inboundTripsPage';
 import TripDetailsPage from './tripDetails/tripDetails';
 import TripManifestPage from './views/trips/tripManifest';
 import MyAssignedTripsPage from './trips/tripPage';
-import MyAssignedTripsDetailPage from './trips/tripDetails';
 import MyOrdersPage from './orders/orderPage';
 import ManageOrdersPage from './orders/orderManage';
 import MyOrdersDetailsPage from './orders/orderDetails';
@@ -83,7 +82,6 @@ export default (
         <Route path="/trips/:tripID/fillReceived" component={ReceivedFillPage} onEnter={requireHubAuth}/>
         <Route path="/trips/:tripID/fillPickup" component={PickupFillPage} onEnter={requireHubAuth}/>
         <Route path="/mytrips" component={MyAssignedTripsPage} onEnter={requireAuth} />
-        <Route path="/mytrips/detail/:tripID" component={MyAssignedTripsDetailPage} onEnter={requireAuth} />
         <Route path="/myorders/open" component={()=>(<MyOrdersPage statusFilter="open" />)} onEnter={requireAuth} />
         <Route path="/myorders/ongoing" component={()=>(<MyOrdersPage statusFilter="ongoing" />)} onEnter={requireAuth} />
         <Route path="/myorders/completed" component={()=>(<MyOrdersPage statusFilter="completed" />)} onEnter={requireAuth} />
