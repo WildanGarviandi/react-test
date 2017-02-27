@@ -7,6 +7,8 @@ import styles from './styles.css';
 import {ButtonWithLoading, Input, Page} from '../views/base';
 import * as InboundOrders from './inboundOrdersService';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import {Glyph} from '../views/base';
+import {ButtonBase} from '../components/button';
 
 const DuplicateModal = React.createClass({
   componentWillUnmount() {
@@ -67,7 +69,11 @@ const InboundOrdersPage = React.createClass({
   getInitialState() {
     return {
       orderMarked: '',
-      isDuplicate: false
+      isDuplicate: false,
+      opened: true,
+      idsRaw: '',
+      ids: [],
+      idsStart: ''
     }
   },
   componentDidMount() {
@@ -95,6 +101,27 @@ const InboundOrdersPage = React.createClass({
   closeModal() {
     this.setState({isDuplicate: false});
   },
+  toggleOpen() {
+    this.setState({opened: !this.state.opened, idsStart: this.state.idsRaw});
+  },
+  cancelChange() {
+    this.setState({opened: true, idsRaw: this.state.idsStart});
+  },
+  textChange(e) {
+    this.setState({idsRaw: e.target.value});
+  },
+  processText() {
+    const IDs = _.chain(this.state.idsRaw.match(/\S+/g)).uniq().value();
+    if (IDs.length === 0) {
+        alert('Please write EDS Number or Order ID');
+        return;
+    }
+    this.setState({ids: IDs});
+  },
+  clearText() {
+    const {filterAction} = this.props;
+    this.setState({ids: [], idsRaw: ''});
+  },
   render() {
     const inputVerifyStyles = {
       container: styles.verifyInputContainer,
@@ -113,6 +140,35 @@ const InboundOrdersPage = React.createClass({
             base={{value: this.state.orderMarked, placeholder: 'Scan EDS, WebOrderID, or TripID...'}} id="markReceivedInput" />
           <button onClick={this.markReceived.bind(null, this.state.orderMarked)} className={styles.verifyButton} 
             disabled={this.state.orderMarked === ''} >Verify</button>
+        </div>
+        <div style={{clear: 'both'}} />
+        <div style={{marginBottom: 15}}>
+          { this.state.opened ?
+            <div className={styles.top2} onClick={this.toggleOpen}>
+              <h4 className={styles.title}>
+                <Glyph name='chevron-down' className={styles.glyphFilter} />
+                {(this.state.ids.length ? 'Search multiple orders (' + this.state.ids.length + ' keywords)' : 'Search multiple orders')}
+              </h4>
+            </div> :
+            <div className={styles.panel}>
+              <div className={styles.top2} onClick={this.toggleOpen}>
+                <h4 className={styles.title}>
+                  <Glyph name='chevron-up' className={styles.glyphFilter} />
+                  {'Search multiple orders:'}
+                </h4>
+              </div>
+              <div className={styles.bottom}>
+                <textarea 
+                    className={styles.textArea} 
+                    value={this.state.idsRaw} 
+                    onChange={this.textChange} 
+                    placeholder={'Write/Paste EDS Number or Order ID here, separated with newline'} />
+                <ButtonBase styles={styles.greenButton} onClick={this.processText}>Filter</ButtonBase>
+                <ButtonBase styles={styles.redButton} onClick={this.cancelChange}>Cancel</ButtonBase>
+                <ButtonBase styles={styles.redButton} onClick={this.clearText}>Clear</ButtonBase>
+              </div>
+            </div>
+          }
         </div>
         <InboundOrdersTable />
       </Page>
