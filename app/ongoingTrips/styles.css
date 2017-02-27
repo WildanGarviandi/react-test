@@ -235,7 +235,6 @@
   font-size: 24px;
   color: #cccccc;
   cursor: pointer;
-  position: inherit;
   padding: 8px;
   margin-left: -32px;
   float: left;
@@ -246,7 +245,7 @@
 
 .filterOption {
   float: left;
-  width: 50%;
+  width: 45%;
   margin-top: 0px;
 }
 
