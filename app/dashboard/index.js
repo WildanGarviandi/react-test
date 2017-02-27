@@ -179,6 +179,11 @@ const menuPaths = [
   '/myongoingtrips',
 ];
 
+const menuPathsTMS = [
+  '/mytrips',
+  '/myongoingtrips'
+];
+
 function GetActiveMenuIdx(path) {
   let fpath = _.find(menuPaths, (menu) => (path.indexOf(menu) > -1));
   let idx = menuPaths.indexOf(fpath);
@@ -195,6 +200,9 @@ const DashboardContainer = React.createClass({
   componentWillMount() {
     this.props.initialLoad(this.props.userLogged.hubID);
     this.checkAuth();
+    if (menuPathsTMS.indexOf(this.props.location.pathname) > -1) {
+      this.setState({tmsMenu: true});
+    }
   },
   toggleCompact() {
     this.setState({isCompact: !this.state.isCompact});
