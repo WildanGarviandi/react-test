@@ -4,16 +4,20 @@ import checkAuth from './modules/auth/actions/checkAuth';
 import store from './store';
 import App from './views/app';
 import ContainerQRCodePage from './views/container/qrcode';
-import DashboardPage from './views/dashboard';
+import DashboardPage from './dashboard';
 import LoginPage from './views/login';
 import RegisterPage from './views/register';
-import OrderDetailsPage from './views/order/orderDetails';
+import OrderDetailsPage from './orderDetails/orderDetails';
 import PickupFillPage from './views/order/pickupFill';
-import PickupOrdersPage from './views/order/pickupOrders';
+import PickupOrdersPage from './pickupOrders/pickupOrdersPage';
 import ReceivedFillPage from './views/order/receivedFill';
 import ReceivedOrdersPage from './views/order/receivedOrders';
+import GroupingPage from './grouping/grouping';
+import InboundOrdersPage from './inbound/inboundOrders';
+import updateOrdersPage from './updateOrders/updateOrders';
 import MyTripsPage from './views/trips/myTrips';
-import TripDetailsPage from './views/trips/tripDetails';
+import InboundTripsPage from './inboundTrips/inboundTripsPage';
+import TripDetailsPage from './tripDetails/tripDetails';
 import TripManifestPage from './views/trips/tripManifest';
 import MyAssignedTripsPage from './trips/tripPage';
 import MyAssignedTripsDetailPage from './trips/tripDetails';
@@ -27,8 +31,13 @@ import ManageContactsPage from './contacts/contactManagePage';
 import MyDriverPage from './drivers/driverPage';
 import ManageDriversPage from './drivers/driverManagePage';
 import MyDriverOrdersPage from './drivers/driverOrderPage';
+import MyOutboundTripsPage from './outboundTrips/outboundTripsPage';
+import OutboundTripsManifestPage from './outboundTrips/outboundTripsManifest';
+import OutboundTripsCoverManifestPage from './outboundTrips/outboundTripsCoverManifest';
+import {modalAction} from './modules/modals/constants';
 
 function requireAuth(nextState, replace, callback) {
+  store.dispatch({type: modalAction.BACKDROP_SHOW});
   checkAuth(store).then(function(result) {
     if(!result.ok) {
       replace({
@@ -36,12 +45,14 @@ function requireAuth(nextState, replace, callback) {
         state: { nextPathname: nextState.location.pathname }
       });
     }
+    store.dispatch({type: modalAction.BACKDROP_HIDE});
 
     callback();
   });
 }
 
 function requireHubAuth(nextState, replace, callback) {
+  store.dispatch({type: modalAction.BACKDROP_SHOW});
   checkAuth(store).then(function(result) {
     if(!result.ok || !result.data.hub) {
       replace({
@@ -49,6 +60,7 @@ function requireHubAuth(nextState, replace, callback) {
         state: { nextPathname: nextState.location.pathname }
       });
     }
+    store.dispatch({type: modalAction.BACKDROP_HIDE});
 
     callback();
   });
@@ -62,9 +74,12 @@ export default (
         <IndexRoute component={PickupOrdersPage} onEnter={requireAuth}/>
         <Route path="/orders/pickup" component={PickupOrdersPage} onEnter={requireAuth} />
         <Route path="/orders/received" component={ReceivedOrdersPage} onEnter={requireHubAuth}/>
+        <Route path="/grouping" component={GroupingPage} onEnter={requireHubAuth}/>
+        <Route path="/inbound" component={InboundOrdersPage} onEnter={requireHubAuth}/>
+        <Route path="/orders/update" component={updateOrdersPage} onEnter={requireHubAuth}/>
         <Route path="/orders/:id" component={OrderDetailsPage} onEnter={requireHubAuth}/>
-        <Route path="/trips/inbound" component={MyTripsPage} onEnter={requireHubAuth}/>
-        <Route path="/trips/outbound" component={MyTripsPage} onEnter={requireHubAuth}/>
+        <Route path="/trips/inbound" component={InboundTripsPage} onEnter={requireHubAuth}/>
+        <Route path="/trips/outbound" component={MyOutboundTripsPage} onEnter={requireHubAuth}/>
         <Route path="/trips/:id" component={TripDetailsPage} onEnter={requireHubAuth}/>
         <Route path="/trips/:tripID/fillReceived" component={ReceivedFillPage} onEnter={requireHubAuth}/>
         <Route path="/trips/:tripID/fillPickup" component={PickupFillPage} onEnter={requireHubAuth}/>
@@ -86,7 +101,8 @@ export default (
         <Route path="/mydrivers/edit/:id" component={ManageDriversPage} onEnter={requireAuth} />
         <Route path="/mydrivers/orders/:id" component={MyDriverOrdersPage} onEnter={requireAuth}/>
       </Route>
-      <Route path="/trips/:tripID/manifest" component={TripManifestPage} onEnter={requireAuth} />
+      <Route path="/trips/:tripID/manifest" component={OutboundTripsManifestPage} onEnter={requireAuth} />
+      <Route path="/trips/:tripID/coverManifest" component={OutboundTripsCoverManifestPage} onEnter={requireAuth} />
       <Route path="/qrcode/:id" component={ContainerQRCodePage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/register" component={RegisterPage} />

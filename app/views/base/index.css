@@ -11,6 +11,11 @@
   color: #fff;
 }
 
+.btnBase:disabled {
+  cursor: default;
+  background-color: #ff8b8f;
+}
+
 .btnBase.loading {
   display: inline-block;
   cursor: default;
@@ -35,4 +40,12 @@
   cursor: pointer;
   padding: 2px;
   display: inline-block;
+}
+
+.buttonTitle {
+  padding: 2px;
+}
+
+.buttonImage {
+  float: left;
 }

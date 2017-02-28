@@ -24,10 +24,6 @@ function Currency(x) {
 
 function FullAddress(address) {
   const Addr = address.Address1 && address.Address2 && (address.Address1.length < address.Address2.length) ? address.Address2 : address.Address1;
-  // return lodash.chain([Addr, address.City, address.State, address.ZipCode])
-  //   .filter((str) => (str && str.length > 0))
-  //   .value()
-  //   .join(', ');
   return Addr;
 }
 
@@ -48,13 +44,16 @@ export function OrderParser(order) {
     IsChecked: false,
     OrderStatus: (order.OrderStatus && order.OrderStatus.OrderStatus) || "",
     PickupAddress: order.PickupAddress ? FullAddress(order.PickupAddress) : "",
+    PickupFullAddress: order.PickupAddress && order.PickupAddress.FullAddress || "",
     PickupCity: order.PickupAddress ? order.PickupAddress.City : "",
+    PickupZip: order.PickupAddress ? order.PickupAddress.ZipCode : "",
     PickupState: order.PickupAddress ? order.PickupAddress.State : "",
     PickupTime: pickupTime.toLocaleString(),
     PickupType: PickupType(order.PickupType),
     RouteStatus: (order.CurrentRoute && order.CurrentRoute.OrderStatus && order.CurrentRoute.OrderStatus.OrderStatus) || "",
     User: (order.User && (order.User.FirstName + ' ' + order.User.LastName)) || '',
     WebstoreName: (order.User && (order.User.FirstName + ' ' + order.User.LastName)) || '',
+    Weight: (order.PackageWeight && (order.PackageWeight + ' kg')) || "",
     ZipCode: order.DropoffAddress && order.DropoffAddress.ZipCode,
     SuggestedVendors: (order.LastMileFleetSuggestion) ? order.LastMileFleetSuggestion.map((val) => {
       return val.CompanyDetail.CompanyName + ' (' + val.OrderCapacity + '/' + 

@@ -15,3 +15,9 @@ export function UserFullName(user) {
 export function FleetName(fleet) {
   return fleet && fleet.CompanyDetail ? fleet.CompanyDetail.CompanyName : '';
 };
+
+export function FleetNameWithCapacity (fleet) {
+  return (fleet && fleet.CompanyDetail) ? 
+    `${fleet.CompanyDetail.CompanyName} (${fleet.OrderCapacity}/${fleet.CompanyDetail.OrderVolumeLimit})` :
+    '';
+}

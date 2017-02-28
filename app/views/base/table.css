@@ -37,14 +37,23 @@
 .tr {
     cursor: pointer;
     border: solid 1px #ddd;
+    background-color: #fafafa;
 }
 
 .tr:nth-of-type(odd) {
-    background-color: #f9f9f9;
+    background-color: #fafafa;
 }
 
 .tr:hover {
-    background-color: #f5f5f5;
+    background-color: #fff;
+}
+
+.tr:hover .detailsID {
+    color: #33c;
+}
+
+.tr:hover a {
+    color: #33c;
 }
 
 .td {
@@ -94,7 +103,7 @@
     height: 28px;
 }
 
-.link {
+.link, .link:hover {
     color: #33c;
 }
 
@@ -104,4 +113,54 @@
 
 .td.SuggestedVendors {
   text-align: center;
+}
+
+.table th {
+    border: solid 1px #e8e8e8;
+    padding: 12px;
+}
+
+.table td {
+    border: solid 1px #e8e8e8;
+    text-align: center;
+}
+
+.cellButton {
+    border-radius: 4px !important;
+    background-color: #38b393 !important;
+    font-family: Helvetica !important;
+    font-size: 12px !important;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    text-align: center !important;
+    color: #ffffff !important;
+    height: 32px !important;
+}
+
+.detailsID {
+    font-weight: bold;
+    font-size: 12px;
+    cursor: pointer;
+    float: left;
+}
+
+.detailsID:hover {
+    text-decoration: underline;
+}
+
+.detailsInfo {
+    font-size: 10px;
+    cursor: pointer;
+    float: left;
+    margin-right: 12px;
+}
+
+.detailsSearchIcon {
+    width: 15px;
+    height: 15px;
+}
+
+.hoverUnderline:hover {
+    text-decoration: underline;
 }

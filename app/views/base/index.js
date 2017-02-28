@@ -1,9 +1,9 @@
 import React from 'react';
 import Collection from './collection';
-import { Dropdown, DropdownTypeAhead } from './dropdown';
+import { Dropdown, DropdownTypeAhead, DropdownWithState } from './dropdown';
 import { Glyph } from './glyph';
 import Infograph from './infograph';
-import { CheckBox, Input, InputWithDefault } from './input';
+import { CheckBox, Input, InputWithDefault, InputWithDefaultNumberFormatted } from './input';
 import ModalMessage from './modalMessage';
 import Page, { ButtonAtRightTop, PageTitle } from './page';
 import { Pagination } from './pagination';
@@ -15,11 +15,11 @@ import baseStyle from './index.css';
 
 const ButtonBase = React.createClass({
   render() {
-    var { children, onClick, styles, type, width } = this.props;
+    var { children, onClick, styles, type, width, onKeyDown } = this.props;
     var btnClass = classNaming(baseStyle.btnBase, styles);
 
     return (
-      <button className={btnClass} onClick={onClick} type={type} style={{width: width}}>{children}</button>
+      <input className={btnClass} onClick={onClick} type="submit" style={{width: width}} value={children} onKeyDown={onKeyDown} />
     );
   }
 });
@@ -30,7 +30,7 @@ function ButtonAction(props) {
 
 const ButtonWithLoading = React.createClass({
   render() {
-    const {textBase, textLoading, isLoading, onClick, styles = {}, base} = this.props;
+    const {textBase, textLoading, isLoading, onClick, styles = {}, base, disabled} = this.props;
     const btnClass = classNaming(baseStyle.btnBase, {[baseStyle.loading]: isLoading}, styles.base);
     const spinnerClass = classNaming(baseStyle.spinner, styles.spinner);
 
@@ -42,9 +42,35 @@ const ButtonWithLoading = React.createClass({
     }
 
     return (
-      <button {...base} className={btnClass} onClick={onClick}>{textBase}</button>
+      <button {...base} className={btnClass} onClick={onClick} disabled={disabled}>{textBase}</button>
     );
   }
 })
 
-export { ButtonAtRightTop, ButtonBase, ButtonAction, ButtonWithLoading, CheckBox, Collection, Dropdown, DropdownTypeAhead, Glyph, Infograph, Input, InputWithDefault, Modal, ModalMessage, Page, PageTitle, Pagination, Rows, Tables, NotificationContainer };
+const ButtonStandard = React.createClass({
+  render() {
+    const {textBase, textLoading, isLoading, onClick, styles = {}, base, urlImage} = this.props;
+    const btnClass = classNaming(baseStyle.btnBase, {[baseStyle.loading]: isLoading}, styles.base);
+
+    return (
+      <button {...base} className={btnClass} onClick={onClick}>
+        { urlImage &&
+          <img src={urlImage} className={baseStyle.buttonImage} />
+        }
+        <span className={baseStyle.buttonTitle}>
+          {textBase}
+        </span>
+      </button>
+    );
+  }
+})
+
+const EmptySpace = React.createClass({
+  render() {
+    return (
+      <div style={{height: this.props.height, clear: 'both'}}></div>
+    );
+  }
+})
+
+export { ButtonAtRightTop, ButtonBase, ButtonAction, ButtonWithLoading, ButtonStandard, CheckBox, Collection, Dropdown, DropdownTypeAhead, DropdownWithState, Glyph, Infograph, Input, InputWithDefault, InputWithDefaultNumberFormatted, Modal, ModalMessage, Page, PageTitle, Pagination, Rows, Tables, NotificationContainer, EmptySpace };

@@ -46,6 +46,16 @@ export default (state = initialUserState, action) => {
         editVolume: action.order && action.order.edit_volume,
         editWeight: action.order && action.order.edit_weight
       });
+    case actionTypes.AUTH_INVALID:
+      localStorage.clear();
+      return _.assign({}, state, {
+        token: null
+      });
+    case actionTypes.LOGOUT_SUCCESS:
+      localStorage.clear();
+      return _.assign({}, state, {
+        token: null
+      });
     default:
       return state;
   }

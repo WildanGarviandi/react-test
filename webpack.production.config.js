@@ -33,6 +33,10 @@ module.exports = {
       {
         test: /\.woff$/, 
         loader: "file-loader"
+      },
+      {
+        test: /\.mp3$/,
+        loader: 'file'
       }
     ]
   },
@@ -49,5 +53,11 @@ module.exports = {
         'NODE_ENV': JSON.stringify('production')
       }
     })
-  ]
+  ],
+
+  resolve: {
+    alias: {
+      soundmanager2: 'soundmanager2/script/soundmanager2-nodebug-jsmin.js'
+    }
+  }
 }

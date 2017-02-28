@@ -6,6 +6,7 @@
 .paginationControl {
   float: right;
   font-size: 12px;
+  margin-top: 3px;
 }
 
 .paginationItem li {
@@ -29,4 +30,12 @@
   cursor: default;
   background-color: #337ab7;
   border-color: #337ab7;
+}
+
+.paginationTable {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-top: 0;
+  padding: 10px 12px 0px;
+  border-radius: 0px 0px 5px 5px;
 }

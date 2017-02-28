@@ -4,6 +4,8 @@ import React from 'react';
 import {Link} from 'react-router';
 import {CheckBox} from './input';
 import styles from './table.css';
+import {ButtonStandard} from './index';
+import ReactTooltip from 'react-tooltip'
 
 export function TextCell({text}) {
   return <span>{text}</span>;
@@ -12,6 +14,58 @@ export function TextCell({text}) {
 export function LinkCell({onClick, text, to}) {
   return <Link to={to} className={styles.link}>{text}</Link>;
 }
+
+export function OrderIDLinkCell({onClick, eds, id, to, isChecked, item}) {
+  let style = {
+    textAlign: 'center',
+    color: '#33c',
+    display: 'inline-block'
+  }
+
+  if (item && item.IsChecked) {
+    style.color = '#fff';
+    style.backgroundColor = '#ff5a60';
+  }
+
+  return (
+    <Link to={to} className={styles.link}>
+      <span style={style} className={styles.hoverUnderline}>
+        {eds}<br />({id})
+      </span>
+    </Link>
+  );
+}
+
+export function ButtonCell({value, onClick}) {
+  const buttonAction = {
+    textBase: value,
+    onClick: onClick,
+    styles: {
+      base: styles.cellButton
+    }
+  }
+
+  return (
+    <div style={{textAlign: 'center'}}>
+      <ButtonStandard {...buttonAction} />
+    </div>
+  );
+}
+
+export function IDCell({text, onClickDetails, onClickModals}) {
+  return (
+    <div style={{textAlign: 'center'}}>
+      <ReactTooltip />
+      <div data-tip="Quick look" onClick={onClickModals} className={styles.detailsInfo}>
+        <img className={styles.detailsSearchIcon} src="/img/icon-search-color.png" />
+      </div>
+      <div onClick={onClickDetails} className={styles.detailsID}>
+        TRIP-{text}
+      </div>
+    </div>
+  );
+}
+
 
 export const CheckBoxCell = CheckBox;
 

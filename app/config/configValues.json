@@ -2,12 +2,29 @@
     "vehicle": [{
         "key": 1, "value": "Motorcycle"
     }, {
-        "key": 2, "value": "Minivan"
+        "key": 2, "value": "Van"
+    }],
+    "vehicleType": {
+        "Motorcycle": 1,
+        "Van": 2
+    },
+    "motorcycleMaxWeight": 25,
+    "vanMaxWeight": 250,
+    "autoGroupInterval": 60000,
+    "driverLimit": 10000,
+    "deadline": {
+        "day": 86400000,
+        "3hours":  10800000
+    },
+    "inboundDeadlineFromCutOffTime": 6,
+    "defaultCODValues": [{
+        "label": "COD",
+        "value": true
     }, {
-        "key": 3, "value": "Small Truck"
-    }, {
-        "key": 4, "value": "Big Truck"
-    }, {
-        "key": 5, "value": "Bicycle"
-    }]
+        "label": "Non COD",
+        "value": false
+    }],
+    "volumetricFactor": 6000,
+    "outboundDeadlineFromCreated": 3,
+    "defaultMainPage": "/orders/pickup"
 }

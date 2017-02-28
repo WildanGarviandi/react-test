@@ -13,6 +13,23 @@
   padding: 10px;
 }
 
+.panel .modalBtn {
+  background-color: #2196f3;
+  margin-top: -4px !important;
+  margin-left: 0px;
+  height: 41px;
+  width: 200px;
+  font-size: 14px;
+  border-radius: 0;
+}
+
+.panel .modalLink {
+  margin-top: -4px !important;
+  margin-left: 0px;
+  padding: 12px;
+  color: #ff5a60;
+}
+
 .subtitle {
   text-indent: 10px;
 }
@@ -47,107 +64,244 @@
 }
 
 .panel {
-    border-radius: 5px;
-    border: solid 1px #ccc;
+  border-radius: 5px;
+  border: solid 1px #ccc;
 }
 
 .bottom {
-    padding: 0 15px 45px;
+  padding: 0 0px 37px;
+  background-color: #fff;
+}
+
+.bottom textarea {
+  border-right: none;
+  border-left: none;
+  background: #f9f9f9;
+  padding: 15px;
+  margin: 0px;
+  box-sizing: border-box;
 }
 
 .title {
-    margin-top: 0;
-    padding: 10px;
+  margin-top: 0;
+  padding: 10px;
 }
 
 .top {
-    background-color: #371e38;
-    color: #ccc;
-    text-indent: 10px;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    cursor: pointer;
+  background-color: #fff;
+  color: #333;
+  text-indent: 10px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  cursor: pointer;
 }
 
-.top {
-    background-color: #371e38;
-    color: #ccc;
-    text-indent: 10px;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    cursor: pointer;
+.top h4 {
+  background-color: #fff !important;
+  color: #333 !important;
+  margin: 0;
 }
 
 .modalBtn, .modalLink {
-    padding: 8px;
-    display: inline-block;
-    margin-left: 4px;
-    margin-top: 5px;
-    float: right;
+  padding: 8px;
+  display: inline-block;
+  margin-left: 4px;
+  margin-top: 5px;
+  float: right;
 }
 
 .modalLink:hover {
-    color: #337ab7;
+  color: #2196f3;
 }
 
 .top2 {
-    background-color: #371e38;
-    color: #ccc;
-    text-indent: 10px;
-    border-radius: 5px;
-    cursor: pointer;
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #e8e8e8;
+  border-radius: 5px;
+  text-indent: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.top2 h4 {
+  margin: 0px;
 }
 
 .glyphFilter {
-    position: relative;
-    left: -13px;
+  position: relative;
+  left: -13px;
 }
 
 .arrowDown {
-    float: left;
+  float: left;
 }
 
 .foundTrip {
-    background-color: #371e38;
-    color: #C0B2A5;
-    padding: 3px;
-    border-radius: 5px;
-    margin-bottom: 2px;
-    margin-top: 2px;
+  background-color: #371e38;
+  color: #C0B2A5;
+  padding: 3px;
+  border-radius: 5px;
+  margin-bottom: 2px;
+  margin-top: 2px;
 }
 
 .foundTrip a {
-    color: #fff;
-}
-
-.tableMessage {
-    background-color: #FFFFFF;
-    color: #000000;
-    border: 1px solid;
-    border-radius: 3px;
-    padding: 8px;
+  color: #fff;
 }
 
 .tableMessage a {
-    text-decoration: underline;
+  border-left: 1px solid #e8e8e8;
+  border-right: 1px solid #e8e8e8;
+  height: 25px;
+  padding: 8px 5px 0px;
+  display: inline-flex;
+}
+
+.tableMessage a:hover {
+  color: #fff;
+  background-color: #2196f3;
+  border-left: 1px solid #2196f3;
+  border-right: 1px solid #2196f3;
 }
 
 .tableMessage thead {
-    background-color: #1A2226;
-    color: #FFFFFF;
-    padding: 4px;
-}
-
-.tableMessage tbody {
-    background-color: #C0B2A5;
-}
-
-.tableMessage tr {
-    padding: 4px;
-    border: 1px solid;
+  padding: 5px;
 }
 
 .tableMessage td {
-    padding: 4px;
-    border: 1px solid;
+  padding: 5px;
+}
+
+.noMargin {
+  margin: 0 !important;
+}
+
+.noPadding {
+  padding: 0 !important;
+}
+
+.colMd1, .colMd2, .colMd3, .colMd4, .colMd5, .colMd6, .colMd7, .colMd8, .colMd9, .colMd10, .colMd11, .colMd12, .colMd1in7 {
+  padding-right: 15px;
+  padding-left: 15px; 
+  min-height: 1px;
+}
+
+.colMd1in7 {
+  width: 14.28571%;
+  float: left;
+}
+
+.colMd1 {
+  width: 8.33333%;
+  float: left;
+}
+
+.colMd2 {
+  width: 16.66667%;
+  float: left;
+}
+
+.colMd3 {
+  width: 25%;
+  float: left;
+}
+
+.colMd4 {
+  width: 33.33333%;
+  float: left;
+}
+
+.colMd5 {
+  width: 41.66667%;
+  float: left;
+}
+
+.colMd6 {
+  width: 50%;
+  float: left;
+}
+
+.colMd8 {
+  width: 66.66666%;
+  float: left;
+}
+
+.colMd9 {
+  width: 75%;
+  float: left;
+}
+
+.colMd12 {
+  width: 100%;
+  float: left;
+}
+
+.tableMessage .noPadding {
+  padding: 0;
+}
+
+.filterDropDown span {
+  font-size: 12px;
+  color: #929292;
+}
+
+.filterDropDown div {
+  margin-top: 5px;
+  margin-bottom: 15px;
+}
+
+.filterDropDown input {
+  margin: 0px;
+  width: 100%;
+}
+.filterDropDown input {
+  padding: 16px 8px;
+  border: 1px solid #e8e8e8;
+}
+
+.filterDropDown > div > input {
+  border: 1px solid #e8e8e8;
+  border-right: 0px;
+  padding: 8px;
+  height: inherit;
+}
+
+.filterDropDown > div > span {
+  border: 1px solid #e8e8e8;
+  border-left: 0px;
+  background-color: #fff;
+}
+
+.filterDropDown > div > span > span {
+  top: 0px;
+}
+
+.filterDropDown > div > div {
+  border: 0px;
+  margin-top: 0px;
+}
+
+.filterDropDown > div > div > span {
+  padding: 8px;
+  border-bottom: 1px solid #e8e8e8;
+  background-color: #fff !important;
+  color: #929292 !important;
+}
+
+.filterDropDown > div > div > span:hover, .filterDropDown > div > div > span:focus {
+  background-image: url('/img/icon-checkmark.png');
+  background-repeat: no-repeat;
+  background-size: 25px;
+  background-position-x: 100%;
+  background-position-y: 50%;
+}
+
+.datePicker {
+  margin: 0px !important;
+}
+
+.datePicker input {
+  height: 34px;
+  padding: 6px 8px;
 }

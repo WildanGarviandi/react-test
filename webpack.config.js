@@ -45,6 +45,10 @@ module.exports = {
       {
         test: /\.woff$/,
         loader: 'url?limit=100000'
+      },
+      {
+        test: /\.mp3$/,
+        loader: 'file'
       }
     ]
   },
@@ -59,5 +63,11 @@ module.exports = {
     historyApiFallback: true,
     inline: true,
     hot: true
-  } 
+  },
+
+  resolve: {
+    alias: {
+      soundmanager2: 'soundmanager2/script/soundmanager2-nodebug-jsmin.js'
+    }
+  }
 }

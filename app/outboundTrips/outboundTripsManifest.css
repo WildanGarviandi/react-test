@@ -1,0 +1,252 @@
+.container {
+  background-color: #462445;
+  position: relative;
+  padding: 50px 16px 16px 16px;
+  text-align: center;
+}
+
+.logo {
+  height: 40px;
+  position: absolute;
+  left: 16px;
+  top: 5px;
+}
+
+.logo img {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.logo p {
+  margin: 0 0 5px 5px;
+  font-size: 32px;
+  color: #fff;
+  display: inline-block;
+  line-height: 40px;
+  vertical-align: top;
+}
+
+.currentDate {
+  height: 40px;
+  position: absolute;
+  line-height: 40px;
+  right: 16px;
+  top: 5px;
+  color: #ffffff;
+  font-size: 16px;
+  text-align: right;
+  opacity: 0.5;
+}
+
+.content {
+  background-color: #fff;
+  padding: 10px 20px 64px 20px;
+}
+
+.mainInfo {
+  width: 25%;
+  float: left;
+  line-height: 0.2em;
+}
+
+.contentTitle {
+  margin: 0 0 10px 0;
+  font-size: 28px;
+  font-weight: 400;
+}
+
+.qrcode {
+  margin: 16px;
+  width: 80px;
+  height: 80px;
+}
+
+.mainInfo p {
+  margin: 0 0 5px 0;
+  color: #9b9b9b;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.mainInfo h2 {
+  margin: 0 0 32px 0;
+  font-size: 28px;
+  font-weight: normal;
+}
+
+.mainInfo h6 {
+  font-size: 10px;
+  font-weight: normal;
+  line-height: 1em;
+  margin-top: -10px;
+}
+
+.addressCardContainer {
+  width: 45%;
+  float: left;
+}
+
+.addressCard {
+  box-sizing: border-box;
+  color: rgba(0,0,0,0.5);
+  text-align: left;
+  font-size: 12px;
+  border: 1px solid #ebebeb;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 0 0 10px 0;
+}
+
+.addressCard p {
+  margin: 0;
+  color: #000000;
+}
+
+.addressCard h2 {
+  font-size: 11px;
+  font-weight: bold;
+  color: #000;
+  line-height: 0.6em;
+}
+
+.codContainer {
+  width: 20%;
+  float: left;
+  margin-left: 5%;
+}
+
+.orderTable {
+  border-spacing: 0;
+  border: none;
+  width: 100%;
+  margin-bottom: 60px;
+}
+
+.orderTable tr {
+  border: none;
+}
+
+.orderTable tr th,
+.orderTable tr td {
+  border-right: 1px solid #ebebeb;
+  border-bottom: 1px solid #ebebeb;
+  vertical-align: top;
+  padding: 5px;
+  font-size: 11px;
+}
+
+.orderTable tr th {
+  vertical-align: middle;
+}
+
+.orderTable tr td {
+  white-space: nowrap;
+}
+
+.orderTable tbody tr td:nth-child(n+3) {
+  text-align: left;
+  white-space: normal;
+}
+
+.orderTable thead tr:first-of-type th {
+  border-top: 1px solid #ebebeb;
+}
+
+.orderTable thead tr th:first-of-type {
+  border-left: 1px solid #ebebeb;
+}
+
+.orderTable thead tr:first-of-type th:first-of-type{
+  border-top-left-radius: 5px;
+}
+
+.orderTable thead tr:first-of-type th:last-of-type {
+  border-top-right-radius: 5px;
+}
+
+.orderTable tbody tr td:first-of-type {
+  border-left: 1px solid #ebebeb;
+}
+
+.orderTable tbody tr:last-of-type td:first-of-type {
+  border-bottom-left-radius: 5px;
+}
+
+.orderTable tbody tr:last-of-type td:last-of-type {
+  border-bottom-right-radius: 5px;
+}
+
+.orderTable p {
+  margin: 0;
+}
+
+.semiBold {
+  font-weight: 600;
+}
+
+.translucentBlack {
+  color: rgba(0,0,0,0.5);
+}
+
+.acknowledgementContainer {
+  text-align: right;
+  padding-right: 10px;
+}
+
+.acknowledgement {
+  width: 112px;
+  text-align: center;
+  display: inline-block;
+}
+
+.signature {
+  width: 112px;
+  height: 80px;
+  border-bottom: 2px dotted #000;
+  position: relative;
+}
+
+.signature::before {
+  content: '(';
+  position: absolute;
+  bottom: -2px;
+  left: -6px;
+}
+
+.signature::after {
+  content: ')';
+  position: absolute;
+  bottom: -2px;
+  right: -6px;
+}
+
+.contentCover {
+  background-color: #fff;
+  padding: 10px 20px 24px 20px;
+}
+
+.mainInfoCover {
+  width: 50%;
+  float: left;
+  max-height: 100px;
+}
+
+.mainInfoCover p {
+  margin: 0 0 5px 0;
+  color: #9b9b9b;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.mainInfoCover h2 {
+  margin: 0 0 -15px 0;
+  font-size: 28px;
+  font-weight: normal;
+}
+
+.mainInfoCover h6 {
+  font-size: 10px;
+  font-weight: normal;
+  line-height: 1em;
+  margin-top: -10px;
+}

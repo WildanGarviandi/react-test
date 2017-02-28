@@ -1,0 +1,150 @@
+.noMargin {
+  margin: 0 !important;
+}
+
+.noPadding {
+  padding: 0 !important;
+}
+
+.colMd1, .colMd2, .colMd3, .colMd4, .colMd5, .colMd6, .colMd7, .colMd8, .colMd9, .colMd10, .colMd11, .colMd12 {
+  padding-right: 15px;
+  padding-left: 15px; 
+  min-height: 1px;
+}
+
+.colMd1 {
+  width: 8.33333%;
+  float: left;
+}
+
+.colMd2 {
+  width: 16.66667%;
+  float: left;
+}
+
+.colMd3 {
+  width: 25%;
+  float: left;
+}
+
+.colMd4 {
+  width: 33.33333%;
+  float: left;
+}
+
+.colMd5 {
+  width: 41.66667%;
+  float: left;
+}
+
+.colMd6 {
+  width: 50%;
+  float: left;
+}
+
+.colMd8 {
+  width: 66.66666%;
+  float: left;
+}
+
+.colMd9 {
+  width: 75%;
+  float: left;
+}
+
+.colMd12 {
+  width: 100%;
+  float: left;
+}
+
+.orderTitle h4 {
+  font-weight: bold;
+}
+
+.orderTitle span {
+  font-weight: normal;
+}
+
+.orderTitle .bgGray {
+  font-size: 12px;
+  background-color: #d8d8d8;
+  color: #888;
+  padding: 5px 12px;
+  border-radius: 5px;
+  margin-left: 15px;
+}
+
+.bgWhite {
+  background-color: #fff;
+}
+
+.red {
+  color: red;
+}
+
+.btnEdit {
+  color: #fff !important;
+  padding: 5px 10px !important;
+  font-size: 12px !important;
+  border-radius: 5px !important;
+  border: 1px solid #d8d8d8 !important;
+}
+
+.btnCancel {
+  background-color: #fff !important;
+  color: #333 !important;
+  padding: 5px 10px !important;
+  font-size: 12px !important;
+  border-radius: 5px !important;
+  margin-left: 10px !important;
+  border: 1px solid #d8d8d8 !important;
+}
+
+p.title {
+  font-weight: bold;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #333;
+}
+
+.infoArea {
+  padding: 15px;
+  border-radius: 5px;
+  border: 1px solid #d8d8d8;
+}
+
+.infoArea a {
+  color: #aaa;
+  text-decoration: underline;
+}
+
+.infoArea a:hover {
+  color: #aaa;
+  text-decoration: underline;
+}
+
+.mB15 {
+  margin-bottom: 15px;
+}
+
+.mB30 {
+  margin-bottom: 30px;
+}
+
+.finalCost {
+  border-top: 1px solid #333;
+  padding-top: 10px;
+}
+
+.infoService {
+  text-align: center;
+  padding-bottom: 33px;
+}
+
+.infoService h2 {
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.infoService p {
+  text-transform: uppercase;
+}

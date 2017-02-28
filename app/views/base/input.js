@@ -1,6 +1,7 @@
 import React from 'react';
 import classNaming from 'classnames';
 import styles from '../../components/form.css';
+import NumberFormat from 'react-number-format';
 
 const CheckBox = React.createClass({
   getInitialState() {
@@ -52,7 +53,7 @@ const Input = React.createClass({
     }
   },
   render() {
-    let { base, notes, id, styles = {} } = this.props;
+    let { base, notes, id, styles = {}, placeholder } = this.props;
 
     var classes = classNaming(
       this.props.className,
@@ -62,7 +63,7 @@ const Input = React.createClass({
     return (
       <span className={styles.container}>
         <input {...base} className={classes} onChange={this.handleChange} onKeyDown={this.handleEnterKey} 
-          id={id} />
+          id={id} ref={id} />
         <span className={styles.notes}>{notes}</span>
       </span>
     );
@@ -104,8 +105,41 @@ const InputWithDefault = React.createClass({
     this.props.handleEnter();
   },
   render() {
-    return <Input {...this.props} base={{value: this.state.currentText, type: this.props.type, autoFocus: this.props.autoFocus}} onChange={this.setText} onEnterKeyPressed={this.handleSelect} />
+    const base = {
+      value: this.state.currentText,
+      type: this.props.type,
+      autoFocus: this.props.autoFocus,
+      placeholder: this.props.placeholder
+    }
+    return <Input {...this.props} base={base} onChange={this.setText} onEnterKeyPressed={this.handleSelect} />
   }
 });
 
-export {CheckBox, Input, InputWithDefault, InputWithState};
+const InputWithDefaultNumberFormatted = React.createClass({
+  getInitialState () {
+    return {
+      currentText: this.props.currentText || ''
+    }
+  },
+  setText (e, value) {
+    this.setState({currentText: parseFloat(value) || '0'})
+    if (this.props.onChange) {
+      this.props.onChange(value)
+    }
+  },
+  handleEnterKey (e) {
+    if (e.keyCode === 13 && this.props.handleEnter) {
+      this.props.handleEnter(this.props.currentText);
+    }
+  },
+  render () {
+    const {id} = this.props
+    const classes = classNaming(
+      this.props.className,
+      styles.input
+    )
+    return <NumberFormat {...this.props.format} onChange={this.setText} onKeyDown={this.handleEnterKey} className={classes} id={id} value={this.state.currentText} />
+  }
+})
+
+export {CheckBox, Input, InputWithDefault, InputWithState, InputWithDefaultNumberFormatted};

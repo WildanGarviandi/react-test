@@ -1,8 +1,19 @@
 .dropdownBase {
-  height: 20px;
-  padding: 0 10px;
-  margin-right: 5px;
+  height: 30px;
+  width: 72px;
+  margin-right: 0px;
   text-align: right;
+  border-radius: 4px;
+  background-color: #ffffff;
+  border: solid 1px #e8e8e8;
+  color: #000;
+  text-align: left;
+  font-size: 14px;
+  line-height: 30px;
+  display: inline-block;
+  cursor: pointer;
+  padding-left: 8px;
+  font-weight: normal;
 }
 
 .val {
@@ -60,11 +71,13 @@
   height: 100%;
   text-align: center;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .caret {
   position: relative;
-  top: 8px;
 }
 
 .typeBox {
@@ -80,4 +93,13 @@
 
   width: 80%;
   height: 28px;
+}
+
+.arrowDown {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  float: right;
+  position: relative;
+  top: 3px;
 }
