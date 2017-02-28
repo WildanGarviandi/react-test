@@ -225,10 +225,18 @@ table th:last-child{
 .cardValue {
   float: left;
   font-weight: bold;
-  font-size: 12px;
+  font-size: 14px;
   margin-top: 5px;
   color: #000000;
   opacity: 0.8;
+  text-align: left;
+}
+
+.cardValueDetails {
+  color: #000000;
+  opacity: 0.6;
+  font-weight: normal;
+  text-decoration: underline;
 }
 
 .cardValueStatus1 {

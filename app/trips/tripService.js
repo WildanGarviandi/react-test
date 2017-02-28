@@ -37,6 +37,7 @@ const initialStore = {
   filters: {},
   limit: 10,
   statusName: "SHOW ALL",
+  sortOptions: "Sort By",
   total: 0,
   trips: [],
   selectedAll: false,
@@ -247,6 +248,7 @@ export function UpdateFilters(filters) {
 export function SetDropDownFilter(keyword) {
   const filterNames = {
     "statusName": "status",
+    "sortOptions": "sortOptions"
   };
 
   return (selectedOption) => {
@@ -299,6 +301,19 @@ export function FetchList() {
     const {myTrips, userLogged} = getState().app;
     const {currentPage, limit, total, filters} = myTrips;
     const {token} = userLogged;
+    const sortFilter = [{
+      key: 1, sortBy: 'AssignedTime', sortCriteria: 'ASC'      
+    }, {
+      key: 2, sortBy: 'AssignedTime', sortCriteria: 'DESC'      
+    }];
+
+    if (filters.sortOptions) {
+      let sortKey = _.find(sortFilter, {'key': filters.sortOptions});
+      filters.sortBy = sortKey.sortBy;
+      filters.sortCriteria = sortKey.sortCriteria;
+      delete filters.sortOptions;
+    }
+
     const params = lodash.assign({}, filters, {
       limit: limit,
       offset: (currentPage - 1) * limit

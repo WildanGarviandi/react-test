@@ -189,7 +189,7 @@
 
 .tripDetails {
   width: 360px;
-  height: 160px;
+  height: 180px;
   border-radius: 4px;
   background-color: #ffffff;
   margin-left: 20px;
@@ -198,6 +198,7 @@
   color: #000000;
   margin-top: 15px;
   padding-right: 10px;
+  overflow-y: auto;
 }
 
 .tripDetailsLabel {

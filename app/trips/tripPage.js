@@ -93,13 +93,13 @@ const PanelDetails = React.createClass({
                 From
               </div>
               <div className={styles.tripDetailsValue}>
-                {expandedTrip.TripMerchant}
+                {expandedTrip.TripMerchantsAll}
               </div>
               <div className={styles.tripDetailsLabel}>
                 Destination
               </div>
               <div className={styles.tripDetailsValue}>
-                {expandedTrip.TripDropoff}
+                {expandedTrip.TripDropoffAll}
               </div>
               <div>
                 <div className={styles.tripAdditionalInfo}>
