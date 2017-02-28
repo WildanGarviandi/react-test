@@ -477,3 +477,9 @@
   height: 50px;
   cursor: pointer;
 }
+
+.deadlineValue {
+  margin-top: 10px;
+  font-weight: bold;
+  text-align: right;
+}

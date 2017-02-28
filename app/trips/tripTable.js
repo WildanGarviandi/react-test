@@ -310,8 +310,8 @@ function TripFilter() {
   )
 }
 
-const Deadline = React.createClass({
-  render: function() {
+export const Deadline = React.createClass({
+  render() {
     let format = {
       hour: 'hh',
       minute: 'mm',
@@ -320,33 +320,25 @@ const Deadline = React.createClass({
     let Duration = moment.duration(moment(this.props.deadline).diff(moment(new Date())));
     if (!this.props.deadline) {            
       return <span style={{color: 'black'}}>
-        <span>
           -
-        </span>
       </span>
     } else if (Duration._milliseconds > config.deadline.day) {            
       return <span style={{color: 'black'}}>
-        <span>
           {Duration.humanize()}
-        </span>
       </span>
     } else if (Duration._milliseconds < 0) {
       return <span style={{color: 'red'}}>
-        <span>
           Passed
-        </span>
       </span>
     } else {
       let normalDeadline = (Duration._milliseconds > config.deadline['3hours']) && (Duration._milliseconds < config.deadline.day);
       return <span style={{color: normalDeadline ? 'black' : 'red'}}>
-        <span>
           <Countdown targetDate={new Date(this.props.deadline)}
            startDelay={500}
            interval={1000}
            format={format}
            timeSeparator={':'}
            leadingZero={true} />
-        </span>
       </span>
     }
   }

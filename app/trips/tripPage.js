@@ -5,7 +5,7 @@ import {Page} from '../views/base';
 import {Pagination2} from '../components/pagination2';
 import {ButtonWithLoading} from '../components/button';
 import * as Form from '../components/form';
-import Table, {Filter} from './tripTable';
+import Table, {Filter, Deadline} from './tripTable';
 import * as TripService from './tripService';
 import driversFetch from '../modules/drivers/actions/driversFetch';
 import styles from './styles.css';
@@ -52,6 +52,9 @@ const TripOrders = React.createClass({
             </div>
             <div>
               {order.UserOrder.DropoffAddress && order.UserOrder.DropoffAddress.Address1}
+            </div>
+            <div className={styles.deadlineValue}>
+                Deadline: <Deadline deadline={order.DueTime} />                
             </div>
           </div>
         </div>
