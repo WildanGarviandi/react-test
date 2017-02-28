@@ -6,6 +6,7 @@ import App from './views/app';
 import ContainerQRCodePage from './views/container/qrcode';
 import DashboardPage from './views/dashboard';
 import LoginPage from './views/login';
+import RegisterPage from './views/register';
 import OrderDetailsPage from './views/order/orderDetails';
 import PickupFillPage from './views/order/pickupFill';
 import PickupOrdersPage from './views/order/pickupOrders';
@@ -88,6 +89,7 @@ export default (
       <Route path="/trips/:tripID/manifest" component={TripManifestPage} onEnter={requireAuth} />
       <Route path="/qrcode/:id" component={ContainerQRCodePage} />
       <Route path="/login" component={LoginPage} />
+      <Route path="/register" component={RegisterPage} />
       <Route path="/*" component={LoginPage} />
     </Route>
   </Router>
