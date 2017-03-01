@@ -325,7 +325,7 @@ export function FetchList() {
 
     dispatch({type: modalAction.BACKDROP_SHOW});
     dispatch({type: Constants.FETCHING_PAGE});
-    FetchGet('/trip/assigned', token, params).then((response) => {
+    FetchGet('/trip/unassigned', token, params).then((response) => {
       if(!response.ok) {
         return response.json().then(({error}) => {
           throw error;
@@ -533,6 +533,37 @@ export function AssignDriver(tripID, driverID) {
 
     dispatch({ type: Constants.TRIP_DRIVER_ASSIGN_START });
     FetchPost(`/trip/${tripID}/driver`, token, body).then((response) => {
+      dispatch({ type: Constants.TRIP_DRIVER_ASSIGN_END });
+      if(!response.ok) {
+        return response.json().then(({error}) => {
+          throw error;
+        });
+      }
+      window.location.reload(false); 
+    }).catch((e) => {
+      const message = (e && e.message) || "Failed to set driver";
+      dispatch(ModalActions.addMessage(message));
+    });
+  }
+}
+
+export function BulkAssignDriver(trips, driverID) {
+  return (dispatch, getState) => {
+    const {userLogged} = getState().app;
+    const {token} = userLogged;
+
+    let tripIDs = [];
+    trips.forEach(function(trip) {
+      tripIDs.push(trip.TripID);
+    })
+
+    const body = {
+      DriverID: driverID,
+      TripIDs: tripIDs
+    };
+
+    dispatch({ type: Constants.TRIP_DRIVER_ASSIGN_START });
+    FetchPost(`/trip/driver/bulk-assign`, token, body).then((response) => {
       dispatch({ type: Constants.TRIP_DRIVER_ASSIGN_END });
       if(!response.ok) {
         return response.json().then(({error}) => {

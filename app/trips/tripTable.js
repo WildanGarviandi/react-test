@@ -218,7 +218,8 @@ function TripParser(trip) {
   }
 
   function getDropoffCity(route) {
-    return route && route.UserOrder && route.UserOrder.DropoffAddress && route.UserOrder.DropoffAddress.City;        
+    return route && route.UserOrder && route.UserOrder.DropoffAddress && route.UserOrder.DropoffAddress.District &&
+      route.UserOrder.DropoffAddress.District.DistrictMaster && route.UserOrder.DropoffAddress.District.DistrictMaster.Name || false;        
   }
 
   const merchantNames = lodash
@@ -237,12 +238,14 @@ function TripParser(trip) {
   const uniqueDropoffNames = lodash
     .chain(trip.UserOrderRoutes)
     .map((route) => (getDropoffCity(route)))
+    .compact()
     .uniq()
     .value();
 
   const uniqueDropoffNamesAll = lodash
     .chain(trip.UserOrderRoutes)
     .map((route) => (getDropoffCity(route)))
+    .compact()
     .uniq()
     .value()
     .join(', ');
@@ -267,7 +270,6 @@ function TripParser(trip) {
     }
   }
 
-
   const routes = lodash.map(trip.UserOrderRoutes, (route) => {
     return route;
   });
@@ -277,6 +279,8 @@ function TripParser(trip) {
   });
 
   const Weight = GetWeightTrip(orders);
+  
+  const CODOrders = _.filter(orders, (order) => order.IsCOD === true);
 
   return lodash.assign({}, trip, {
     TripDriver: getDriverName(trip),
@@ -289,6 +293,10 @@ function TripParser(trip) {
     IsChecked: ('IsChecked' in trip) ? trip.IsChecked : false,
     Weight: Weight,
     TotalValue: _.reduce(orders, (total, order) => {
+      return total + order.TotalValue;
+    }, 0),
+    CODOrders: CODOrders.length,
+    CODTotalValue: _.reduce(CODOrders, (total, order) => {
       return total + order.TotalValue;
     }, 0)
   })
@@ -324,7 +332,7 @@ export const Deadline = React.createClass({
       </span>
     } else if (Duration._milliseconds > config.deadline.day) {            
       return <span style={{color: 'black'}}>
-          {Duration.humanize()}
+          {Duration.humanize()} remaining
       </span>
     } else if (Duration._milliseconds < 0) {
       return <span style={{color: 'red'}}>
@@ -333,12 +341,12 @@ export const Deadline = React.createClass({
     } else {
       let normalDeadline = (Duration._milliseconds > config.deadline['3hours']) && (Duration._milliseconds < config.deadline.day);
       return <span style={{color: normalDeadline ? 'black' : 'red'}}>
-          <Countdown targetDate={new Date(this.props.deadline)}
-           startDelay={500}
-           interval={1000}
-           format={format}
-           timeSeparator={':'}
-           leadingZero={true} />
+        <Countdown targetDate={new Date(this.props.deadline)}
+         startDelay={500}
+         interval={1000}
+         format={format}
+         timeSeparator={':'}
+         leadingZero={true} />
       </span>
     }
   }
@@ -372,9 +380,12 @@ const TripRow = React.createClass({
     const { trip, expandedTrip } = this.props;
     const { isEdit, isHover } = this.state;
     const parsedTrip = TripParser(trip);
-    const cardValueStatus = styles['cardValueStatus' + trip.OrderStatus.OrderStatusID];
+    let rowStyles = styles.tr + ' ' + styles.card  + (this.state.isHover && (' ' + styles.hovered));
+    if (expandedTrip.TripID === trip.TripID) {
+      rowStyles = styles.tr + ' ' + styles.card +  ' ' + styles.select;
+    }
     return (
-      <tr className={styles.tr + ' ' + styles.card + (trip.IsChecked && (' ' + styles.selected)) + (this.state.isHover && (' ' + styles.hovered))} 
+      <tr className={rowStyles} 
         onMouseEnter={this.onMouseOver} onMouseLeave={this.onMouseOut}>
         <td><CheckboxRow isChecked={trip.IsChecked} tripID={trip.TripID} /></td>
         <td onClick={()=>{this.expandTrip(trip)}}><div className={styles.cardSeparator} /></td>
@@ -386,7 +397,7 @@ const TripRow = React.createClass({
           </div>
           <br />
           <div className={styles.cardValue}>
-            {parsedTrip.TripMerchant[0]}
+            {parsedTrip.TripMerchant[0] || 'Unknown'}
             <ReactTooltip />
             <div data-tip={parsedTrip.TripMerchantsAll} className={styles.cardValueDetails}>
               {parsedTrip.TripMerchantDetails}
@@ -400,7 +411,7 @@ const TripRow = React.createClass({
           </div>
           <br />
           <div className={styles.cardValue}>
-            {parsedTrip.TripDropoff[0]}
+            {parsedTrip.TripDropoff[0] || 'Unknown'}
             <ReactTooltip />
             <div data-tip={parsedTrip.TripDropoffAll} className={styles.cardValueDetails}>
               {parsedTrip.TripDropoffDetails}

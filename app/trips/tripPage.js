@@ -54,7 +54,7 @@ const TripOrders = React.createClass({
               {order.UserOrder.DropoffAddress && order.UserOrder.DropoffAddress.Address1}
             </div>
             <div className={styles.deadlineValue}>
-                Deadline: <Deadline deadline={order.DueTime} />                
+                Deadline: <Deadline deadline={order.UserOrder.DueTime} />                
             </div>
           </div>
         </div>
@@ -74,7 +74,6 @@ const PanelDetails = React.createClass({
         base: stylesButton.greenButton2,
       }
     };
-    const tripStatusStyles = styles['tripStatus' + expandedTrip.OrderStatus.OrderStatusID];
     return (
       <div>
         { expandedTrip &&
@@ -96,13 +95,13 @@ const PanelDetails = React.createClass({
                 From
               </div>
               <div className={styles.tripDetailsValue}>
-                {expandedTrip.TripMerchantsAll}
+                {expandedTrip.TripMerchantsAll || 'Unknown'}
               </div>
               <div className={styles.tripDetailsLabel}>
                 Destination
               </div>
               <div className={styles.tripDetailsValue}>
-                {expandedTrip.TripDropoffAll}
+                {expandedTrip.TripDropoffAll || 'Unknown'}
               </div>
               <div>
                 <div className={styles.tripAdditionalInfo}>
@@ -118,7 +117,7 @@ const PanelDetails = React.createClass({
                     COD Order
                   </div>
                   <div className={styles.tripDetailsValue}>
-                    {expandedTrip.TotalCOD} items
+                    {expandedTrip.CODOrders} items
                   </div>
                 </div>
                 <div className={styles.tripAdditionalInfo}>
@@ -126,7 +125,7 @@ const PanelDetails = React.createClass({
                     COD Value
                   </div>
                   <div className={styles.tripDetailsValue}>
-                    <NumberFormat displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp '} value={expandedTrip.TotalCODValue} />
+                    <NumberFormat displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp '} value={expandedTrip.CODTotalValue} />
                   </div>
                 </div>
               </div>
@@ -192,7 +191,9 @@ const PanelDrivers = React.createClass({
   render() {
     const setDriverButton = {
       textBase: 'Assign Driver',
-      onClick: this.props.assignTrip.bind(null, this.props.expandedTrip.TripID, this.props.selectedDriver),
+      onClick: this.props.isExpandDriverBulk ? 
+        this.props.bulkAssignTrip.bind(null, this.props.selectedTrips, this.props.selectedDriver) :
+        this.props.assignTrip.bind(null, this.props.expandedTrip.TripID, this.props.selectedDriver),
       styles: {
         base: stylesButton.greenButton4,
       }
@@ -261,7 +262,7 @@ const TripPage = React.createClass({
     this.props.ExportTrip();
   },
   render() {
-    const {paginationState, PaginationAction, drivers, total, trips, expandedTrip, isExpandTrip, isExpandDriver, isExpandDriverBulk, AssignTrip, ShrinkTrip, ExpandDriver, selectedDriver, SetDriver} = this.props;
+    const {paginationState, PaginationAction, drivers, total, trips, expandedTrip, isExpandTrip, isExpandDriver, isExpandDriverBulk, AssignTrip, BulkAssignTrip, ShrinkTrip, ExpandDriver, selectedDriver, SetDriver} = this.props;
     return (
       <Page title="My Trips" count={{itemName: 'Items', done: 'All Done', value: total}}>
         <Pagination2 {...paginationState} {...PaginationAction} />
@@ -319,7 +320,7 @@ const TripPage = React.createClass({
               }
               {   
                 isExpandDriver &&
-                <PanelDrivers selectedTrips={this.state.selectedTrips} isExpandDriverBulk={isExpandDriverBulk} shrinkTrip={ShrinkTrip} expandedTrip={expandedTrip} assignTrip={AssignTrip} selectedDriver={selectedDriver} setDriver={SetDriver} drivers={drivers} />
+                <PanelDrivers selectedTrips={this.state.selectedTrips} isExpandDriverBulk={isExpandDriverBulk} shrinkTrip={ShrinkTrip} expandedTrip={expandedTrip} assignTrip={AssignTrip} bulkAssignTrip={BulkAssignTrip} selectedDriver={selectedDriver} setDriver={SetDriver} drivers={drivers} />
               }
             </div>
           }
@@ -385,6 +386,9 @@ function DispatchToTripsPage(dispatch) {
     },
     AssignTrip: (trips, driverID) => {
       dispatch(TripService.ReassignDriver(trips, driverID));
+    },
+    BulkAssignTrip: (trips, driverID) => {
+      dispatch(TripService.BulkAssignDriver(trips, driverID));
     },
     ExportTrip: () => {
       dispatch(TripService.ExportTrip());
