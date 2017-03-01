@@ -278,7 +278,7 @@ export function UpdateOrder (id, order) {
     const {token} = userLogged;
 
     const postBody = {
-      updateData: order,
+      UpdateData: order,
       scanReweight: 1
     }
 
