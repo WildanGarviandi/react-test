@@ -190,7 +190,7 @@ const DashboardContainer = React.createClass({
   },
   componentWillMount() {
     this.props.initialLoad();
-    this.checkAuth();
+    //this.checkAuth();
   },
   toggleCompact() {
     this.setState({isCompact: !this.state.isCompact});

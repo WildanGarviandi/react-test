@@ -36,5 +36,10 @@ export default (url, token, query = {}, isHubAPI = false, isPublicAPI = false) =
   if (isPublicAPI) {
     baseUrl = config.baseUrlPublic;
   }
-  return fetch(baseUrl + url + UrlParams(query), GetParams(token));
+  return fetch(baseUrl + url + UrlParams(query), GetParams(token)).then(function(response) {
+    if (response.status === 403) {
+      window.location.href = '/login';
+    }
+    return response;
+  });
 }
