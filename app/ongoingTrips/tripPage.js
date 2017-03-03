@@ -211,6 +211,18 @@ const Drivers = React.createClass({
 });
 
 const PanelDrivers = React.createClass({
+  getInitialState() {
+    return ({driverList: this.props.drivers, searchValue: ''})
+  },
+  searchDriver(e) {
+    this.setState({searchValue: e.target.value});
+    let driverList = lodash.filter(this.props.drivers, function(driver) { 
+      let driverName = driver.FirstName + ' ' + driver.LastName;
+      let searchValue = e.target.value;
+      return driverName.toLowerCase().includes(searchValue);
+    });
+    this.setState({driverList: driverList});
+  },
   render() {
     const setDriverButton = {
       textBase: 'Assign Driver',
@@ -239,10 +251,10 @@ const PanelDrivers = React.createClass({
           </div>
         }
         <div className={styles.panelDriverSearch}>
-          <input className={styles.inputDriverSearch} onChange={this.changeMark} placeholder={'Search Driver...'} />
+          <input className={styles.inputDriverSearch} onChange={this.searchDriver} placeholder={'Search Driver...'} />
         </div>
         <div className={styles.panelDriverList}>
-          <Drivers selectedDriver={this.props.selectedDriver} setDriver={this.props.setDriver} drivers={this.props.drivers} />
+          <Drivers selectedDriver={this.props.selectedDriver} setDriver={this.props.setDriver} drivers={this.state.driverList} />
         </div>
         <div className={styles.setDriverButton}>
           <ButtonWithLoading {...setDriverButton} />
@@ -254,7 +266,7 @@ const PanelDrivers = React.createClass({
 
 const TripPage = React.createClass({
   getInitialState() {
-    return ({driverID: null, trips: [], selectedTrips: [], isSuccessAssign: false})
+    return ({driverID: null, trips: [], selectedTrips: [], isSuccessAssign: false});
   },
   componentWillMount() {
     this.props.ShrinkTrip();
@@ -339,11 +351,24 @@ const TripPage = React.createClass({
               <Table trips={trips} />
               {   
                 isExpandTrip &&
-                <PanelDetails isExpandDriver={isExpandDriver} expandedTrip={expandedTrip} shrinkTrip={ShrinkTrip} expandDriver={ExpandDriver} />
+                <PanelDetails 
+                  isExpandDriver={isExpandDriver} 
+                  expandedTrip={expandedTrip} 
+                  shrinkTrip={ShrinkTrip} 
+                  expandDriver={ExpandDriver} />
               }
               {   
                 isExpandDriver &&
-                <PanelDrivers bulkAssignTrip={BulkAssignTrip} selectedTrips={this.state.selectedTrips} isExpandDriverBulk={isExpandDriverBulk} shrinkTrip={ShrinkTrip} expandedTrip={expandedTrip} assignTrip={AssignTrip} selectedDriver={selectedDriver} setDriver={SetDriver} drivers={drivers} />
+                <PanelDrivers 
+                  bulkAssignTrip={BulkAssignTrip} 
+                  selectedTrips={this.state.selectedTrips} 
+                  isExpandDriverBulk={isExpandDriverBulk} 
+                  shrinkTrip={ShrinkTrip} 
+                  expandedTrip={expandedTrip} 
+                  assignTrip={AssignTrip} 
+                  selectedDriver={selectedDriver} 
+                  setDriver={SetDriver} 
+                  drivers={drivers} />
               }
             </div>
           }
