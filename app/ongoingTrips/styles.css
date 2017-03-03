@@ -189,7 +189,7 @@
 
 .tripDetails {
   width: 360px;
-  height: 160px;
+  height: 180px;
   border-radius: 4px;
   background-color: #ffffff;
   margin-left: 20px;
@@ -198,6 +198,7 @@
   color: #000000;
   margin-top: 15px;
   padding-right: 10px;
+  overflow-y: auto;
 }
 
 .tripDetailsLabel {
@@ -214,7 +215,7 @@
 
 .tripDetailsOrder {
   width: 360px;
-  max-height: 180px;
+  max-height: 160px;
   overflow-y: scroll; 
   border-radius: 4px;
   border: solid 1px #e8e8e8;
@@ -475,4 +476,10 @@
   width: 100%;
   height: 50px;
   cursor: pointer;
+}
+
+.deadlineValue {
+  margin-top: 10px;
+  font-weight: bold;
+  text-align: right;
 }

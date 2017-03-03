@@ -15,6 +15,8 @@ import {FilterTop, FilterTop2, FilterText} from '../components/form';
 import NumberFormat from 'react-number-format';
 import stylesButton from '../components/button.css';
 import {ButtonWithLoading} from '../components/button';
+import config from '../config/configValues.json';
+import Countdown from 'react-cntdwn';
 
 function StoreBuilder(keyword) {
   return (store) => {
@@ -60,8 +62,15 @@ function DispatchDateTime(dispatch) {
 function DropdownStoreBuilder(name) {
   return (store) => {
 
+    const sortOptions = [{
+      key: 1, value: 'Deadline (newest)', 
+    }, {
+      key: 2, value: 'Deadline (oldest)',
+    }];
+
     const options = {
       "statusName": OrderStatusSelector.GetList(store),
+      "sortOptions": sortOptions
     }
 
     return {
@@ -140,6 +149,7 @@ const CheckboxHeader = connect(CheckboxHeaderStore, CheckboxHeaderDispatch)(Chec
 const CheckboxRow = connect(undefined, CheckboxDispatch)(CheckboxCell);
 const ContainerNumberFilter = ConnectBuilder('containerNumber')(Table.InputCell);
 const StatusFilter = ConnectDropdownBuilder('statusName')(FilterTop);
+const SortFilter = ConnectDropdownBuilder('sortOptions')(FilterTop);
 const MerchantFilter = ConnectBuilder('merchant')(Table.InputCell);
 const PickupFilter = ConnectBuilder('pickup')(Table.InputCell);
 const DropoffFilter = ConnectBuilder('dropoff')(Table.InputCell);
@@ -159,7 +169,7 @@ export const Filter = React.createClass({
     return (
       <div>
         <CheckboxHeader />
-        <StatusFilter />
+        <SortFilter />
         <div className={styles.reassignBulkButton}>
             <ButtonWithLoading {...reassignTripButton} />
         </div>
@@ -242,6 +252,8 @@ function TripParser(trip) {
 
   const Weight = GetWeightTrip(orders);
 
+  const CODOrders = _.filter(orders, (order) => order.IsCOD === true);
+
   return lodash.assign({}, trip, {
     TripDriver: getDriverName(trip),
     TripMerchant: merchantNames,
@@ -249,6 +261,10 @@ function TripParser(trip) {
     IsChecked: ('IsChecked' in trip) ? trip.IsChecked : false,
     Weight: Weight,
     TotalValue: _.reduce(orders, (total, order) => {
+      return total + order.TotalValue;
+    }, 0),
+    CODOrders: CODOrders.length,
+    CODTotalValue: _.reduce(CODOrders, (total, order) => {
       return total + order.TotalValue;
     }, 0)
   })
@@ -269,6 +285,40 @@ function TripFilter() {
     </tr>
   )
 }
+
+export const Deadline = React.createClass({
+  render: function() {
+    let format = {
+      hour: 'hh',
+      minute: 'mm',
+      second: 'ss'
+    };
+    let Duration = moment.duration(moment(this.props.deadline).diff(moment(new Date())));
+    if (!this.props.deadline) {            
+      return <span style={{color: 'black'}}>
+          -
+      </span>
+    } else if (Duration._milliseconds > config.deadline.day) {            
+      return <span style={{color: 'black'}}>
+          {Duration.humanize()} remaining
+      </span>
+    } else if (Duration._milliseconds < 0) {
+      return <span style={{color: 'red'}}>
+          Passed
+      </span>
+    } else {
+      let normalDeadline = (Duration._milliseconds > config.deadline['3hours']) && (Duration._milliseconds < config.deadline.day);
+      return <span style={{color: normalDeadline ? 'black' : 'red'}}>
+          <Countdown targetDate={new Date(this.props.deadline)}
+           startDelay={500}
+           interval={1000}
+           format={format}
+           timeSeparator={':'}
+           leadingZero={true} />
+      </span>
+    }
+  }
+});
 
 const TripRow = React.createClass({
   getInitialState() {
@@ -299,9 +349,12 @@ const TripRow = React.createClass({
     const { isEdit, isHover } = this.state;
     const parsedTrip = TripParser(trip);
     const cardValueStatus = styles['cardValueStatus' + trip.OrderStatus.OrderStatusID];
+    let rowStyles = styles.tr + ' ' + styles.card  + (this.state.isHover && (' ' + styles.hovered));
+    if (expandedTrip.TripID === trip.TripID) {
+      rowStyles = styles.tr + ' ' + styles.card +  ' ' + styles.select;
+    }
     return (
-      <tr className={styles.tr + ' ' + styles.card + (trip.IsChecked && (' ' + styles.selected)) + (this.state.isHover && (' ' + styles.hovered))} 
-        onMouseEnter={this.onMouseOver} onMouseLeave={this.onMouseOut}>
+      <tr className={rowStyles} onMouseEnter={this.onMouseOver} onMouseLeave={this.onMouseOut}>
         <td><CheckboxRow isChecked={trip.IsChecked} tripID={trip.TripID} /></td>
         <td onClick={()=>{this.expandTrip(trip)}}><div className={styles.cardSeparator} /></td>
         <td onClick={()=>{this.expandTrip(trip)}} className={styles.tripIDColumn}>{`TRIP- ${trip.TripID}`}</td>
@@ -318,7 +371,7 @@ const TripRow = React.createClass({
             <div className={styles.cardValueDriver}>
               <div className={styles.vehicleIcon}>
                 <img className={styles.driverLoadImage}
-                  src={trip.Driver && trip.Driver.Vehicle && driver.Vehicle.VehicleID === 1 ? 
+                  src={trip.Driver && trip.Driver.Vehicle && trip.Driver.Vehicle.Name === 'Motorcycle' ? 
                   "/img/icon-vehicle-motor.png" : "/img/icon-vehicle-van.png"} />
               </div>
               <div className={styles.cardLabel}>
@@ -373,6 +426,7 @@ const TripRow = React.createClass({
           </div>
           <br />
           <div className={styles.cardValue}>
+              <Deadline deadline={trip.AssignedTime} />
           </div>
         </td>
       </tr>

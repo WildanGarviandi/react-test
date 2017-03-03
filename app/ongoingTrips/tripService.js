@@ -37,6 +37,7 @@ const initialStore = {
   filters: {},
   limit: 10,
   statusName: "SHOW ALL",
+  sortOptions: "Sort By",
   total: 0,
   trips: [],
   selectedAll: false,
@@ -247,6 +248,7 @@ export function UpdateFilters(filters) {
 export function SetDropDownFilter(keyword) {
   const filterNames = {
     "statusName": "status",
+    "sortOptions": "sortOptions"
   };
 
   return (selectedOption) => {
@@ -299,6 +301,20 @@ export function FetchList() {
     const {myOngoingTrips, userLogged} = getState().app;
     const {currentPage, limit, total, filters} = myOngoingTrips;
     const {token} = userLogged;
+
+    const sortFilter = [{
+      key: 1, sortBy: 'AssignedTime', sortCriteria: 'ASC'      
+    }, {
+      key: 2, sortBy: 'AssignedTime', sortCriteria: 'DESC'      
+    }];
+
+    if (filters.sortOptions) {
+      let sortKey = _.find(sortFilter, {'key': filters.sortOptions});
+      filters.sortBy = sortKey.sortBy;
+      filters.sortCriteria = sortKey.sortCriteria;
+      delete filters.sortOptions;
+    }
+
     const params = lodash.assign({}, filters, {
       limit: limit,
       offset: (currentPage - 1) * limit
@@ -310,7 +326,7 @@ export function FetchList() {
 
     dispatch({type: modalAction.BACKDROP_SHOW});
     dispatch({type: Constants.FETCHING_PAGE});
-    FetchGet('/trip/assigned', token, params).then((response) => {
+    FetchGet('/trip/ongoing', token, params).then((response) => {
       if(!response.ok) {
         return response.json().then(({error}) => {
           throw error;
@@ -542,5 +558,36 @@ export function SetDriver(driverID) {
 export function ResetDriver() {
   return {
     type: Constants.RESET_DRIVER
+  }
+}
+
+export function BulkAssignDriver(trips, driverID) {
+  return (dispatch, getState) => {
+    const {userLogged} = getState().app;
+    const {token} = userLogged;
+
+    let tripIDs = [];
+    trips.forEach(function(trip) {
+      tripIDs.push(trip.TripID);
+    })
+
+    const body = {
+      DriverID: driverID,
+      TripIDs: tripIDs
+    };
+
+    dispatch({ type: Constants.TRIP_DRIVER_ASSIGN_START });
+    FetchPost(`/trip/driver/bulk-assign`, token, body).then((response) => {
+      dispatch({ type: Constants.TRIP_DRIVER_ASSIGN_END });
+      if(!response.ok) {
+        return response.json().then(({error}) => {
+          throw error;
+        });
+      }
+      window.location.reload(false); 
+    }).catch((e) => {
+      const message = (e && e.message) || "Failed to set driver";
+      dispatch(ModalActions.addMessage(message));
+    });
   }
 }
