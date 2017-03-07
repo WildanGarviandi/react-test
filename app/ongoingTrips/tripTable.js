@@ -458,7 +458,7 @@ const TripRow = React.createClass({
           </div>
           <br />
           <div className={styles.cardValue}>
-              <Deadline deadline={trip.AssignedTime} />
+              <Deadline deadline={trip.Deadline} />
           </div>
         </td>
       </tr>
