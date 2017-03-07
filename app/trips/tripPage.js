@@ -358,7 +358,7 @@ const TripPage = React.createClass({
                     <h2 className={styles.modalTitle}>Success</h2>
                     <div className={styles.successContent + ' ' + styles.ordersContentEmpty}>
                       <img className={styles.successIcon} src={"/img/icon-success.png"} />
-                      <div className={styles.mediumText}>You have successfully re-assigned this trip</div>
+                      <div className={styles.mediumText}>You have successfully assigned this trip</div>
                     </div>
                   </div>
                   <div className={styles.modalFooter}>
