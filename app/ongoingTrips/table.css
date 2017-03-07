@@ -241,7 +241,7 @@ table th:last-child{
   opacity: 0.8;
 }
 
-.cardValueStatus1 {
+.cardValueStatus2 {
   font-weight: bold;
   font-size: 16px;
   margin-top: 5px;
@@ -252,7 +252,7 @@ table th:last-child{
   text-align: center;
 }
 
-.cardValueStatus2, .cardValueStatus3, .cardValueStatus4 {
+.cardValueStatus3 {
   font-weight: bold;
   font-size: 16px;
   margin-top: 5px;
@@ -263,7 +263,7 @@ table th:last-child{
   text-align: center;
 }
 
-.cardValueStatus5 {
+.cardValueStatus4 {
   font-weight: bold;
   font-size: 16px;
   margin-top: 5px;

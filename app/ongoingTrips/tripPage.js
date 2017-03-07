@@ -118,13 +118,13 @@ const PanelDetails = React.createClass({
                 From
               </div>
               <div className={styles.tripDetailsValue}>
-                {expandedTrip.TripMerchant}
+                {expandedTrip.TripMerchantsAll || 'Unknown'}
               </div>
               <div className={styles.tripDetailsLabel}>
                 Destination
               </div>
               <div className={styles.tripDetailsValue}>
-                {expandedTrip.TripDropoff}
+                {expandedTrip.TripDropoffAll || 'Unknown'}
               </div>
               <div>
                 <div className={styles.tripAdditionalInfo}>

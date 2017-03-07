@@ -218,10 +218,17 @@ function TripParser(trip) {
   }
 
   function getDropoffCity(route) {
-    return route && route.UserOrder && route.UserOrder.DropoffAddress && route.UserOrder.DropoffAddress.City;        
+    return route && route.UserOrder && route.UserOrder.DropoffAddress && route.UserOrder.DropoffAddress.District
+      && route.UserOrder.DropoffAddress.District.DistrictMaster && route.UserOrder.DropoffAddress.District.DistrictMaster.Name;        
   }
 
   const merchantNames = lodash
+    .chain(trip.UserOrderRoutes)
+    .map((route) => (getMerchantName(route)))
+    .uniq()
+    .value();
+
+  const merchantNamesAll = lodash
     .chain(trip.UserOrderRoutes)
     .map((route) => (getMerchantName(route)))
     .uniq()
@@ -231,16 +238,35 @@ function TripParser(trip) {
   const uniqueDropoffNames = lodash
     .chain(trip.UserOrderRoutes)
     .map((route) => (getDropoffCity(route)))
+    .compact()
     .uniq()
     .value();
 
-  function getDropoffNames(dropoffNames) {
-    if (dropoffNames.length === 1) {
-      return dropoffNames[0];
-    } else if (dropoffNames.length === 2) {
-      return dropoffNames[0] + ' and ' + dropoffNames[1];
+  const uniqueDropoffNamesAll = lodash
+    .chain(trip.UserOrderRoutes)
+    .map((route) => (getDropoffCity(route)))
+    .compact()
+    .uniq()
+    .value()
+    .join(', ');
+
+  function getMerchantDetails(merchantNames) {
+    if (merchantNames.length === 0 || merchantNames.length === 1) {
+      return '';
+    } else if (merchantNames.length === 2) {
+      return ' +1 other';
     } else {
-      return dropoffNames[0] + ' and ' + (dropoffNames.length - 1) + ' other cities';
+      return ' +' + (merchantNames.length - 1) + ' others';
+    }
+  }
+
+  function getDropoffDetails(dropoffNames) {
+    if (dropoffNames.length === 0 || dropoffNames.length === 1) {
+      return '';
+    } else if (dropoffNames.length === 2) {
+      return ' +1 other';
+    } else {
+      return ' +' + (dropoffNames.length - 1) + ' others';
     }
   }
 
@@ -253,13 +279,17 @@ function TripParser(trip) {
   });
 
   const Weight = GetWeightTrip(orders);
-
+  
   const CODOrders = _.filter(orders, (order) => order.IsCOD === true);
 
   return lodash.assign({}, trip, {
     TripDriver: getDriverName(trip),
     TripMerchant: merchantNames,
-    TripDropoff: getDropoffNames(uniqueDropoffNames),
+    TripMerchantsAll: merchantNamesAll,
+    TripMerchantDetails: getMerchantDetails(merchantNames),
+    TripDropoff: uniqueDropoffNames,
+    TripDropoffAll: uniqueDropoffNamesAll,
+    TripDropoffDetails: getDropoffDetails(uniqueDropoffNames),
     IsChecked: ('IsChecked' in trip) ? trip.IsChecked : false,
     Weight: Weight,
     TotalValue: _.reduce(orders, (total, order) => {
