@@ -532,6 +532,7 @@ export function AssignDriver(tripID, driverID) {
     };
 
     dispatch({ type: Constants.TRIP_DRIVER_ASSIGN_START });
+    dispatch({type: modalAction.BACKDROP_SHOW});
     FetchPost(`/trip/${tripID}/driver`, token, body).then((response) => {
       dispatch({ type: Constants.TRIP_DRIVER_ASSIGN_END });
       if(!response.ok) {
@@ -539,10 +540,15 @@ export function AssignDriver(tripID, driverID) {
           throw error;
         });
       }
-      window.location.reload(false); 
+      dispatch({ type: Constants.SHOW_SUCCESS_ASSIGN });
+      dispatch(ResetDriver());
+      dispatch(ShrinkTrip());
+      dispatch(FetchList());
+      dispatch({type: modalAction.BACKDROP_HIDE});
     }).catch((e) => {
       const message = (e && e.message) || "Failed to set driver";
       dispatch(ModalActions.addMessage(message));
+      dispatch({type: modalAction.BACKDROP_HIDE});
     });
   }
 }

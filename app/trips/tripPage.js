@@ -410,7 +410,7 @@ function DispatchToTripsPage(dispatch) {
       dispatch(driversFetch(fleetID));
     },
     AssignTrip: (trips, driverID) => {
-      dispatch(TripService.ReassignDriver(trips, driverID));
+      dispatch(TripService.AssignDriver(trips, driverID));
     },
     BulkAssignTrip: (trips, driverID) => {
       dispatch(TripService.BulkAssignDriver(trips, driverID));
