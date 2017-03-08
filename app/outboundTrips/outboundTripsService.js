@@ -147,7 +147,7 @@ export function Reducer(state = initialState, action) {
         },
         currentPage: 1,
         filterStatus: 'SHOW ALL',
-        limit: 100,
+        limit: 25,
       });
     }
 
@@ -304,7 +304,7 @@ export function Reducer(state = initialState, action) {
         }, 
         currentPage: 1,
         filterStatus: 'SHOW ALL',
-        limit: 100,
+        limit: 25,
       });
     }
 

@@ -114,7 +114,7 @@ export function Reducer(state = initialState, action) {
         filters: {}, 
         currentPage: 1,
         city: 'All',
-        limit: 50,
+        limit: 25,
       });
     }
 

@@ -60,7 +60,7 @@ export default function Reducer(store = initialStore, action) {
                 filters: {}, 
                 currentPage: 1,
                 filterStatus: "SHOW ALL",
-                limit: 100,
+                limit: 25,
             });
         }
 
