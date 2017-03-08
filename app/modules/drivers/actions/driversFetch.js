@@ -12,7 +12,7 @@ function FetchDrivers(fleetID, isWeighting) {
     }
 
     let params = {
-      limit: 'all'
+      limit: 'all',
       isWeighting: isWeighting
     }
 
