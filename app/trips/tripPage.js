@@ -289,7 +289,7 @@ const TripPage = React.createClass({
             <Filter expandDriver={this.expandBulkAssign} />
           </div>
           {
-            this.props.isFetching &&
+            (this.props.isFetching || this.props.isLoadingDriver) &&
             <div>
               <div style={{clear: 'both'}} />
               <div style={{textAlign:'center'}}>
@@ -330,7 +330,7 @@ const TripPage = React.createClass({
             </div>   
           }
           {
-            !this.props.isFetching && this.props.trips.length > 0 &&
+            !this.props.isFetching && !this.props.isLoadingDriver && this.props.trips.length > 0 &&
             <div>
               <Table trips={trips} />
               {   
@@ -387,6 +387,7 @@ function StoreToTripsPage(store) {
   const userLogged = store.app.userLogged;  
   const driversStore = store.app.driversStore;
   const driverList = driversStore.driverList;
+  const isLoadingDriver = driverList.isLoading;
   const fleetDrivers = driversStore.fleetDrivers;
   const drivers = fleetDrivers.driverList;
   return {
@@ -404,7 +405,8 @@ function StoreToTripsPage(store) {
     isExpandDriverBulk,
     total,
     selectedDriver,
-    isSuccessAssign
+    isSuccessAssign,
+    isLoadingDriver
   }
 }
 
