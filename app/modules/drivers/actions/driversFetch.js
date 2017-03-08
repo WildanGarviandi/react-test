@@ -2,7 +2,7 @@ import * as actionTypes from '../constants';
 import fetchGet from '../../fetch/get';
 import ModalActions from '../../modals/actions';
 
-function FetchDrivers(fleetID) {
+function FetchDrivers(fleetID, isWeighting) {
   return (dispatch, getState) => {
     const {driversStore, userLogged} = getState().app;
     const {token} = userLogged;
@@ -13,6 +13,7 @@ function FetchDrivers(fleetID) {
 
     let params = {
       limit: 'all'
+      isWeighting: isWeighting
     }
 
     dispatch({ type: actionTypes.DRIVERS_FETCH_START, fleetID });
