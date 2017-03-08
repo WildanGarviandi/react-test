@@ -157,6 +157,38 @@
   margin-top: 15px;
 }
 
+.tripDriverSelected {
+  width: 360px;
+  height: 60px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 5px;
+  margin-top: 15px;
+  border: 2px solid #4cc38e;
+}
+
+.tripDriverSelectedExceed {
+  width: 360px;
+  height: 60px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 5px;
+  margin-top: 15px;
+  border: 2px solid #ff0000;
+}
+
 .tripValue {
   width: 360px;
   height: 40px;
