@@ -414,7 +414,7 @@ function DispatchToTripsPage(dispatch) {
       dispatch(TripService.FetchList());
     },
     FetchDrivers: (fleetID) => {
-      dispatch(driversFetch(fleetID));
+      dispatch(driversFetch(fleetID, true));
     },
     AssignTrip: (trips, driverID) => {
       dispatch(TripService.AssignDriver(trips, driverID));
