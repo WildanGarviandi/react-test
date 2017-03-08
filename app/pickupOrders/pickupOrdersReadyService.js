@@ -45,7 +45,7 @@ const initialState = {
   city: 'All',
   listType: 'All',
   isFetching: false,
-  limit: 50,
+  limit: 25,
   trips: [],
   total: 0,
   fixTotal: 0,

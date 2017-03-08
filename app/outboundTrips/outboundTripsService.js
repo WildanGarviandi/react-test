@@ -75,7 +75,7 @@ const initialState = {
   },
   filtersStatus: 'SHOW ALL',
   isDetailFetching: false,
-  limit: 100,
+  limit: 25,
   total: 0,
   trips: [],
   nearbyFleets: {

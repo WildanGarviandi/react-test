@@ -30,7 +30,7 @@ const Constants = {
 const initialState = {
   currentPage: 1,
   isFetching: true,
-  limit: 50,
+  limit: 25,
   orders: [],
   total: 0,
   isEditing: false,

@@ -18,7 +18,7 @@ const Constants = {
 const initialStore = {
     currentPage: 1,
     filters: {},
-    limit: 100,
+    limit: 25,
     statusName: "SHOW ALL",
     total: 0,
     tripType: "Show All",

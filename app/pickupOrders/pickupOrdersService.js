@@ -31,7 +31,7 @@ const initialState = {
   filters: {},
   city: 'All',
   isFetching: false,
-  limit: 50,
+  limit: 25,
   orders: [],
   total: 0,
   fixTotal : 0,
