@@ -159,9 +159,16 @@ const PanelDetails = React.createClass({
 const Drivers = React.createClass({
   render: function() {
     var driverComponents = this.props.drivers.map(function(driver, idx) {
+      const isSelected = this.props.selectedDriver === driver.UserID;
+      const totalWeight = parseFloat(driver.TotalCurrentWeight) + parseFloat(this.props.selectedTrip.Weight);
+      const driverWeight = isSelected ? totalWeight : parseFloat(driver.TotalCurrentWeight);
+      let tripDriverStyle = isSelected ? styles.tripDriverSelected : styles.tripDriver;
+      if (isSelected && (totalWeight > driver.AvailableWeight)) {
+        tripDriverStyle = styles.tripDriverSelectedExceed;
+      }
       return (
         <div className={styles.mainDriver} key={idx}>
-          <div className={styles.tripDriver} onClick={()=>{this.props.setDriver(driver.UserID)}}>
+          <div className={tripDriverStyle} onClick={()=>{this.props.setDriver(driver.UserID)}}>
             <div className={styles.driverInput}>
               <img src={this.props.selectedDriver === driver.UserID ? "/img/icon-radio-on.png" : "/img/icon-radio-off.png"} />
             </div>
@@ -176,7 +183,7 @@ const Drivers = React.createClass({
             </div>
             <div className={styles.driverDetails}>
               <span className={styles.vendorLoad}>
-                Available Weight 12 / 25
+                Available Weight {driverWeight} / {driver.AvailableWeight}
               </span>
             </div>
           </div>
@@ -231,7 +238,7 @@ const PanelDrivers = React.createClass({
           <input className={styles.inputDriverSearch} onChange={this.searchDriver} placeholder={'Search Driver...'} />
         </div>
         <div className={styles.panelDriverList}>
-          <Drivers selectedDriver={this.props.selectedDriver} setDriver={this.props.setDriver} drivers={this.state.driverList} />
+          <Drivers selectedDriver={this.props.selectedDriver} selectedTrip={this.props.expandedTrip} setDriver={this.props.setDriver} drivers={this.state.driverList} />
         </div>
         <div className={styles.setDriverButton}>
           <ButtonWithLoading {...setDriverButton} />
