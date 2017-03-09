@@ -26,5 +26,6 @@
     }],
     "volumetricFactor": 6000,
     "outboundDeadlineFromCreated": 3,
-    "defaultMainPage": "/orders/pickup"
+    "defaultMainPage": "/orders/pickup",
+    "defaultMainPageTMS": "/mytrips"
 }

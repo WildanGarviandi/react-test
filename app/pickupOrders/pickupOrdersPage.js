@@ -32,7 +32,7 @@ const PickupOrdersPage = React.createClass({
     //this.props.CheckAutoGroup();
     //this.checkAutoGroup();
     if (!this.props.userLogged.hubID) {
-      window.location.href ='/myorders/open';
+      window.location.href = config.defaultMainPageTMS;
     }
   },
   checkAutoGroup() {
