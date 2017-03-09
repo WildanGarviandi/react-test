@@ -22,6 +22,7 @@ import orderDetails from './modules/orders/reducers/details';
 // import outboundTrips from './modules/trips/reducers/outbound';
 import hubs from './modules/hubs/reducers';
 import myTrips from './trips/tripService';
+import myOngoingTrips from './ongoingTrips/tripService';
 import myOrders from './orders/orderService';
 import myContacts from './contacts/contactService';
 import stateList from './states/stateService';
@@ -61,6 +62,7 @@ export default combineReducers({
   inboundOrders,
   updateOrders,
   myTrips,
+  myOngoingTrips,
   myOrders,
   myContacts,
   stateList,

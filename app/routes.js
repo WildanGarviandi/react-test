@@ -34,6 +34,7 @@ import MyOutboundTripsPage from './outboundTrips/outboundTripsPage';
 import OutboundTripsManifestPage from './outboundTrips/outboundTripsManifest';
 import OutboundTripsCoverManifestPage from './outboundTrips/outboundTripsCoverManifest';
 import {modalAction} from './modules/modals/constants';
+import MyOngoingTripsPage from './ongoingTrips/tripPage';
 
 function requireAuth(nextState, replace, callback) {
   store.dispatch({type: modalAction.BACKDROP_SHOW});
@@ -83,6 +84,7 @@ export default (
         <Route path="/trips/:tripID/fillReceived" component={ReceivedFillPage} onEnter={requireHubAuth}/>
         <Route path="/trips/:tripID/fillPickup" component={PickupFillPage} onEnter={requireHubAuth}/>
         <Route path="/mytrips" component={MyAssignedTripsPage} onEnter={requireAuth} />
+        <Route path="/myongoingtrips" component={MyOngoingTripsPage} onEnter={requireAuth} />
         <Route path="/myorders/open" component={()=>(<MyOrdersPage statusFilter="open" />)} onEnter={requireAuth} />
         <Route path="/myorders/ongoing" component={()=>(<MyOrdersPage statusFilter="ongoing" />)} onEnter={requireAuth} />
         <Route path="/myorders/completed" component={()=>(<MyOrdersPage statusFilter="completed" />)} onEnter={requireAuth} />
