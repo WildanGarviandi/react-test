@@ -124,6 +124,7 @@ function DateRangeDispatch(keyword) {
         }
     }
 }
+
 function ConnectBuilder(keyword) {
     return connect(StoreBuilder(keyword), DispatchBuilder(keyword));
 }

@@ -53,3 +53,110 @@
     width: 150px;
     padding: 5px;
 }
+
+.mainDriverPanel {
+  top: 50px;
+  width: 400px;
+  background-color: #ffffff;
+  height: 100%;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+}
+
+.mainDriver {
+    cursor: pointer;
+}
+
+.tripDriver {
+  width: 360px;
+  height: 60px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 5px;
+  margin-top: 15px;
+}
+
+.panelDriverList {
+  width: 400px;
+  height: 440px;
+  overflow-y: scroll; 
+  border-radius: 4px;
+  background-color: #ffffff;
+  font-family: Helvetica;
+  font-size: 12px;
+  color: #000000;
+  margin-bottom: 10px;
+}
+
+.driverName {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.driverInput {
+  margin-left: 16px;
+  margin-top: 16px;
+  float: left;
+}
+
+.driverLoadImage {    
+  height: 40px;
+  margin-top: 10px;
+}
+
+.panelDriverSearch {
+  text-align: center;
+  padding-top: 10px;
+}
+
+.inputDriverSearch {
+  background-color: #e8e8e8;
+  border-radius: 4px;
+  background-color: #f1f1f1;
+  border: solid 1px #e8e8e8;
+  width: 348px;
+  height: 30px;
+}
+
+.driverDetails {
+  float: left;
+  margin-left: 20px;
+  width: 200px;
+  text-align: left;
+}
+
+.vendorName {
+  font-size: 18px;
+}
+
+.vendorLoad {
+  font-family: Helvetica;
+  font-size: 14px;
+  font-style: normal;
+  font-stretch: normal;
+}
+
+.vehicleIcon {
+  float: left;
+  margin-left: 15px;
+}
+
+.vendorLoadImage {    
+  margin-left: 40px;
+  margin-right: -70px;
+  height: 50px;
+}
+
+.driverTitle {
+  font-size: 14px;
+  font-weight: bold;
+  color: #000000;
+  margin-left: 20px;
+  margin-top: 20px;
+}
