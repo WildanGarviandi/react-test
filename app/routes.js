@@ -28,8 +28,6 @@ import TripHistoryDetails from './tripHistory/detailsPage';
 import MyContactPage from './contacts/contactPage';
 import ManageContactsPage from './contacts/contactManagePage';
 import MyDriverPage from './drivers/driverPage';
-import ManageDriversPage from './drivers/driverManagePage';
-import MyDriverOrdersPage from './drivers/driverOrderPage';
 import MyOutboundTripsPage from './outboundTrips/outboundTripsPage';
 import OutboundTripsManifestPage from './outboundTrips/outboundTripsManifest';
 import OutboundTripsCoverManifestPage from './outboundTrips/outboundTripsCoverManifest';
@@ -97,9 +95,6 @@ export default (
         <Route path="/mycontacts/add" component={ManageContactsPage} onEnter={requireAuth} />
         <Route path="/mycontacts/edit/:id" component={ManageContactsPage} onEnter={requireAuth} />
         <Route path="/mydrivers" component={MyDriverPage} onEnter={requireAuth}/>
-        <Route path="/mydrivers/add" component={ManageDriversPage} onEnter={requireAuth} />
-        <Route path="/mydrivers/edit/:id" component={ManageDriversPage} onEnter={requireAuth} />
-        <Route path="/mydrivers/orders/:id" component={MyDriverOrdersPage} onEnter={requireAuth}/>
       </Route>
       <Route path="/trips/:tripID/manifest" component={OutboundTripsManifestPage} onEnter={requireAuth} />
       <Route path="/trips/:tripID/coverManifest" component={OutboundTripsCoverManifestPage} onEnter={requireAuth} />
