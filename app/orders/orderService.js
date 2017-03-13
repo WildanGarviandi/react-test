@@ -20,10 +20,6 @@ const Constants = {
   ORDER_EXPAND_DRIVER: "myorder/orders/expandDriver",
   ORDER_EXPAND_DRIVER_BULK: "myorder/orders/expandDriverBulk",
   ORDER_SHRINK_ORDER: "myorder/orders/shrink",
-  ORDER_DRIVER_ASSIGN_START: "myorder/orders/driver/assign/start",
-  ORDER_DRIVER_ASSIGN_END: "myorder/orders/driver/assign/end",
-  ORDER_DRIVER_DEASSIGN_START: "myorder/orders/driver/deassign/start",
-  ORDER_DRIVER_DEASSIGN_END: "myorder/orders/driver/deassign/end",
   SET_DRIVER: "myorder/orders/setDriver",
   RESET_DRIVER: "myorder/orders/resetDriver",
   SHOW_SUCCESS_ASSIGN: "myorder/orders/showSuccess",
@@ -45,7 +41,6 @@ const initialStore = {
   isExpandOrder: false,
   isExpandDriver: false,
   isExpandDriverBulk: false,
-  isSettingDriver: false,
   selectedDriver: null,
   isSuccessAssign: false
 }
@@ -137,30 +132,6 @@ export default function Reducer(store = initialStore, action) {
         isExpandOrder: false,
         isExpandDriver: false,
         isExpandDriverBulk: false
-      });
-    }
-
-    case Constants.ORDER_DRIVER_ASSIGN_START: {
-      return lodash.assign({}, store, {
-        isSettingDriver: true
-      });
-    }
-
-    case Constants.ORDER_DRIVER_ASSIGN_END: {
-      return lodash.assign({}, store, {
-        isSettingDriver: false
-      });
-    }
-
-    case Constants.ORDER_DRIVER_DEASSIGN_START: {
-      return lodash.assign({}, store, {
-        isSettingDriver: true
-      });
-    }
-
-    case Constants.ORDER_DRIVER_DEASSIGN_END: {
-      return lodash.assign({}, store, {
-        isSettingDriver: false
       });
     }
 
@@ -267,9 +238,9 @@ export function FetchList() {
     const {currentPage, limit, total, filters} = myOrders;
     const {token} = userLogged;
     const sortFilter = [{
-      key: 1, sortBy: 'AssignedTime', sortCriteria: 'ASC'      
+      key: 1, sortBy: 'DueTime', sortCriteria: 'ASC'      
     }, {
-      key: 2, sortBy: 'AssignedTime', sortCriteria: 'DESC'      
+      key: 2, sortBy: 'DueTime', sortCriteria: 'DESC'      
     }];
 
     if (filters.sortOptions) {
@@ -283,10 +254,6 @@ export function FetchList() {
       limit: limit,
       offset: (currentPage - 1) * limit
     });
-
-    if (filters.status) {
-      params.statusIDs = JSON.stringify([filters.status]);
-    }
 
     dispatch({type: modalAction.BACKDROP_SHOW});
     dispatch({type: Constants.FETCHING_PAGE});
@@ -387,7 +354,6 @@ export function AssignDriver(orderID, driverID) {
       DriverID: driverID,
     };
 
-    dispatch({ type: Constants.ORDER_DRIVER_ASSIGN_START });
     dispatch({type: modalAction.BACKDROP_SHOW});
     FetchPost(`/order/${orderID}/driver`, token, body).then((response) => {
       dispatch({ type: Constants.ORDER_DRIVER_ASSIGN_END });
@@ -396,7 +362,6 @@ export function AssignDriver(orderID, driverID) {
           throw error;
         });
       }
-      dispatch({ type: Constants.SHOW_SUCCESS_ASSIGN });
       dispatch(ResetDriver());
       dispatch(ShrinkOrder());
       dispatch(FetchList());
@@ -424,9 +389,7 @@ export function BulkAssignDriver(orders, driverID) {
       OrderIDs: orderIDs
     };
 
-    dispatch({ type: Constants.ORDER_DRIVER_ASSIGN_START });
     FetchPost(`/order/driver/bulk-assign`, token, body).then((response) => {
-      dispatch({ type: Constants.ORDER_DRIVER_ASSIGN_END });
       if(!response.ok) {
         return response.json().then(({error}) => {
           throw error;

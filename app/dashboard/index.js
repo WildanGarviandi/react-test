@@ -117,9 +117,8 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
               </span>
               <hr className={styles.menuSeparator} />
               <MenuItem active={activeMenuIdx == 7} to={'/myorders'}>
-                <img src="/img/icon-my-trips.png" className={styles.menuGlyph} />
+                <img src="/img/icon-orders.png" className={styles.menuGlyph} />
                 <span>My Orders</span>
-                <span className={styles.counterNumber}>{countTMS && countTMS.NotAssigned}</span>
               </MenuItem>
               <MenuItem active={activeMenuIdx == 8} to={'/mytrips'}>
                 <img src="/img/icon-my-trips.png" className={styles.menuGlyph} />

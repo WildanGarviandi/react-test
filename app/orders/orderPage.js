@@ -17,7 +17,7 @@ import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 const PanelDetails = React.createClass({
   render() {
     const { expandedOrder, shrinkOrder, isExpandDriver } = this.props;
-    const reassignTripButton = {
+    const reassignOrderButton = {
       textBase: 'Assign',
       onClick: this.props.expandDriver,
       styles: {
@@ -31,15 +31,78 @@ const PanelDetails = React.createClass({
             <div onClick={shrinkOrder} className={styles.closeButton}>
               X
             </div>
-            <div className={styles.tripDetails}>
+            <div className={styles.orderDueTime}>
+              <Deadline deadline={expandedOrder.DueTime} />
+            </div>   
+            <div className={styles.orderDetails}>
               <div className={styles.reassignButton}>
-                <ButtonWithLoading {...reassignTripButton} />
+                <ButtonWithLoading {...reassignOrderButton} />
               </div>
-              <div className={styles.tripDetailsLabel}>
-                TripID
+              <div className={styles.orderDetailsLabel}>
+                Order ID
+              </div>
+              <div className={styles.orderDetailsValue}>
+                {expandedOrder.UserOrderNumber}
+              </div>
+              <div className={styles.orderDetailsLabel}>
+                Origin
               </div>
               <div className={styles.tripDetailsValue}>
-                TRIP-{expandedOrder.UserOrderID}
+                {expandedOrder.PickupAddress && expandedOrder.PickupAddress.City}
+              </div>
+              <div className={styles.orderDetailsLabel}>
+                Destination
+              </div>
+              <div className={styles.orderDetailsValue}>
+                {expandedOrder.DropoffAddress && expandedOrder.DropoffAddress.City}
+              </div>
+              <div>
+                <div className={styles.orderAdditionalInfo}>
+                  <div className={styles.orderDetailsLabel}>
+                    Weight
+                  </div>
+                  <div className={styles.orderDetailsValue}>
+                    {expandedOrder.PackageWeight} kg
+                  </div>
+                </div>
+                <div className={styles.orderAdditionalInfo}>
+                  <div className={styles.orderDetailsLabel}>
+                    COD Type
+                  </div>
+                  <div className={styles.orderDetailsValue}>
+                    {expandedOrder.IsCOD ? 'COD' : 'Non-COD'}
+                  </div>
+                </div>
+              </div>
+            </div>            
+            <div className={styles.orderValue}>                            
+              <div className={styles.orderValueLabel}>
+                Total Value
+              </div>
+              <div className={styles.orderTotalValue}>
+                <NumberFormat displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp '} value={expandedOrder.TotalValue} />    
+              </div>
+            </div>
+            <div className={styles.orderDetails}>            
+              <div className={styles.orderDetailsLabel}>
+                From
+              </div>
+              <div className={styles.orderDetailsValue}>
+                {expandedOrder.PickupAddress && expandedOrder.PickupAddress.FirstName + ' ' + expandedOrder.PickupAddress.LastName}
+              </div>
+              <div className={styles.orderDetailsValue2}>
+                {expandedOrder.PickupAddress && expandedOrder.PickupAddress.Address1}
+              </div>
+            </div>
+            <div className={styles.orderDetails}>            
+              <div className={styles.orderDetailsLabel}>
+                To
+              </div>
+              <div className={styles.orderDetailsValue}>
+                {expandedOrder.DropoffAddress && expandedOrder.DropoffAddress.FirstName + ' ' + expandedOrder.DropoffAddress.LastName}
+              </div>
+              <div className={styles.orderDetailsValue2}>
+                {expandedOrder.DropoffAddress && expandedOrder.DropoffAddress.Address1}
               </div>
             </div>
           </div>
@@ -55,13 +118,13 @@ const Drivers = React.createClass({
       const isSelected = this.props.selectedDriver === driver.UserID;
       const totalWeight = parseFloat(driver.TotalCurrentWeight) + parseFloat(this.props.selectedOrder.Weight);
       const driverWeight = isSelected ? totalWeight : parseFloat(driver.TotalCurrentWeight);
-      let tripDriverStyle = isSelected ? styles.tripDriverSelected : styles.tripDriver;
+      let orderDriverStyle = isSelected ? styles.orderDriverSelected : styles.orderDriver;
       if (isSelected && (totalWeight > driver.AvailableWeight)) {
-        tripDriverStyle = styles.tripDriverSelectedExceed;
+        orderDriverStyle = styles.orderDriverSelectedExceed;
       }
       return (
         <div className={styles.mainDriver} key={idx}>
-          <div className={tripDriverStyle} onClick={()=>{this.props.setDriver(driver.UserID)}}>
+          <div className={orderDriverStyle} onClick={()=>{this.props.setDriver(driver.UserID)}}>
             <div className={styles.driverInput}>
               <img src={this.props.selectedDriver === driver.UserID ? "/img/icon-radio-on.png" : "/img/icon-radio-off.png"} />
             </div>
@@ -119,7 +182,7 @@ const PanelDrivers = React.createClass({
         }
         { this.props.isExpandDriverBulk && 
           <div className={styles.panelDriverChoose}>
-            Choose a driver for {this.props.selectedOrders.length} trip: 
+            Choose a driver for {this.props.selectedOrders.length} order: 
           </div>
         }
         { !this.props.isExpandDriverBulk && 
@@ -193,10 +256,10 @@ const OrderPage = React.createClass({
             !this.props.isFetching && this.props.orders.length === 0 && !lodash.isEmpty(this.props.filters) &&
             <div>
               <div style={{clear: 'both'}} />
-              <div className={styles.noTripDesc}>
-                <img src="/img/image-inbound-trip-done.png" />
+              <div className={styles.noOrderDesc}>
+                <img src="/img/icon-orders-done.png" />
                 <div style={{fontSize: 20}}>
-                  Trips not found
+                  Orders not found
                 </div>
                 <div style={{fontSize: 12, marginTop: 20}}>
                   Please choose another filter to get the orders.
@@ -208,13 +271,13 @@ const OrderPage = React.createClass({
             !this.props.isFetching && this.props.orders.length === 0 && lodash.isEmpty(this.props.filters) &&
             <div>
               <div style={{clear: 'both'}} />
-              <div className={styles.noTripDesc}>
-                <img src="/img/image-inbound-trip-done.png" />
+              <div className={styles.noOrderDesc}>
+                <img src="/img/icon-orders-done.png" />
                 <div style={{fontSize: 20}}>
-                  Awesome work guys!
+                  You dont have any orders right now!
                 </div>
                 <div style={{fontSize: 12, marginTop: 20}}>
-                  You have assign all trips, please always check if there’s another trip to assign every 5 minutes.
+                  You have assign all orders
                 </div>
               </div>
             </div>   
@@ -255,7 +318,7 @@ const OrderPage = React.createClass({
                     <h2 className={styles.modalTitle}>Success</h2>
                     <div className={styles.successContent + ' ' + styles.ordersContentEmpty}>
                       <img className={styles.successIcon} src={"/img/icon-success.png"} />
-                      <div className={styles.mediumText}>You have successfully assigned this trip</div>
+                      <div className={styles.mediumText}>You have successfully assigned this order</div>
                     </div>
                   </div>
                   <div className={styles.modalFooter}>

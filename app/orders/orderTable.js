@@ -149,18 +149,11 @@ function ConnectDropdownBuilder(keyword) {
 
 const CheckboxHeader = connect(CheckboxHeaderStore, CheckboxHeaderDispatch)(CheckboxHeaderBase);
 const CheckboxRow = connect(undefined, CheckboxDispatch)(CheckboxCell);
-const ContainerNumberFilter = ConnectBuilder('containerNumber')(Table.InputCell);
-const StatusFilter = ConnectDropdownBuilder('statusName')(FilterTop);
 const SortFilter = ConnectDropdownBuilder('sortOptions')(FilterTop);
-const MerchantFilter = ConnectBuilder('merchant')(Table.InputCell);
-const PickupFilter = ConnectBuilder('pickup')(Table.InputCell);
-const DropoffFilter = ConnectBuilder('dropoff')(Table.InputCell);
-const DriverFilter = ConnectBuilder('driver')(Table.InputCell);
-const PickupDateFilter = connect(DateRangeBuilder('Pickup'), DateRangeDispatch('Pickup'))(Table.FilterDateTimeRangeCell);
 
 export const Filter = React.createClass({
   render() {
-    const reassignTripButton = {
+    const reassignOrderButton = {
       textBase: 'Assign Orders',
       onClick: this.props.expandDriver,
       styles: {
@@ -173,7 +166,7 @@ export const Filter = React.createClass({
         <SortFilter />
         {
           /*<div className={styles.reassignBulkButton}>
-              <ButtonWithLoading {...reassignTripButton} />
+              <ButtonWithLoading {...reassignOrderButton} />
           </div>*/
         }
       </div>
@@ -181,42 +174,10 @@ export const Filter = React.createClass({
   }
 })
 
-function OrderHeader() {
-  return (
-    <tr>
-      <CheckboxHeader />
-      <Table.TextHeader text="Trip Number" />
-      <Table.TextHeader text="Status" />
-      <Table.TextHeader text="Webstore" />
-      <Table.TextHeader text="Pickup" />
-      <Table.TextHeader text="Dropoff" />
-      <Table.TextHeader text="Pickup Time" />
-      <Table.TextHeader text="Driver" />
-      <Table.TextHeader text="Number of Orders" style={{whiteSpace:'nowrap'}} />
-    </tr>
-  );
-}
-
 function OrderParser(order) {
   return lodash.assign({}, order, {
     IsOrder: true
   })
-}
-
-function OrderFilter() {
-  return (
-    <tr className={styles.tr}>
-      <Table.EmptyCell />
-      <ContainerNumberFilter />
-      <StatusFilter />
-      <MerchantFilter />
-      <PickupFilter />
-      <DropoffFilter />
-      <PickupDateFilter />
-      <DriverFilter />
-      <OrderFilter />
-    </tr>
-  )
 }
 
 export const Deadline = React.createClass({
@@ -290,17 +251,7 @@ const OrderRow = React.createClass({
         onMouseEnter={this.onMouseOver} onMouseLeave={this.onMouseOut}>
         <td><CheckboxRow isChecked={order.IsChecked} orderID={order.UserOrderID} /></td>
         <td onClick={()=>{this.expandOrder(order)}}><div className={styles.cardSeparator} /></td>
-        <td onClick={()=>{this.expandOrder(order)}} className={styles.tripIDColumn}>{`ORDER- ${order.UserOrderID}`}</td>
-        <td onClick={()=>{this.expandOrder(order)}}><div className={styles.cardSeparator} /></td>
-        <td onClick={()=>{this.expandOrder(order)}}>
-          <div className={styles.cardLabel}>
-            Weight
-          </div>
-          <br />
-          <div className={styles.cardValue}>
-            {order.PackageWeight}
-          </div>
-        </td>
+        <td onClick={()=>{this.expandOrder(order)}} className={styles.orderIDColumn}>{`${order.UserOrderNumber}`}</td>
         <td onClick={()=>{this.expandOrder(order)}}><div className={styles.cardSeparator} /></td>
         <td onClick={()=>{this.expandOrder(order)}}>
           <div className={styles.cardLabel}>
@@ -309,6 +260,56 @@ const OrderRow = React.createClass({
           <br />
           <div className={styles.cardValue}>
             <Deadline deadline={order.DueTime} />
+          </div>
+        </td>
+        <td onClick={()=>{this.expandOrder(order)}}><div className={styles.cardSeparator} /></td>
+        <td onClick={()=>{this.expandOrder(order)}}>
+          <div className={styles.cardLabel}>
+            Origin
+          </div>
+          <br />
+          <div className={styles.cardValue}>
+            {order.PickupAddress && order.PickupAddress.City}
+          </div>
+        </td>
+        <td onClick={()=>{this.expandOrder(order)}}><div className={styles.cardSeparator} /></td>
+        <td onClick={()=>{this.expandOrder(order)}}>
+          <div className={styles.cardLabel}>
+            Destination
+          </div>
+          <br />
+          <div className={styles.cardValue}>
+            {order.DropoffAddress && order.DropoffAddress.City}
+          </div>
+        </td>
+        <td onClick={()=>{this.expandOrder(order)}}><div className={styles.cardSeparator} /></td>
+        <td onClick={()=>{this.expandOrder(order)}}>
+          <div className={styles.cardLabel}>
+            Weight
+          </div>
+          <br />
+          <div className={styles.cardValue}>
+            {order.PackageWeight} kg
+          </div>
+        </td>
+        <td onClick={()=>{this.expandOrder(order)}}><div className={styles.cardSeparator} /></td>
+        <td onClick={()=>{this.expandOrder(order)}}>
+          <div className={styles.cardLabel}>
+            COD Type
+          </div>
+          <br />
+          <div className={styles.cardValue}>
+            {order.IsCOD ? 'COD' : 'Non-COD'}
+          </div>
+        </td>
+        <td onClick={()=>{this.expandOrder(order)}}><div className={styles.cardSeparator} /></td>
+        <td onClick={()=>{this.expandOrder(order)}}>
+          <div className={styles.cardLabel}>
+            Value
+          </div>
+          <br />
+          <div className={styles.cardValue}>
+            <NumberFormat displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp '} value={order.TotalValue} />
           </div>
         </td>
       </tr>
@@ -359,7 +360,6 @@ function OrderBodyDispatch() {
 const OrderBodyContainer = connect(OrderBodyStore, OrderBodyDispatch)(OrderBody);
 
 function OrderTable({orders}) {
-  const headers = <OrderHeader />;
 
   return (
     <table className={styles.table}>

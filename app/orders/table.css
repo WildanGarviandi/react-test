@@ -234,8 +234,8 @@ table th:last-child{
 
 .cardValue {
   float: left;
-  font-weight: bold;
-  font-size: 14px;
+  font-weight: normal;
+  font-size: 16px;
   margin-top: 5px;
   color: #000000;
   opacity: 0.8;
@@ -249,47 +249,6 @@ table th:last-child{
   text-decoration: underline;
 }
 
-.cardValueStatus1 {
-  font-weight: bold;
-  font-size: 16px;
-  margin-top: 5px;
-  color: #000000;
-  border-radius: 4px;
-  background-color: rgba(33, 150, 243, 0.15);
-  padding: 10px;
-  text-align: center;
-}
-
-.cardValueStatus2, .cardValueStatus3, .cardValueStatus4 {
-  font-weight: bold;
-  font-size: 16px;
-  margin-top: 5px;
-  color: #000000;
-  border-radius: 4px;
-  background-color: rgba(255, 228, 191, 0.15);
-  padding: 10px;
-  text-align: center;
-}
-
-.cardValueStatus5 {
-  font-weight: bold;
-  font-size: 16px;
-  margin-top: 5px;
-  color: #000000;
-  border-radius: 4px;
-  background-color: rgba(255, 90, 96, 0.15);
-  padding: 10px;
-  text-align: center;
-}
-
-.cardValueDriver {
-  width: 250px;
-}
-
-.tripIDColumn {
-    width: 90px;
-}
-
 .reassignBulkButton {
   padding-top: 10px;
 }
@@ -301,4 +260,8 @@ table th:last-child{
 .driverLoadImage {    
   height: 40px;
   margin-right: 10px;
+}
+
+.orderIDColumn {
+  font-size: 16px;
 }
