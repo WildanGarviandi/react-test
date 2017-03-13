@@ -5,7 +5,6 @@ import {Link} from 'react-router';
 import {Page} from '../components/page';
 import {Pagination3} from '../components/pagination3';
 import {ButtonWithLoading} from '../components/button';
-import Table from './driverTable';
 import * as DriverService from './driverService';
 import styles from './styles.css';
 import stylesButton from '../components/button.css';
