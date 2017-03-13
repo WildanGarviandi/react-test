@@ -1,293 +1,518 @@
-.itemLabel {
-    display: block;
-    padding: 5px;
-    width: 150px;
-    float: left;
+.panel {
+  border: solid 1px #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 20px;
 }
 
-.itemValue {
-    padding: 5px;
-    display: block;
-    margin-left: 160px;
-    max-width: 350px;
-    text-indent: 0px;
+.panel .title {
+  background-color: #222D32;
+  color: #f2f2f2;
+  cursor: pointer;
+  margin: 0;
+  padding: 10px;
 }
 
-.orderDetailsHeader {
-    background-color: #222D32;
-    color: #eee;
-    text-indent: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    padding: 15px;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    clear: both;
+.subtitle {
+  text-indent: 10px;
 }
 
-.orderDetailsInformation {
-    background-color: #eee;
-    color: #000;
-    text-indent: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    padding: 15px;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    clear: both;
-    padding-bottom: 30px;
-    margin-bottom: 20px;
+.body {
+  background-color: #f2f2f2;
 }
 
-.orderDetailsBoxLeft {
-    float: left;
-    width: 48%;
+.row {
+  display: block;
+  padding: 10px;
 }
 
-.orderDetailsBoxRight {
-    float: right;
-    width: 48%;
+.row:nth-of-type(odd) {
+  background-color: #f9f9f9;
 }
 
-.editOrderHeaders {
-    margin-bottom: 10px;
-    background-color: #eee;
-    color: #000;
-    font-weight: bold;
-    text-indent: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    padding: 15px;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    clear: both;
+.label {
+  display: inline-block;
+  position: absolute;
+  width: 150px;
 }
 
-.addOrderButton {
-    border: 0;
-    border-radius: 5px;
-    background-color: #FF5A60;
-    color: #fff;
-    cursor: pointer;
-    padding: 5px;
+.value {
+  display: inline-block;
+  margin-left: 150px;
 }
 
-.orderDetailsContact {
-    float: left;
-    width: 50%;
+.detail {
+  border: solid 1px #eee;
+  margin-bottom: 10px;
 }
 
-.contactDetails {
-    float: left;
-    width: 45%;
-    margin-left: 15px;
-    margin-right: 25px;
-}
-
-.contactDetailsBox {
-    min-height: 360px;
-    padding: 15px;
-    background-color: #eee;
-    color: #000;
-    clear: both;
-    padding-bottom: 30px;
-    margin-bottom: 20px;
-}
-
-.detailsTableColumn {
-    min-width: 40px;
-}
-
-.attemptInformationHeader {
-    background-color: #222D32;
-    color: #eee;
-    text-indent: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    padding: 15px;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    clear: both;
-}
-
-.itemImage {
-    padding: 5px;
-    display: block;
-    margin-left: 160px;
-    max-width: 150px;
-    max-height: 200px;
-    text-indent: 0px;
-}
-
-.orderDetailsFullWidth {
-    float: left;
-    width: 100%;
-}
-
-.assignOrderButton {
-    border: 0;
-    border-radius: 5px;
-    background-color: #FF5A60;
-    color: #fff;
-    cursor: pointer;
-    padding: 5px;
-    margin-left: 5px;
+.assignTripButton {
+  border: 0;
+  border-radius: 5px;
+  background-color: #FF5A60;
+  color: #fff;
+  cursor: pointer;
+  padding: 5px;
+  margin-left: 5px;
 }
 
 .selectDriver { 
-    width: 300px;
+  width: 300px;
 }
 
-.panel {
-    border-radius: 5px;
-    border: solid 1px #ccc;
+/* The animation code */
+@keyframes panelDetailsAnimation {
+  from {right: -400px;}
+  to {right: 0px;}
 }
 
-.bottom {
-    padding: 0 15px 45px;
+.panelDetails {
+  position: fixed;
+  right: 0px;
+  top: 50px;
+  width: 400px;
+  background-color: white;
+  height: 100%;
+  box-shadow: -1px 2px 10px 0px rgba(50, 50, 50, 0.75);
+  animation-name: panelDetailsAnimation;
+  animation-duration: 0.5s;
 }
 
-.title {
-    margin-top: 0;
-    padding: 10px;
+/* The animation code */
+@keyframes panelDetailsAnimation2 {
+  from {right: 0px;}
+  to {right: 400px;}
 }
 
-.top {
-    background-color: #371e38;
-    color: #ccc;
-    text-indent: 10px;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    cursor: pointer;
+.panelDetails2 {
+  position: fixed;
+  right: 400px;
+  top: 50px;
+  width: 400px;
+  background-color: white;
+  height: 100%; 
+  border-right: 1px solid #e8e8e8;
+  box-shadow: -1px 2px 10px 0px rgba(50, 50, 50, 0.75);
+  animation-name: panelDetailsAnimation2;
+  animation-duration: 0.5s;
 }
 
-.modalBtn, .modalLink {
-    padding: 8px;
-    display: inline-block;
-    margin-left: 4px;
-    margin-top: 5px;
-    float: right;
+.tripStatus1 {
+  width: 360px;
+  height: 30px;
+  border-radius: 4px;
+  background-color: rgba(33, 150, 243, 0.15);
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-top: 15px;
 }
 
-.modalLink:hover {
-    color: #337ab7;
+.tripStatus2, .tripStatus3, .tripStatus4 {
+  width: 360px;
+  height: 30px;
+  border-radius: 4px;
+  background-color: rgba(255, 228, 191, 0.15);
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-top: 15px;
 }
 
-.top2 {
-    background-color: #371e38;
-    color: #ccc;
-    text-indent: 10px;
-    border-radius: 5px;
-    cursor: pointer;
+.tripStatus5 {
+  width: 360px;
+  height: 30px;
+  border-radius: 4px;
+  background-color: rgba(255, 90, 96, 0.15);
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-top: 15px;
 }
 
-.glyphFilter {
-    position: relative;
-    left: -13px;
+.tripDriver {
+  width: 360px;
+  height: 60px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 5px;
+  margin-top: 15px;
 }
 
-.arrowDown {
-    float: left;
+.tripDriverSelected {
+  width: 360px;
+  height: 60px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 5px;
+  margin-top: 15px;
+  border: 2px solid #4cc38e;
 }
 
-.addContactButton {
-    margin-left: 5px;
+.tripDriverSelectedExceed {
+  width: 360px;
+  height: 60px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 5px;
+  margin-top: 15px;
+  border: 2px solid #ff0000;
 }
 
-.contactAddress {
-    background-color: #4cc38e;
-    color: #eee;
-    border-radius: 5px;
-    cursor: pointer;
-    padding: 8px;
-    clear: both;
-    margin-top: 8px;
-    margin-bottom: 8px;
-    font-size: 12px;
+.tripValue {
+  width: 360px;
+  height: 40px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 5px;
+  margin-top: 15px;
 }
 
-.arrowRight {
-    float: right;
+.tripNumOrders {
+  width: 360px;
+  height: 20px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 14px;
+  text-align: center;
+  color: #000000;
+  padding-top: 5px;
+  margin-top: 15px;
 }
 
-.removeShipperButton {
-    background-color: #FF5A60;
-    color: #eee;
-    border-radius: 5px;
-    cursor: pointer;
-    padding: 8px;
-    clear: both;
-    margin-top: 8px;
-    margin-bottom: 8px;
-    font-size: 12px;
+.tripDetails {
+  width: 360px;
+  height: 180px;
+  border-radius: 4px;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 12px;
+  color: #000000;
+  margin-top: 15px;
+  padding-right: 10px;
+  overflow-y: auto;
 }
 
-.activeContactButton {
-    background-color: #4cc370;
-    color: #eee;
-    border-radius: 5px;
-    cursor: pointer;
-    padding: 8px;
-    clear: both;
-    margin-top: 8px;
-    margin-bottom: 8px;
-    font-size: 12px;
+.tripDetailsLabel {
+  font-size: 12px;
+  margin-top: 8px;
+  opacity: 0.5;
 }
 
-.container {
-    float: left;
-    display: inline-block;
-    border-radius: 5px;
-    width: 15%;
-    height: 110px;
-    position: relative;
-    color: #fff;
-    background-color: #5cb85c;
-    margin-right: 20px;
-    margin-bottom: 20px;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    border: solid 1px #fff;
+.tripDetailsValue {
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 5px;
 }
 
-.num {
-    font-size: 35px;
-    position: absolute;
-    top: 0;
-    right: 10px;
+.tripDetailsOrder {
+  width: 360px;
+  max-height: 280px;
+  overflow-y: scroll; 
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 12px;
+  color: #000000;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-bottom: 50px;
 }
 
-.attr {
-    font-size: 20px;
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
+.closeButton {
+  background-color: #fff;
+  box-shadow: none;
+  border: none;
+  font-size: 24px;
+  color: #cccccc;
+  cursor: pointer;
+  padding: 8px;
+  margin-left: -32px;
+  float: left;
+  z-index: -1;
+  border-left: 1px solid #e8e8e8;
+  box-shadow: -2px 1px 2px 0px rgba(50, 50, 50, 0.75);
 }
 
-.glyph {
-    font-size: 50px;
-    position: absolute;
-    top: 10px;
-    left: 10px;
+.filterOption {
+  float: left;
+  width: 45%;
+  margin-top: 0px;
 }
 
-.container:hover {
-    border: solid 1px #337ab7;
+.vendorName {
+  font-size: 18px;
 }
 
-.attrAll {
-    background-color: #337ab7;
+.vendorLoad {
+  font-family: Helvetica;
+  font-size: 14px;
+  font-style: normal;
+  font-stretch: normal;
 }
 
-.attrOpen {
-    background-color: #d9534f;
+.tripAdditionalInfo {
+  float: left;
+  width: 30%;
 }
 
-.attrProcessed {
-    background-color: #f0ad4e;
+.vehicleIcon {
+  float: left;
+  margin-left: 15px;
 }
 
-.attrFinished {
-    background-color: #5cb85c;
+.vendorLoadImage {    
+  margin-left: 40px;
+  margin-right: -70px;
+  height: 50px;
+}
+
+.reassignButton {
+  position: absolute;
+  right: 20px;
+  cursor: pointer;
+}
+
+.orderNum {
+  float: left;
+  width: 45%;
+  opacity: 0.5;
+}
+
+.orderEDS {
+  float: left;
+  width: 40%;
+  font-weight: bold;
+}
+
+.numOrderLeft {
+  float: left;
+  margin-left: 10px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.numOrderRight {
+  float: right;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.orderCOD {
+  float: left;
+  width: 8%;
+  border-radius: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  font-weight: bold;
+  font-size: 14px;
+  border: solid 1px #e8e8e8;
+}
+
+.mainOrder {
+  padding-bottom: 8px;
+  padding-top: 8px;
+  border-bottom: solid 1px #e8e8e8;
+}
+
+/* The animation code */
+@keyframes panelDriversAnimation {
+  from {right: -400px;}
+  to {right: 0px;}
+}
+
+.mainDriverPanel {
+  position: fixed;
+  right: 0px;
+  top: 50px;
+  width: 400px;
+  background-color: white;
+  height: 100%;
+  box-shadow: 3px 2px 8px 0px rgba(50, 50, 50, 0.75);
+  animation-name: panelDriversAnimation;
+  animation-duration: 0.5s;
+}
+
+.mainDriver {
+  cursor: pointer;
+}
+
+.panelDriverChoose {
+  text-align: center;
+  font-size: 14px;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.panelDriverList {
+  width: 400px;
+  height: 450px;
+  overflow-y: scroll; 
+  border-radius: 4px;
+  background-color: #ffffff;
+  font-family: Helvetica;
+  font-size: 12px;
+  color: #000000;
+}
+
+.driverName {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.driverInput {
+  margin-left: 16px;
+  margin-top: 16px;
+  float: left;
+}
+
+.driverLoadImage {    
+  height: 40px;
+  margin-top: 10px;
+}
+
+.panelDriverSearch {
+  text-align: center;
+  padding-top: 10px;
+}
+
+.inputDriverSearch {
+  background-color: #e8e8e8;
+  border-radius: 4px;
+  background-color: #f1f1f1;
+  border: solid 1px #e8e8e8;
+  width: 288px;
+  height: 30px;
+}
+
+.driverDetails {
+  float: left;
+  margin-left: 20px;
+  width: 200px;
+  text-align: left;
+}
+
+.setDriverButton {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.tripValueLabel {
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+.tripTotalValue {
+  font-size: 24px;
+}
+
+.noTripDesc {
+  margin-top: 80px;
+  margin-bottom: 80px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #ffffff;
+  height: 200px;
+  text-align: center;
+  width: 480px;
+  padding: 32px;
+  border-radius: 12px;
+}
+
+.modal {
+  background-color: #f1f1f1;
+  margin-left: -20px;
+  margin-right: -20px;
+  width: 550px;
+}
+
+.modalHeader {
+  background-color: white;
+  padding: 0 20px 16px;
+  text-align: center;
+}
+
+.modalTitle {
+  font-size: 20px;
+  margin-top: 0;
+  text-align: center;
+}
+
+.modalFooter {
+  background-color: white;
+  text-align: center;
+  padding: 20px 20px 0;
+}
+
+.mediumText {
+  font-size: 16px;
+  margin: 2px 0;
+}
+
+.mediumTextBold {
+  font-size: 16px;
+  margin: 2px 0;
+  font-weight: bold;
+}
+
+.endButton {
+  font-size: 20px;
+  font-weight: 700;
+  background-color: #38b393;
+  box-shadow: none;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  width: 100%;
+  height: 50px;
+  cursor: pointer;
+}
+
+.deadlineValue {
+  margin-top: 10px;
+  font-weight: bold;
+  text-align: right;
 }

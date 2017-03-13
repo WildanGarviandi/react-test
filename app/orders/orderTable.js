@@ -4,350 +4,366 @@ import DateTime from 'react-datetime';
 import {connect} from 'react-redux';
 import moment from 'moment';
 import * as Table from '../components/table';
-import styles from '../components/table.css';
-import stylesOrders from './styles.css';
+import styles from './table.css';
 import * as OrderService from './orderService';
 import OrderStatusSelector from '../modules/orderStatus/selector';
 import {Glyph} from '../views/base';
-import {Link} from 'react-router';
 import {formatDate} from '../helper/time';
-import defaultValues from '../../defaultValues.json';
-import {CheckboxHeader as CheckboxHeaderBase, CheckboxCell} from '../views/base/tableCell';
+import {ButtonBase} from '../views/base';
+import {CheckboxHeader2 as CheckboxHeaderBase, CheckboxCell} from '../views/base/tableCell';
+import {FilterTop, FilterTop2, FilterText} from '../components/form';
+import NumberFormat from 'react-number-format';
+import stylesButton from '../components/button.css';
+import {ButtonWithLoading} from '../components/button';
+import ReactTooltip from 'react-tooltip';
+import config from '../config/configValues.json';
+import Countdown from 'react-cntdwn';
 
 function StoreBuilder(keyword) {
-    return (store) => {
-        const {filters} = store.app.myOrders;
+  return (store) => {
+    const {filters} = store.app.myOrders;
 
-        return {
-            value: filters[keyword],
-        }
-    }    
+    return {
+      value: filters[keyword],
+    }
+  }    
 }
 
 function DispatchBuilder(keyword) {
-    return (dispatch) => {
-        function OnChange(e) {
-            const newFilters = {[keyword]: e.target.value};
-            dispatch(OrderService.UpdateFilters(newFilters));
-        }
-
-        function OnKeyDown(e) {
-            if(e.keyCode !== 13) {
-                return;
-            }
-
-            dispatch(OrderService.StoreSetter("currentPage", 1));
-            dispatch(OrderService.FetchList());
-        }
-
-        return {
-            onChange: OnChange, 
-            onKeyDown: OnKeyDown,
-        }
+  return (dispatch) => {
+    function OnChange(e) {
+      const newFilters = {[keyword]: e.target.value};
+      dispatch(OrderService.UpdateFilters(newFilters));
     }
+
+    function OnKeyDown(e) {
+      if(e.keyCode !== 13) {
+        return;
+      }
+
+      dispatch(OrderService.StoreSetter("currentPage", 1));
+      dispatch(OrderService.FetchList());
+    }
+
+    return {
+      onChange: OnChange, 
+      onKeyDown: OnKeyDown,
+    }
+  }
 }
 
-function DateTimeDispatch(dispatch) {
-    return {
-        onChange: function(date) {
-            dispatch(OrderService.SetCreatedDate(date));
-        }
+function DispatchDateTime(dispatch) {
+  return {
+    onChange: function(date) {
+      dispatch(OrderService.SetCreatedDate(date));
     }
+  }
 }
 
 function DropdownStoreBuilder(name) {
-    return (store) => {
-        const orderTypeOptions = [{
-            key: 0, value: "ALL", 
-        }, {
-            key: 1, value: 'SINGLE ORDER',
-        }, {
-            key: 2, value: 'TRIP ORDER',
-        }];
+  return (store) => {
+    
+    const sortOptions = [{
+      key: 1, value: 'Deadline (newest)', 
+    }, {
+      key: 2, value: 'Deadline (oldest)',
+    }];
 
-        const ownerOptions = [{
-            key: 'All', value: "All", 
-        }, {
-            key: 0, value: 'Company',
-        }, {
-            key: 1, value: 'Etobee',
-        }];
-
-        const assignmentOptions = [{
-            key: 0, value: "ALL", 
-        }, {
-            key: 1, value: 'ASSIGNED',
-        }, {
-            key: 2, value: 'UNASSIGNED',
-        }];
-
-        const codOptions = [{
-            key: 'All', value: "All", 
-        }, {
-            key: 0, value: 'No',
-        }, {
-            key: 1, value: 'Yes',
-        }];
-
-        const statusFilter = store.app.myOrders.statusFilter;
-        let statusOptions = lodash.filter(OrderStatusSelector.GetList(store), function(status) {
-            switch (statusFilter) {
-                case 'ongoing' :
-                     return defaultValues.ongoingOrderStatus.includes(status.key);
-                     break;
-                case 'completed' :
-                    return defaultValues.completedOrderStatus.includes(status.key);
-                    break;
-                default :
-                    return defaultValues.openOrderStatus.includes(status.key);
-                    break;
-            }
-        });
-
-        const options = {
-            "orderType": orderTypeOptions,
-            "statusName": statusOptions,
-            "orderOwner": ownerOptions,
-            "assignment": assignmentOptions,
-            "isCOD": codOptions,
-        }
-
-        return {
-            value: store.app.myOrders[name],
-            options: options[name]
-        }
+    const options = {
+      "statusName": OrderStatusSelector.GetList(store),
+      "sortOptions": sortOptions
     }
+
+
+    return {
+      value: store.app.myOrders[name],
+      options: options[name]
+    }
+  }
 }
 
 function DropdownDispatchBuilder(filterKeyword) {
-    return (dispatch) => {
-        return {
-            handleSelect: (selectedOption) => {
-                const SetFn = OrderService.SetDropDownFilter(filterKeyword);
-                dispatch(SetFn(selectedOption));
-            }
-        }
+  return (dispatch) => {
+    return {
+      handleSelect: (selectedOption) => {
+        const SetFn = OrderService.SetDropDownFilter(filterKeyword);
+        dispatch(SetFn(selectedOption));
+      }
     }
+  }
 }
 
 function CheckboxDispatch(dispatch, props) {
-    return {
-        onToggle: () => {
-            dispatch(OrderService.ToggleChecked(props.orderID));
-        }
+  return {
+    onToggle: () => {
+      dispatch(OrderService.ToggleChecked(props.orderID));
     }
+  }
 }
-
+ 
 function CheckboxHeaderStore(store) {
-    return {
-        isChecked: store.app.myOrders.selectedAll,
-    }
+  return {
+    isChecked: store.app.myOrders.selectedAll,
+  }
 }
-
+ 
 function CheckboxHeaderDispatch(dispatch) {
-    return {
-        onToggle: () => {
-            dispatch(OrderService.ToggleCheckedAll());
-        }
+  return {
+    onToggle: () => {
+      dispatch(OrderService.ToggleCheckedAll());
     }
+  }
 }
 
 function DateRangeBuilder(keyword) {
-    return (store) => {
-        const {filters} = store.app.myOrders;
-        return {
-            startDate: filters['start' + keyword],
-            endDate: filters['end' + keyword],
-        }
+  return (store) => {
+    const {filters} = store.app.myOrders;
+    return {
+      startDate: filters['start' + keyword],
+      endDate: filters['end' + keyword],
     }
+  }
 }
-
+ 
 function DateRangeDispatch(keyword) {
-    return (dispatch) => {
-        return {
-            onChange: (event, picker) => {
-                const newFilters = {
-                    ['start' + keyword]: picker.startDate.toISOString(),
-                    ['end' + keyword]: picker.endDate.toISOString()
-                }
-                dispatch(OrderService.UpdateAndFetch(newFilters))
-            }
+  return (dispatch) => {
+    return {
+      onChange: (event, picker) => {
+        const newFilters = {
+          ['start' + keyword]: picker.startDate.toISOString(),
+          ['end' + keyword]: picker.endDate.toISOString()
         }
+        dispatch(OrderService.UpdateAndFetch(newFilters))
+      }
     }
-}
-
-function HeaderDispatch(keyword, sortCriteria) {
-    return (dispatch) => {
-        return {
-            onClick: () => {
-                const newFilters = {
-                    ['sortBy']: keyword,
-                    ['sortCriteria']: sortCriteria
-                }
-                dispatch(OrderService.UpdateAndFetch(newFilters))
-            }
-        }
-    }
+  }
 }
 
 function ConnectBuilder(keyword) {
-    return connect(StoreBuilder(keyword), DispatchBuilder(keyword));
+  return connect(StoreBuilder(keyword), DispatchBuilder(keyword));
 }
 
 function ConnectDropdownBuilder(keyword) {
-    return connect(DropdownStoreBuilder(keyword), DropdownDispatchBuilder(keyword));
+  return connect(DropdownStoreBuilder(keyword), DropdownDispatchBuilder(keyword));
 }
 
-const WebOrderIDFilter = ConnectBuilder('userOrderNumber')(Table.InputCell);
-const UserOrderNumberFilter = ConnectBuilder('userOrderNumber')(Table.InputCell);
+const CheckboxHeader = connect(CheckboxHeaderStore, CheckboxHeaderDispatch)(CheckboxHeaderBase);
+const CheckboxRow = connect(undefined, CheckboxDispatch)(CheckboxCell);
+const ContainerNumberFilter = ConnectBuilder('containerNumber')(Table.InputCell);
+const StatusFilter = ConnectDropdownBuilder('statusName')(FilterTop);
+const SortFilter = ConnectDropdownBuilder('sortOptions')(FilterTop);
+const MerchantFilter = ConnectBuilder('merchant')(Table.InputCell);
 const PickupFilter = ConnectBuilder('pickup')(Table.InputCell);
 const DropoffFilter = ConnectBuilder('dropoff')(Table.InputCell);
 const DriverFilter = ConnectBuilder('driver')(Table.InputCell);
-const StatusFilter = ConnectDropdownBuilder('statusName')(Table.FilterDropdown);
-const OrderTypeFilter = ConnectDropdownBuilder('orderType')(Table.FilterDropdown);
-const OrderOwnerFilter = ConnectDropdownBuilder('orderOwner')(Table.FilterDropdown);
-const AssignmentFilter = ConnectDropdownBuilder('assignment')(Table.FilterDropdown);
-const CODFilter = ConnectDropdownBuilder('isCOD')(Table.FilterDropdown);
-const CreatedDateFilter = connect(DateRangeBuilder('Created'), DateRangeDispatch('Created'))(Table.FilterDateTimeRangeCell);
-const DueTimeFilter = connect(DateRangeBuilder('DueTime'), DateRangeDispatch('DueTime'))(Table.FilterDateTimeRangeCell);
-const CreatedDateASC = connect(undefined, HeaderDispatch('CreatedDate', 'ASC'))(Table.SortCriteria);
-const CreatedDateDESC = connect(undefined, HeaderDispatch('CreatedDate', 'DESC'))(Table.SortCriteria);
-const DueTimeASC = connect(undefined, HeaderDispatch('DueTime', 'ASC'))(Table.SortCriteria);
-const DueTimeDESC = connect(undefined, HeaderDispatch('DueTime', 'DESC'))(Table.SortCriteria);
-const CheckboxHeader = connect(CheckboxHeaderStore, CheckboxHeaderDispatch)(CheckboxHeaderBase);
-const CheckboxRow = connect(undefined, CheckboxDispatch)(CheckboxCell);
+const PickupDateFilter = connect(DateRangeBuilder('Pickup'), DateRangeDispatch('Pickup'))(Table.FilterDateTimeRangeCell);
 
-function OrderParser(order) {
-    function getAssignment(order) {
-        var assignment = 'UNASSIGNED';
-        if ((order.CurrentRoute && order.CurrentRoute.Trip && order.CurrentRoute.Trip.Driver) || (order.Driver)) {
-            assignment = 'Assigned';
+export const Filter = React.createClass({
+  render() {
+    const reassignTripButton = {
+      textBase: 'Assign Orders',
+      onClick: this.props.expandDriver,
+      styles: {
+        base: stylesButton.greenButton3,
+      }
+    };
+    return (
+      <div>
+        <CheckboxHeader />
+        <SortFilter />
+        {
+          /*<div className={styles.reassignBulkButton}>
+              <ButtonWithLoading {...reassignTripButton} />
+          </div>*/
         }
-        return assignment;
-    }
-
-    function getStatus(order) {
-        if (!order.CurrentRoute && order.OrderStatus && order.OrderStatus.OrderStatus) {
-            return order.OrderStatus.OrderStatus;
-        }
-        if (order.CurrentRoute
-            && order.CurrentRoute.OrderStatus 
-            && order.CurrentRoute.OrderStatus.OrderStatus) {
-            return order.CurrentRoute.OrderStatus.OrderStatus;
-        }
-    }
-
-    return lodash.assign({}, order, {
-        OrderType: order.CurrentRoute && order.CurrentRoute.Trip ? "Trip Order" : "Single Order",
-        OrderOwner: order.IsTrunkeyOrder ? "Etobee" : "Company",
-        IsCOD: order.IsCOD ? "Yes" : "No",
-        OrderAssignment: getAssignment(order),
-        Driver: order.Driver && `${order.Driver.FirstName} ${order.Driver.LastName}`,
-        Status: getStatus(order),
-        DueTime: order.DueTime && formatDate(order.DueTime),
-        CreatedDate: order.CreatedDate && formatDate(order.CreatedDate),
-        IsChecked: ('IsChecked' in order) ? order.IsChecked : false,
-    })
-}
+      </div>
+    );
+  }
+})
 
 function OrderHeader() {
-    return (
-        <tr>
-            <CheckboxHeader />
-            <Table.TextHeader />
-            <Table.TextHeader text="AWB / Order ID" />
-            <Table.TextHeader text="Pickup" />
-            <Table.TextHeader text="Dropoff" />
-            <Table.TextHeader text="Driver" />
-            <Table.TextHeader text="Status" />
-            <Table.TextHeader text="Order Owner" />
-            <Table.TextHeader text="Is COD" />
-            <Table.TextHeader text="COD Amount" />
-            <Table.TextHeader text="COD Status" />
-            <th style={{textAlign: 'center'}}>
-                <span style={{display:'block', width: 120}}>
-                    Created Date
-                    <CreatedDateASC glyphName='chevron-down' />
-                    <CreatedDateDESC glyphName='chevron-up' />
-                </span>
-            </th>
-            <th>
-                <span style={{display:'block', width: 90}}>
-                    Deadline
-                    <DueTimeASC glyphName='chevron-down' />
-                    <DueTimeDESC glyphName='chevron-up' />
-                </span>
-            </th>
-        </tr>
-    );
+  return (
+    <tr>
+      <CheckboxHeader />
+      <Table.TextHeader text="Trip Number" />
+      <Table.TextHeader text="Status" />
+      <Table.TextHeader text="Webstore" />
+      <Table.TextHeader text="Pickup" />
+      <Table.TextHeader text="Dropoff" />
+      <Table.TextHeader text="Pickup Time" />
+      <Table.TextHeader text="Driver" />
+      <Table.TextHeader text="Number of Orders" style={{whiteSpace:'nowrap'}} />
+    </tr>
+  );
+}
+
+function OrderParser(order) {
+  return lodash.assign({}, order, {
+    IsOrder: true
+  })
 }
 
 function OrderFilter() {
-    return (
-        <tr className={styles.tr}>
-            <Table.EmptyCell />
-            <Table.EmptyCell />
-            <UserOrderNumberFilter />
-            <PickupFilter />
-            <DropoffFilter />
-            <DriverFilter />
-            <StatusFilter />
-            <OrderOwnerFilter />
-            <CODFilter />
-            <Table.EmptyCell />
-            <Table.EmptyCell />
-            <CreatedDateFilter />
-            <DueTimeFilter />
-        </tr>
-    )
+  return (
+    <tr className={styles.tr}>
+      <Table.EmptyCell />
+      <ContainerNumberFilter />
+      <StatusFilter />
+      <MerchantFilter />
+      <PickupFilter />
+      <DropoffFilter />
+      <PickupDateFilter />
+      <DriverFilter />
+      <OrderFilter />
+    </tr>
+  )
 }
 
-function OrderRow({order}) {
+export const Deadline = React.createClass({
+  render() {
+    let format = {
+      hour: 'hh',
+      minute: 'mm',
+      second: 'ss'
+    };
+    let Duration = moment.duration(moment(this.props.deadline).diff(moment(new Date())));
+    if (!this.props.deadline) {            
+      return <span style={{color: 'black'}}>
+          -
+      </span>
+    } else if (Duration._milliseconds > config.deadline.day) {            
+      return <span style={{color: 'black'}}>
+          {Duration.humanize()} remaining
+      </span>
+    } else if (Duration._milliseconds < 0) {
+      return <span style={{color: 'red'}}>
+          Passed
+      </span>
+    } else {
+      let normalDeadline = (Duration._milliseconds > config.deadline['3hours']) && (Duration._milliseconds < config.deadline.day);
+      return <span style={{color: normalDeadline ? 'black' : 'red'}}>
+        <Countdown targetDate={new Date(this.props.deadline)}
+         startDelay={500}
+         interval={1000}
+         format={format}
+         timeSeparator={':'}
+         leadingZero={true} />
+      </span>
+    }
+  }
+});
+
+const OrderRow = React.createClass({
+  getInitialState() {
+    return ({isHover: false, isEdit: false});
+  },
+  expandOrder(order) {
+    this.props.shrink();
+    setTimeout(function() {
+      if (!this.props.expandedOrder.UserOrderID) {
+        this.props.expand(order);
+      } else {
+        if (this.props.expandedOrder.UserOrderID !== order.UserOrderID) {
+          this.props.expand(order);
+        } else {
+          this.props.shrink();
+        }
+      }
+    }.bind(this), 100);
+  },
+  onMouseOver() {
+    this.setState({isHover: true});
+  },
+  onMouseOut() {
+    this.setState({isHover: false});
+  },
+  render() {
+    const { order, expandedOrder } = this.props;
+    const { isEdit, isHover } = this.state;
+    const parsedOrder = OrderParser(order);
+    let rowStyles = styles.tr + ' ' + styles.card  + (this.state.isHover && (' ' + styles.hovered));
+    if (expandedOrder.UserOrderID === order.UserOrderID) {
+      rowStyles = styles.tr + ' ' + styles.card +  ' ' + styles.select;
+    }
     return (
-        <tr className={styles.tr + (order.IsChecked && (" " + styles.selected))}>
-            <td><CheckboxRow isChecked={order.IsChecked} orderID={order.UserOrderID} /></td>
-            <td className={stylesOrders.detailsTableColumn}>
-                <Link title='Edit' to={'/myorders/edit/' + order.UserOrderID} className={styles.linkMenu}>
-                    {<Glyph name={'pencil'}/>}
-                </Link>
-                <Link title='View Details' to={'/myorders/details/' + order.UserOrderID} className={styles.linkMenu}>
-                    {<Glyph name={'list-alt'}/>}
-                </Link>
-            </td>
-            <Table.TextCell text={`${order.UserOrderNumber} / ${order.WebOrderID}`} />
-            <Table.TextCell text={order.PickupAddress ? order.PickupAddress.Address1 : ''} />
-            <Table.TextCell text={order.DropoffAddress ? order.DropoffAddress.Address1 : ''} />
-            <Table.TextCell text={order.Driver} />
-            <Table.TextCell text={order.Status} />
-            <Table.TextCell text={order.OrderOwner} />
-            <Table.TextCell text={order.IsCOD} />
-            {
-              (order.IsCOD === 'Yes') && order.TotalValue &&
-              <Table.NumberCell number={order.TotalValue} />
-            }
-            {
-              (order.IsCOD !== 'Yes' || !order.TotalValue) &&
-              <Table.TextCell text={'-'} />
-            }
-            <Table.TextCell text={(order.IsCOD === 'Yes' && order.CODPaymentUserOrder &&
-                                    order.CODPaymentUserOrder.CODPayment) ? 
-                                    order.CODPaymentUserOrder.CODPayment.Status : 'N/A'} />
-            <Table.TextCell text={order.CreatedDate} />
-            <Table.TextCell text={order.DueTime} />
-        </tr>
+      <tr className={rowStyles} 
+        onMouseEnter={this.onMouseOver} onMouseLeave={this.onMouseOut}>
+        <td><CheckboxRow isChecked={order.IsChecked} orderID={order.UserOrderID} /></td>
+        <td onClick={()=>{this.expandOrder(order)}}><div className={styles.cardSeparator} /></td>
+        <td onClick={()=>{this.expandOrder(order)}} className={styles.tripIDColumn}>{`ORDER- ${order.UserOrderID}`}</td>
+        <td onClick={()=>{this.expandOrder(order)}}><div className={styles.cardSeparator} /></td>
+        <td onClick={()=>{this.expandOrder(order)}}>
+          <div className={styles.cardLabel}>
+            Weight
+          </div>
+          <br />
+          <div className={styles.cardValue}>
+            {order.PackageWeight}
+          </div>
+        </td>
+        <td onClick={()=>{this.expandOrder(order)}}><div className={styles.cardSeparator} /></td>
+        <td onClick={()=>{this.expandOrder(order)}}>
+          <div className={styles.cardLabel}>
+            Deadline
+          </div>
+          <br />
+          <div className={styles.cardValue}>
+            <Deadline deadline={order.DueTime} />
+          </div>
+        </td>
+      </tr>
     );
+  }
+});
+
+const OrderBody = React.createClass({
+  getBodyContent() {
+    const { orders, expandedOrder, expand, shrink } = this.props;
+    let content = [];
+    orders.forEach((order) => {
+      content.push(<OrderRow key={order.UserOrderID} order={OrderParser(order)} expandedOrder={expandedOrder} expand={expand} shrink={shrink} />);
+    });
+    return content;
+  },
+  render() {
+    return (
+      <tbody>
+        {this.getBodyContent()}
+      </tbody>
+    );
+  }
+});
+
+function OrderBodyStore() {
+  return (store) => {
+    const { expandedOrder } = store.app.myOrders;
+    return {
+      expandedOrder: expandedOrder
+    }
+  }
 }
+
+function OrderBodyDispatch() {
+  return (dispatch) => {
+    return {
+      expand: (order) => {
+        dispatch(OrderService.ExpandOrder(order));
+      },
+      shrink: () => {
+        dispatch(OrderService.ShrinkOrder());
+      }
+    }
+  }
+}
+
+const OrderBodyContainer = connect(OrderBodyStore, OrderBodyDispatch)(OrderBody);
 
 function OrderTable({orders}) {
   const headers = <OrderHeader />;
-  const body = lodash.map(orders, (order) => {
-    return <OrderRow key={order.UserOrderID} order={OrderParser(order)} />
-  });
 
   return (
     <table className={styles.table}>
-      <thead>{headers}</thead>
-      <tbody>{body}</tbody>
+      <OrderBodyContainer orders={orders} />
     </table>
   );
 }

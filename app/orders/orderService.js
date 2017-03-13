@@ -1,601 +1,454 @@
 import lodash from 'lodash';
 import FetchGet from '../modules/fetch/get';
 import FetchPost from '../modules/fetch/post';
+import FetchDelete from '../modules/fetch/delete';
 import ModalActions from '../modules/modals/actions';
 import {modalAction} from '../modules/modals/constants';
 import moment from 'moment';
-import config from '../../config.json';
-import defaultValues from '../../defaultValues.json';
 import Promise from 'bluebird';
 import {fetchXhr} from '../modules/fetch/getXhr';
 
 const Constants = {
-    BASE: "myorder/defaultSet/",
-    SET_ORDERS: "myorder/orders/set",
-    SET_COUNT_ORDERS: "myorder/orders/setCount",
-    TOGGLE_SELECT_ORDER: "myorder/orders/select",
-    TOGGLE_SELECT_ALL: "myorder/selectedAll/toggle",
-    ADD_ORDERS: "myorder/orders/add",
-    FETCH_ORDER_DETAILS: "myorder/orders/details",
-    ORDER_DETAILS_SET: "myorder/orders/details/set",
-    FETCHING_PAGE: "myorder/orders/fetching",
-    FETCHING_PAGE_STOP: "myorder/orders/fetchingStop",
-    RESET_ORDERS: "myorder/orders/reset",
+  BASE: "myorder/defaultSet/",
+  SET_ORDERS: "myorder/orders/set",
+  TOGGLE_SELECT_ORDER: "myorder/orders/select",
+  TOGGLE_SELECT_ALL: "myorder/orders/selectAll",
+  ORDER_DETAILS_SET: "myorder/orders/details",
+  FETCHING_PAGE: "myorder/orders/fetchingStart",
+  FETCHING_PAGE_STOP: "myorder/orders/fetchingStop",
+  ORDER_EXPAND_DETAILS: "myorder/orders/expand",
+  ORDER_EXPAND_DRIVER: "myorder/orders/expandDriver",
+  ORDER_EXPAND_DRIVER_BULK: "myorder/orders/expandDriverBulk",
+  ORDER_SHRINK_ORDER: "myorder/orders/shrink",
+  ORDER_DRIVER_ASSIGN_START: "myorder/orders/driver/assign/start",
+  ORDER_DRIVER_ASSIGN_END: "myorder/orders/driver/assign/end",
+  ORDER_DRIVER_DEASSIGN_START: "myorder/orders/driver/deassign/start",
+  ORDER_DRIVER_DEASSIGN_END: "myorder/orders/driver/deassign/end",
+  SET_DRIVER: "myorder/orders/setDriver",
+  RESET_DRIVER: "myorder/orders/resetDriver",
+  SHOW_SUCCESS_ASSIGN: "myorder/orders/showSuccess",
+  CLOSE_SUCCESS_ASSIGN: "myorder/orders/closeSuccess"
 }
 
 const initialStore = {
-    currentPage: 1,
-    filters: {},
-    limit: 100,
-    statusName: "SHOW ALL",
-    orderType: "All",
-    orderOwner: "All",
-    assignment: "All",
-    isCOD: "All",
-    total: 0,
-    orders: [],
-    selectedAll: false,
-    order: {},
-    isEditing: false,
-    isFetching: false,
-    countOpen: '',
-    countInProgress: '',
-    countFinished: '',
-    statusFilter: ''
+  currentPage: 1,
+  filters: {},
+  limit: 10,
+  statusName: "SHOW ALL",
+  sortOptions: "Sort By",
+  total: 0,
+  orders: [],
+  selectedAll: false,
+  isFetching: false,
+  order: {},
+  expandedOrder: {},
+  isExpandOrder: false,
+  isExpandDriver: false,
+  isExpandDriverBulk: false,
+  isSettingDriver: false,
+  selectedDriver: null,
+  isSuccessAssign: false
 }
 
 export default function Reducer(store = initialStore, action) {
-    const parsedActionType = action.type.split('/');
-    if (parsedActionType.length > 2 && parsedActionType[0] === "myorder" && parsedActionType[1] === "defaultSet") {
-        const fieldName = parsedActionType[2];
-        return lodash.assign({}, store, {[fieldName]: action[fieldName]});
+  const parsedActionType = action.type.split('/');
+  if(parsedActionType.length > 2 && parsedActionType[0] === "myorder" && parsedActionType[1] === "defaultSet") {
+    const fieldName = parsedActionType[2];
+    return lodash.assign({}, store, {[fieldName]: action[fieldName]});
+  }
+
+  switch(action.type) {
+    case Constants.SET_ORDERS: {
+      return lodash.assign({}, store, {
+        total: action.total,
+        orders: action.orders,
+      });
     }
 
-    switch(action.type) {
-        case Constants.SET_ORDERS: {
-            return lodash.assign({}, store, {
-                total: action.total,
-                orders: action.orders
-            });
+    case Constants.TOGGLE_SELECT_ORDER: {
+      const newOrders= lodash.map(store.orders, (order) => {
+        if(order.UserOrderID !== action.orderID) {
+            return order;
         }
 
-        case Constants.TOGGLE_SELECT_ORDER: {
-            const newOrders = lodash.map(store.orders, (order) => {
-                if(order.UserOrderID !== action.orderID) {
-                    return order;
-                }
+        return lodash.assign({}, order, {IsChecked: !order.IsChecked});
+      });
 
-                return lodash.assign({}, order, {IsChecked: !order.IsChecked});
-            });
-
-            return lodash.assign({}, store, {
-                orders: newOrders,
-            });
-        }
-
-        case Constants.TOGGLE_SELECT_ALL: {
-            const {orders, selectedAll} = store;
-            const newOrders = lodash.map(orders, (order) => {
-                return lodash.assign({}, order, {IsChecked: !selectedAll});
-            });
-
-            return lodash.assign({}, store, {
-                selectedAll: !selectedAll,
-                orders: newOrders,
-            })
-        }
-
-        case Constants.FETCHING_PAGE: {
-            return lodash.assign({}, store, {
-                isFetching: true
-            });
-        }
-
-        case Constants.ORDER_DETAILS_SET: {
-            return lodash.assign({}, store, {
-                order: action.order,
-                isEditing: true,
-                isFetching: false
-            });
-        }
-
-        case Constants.FETCHING_PAGE_STOP: {
-            return lodash.assign({}, store, {
-                order: {},
-                isFetching: false,
-                isEditing: false
-            });
-        }
-
-        case Constants.SET_COUNT_ORDERS: {
-            return lodash.assign({}, store, {
-                countOpen: action.countOpen,
-                countInProgress: action.countInProgress,
-                countFinished: action.countFinished
-            });
-        }
-
-        case Constants.RESET_ORDERS: {
-            return lodash.assign({}, store, {
-                total: 0,
-                orders: []
-            });
-        }
-
-        default: {
-            return store;
-        }
+      return lodash.assign({}, store, {
+        orders: newOrders,
+      });
     }
+
+    case Constants.TOGGLE_SELECT_ALL: {
+      const {orders, selectedAll} = store;
+      const newOrders = lodash.map(orders, (order) => {
+        return lodash.assign({}, order, {IsChecked: !selectedAll});
+      });
+
+      return lodash.assign({}, store, {
+        selectedAll: !selectedAll,
+        orders: newOrders,
+      })
+    }
+
+    case Constants.FETCHING_PAGE: {
+      return lodash.assign({}, store, {
+        isFetching: true
+      });
+    }
+
+    case Constants.ORDER_DETAILS_SET: {
+      return lodash.assign({}, store, {
+        order: action.order,
+        isFetching: false
+      });
+    }
+
+    case Constants.FETCHING_PAGE_STOP: {
+      return lodash.assign({}, store, {
+        order: {},
+        isFetching: false
+      });
+    }
+
+    case Constants.ORDER_EXPAND_DETAILS: {
+      return lodash.assign({}, store, {
+        expandedOrder: action.order,
+        isExpandOrder: true
+      });
+    }
+
+    case Constants.ORDER_EXPAND_DRIVER: {
+      return lodash.assign({}, store, {
+        isExpandDriver: true
+      });
+    }
+
+    case Constants.ORDER_EXPAND_DRIVER_BULK: {
+      return lodash.assign({}, store, {
+        isExpandDriver: true,
+        isExpandDriverBulk: true
+      });
+    }
+
+    case Constants.ORDER_SHRINK_ORDER: {
+      return lodash.assign({}, store, {
+        expandedOrder: {},
+        isExpandOrder: false,
+        isExpandDriver: false,
+        isExpandDriverBulk: false
+      });
+    }
+
+    case Constants.ORDER_DRIVER_ASSIGN_START: {
+      return lodash.assign({}, store, {
+        isSettingDriver: true
+      });
+    }
+
+    case Constants.ORDER_DRIVER_ASSIGN_END: {
+      return lodash.assign({}, store, {
+        isSettingDriver: false
+      });
+    }
+
+    case Constants.ORDER_DRIVER_DEASSIGN_START: {
+      return lodash.assign({}, store, {
+        isSettingDriver: true
+      });
+    }
+
+    case Constants.ORDER_DRIVER_DEASSIGN_END: {
+      return lodash.assign({}, store, {
+        isSettingDriver: false
+      });
+    }
+
+    case Constants.SET_DRIVER: {
+      return lodash.assign({}, store, {
+        selectedDriver: action.driverID
+      });
+    }
+
+    case Constants.RESET_DRIVER: {
+      return lodash.assign({}, store, {
+        selectedDriver: action.driverID
+      });
+    }        
+
+    case Constants.SHOW_SUCCESS_ASSIGN: {
+      return lodash.assign({}, store, {
+          isSuccessAssign: true
+      });
+    }
+
+    case Constants.CLOSE_SUCCESS_ASSIGN: {
+      return lodash.assign({}, store, {
+          isSuccessAssign: false
+      });
+    }
+
+    default: {
+      return store;
+    }
+  }
 }
 
 export function StoreSetter(keyword, value) {
-    return {type: Constants.BASE + keyword, [keyword]: value};
+  return {type: Constants.BASE + keyword, [keyword]: value};
 }
 
 export function SetFilters(filters) {
-    return StoreSetter("filters", filters);
+  return StoreSetter("filters", filters);
 }
 
 export function UpdateFilters(filters) {
-    return (dispatch, getState) => {
-        const prevFilters = getState().app.myOrders.filters;
-        const nextFilter = lodash.assign({}, prevFilters, filters);
-        dispatch(SetFilters(nextFilter));
-    }
-}
-
-export function SetStatusFilter(filter) {
-    return StoreSetter("statusFilter", filter);
+  return (dispatch, getState) => {
+    const prevFilters = getState().app.myOrders.filters;
+    const nextFilter = lodash.assign({}, prevFilters, filters);
+    dispatch(SetFilters(nextFilter));
+  }
 }
 
 export function SetDropDownFilter(keyword) {
-    const filterNames = {
-        "statusName": "status",
-        "orderOwner": "isTrunkeyOrder",
-        "isCOD": "isCOD",
-        "orderType": "orderType",
-        "assignment": "assignment",
-    };
+  const filterNames = {
+    "statusName": "status",
+    "sortOptions": "sortOptions"
+  };
 
-    return (selectedOption) => {
-        const filterName = filterNames[keyword];
+  return (selectedOption) => {
+    const filterName = filterNames[keyword];
 
-        return (dispatch, getState) => {
-            dispatch(StoreSetter(keyword, selectedOption.value));
-            dispatch(StoreSetter("currentPage", 1));
-            dispatch(UpdateFilters({[filterName]: selectedOption.key}));
-            dispatch(FetchList());
-        }
+    return (dispatch, getState) => {
+        dispatch(StoreSetter(keyword, selectedOption.value));
+        dispatch(StoreSetter("currentPage", 1));
+        dispatch(UpdateFilters({[filterName]: selectedOption.key}));
+        dispatch(FetchList());
     }
+  }
 }
 
 export function SetCurrentPage(currentPage) {
-    return (dispatch, getState) => {
-        dispatch(StoreSetter("currentPage", currentPage));
-        dispatch(FetchList());
-    }
+  return (dispatch, getState) => {
+    dispatch(StoreSetter("currentPage", currentPage));
+    dispatch(FetchList());
+  }
 }
 
 export function SetLimit(limit) {
-    return (dispatch, getState) => {
-        dispatch(StoreSetter("limit", limit));
-        dispatch(SetCurrentPage(1));
-    }
-}
-
-export function SetCreatedDate(date) {
-    return (dispatch, getState) => {
-        dispatch(UpdateFilters({createdDate: date.toLocaleString()}));
-        dispatch(FetchList());
-        dispatch({type: modalAction.BACKDROP_SHOW});
-    }
+  return (dispatch, getState) => {
+    dispatch(StoreSetter("limit", limit));
+    dispatch(SetCurrentPage(1));
+  }
 }
 
 export function UpdateAndFetch(filters) {
-    return (dispatch) => {
-        dispatch(StoreSetter("currentPage", 1));
-        dispatch(UpdateFilters(filters));
-        dispatch(FetchList());
-    }
+  return (dispatch) => {
+    dispatch(StoreSetter("currentPage", 1));
+    dispatch(UpdateFilters(filters));
+    dispatch(FetchList());
+  }
 }
 
 export function ToggleChecked(orderID) {
-    return {
-        type: Constants.TOGGLE_SELECT_ORDER,
-        orderID: orderID
-    }
+  return {
+    type: Constants.TOGGLE_SELECT_ORDER,
+    orderID: orderID
+  }
 }
-
+ 
 export function ToggleCheckedAll() {
-    return { type: Constants.TOGGLE_SELECT_ALL };
+  return { type: Constants.TOGGLE_SELECT_ALL };
 }
-
 
 export function FetchList() {
-    return (dispatch, getState) => {
-        dispatch({type: Constants.RESET_ORDERS});
-        const {myOrders, userLogged} = getState().app;
-        const {currentPage, limit, total, filters, statusFilter} = myOrders;
-        const {token} = userLogged;
-        let params = lodash.assign({}, filters, {
-            limit: limit,
-            offset: (currentPage - 1) * limit
+  return (dispatch, getState) => {
+    const {myOrders, userLogged} = getState().app;
+    const {currentPage, limit, total, filters} = myOrders;
+    const {token} = userLogged;
+    const sortFilter = [{
+      key: 1, sortBy: 'AssignedTime', sortCriteria: 'ASC'      
+    }, {
+      key: 2, sortBy: 'AssignedTime', sortCriteria: 'DESC'      
+    }];
+
+    if (filters.sortOptions) {
+      let sortKey = _.find(sortFilter, {'key': filters.sortOptions});
+      filters.sortBy = sortKey.sortBy;
+      filters.sortCriteria = sortKey.sortCriteria;
+      delete filters.sortOptions;
+    }
+
+    const params = lodash.assign({}, filters, {
+      limit: limit,
+      offset: (currentPage - 1) * limit
+    });
+
+    if (filters.status) {
+      params.statusIDs = JSON.stringify([filters.status]);
+    }
+
+    dispatch({type: modalAction.BACKDROP_SHOW});
+    dispatch({type: Constants.FETCHING_PAGE});
+    FetchGet('/order/received', token, params).then((response) => {
+      if(!response.ok) {
+        return response.json().then(({error}) => {
+          throw error;
         })
+      }
 
-        switch (statusFilter) {
-            case 'ongoing' :
-                if (defaultValues.ongoingOrderStatus.indexOf(filters.status) === -1) {
-                    filters.status = null;
-                    dispatch(StoreSetter("statusName", "SHOW ALL"));
-                }
-                break;
-            case 'completed' :
-                if (defaultValues.completedOrderStatus.indexOf(filters.status) === -1) {
-                    filters.status = null;
-                    dispatch(StoreSetter("statusName", "SHOW ALL"));
-                }
-                break;
-            default :
-                if (defaultValues.openOrderStatus.indexOf(filters.status) === -1) {
-                    filters.status = null;
-                    dispatch(StoreSetter("statusName", "SHOW ALL"));
-                }
-                break;
+      return response.json().then(({data}) => {
+        if (data.count < total) {
+          dispatch(SetCurrentPage(1));
         }
-
-        if (filters.status === 'All' || !filters.status) {
-            switch (statusFilter) {
-                case 'ongoing' :
-                    params.status = JSON.stringify(defaultValues.ongoingOrderStatus.filter((val) => {
-                        return val;
-                    }));
-                    break;
-                case 'completed' :
-                    params.status = JSON.stringify(defaultValues.completedOrderStatus.filter((val) => {
-                        return val;
-                    }));
-                    break;
-                default :
-                    params.status = JSON.stringify(defaultValues.openOrderStatus);
-                    break;
-            }
-        }
-
-        if (filters.isTrunkeyOrder === 'All') {
-            delete params.isTrunkeyOrder;
-        }
-
-        if (filters.isCOD === 'All') {
-            delete params.isCOD;
-        }
-
-        dispatch({type: modalAction.BACKDROP_SHOW});
-        dispatch({type: Constants.FETCHING_PAGE});
-        FetchGet('/order/assigned', token, params)
-        .then((response) => {
-            if(!response.ok) {
-                return response.json().then(({error}) => {
-                    throw error;
-                })
-            }
-
-            response.json().then(({data}) => {
-                dispatch({
-                    type: Constants.SET_ORDERS,
-                    orders: data.rows,
-                    total: data.count,
-                })
-            })
-            dispatch({type: Constants.FETCHING_PAGE_STOP});
-            dispatch({type: modalAction.BACKDROP_HIDE});
-        }).catch((e) => {
-            dispatch({type: modalAction.BACKDROP_HIDE});
-            dispatch(ModalActions.addMessage(e.message));
+        dispatch({type: modalAction.BACKDROP_HIDE});
+        dispatch({
+          type: Constants.SET_ORDERS,
+          orders: data.rows,
+          total: data.count,
         });
-    }
-}
-
-export function FetchCountOrder() {
-    return (dispatch, getState) => {
-
-        const {userLogged} = getState().app;
-        const {token} = userLogged;
-        let params = {};
-
-        dispatch({type: modalAction.BACKDROP_SHOW});
-        FetchGet('/order/assignedCount', token, params).then((response) => {
-            return response.json().then(({data}) => {
-                dispatch({
-                    type: Constants.SET_COUNT_ORDERS,
-                    countOpen: data.open,
-                    countInProgress: data.inProgress,
-                    countFinished: data.finished,
-                })
-                dispatch({type: modalAction.BACKDROP_HIDE});
-            });
-        })
-        .catch((e) => {
-            dispatch({type: modalAction.BACKDROP_HIDE});
-            dispatch(ModalActions.addMessage(e.message));
-        });
-    }
-}
-
-export function addOrder(order) {
-    return (dispatch, getState) => {
-        const {userLogged} = getState().app;
-        const {token} = userLogged;
-
-        dispatch({type: modalAction.BACKDROP_SHOW});
-        FetchPost('/order/company', token, order).then((response) => {
-        if(response.ok) {
-            response.json().then(function({data}) {
-                dispatch({
-                    type: Constants.ORDER_DETAILS_SET,
-                    order: lodash.assign({}, order),
-                });
-                alert('Add Order Success');
-                dispatch({type: modalAction.BACKDROP_HIDE});
-                window.location.href='/myorders/details/' + data.UserOrderID;
-            });
-        } else {
-            response.json().then(function({error}) {
-                var message = '';
-                error.message.forEach(function(m) {
-                    message += m + '\n';
-                });
-                alert(message);
-                dispatch({type: modalAction.BACKDROP_HIDE});
-            });
-        }
-        }).catch(() => { 
-            dispatch({type: modalAction.BACKDROP_HIDE});
-            dispatch(ModalActions.addMessage('Network error'));
-        });
-    }
-}
-
-export function editOrder(id, order) {
-    return (dispatch, getState) => {
-        const {userLogged} = getState().app;
-        const {token} = userLogged;
-
-        dispatch({type: modalAction.BACKDROP_SHOW});
-        FetchPost('/order/company/' + id, token, order).then((response) => {
-        if(response.ok) {
-            response.json().then(function({data}) {
-                if (!data.UserOrderID) {
-                    alert(data.message || 'Can\'t update order');
-                    dispatch({type: modalAction.BACKDROP_HIDE});
-                    return;
-                }
-                dispatch({
-                    type: Constants.ORDER_DETAILS_SET,
-                    order: lodash.assign({}, order),
-                });                
-                alert('Edit Order Success');
-                dispatch({type: modalAction.BACKDROP_HIDE});
-                dispatch(fetchDetails(data.UserOrderID));
-            });
-        } else {
-            response.json().then(function({error}) {
-                var message = '';
-                error.message.forEach(function(m) {
-                    message += m + '\n';
-                });
-                alert(message);
-                dispatch({type: modalAction.BACKDROP_HIDE});
-                dispatch(fetchDetails(id));
-            });
-        }
-        }).catch(() => { 
-            dispatch({type: modalAction.BACKDROP_HIDE});
-            dispatch(ModalActions.addMessage('Network error'));
-        });
-    }
+        dispatch({type: Constants.FETCHING_PAGE_STOP});
+      });
+    }).catch((e) => {
+      dispatch({type: modalAction.BACKDROP_HIDE});
+      dispatch(ModalActions.addMessage(e.message));
+      dispatch({type: Constants.FETCHING_PAGE_STOP});
+    });
+  }
 }
 
 export function fetchDetails(id) {
-    return (dispatch, getState) => {
-        const {userLogged} = getState().app;
-        const {token} = userLogged;
+  return (dispatch, getState) => {
+    const {userLogged} = getState().app;
+    const {token} = userLogged;
 
-        dispatch({type: modalAction.BACKDROP_SHOW});
-        dispatch({type: Constants.FETCHING_PAGE});
-        FetchGet('/order/' + id, token).then(function(response) {
-            if(!response.ok) {
-                return response.json().then(({error}) => {
-                    throw error;
-                });
-            }
-
-            response.json().then(function({data}) {
-                dispatch({
-                    type: Constants.ORDER_DETAILS_SET,
-                    order: data,
-                });
-                dispatch({type: modalAction.BACKDROP_HIDE});
-            });
-        }).catch((e) => {
-            window.history.back();
-            const message = (e && e.message) ? e.message : "Failed to fetch order details";
-            dispatch(ModalActions.addMessage(message));
-            dispatch({type: modalAction.BACKDROP_HIDE});
+    dispatch({type: modalAction.BACKDROP_SHOW});
+    dispatch({type: Constants.FETCHING_PAGE});
+    FetchGet('/order/' + id, token).then(function(response) {
+      if(!response.ok) {
+        return response.json().then(({error}) => {
+          throw error;
         });
-    }
+      }
+
+      response.json().then(function({data}) {
+        dispatch({
+          type: Constants.ORDER_DETAILS_SET,
+          order: data,
+        });
+        dispatch({type: modalAction.BACKDROP_HIDE});
+      });
+    }).catch((e) => {
+      window.history.back();
+      const message = (e && e.message) ? e.message : "Failed to fetch trip details";
+      dispatch(ModalActions.addMessage(message));
+      dispatch({type: modalAction.BACKDROP_HIDE});
+    });
+  }
 }
 
-export function resetManageOrder() {
-    return (dispatch) => {
-        dispatch({type: Constants.FETCHING_PAGE_STOP});
-    }
+export function ExpandOrder(order) {
+  return {
+    type: Constants.ORDER_EXPAND_DETAILS,
+    order: order
+  }
 }
 
-export function ExportOrder(startDate, endDate) {
-    return (dispatch, getState) => {
-        const {myOrders, userLogged} = getState().app;
-        const {filters, total} = myOrders;
-        const {token} = userLogged;
-        const acceptHeader = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-        const responseType = 'arraybuffer';
-        let params = lodash.assign({}, filters, {});
-        let isProceed;
-
-        if (filters.status === 'All' || !filters.status) {
-            params.status = JSON.stringify(defaultValues.openOrderStatus);
-        }
-
-        if (filters.isTrunkeyOrder === 'All') {
-            delete params.isTrunkeyOrder;
-        }
-
-        if (filters.isCOD === 'All') {
-            delete params.isCOD;
-        }
-        
-        if (Object.keys(params).length === 0) {
-            isProceed = confirm('You are about to export ' + total + ' orders. Do you want to continue ?');
-            if (!isProceed) {
-                return;
-            }
-        }
-
-        var output ='<p style="text-align: center">'+
-                    '<img src="../img/loading.gif" style="width:100px; height:100px;" />'+
-                    '<br />'+
-                    'You can do other things, while exporting in progress'+
-                    '</p>';
-
-        var popout = window.open();
-        popout.document.write(output);
-        let xhr = fetchXhr('/order/export/', params, token, acceptHeader, responseType);
-        xhr.onload = function (oEvent) {
-            let blob = new Blob([xhr.response], {type: acceptHeader});
-            let fileName = 'export_'+ moment(new Date()).format('YYYY-MM-DD HH:mm:ss') +'.xlsx';
-            if (typeof window.navigator.msSaveBlob !== 'undefined') {
-                window.navigator.msSaveBlob(blob, fileName);
-            } else {
-                let URL = window.URL || window.webkitURL;
-                let downloadUrl = window.URL.createObjectURL(blob);
-
-                if (fileName) {
-                    let a = document.createElement("a");
-                    if (typeof a.download === 'undefined') {
-                        popout.location.href = downloadUrl;
-                    } else {
-                        a.href = downloadUrl;
-                        a.download = fileName;
-                        a.target = '_blank';
-                        document.body.appendChild(a);
-                        a.click();
-                    }
-                } else {
-                    popout.location.href = downloadUrl;
-                }
-
-                setTimeout(function () { 
-                    window.URL.revokeObjectURL(downloadUrl); 
-                    popout.close();
-                }, 1000);
-            }
-        };
-
-        xhr.send(null);
-    }
+export function ExpandDriver() {
+  return {
+    type: Constants.ORDER_EXPAND_DRIVER
+  }
 }
 
-export function AssignOrder(orders, driverID) {
-    return (dispatch, getState) => {
-        const {userLogged, myOrders} = getState().app;
-        const {token} = userLogged;
-        let params = {
-            driverID: driverID
-        };
-
-        let promises = [];
-        let assignMessage = '';
-
-        function assignSingleOrder(token, order, params) {
-            return new Promise(function(resolve, reject) {
-                FetchPost('/order/' + order.UserOrderID + '/driver', token, params)
-                .then(function(response) {
-                    if (!response.ok) {            
-                        return response.json().then(({error}) => {
-                            error.order = order;
-                            return resolve(error);
-                        });
-                    } 
-                    return response.json().then(({data}) => {
-                        data.order = order;
-                        return resolve(data);
-                    });
-                });
-            });
-        }
-
-        dispatch({type: modalAction.BACKDROP_SHOW});
-        orders.forEach(function(order) {
-            promises.push(assignSingleOrder(token, order, params));
-        });
-
-        Promise.all(promises).then(function(responses) {
-            responses.forEach(function(response) {
-                if (response.code === 200) {            
-                    assignMessage += response.order.UserOrderNumber + ': success assigned \n';
-                } else {
-                    assignMessage += response.order.UserOrderNumber + ': ' + response.message + '\n';
-                }
-            })
-            alert(assignMessage);
-            dispatch({type: modalAction.BACKDROP_HIDE});
-            dispatch(FetchList());
-            dispatch(FetchCountOrder());
-        });
-    }
+export function ExpandDriverBulk() {
+  return {
+    type: Constants.ORDER_EXPAND_DRIVER_BULK
+  }
 }
 
-export function CancelOrder(orders) {
-    return (dispatch, getState) => {
-        const {userLogged, myOrders} = getState().app;
-        const {token} = userLogged;
-        let promises = [];
-        let cancelMessage = '';
+export function ShrinkOrder(order) {
+  return {
+    type: Constants.ORDER_SHRINK_ORDER
+  }
+}
 
-        function cancelSingleOrder(token, order) {
-            return new Promise(function(resolve, reject) {
-                FetchPost('/order/company/' + order.UserOrderID + '/cancel', token)
-                .then(function(response) {
-                    if (!response.ok) {            
-                        return response.json().then(({error}) => {
-                            error.order = order;
-                            return resolve(error);
-                        });
-                    } 
-                    return response.json().then(({data}) => {
-                        data.order = order;
-                        return resolve(data);
-                    });
-                });
-            });
-        }
+export function CloseSuccessAssign() {
+  return {
+    type: Constants.CLOSE_SUCCESS_ASSIGN
+  }
+}
 
-        dispatch({type: modalAction.BACKDROP_SHOW});
-        orders.forEach(function(order) {
-            promises.push(cancelSingleOrder(token, order));
+export function AssignDriver(orderID, driverID) {
+  return (dispatch, getState) => {
+    const {userLogged} = getState().app;
+    const {token} = userLogged;
+
+    const body = {
+      DriverID: driverID,
+    };
+
+    dispatch({ type: Constants.ORDER_DRIVER_ASSIGN_START });
+    dispatch({type: modalAction.BACKDROP_SHOW});
+    FetchPost(`/order/${orderID}/driver`, token, body).then((response) => {
+      dispatch({ type: Constants.ORDER_DRIVER_ASSIGN_END });
+      if(!response.ok) {
+        return response.json().then(({error}) => {
+          throw error;
         });
+      }
+      dispatch({ type: Constants.SHOW_SUCCESS_ASSIGN });
+      dispatch(ResetDriver());
+      dispatch(ShrinkOrder());
+      dispatch(FetchList());
+      dispatch({type: modalAction.BACKDROP_HIDE});
+    }).catch((e) => {
+      const message = (e && e.message) || "Failed to set driver";
+      dispatch(ModalActions.addMessage(message));
+      dispatch({type: modalAction.BACKDROP_HIDE});
+    });
+  }
+}
 
-        Promise.all(promises).then(function(responses) {
-            responses.forEach(function(response) {
-                if (!response.code) {            
-                    cancelMessage += response.order.UserOrderNumber + ': Success cancelled \n';
-                } else {
-                    cancelMessage += response.order.UserOrderNumber + ': ' + response.message + '\n';
-                }
-            })
-            alert(cancelMessage);
-            dispatch({type: modalAction.BACKDROP_HIDE});
-            dispatch(FetchList());
-            dispatch(FetchCountOrder());
+export function BulkAssignDriver(orders, driverID) {
+  return (dispatch, getState) => {
+    const {userLogged} = getState().app;
+    const {token} = userLogged;
+
+    let orderIDs = [];
+    orders.forEach(function(order) {
+      orderIDs.push(order.UserOrderID);
+    })
+
+    const body = {
+      DriverID: driverID,
+      OrderIDs: orderIDs
+    };
+
+    dispatch({ type: Constants.ORDER_DRIVER_ASSIGN_START });
+    FetchPost(`/order/driver/bulk-assign`, token, body).then((response) => {
+      dispatch({ type: Constants.ORDER_DRIVER_ASSIGN_END });
+      if(!response.ok) {
+        return response.json().then(({error}) => {
+          throw error;
         });
-    }
+      }
+      window.location.reload(false); 
+    }).catch((e) => {
+      const message = (e && e.message) || "Failed to set driver";
+      dispatch(ModalActions.addMessage(message));
+    });
+  }
+}
+
+export function SetDriver(driverID) {
+  return {
+    type: Constants.SET_DRIVER,
+    driverID: driverID
+  }
+}
+
+export function ResetDriver() {
+  return {
+    type: Constants.RESET_DRIVER
+  }
 }
