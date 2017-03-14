@@ -16,7 +16,9 @@ const Constants = {
   ORDERS_INBOUND_SET: "inbound/set",
   ORDERS_INBOUND_MARK_RECEIVED_START: "inbound/mark/start",
   ORDERS_INBOUND_MARK_RECEIVED_END: "inbound/mark/end",
-  ORDERS_INBOUND_MARK_RECEIVED_SET: "inbound/mark/set"
+  ORDERS_INBOUND_MARK_RECEIVED_END_ERROR: "inbound/mark/endError",
+  ORDERS_INBOUND_MARK_RECEIVED_SET: "inbound/mark/set",
+  ORDERS_INBOUND_RESET_SUGGESTION: "inbound/resetSuggestion"
 }
 
 //
@@ -31,7 +33,10 @@ const initialState = {
   total: 0,
   isMarking: false,
   isDuplicate: false,
-  duplicateOrders: []
+  duplicateOrders: [],
+  suggestion: {},
+  scannedOrder: '',
+  successScanned: 0
 }
 
 export function Reducer (state = initialState, action) {
@@ -68,13 +73,34 @@ export function Reducer (state = initialState, action) {
     }
 
     case Constants.ORDERS_INBOUND_MARK_RECEIVED_END: {
-      return lodash.assign({}, state, { isMarking: false });
+      return lodash.assign({}, state, { 
+        isMarking: false,
+        suggestion: action.nextDestination,
+        successScanned: action.successScanned,
+        scannedOrder: action.scannedOrder
+      });
+    }
+
+    case Constants.ORDERS_INBOUND_MARK_RECEIVED_END_ERROR: {
+      return lodash.assign({}, state, { 
+        isMarking: false,
+        suggestion: action.nextDestination,
+        scannedOrder: action.scannedOrder
+      });
     }
 
     case Constants.ORDERS_INBOUND_MARK_RECEIVED_SET: {
       return lodash.assign({}, state, { 
         isDuplicate: action.isDuplicate || false, 
         duplicateOrders: action.duplicateOrders || []
+      });
+    }
+
+    case Constants.ORDERS_INBOUND_RESET_SUGGESTION: {
+      return lodash.assign({}, state, { 
+        suggestion: {}, 
+        successScanned: 0,
+        scannedOrder: ''
       });
     }
 
@@ -158,8 +184,9 @@ export function SetLimit (limit) {
 
 export function MarkReceived (scannedID) {
   return (dispatch, getState) => {
-    const { userLogged } = getState().app;
+    const { userLogged, inboundOrders } = getState().app;
     const { token } = userLogged;
+    const { successScanned } = inboundOrders;
 
     if (scannedID.toUpperCase().includes('TRIP-')) {
       scannedID = scannedID.toUpperCase();
@@ -200,6 +227,12 @@ export function MarkReceived (scannedID) {
           dispatch({
             type: Constants.ORDERS_INBOUND_MARK_RECEIVED_SET
           });
+        } else if (data.hasScanned) {          
+          dispatch(NotifActions.addNotification(`Order ${scannedID} already scanned`, 'success', null, null, 3, true));
+
+          dispatch({
+            type: Constants.ORDERS_INBOUND_MARK_RECEIVED_SET
+          });
         } else {
           dispatch(NotifActions.addNotification(`Order ${scannedID} was received`, 'success', null, null, 3, true));
 
@@ -209,7 +242,12 @@ export function MarkReceived (scannedID) {
         }
       
         dispatch({type: modalAction.BACKDROP_HIDE});
-        dispatch({ type: Constants.ORDERS_INBOUND_MARK_RECEIVED_END });
+        dispatch({ 
+          type: Constants.ORDERS_INBOUND_MARK_RECEIVED_END,
+          nextDestination: data.nextDestination.CurrentRoute,
+          successScanned: data.hasScanned ? successScanned : (successScanned + 1),
+          scannedOrder: scannedID
+        });
         dispatch(ReFetchList());
         dispatch(DashboardService.FetchCount());
       });
@@ -217,9 +255,23 @@ export function MarkReceived (scannedID) {
     }).catch((e) => {
       const message = (e && e.message) ? e.message : "Failed to mark order as received";
       dispatch({type: modalAction.BACKDROP_HIDE});
-      dispatch({ type: Constants.ORDERS_INBOUND_MARK_RECEIVED_END });
+        dispatch({ 
+          type: Constants.ORDERS_INBOUND_MARK_RECEIVED_END_ERROR,
+          nextDestination: {
+            DropoffAddress: {
+              City: 'Not Found' 
+            } 
+          },
+          scannedOrder: scannedID
+        });
 
       dispatch(NotifActions.addNotification(message, 'error', null, null, 5, true));
     });
   };
+}
+
+export function ResetSuggestion() {
+  return (dispatch) => {
+    dispatch({type: Constants.ORDERS_INBOUND_RESET_SUGGESTION});
+  }
 }

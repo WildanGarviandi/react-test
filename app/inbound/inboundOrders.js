@@ -63,15 +63,39 @@ const DuplicateModal = React.createClass({
   }
 });
 
+const PanelSuggestion = React.createClass({
+  render() {
+    const { nextDestination, scannedOrder } = this.props;
+    return (
+      <div className={styles.panelSuggestion}>
+        <div className={styles.scannedOrder}>
+          {scannedOrder}
+        </div>
+        <div>
+          {nextDestination.DropoffAddress.City}
+        </div>
+        <div className={styles.scannedOrder}>
+          {nextDestination.DropoffAddress.State}
+        </div>
+        <div className={styles.scannedOrder}>
+          {nextDestination.ZipCode}
+        </div>
+      </div>
+    );
+  }
+});
+
 const InboundOrdersPage = React.createClass({
   getInitialState() {
     return {
       orderMarked: '',
-      isDuplicate: false
+      isDuplicate: false,
+      showModalMessage: false
     }
   },
   componentDidMount() {
     document.getElementById('markReceivedInput').focus();
+    this.props.resetSuggestion();
   },
   componentWillReceiveProps(nextProps) {
     if (nextProps['isDuplicate']) {
@@ -90,10 +114,14 @@ const InboundOrdersPage = React.createClass({
     this.props.markReceived(val);
     this.setState({
       orderMarked: "",
+      showModalMessage: true
     });
   },
   closeModal() {
     this.setState({isDuplicate: false});
+  },
+  closeModalMessage() {
+    this.setState({showModalMessage: false});
   },
   render() {
     const inputVerifyStyles = {
@@ -115,6 +143,18 @@ const InboundOrdersPage = React.createClass({
             disabled={this.state.orderMarked === ''} >Verify</button>
         </div>
         <InboundOrdersTable />
+        {
+          !lodash.isEmpty(this.props.suggestion) && this.state.showModalMessage &&
+          <div className={styles.scanMessage}>
+            <div onClick={this.closeModalMessage} className={styles.modalClose}>
+              X
+            </div> 
+            <div className={styles.successScanned}>
+              Success: {this.props.successScanned}
+            </div>
+            <PanelSuggestion nextDestination={this.props.suggestion} scannedOrder={this.props.scannedOrder} />
+          </div>
+        }
       </Page>
     );
   }
@@ -123,13 +163,16 @@ const InboundOrdersPage = React.createClass({
 function mapStateToProps (state) {
   const { inboundOrders } = state.app;
   const userLogged = state.app.userLogged;
-  const { duplicateOrders, isDuplicate, total } = inboundOrders;
+  const { duplicateOrders, isDuplicate, total, suggestion, successScanned, scannedOrder } = inboundOrders;
 
   return {
     userLogged,
     duplicateOrders,
     isDuplicate,
-    total
+    total,
+    suggestion,
+    scannedOrder,
+    successScanned
   }
 }
 
@@ -137,6 +180,9 @@ function mapDispatchToProps (dispatch) {
   return {
     markReceived: function(scannedID) {
       dispatch(InboundOrders.MarkReceived(scannedID));
+    },
+    resetSuggestion: function() {
+      dispatch(InboundOrders.ResetSuggestion());
     }
   }
 }
