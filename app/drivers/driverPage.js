@@ -150,7 +150,7 @@ const RowDetailsDropdown = React.createClass({
           {
             isEditing &&
             <span>
-              <Form.DropdownWithState initialValue={value} options={options} handleSelect={handleSelect} />
+              <Form.DropdownWithState3 initialValue={value} options={options} handleSelect={handleSelect} />
             </span>
           }
           {

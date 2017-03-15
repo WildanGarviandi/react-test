@@ -64,7 +64,7 @@
 
 .caret {
   position: relative;
-  top: 6px;
+  top: 16px;
 }
 
 .typeBox {
@@ -79,12 +79,32 @@
   box-sizing: border-box;
 
   width: 80%;
-  height: 23px;
+  height: 48px;
 }
 
 .container {
   float: left;
   margin-bottom: 5px;
+}
+
+.caret2 {
+  position: relative;
+  top: 6px;
+}
+
+.typeBox2 {
+  display: block;
+  text-indent: 5px;
+
+  border: solid 1px #ccc;
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+
+  width: 80%;
+  height: 23px;
 }
 
 input {
