@@ -227,7 +227,7 @@ export function editDriver(id, updateData) {
         });
         alert('Edit Driver Success');
         dispatch({type: modalAction.BACKDROP_HIDE});
-        dispatch(fetchDetails(id));
+        dispatch(FetchDetails(id));
     });
     } else {
       dispatch({type: modalAction.BACKDROP_HIDE});

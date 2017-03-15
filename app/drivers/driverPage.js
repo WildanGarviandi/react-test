@@ -179,13 +179,18 @@ const PanelDriversDetails = React.createClass({
         }
     };
   },
+  componentWillReceiveProps(nextProps) {
+    this.setState({isEditing: false});
+  },
   toggleEditDriver() {
     this.setState({
       isEditing: !this.state.isEditing
     })
   },
   updateDriver() {
-    console.log(this.state);
+    let updatedData = lodash.assign({}, this.state);
+    delete updatedData.isEditing;
+    this.props.editDriver(this.props.driver.UserID, updatedData);
   },
   render() {
     const {driver, stateList} = this.props;    
@@ -404,17 +409,17 @@ const PanelDriversOrders = React.createClass({
 
 const DriverPage = React.createClass({
   componentWillMount() {
-    this.props.FetchList()
+    this.props.FetchList();
   },
   render() {
-    const {paginationState, paginationStateOrders, PaginationAction, PaginationActionOrders, stateList, drivers, driver, orders, SelectDriver} = this.props;
+    const {paginationState, paginationStateOrders, PaginationAction, PaginationActionOrders, stateList, EditDriver, drivers, driver, orders, SelectDriver} = this.props;
     return (
       <Page title="My Driver">
         <div className={styles.mainDriverPage}>
           <PanelDrivers drivers={drivers} paginationState={paginationState} PaginationAction={PaginationAction} selectDriver={SelectDriver} />
           {
             !lodash.isEmpty(driver) &&
-            <PanelDriversDetails driver={driver} stateList={stateList} />
+            <PanelDriversDetails driver={driver} stateList={stateList} editDriver={EditDriver} />
           }
           {
             !lodash.isEmpty(driver) &&
@@ -475,7 +480,7 @@ function DispatchToDriversPage(dispatch) {
       dispatch(DriverService.FetchListOrders(id));
     },
     EditDriver: (id, driver) => {
-      dispatch(DriverService.editDriver(id, order));
+      dispatch(DriverService.editDriver(id, driver));
     }
   }
 }
