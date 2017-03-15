@@ -12,6 +12,8 @@ import stylesButton from '../components/button.css';
 import config from '../config/configValues.json';
 import Countdown from 'react-cntdwn';
 import NumberFormat from 'react-number-format';
+import {InputWithDefault} from '../views/base/input';
+import * as Form from '../components/form';
 
 function StoreBuilder(keyword) {
   return (store) => {
@@ -109,85 +111,138 @@ const PanelDrivers = React.createClass({
   }
 });
 
-const PanelDriversDetails = React.createClass({
+const RowDetails = React.createClass({
   render() {
-    const {driver} = this.props;
+    const {isEditing, value, label, onChange} = this.props;
+    return (
+      <div>
+        <div className={styles.driverDetailsLabel}>
+          {label}
+        </div>
+        <div className={styles.driverDetailsValue}>
+          {
+            isEditing &&
+            <span>
+              <InputWithDefault className={styles.inputDetails} currentText={value} onChange={onChange} />
+            </span>
+          }
+          {
+            !isEditing &&
+            <span>
+              {value}
+            </span>
+          }
+        </div>
+      </div>
+      )
+  }
+})
+
+const RowDetailsDropdown = React.createClass({
+  render() {
+    const {isEditing, value, label, handleSelect, options} = this.props;
+    return (
+      <div>
+        <div className={styles.driverDetailsLabel}>
+          {label}
+        </div>
+        <div className={styles.driverDetailsValue}>
+          {
+            isEditing &&
+            <span>
+              <Form.DropdownWithState initialValue={value} options={options} handleSelect={handleSelect} />
+            </span>
+          }
+          {
+            !isEditing &&
+            <span>
+              {value}
+            </span>
+          }
+        </div>
+      </div>
+      )
+  }
+})
+
+const PanelDriversDetails = React.createClass({
+  getInitialState() {
+    return ({
+      isEditing: false
+    })
+  },
+  stateChange(key) {
+    return (value) => {
+        this.setState({[key]: value});
+        if (typeof value === 'object') {
+            this.setState({[key]: value.key});
+        }
+    };
+  },
+  toggleEditDriver() {
+    this.setState({
+      isEditing: !this.state.isEditing
+    })
+  },
+  updateDriver() {
+    console.log(this.state);
+  },
+  render() {
+    const {driver, stateList} = this.props;    
+    const updateButton = {
+      textBase: 'Update Profile',
+      onClick: this.updateDriver,
+      styles: {
+        base: stylesButton.greenButton3,
+      }
+    };    
+    const vehicleOptions = config.vehicle;
+    const vehicleValue = lodash.find(vehicleOptions, { 'key': driver.PackageSizeMaster && driver.PackageSizeMaster.PackageSizeID });
+    const stateOptions = lodash.chain(stateList)
+     .map((key, val) => ({key:key, value: val.toUpperCase()}))
+     .sortBy((arr) => (arr.key))
+     .value();
     return (
       <div className={styles.mainDriverDetailsPanel}>
         <div className={styles.driverTitle}>
           Driver Details
+        </div>
+        <div className={styles.driverEditButton} onClick={this.toggleEditDriver}>
+          {this.state.isEditing ? '(Click to cancel)' : '(Click to edit)'}
         </div>
         <div className={styles.driverDetailsMain}>
           <div className={styles.driverDetailsPicture}>
             <img src={driver.PictureUrl} onError={(e)=>{e.target.src=DEFAULT_IMAGE}}/>
           </div>
           <div className={styles.driverDetailsName}>
-            <div className={styles.driverDetailsLabel}>
-              First Name
-            </div>
-            <div className={styles.driverDetailsValue}>
-              {driver.FirstName}
-            </div>
-            <div className={styles.driverDetailsLabel}>
-              Last Name
-            </div>
-            <div className={styles.driverDetailsValue}>
-              {driver.LastName}
-            </div>
+            <RowDetails value={driver.FirstName} onChange={this.stateChange('FirstName')} label={'First Name'} isEditing={this.state.isEditing} />
+            <RowDetails value={driver.LastName} onChange={this.stateChange('LastName')} label={'Last Name'} isEditing={this.state.isEditing} />
           </div>
         </div>
         <div className={styles.driverDetailsSecondary}>
-          <div className={styles.driverDetailsLabel}>
-            Email
-          </div>
-          <div className={styles.driverDetailsValue}>
-            {driver.Email}
-          </div> 
-          <div className={styles.driverDetailsLabel}>
-            Phone Number
-          </div>
-          <div className={styles.driverDetailsValue}>
-            {driver.PhoneNumber}
-          </div> 
-          <div className={styles.driverDetailsLabel}>
-            Address
-          </div>
-          <div className={styles.driverDetailsValue}>
-            {driver.Location}
-          </div>          
+          <RowDetails value={driver.Email} onChange={this.stateChange('Email')} label={'Email'} isEditing={this.state.isEditing} />
+          <RowDetails value={driver.PhoneNumber} onChange={this.stateChange('PhoneNumber')} label={'Phone Number'} isEditing={this.state.isEditing} />
+          <RowDetails value={driver.Location} onChange={this.stateChange('Location')} label={'Address'} isEditing={this.state.isEditing} />         
         </div>
-        <div className={styles.driverDetailsMain}>
+        <div className={styles.driverDetailsMain2}>
           <div className={styles.driverDetailsPicture}>
-            <div className={styles.driverDetailsLabel}>
-              State
-            </div>
-            <div className={styles.driverDetailsValue}>
-              {driver.State && driver.State.Name}
-            </div>
+            <RowDetailsDropdown label={'State'} value={driver.State && driver.State.Name} options={stateOptions} handleSelect={this.stateChange('StateID')} isEditing={this.state.isEditing} />
           </div>
           <div className={styles.driverDetailsName}>
-            <div className={styles.driverDetailsLabel}>
-              Last Name
-            </div>
-            <div className={styles.driverDetailsValue}>
-              {driver.ZipCode}
-            </div>
+            <RowDetails value={driver.ZipCode} onChange={this.stateChange('ZipCode')} label={'Zipcode'} isEditing={this.state.isEditing} />
           </div>
         </div>
         <div className={styles.driverDetailsSecondary}>
-          <div className={styles.driverDetailsLabel}>
-            Vehicle Type
-          </div>
-          <div className={styles.driverDetailsValue}>
-            {driver.PackageSizeMaster && driver.PackageSizeMaster.PackageSizeID === 1 ? 'Motorcycle' : 'Van'}
-          </div> 
-          <div className={styles.driverDetailsLabel}>
-            Vehicle License Number
-          </div>
-          <div className={styles.driverDetailsValue}>
-            {driver.DrivingLicenseID}
-          </div>         
+          <RowDetailsDropdown label={'Vehicle'} value={vehicleValue && vehicleValue.value} options={vehicleOptions} handleSelect={this.stateChange('PackageSizeID')} isEditing={this.state.isEditing} />
+          <div style={{clear: 'both'}} />
+          <RowDetails value={driver.DrivingLicenseID} onChange={this.stateChange('DrivingLicenseID')} label={'License Number'} isEditing={this.state.isEditing} />       
         </div>
+        {
+          this.state.isEditing &&
+          <div className={styles.updateButton}>
+            <ButtonWithLoading {...updateButton} />
+          </div>
+        }
       </div>
     );
   }
@@ -352,14 +407,14 @@ const DriverPage = React.createClass({
     this.props.FetchList()
   },
   render() {
-    const {paginationState, paginationStateOrders, PaginationAction, PaginationActionOrders, drivers, driver, orders, SelectDriver} = this.props;
+    const {paginationState, paginationStateOrders, PaginationAction, PaginationActionOrders, stateList, drivers, driver, orders, SelectDriver} = this.props;
     return (
       <Page title="My Driver">
         <div className={styles.mainDriverPage}>
           <PanelDrivers drivers={drivers} paginationState={paginationState} PaginationAction={PaginationAction} selectDriver={SelectDriver} />
           {
             !lodash.isEmpty(driver) &&
-            <PanelDriversDetails driver={driver} />
+            <PanelDriversDetails driver={driver} stateList={stateList} />
           }
           {
             !lodash.isEmpty(driver) &&
@@ -373,6 +428,11 @@ const DriverPage = React.createClass({
 
 function StoreToDriversPage(store) {
   const {currentPage, currentPageOrders, limit, limitOrders, total, totalOrders, drivers, driver, orders} = store.app.myDrivers;
+  const {states} = store.app.stateList;
+  let stateList = {}; 
+  states.forEach(function(state) {
+      stateList[state.Name] = state.StateID;
+  });
   return {
     drivers: drivers,
     paginationState: {
@@ -384,7 +444,8 @@ function StoreToDriversPage(store) {
       total: totalOrders
     },
     driver: driver,
-    orders: orders
+    orders: orders,
+    stateList: stateList
   }
 }
 
@@ -412,6 +473,9 @@ function DispatchToDriversPage(dispatch) {
     SelectDriver: (id) => {
       dispatch(DriverService.FetchDetails(id));
       dispatch(DriverService.FetchListOrders(id));
+    },
+    EditDriver: (id, driver) => {
+      dispatch(DriverService.editDriver(id, order));
     }
   }
 }

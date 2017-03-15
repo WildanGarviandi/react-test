@@ -64,7 +64,7 @@
 
 .caret {
   position: relative;
-  top: 16px;
+  top: 6px;
 }
 
 .typeBox {
@@ -79,11 +79,12 @@
   box-sizing: border-box;
 
   width: 80%;
-  height: 48px;
+  height: 23px;
 }
 
 .container {
   float: left;
+  margin-bottom: 5px;
 }
 
 input {
