@@ -343,7 +343,6 @@ export function MarkPickup () {
       }
       dispatch({type: modalAction.BACKDROP_HIDE});
       dispatch(ModalActions.addMessage("Marking pickup is suceeed"));
-      dispatch(DashboardService.FetchCount());
       dispatch(PickupOrdersReadyService.FetchList());
       dispatch(FetchList());
 
