@@ -4,6 +4,9 @@ import FetchGet from '../modules/fetch/get';
 import FetchPost from '../modules/fetch/post';
 import ModalActions from '../modules/modals/actions';
 import {OrderParser} from '../modules/orders';
+import * as DashboardService from '../dashboard/dashboardService';
+import * as PickupOrdersReadyService from './pickupOrdersReadyService';
+import {modalAction} from '../modules/modals/constants';
 
 const Constants = {
   BASE_ORDERS_PICKUP: "pickup/defaultSet/",
@@ -299,5 +302,54 @@ export function ShowAssignModal() {
 export function HideAssignModal() {
   return (dispatch) => {
     dispatch({type: Constants.ORDERS_PICKUP_HIDE_MODAL});
+  }
+}
+
+export function MarkPickup () {
+  return (dispatch, getState) => {
+    const {pickupOrders, userLogged} = getState().app;
+    const {token} = userLogged;
+    const {orders} = pickupOrders;
+
+    let forbidden = false;
+    const checkedOrdersIDs = lodash.chain(orders)
+      .filter((order) => {
+        if (order.IsChecked && order.OrderStatus === 'NOTASSIGNED') {
+          forbidden = true;
+        }
+        return order.IsChecked;
+      })
+      .map((order) => (order.UserOrderID))
+      .value();
+
+    if (forbidden) {
+      dispatch(ModalActions.addMessage('Failed, one or more orders have status NOTASSIGNED'));
+      return;
+    }
+
+    if (checkedOrdersIDs.length === 0) {
+      dispatch(ModalActions.addMessage('No order selected'));
+      return;
+    }
+
+    const body = {
+      OrderIDs: checkedOrdersIDs
+    }
+
+    dispatch({type: modalAction.BACKDROP_SHOW});
+    FetchPost('/order/pickupNow', token, body).then((response) => {
+      if(!response.ok) {
+        throw new Error();
+      }
+      dispatch({type: modalAction.BACKDROP_HIDE});
+      dispatch(ModalActions.addMessage("Marking pickup is suceeed"));
+      dispatch(DashboardService.FetchCount());
+      dispatch(PickupOrdersReadyService.FetchList());
+      dispatch(FetchList());
+
+    }).catch(() => {
+      dispatch({type: modalAction.BACKDROP_HIDE});
+      dispatch(ModalActions.addMessage("Failed to marking pickup"));
+    });
   }
 }

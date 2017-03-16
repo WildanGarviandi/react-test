@@ -16,20 +16,9 @@ export function LinkCell({onClick, text, to}) {
 }
 
 export function OrderIDLinkCell({onClick, eds, id, to, isChecked, item}) {
-  let style = {
-    textAlign: 'center',
-    color: '#33c',
-    display: 'inline-block'
-  }
-
-  if (item && item.IsChecked) {
-    style.color = '#fff';
-    style.backgroundColor = '#ff5a60';
-  }
-
   return (
     <Link to={to} className={styles.link}>
-      <span style={style} className={styles.hoverUnderline}>
+      <span className={styles.hoverUnderline}>
         {eds}<br />({id})
       </span>
     </Link>
