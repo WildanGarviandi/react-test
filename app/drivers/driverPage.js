@@ -410,6 +410,7 @@ const PanelDriversOrders = React.createClass({
 const DriverPage = React.createClass({
   componentWillMount() {
     this.props.FetchList();
+    this.props.ResetDriver();
   },
   render() {
     const {paginationState, paginationStateOrders, PaginationAction, PaginationActionOrders, stateList, EditDriver, drivers, driver, orders, SelectDriver} = this.props;
@@ -481,6 +482,9 @@ function DispatchToDriversPage(dispatch) {
     },
     EditDriver: (id, driver) => {
       dispatch(DriverService.editDriver(id, driver));
+    },
+    ResetDriver: () => {
+      dispatch(DriverService.ResetDriver());
     }
   }
 }
