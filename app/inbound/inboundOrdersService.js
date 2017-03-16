@@ -258,9 +258,7 @@ export function MarkReceived (scannedID) {
         dispatch({ 
           type: Constants.ORDERS_INBOUND_MARK_RECEIVED_END_ERROR,
           nextDestination: {
-            DropoffAddress: {
-              City: 'Not Found' 
-            } 
+            City: 'Not Found'
           },
           scannedOrder: scannedID
         });
