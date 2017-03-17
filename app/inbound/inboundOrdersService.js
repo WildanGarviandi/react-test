@@ -244,7 +244,7 @@ export function MarkReceived (scannedID) {
         dispatch({type: modalAction.BACKDROP_HIDE});
         dispatch({ 
           type: Constants.ORDERS_INBOUND_MARK_RECEIVED_END,
-          nextDestination: data.nextDestination.CurrentRoute,
+          nextDestination: data.nextDestination,
           successScanned: data.hasScanned ? successScanned : (successScanned + 1),
           scannedOrder: scannedID
         });
