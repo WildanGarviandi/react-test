@@ -127,6 +127,16 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
                 <span className={styles.counterNumber}>{countTMS && countTMS.NotDelivered}</span>
               </MenuItem>
             </div>
+            <div className={styles.titlePanel}>
+              <span className={styles.titleMenu}>
+                Others
+              </span>
+              <hr className={styles.menuSeparator} />
+              <MenuItem active={activeMenuIdx == 10} to={'/mydrivers'}>
+                <img src="/img/icon-driver.png" className={styles.menuGlyph} />
+                <span>My Drivers</span>
+              </MenuItem>
+            </div>
             { /*<div className={styles.titlePanel}>
               <span className={styles.titleMenu}>
                 Others
@@ -177,11 +187,13 @@ const menuPaths = [
   '/history',
   '/mytrips',
   '/myongoingtrips',
+  '/mydrivers'
 ];
 
 const menuPathsTMS = [
   '/mytrips',
-  '/myongoingtrips'
+  '/myongoingtrips',
+  '/mydrivers'
 ];
 
 function GetActiveMenuIdx(path) {
