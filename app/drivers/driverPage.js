@@ -14,6 +14,7 @@ import Countdown from 'react-cntdwn';
 import NumberFormat from 'react-number-format';
 import {InputWithDefault} from '../views/base/input';
 import * as Form from '../components/form';
+import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 
 function StoreBuilder(keyword) {
   return (store) => {
@@ -93,11 +94,59 @@ const Drivers = React.createClass({
 });
 
 const PanelDrivers = React.createClass({
-  render() {
+  getInitialState() {
+    return ({
+      showAddModals: false
+    })
+  },
+  addDriverModal() {
+    this.setState({
+        showAddModals: true
+    })
+  },
+  closeModal() {
+    this.setState({
+        showAddModals: false
+    })
+  },
+  stateChange(key) {
+    return (value) => {
+      this.setState({[key]: value});
+      if (typeof value === 'object') {
+        this.setState({[key]: value.key});
+      }
+    };
+  },
+  addDriver() {
+    let addedData = lodash.assign({}, this.state);
+    delete addedData.showAddModals;
+    this.props.addDriver(addedData);
+  },
+  render() {    
+    const addButton = {
+      textBase: '+ Add',
+      onClick: this.addDriverModal,
+      styles: {
+        base: stylesButton.whiteButton,
+      }
+    };    
+    const submitButton = {
+      textBase: 'Add New Driver',
+      onClick: this.addDriver,
+      styles: {
+        base: stylesButton.blueButton,
+      }
+    };    
+    const vehicleOptions = config.vehicle;
+    const stateOptions = lodash.chain(this.props.stateList)
+     .map((key, val) => ({key:key, value: val.toUpperCase()}))
+     .sortBy((arr) => (arr.key))
+     .value();
     return (
       <div className={styles.mainDriverPanel}>
         <div className={styles.driverTitle}>
           Driver List
+          <ButtonWithLoading {...addButton} />
         </div>
         <div className={styles.panelDriverSearch}>
           <NameFilter />
@@ -106,6 +155,54 @@ const PanelDrivers = React.createClass({
           <Drivers drivers={this.props.drivers} selectDriver={this.props.selectDriver} />
         </div>
         <Pagination3 {...this.props.paginationState} {...this.props.PaginationAction} />
+        {
+          this.state.showAddModals &&
+          <ModalContainer>
+            <ModalDialog>
+              <div>
+                <div className={styles.modalTitle}>
+                  Add Driver
+                </div> 
+                <div onClick={this.closeModal} className={styles.modalClose}>
+                  X
+                </div> 
+                <div className={styles.topDescDetails}>
+                  <div className={styles.driverDetailsMain}>
+                  <div className={styles.driverDetailsPicture}>
+                    <img src={DEFAULT_IMAGE} />
+                  </div>
+                  <div className={styles.driverDetailsName}>
+                    <RowDetails onChange={this.stateChange('FirstName')} label={'First Name'} isEditing={true} />
+                    <RowDetails onChange={this.stateChange('LastName')} label={'Last Name'} isEditing={true} />
+                  </div>
+                </div>
+                <div className={styles.driverDetailsSecondary}>
+                  <RowDetails onChange={this.stateChange('Email')} label={'Email'} isEditing={true} />
+                  <RowDetails onChange={this.stateChange('PhoneNumber')} label={'Phone Number'} isEditing={true} />
+                  <RowDetails onChange={this.stateChange('Location')} label={'Address'} isEditing={true} />         
+                </div>
+                <div className={styles.driverDetailsMain2}>
+                  <div className={styles.driverDetailsPicture}>
+                    <RowDetailsDropdown label={'State'} options={stateOptions} handleSelect={this.stateChange('StateID')} isEditing={true} />
+                  </div>
+                  <div className={styles.driverDetailsName}>
+                    <RowDetails onChange={this.stateChange('ZipCode')} label={'Zipcode'} isEditing={true} />
+                  </div>
+                </div>
+                <div className={styles.driverDetailsSecondary}>
+                  <RowDetailsDropdown label={'Vehicle'} options={vehicleOptions} handleSelect={this.stateChange('PackageSizeID')} isEditing={true} />
+                  <div style={{clear: 'both'}} />
+                  <RowDetails onChange={this.stateChange('DrivingLicenseID')} label={'License Number'} isEditing={true} />       
+                </div>
+                <div className={styles.updateButton}>
+                  <ButtonWithLoading {...submitButton} />
+                </div>
+                <div style={{clear: 'both'}} />
+                </div>
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
       </div>
     );
   }
@@ -413,11 +510,11 @@ const DriverPage = React.createClass({
     this.props.ResetDriver();
   },
   render() {
-    const {paginationState, paginationStateOrders, PaginationAction, PaginationActionOrders, stateList, EditDriver, drivers, driver, orders, SelectDriver} = this.props;
+    const {paginationState, paginationStateOrders, PaginationAction, PaginationActionOrders, stateList, AddDriver, EditDriver, drivers, driver, orders, SelectDriver} = this.props;
     return (
       <Page title="My Driver">
         <div className={styles.mainDriverPage}>
-          <PanelDrivers drivers={drivers} paginationState={paginationState} PaginationAction={PaginationAction} selectDriver={SelectDriver} />
+          <PanelDrivers drivers={drivers} stateList={stateList} addDriver={AddDriver} paginationState={paginationState} PaginationAction={PaginationAction} selectDriver={SelectDriver} />
           {
             !lodash.isEmpty(driver) &&
             <PanelDriversDetails driver={driver} stateList={stateList} editDriver={EditDriver} />
@@ -479,6 +576,9 @@ function DispatchToDriversPage(dispatch) {
     SelectDriver: (id) => {
       dispatch(DriverService.FetchDetails(id));
       dispatch(DriverService.FetchListOrders(id));
+    },
+    AddDriver: (driver) => {
+      dispatch(DriverService.addDriver(driver));
     },
     EditDriver: (id, driver) => {
       dispatch(DriverService.editDriver(id, driver));

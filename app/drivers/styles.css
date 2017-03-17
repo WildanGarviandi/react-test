@@ -152,6 +152,7 @@
 .driverDetailsName {
   width: 45%;
   float: left;
+  margin-left: 5px;
 }
 
 .driverDetailsLabel {
@@ -306,8 +307,8 @@
 }
 
 .inputDetails {  
-  width: 140px;
-  height: 17px;
+  width: 85%;
+  height: 25px;
   border-radius: 4px;
   background-color: #ffffff;
   border: solid 1px #e8e8e8;
@@ -333,4 +334,19 @@
 .updateButton {
   text-align: center;
   margin-top: 15px;
+}
+
+.modalTitle {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.modalClose {
+  font-size: 26px;
+  float: right;
+  top: 10px;
+  position: absolute;
+  right: 20px;
+  cursor: pointer;
 }

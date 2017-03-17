@@ -302,7 +302,7 @@ export function addDriver(driverData) {
         });
         alert('Add Driver Success');
         dispatch({type: modalAction.BACKDROP_HIDE});
-        window.location.href='/mydrivers/edit/' + data.driver.UserID;
+        window.location.href='/mydrivers/';
       });
     } else {
       response.json().then(function({error}) {
