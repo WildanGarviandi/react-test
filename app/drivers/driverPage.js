@@ -287,9 +287,7 @@ const PanelDriversDetails = React.createClass({
   },
   componentWillReceiveProps(nextProps) {
     this.setState({isEditing: false});
-  },
-  componentWillMount() {
-    this.setState({PictureUrl: this.props.driver.PictureUrl});
+    this.setState({PictureUrl: nextProps.driver.PictureUrl});
   },
   toggleEditDriver() {
     this.setState({
