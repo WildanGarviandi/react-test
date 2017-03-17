@@ -238,6 +238,7 @@ export function editDriver(id, updateData) {
         alert('Edit Driver Success');
         dispatch({type: modalAction.BACKDROP_HIDE});
         dispatch(FetchDetails(id));
+        dispatch(FetchList());
     });
     } else {
       dispatch({type: modalAction.BACKDROP_HIDE});

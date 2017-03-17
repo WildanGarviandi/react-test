@@ -27,32 +27,61 @@ const ImageUploader = React.createClass({
     }
   },
   render() {
+    const DEFAULT_IMAGE="/img/photo-default.png";
     return (
       <div>
-        { !this.props.withoutPreview && typeof this.props.currentImageUrl === "string" &&
+        { !this.props.withoutPreview && !this.props.withImagePreview && typeof this.props.currentImageUrl === "string" &&
           <span className={styles.textIndent}>
             <ImagePreview imageUrl={this.props.currentImageUrl} />
           </span>
         }
-        {
-          this.state.isUploading ?
-          <div>
-            <label className={styles.disabledFileLabel}>
-              Uploading..
-            </label>
-          </div>
-          :
-          <div>
-            <label className={styles.fileLabel}>
-              Upload
-              <input type="file"
-                onChange={(e) => this.uploadImage(e)}
-                accept="image/*"
-                name="file"
-                className={styles.fileInput}
-              />
-            </label>
-          </div>
+        { !this.props.withoutPreview && this.props.withImagePreview && typeof this.props.currentImageUrl === "string" &&
+          <span className={styles.textIndent}>  
+            { this.state.isUploading &&
+              <div>
+                <label className={styles.disabledFileLabel}>
+                  Uploading..
+                </label>
+              </div>
+            }
+            { !this.state.isUploading &&
+              <div>
+                <label className={styles.fileLabel2}>
+                  <img className={styles.imgPreview} src={this.props.currentImageUrl} onError={(e)=>{e.target.src=DEFAULT_IMAGE}} />
+                  <input type="file"
+                    onChange={(e) => this.uploadImage(e)}
+                    accept="image/*"
+                    name="file"
+                    className={styles.fileInput}
+                  />
+                </label>
+              </div>
+            }
+          </span>
+        }
+        { !this.props.withoutPreview && !this.props.withImagePreview &&
+          <span className={styles.textIndent}>  
+            { this.state.isUploading &&
+              <div>
+                <label className={styles.disabledFileLabel}>
+                  Uploading..
+                </label>
+              </div>
+            }
+            { !this.state.isUploading &&
+              <div>
+                <label className={styles.fileLabel}>
+                  Upload
+                  <input type="file"
+                    onChange={(e) => this.uploadImage(e)}
+                    accept="image/*"
+                    name="file"
+                    className={styles.fileInput}
+                  />
+                </label>
+              </div>
+            }
+          </span>          
         }
       </div>
     );

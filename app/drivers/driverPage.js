@@ -15,6 +15,8 @@ import NumberFormat from 'react-number-format';
 import {InputWithDefault} from '../views/base/input';
 import * as Form from '../components/form';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import ImagePreview from '../views/base/imagePreview';
+import ImageUploader from '../views/base/imageUploader';
 
 function StoreBuilder(keyword) {
   return (store) => {
@@ -64,7 +66,7 @@ function InputFilter({value, onChange, onKeyDown, placeholder}) {
 
 const NameFilter = ConnectBuilder('name', 'Search Driver...')(InputFilter);
 
-const DEFAULT_IMAGE="/img/photo-default.png"
+const DEFAULT_IMAGE="/img/photo-default.png";
 
 const Drivers = React.createClass({
   render: function() {
@@ -96,7 +98,8 @@ const Drivers = React.createClass({
 const PanelDrivers = React.createClass({
   getInitialState() {
     return ({
-      showAddModals: false
+      showAddModals: false,
+      PictureUrl: DEFAULT_IMAGE
     })
   },
   addDriverModal() {
@@ -106,7 +109,8 @@ const PanelDrivers = React.createClass({
   },
   closeModal() {
     this.setState({
-        showAddModals: false
+        showAddModals: false,
+        PictureUrl: DEFAULT_IMAGE
     })
   },
   stateChange(key) {
@@ -117,10 +121,15 @@ const PanelDrivers = React.createClass({
       }
     };
   },
+  setPicture(url) {    
+    this.setState({
+        PictureUrl: url
+    })
+  },
   addDriver() {
     let addedData = lodash.assign({}, this.state);
     delete addedData.showAddModals;
-    this.props.addDriver(addedData);
+    this.props.addDriver(addedData);  
   },
   render() {    
     const addButton = {
@@ -169,7 +178,7 @@ const PanelDrivers = React.createClass({
                 <div className={styles.topDescDetails}>
                   <div className={styles.driverDetailsMain}>
                   <div className={styles.driverDetailsPicture}>
-                    <img src={DEFAULT_IMAGE} />
+                    <ImageUploader withImagePreview={true} currentImageUrl={this.state.PictureUrl} updateImageUrl={(data) => this.setPicture(data)} />
                   </div>
                   <div className={styles.driverDetailsName}>
                     <RowDetails onChange={this.stateChange('FirstName')} label={'First Name'} isEditing={true} />
@@ -279,6 +288,9 @@ const PanelDriversDetails = React.createClass({
   componentWillReceiveProps(nextProps) {
     this.setState({isEditing: false});
   },
+  componentWillMount() {
+    this.setState({PictureUrl: this.props.driver.PictureUrl});
+  },
   toggleEditDriver() {
     this.setState({
       isEditing: !this.state.isEditing
@@ -288,6 +300,11 @@ const PanelDriversDetails = React.createClass({
     let updatedData = lodash.assign({}, this.state);
     delete updatedData.isEditing;
     this.props.editDriver(this.props.driver.UserID, updatedData);
+  },
+  setPicture(url) {    
+    this.setState({
+        PictureUrl: url
+    })
   },
   render() {
     const {driver, stateList} = this.props;    
@@ -313,8 +330,8 @@ const PanelDriversDetails = React.createClass({
           {this.state.isEditing ? '(Click to cancel)' : '(Click to edit)'}
         </div>
         <div className={styles.driverDetailsMain}>
-          <div className={styles.driverDetailsPicture}>
-            <img src={driver.PictureUrl} onError={(e)=>{e.target.src=DEFAULT_IMAGE}}/>
+          <div className={styles.driverDetailsPicture}>            
+            <ImageUploader withImagePreview={true} currentImageUrl={this.state.PictureUrl} updateImageUrl={(data) => this.setPicture(data)} />
           </div>
           <div className={styles.driverDetailsName}>
             <RowDetails value={driver.FirstName} onChange={this.stateChange('FirstName')} label={'First Name'} isEditing={this.state.isEditing} />
