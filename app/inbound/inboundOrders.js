@@ -72,13 +72,13 @@ const PanelSuggestion = React.createClass({
           {scannedOrder}
         </div>
         <div>
-          {nextDestination.City}
+          {`Hub ${nextDestination.Hub.City}` || nextDestination.City}
         </div>
         <div className={styles.scannedOrder}>
-          {nextDestination.District}
+          {nextDestination.Hub.District || nextDestination.District}
         </div>
         <div className={styles.scannedOrder}>
-          {nextDestination.ZipCode}
+          {nextDestination.Hub.ZipCode || nextDestination.ZipCode}
         </div>
       </div>
     );
