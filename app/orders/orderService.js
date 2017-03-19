@@ -257,7 +257,7 @@ export function FetchList() {
 
     dispatch({type: modalAction.BACKDROP_SHOW});
     dispatch({type: Constants.FETCHING_PAGE});
-    FetchGet('/order/received', token, params).then((response) => {
+    FetchGet('/order/assigned', token, params).then((response) => {
       if(!response.ok) {
         return response.json().then(({error}) => {
           throw error;
