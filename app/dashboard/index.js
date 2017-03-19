@@ -116,12 +116,16 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
                 My Jobs
               </span>
               <hr className={styles.menuSeparator} />
-              <MenuItem active={activeMenuIdx == 7} to={'/mytrips'}>
+              <MenuItem active={activeMenuIdx == 7} to={'/myorders'}>
+                <img src="/img/icon-orders.png" className={styles.menuGlyph} />
+                <span>My Orders</span>
+              </MenuItem>
+              <MenuItem active={activeMenuIdx == 8} to={'/mytrips'}>
                 <img src="/img/icon-my-trips.png" className={styles.menuGlyph} />
                 <span>My Trips</span>
                 <span className={styles.counterNumber}>{countTMS && countTMS.NotAssigned}</span>
               </MenuItem>
-              <MenuItem active={activeMenuIdx == 8} to={'/myongoingtrips'}>
+              <MenuItem active={activeMenuIdx == 9} to={'/myongoingtrips'}>
                 <img src="/img/icon-ongoing-trips.png" className={styles.menuGlyph} />
                 <span>My Ongoing Trips</span>
                 <span className={styles.counterNumber}>{countTMS && countTMS.NotDelivered}</span>
@@ -175,13 +179,15 @@ const menuPaths = [
   '/grouping',
   '/trips/outbound',
   '/history',
+  '/myorders',
   '/mytrips',
   '/myongoingtrips',
 ];
 
 const menuPathsTMS = [
+  '/myorders',
   '/mytrips',
-  '/myongoingtrips'
+  '/myongoingtrips',
 ];
 
 function GetActiveMenuIdx(path) {
@@ -271,7 +277,6 @@ function DispatchToProps(dispatch) {
       dispatch(ContactService.FetchList());
       dispatch(CityService.FetchList());
       dispatch(StateService.FetchList());
-      dispatch(OrderService.FetchCountOrder());
       dispatch(DashboardService.FetchCountTMS());
       if (hubID) {
         dispatch(DashboardService.FetchCount());

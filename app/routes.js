@@ -21,8 +21,6 @@ import TripDetailsPage from './tripDetails/tripDetails';
 import TripManifestPage from './views/trips/tripManifest';
 import MyAssignedTripsPage from './trips/tripPage';
 import MyOrdersPage from './orders/orderPage';
-import ManageOrdersPage from './orders/orderManage';
-import MyOrdersDetailsPage from './orders/orderDetails';
 import TripHistoryList from './tripHistory/listPage';
 import TripHistoryDetails from './tripHistory/detailsPage';
 import MyContactPage from './contacts/contactPage';
@@ -85,12 +83,7 @@ export default (
         <Route path="/trips/:tripID/fillPickup" component={PickupFillPage} onEnter={requireHubAuth}/>
         <Route path="/mytrips" component={MyAssignedTripsPage} onEnter={requireAuth} />
         <Route path="/myongoingtrips" component={MyOngoingTripsPage} onEnter={requireAuth} />
-        <Route path="/myorders/open" component={()=>(<MyOrdersPage statusFilter="open" />)} onEnter={requireAuth} />
-        <Route path="/myorders/ongoing" component={()=>(<MyOrdersPage statusFilter="ongoing" />)} onEnter={requireAuth} />
-        <Route path="/myorders/completed" component={()=>(<MyOrdersPage statusFilter="completed" />)} onEnter={requireAuth} />
-        <Route path="/myorders/add" component={ManageOrdersPage} onEnter={requireAuth} />
-        <Route path="/myorders/edit/:id" component={ManageOrdersPage} onEnter={requireAuth} />
-        <Route path="/myorders/details/:id" component={MyOrdersDetailsPage} onEnter={requireAuth} />
+        <Route path="/myorders" component={()=>(<MyOrdersPage />)} onEnter={requireAuth} />
         <Route path="/history" component={TripHistoryList} onEnter={requireAuth}/>
         <Route path="/history/:id" component={TripHistoryDetails} onEnter={requireAuth}/>
         <Route path="/mycontacts" component={MyContactPage} onEnter={requireAuth} />
