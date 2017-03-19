@@ -84,7 +84,7 @@ const Drivers = React.createClass({
             </div>
             <div className={styles.driverDetails}>
               <span className={styles.vendorLoad}>
-                Number of orders : 6
+                Number of orders : {driver.TotalOrder}
               </span>
             </div>
           </div>
@@ -458,7 +458,7 @@ const DriverOrders = React.createClass({
 
 const PanelDriversOrders = React.createClass({
   render() {
-    const {driver, orders} = this.props;
+    const {driver, orders, isFetchingOrders} = this.props;
     const weight = lodash.sumBy(orders, 'PackageWeight');
     const codOrders = lodash.filter(orders, (order) => order.IsCOD === true);
     const totalValue = _.reduce(orders, (total, order) => {
@@ -471,57 +471,67 @@ const PanelDriversOrders = React.createClass({
       <div className={styles.mainDriverOrdersPanel}>
         <div className={styles.driverTitle}>
           Driver Orders
-        </div>        
-        <div className={styles.orderDetails}>
-          <div>
-            <div className={styles.orderAdditionalInfo}>
-              <div className={styles.orderDetailsLabel}>
-                Weight
-              </div>
-              <div className={styles.orderDetailsValue}>
-                {weight} kg
+        </div>  
+        {
+          isFetchingOrders && 
+          <div className={styles.orderDetails}>
+            <img className={styles.loadingImage} src={"/img/loading.gif"} />
+          </div> 
+        }
+        { !isFetchingOrders &&
+          <div>     
+            <div className={styles.orderDetails}>
+              <div>
+                <div className={styles.orderAdditionalInfo}>
+                  <div className={styles.orderDetailsLabel}>
+                    Weight
+                  </div>
+                  <div className={styles.orderDetailsValue}>
+                    {weight} kg
+                  </div>
+                </div>
+                <div className={styles.orderAdditionalInfo}>
+                  <div className={styles.orderDetailsLabel}>
+                    COD Order
+                  </div>
+                  <div className={styles.orderDetailsValue}>
+                    {codOrders.length} items
+                  </div>
+                </div>
+                <div className={styles.orderAdditionalInfo}>
+                  <div className={styles.orderDetailsLabel}>
+                    COD Value
+                  </div>
+                  <div className={styles.orderDetailsValue}>
+                    <NumberFormat displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp '} value={codTotalValue} />
+                  </div>
+                </div>
               </div>
             </div>
-            <div className={styles.orderAdditionalInfo}>
-              <div className={styles.orderDetailsLabel}>
-                COD Order
+            <div className={styles.orderValue}>                            
+              <div className={styles.orderValueLabel}>
+                Total Value
               </div>
-              <div className={styles.orderDetailsValue}>
-                {codOrders.length} items
-              </div>
-            </div>
-            <div className={styles.orderAdditionalInfo}>
-              <div className={styles.orderDetailsLabel}>
-                COD Value
-              </div>
-              <div className={styles.orderDetailsValue}>
-                <NumberFormat displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp '} value={codTotalValue} />
+              <div className={styles.orderTotalValue}>
+                <NumberFormat displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp '} value={totalValue} />    
               </div>
             </div>
+            <div>
+              <div className={styles.driverNumOrders}>
+                <div className={styles.numOrderLeft}>
+                  Number of orders: 
+                </div>
+                <div className={styles.numOrderRight}>
+                  {orders.length}
+                </div>
+              </div>
+              <div className={styles.driverDetailsOrder}>
+                <DriverOrders orders={orders} />
+              </div>
+            </div>        
+            <Pagination3 {...this.props.paginationState} {...this.props.PaginationAction} />
           </div>
-        </div>
-        <div className={styles.orderValue}>                            
-          <div className={styles.orderValueLabel}>
-            Total Value
-          </div>
-          <div className={styles.orderTotalValue}>
-            <NumberFormat displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp '} value={totalValue} />    
-          </div>
-        </div>
-        <div>
-          <div className={styles.driverNumOrders}>
-            <div className={styles.numOrderLeft}>
-              Number of orders: 
-            </div>
-            <div className={styles.numOrderRight}>
-              {orders.length}
-            </div>
-          </div>
-          <div className={styles.driverDetailsOrder}>
-            <DriverOrders orders={orders} />
-          </div>
-        </div>        
-        <Pagination3 {...this.props.paginationState} {...this.props.PaginationAction} />
+        }
       </div>
     );
   }
@@ -533,7 +543,7 @@ const DriverPage = React.createClass({
     this.props.ResetDriver();
   },
   render() {
-    const {paginationState, paginationStateOrders, PaginationAction, PaginationActionOrders, stateList, AddDriver, EditDriver, drivers, driver, orders, SelectDriver} = this.props;
+    const {paginationState, paginationStateOrders, PaginationAction, PaginationActionOrders, stateList, AddDriver, EditDriver, drivers, driver, orders, SelectDriver, isFetchingOrders} = this.props;
     return (
       <Page title="My Driver">
         <div className={styles.mainDriverPage}>
@@ -544,7 +554,7 @@ const DriverPage = React.createClass({
           }
           {
             !lodash.isEmpty(driver) &&
-            <PanelDriversOrders driver={driver} orders={orders} paginationState={paginationStateOrders} PaginationAction={PaginationActionOrders} />
+            <PanelDriversOrders driver={driver} isFetchingOrders={isFetchingOrders} orders={orders} paginationState={paginationStateOrders} PaginationAction={PaginationActionOrders} />
           }
         </div>
       </Page>
@@ -553,7 +563,7 @@ const DriverPage = React.createClass({
 });
 
 function StoreToDriversPage(store) {
-  const {currentPage, currentPageOrders, limit, limitOrders, total, totalOrders, drivers, driver, orders} = store.app.myDrivers;
+  const {currentPage, currentPageOrders, limit, limitOrders, total, totalOrders, drivers, driver, orders, isFetchingOrders} = store.app.myDrivers;
   const {states} = store.app.stateList;
   let stateList = {}; 
   states.forEach(function(state) {
@@ -571,7 +581,8 @@ function StoreToDriversPage(store) {
     },
     driver: driver,
     orders: orders,
-    stateList: stateList
+    stateList: stateList,
+    isFetchingOrders: isFetchingOrders
   }
 }
 

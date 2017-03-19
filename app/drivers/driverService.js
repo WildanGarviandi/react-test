@@ -14,6 +14,8 @@ const Constants = {
   DRIVER_DETAILS_SET: "mydriver/drivers/details",
   FETCHING_PAGE: "mydriver/drivers/fetching",
   FETCHING_PAGE_STOP: "mydriver/drivers/fetchingStop",
+  FETCHING_ORDERS: "mydriver/drivers/fetchingOrder",
+  FETCHING_ORDERS_STOP: "mydriver/drivers/fetchingOrderStop",
   SET_DRIVERS_ORDERS: "mydriver/drivers/orders",
   DRIVER_RESET: "mydriver/drivers/reset"
 }
@@ -35,8 +37,9 @@ const initialStore = {
   totalOrders: 0,
   statusNameOrders: "SHOW ALL",
   orderOwner: "ALL",
-  limitOrders: 20,
-  filtersOrders: {}
+  limitOrders: 100,
+  filtersOrders: {},
+  isFetchingOrders: false
 }
 
 export default function Reducer(store = initialStore, action) {
@@ -118,6 +121,18 @@ export default function Reducer(store = initialStore, action) {
       });
     }
 
+    case Constants.FETCHING_ORDERS: {
+      return lodash.assign({}, store, {
+        isFetchingOrders: true
+      });
+    }
+
+    case Constants.FETCHING_ORDERS_STOP: {
+      return lodash.assign({}, store, {
+        isFetchingOrders: false
+      });
+    }
+
     default: {
       return store;
     }
@@ -195,7 +210,8 @@ export function FetchList() {
     const {token} = userLogged;
     let params = lodash.assign({}, filters, {
       limit: limit,
-      offset: (currentPage - 1) * limit
+      offset: (currentPage - 1) * limit,
+      isWeighting: true
     })
 
     dispatch({type: modalAction.BACKDROP_SHOW});
@@ -392,6 +408,7 @@ export function FetchListOrders(id) {
 
     let driverID = parseInt(id) || parseInt(driverOrdersIDActive);
     dispatch({type: modalAction.BACKDROP_SHOW});
+    dispatch({type: Constants.FETCHING_ORDERS});
     FetchGet('/driver/' + driverID + '/orders', token, params).then((response) => {
       if(!response.ok) {
         return response.json().then(({error}) => {
@@ -401,6 +418,7 @@ export function FetchListOrders(id) {
 
       return response.json().then(({data}) => {
         dispatch({type: modalAction.BACKDROP_HIDE});
+        dispatch({type: Constants.FETCHING_ORDERS_STOP});
         dispatch({
           type: Constants.SET_DRIVERS_ORDERS,
           driverID: driverID,
@@ -411,6 +429,7 @@ export function FetchListOrders(id) {
     }).catch((e) => {
         dispatch({type: modalAction.BACKDROP_HIDE});
         dispatch(ModalActions.addMessage(e.message));
+        dispatch({type: Constants.FETCHING_ORDERS_STOP});
     });
   }
 }
