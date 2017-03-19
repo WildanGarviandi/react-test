@@ -18,6 +18,8 @@ import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import ImagePreview from '../views/base/imagePreview';
 import ImageUploader from '../views/base/imageUploader';
 
+const DEFAULT_IMAGE="/img/photo-default.png";
+
 function StoreBuilder(keyword) {
   return (store) => {
     const {filters} = store.app.myDrivers;
@@ -66,8 +68,6 @@ function InputFilter({value, onChange, onKeyDown, placeholder}) {
 
 const NameFilter = ConnectBuilder('name', 'Search Driver...')(InputFilter);
 
-const DEFAULT_IMAGE="/img/photo-default.png";
-
 const Drivers = React.createClass({
   render: function() {
     var driverComponents = this.props.drivers.map(function(driver, idx) {
@@ -75,7 +75,7 @@ const Drivers = React.createClass({
         <div className={styles.mainDriver} key={idx} onClick={()=>{this.props.selectDriver(driver.UserID)}}>
           <div className={styles.tripDriver}>
             <div className={styles.vehicleIcon}>
-              <img className={styles.driverLoadImage} src={driver.PictureUrl} onError={(e)=>{e.target.src=DEFAULT_IMAGE}}/>
+              <img className={styles.driverLoadImage} src={driver.ProfilePicture || DEFAULT_IMAGE} onError={(e)=>{e.target.src=DEFAULT_IMAGE}}/>
             </div>
             <div className={styles.driverDetails}>
               <span className={styles.driverName}>
@@ -99,7 +99,7 @@ const PanelDrivers = React.createClass({
   getInitialState() {
     return ({
       showAddModals: false,
-      PictureUrl: DEFAULT_IMAGE
+      ProfilePicture: DEFAULT_IMAGE
     })
   },
   addDriverModal() {
@@ -110,7 +110,7 @@ const PanelDrivers = React.createClass({
   closeModal() {
     this.setState({
         showAddModals: false,
-        PictureUrl: DEFAULT_IMAGE
+        ProfilePicture: DEFAULT_IMAGE
     })
   },
   stateChange(key) {
@@ -123,10 +123,17 @@ const PanelDrivers = React.createClass({
   },
   setPicture(url) {    
     this.setState({
-        PictureUrl: url
+        ProfilePicture: url
     })
   },
   addDriver() {
+    const mandatoryFields = ['FirstName', 'LastName', 'PhoneNumber', 'Email', 'Location', 'StateID', 'ZipCode', 'PackageSizeID', 'Password'];
+    const filledFields = Object.keys(this.state);
+    const unfilledFields = lodash.difference(mandatoryFields, filledFields);
+    if (unfilledFields.length > 0) {
+        alert('Missing ' + unfilledFields.join())
+        return;
+    }
     let addedData = lodash.assign({}, this.state);
     delete addedData.showAddModals;
     this.props.addDriver(addedData);  
@@ -178,7 +185,7 @@ const PanelDrivers = React.createClass({
                 <div className={styles.topDescDetails}>
                   <div className={styles.driverDetailsMain}>
                   <div className={styles.driverDetailsPicture}>
-                    <ImageUploader withImagePreview={true} currentImageUrl={this.state.PictureUrl} updateImageUrl={(data) => this.setPicture(data)} />
+                    <ImageUploader withImagePreview={true} currentImageUrl={this.state.ProfilePicture} updateImageUrl={(data) => this.setPicture(data)} />
                   </div>
                   <div className={styles.driverDetailsName}>
                     <RowDetails onChange={this.stateChange('FirstName')} label={'First Name'} isEditing={true} />
@@ -201,7 +208,8 @@ const PanelDrivers = React.createClass({
                 <div className={styles.driverDetailsSecondary}>
                   <RowDetailsDropdown label={'Vehicle'} options={vehicleOptions} handleSelect={this.stateChange('PackageSizeID')} isEditing={true} />
                   <div style={{clear: 'both'}} />
-                  <RowDetails onChange={this.stateChange('DrivingLicenseID')} label={'License Number'} isEditing={true} />       
+                  <RowDetails onChange={this.stateChange('DrivingLicenseID')} label={'License Number'} isEditing={true} /> 
+                  <RowDetails onChange={this.stateChange('Password')} type={'password'} label={'Password'} isEditing={true} />       
                 </div>
                 <div className={styles.updateButton}>
                   <ButtonWithLoading {...submitButton} />
@@ -219,7 +227,7 @@ const PanelDrivers = React.createClass({
 
 const RowDetails = React.createClass({
   render() {
-    const {isEditing, value, label, onChange} = this.props;
+    const {isEditing, value, label, onChange, type} = this.props;
     return (
       <div>
         <div className={styles.driverDetailsLabel}>
@@ -229,7 +237,7 @@ const RowDetails = React.createClass({
           {
             isEditing &&
             <span>
-              <InputWithDefault className={styles.inputDetails} currentText={value} onChange={onChange} />
+              <InputWithDefault type={type || 'text'} className={styles.inputDetails} currentText={value} onChange={onChange} />
             </span>
           }
           {
@@ -287,7 +295,7 @@ const PanelDriversDetails = React.createClass({
   },
   componentWillReceiveProps(nextProps) {
     this.setState({isEditing: false});
-    this.setState({PictureUrl: nextProps.driver.PictureUrl});
+    this.setState({ProfilePicture: nextProps.driver.ProfilePicture || DEFAULT_IMAGE});
   },
   toggleEditDriver() {
     this.setState({
@@ -301,7 +309,7 @@ const PanelDriversDetails = React.createClass({
   },
   setPicture(url) {    
     this.setState({
-        PictureUrl: url
+      ProfilePicture: url
     })
   },
   render() {
@@ -329,7 +337,7 @@ const PanelDriversDetails = React.createClass({
         </div>
         <div className={styles.driverDetailsMain}>
           <div className={styles.driverDetailsPicture}>            
-            <ImageUploader withImagePreview={true} currentImageUrl={this.state.PictureUrl} updateImageUrl={(data) => this.setPicture(data)} />
+            <ImageUploader withImagePreview={true} currentImageUrl={this.state.ProfilePicture} updateImageUrl={(data) => this.setPicture(data)} />
           </div>
           <div className={styles.driverDetailsName}>
             <RowDetails value={driver.FirstName} onChange={this.stateChange('FirstName')} label={'First Name'} isEditing={this.state.isEditing} />
