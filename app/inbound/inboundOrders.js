@@ -75,7 +75,7 @@ const PanelSuggestion = React.createClass({
           {lastDestination.City}
         </div>
         <div className={styles.scannedOrder}>
-          {nextDestination.Hub && `via Hub ${nextDestination.Hub.Name}`}
+          {nextDestination.Hub ? `via Hub ${nextDestination.Hub.Name}` : `Dropoff`}
         </div>
         <div className={styles.scannedOrder}>
           {lastDestination.District && `Kec. ${lastDestination.District}`}
