@@ -65,11 +65,11 @@ const DuplicateModal = React.createClass({
 
 const PanelSuggestion = React.createClass({
   render() {
-    const { nextDestination, lastDestination, successScanned, scannedOrder } = this.props;
+    const { nextDestination, lastDestination, successScanned, scannedOrder, closeModalMessage } = this.props;
     return (
       <div className={styles.panelSuggestion}>
         <div className={styles.scanMessage}>
-          <div onClick={this.closeModalMessage} className={styles.modalClose}>
+          <div onClick={closeModalMessage} className={styles.modalClose}>
             X
           </div> 
           <div className={styles.successScanned}>
@@ -156,7 +156,7 @@ const InboundOrdersPage = React.createClass({
         <InboundOrdersTable />
         {
           !lodash.isEmpty(this.props.lastDestination) && this.state.showModalMessage &&
-          <PanelSuggestion nextDestination={this.props.suggestion} lastDestination={this.props.lastDestination} successScanned={this.props.successScanned} scannedOrder={this.props.scannedOrder} />
+          <PanelSuggestion closeModalMessage={this.closeModalMessage} nextDestination={this.props.suggestion}  lastDestination={this.props.lastDestination} successScanned={this.props.successScanned} scannedOrder={this.props.scannedOrder} />
         }
       </Page>
     );

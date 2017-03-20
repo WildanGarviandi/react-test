@@ -250,7 +250,7 @@ export function MarkReceived (scannedID) {
           type: Constants.ORDERS_INBOUND_MARK_RECEIVED_END,
           nextDestination: data.nextDestination,
           lastDestination: data.lastDestination,
-          successScanned: data.hasScanned ? successScanned : (successScanned + 1),
+          successScanned: (data.hasScanned || data.duplicate) ? successScanned : (successScanned + 1),
           scannedOrder: scannedID
         });
         dispatch(ReFetchList());
