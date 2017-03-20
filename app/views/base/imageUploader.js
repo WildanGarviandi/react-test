@@ -48,6 +48,7 @@ const ImageUploader = React.createClass({
               <div>
                 <label className={styles.fileLabel2}>
                   <img className={styles.imgPreview} src={this.props.currentImageUrl} onError={(e)=>{e.target.src=DEFAULT_IMAGE}} />
+                  <span className={styles.editIcon}><img src={"/img/icon-edit.png"} /></span>
                   <input type="file"
                     onChange={(e) => this.uploadImage(e)}
                     accept="image/*"

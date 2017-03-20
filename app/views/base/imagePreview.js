@@ -38,7 +38,7 @@ const ImagePreview = React.createClass({
         this.props.imageUrl &&
         <span>
           <a href={this.props.imageUrl} onClick={(e) => {this.openModal(e)}} className={styles.modalTrigger}>
-            {this.props.imageUrl.length > 35 ? this.props.imageUrl.substr(0,33) + '..' : this.props.imageUrl}
+            <img src={this.props.imageUrl} className={styles.imgPreview} />
           </a>
           <Modal
             isOpen={this.state.openModal}

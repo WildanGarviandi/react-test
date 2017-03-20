@@ -336,8 +336,13 @@ const PanelDriversDetails = React.createClass({
           {this.state.isEditing ? '(Click to cancel)' : '(Click to edit)'}
         </div>
         <div className={styles.driverDetailsMain}>
-          <div className={styles.driverDetailsPicture}>            
-            <ImageUploader withImagePreview={true} currentImageUrl={this.state.ProfilePicture} updateImageUrl={(data) => this.setPicture(data)} />
+          <div className={styles.driverDetailsPicture}>       
+            { this.state.isEditing &&
+              <ImageUploader withImagePreview={true} currentImageUrl={this.state.ProfilePicture} updateImageUrl={(data) => this.setPicture(data)} />
+            }
+            { !this.state.isEditing &&
+              <ImagePreview imageUrl={this.state.ProfilePicture} />
+            }   
           </div>
           <div className={styles.driverDetailsName}>
             <RowDetails value={driver.FirstName} onChange={this.stateChange('FirstName')} label={'First Name'} isEditing={this.state.isEditing} />

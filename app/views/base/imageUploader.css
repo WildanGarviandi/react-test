@@ -64,7 +64,6 @@
 .fileLabel2 {
   color: #333;
   background-color: #fff;
-  border: solid 1px #ccc;
   border-radius: 5px;
   box-sizing: border-box;
   cursor: pointer;
@@ -110,4 +109,11 @@
 .imgPreview {
   width: 130px;
   height: 130px;
+  border-radius: 70px;
+}
+
+.editIcon {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
 }
