@@ -65,9 +65,17 @@ const DuplicateModal = React.createClass({
 
 const PanelSuggestion = React.createClass({
   render() {
-    const { nextDestination, lastDestination, scannedOrder } = this.props;
+    const { nextDestination, lastDestination, successScanned, scannedOrder } = this.props;
     return (
       <div className={styles.panelSuggestion}>
+        <div className={styles.scanMessage}>
+          <div onClick={this.closeModalMessage} className={styles.modalClose}>
+            X
+          </div> 
+          <div className={styles.successScanned}>
+            Success: {successScanned}
+          </div>
+        </div>
         <div className={styles.scannedOrder}>
           {scannedOrder}
         </div>
@@ -75,7 +83,7 @@ const PanelSuggestion = React.createClass({
           {lastDestination.City}
         </div>
         <div className={styles.scannedOrder}>
-          {nextDestination.Hub ? `via Hub ${nextDestination.Hub.Name}` : `Dropoff`}
+          {nextDestination.Hub ? `via Hub ${nextDestination.Hub.Name}` : (nextDestination && `Dropoff`)}
         </div>
         <div className={styles.scannedOrder}>
           {lastDestination.District && `Kec. ${lastDestination.District}`}
@@ -148,15 +156,7 @@ const InboundOrdersPage = React.createClass({
         <InboundOrdersTable />
         {
           !lodash.isEmpty(this.props.lastDestination) && this.state.showModalMessage &&
-          <div className={styles.scanMessage}>
-            <div onClick={this.closeModalMessage} className={styles.modalClose}>
-              X
-            </div> 
-            <div className={styles.successScanned}>
-              Success: {this.props.successScanned}
-            </div>
-            <PanelSuggestion nextDestination={this.props.suggestion} lastDestination={this.props.lastDestination} scannedOrder={this.props.scannedOrder} />
-          </div>
+          <PanelSuggestion nextDestination={this.props.suggestion} lastDestination={this.props.lastDestination} successScanned={this.props.successScanned} scannedOrder={this.props.scannedOrder} />
         }
       </Page>
     );

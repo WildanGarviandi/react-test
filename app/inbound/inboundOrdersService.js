@@ -265,7 +265,7 @@ export function MarkReceived (scannedID) {
           lastDestination: {
             City: 'Not Found'
           },
-          nextDestination: {},
+          nextDestination: false,
           scannedOrder: scannedID
         });
 
