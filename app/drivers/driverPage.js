@@ -84,7 +84,7 @@ const Drivers = React.createClass({
             </div>
             <div className={styles.driverDetails}>
               <span className={styles.vendorLoad}>
-                Number of orders : {driver.TotalOrder}
+                Number of orders : {driver.TotalOrders}
               </span>
             </div>
           </div>
