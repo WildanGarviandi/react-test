@@ -6,7 +6,7 @@
   top: 50px;
   width: 33%;
   background-color: #ffffff;
-  height: 590px;
+  height: 100vh;
   float: left;
   border-radius: 4px;
   border: solid 1px #e8e8e8;
@@ -17,7 +17,7 @@
   width: 33%;
   float: left;
   background-color: #ffffff;
-  height: 590px;
+  height: 100vh;
   border-radius: 4px;
   border: solid 1px #e8e8e8;
 }
@@ -27,7 +27,7 @@
   width: 33%;
   float: left;
   background-color: #ffffff;
-  height: 590px;
+  height: 100vh;
   border-radius: 4px;
   border: solid 1px #e8e8e8;
 }
@@ -353,6 +353,6 @@
 }
 
 .loadingImage {
-    text-align: center;
-    width: 300px;
+  text-align: center;
+  width: 300px;
 }
