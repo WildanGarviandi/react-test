@@ -87,7 +87,7 @@
   border-radius: 4px;
   background-color: #f1f1f1;
   border: solid 1px #e8e8e8;
-  width: 298px;
+  width: 80%;
   height: 30px;
 }
 
@@ -354,5 +354,6 @@
 
 .loadingImage {
   text-align: center;
-  width: 300px;
+  width: 80%;
+  margin-left: 10%;
 }
