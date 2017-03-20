@@ -35,6 +35,7 @@ const initialState = {
   isDuplicate: false,
   duplicateOrders: [],
   suggestion: {},
+  lastDestination: {},
   scannedOrder: '',
   successScanned: 0
 }
@@ -76,6 +77,7 @@ export function Reducer (state = initialState, action) {
       return lodash.assign({}, state, { 
         isMarking: false,
         suggestion: action.nextDestination,
+        lastDestination: action.lastDestination,
         successScanned: action.successScanned,
         scannedOrder: action.scannedOrder
       });
@@ -85,6 +87,7 @@ export function Reducer (state = initialState, action) {
       return lodash.assign({}, state, { 
         isMarking: false,
         suggestion: action.nextDestination,
+        lastDestination: action.lastDestination,
         scannedOrder: action.scannedOrder
       });
     }
@@ -99,6 +102,7 @@ export function Reducer (state = initialState, action) {
     case Constants.ORDERS_INBOUND_RESET_SUGGESTION: {
       return lodash.assign({}, state, { 
         suggestion: {}, 
+        lastDestination: {},
         successScanned: 0,
         scannedOrder: ''
       });
@@ -245,6 +249,7 @@ export function MarkReceived (scannedID) {
         dispatch({ 
           type: Constants.ORDERS_INBOUND_MARK_RECEIVED_END,
           nextDestination: data.nextDestination,
+          lastDestination: data.lastDestination,
           successScanned: data.hasScanned ? successScanned : (successScanned + 1),
           scannedOrder: scannedID
         });
@@ -257,9 +262,10 @@ export function MarkReceived (scannedID) {
       dispatch({type: modalAction.BACKDROP_HIDE});
         dispatch({ 
           type: Constants.ORDERS_INBOUND_MARK_RECEIVED_END_ERROR,
-          nextDestination: {
+          lastDestination: {
             City: 'Not Found'
           },
+          nextDestination: {},
           scannedOrder: scannedID
         });
 

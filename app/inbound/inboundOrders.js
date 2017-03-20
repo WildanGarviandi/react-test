@@ -65,30 +65,21 @@ const DuplicateModal = React.createClass({
 
 const PanelSuggestion = React.createClass({
   render() {
-    const { nextDestination, scannedOrder } = this.props;
+    const { nextDestination, lastDestination, scannedOrder } = this.props;
     return (
       <div className={styles.panelSuggestion}>
         <div className={styles.scannedOrder}>
           {scannedOrder}
         </div>
-        { nextDestination.Hub &&
-          <div>
-            {`Hub ${nextDestination.Hub.City}`}
-          </div>
-        }
-        { !nextDestination.Hub &&
-          <div>
-            <div>
-              {nextDestination.City}
-            </div>
-            <div className={styles.scannedOrder}>
-              {nextDestination.District}
-            </div>
-            <div className={styles.scannedOrder}>
-              {nextDestination.ZipCode}
-            </div>
-          </div>
-        }
+        <div>
+          {lastDestination.City} {nextDestination.Hub && `via Hub ${nextDestination.Hub.Name}`}
+        </div>
+        <div className={styles.scannedOrder}>
+          {lastDestination.District && `Kec. ${lastDestination.District}`}
+        </div>
+        <div className={styles.scannedOrder}>
+          {lastDestination.ZipCode}
+        </div>
       </div>
     );
   }
@@ -153,7 +144,7 @@ const InboundOrdersPage = React.createClass({
         </div>
         <InboundOrdersTable />
         {
-          !lodash.isEmpty(this.props.suggestion) && this.state.showModalMessage &&
+          !lodash.isEmpty(this.props.lastDestination) && this.state.showModalMessage &&
           <div className={styles.scanMessage}>
             <div onClick={this.closeModalMessage} className={styles.modalClose}>
               X
@@ -161,7 +152,7 @@ const InboundOrdersPage = React.createClass({
             <div className={styles.successScanned}>
               Success: {this.props.successScanned}
             </div>
-            <PanelSuggestion nextDestination={this.props.suggestion} scannedOrder={this.props.scannedOrder} />
+            <PanelSuggestion nextDestination={this.props.suggestion} lastDestination={this.props.lastDestination} scannedOrder={this.props.scannedOrder} />
           </div>
         }
       </Page>
@@ -172,7 +163,7 @@ const InboundOrdersPage = React.createClass({
 function mapStateToProps (state) {
   const { inboundOrders } = state.app;
   const userLogged = state.app.userLogged;
-  const { duplicateOrders, isDuplicate, total, suggestion, successScanned, scannedOrder } = inboundOrders;
+  const { duplicateOrders, isDuplicate, total, suggestion, lastDestination, successScanned, scannedOrder } = inboundOrders;
 
   return {
     userLogged,
@@ -180,6 +171,7 @@ function mapStateToProps (state) {
     isDuplicate,
     total,
     suggestion,
+    lastDestination,
     scannedOrder,
     successScanned
   }
