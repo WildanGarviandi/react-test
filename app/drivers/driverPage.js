@@ -71,9 +71,10 @@ const NameFilter = ConnectBuilder('name', 'Search Driver...')(InputFilter);
 const Drivers = React.createClass({
   render: function() {
     var driverComponents = this.props.drivers.map(function(driver, idx) {
+      const driverStyle = (parseInt(driver.UserID) === parseInt(this.props.driver && this.props.driver.UserID)) ? styles.tripDriverSelected : styles.tripDriver;
       return (
         <div className={styles.mainDriver} key={idx} onClick={()=>{this.props.selectDriver(driver.UserID)}}>
-          <div className={styles.tripDriver}>
+          <div className={driverStyle}>
             <div className={styles.vehicleIcon}>
               <img className={styles.driverLoadImage} src={driver.ProfilePicture || DEFAULT_IMAGE} onError={(e)=>{e.target.src=DEFAULT_IMAGE}}/>
             </div>
@@ -168,7 +169,7 @@ const PanelDrivers = React.createClass({
           <NameFilter />
         </div>
         <div className={styles.panelDriverList}>
-          <Drivers drivers={this.props.drivers} selectDriver={this.props.selectDriver} />
+          <Drivers drivers={this.props.drivers} driver={this.props.driver} selectDriver={this.props.selectDriver} />
         </div>
         <Pagination3 {...this.props.paginationState} {...this.props.PaginationAction} />
         {
@@ -320,7 +321,14 @@ const PanelDriversDetails = React.createClass({
       styles: {
         base: stylesButton.greenButton3,
       }
-    };    
+    };  
+    const editButton = {
+      textBase: this.state.isEditing ? 'Cancel' : 'Edit',
+      onClick: this.toggleEditDriver,
+      styles: {
+        base: stylesButton.whiteButton2,
+      }
+    };      
     const vehicleOptions = config.vehicle;
     const vehicleValue = lodash.find(vehicleOptions, { 'key': driver.PackageSizeMaster && driver.PackageSizeMaster.PackageSizeID });
     const stateOptions = lodash.chain(stateList)
@@ -333,7 +341,8 @@ const PanelDriversDetails = React.createClass({
           Driver Details
         </div>
         <div className={styles.driverEditButton} onClick={this.toggleEditDriver}>
-          {this.state.isEditing ? '(Click to cancel)' : '(Click to edit)'}
+          <img className={styles.editIcon} src={"/img/icon-edit.png"} />
+          <span className={styles.editSpan}>{this.state.isEditing ? 'Cancel' : 'Edit'}</span>
         </div>
         <div className={styles.driverDetailsMain}>
           <div className={styles.driverDetailsPicture}>       
@@ -552,7 +561,7 @@ const DriverPage = React.createClass({
     return (
       <Page title="My Driver">
         <div className={styles.mainDriverPage}>
-          <PanelDrivers drivers={drivers} stateList={stateList} addDriver={AddDriver} paginationState={paginationState} PaginationAction={PaginationAction} selectDriver={SelectDriver} />
+          <PanelDrivers drivers={drivers} driver={driver} stateList={stateList} addDriver={AddDriver} paginationState={paginationState} PaginationAction={PaginationAction} selectDriver={SelectDriver} />
           {
             !lodash.isEmpty(driver) &&
             <PanelDriversDetails driver={driver} stateList={stateList} editDriver={EditDriver} />

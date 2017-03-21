@@ -119,5 +119,19 @@
     width: 288px;
     height: 44px;
     font-weight: bold;
+}
 
+.whiteButton2 {
+    background-color: #ffffff;
+    border: solid 1px #d8d8d8;
+    float: right;
+    border-radius: 5px;
+    color: #2196f3;
+    cursor: pointer;
+    padding: 4px;
+    padding-right: 20px;
+    padding-left: 20px;
+    font-weight: bold;
+    margin-right: 10px;
+    margin-bottom: 10px;
 }

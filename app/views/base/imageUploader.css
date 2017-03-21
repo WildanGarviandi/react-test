@@ -77,9 +77,7 @@
 }
 
 .fileLabel2:hover {
-  color: #333;
-  background-color: #e6e6e6;
-  border-color: #adadad;
+  opacity: 0.5;
 }
 
 
