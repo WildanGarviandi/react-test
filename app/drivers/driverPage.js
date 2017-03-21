@@ -168,9 +168,20 @@ const PanelDrivers = React.createClass({
         <div className={styles.panelDriverSearch}>
           <NameFilter />
         </div>
-        <div className={styles.panelDriverList}>
-          <Drivers drivers={this.props.drivers} driver={this.props.driver} selectDriver={this.props.selectDriver} />
-        </div>
+        { this.props.drivers.length > 0 &&
+          <div className={styles.panelDriverList}>
+            <Drivers drivers={this.props.drivers} driver={this.props.driver} selectDriver={this.props.selectDriver} />
+          </div>
+        }
+        { this.props.drivers.length === 0 &&
+          <div className={styles.noDriverDesc}>
+            <img src={"/img/icon-no-driver.png"} />
+            <br />
+            <span style={{fontWeight: 'bold', lineHeight: 2.5}}>You haven’t add any driver yet!</span>
+            <br />
+            <span style={{opacity: 0.5}}>You can add a diver by tapping the "+add" button above.</span>
+          </div>
+        }
         <Pagination3 {...this.props.paginationState} {...this.props.PaginationAction} />
         {
           this.state.showAddModals &&
@@ -562,6 +573,12 @@ const DriverPage = React.createClass({
       <Page title="My Driver">
         <div className={styles.mainDriverPage}>
           <PanelDrivers drivers={drivers} driver={driver} stateList={stateList} addDriver={AddDriver} paginationState={paginationState} PaginationAction={PaginationAction} selectDriver={SelectDriver} />
+          {
+            lodash.isEmpty(driver) &&
+            <div className={styles.clickDriverDesc}>
+              Click on the driver to see their details and information.
+            </div>
+          }
           {
             !lodash.isEmpty(driver) &&
             <PanelDriversDetails driver={driver} stateList={stateList} editDriver={EditDriver} />

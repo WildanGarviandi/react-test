@@ -382,3 +382,25 @@
   width: 80%;
   margin-left: 10%;
 }
+
+.noDriverDesc {
+  margin-top: 80px;
+  margin-bottom: 80px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #ffffff;
+  height: 200px;
+  text-align: center;
+  padding: 32px;
+  border-radius: 12px;
+}
+
+.clickDriverDesc {
+  position: fixed;
+  top: 50%;
+  right: 10%;
+  height: 100vh;
+  opacity: 0.5;
+  font-family: Helvetica;
+  font-size: 20px;
+}
