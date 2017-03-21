@@ -49,7 +49,6 @@ const InputStaticRow = React.createClass({
 const DropdownRow = React.createClass({
   render() {
     const {isEditing, label, value, onChange, type, options, handleSelect, withoutLabel} = this.props;
-
     return (
       <div style={{clear: 'both'}}>
         { withoutLabel &&
@@ -75,7 +74,7 @@ const DatetimeRow = React.createClass({
         const {isEditing, label, value, onChange, type, options, handleSelect} = this.props;
 
         return (
-          <div style={{clear: 'both'}}>
+          <div className='nb' style={{clear: 'both'}}>
             <span className={styles.itemLabel}>{label}</span>
               <span className={styles.itemValue}>
                 <DateTime parentEl="#bootstrapPlaceholder" onChange={this.props.onChange} defaultValue={value} />
@@ -132,7 +131,7 @@ const AddContact = React.createClass({
             textLoading: "Saving Changes",
             onClick: this.saveContact,
             styles: {
-                base: stylesButton.greenButton,
+                base: stylesButton.greenButton5,
             },
         };
 
@@ -172,17 +171,12 @@ const AddContact = React.createClass({
 const ManagePage = React.createClass({
     getInitialState() {
         return ({
-            PickupTime: new Date(),
-            activeContact: null,
             HasShipper: false
         });
     },
     componentWillMount() {
-        if (this.props.params.id) {
-            this.props.GetDetails();
-        } else {
-            this.props.ResetFilter();
-        }
+        this.props.ResetFilter();
+        this.props.ResetManageOrder();
     },
     stateChange(key) {
         return (value) => {
@@ -493,6 +487,9 @@ function mapDispatchToOrders(dispatch, ownProps) {
     },
     AddOrder: (order) => {
       dispatch(OrderService.addOrder(order));
+    },
+    ResetManageOrder: () => {
+      dispatch(ContactService.resetManageContact());
     },
     EditOrder: (order) => {
       dispatch(OrderService.editOrder(ownProps.params.id, order));

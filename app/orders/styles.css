@@ -463,14 +463,14 @@
 .itemLabel {
   display: block;
   padding: 5px;
-  width: 110px;
+  width: 140px;
   float: left;
 }
 
 .itemValue {
   padding: 5px;
   display: block;
-  margin-left: 120px;
+  margin-left: 150px;
   max-width: 350px;
   text-indent: 0px;
   font-weight: bold;
@@ -685,9 +685,10 @@
 
 .addContactButton {
   margin-left: 5px;
-  width: 48;
-  height: 48px;
+  width: 28;
+  height: 28px;
   border-radius: 4px;
+  padding: 10px;
   background-color: #ffffff;
   border: solid 1px #e8e8e8;
   cursor: pointer;

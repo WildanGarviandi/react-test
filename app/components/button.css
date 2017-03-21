@@ -37,60 +37,73 @@
 }
 
 .greenButton {
-    border: 0;
-    border-radius: 5px;
-    background-color: #4cc38e;
-    color: #fff;
-    cursor: pointer;
-    min-width: 120px;
-    min-height: 30px;
-    margin-left: 5px;
+  border: 0;
+  border-radius: 5px;
+  background-color: #4cc38e;
+  color: #fff;
+  cursor: pointer;
+  min-width: 120px;
+  min-height: 30px;
+  margin-left: 5px;
 }
 
 .greenButton2 {
-    border: 0;
-    border-radius: 5px;
-    background-color: #ffffff;
-    color: #38b393;
-    cursor: pointer;
-    min-width: 120px;
-    min-height: 30px;
-    margin-left: 5px;
-    border: solid 1px #d8d8d8;
-    font-weight: bold;
+  border: 0;
+  border-radius: 5px;
+  background-color: #ffffff;
+  color: #38b393;
+  cursor: pointer;
+  min-width: 120px;
+  min-height: 30px;
+  margin-left: 5px;
+  border: solid 1px #d8d8d8;
+  font-weight: bold;
 }
 
 .greenButton3 {
-    border: 0;
-    border-radius: 5px;
-    background-color: #4cc38e;
-    color: #fff;
-    cursor: pointer;
-    min-width: 120px;
-    min-height: 30px;
-    margin-left: 5px;
-    font-weight: bold;
-    padding: 15px;
+  border: 0;
+  border-radius: 5px;
+  background-color: #4cc38e;
+  color: #fff;
+  cursor: pointer;
+  min-width: 120px;
+  min-height: 30px;
+  margin-left: 5px;
+  font-weight: bold;
+  padding: 15px;
 }
 
 .greenButton4 {
-    border: 0;
-    border-radius: 5px;
-    background-color: #4cc38e;
-    color: #fff;
-    cursor: pointer;
-    min-width: 350px;
-    min-height: 30px;
-    margin-left: 5px;
+  border: 0;
+  border-radius: 5px;
+  background-color: #4cc38e;
+  color: #fff;
+  cursor: pointer;
+  min-width: 350px;
+  min-height: 30px;
+  margin-left: 5px;
 }
 
+.greenButton5 {
+  border: 0;
+  border-radius: 5px;
+  background-color: #4cc38e;
+  color: #fff;
+  cursor: pointer;
+  min-width: 350px;
+  min-height: 40px;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+
+
 .redButton {
-    border: 0;
-    border-radius: 5px;
-    background-color: #4cc38e;
-    color: #fff;
-    cursor: pointer;
-    min-width: 120px;
-    min-height: 30px;
-    margin-left: 5px;
+  border: 0;
+  border-radius: 5px;
+  background-color: #4cc38e;
+  color: #fff;
+  cursor: pointer;
+  min-width: 120px;
+  min-height: 30px;
+  margin-left: 5px;
 }
