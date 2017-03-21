@@ -18,6 +18,7 @@ const Constants = {
     CONTACT_DETAILS_SET: "mycontact/contacts/details",
     FETCHING_PAGE: "mycontact/contacts/fetching",
     FETCHING_PAGE_STOP: "mycontact/contacts/fetchingStop",
+    RESET_MANAGE_CONTACT: "mycontact/contacts/resetContact"
 }
 
 const initialStore = {
@@ -98,6 +99,15 @@ export default function Reducer(store = initialStore, action) {
         case Constants.RESET_FILTER: {
             return lodash.assign({}, store, {
                 filters: {}
+            });
+        }
+
+
+        case Constants.RESET_MANAGE_CONTACT: {
+            return lodash.assign({}, store, {
+                shipper: {},
+                pickup: {},
+                dropoff: {}
             });
         }
 
@@ -313,9 +323,8 @@ export function addContact(contact, contactType) {
 }
 
 export function resetManageContact() {
-    return (dispatch) => {
-   
-        dispatch({type: Constants.FETCHING_PAGE_STOP});
+    return (dispatch) => {   
+        dispatch({type: Constants.RESET_MANAGE_CONTACT});
     }
 }
 
