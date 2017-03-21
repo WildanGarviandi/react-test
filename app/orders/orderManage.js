@@ -422,6 +422,7 @@ const ManagePage = React.createClass({
                                 <Form.InputWithDefault onChange={this.stateChange('PackageVolume')} type={'number'} />
                               </div>
                             </div>
+                            <div style={{clear: 'both'}} />
                             <div>
                               <div className={styles.itemLabel2}>Width/Height/Length</div>
                               <div className={styles.itemValue2}>

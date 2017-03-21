@@ -228,7 +228,7 @@
 
 .filterOption {
   float: left;
-  width: 45%;
+  width: 50%;
   margin-top: 30px;
 }
 
@@ -339,13 +339,13 @@
 
 .panelDriverList {
   width: 400px;
-  height: 450px;
   overflow-y: scroll; 
   border-radius: 4px;
   background-color: #ffffff;
   font-family: Helvetica;
   font-size: 12px;
   color: #000000;
+  height: calc(100vh - 200px);
 }
 
 .driverName {

@@ -38,7 +38,7 @@ const PanelDetails = React.createClass({
             </div>   
             <div className={styles.orderDetails}>
               <div className={styles.reassignButton}>
-                <ButtonWithLoading {...reassignOrderButton} />
+                <button className={stylesButton.greenButton2} onClick={this.props.expandDriver}>Assign</button>
               </div>
               <div className={styles.orderDetailsLabel}>
                 Order ID
