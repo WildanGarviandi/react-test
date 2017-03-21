@@ -250,6 +250,7 @@ export function FetchList() {
       delete filters.sortOptions;
     }
 
+    filters.userOrderNumbers = JSON.stringify(filters.userOrderNumbers);
     const params = lodash.assign({}, filters, {
       limit: limit,
       offset: (currentPage - 1) * limit

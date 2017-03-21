@@ -5,6 +5,13 @@
   margin-bottom: 20px;
 }
 
+.panel2 {
+  border: solid 1px #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+  padding-bottom: 10px;
+}
+
 .panel .title {
   background-color: #222D32;
   color: #f2f2f2;
@@ -222,7 +229,7 @@
 .filterOption {
   float: left;
   width: 45%;
-  margin-top: 0px;
+  margin-top: 30px;
 }
 
 .vendorName {
@@ -458,4 +465,73 @@
   margin-top: 10px;
   font-weight: bold;
   text-align: right;
+}
+
+.addCompanyOrderButton {
+  color: #2196f3;
+  padding: 14px;
+  border-radius: 3px;
+  border: solid 1px #d5d5d5;
+  font-weight: bold;
+  width: 160px;
+  margin-bottom: -20px;
+  cursor: pointer;
+  float: left;
+}
+
+.filterOrderArea {
+  float: left;
+  width: calc(100% - 220px);
+  margin-left: 20px;
+}
+
+.title {
+  margin-top: 0;
+  padding: 10px;
+}
+
+.top {
+  background-color: #fff;
+  color: #333;
+  text-indent: 10px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  cursor: pointer;
+}
+
+.top h4 {
+  background-color: #fff !important;
+  color: #333 !important;
+  margin: 0;
+}
+
+.modalBtn, .modalLink {
+  padding: 8px;
+  display: inline-block;
+  margin-left: 4px;
+  margin-top: 5px;
+  float: right;
+}
+
+.modalLink:hover {
+  color: #2196f3;
+}
+
+.top2 {
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #e8e8e8;
+  border-radius: 5px;
+  text-indent: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.top2 h4 {
+  margin: 0px;
+}
+
+.glyphFilter {
+  position: relative;
+  left: -13px;
 }
