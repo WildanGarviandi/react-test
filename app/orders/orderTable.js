@@ -165,9 +165,9 @@ export const Filter = React.createClass({
         <CheckboxHeader />
         <SortFilter />
         {
-          /*<div className={styles.reassignBulkButton}>
+          <div className={styles.reassignBulkButton}>
               <ButtonWithLoading {...reassignOrderButton} />
-          </div>*/
+          </div>
         }
       </div>
     );
