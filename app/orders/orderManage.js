@@ -60,9 +60,9 @@ const DropdownRow = React.createClass({
         { !withoutLabel &&
           <div>
               <span className={styles.itemLabel}>{label}</span>
-              <span className={styles.itemValue}>
+              <div className={styles.itemValue}>
                 <Form.DropdownWithState initialValue={value} options={options} handleSelect={handleSelect} />
-              </span>
+              </div>
           </div>
         }
       </div>
@@ -78,7 +78,7 @@ const DatetimeRow = React.createClass({
           <div style={{clear: 'both'}}>
             <span className={styles.itemLabel}>{label}</span>
               <span className={styles.itemValue}>
-                <DateTime onChange={this.props.onChange} defaultValue={value} />
+                <DateTime parentEl="#bootstrapPlaceholder" onChange={this.props.onChange} defaultValue={value} />
               </span>
           </div>
         );
@@ -141,9 +141,14 @@ const AddContact = React.createClass({
               <img src={"/img/icon-add.png"} className={styles.addContactButton} onClick={this.openModal}/>
               {
                 this.state.showContactModal &&
-                <ModalContainer onClose={this.closeModal}>
-                  <ModalDialog onClose={this.closeModal}>
-                    <h1>Add New Contact</h1>
+                <ModalContainer>
+                  <ModalDialog>
+                    <div className={styles.modalTitle}>
+                      Add New Contact
+                    </div>
+                    <div onClick={this.closeModal} className={styles.modalClose}>
+                      X
+                    </div>
                     <InputRow label={'First Name'} type={'text'} onChange={this.stateChange('FirstName') } />
                     <InputRow label={'Last Name'} type={'text'} onChange={this.stateChange('LastName') } />
                     <InputRow label={'Phone'} type={'text'} onChange={this.stateChange('Phone') } />
@@ -402,8 +407,8 @@ const ManagePage = React.createClass({
                         <div className={styles.orderDetailsInformation}>
                             <InputRow label={'Web Order ID'} type={'text'} onChange={this.stateChange('WebOrderID') } />
                             <DropdownRow label={'Vehicle'} options={vehicleOptions} handleSelect={this.stateChange('PackageSize')} />
-                            <InputRow label={'Package Details'} type={'text'} onChange={this.stateChange('PackageComments') } />
-                            <InputRow label={'Delivery Instructions'} type={'text'} onChange={this.stateChange('DeliveryInstructions') } />
+                            <InputRow label={'Details'} type={'text'} onChange={this.stateChange('PackageComments') } />
+                            <InputRow label={'Instructions'} type={'text'} onChange={this.stateChange('DeliveryInstructions') } />
                             <DatetimeRow label={'Pickup Time'} onChange={this.stateChange('PickupTime') } />
                             <DatetimeRow label={'Deadline'} onChange={this.stateChange('DueTime') } />
                         </div>
@@ -414,14 +419,30 @@ const ManagePage = React.createClass({
                         </div>
                         <div className={styles.orderDetailsInformation}>
                             <InputRow label={'Delivery Fee'} type={'number'} onChange={this.stateChange('DeliveryFee') } />
-                            <InputRow label={'Package Weight'} type={'number'} onChange={this.stateChange('PackageWeight') } />
-                            <InputRow label={'Package Volume'} type={'number'} onChange={this.stateChange('PackageVolume') } />
-                            <InputRow label={'Package Width'} type={'number'} onChange={this.stateChange('PackageWidth') } />
-                            <InputRow label={'Package Height'} type={'number'} onChange={this.stateChange('PackageHeight') } />
-                            <InputRow label={'Package Length'} type={'number'} onChange={this.stateChange('PackageLength') } />
+                            <div>
+                              <div className={styles.itemLabel2}>Weight/Volume</div>
+                              <div className={styles.itemValue3}>
+                                <Form.InputWithDefault onChange={this.stateChange('PackageWeight')} type={'number'} />
+                              </div>
+                              <div className={styles.itemValue3}>
+                                <Form.InputWithDefault onChange={this.stateChange('PackageVolume')} type={'number'} />
+                              </div>
+                            </div>
+                            <div>
+                              <div className={styles.itemLabel2}>Width/Height/Length</div>
+                              <div className={styles.itemValue2}>
+                                <Form.InputWithDefault onChange={this.stateChange('PackageWidth')} type={'number'} />
+                              </div>
+                              <div className={styles.itemValue2}>
+                                <Form.InputWithDefault onChange={this.stateChange('PackageHeight')} type={'number'} />
+                              </div>
+                              <div className={styles.itemValue2}>
+                                <Form.InputWithDefault onChange={this.stateChange('PackageLength')} type={'number'} />
+                              </div>
+                            </div>
                         </div> 
                     </div>
-                    <div style={{clear: 'both', float: 'right'}}>
+                    <div style={{float: 'right'}}>
                         { <ButtonWithLoading {...saveBtnProps} /> }
                     </div>
                 </Page>

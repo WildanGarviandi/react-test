@@ -415,3 +415,42 @@ export function ResetDriver() {
     type: Constants.RESET_DRIVER
   }
 }
+
+export function addOrder(order) {
+    return (dispatch, getState) => {
+        const {userLogged} = getState().app;
+        const {token} = userLogged;
+        dispatch({type: modalAction.BACKDROP_SHOW});
+        FetchPost('/order/company', token, order).then((response) => {
+        if(response.ok) {
+            response.json().then(function({data}) {
+                dispatch({
+                    type: Constants.ORDER_DETAILS_SET,
+                    order: lodash.assign({}, order),
+                });
+                alert('Add Order Success');
+                dispatch({type: modalAction.BACKDROP_HIDE});
+                window.location.href='/myorders/details/' + data.UserOrderID;
+            });
+        } else {
+            response.json().then(function({error}) {
+                var message = '';
+                error.message.forEach(function(m) {
+                    message += m + '\n';
+                });
+                alert(message);
+                dispatch({type: modalAction.BACKDROP_HIDE});
+            });
+        }
+        }).catch(() => { 
+            dispatch({type: modalAction.BACKDROP_HIDE});
+            dispatch(ModalActions.addMessage('Network error'));
+        });
+    }
+}
+
+export function resetManageOrder() {
+    return (dispatch) => {
+        dispatch({type: Constants.FETCHING_PAGE_STOP});
+    }
+}

@@ -186,6 +186,7 @@ const menuPaths = [
 
 const menuPathsTMS = [
   '/myorders',
+  '/myorders/add',
   '/mytrips',
   '/myongoingtrips',
 ];

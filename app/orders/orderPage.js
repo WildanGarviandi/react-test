@@ -13,6 +13,7 @@ import stylesButton from '../components/button.css';
 import * as UtilHelper from '../helper/utility';
 import NumberFormat from 'react-number-format';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import {push} from 'react-router-redux';
 
 const PanelDetails = React.createClass({
   render() {
@@ -237,99 +238,102 @@ const OrderPage = React.createClass({
     const {paginationState, PaginationAction, drivers, total, orders, expandedOrder, isExpandOrder, isExpandDriver, isExpandDriverBulk, AssignOrder, BulkAssignOrder, ShrinkOrder, ExpandDriver, selectedDriver, SetDriver} = this.props;
     return (
       <Page title="My Orders" count={{itemName: 'Items', done: 'All Done', value: total}}>
+        <div className={styles.addCompanyOrderButton} onClick={this.props.GoToAddOrder}>
+          + Add Company Order
+        </div>
         <Pagination2 {...paginationState} {...PaginationAction} />
-          <div className={styles.filterOption}>
-            <Filter expandDriver={this.expandBulkAssign} />
+        <div className={styles.filterOption}>
+          <Filter expandDriver={this.expandBulkAssign} />
+        </div>
+        {
+          (this.props.isFetching || this.props.isLoadingDriver) &&
+          <div>
+            <div style={{clear: 'both'}} />
+            <div style={{textAlign:'center'}}>
+              <div style={{fontSize: 20}}>
+                Fetching data....
+              </div>
+            </div>
           </div>
-          {
-            (this.props.isFetching || this.props.isLoadingDriver) &&
-            <div>
-              <div style={{clear: 'both'}} />
-              <div style={{textAlign:'center'}}>
-                <div style={{fontSize: 20}}>
-                  Fetching data....
-                </div>
+        }
+        {
+          !this.props.isFetching && this.props.orders.length === 0 && !lodash.isEmpty(this.props.filters) &&
+          <div>
+            <div style={{clear: 'both'}} />
+            <div className={styles.noOrderDesc}>
+              <img src="/img/icon-orders-done.png" />
+              <div style={{fontSize: 20}}>
+                Orders not found
+              </div>
+              <div style={{fontSize: 12, marginTop: 20}}>
+                Please choose another filter to get the orders.
               </div>
             </div>
-          }
-          {
-            !this.props.isFetching && this.props.orders.length === 0 && !lodash.isEmpty(this.props.filters) &&
-            <div>
-              <div style={{clear: 'both'}} />
-              <div className={styles.noOrderDesc}>
-                <img src="/img/icon-orders-done.png" />
-                <div style={{fontSize: 20}}>
-                  Orders not found
-                </div>
-                <div style={{fontSize: 12, marginTop: 20}}>
-                  Please choose another filter to get the orders.
-                </div>
+          </div>
+        }
+        {
+          !this.props.isFetching && this.props.orders.length === 0 && lodash.isEmpty(this.props.filters) &&
+          <div>
+            <div style={{clear: 'both'}} />
+            <div className={styles.noOrderDesc}>
+              <img src="/img/icon-orders-done.png" />
+              <div style={{fontSize: 20}}>
+                You dont have any orders right now!
+              </div>
+              <div style={{fontSize: 12, marginTop: 20}}>
+                You have assign all orders
               </div>
             </div>
-          }
-          {
-            !this.props.isFetching && this.props.orders.length === 0 && lodash.isEmpty(this.props.filters) &&
-            <div>
-              <div style={{clear: 'both'}} />
-              <div className={styles.noOrderDesc}>
-                <img src="/img/icon-orders-done.png" />
-                <div style={{fontSize: 20}}>
-                  You dont have any orders right now!
-                </div>
-                <div style={{fontSize: 12, marginTop: 20}}>
-                  You have assign all orders
-                </div>
-              </div>
-            </div>   
-          }
-          {
-            !this.props.isFetching && !this.props.isLoadingDriver && this.props.orders.length > 0 &&
-            <div>
-              <Table orders={orders} />
-              {   
-                isExpandOrder &&
-                <PanelDetails 
-                  isExpandDriver={isExpandDriver} 
-                  expandedOrder={expandedOrder} 
-                  shrinkOrder={ShrinkOrder} 
-                  expandDriver={ExpandDriver} />
-              }
-              {   
-                isExpandDriver &&
-                <PanelDrivers 
-                  selectedOrders={this.state.selectedOrders} 
-                  isExpandDriverBulk={isExpandDriverBulk} 
-                  shrinkOrder={ShrinkOrder} 
-                  expandedOrder={expandedOrder} 
-                  assignOrder={AssignOrder} 
-                  bulkAssignOrder={BulkAssignOrder} 
-                  selectedDriver={selectedDriver} 
-                  setDriver={SetDriver} 
-                  drivers={drivers} />
-              }
-            </div>
-          }
+          </div>   
+        }
+        {
+          !this.props.isFetching && !this.props.isLoadingDriver && this.props.orders.length > 0 &&
+          <div>
+            <Table orders={orders} />
+            {   
+              isExpandOrder &&
+              <PanelDetails 
+                isExpandDriver={isExpandDriver} 
+                expandedOrder={expandedOrder} 
+                shrinkOrder={ShrinkOrder} 
+                expandDriver={ExpandDriver} />
+            }
+            {   
+              isExpandDriver &&
+              <PanelDrivers 
+                selectedOrders={this.state.selectedOrders} 
+                isExpandDriverBulk={isExpandDriverBulk} 
+                shrinkOrder={ShrinkOrder} 
+                expandedOrder={expandedOrder} 
+                assignOrder={AssignOrder} 
+                bulkAssignOrder={BulkAssignOrder} 
+                selectedDriver={selectedDriver} 
+                setDriver={SetDriver} 
+                drivers={drivers} />
+            }
+          </div>
+        }
 
-          { this.state.isSuccessAssign &&
-            <ModalContainer>
-              <ModalDialog>
-                <div className={styles.modal}>
-                  <div className={styles.modalHeader}>
-                    <h2 className={styles.modalTitle}>Success</h2>
-                    <div className={styles.successContent + ' ' + styles.ordersContentEmpty}>
-                      <img className={styles.successIcon} src={"/img/icon-success.png"} />
-                      <div className={styles.mediumText}>You have successfully assigned this order</div>
-                    </div>
-                  </div>
-                  <div className={styles.modalFooter}>
-                    <button className={styles.endButton} onClick={this.props.CloseSuccessAssign}>
-                      <span className={styles.mediumText}>Got It</span>
-                    </button>
+        { this.state.isSuccessAssign &&
+          <ModalContainer>
+            <ModalDialog>
+              <div className={styles.modal}>
+                <div className={styles.modalHeader}>
+                  <h2 className={styles.modalTitle}>Success</h2>
+                  <div className={styles.successContent + ' ' + styles.ordersContentEmpty}>
+                    <img className={styles.successIcon} src={"/img/icon-success.png"} />
+                    <div className={styles.mediumText}>You have successfully assigned this order</div>
                   </div>
                 </div>
-              </ModalDialog>
-            </ModalContainer>
-          }
+                <div className={styles.modalFooter}>
+                  <button className={styles.endButton} onClick={this.props.CloseSuccessAssign}>
+                    <span className={styles.mediumText}>Got It</span>
+                  </button>
+                </div>
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
       </Page>
     );
   }
@@ -400,6 +404,9 @@ function DispatchToOrdersPage(dispatch) {
       setLimit: (limit) => {
         dispatch(OrderService.SetLimit(limit));
       },
+    },
+    GoToAddOrder: () => {
+      dispatch(push(`/myorders/add/`));
     }
   }
 }

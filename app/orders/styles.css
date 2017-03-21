@@ -222,7 +222,7 @@
 .filterOption {
   float: left;
   width: 45%;
-  margin-top: 0px;
+  margin-top: 30px;
 }
 
 .vendorName {
@@ -463,17 +463,46 @@
 .itemLabel {
   display: block;
   padding: 5px;
-  width: 150px;
+  width: 110px;
   float: left;
 }
 
 .itemValue {
   padding: 5px;
   display: block;
-  margin-left: 160px;
+  margin-left: 120px;
   max-width: 350px;
   text-indent: 0px;
   font-weight: bold;
+}
+
+.itemLabel2 {
+  display: block;
+  padding: 5px;
+  width: 140px;
+  float: left;
+}
+
+.itemValue2 {
+  padding: 5px;
+  display: block;
+  float: left;
+  width: 100px;
+  text-indent: 0px;
+  font-weight: bold;
+}
+
+.itemValue3 {
+  padding: 5px;
+  display: block;
+  float: left;
+  width: 155px;
+  text-indent: 0px;
+  font-weight: bold;
+}
+
+.itemDateValue {
+  height: 44px;
 }
 
 .orderDetailsHeader {
@@ -481,7 +510,8 @@
   color: #000000;
   text-indent: 10px;
   border-radius: 5px;
-  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
   padding: 15px;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
@@ -493,13 +523,13 @@
   background-color: #ffffff;
   text-indent: 10px;
   border-radius: 5px;
-  cursor: pointer;
   padding: 15px;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
   clear: both;
   padding-bottom: 30px;
   margin-bottom: 20px;
+  min-height: 120px;
 }
 
 .orderDetailsBoxLeft {
@@ -542,8 +572,9 @@
 
 .contactDetails {
   float: left;
-  width: 30%;
-  margin-left: 15px;
+  width: 32%;
+  overflow-x: auto;
+  margin-left: 5px;
 }
 
 .contactDetailsBox {
@@ -762,4 +793,31 @@
   margin-top: 10px;
   opacity: 0.5;
   color: #000000;
+}
+
+.addCompanyOrderButton {
+  color: #2196f3;
+  padding: 14px;
+  border-radius: 3px;
+  border: solid 1px #d5d5d5;
+  font-weight: bold;
+  width: 160px;
+  margin-bottom: -20px;
+  cursor: pointer;
+}
+
+.modalClose {
+  font-size: 26px;
+  float: right;
+  top: 10px;
+  position: absolute;
+  right: 20px;
+  cursor: pointer;
+}
+
+.modalTitle {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
 }
