@@ -47,7 +47,7 @@ const PanelDetails = React.createClass({
               <div className={styles.orderDetailsLabel}>
                 Origin
               </div>
-              <div className={styles.tripDetailsValue}>
+              <div className={styles.orderDetailsValue}>
                 {expandedOrder.PickupAddress && expandedOrder.PickupAddress.City}
               </div>
               <div className={styles.orderDetailsLabel}>
