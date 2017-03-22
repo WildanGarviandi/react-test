@@ -252,6 +252,10 @@ export function FetchList() {
       delete filters.sortOptions;
     }
 
+    if (filters.isTrunkeyOrder === 'All') {
+      delete filters.isTrunkeyOrder;
+    }
+
     const params = lodash.assign({}, filters, {
       limit: limit,
       offset: (currentPage - 1) * limit
