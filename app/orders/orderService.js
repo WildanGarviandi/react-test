@@ -357,17 +357,17 @@ export function AssignDriver(orderID, driverID) {
     const {token} = userLogged;
 
     const body = {
-      DriverID: driverID,
+      driverID: driverID,
     };
 
     dispatch({type: modalAction.BACKDROP_SHOW});
     FetchPost(`/order/${orderID}/driver`, token, body).then((response) => {
-      dispatch({ type: Constants.ORDER_DRIVER_ASSIGN_END });
       if(!response.ok) {
         return response.json().then(({error}) => {
           throw error;
         });
       }
+      dispatch({ type: Constants.SHOW_SUCCESS_ASSIGN });
       dispatch(ResetDriver());
       dispatch(ShrinkOrder());
       dispatch(FetchList());

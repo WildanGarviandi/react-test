@@ -118,7 +118,7 @@ const Drivers = React.createClass({
   render: function() {
     var driverComponents = this.props.drivers.map(function(driver, idx) {
       const isSelected = this.props.selectedDriver === driver.UserID;
-      const totalWeight = parseFloat(driver.TotalCurrentWeight) + parseFloat(this.props.selectedOrder.Weight);
+      const totalWeight = parseFloat(driver.TotalCurrentWeight) + parseFloat(this.props.selectedOrder.PackageWeight);
       const driverWeight = isSelected ? totalWeight : parseFloat(driver.TotalCurrentWeight);
       let orderDriverStyle = isSelected ? styles.orderDriverSelected : styles.orderDriver;
       if (isSelected && (totalWeight > driver.AvailableWeight)) {
