@@ -67,32 +67,51 @@ const DuplicateModal = React.createClass({
 
 const PanelSuggestion = React.createClass({
   render() {
-    const { nextDestination, lastDestination, successScanned, scannedOrder, closeModalMessage } = this.props;
+    const { nextDestination, lastDestination, successScanned, scannedOrder, closeModalMessage, bulkScan, errorIDs, countSuccess, countError } = this.props;
     return (
       <div className={styles.panelSuggestion}>
-        <div className={styles.scanMessage}>
-          <div onClick={closeModalMessage} className={styles.modalClose}>
-            X
-          </div> 
-          <div className={styles.successScanned}>
-            Success: {successScanned}
+        { !bulkScan &&
+          <div>
+            <div className={styles.scanMessage}>
+              <div onClick={closeModalMessage} className={styles.modalClose}>
+                X
+              </div> 
+              <div className={styles.successScanned}>
+                Success: {successScanned}
+              </div>
+            </div>
+            <div className={styles.scannedOrder}>
+              {scannedOrder}
+            </div>
+            <div>
+              {lastDestination.City}
+            </div>
+            <div className={styles.scannedOrder}>
+              {nextDestination.Hub ? `via Hub ${nextDestination.Hub.Name}` : (nextDestination && `Dropoff`)}
+            </div>
+            <div className={styles.scannedOrder}>
+              {lastDestination.District && `Kec. ${lastDestination.District}`}
+            </div>
+            <div className={styles.scannedOrder}>
+              {lastDestination.ZipCode}
+            </div>
           </div>
-        </div>
-        <div className={styles.scannedOrder}>
-          {scannedOrder}
-        </div>
-        <div>
-          {lastDestination.City}
-        </div>
-        <div className={styles.scannedOrder}>
-          {nextDestination.Hub ? `via Hub ${nextDestination.Hub.Name}` : (nextDestination && `Dropoff`)}
-        </div>
-        <div className={styles.scannedOrder}>
-          {lastDestination.District && `Kec. ${lastDestination.District}`}
-        </div>
-        <div className={styles.scannedOrder}>
-          {lastDestination.ZipCode}
-        </div>
+        }
+        { bulkScan &&
+          <div>
+            <div className={styles.scanMessage}>
+              <div onClick={closeModalMessage} className={styles.modalClose}>
+                X
+              </div> 
+            </div>
+            <div className={styles.scannedOrder}>
+              Success: {countSuccess}, Error: {countError}
+            </div>
+            <div className={styles.scannedOrder}>
+              Error EDS: {errorIDs.join(', ')}
+            </div>
+          </div>
+        }
       </div>
     );
   }
@@ -152,7 +171,7 @@ const InboundOrdersPage = React.createClass({
         alert('Please write EDS Number or Order ID');
         return;
     }
-    this.setState({ids: IDs});
+    this.setState({ids: IDs, showModalMessage: true});
     this.props.bulkMarkReceived(IDs);
   },
   clearText() {
@@ -212,8 +231,17 @@ const InboundOrdersPage = React.createClass({
         </div>
         <InboundOrdersTable />
         {
-          !lodash.isEmpty(this.props.lastDestination) && this.state.showModalMessage &&
-          <PanelSuggestion closeModalMessage={this.closeModalMessage} nextDestination={this.props.suggestion}  lastDestination={this.props.lastDestination} successScanned={this.props.successScanned} scannedOrder={this.props.scannedOrder} />
+          (!lodash.isEmpty(this.props.lastDestination) || this.props.bulkScan) && this.state.showModalMessage &&
+          <PanelSuggestion 
+            closeModalMessage={this.closeModalMessage} 
+            nextDestination={this.props.suggestion} 
+            lastDestination={this.props.lastDestination} 
+            successScanned={this.props.successScanned} 
+            scannedOrder={this.props.scannedOrder}
+            bulkScan={this.props.bulkScan}
+            errorIDs={this.props.errorIDs}
+            countSuccess={this.props.countSuccess}
+            countError={this.props.countError} />
         }
       </Page>
     );
@@ -223,7 +251,7 @@ const InboundOrdersPage = React.createClass({
 function mapStateToProps (state) {
   const { inboundOrders } = state.app;
   const userLogged = state.app.userLogged;
-  const { duplicateOrders, isDuplicate, total, suggestion, lastDestination, successScanned, scannedOrder } = inboundOrders;
+  const { duplicateOrders, isDuplicate, total, suggestion, lastDestination, successScanned, scannedOrder, bulkScan, errorIDs, countSuccess, countError } = inboundOrders;
 
   return {
     userLogged,
@@ -233,7 +261,11 @@ function mapStateToProps (state) {
     suggestion,
     lastDestination,
     scannedOrder,
-    successScanned
+    successScanned,
+    errorIDs,
+    countSuccess,
+    countError,
+    bulkScan
   }
 }
 

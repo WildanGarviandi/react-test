@@ -37,7 +37,11 @@ const initialState = {
   suggestion: {},
   lastDestination: {},
   scannedOrder: '',
-  successScanned: 0
+  successScanned: 0,
+  errorIDs: [],
+  countSuccess: 0,
+  countError: 0,
+  bulkScan: false
 }
 
 export function Reducer (state = initialState, action) {
@@ -79,7 +83,11 @@ export function Reducer (state = initialState, action) {
         suggestion: action.nextDestination,
         lastDestination: action.lastDestination,
         successScanned: action.successScanned,
-        scannedOrder: action.scannedOrder
+        scannedOrder: action.scannedOrder,
+        errorIDs: action.errorIDs,
+        countSuccess: action.countSuccess,
+        countError: action.countError,
+        bulkScan: action.bulkScan
       });
     }
 
@@ -88,7 +96,11 @@ export function Reducer (state = initialState, action) {
         isMarking: false,
         suggestion: action.nextDestination,
         lastDestination: action.lastDestination,
-        scannedOrder: action.scannedOrder
+        scannedOrder: action.scannedOrder,
+        errorIDs: action.errorIDs,
+        countSuccess: action.countSuccess,
+        countError: action.countError,
+        bulkScan: action.bulkScan
       });
     }
 
@@ -104,7 +116,11 @@ export function Reducer (state = initialState, action) {
         suggestion: {}, 
         lastDestination: {},
         successScanned: 0,
-        scannedOrder: ''
+        scannedOrder: '',
+        errorIDs: [],
+        countSuccess: 0,
+        countError: 0,
+        bulkScan: false
       });
     }
 
@@ -260,14 +276,14 @@ export function MarkReceived (scannedID) {
     }).catch((e) => {
       const message = (e && e.message) ? e.message : "Failed to mark order as received";
       dispatch({type: modalAction.BACKDROP_HIDE});
-        dispatch({ 
-          type: Constants.ORDERS_INBOUND_MARK_RECEIVED_END_ERROR,
-          lastDestination: {
-            City: 'Not Found'
-          },
-          nextDestination: false,
-          scannedOrder: scannedID
-        });
+      dispatch({ 
+        type: Constants.ORDERS_INBOUND_MARK_RECEIVED_END_ERROR,
+        lastDestination: {
+          City: 'Not Found'
+        },
+        nextDestination: false,
+        scannedOrder: scannedID
+      });
 
       dispatch(NotifActions.addNotification(message, 'error', null, null, 5, true));
     });
@@ -297,14 +313,20 @@ export function BulkMarkReceived (scannedIDs) {
 
       response.json().then(({data}) => {
         
-        dispatch(NotifActions.addNotification(`Order was received`, 'success', null, null, 3, true));
-
-        dispatch({
-          type: Constants.ORDERS_INBOUND_MARK_RECEIVED_SET
+        
+        dispatch({ 
+          type: Constants.ORDERS_INBOUND_MARK_RECEIVED_END,
+          lastDestination: {},
+          nextDestination: false,
+          bulkScan: true,
+          errorIDs: scannedIDs,
+          countSuccess: 4,
+          countError: 5,
+          scannedOrder: '',
+          successScanned: 0
         });
       
         dispatch({type: modalAction.BACKDROP_HIDE});
-        dispatch({ type: Constants.ORDERS_INBOUND_MARK_RECEIVED_END });
         dispatch(ReFetchList());
         dispatch(DashboardService.FetchCount());
       });
