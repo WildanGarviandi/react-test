@@ -231,7 +231,14 @@ const OrderPage = React.createClass({
       const newFilters = {['userOrderNumbers']: JSON.stringify(IDs)};
       this.props.UpdateAndFetch(newFilters);
   },
+  clearText() {
+      this.setState({opened: true, idsRaw: '', ids: []});
+      this.setState({ids: []});
+      const newFilters = {['userOrderNumbers']: []};
+      this.props.UpdateAndFetch(newFilters);
+  },
   componentWillMount() {
+    this.clearText();
     this.props.ShrinkOrder();
     this.props.FetchList();
     this.props.FetchDrivers(this.props.userLogged.userID);
@@ -287,6 +294,7 @@ const OrderPage = React.createClass({
                       onChange={this.textChange} 
                       placeholder={'Write/Paste EDS Number or Order ID here, separated with newline'} />
                   <ButtonBase styles={styles.modalBtn} onClick={this.processText}>Filter</ButtonBase>
+                  <ButtonBase styles={styles.modalBtn} onClick={this.clearText}>Clear</ButtonBase>
                   <ButtonBase styles={styles.modalBtn} onClick={this.cancelChange}>Cancel</ButtonBase>
                 </div>
               </div>
