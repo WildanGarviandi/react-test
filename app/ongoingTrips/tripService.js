@@ -572,8 +572,8 @@ export function BulkAssignDriver(trips, driverID) {
     })
 
     const body = {
-      DriverID: driverID,
-      TripIDs: tripIDs
+      driverID: driverID,
+      tripIDs: tripIDs
     };
 
     dispatch({ type: Constants.TRIP_DRIVER_ASSIGN_START });
