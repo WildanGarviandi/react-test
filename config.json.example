@@ -1,6 +1,7 @@
 {
   "baseAPI": "http://localhost:3001/v2/fleet",
   "baseAPIHub": "http://localhost:3001/v2/hub",
+  "baseAPIPublic": "http://localhost:3001/v2/public",
   "port": 8080,
   "defaultCountryCode": "+62",
   "defaultCountryID": 95,
@@ -8,5 +9,6 @@
   "features": {
     "menuTMS": true,
     "menuUpdateOrder": true
-  }
+  },
+  "googleSiteKey": ""
 }

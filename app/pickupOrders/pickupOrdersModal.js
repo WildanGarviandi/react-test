@@ -234,9 +234,6 @@ const Driver = React.createClass({
             <tr>
               <span className={styles.driverName}>{driver.FirstName} {driver.LastName}</span>
             </tr>
-            <tr>
-              <span className={driverWeightStyle}>Available Weight: {availableWeight}/{capacity} kg</span>
-            </tr>
           </table>
           <table className={styles.driverLocation}>
             <tr>

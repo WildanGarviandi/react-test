@@ -1,0 +1,171 @@
+.page {
+  background: url('../../img/bg-login.jpg') no-repeat center center fixed;
+  -webkit-background-size: cover;
+  background-size: cover;
+
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+.panel {
+  border: solid 1px #eee;
+  border-radius: 5px;
+  background-color: #fff;
+
+  width: 510px;
+  margin: 0 auto;
+}
+
+.logo {
+  background-image: url('../../img/etobee-hd-logo-plain.png');
+  -webkit-background-size: cover;
+  background-size: cover;
+
+  width: 75px;
+  height: 113px;
+
+  margin: 0 auto 30px;
+}
+
+.form {
+  max-width: 350px;
+  margin: 0 auto;
+  padding-top: 30px;
+  padding-bottom: 30px;
+
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.header {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.inputWrapper {
+  position: relative;
+}
+
+.inputText {
+  background-color: transparent;
+  border: 1px solid #dbdbdb;
+  border-radius: 3px;
+
+  height: 34px;
+  width: 100%;
+
+  padding: 0;
+
+  color: #222;
+  font-size: 12px;
+  text-indent: 20px;
+}
+
+.inputTextWithPrefix {
+  margin-left: 44px;
+  width: calc(100% - 46px) !important;
+  border-radius: 0 2px 2px 0;
+}
+
+.inputDropdown {
+  background-color: transparent;
+  border: 1px solid #dbdbdb;
+  border-radius: 3px;
+
+  width: 340px;
+
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 0;
+
+  color: #222;
+  font-size: 12px;
+  text-indent: 20px;
+  margin-left: 5px;
+  text-indent: 0px;
+}
+
+.inputError {
+  border: solid 1px red;
+}
+
+.inputNotes {
+  color: #f00;
+  font-size: 11px;
+}
+
+.checkbox {
+  display: inline-block;
+
+  background-image: url('../../img/login-checkbox-unchecked.png');
+  background-position: 0 0;
+  background-repeat: no-repeat;
+
+  height: 20px;
+}
+
+.checkbox.checked {
+  background-image: url('../../img/login-checkbox-checked.png');
+}
+
+.checkboxInput {
+  opacity: 0;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+}
+
+.checkboxLabel {
+  position: relative;
+  top: -3px;
+
+  margin-left: 5px;
+}
+
+.forgot {
+  position: relative;
+  top: 3px;
+  color: #ff5a60;
+  float: right;
+}
+
+.errorMsg {
+  text-align: center;
+  display: block;
+  color: red;
+}
+
+.submitBtn {
+  display: block;
+
+  width: 100%;
+  height: 40px;
+
+  padding: 10px;
+  margin-top: 10px;
+
+  font-size: 18px;
+}
+
+.submitBtnSpinner {
+  background-position: 25% 50%;
+  -webkit-background-size: 20px 20px;
+  background-size: 20px 20px;
+}
+
+.itemValue {
+  padding: 5px;
+  display: block;
+  max-width: 350px;
+  text-indent: 0px;
+}
+
+.prefix {
+  background-color: #ccc;
+  padding: 10px;
+  border-radius: 2px 0 0 2px;
+  float: left;
+  width: 24px;
+  height: 16px;
+  position: absolute;
+}

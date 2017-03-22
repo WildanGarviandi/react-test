@@ -28,7 +28,18 @@ function GetParams(token) {
   }
 };
 
-export default (url, token, query = {}, isHubAPI = false) => {
-  let baseUrl = isHubAPI ? config.baseUrlHub : config.baseUrl;
-  return fetch(baseUrl + url + UrlParams(query), GetParams(token));
+export default (url, token, query = {}, isHubAPI = false, isPublicAPI = false) => {
+  let baseUrl = config.baseUrl;
+  if (isHubAPI) {
+    baseUrl = config.baseUrlHub;
+  }
+  if (isPublicAPI) {
+    baseUrl = config.baseUrlPublic;
+  }
+  return fetch(baseUrl + url + UrlParams(query), GetParams(token)).then(function(response) {
+    if (response.status === 403) {
+      window.location.href = '/login';
+    }
+    return response;
+  });
 }

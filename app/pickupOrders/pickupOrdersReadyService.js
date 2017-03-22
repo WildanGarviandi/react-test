@@ -45,7 +45,7 @@ const initialState = {
   city: 'All',
   listType: 'All',
   isFetching: false,
-  limit: 50,
+  limit: 25,
   trips: [],
   total: 0,
   fixTotal: 0,
@@ -134,7 +134,7 @@ export function Reducer(state = initialState, action) {
         currentPage: 1,
         city: 'All',
         listType: 'All',
-        limit: 50,
+        limit: 25,
       });
     }
 
@@ -343,7 +343,7 @@ export function ShowAssignModal(tripID) {
     const {pickupOrdersReady, userLogged} = getState().app;
     const {token} = userLogged;
     let params =  {
-      suggestLastMileFleet: 1
+      suggestLastMileFleet: 0
     };
 
     FetchGet('/trip/' + tripID, token, params).then((response) => {
@@ -421,13 +421,12 @@ export function FetchDrivers(tripID) {
     const {token} = userLogged;
 
     const query = {
-      tripID: tripID,
-      limit: config.driverLimit,
-      offset: 0
+      offset: 0,
+      limit: 'all'
     };
         
     dispatch({type: Constants.ORDERS_PICKUP_DRIVER_FETCH_START});
-    FetchGet('/drivers', token, query, true).then((response) => {
+    FetchGet('/driver', token, query).then((response) => {
       if(!response.ok) {
         return response.json().then(({error}) => {
           throw error;
@@ -438,7 +437,7 @@ export function FetchDrivers(tripID) {
         dispatch({type: Constants.ORDERS_PICKUP_DRIVER_FETCH_END});
         dispatch({
           type: Constants.ORDERS_PICKUP_SET_DRIVERS,
-          drivers: data
+          drivers: data.rows
         })
       });
     }).catch((e) => {

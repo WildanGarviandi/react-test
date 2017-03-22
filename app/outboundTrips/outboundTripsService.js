@@ -75,7 +75,7 @@ const initialState = {
   },
   filtersStatus: 'SHOW ALL',
   isDetailFetching: false,
-  limit: 100,
+  limit: 25,
   total: 0,
   trips: [],
   nearbyFleets: {
@@ -147,7 +147,7 @@ export function Reducer(state = initialState, action) {
         },
         currentPage: 1,
         filterStatus: 'SHOW ALL',
-        limit: 100,
+        limit: 25,
       });
     }
 
@@ -304,7 +304,7 @@ export function Reducer(state = initialState, action) {
         }, 
         currentPage: 1,
         filterStatus: 'SHOW ALL',
-        limit: 100,
+        limit: 25,
       });
     }
 
@@ -474,8 +474,8 @@ export function FetchListNearbyDrivers(tripID) {
     const {token} = userLogged;
 
     const query = {
-      tripID: tripID,
-      limit: 10000
+      offset: 0,
+      limit: 'all'
     };
 
     const isHubAPI = true;
@@ -485,7 +485,7 @@ export function FetchListNearbyDrivers(tripID) {
       type: Constants.NEARBY_DRIVERS_FETCH_START,
     });
 
-    FetchGet('/drivers', token, query, isHubAPI).then((response) => {
+    FetchGet('/driver', token, query).then((response) => {
       if(!response.ok) {
         throw new Error();
       }
@@ -494,8 +494,8 @@ export function FetchListNearbyDrivers(tripID) {
         dispatch({type: modalAction.BACKDROP_HIDE});
         dispatch({
           type: Constants.NEARBY_DRIVERS_SET,
-          drivers: data,
-          total: data.length,
+          drivers: data.rows,
+          total: data.count,
         });
 
         dispatch({
@@ -611,7 +611,7 @@ export function FetchDetails(tripID) {
     const {userLogged} = getState().app;
     const {token} = userLogged;
     let params =  {
-      suggestLastMileFleet: 1
+      suggestLastMileFleet: 0
     };
 
     dispatch({type: modalAction.BACKDROP_SHOW});

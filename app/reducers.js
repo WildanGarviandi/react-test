@@ -28,6 +28,10 @@ import stateList from './states/stateService';
 import tripsHistory from './tripHistory/service';
 import myDrivers from './drivers/driverService';
 import cityList from './cities/cityService';
+import publicCountryList from './location/countryService';
+import publicStateList from './location/stateService';
+import publicCityList from './location/cityService';
+import registerData from './modules/auth/actions/register';
 import {Reducer as pickupOrders} from './pickupOrders/pickupOrdersService';
 import {Reducer as pickupOrdersReady} from './pickupOrders/pickupOrdersReadyService';
 import nearbyFleets from './nearbyFleets/nearbyFleetService';
@@ -63,6 +67,10 @@ export default combineReducers({
   tripsHistory,
   myDrivers,
   cityList,
+  publicCountryList,
+  publicStateList,
+  publicCityList,
+  registerData,
   nearbyFleets,
   dashboard
 });

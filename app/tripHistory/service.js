@@ -18,7 +18,7 @@ const Constants = {
 const initialStore = {
     currentPage: 1,
     filters: {},
-    limit: 100,
+    limit: 25,
     statusName: "SHOW ALL",
     total: 0,
     tripType: "Show All",
@@ -60,7 +60,7 @@ export default function Reducer(store = initialStore, action) {
                 filters: {}, 
                 currentPage: 1,
                 filterStatus: "SHOW ALL",
-                limit: 100,
+                limit: 25,
             });
         }
 

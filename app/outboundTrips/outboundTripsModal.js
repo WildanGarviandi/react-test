@@ -256,11 +256,6 @@ const DriverInModal = React.createClass({
           <div className={styles.colMd7 + ' ' + styles.vendorName}>
             <span className={styles.mediumText}><strong>{item.FirstName + ' ' + item.LastName}</strong></span>
             <br/>
-            { trip &&
-              <span className={styles.infoWeight + (isOverload ? ' ' + styles.red : '')}>
-                Available weight : {currentLoad + '/' + item.TotalCapability} kg
-              </span>
-            }
           </div>
           { trip &&
             <div className={styles.driverDistance}>
@@ -269,7 +264,7 @@ const DriverInModal = React.createClass({
                 <img src="/img/icon-location.png" width="24"/>
                 { item.DistanceToNearestPickup && 
                   <span className={styles.baseline}>
-                    <span className={styles.bigText}>{(item.DistanceToNearestPickup).toFixed(2)}</span>
+                    <span className={styles.bigText}>{(item.DistanceToNearestPickup).toFixed(2) || 'N/A'}</span>
                     <span>km</span>
                   </span>
                 }

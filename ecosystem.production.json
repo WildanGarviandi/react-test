@@ -5,7 +5,8 @@
       "script"    : "server.js",
       "env_production" : {
         "NODE_ENV": "production"
-      }
+      },
+      "max_memory_restart" : "300M"
     }
   ],
 
