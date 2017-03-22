@@ -117,6 +117,7 @@ const InboundOrdersPage = React.createClass({
         return;
     }
     this.setState({ids: IDs});
+    this.props.bulkMarkReceived(IDs);
   },
   clearText() {
     const {filterAction} = this.props;
@@ -193,6 +194,9 @@ function mapDispatchToProps (dispatch) {
   return {
     markReceived: function(scannedID) {
       dispatch(InboundOrders.MarkReceived(scannedID));
+    },
+    bulkMarkReceived: function(scannedIDs) {
+      dispatch(InboundOrders.BulkMarkReceived(scannedIDs));
     }
   }
 }

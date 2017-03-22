@@ -223,3 +223,48 @@ export function MarkReceived (scannedID) {
     });
   };
 }
+
+export function BulkMarkReceived (scannedIDs) {
+  return (dispatch, getState) => {
+    const { userLogged } = getState().app;
+    const { token } = userLogged;
+
+    const query = {
+      ids: scannedIDs
+    }
+
+    dispatch({type: modalAction.BACKDROP_SHOW});
+    dispatch({
+      type: Constants.ORDERS_INBOUND_MARK_RECEIVED_START,
+    });
+
+    FetchPost(`/order/bulk-mark-deliver`, token, query).then((response) => {
+      if(!response.ok) {
+        return response.json().then(({error}) => {
+          throw error;
+        });
+      }
+
+      response.json().then(({data}) => {
+        
+        dispatch(NotifActions.addNotification(`Order was received`, 'success', null, null, 3, true));
+
+        dispatch({
+          type: Constants.ORDERS_INBOUND_MARK_RECEIVED_SET
+        });
+      
+        dispatch({type: modalAction.BACKDROP_HIDE});
+        dispatch({ type: Constants.ORDERS_INBOUND_MARK_RECEIVED_END });
+        dispatch(ReFetchList());
+        dispatch(DashboardService.FetchCount());
+      });
+
+    }).catch((e) => {
+      const message = (e && e.message) ? e.message : "Failed to mark order as received";
+      dispatch({type: modalAction.BACKDROP_HIDE});
+      dispatch({ type: Constants.ORDERS_INBOUND_MARK_RECEIVED_END });
+
+      dispatch(NotifActions.addNotification(message, 'error', null, null, 5, true));
+    });
+  };
+}
