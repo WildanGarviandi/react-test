@@ -228,9 +228,8 @@ const OrderPage = React.createClass({
       }
       this.setState({ids: IDs});
       this.toggleOpen();
-      const newFilters = {['userOrderNumbers']: IDs};
-      this.props.UpdateFilters(newFilters);
-      this.props.FetchList();
+      const newFilters = {['userOrderNumbers']: JSON.stringify(IDs)};
+      this.props.UpdateAndFetch(newFilters);
   },
   componentWillMount() {
     this.props.ShrinkOrder();
@@ -461,8 +460,8 @@ function DispatchToOrdersPage(dispatch) {
     GoToAddOrder: () => {
       dispatch(push(`/myorders/add/`));
     },
-    UpdateFilters: (newFilters) => {
-      dispatch(OrderService.UpdateFilters(newFilters));
+    UpdateAndFetch: (newFilters) => {
+      dispatch(OrderService.UpdateAndFetch(newFilters));
     }
   }
 }

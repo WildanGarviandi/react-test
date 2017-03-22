@@ -32,6 +32,7 @@ const initialStore = {
   limit: 10,
   statusName: "SHOW ALL",
   sortOptions: "Sort By",
+  orderTypeOptions: "All",
   total: 0,
   orders: [],
   selectedAll: false,
@@ -184,7 +185,8 @@ export function UpdateFilters(filters) {
 export function SetDropDownFilter(keyword) {
   const filterNames = {
     "statusName": "status",
-    "sortOptions": "sortOptions"
+    "sortOptions": "sortOptions",
+    "orderTypeOptions": "isTrunkeyOrder"
   };
 
   return (selectedOption) => {
@@ -250,7 +252,6 @@ export function FetchList() {
       delete filters.sortOptions;
     }
 
-    filters.userOrderNumbers = JSON.stringify(filters.userOrderNumbers);
     const params = lodash.assign({}, filters, {
       limit: limit,
       offset: (currentPage - 1) * limit

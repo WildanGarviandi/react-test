@@ -69,9 +69,18 @@ function DropdownStoreBuilder(name) {
       key: 2, value: 'Deadline (oldest)',
     }];
 
+    const orderTypeOptions = [{
+      key: 'All', value: "All", 
+    }, {
+      key: 0, value: 'Company',
+    }, {
+      key: 1, value: 'Etobee',
+    }];
+
     const options = {
       "statusName": OrderStatusSelector.GetList(store),
-      "sortOptions": sortOptions
+      "sortOptions": sortOptions,
+      "orderTypeOptions": orderTypeOptions
     }
 
 
@@ -150,6 +159,7 @@ function ConnectDropdownBuilder(keyword) {
 const CheckboxHeader = connect(CheckboxHeaderStore, CheckboxHeaderDispatch)(CheckboxHeaderBase);
 const CheckboxRow = connect(undefined, CheckboxDispatch)(CheckboxCell);
 const SortFilter = ConnectDropdownBuilder('sortOptions')(FilterTop);
+const OrderTypeFilter = ConnectDropdownBuilder('orderTypeOptions')(FilterTop);
 
 export const Filter = React.createClass({
   render() {
@@ -164,6 +174,7 @@ export const Filter = React.createClass({
       <div>
         <CheckboxHeader />
         <SortFilter />
+        <OrderTypeFilter />
         {
           <div className={styles.reassignBulkButton}>
               <ButtonWithLoading {...reassignOrderButton} />
@@ -239,18 +250,22 @@ const OrderRow = React.createClass({
     this.setState({isHover: false});
   },
   render() {
-    const { order, expandedOrder } = this.props;
+    const { order, expandedOrder, profilePicture } = this.props;
     const { isEdit, isHover } = this.state;
     const parsedOrder = OrderParser(order);
     let rowStyles = styles.tr + ' ' + styles.card  + (this.state.isHover && (' ' + styles.hovered));
     if (expandedOrder.UserOrderID === order.UserOrderID) {
       rowStyles = styles.tr + ' ' + styles.card +  ' ' + styles.select;
     }
+    const DEFAULT_IMAGE = "/img/default-logo.png";
+    const ETOBEE_IMAGE = "/img/etobee-logo.png";
+    const FLEET_IMAGE = profilePicture;
     return (
       <tr className={rowStyles} 
         onMouseEnter={this.onMouseOver} onMouseLeave={this.onMouseOut}>
         <td><CheckboxRow isChecked={order.IsChecked} orderID={order.UserOrderID} /></td>
         <td onClick={()=>{this.expandOrder(order)}}><div className={styles.cardSeparator} /></td>
+        <td onClick={()=>{this.expandOrder(order)}}><img className={styles.orderLoadImage} src={order.IsTrunkeyOrder ? ETOBEE_IMAGE : FLEET_IMAGE} onError={(e)=>{e.target.src=DEFAULT_IMAGE}} /></td>
         <td onClick={()=>{this.expandOrder(order)}} className={styles.orderIDColumn}>{`${order.UserOrderNumber}`}</td>
         <td onClick={()=>{this.expandOrder(order)}}><div className={styles.cardSeparator} /></td>
         <td onClick={()=>{this.expandOrder(order)}}>
@@ -319,10 +334,10 @@ const OrderRow = React.createClass({
 
 const OrderBody = React.createClass({
   getBodyContent() {
-    const { orders, expandedOrder, expand, shrink } = this.props;
+    const { orders, expandedOrder, expand, shrink, profilePicture } = this.props;
     let content = [];
     orders.forEach((order) => {
-      content.push(<OrderRow key={order.UserOrderID} order={OrderParser(order)} expandedOrder={expandedOrder} expand={expand} shrink={shrink} />);
+      content.push(<OrderRow key={order.UserOrderID} profilePicture={profilePicture} order={OrderParser(order)} expandedOrder={expandedOrder} expand={expand} shrink={shrink} />);
     });
     return content;
   },
@@ -338,8 +353,10 @@ const OrderBody = React.createClass({
 function OrderBodyStore() {
   return (store) => {
     const { expandedOrder } = store.app.myOrders;
+    const { user } = store.app.userLogged;
     return {
-      expandedOrder: expandedOrder
+      expandedOrder: expandedOrder,
+      profilePicture: user && user.User && user.User.ProfilePicture
     }
   }
 }
