@@ -577,7 +577,7 @@ export function BulkAssignDriver(trips, driverID) {
     };
 
     dispatch({ type: Constants.TRIP_DRIVER_ASSIGN_START });
-    FetchPost(`/trip/driver/bulk-assign`, token, body).then((response) => {
+    FetchPost(`/trip/bulk-assign`, token, body).then((response) => {
       dispatch({ type: Constants.TRIP_DRIVER_ASSIGN_END });
       if(!response.ok) {
         return response.json().then(({error}) => {
