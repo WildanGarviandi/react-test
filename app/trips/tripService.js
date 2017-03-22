@@ -569,6 +569,7 @@ export function BulkAssignDriver(trips, driverID) {
     };
 
     dispatch({ type: Constants.TRIP_DRIVER_ASSIGN_START });
+    dispatch({type: modalAction.BACKDROP_SHOW});
     FetchPost(`/trip/bulk-assign`, token, body).then((response) => {
       dispatch({ type: Constants.TRIP_DRIVER_ASSIGN_END });
       if(!response.ok) {
@@ -576,10 +577,15 @@ export function BulkAssignDriver(trips, driverID) {
           throw error;
         });
       }
-      window.location.reload(false); 
+      dispatch({ type: Constants.SHOW_SUCCESS_ASSIGN });
+      dispatch(ResetDriver());
+      dispatch(ShrinkTrip());
+      dispatch(FetchList());
+      dispatch({type: modalAction.BACKDROP_HIDE});
     }).catch((e) => {
       const message = (e && e.message) || "Failed to set driver";
       dispatch(ModalActions.addMessage(message));
+      dispatch({type: modalAction.BACKDROP_HIDE});
     });
   }
 }
