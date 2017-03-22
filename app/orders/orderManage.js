@@ -76,9 +76,9 @@ const DatetimeRow = React.createClass({
         return (
           <div className='nb' style={{clear: 'both'}}>
             <span className={styles.itemLabel}>{label}</span>
-              <span className={styles.itemValue}>
+              <div className={styles.itemValue}>
                 <DateTime parentEl="#bootstrapPlaceholder" onChange={this.props.onChange} defaultValue={value} />
-              </span>
+              </div>
           </div>
         );
     }
@@ -334,13 +334,13 @@ const ManagePage = React.createClass({
                                 <div className={styles.contactDetails}>
                                     <DropdownRow withoutLabel={true} label={'Pickup'} value={this.state.PickupName} options={contactOptions} handleSelect={this.selectContact('pickup')} />
                                     <AddContact contactClick={this.contactClick('pickup')} AddContact={this.props.AddContact} stateList={this.props.stateList} contactType={'pickup'} />
-                                    <InputStaticRow label={'Pickup Name'} value={this.state.PickupName} type={'text'} />
-                                    <InputStaticRow label={'Pickup Mobile'} value={this.state.PickupMobile} type={'text'} />
-                                    <InputStaticRow label={'Pickup Email'} value={this.state.PickupEmail} type={'text'} />
-                                    <InputStaticRow label={'Pickup Address'} value={this.state.PickupAddress} type={'text'} />
-                                    <InputStaticRow label={'Pickup City'} value={this.state.PickupCity} type={'text'} />
-                                    <InputStaticRow label={'Pickup State'} value={this.state.PickupState} type={'text'} />
-                                    <InputStaticRow label={'Pickup Zip'} value={this.state.PickupZip} type={'text'} />
+                                    <InputStaticRow label={'Pickup Name'} value={this.state.PickupName || '-'} type={'text'} />
+                                    <InputStaticRow label={'Pickup Mobile'} value={this.state.PickupMobile || '-'} type={'text'} />
+                                    <InputStaticRow label={'Pickup Email'} value={this.state.PickupEmail || '-'} type={'text'} />
+                                    <InputStaticRow label={'Pickup Address'} value={this.state.PickupAddress || '-'} type={'text'} />
+                                    <InputStaticRow label={'Pickup City'} value={this.state.PickupCity || '-'} type={'text'} />
+                                    <InputStaticRow label={'Pickup State'} value={this.state.PickupState || '-'} type={'text'} />
+                                    <InputStaticRow label={'Pickup Zip'} value={this.state.PickupZip || '-'} type={'text'} />
                                 </div>
                             }
                             { 
@@ -348,13 +348,13 @@ const ManagePage = React.createClass({
                                 <div className={styles.contactDetails}>
                                     <DropdownRow withoutLabel={true} label={'Dropoff'} value={this.state.DropoffName} options={contactOptions} handleSelect={this.selectContact('dropoff')} />
                                     <AddContact contactClick={this.contactClick('dropoff')} AddContact={this.props.AddContact} stateList={this.props.stateList} contactType={'dropoff'} />
-                                    <InputStaticRow label={'Dropoff Name'} value={this.state.DropoffName} type={'text'} />
-                                    <InputStaticRow label={'Dropoff Mobile'} value={this.state.DropoffMobile} type={'text'} />
-                                    <InputStaticRow label={'Dropoff Email'} value={this.state.DropoffEmail} type={'text'} />
-                                    <InputStaticRow label={'Dropoff Address'} value={this.state.DropoffAddress} type={'text'} />
-                                    <InputStaticRow label={'Dropoff City'} value={this.state.DropoffCity} type={'text'} />
-                                    <InputStaticRow label={'Dropoff State'} value={this.state.DropoffState} type={'text'}  />
-                                    <InputStaticRow label={'Dropoff Zip'} value={this.state.DropoffZip} type={'text'} />
+                                    <InputStaticRow label={'Dropoff Name'} value={this.state.DropoffName || '-'} type={'text'} />
+                                    <InputStaticRow label={'Dropoff Mobile'} value={this.state.DropoffMobile || '-'} type={'text'} />
+                                    <InputStaticRow label={'Dropoff Email'} value={this.state.DropoffEmail || '-'} type={'text'} />
+                                    <InputStaticRow label={'Dropoff Address'} value={this.state.DropoffAddress || '-'} type={'text'} />
+                                    <InputStaticRow label={'Dropoff City'} value={this.state.DropoffCity || '-'} type={'text'} />
+                                    <InputStaticRow label={'Dropoff State'} value={this.state.DropoffState || '-'} type={'text'}  />
+                                    <InputStaticRow label={'Dropoff Zip'} value={this.state.DropoffZip || '-'} type={'text'} />
                                 </div>
                             }
                             { 
@@ -379,13 +379,13 @@ const ManagePage = React.createClass({
                                         <div>
                                             <DropdownRow withoutLabel={true} label={'Shipper'} value={this.state.ShipperName} options={contactOptions} handleSelect={this.selectContact('shipper')} />
                                             <AddContact contactClick={this.contactClick('shipper')} AddContact={this.props.AddContact} stateList={this.props.stateList} contactType={'shipper'} />
-                                            <InputStaticRow label={'Shipper Name'} value={this.state.ShipperName} type={'text'} />
-                                            <InputStaticRow label={'Shipper Mobile'} value={this.state.ShipperMobile} type={'text'} />
-                                            <InputStaticRow label={'Shipper Email'} value={this.state.ShipperEmail} type={'text'} />
-                                            <InputStaticRow label={'Shipper Address'} value={this.state.ShipperAddress} type={'text'} />
-                                            <InputStaticRow label={'Shipper City'} value={this.state.ShipperCity} type={'text'} />
-                                            <InputStaticRow label={'Shipper State'} value={this.state.ShipperState} type={'text'} />
-                                            <InputStaticRow label={'Shipper Zip'} value={this.state.ShipperZip} type={'text'} />
+                                            <InputStaticRow label={'Shipper Name'} value={this.state.ShipperName || '-'} type={'text'} />
+                                            <InputStaticRow label={'Shipper Mobile'} value={this.state.ShipperMobile || '-'} type={'text'} />
+                                            <InputStaticRow label={'Shipper Email'} value={this.state.ShipperEmail || '-'} type={'text'} />
+                                            <InputStaticRow label={'Shipper Address'} value={this.state.ShipperAddress || '-'} type={'text'} />
+                                            <InputStaticRow label={'Shipper City'} value={this.state.ShipperCity || '-'} type={'text'} />
+                                            <InputStaticRow label={'Shipper State'} value={this.state.ShipperState || '-'} type={'text'} />
+                                            <InputStaticRow label={'Shipper Zip'} value={this.state.ShipperZip || '-'} type={'text'} />
                                         </div>
                                     }
                                 </div>
