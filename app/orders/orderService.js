@@ -7,6 +7,7 @@ import {modalAction} from '../modules/modals/constants';
 import moment from 'moment';
 import Promise from 'bluebird';
 import {fetchXhr} from '../modules/fetch/getXhr';
+import * as DashboardService from '../dashboard/dashboardService';
 
 const Constants = {
   BASE: "myorder/defaultSet/",
@@ -32,6 +33,7 @@ const initialStore = {
   limit: 10,
   statusName: "SHOW ALL",
   sortOptions: "Sort By",
+  orderTypeOptions: "All",
   total: 0,
   orders: [],
   selectedAll: false,
@@ -184,7 +186,8 @@ export function UpdateFilters(filters) {
 export function SetDropDownFilter(keyword) {
   const filterNames = {
     "statusName": "status",
-    "sortOptions": "sortOptions"
+    "sortOptions": "sortOptions",
+    "orderTypeOptions": "isTrunkeyOrder"
   };
 
   return (selectedOption) => {
@@ -248,6 +251,10 @@ export function FetchList() {
       filters.sortBy = sortKey.sortBy;
       filters.sortCriteria = sortKey.sortCriteria;
       delete filters.sortOptions;
+    }
+
+    if (filters.isTrunkeyOrder === 'All') {
+      delete filters.isTrunkeyOrder;
     }
 
     const params = lodash.assign({}, filters, {
@@ -351,20 +358,21 @@ export function AssignDriver(orderID, driverID) {
     const {token} = userLogged;
 
     const body = {
-      DriverID: driverID,
+      driverID: driverID,
     };
 
     dispatch({type: modalAction.BACKDROP_SHOW});
     FetchPost(`/order/${orderID}/driver`, token, body).then((response) => {
-      dispatch({ type: Constants.ORDER_DRIVER_ASSIGN_END });
       if(!response.ok) {
         return response.json().then(({error}) => {
           throw error;
         });
       }
+      dispatch({ type: Constants.SHOW_SUCCESS_ASSIGN });
       dispatch(ResetDriver());
       dispatch(ShrinkOrder());
       dispatch(FetchList());
+      dispatch(DashboardService.FetchCountTMS());
       dispatch({type: modalAction.BACKDROP_HIDE});
     }).catch((e) => {
       const message = (e && e.message) || "Failed to set driver";
@@ -385,20 +393,27 @@ export function BulkAssignDriver(orders, driverID) {
     })
 
     const body = {
-      DriverID: driverID,
-      OrderIDs: orderIDs
-    };
+      driverID: driverID,
+      orderIDs: orderIDs
+    };    
 
-    FetchPost(`/order/driver/bulk-assign`, token, body).then((response) => {
+    dispatch({type: modalAction.BACKDROP_SHOW});
+    FetchPost(`/order/bulk-assign`, token, body).then((response) => {
       if(!response.ok) {
         return response.json().then(({error}) => {
           throw error;
         });
       }
-      window.location.reload(false); 
+      dispatch({ type: Constants.SHOW_SUCCESS_ASSIGN });
+      dispatch(ResetDriver());
+      dispatch(ShrinkOrder());
+      dispatch(FetchList());
+      dispatch(DashboardService.FetchCountTMS());
+      dispatch({type: modalAction.BACKDROP_HIDE});
     }).catch((e) => {
       const message = (e && e.message) || "Failed to set driver";
       dispatch(ModalActions.addMessage(message));
+      dispatch({type: modalAction.BACKDROP_HIDE});
     });
   }
 }
@@ -430,7 +445,7 @@ export function addOrder(order) {
                 });
                 alert('Add Order Success');
                 dispatch({type: modalAction.BACKDROP_HIDE});
-                window.location.href='/myorders/details/' + data.UserOrderID;
+                window.location.href='/myorders';
             });
         } else {
             response.json().then(function({error}) {
