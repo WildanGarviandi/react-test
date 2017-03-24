@@ -372,7 +372,7 @@ export function AssignDriver(orderID, driverID) {
       dispatch(ResetDriver());
       dispatch(ShrinkOrder());
       dispatch(FetchList());
-      dispatch(DashboardService.FetchCount());
+      dispatch(DashboardService.FetchCountTMS());
       dispatch({type: modalAction.BACKDROP_HIDE});
     }).catch((e) => {
       const message = (e && e.message) || "Failed to set driver";
@@ -408,7 +408,7 @@ export function BulkAssignDriver(orders, driverID) {
       dispatch(ResetDriver());
       dispatch(ShrinkOrder());
       dispatch(FetchList());
-      dispatch(DashboardService.FetchCount());
+      dispatch(DashboardService.FetchCountTMS());
       dispatch({type: modalAction.BACKDROP_HIDE});
     }).catch((e) => {
       const message = (e && e.message) || "Failed to set driver";
