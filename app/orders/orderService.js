@@ -391,17 +391,22 @@ export function BulkAssignDriver(orders, driverID) {
     })
 
     const body = {
-      DriverID: driverID,
-      OrderIDs: orderIDs
-    };
+      driverID: driverID,
+      orderIDs: orderIDs
+    };    
 
+    dispatch({type: modalAction.BACKDROP_SHOW});
     FetchPost(`/order/driver/bulk-assign`, token, body).then((response) => {
       if(!response.ok) {
         return response.json().then(({error}) => {
           throw error;
         });
       }
-      window.location.reload(false); 
+      dispatch({ type: Constants.SHOW_SUCCESS_ASSIGN });
+      dispatch(ResetDriver());
+      dispatch(ShrinkOrder());
+      dispatch(FetchList());
+      dispatch({type: modalAction.BACKDROP_HIDE});
     }).catch((e) => {
       const message = (e && e.message) || "Failed to set driver";
       dispatch(ModalActions.addMessage(message));

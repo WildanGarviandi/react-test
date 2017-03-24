@@ -118,7 +118,14 @@ const Drivers = React.createClass({
   render: function() {
     var driverComponents = this.props.drivers.map(function(driver, idx) {
       const isSelected = this.props.selectedDriver === driver.UserID;
-      const totalWeight = parseFloat(driver.TotalCurrentWeight) + parseFloat(this.props.selectedOrder.PackageWeight);
+      let selectedWeight = this.props.selectedOrder.PackageWeight;
+      if (this.props.selectedOrders.length > 0) {
+        selectedWeight = 0;
+        this.props.selectedOrders.forEach(function(order) {
+          selectedWeight += order.PackageWeight;
+        })
+      } 
+      const totalWeight = parseFloat(driver.TotalCurrentWeight) + parseFloat(selectedWeight);
       const driverWeight = isSelected ? totalWeight : parseFloat(driver.TotalCurrentWeight);
       let orderDriverStyle = isSelected ? styles.orderDriverSelected : styles.orderDriver;
       if (isSelected && (totalWeight > driver.AvailableWeight)) {
@@ -196,7 +203,7 @@ const PanelDrivers = React.createClass({
           <input className={styles.inputDriverSearch} onChange={this.searchDriver} placeholder={'Search Driver...'} />
         </div>
         <div className={styles.panelDriverList}>
-          <Drivers selectedDriver={this.props.selectedDriver} selectedOrder={this.props.expandedOrder} setDriver={this.props.setDriver} drivers={this.state.driverList} />
+          <Drivers selectedDriver={this.props.selectedDriver} selectedOrders={this.props.selectedOrders} selectedOrder={this.props.expandedOrder} setDriver={this.props.setDriver} drivers={this.state.driverList} />
         </div>
         <div className={styles.setDriverButton}>
           <ButtonWithLoading {...setDriverButton} />
