@@ -104,11 +104,11 @@ const PanelSuggestion = React.createClass({
                 X
               </div> 
             </div>
-            <div className={styles.scannedOrder}>
+            <div className={styles.bulkScanInformation}>
               Success: {countSuccess}, Error: {countError}
             </div>
-            <div className={styles.scannedOrder}>
-              Error EDS: {errorIDs.join(', ')}
+            <div className={styles.bulkScanFailed}>
+              Error Order: {errorIDs.join(', ')}
             </div>
           </div>
         }
@@ -213,7 +213,7 @@ const InboundOrdersPage = React.createClass({
               <div className={styles.top2} onClick={this.toggleOpen}>
                 <h4 className={styles.title}>
                   <Glyph name='chevron-up' className={styles.glyphFilter} />
-                  {'Search multiple orders:'}
+                  {'Scan multiple orders:'}
                 </h4>
               </div>
               <div className={styles.bottom}>

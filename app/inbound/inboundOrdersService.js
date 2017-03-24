@@ -312,16 +312,23 @@ export function BulkMarkReceived (scannedIDs) {
       }
 
       response.json().then(({data}) => {
-        
+        console.log(data)
+
+        let failedIds = [];
+        if (data.failedIds.length > 0) {
+          data.failedIds.forEach(function(failed) {
+            failedIds.push(failed.id);
+          })
+        }        
         
         dispatch({ 
           type: Constants.ORDERS_INBOUND_MARK_RECEIVED_END,
           lastDestination: {},
           nextDestination: false,
           bulkScan: true,
-          errorIDs: scannedIDs,
-          countSuccess: 4,
-          countError: 5,
+          errorIDs: failedIds,
+          countSuccess: data.success,
+          countError: data.error,
           scannedOrder: '',
           successScanned: 0
         });
