@@ -7,6 +7,7 @@ import {modalAction} from '../modules/modals/constants';
 import moment from 'moment';
 import Promise from 'bluebird';
 import {fetchXhr} from '../modules/fetch/getXhr';
+import * as DashboardService from '../dashboard/dashboardService';
 
 const Constants = {
   BASE: "mytrip/defaultSet/",
@@ -514,6 +515,7 @@ export function ReassignDriver(tripID, driverID) {
       dispatch(ResetDriver());
       dispatch(ShrinkTrip());
       dispatch(FetchList());
+      dispatch(DashboardService.FetchCountTMS());
       dispatch({type: modalAction.BACKDROP_HIDE});
     }).catch((e) => {
       const message = (e && e.message) || "Failed to reassign driver";
@@ -598,6 +600,7 @@ export function BulkAssignDriver(trips, driverID) {
       dispatch(ResetDriver());
       dispatch(ShrinkTrip());
       dispatch(FetchList());
+      dispatch(DashboardService.FetchCountTMS());
       dispatch({type: modalAction.BACKDROP_HIDE});
     }).catch((e) => {
       const message = (e && e.message) || "Failed to reassign driver";
