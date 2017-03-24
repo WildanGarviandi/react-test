@@ -183,7 +183,18 @@ const Drivers = React.createClass({
   render: function() {
     var driverComponents = this.props.drivers.map(function(driver, idx) {
       const isSelected = this.props.selectedDriver === driver.UserID;
-      const totalWeight = parseFloat(driver.TotalCurrentWeight) + parseFloat(this.props.selectedTrip.Weight);
+      let selectedWeight = this.props.selectedTrip.Weight;
+      if (this.props.selectedTrips.length > 0) {
+        selectedWeight = 0;
+        this.props.selectedTrips.forEach(function(trip) {
+          const orders = lodash.map(trip.UserOrderRoutes, (route) => {
+            return route.UserOrder;
+          });
+          const weight = lodash.sumBy(orders, 'PackageWeight');
+          selectedWeight += weight;  
+        })
+      } 
+      const totalWeight = parseFloat(driver.TotalCurrentWeight) + parseFloat(selectedWeight);
       const driverWeight = isSelected ? totalWeight : parseFloat(driver.TotalCurrentWeight);
       let tripDriverStyle = isSelected ? styles.tripDriverSelected : styles.tripDriver;
       if (isSelected && (totalWeight > driver.AvailableWeight)) {
@@ -261,7 +272,7 @@ const PanelDrivers = React.createClass({
           <input className={styles.inputDriverSearch} onChange={this.searchDriver} placeholder={'Search Driver...'} />
         </div>
         <div className={styles.panelDriverList}>
-          <Drivers selectedDriver={this.props.selectedDriver} selectedTrip={this.props.expandedTrip} setDriver={this.props.setDriver} drivers={this.state.driverList} />
+          <Drivers selectedDriver={this.props.selectedDriver} selectedTrips={this.props.selectedTrips} selectedTrip={this.props.expandedTrip} setDriver={this.props.setDriver} drivers={this.state.driverList} />
         </div>
         <div className={styles.setDriverButton}>
           <ButtonWithLoading {...setDriverButton} />

@@ -516,7 +516,7 @@ export function ReassignDriver(tripID, driverID) {
       dispatch(FetchList());
       dispatch({type: modalAction.BACKDROP_HIDE});
     }).catch((e) => {
-      const message = (e && e.message) || "Failed to set driver";
+      const message = (e && e.message) || "Failed to reassign driver";
       dispatch(ModalActions.addMessage(message));
       dispatch({type: modalAction.BACKDROP_HIDE});
     });
@@ -542,7 +542,7 @@ export function AssignDriver(tripID, driverID) {
       }
       window.location.reload(false); 
     }).catch((e) => {
-      const message = (e && e.message) || "Failed to set driver";
+      const message = (e && e.message) || "Failed to reassign driver";
       dispatch(ModalActions.addMessage(message));
     });
   }
@@ -571,27 +571,36 @@ export function BulkAssignDriver(trips, driverID) {
       tripIDs.push(trip.TripID);
     })
 
+    const bodyDeassign = {
+      tripIDs: tripIDs
+    };
+
     const body = {
       driverID: driverID,
       tripIDs: tripIDs
     };
 
-    dispatch({ type: Constants.TRIP_DRIVER_ASSIGN_START });
     dispatch({type: modalAction.BACKDROP_SHOW});
-    FetchPost(`/trip/bulk-assign`, token, body).then((response) => {
-      dispatch({ type: Constants.TRIP_DRIVER_ASSIGN_END });
+    FetchDelete(`/trip/bulk-deassign`, token, bodyDeassign).then((response) => { 
       if(!response.ok) {
         return response.json().then(({error}) => {
           throw error;
         });
       }
-      dispatch({type: modalAction.BACKDROP_HIDE});
+      return FetchPost(`/trip/bulk-assign`, token, body);
+    }).then((response) => {
+      if(!response.ok) {
+        return response.json().then(({error}) => {
+          throw error;
+        });
+      }
       dispatch({ type: Constants.SHOW_SUCCESS_ASSIGN });
       dispatch(ResetDriver());
       dispatch(ShrinkTrip());
       dispatch(FetchList());
+      dispatch({type: modalAction.BACKDROP_HIDE});
     }).catch((e) => {
-      const message = (e && e.message) || "Failed to set driver";
+      const message = (e && e.message) || "Failed to reassign driver";
       dispatch(ModalActions.addMessage(message));
       dispatch({type: modalAction.BACKDROP_HIDE});
     });
