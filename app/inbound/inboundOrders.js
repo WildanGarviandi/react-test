@@ -206,7 +206,7 @@ const InboundOrdersPage = React.createClass({
             <div className={styles.top2} onClick={this.toggleOpen}>
               <h4 className={styles.title}>
                 <Glyph name='chevron-down' className={styles.glyphFilter} />
-                {(this.state.ids.length ? 'Search multiple orders (' + this.state.ids.length + ' keywords)' : 'Search multiple orders')}
+                {(this.state.ids.length ? 'Scan multiple orders (' + this.state.ids.length + ' keywords)' : 'Scan multiple orders')}
               </h4>
             </div> :
             <div className={styles.panel}>
@@ -222,7 +222,7 @@ const InboundOrdersPage = React.createClass({
                     value={this.state.idsRaw} 
                     onChange={this.textChange} 
                     placeholder={'Write/Paste EDS Number or Order ID here, separated with newline'} />
-                <ButtonBase styles={styles.greenButton} onClick={this.processText}>Filter</ButtonBase>
+                <ButtonBase styles={styles.greenButton} onClick={this.processText}>Scan</ButtonBase>
                 <ButtonBase styles={styles.redButton} onClick={this.cancelChange}>Cancel</ButtonBase>
                 <ButtonBase styles={styles.redButton} onClick={this.clearText}>Clear</ButtonBase>
               </div>
