@@ -285,7 +285,6 @@ const OrderPage = React.createClass({
   },
   render() {
     const {paginationState, PaginationAction, drivers, total, errorIDs, successAssign, errorAssign, orders, expandedOrder, isExpandOrder, isExpandDriver, isExpandDriverBulk, AssignOrder, BulkAssignOrder, ShrinkOrder, ExpandDriver, selectedDriver, SetDriver} = this.props;
-    console.log(errorIDs, 'error')
     return (
       <Page title="My Orders" count={{itemName: 'Items', done: 'All Done', value: total}}>
         <div>

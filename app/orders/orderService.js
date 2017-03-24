@@ -378,7 +378,10 @@ export function AssignDriver(orderID, driverID) {
         });
       }
       dispatch({ 
-        type: Constants.SHOW_SUCCESS_ASSIGN
+        type: Constants.SHOW_SUCCESS_ASSIGN,
+        errorIDs: [],
+        successAssign: 0,
+        errorAssign: 0
       });
       dispatch(ResetDriver());
       dispatch(ShrinkOrder());
