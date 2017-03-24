@@ -107,9 +107,11 @@ const PanelSuggestion = React.createClass({
             <div className={styles.bulkScanInformation}>
               Success: {countSuccess}, Error: {countError}
             </div>
-            <div className={styles.bulkScanFailed}>
-              Error Order: {errorIDs.join(', ')}
-            </div>
+            { errorIDs.length > 0 &&
+              <div className={styles.bulkScanFailed}>
+                Error Order: {errorIDs.join(', ')}
+              </div>
+            }
           </div>
         }
       </div>
