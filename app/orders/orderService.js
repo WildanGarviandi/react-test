@@ -7,6 +7,7 @@ import {modalAction} from '../modules/modals/constants';
 import moment from 'moment';
 import Promise from 'bluebird';
 import {fetchXhr} from '../modules/fetch/getXhr';
+import * as DashboardService from '../dashboard/dashboardService';
 
 const Constants = {
   BASE: "myorder/defaultSet/",
@@ -371,6 +372,7 @@ export function AssignDriver(orderID, driverID) {
       dispatch(ResetDriver());
       dispatch(ShrinkOrder());
       dispatch(FetchList());
+      dispatch(DashboardService.FetchCount());
       dispatch({type: modalAction.BACKDROP_HIDE});
     }).catch((e) => {
       const message = (e && e.message) || "Failed to set driver";
@@ -396,7 +398,7 @@ export function BulkAssignDriver(orders, driverID) {
     };    
 
     dispatch({type: modalAction.BACKDROP_SHOW});
-    FetchPost(`/order/driver/bulk-assign`, token, body).then((response) => {
+    FetchPost(`/order/bulk-assign`, token, body).then((response) => {
       if(!response.ok) {
         return response.json().then(({error}) => {
           throw error;
@@ -406,10 +408,12 @@ export function BulkAssignDriver(orders, driverID) {
       dispatch(ResetDriver());
       dispatch(ShrinkOrder());
       dispatch(FetchList());
+      dispatch(DashboardService.FetchCount());
       dispatch({type: modalAction.BACKDROP_HIDE});
     }).catch((e) => {
       const message = (e && e.message) || "Failed to set driver";
       dispatch(ModalActions.addMessage(message));
+      dispatch({type: modalAction.BACKDROP_HIDE});
     });
   }
 }
