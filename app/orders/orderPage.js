@@ -213,6 +213,19 @@ const PanelDrivers = React.createClass({
   }
 });
 
+const ErrorAssign = React.createClass({
+  render: function() {
+    var errorComponents = this.props.errorIDs.map(function(error, idx) {
+      return (
+        <div key={idx}>
+          {error.UserOrderID} : {error.error}
+        </div>
+      );
+    }.bind(this));
+    return <div>{errorComponents}</div>;
+  }
+});
+
 const OrderPage = React.createClass({
   getInitialState() {
     return ({opened: true, idsRaw: '', ids: [], idsStart: '', driverID: null, orders: [], selectedOrders: [], isSuccessAssign: false});
@@ -271,7 +284,8 @@ const OrderPage = React.createClass({
     }.bind(this), 100);
   },
   render() {
-    const {paginationState, PaginationAction, drivers, total, orders, expandedOrder, isExpandOrder, isExpandDriver, isExpandDriverBulk, AssignOrder, BulkAssignOrder, ShrinkOrder, ExpandDriver, selectedDriver, SetDriver} = this.props;
+    const {paginationState, PaginationAction, drivers, total, errorIDs, successAssign, errorAssign, orders, expandedOrder, isExpandOrder, isExpandDriver, isExpandDriverBulk, AssignOrder, BulkAssignOrder, ShrinkOrder, ExpandDriver, selectedDriver, SetDriver} = this.props;
+    console.log(errorIDs, 'error')
     return (
       <Page title="My Orders" count={{itemName: 'Items', done: 'All Done', value: total}}>
         <div>
@@ -384,20 +398,44 @@ const OrderPage = React.createClass({
         { this.state.isSuccessAssign &&
           <ModalContainer>
             <ModalDialog>
-              <div className={styles.modal}>
-                <div className={styles.modalHeader}>
-                  <h2 className={styles.modalTitle}>Success</h2>
-                  <div className={styles.successContent + ' ' + styles.ordersContentEmpty}>
-                    <img className={styles.successIcon} src={"/img/icon-success.png"} />
-                    <div className={styles.mediumText}>You have successfully assigned this order</div>
+              {
+                errorIDs.length > 0 &&
+                <div className={styles.modal}>
+                  <div className={styles.modalHeader}>
+                    <h2 className={styles.modalTitle}>Assign Report</h2>
+                    <div className={styles.successContent + ' ' + styles.ordersContentEmpty}>
+                      <div>
+                        Success: {successAssign}
+                      </div>
+                      <div>
+                        Error: {errorAssign}
+                      </div>
+                      <ErrorAssign errorIDs={errorIDs} />
+                    </div>
+                  </div>
+                  <div className={styles.modalFooter}>
+                    <button className={styles.endButton} onClick={this.props.CloseSuccessAssign}>
+                      <span className={styles.mediumText}>Got It</span>
+                    </button>
                   </div>
                 </div>
-                <div className={styles.modalFooter}>
-                  <button className={styles.endButton} onClick={this.props.CloseSuccessAssign}>
-                    <span className={styles.mediumText}>Got It</span>
-                  </button>
+              }
+              { errorIDs.length === 0 &&
+                <div className={styles.modal}>
+                  <div className={styles.modalHeader}>
+                    <h2 className={styles.modalTitle}>Success</h2>
+                    <div className={styles.successContent + ' ' + styles.ordersContentEmpty}>
+                      <img className={styles.successIcon} src={"/img/icon-success.png"} />
+                      <div className={styles.mediumText}>You have successfully assigned this order</div>
+                    </div>
+                  </div>
+                  <div className={styles.modalFooter}>
+                    <button className={styles.endButton} onClick={this.props.CloseSuccessAssign}>
+                      <span className={styles.mediumText}>Got It</span>
+                    </button>
+                  </div>
                 </div>
-              </div>
+              }
             </ModalDialog>
           </ModalContainer>
         }
@@ -407,7 +445,7 @@ const OrderPage = React.createClass({
 });
 
 function StoreToOrdersPage(store) {
-  const {currentPage, limit, total, isFetching, filters, orders, expandedOrder, isExpandOrder, isExpandDriver, isExpandDriverBulk, selectedDriver, isSuccessAssign} = store.app.myOrders;  
+  const {currentPage, limit, total, isFetching, filters, errorIDs, successAssign, errorAssign, orders, expandedOrder, isExpandOrder, isExpandDriver, isExpandDriverBulk, selectedDriver, isSuccessAssign} = store.app.myOrders;  
   const userLogged = store.app.userLogged;  
   const driversStore = store.app.driversStore;
   const driverList = driversStore.driverList;
@@ -430,7 +468,10 @@ function StoreToOrdersPage(store) {
     total,
     selectedDriver,
     isSuccessAssign,
-    isLoadingDriver
+    isLoadingDriver,
+    errorIDs,
+    successAssign,
+    errorAssign
   }
 }
 
