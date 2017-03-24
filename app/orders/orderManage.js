@@ -111,9 +111,21 @@ const AddContact = React.createClass({
         const mandatoryFields = ['FirstName', 'LastName', 'Phone', 'Email', 'Street', 'StateID', 'City', 'ZipCode'];
         const filledFields = Object.keys(this.state);
         const unfilledFields = lodash.difference(mandatoryFields, filledFields);
+        var regexEmail = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+        var regexPhone = /^[+]?([\d]{3}(-| )?[\d]{3}(-| )?[\d]{4}|[\d]{5,12}|}|[(][\d]{3}[)](-| )?[\d]{3}(-| )?[\d]{4})$/;
+        let errorMessage = [];
         if (unfilledFields.length > 0) {
-            alert('Missing ' + unfilledFields.join())
-            return;
+          errorMessage.push('Missing ' + unfilledFields.join())
+        }
+        if (this.state.Email && !regexEmail.test(this.state.Email)) {
+          errorMessage.push('Invalid email');  
+        }
+        if (this.state.Phone && !regexPhone.test(this.state.Phone)) {
+          errorMessage.push('Invalid phone');  
+        }
+        if (errorMessage.length > 0) {
+          alert(errorMessage.join())
+          return;
         }
         let addedData = lodash.assign({}, this.state);
         delete addedData.showContactModal;
@@ -328,7 +340,7 @@ const ManagePage = React.createClass({
                         Contact Information
                     </div>
                     { !isEditing &&
-                        <div className={styles.orderDetailsInformation, styles.contactDetailsBox}>
+                        <div className={styles.orderDetailsInformation}>
                             { 
                                 !isFetchingContact &&
                                 <div className={styles.contactDetails}>
@@ -418,21 +430,26 @@ const ManagePage = React.createClass({
                               <div className={styles.itemValue3}>
                                 <Form.InputWithDefault onChange={this.stateChange('PackageWeight')} type={'number'} />
                               </div>
+                              <div className={styles.unitValue}>kg</div>
                               <div className={styles.itemValue3}>
                                 <Form.InputWithDefault onChange={this.stateChange('PackageVolume')} type={'number'} />
                               </div>
+                              <div className={styles.unitValue}>cbm</div>
                             </div>
                             <div>
                               <div className={styles.itemLabel2}>Width/Height/Length</div>
                               <div className={styles.itemValue2}>
                                 <Form.InputWithDefault onChange={this.stateChange('PackageWidth')} type={'number'} />
                               </div>
+                              <div className={styles.unitValue}>cm</div>
                               <div className={styles.itemValue2}>
                                 <Form.InputWithDefault onChange={this.stateChange('PackageHeight')} type={'number'} />
                               </div>
+                              <div className={styles.unitValue}>cm</div>
                               <div className={styles.itemValue2}>
                                 <Form.InputWithDefault onChange={this.stateChange('PackageLength')} type={'number'} />
                               </div>
+                              <div className={styles.unitValue}>cm</div>
                             </div>
                         </div> 
                     </div>
