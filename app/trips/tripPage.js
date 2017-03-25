@@ -259,6 +259,19 @@ const PanelDrivers = React.createClass({
   }
 });
 
+const ErrorAssign = React.createClass({
+  render: function() {
+    var errorComponents = this.props.errorIDs.map(function(error, idx) {
+      return (
+        <div key={idx}>
+          {error.TripID} : {error.error}
+        </div>
+      );
+    }.bind(this));
+    return <div>{errorComponents}</div>;
+  }
+});
+
 const TripPage = React.createClass({
   getInitialState() {
     return ({driverID: null, trips: [], selectedTrips: [], isSuccessAssign: false});
@@ -292,7 +305,8 @@ const TripPage = React.createClass({
     this.props.ExportTrip();
   },
   render() {
-    const {paginationState, PaginationAction, drivers, total, trips, expandedTrip, isExpandTrip, isExpandDriver, isExpandDriverBulk, AssignTrip, BulkAssignTrip, ShrinkTrip, ExpandDriver, selectedDriver, SetDriver} = this.props;
+    const {paginationState, PaginationAction, drivers, total, errorIDs, successAssign, errorAssign, trips, expandedTrip, isExpandTrip, isExpandDriver, isExpandDriverBulk, AssignTrip, BulkAssignTrip, ShrinkTrip, ExpandDriver, selectedDriver, SetDriver} = this.props;
+    console.log(errorIDs, successAssign, errorAssign)
     return (
       <Page title="My Trips" count={{itemName: 'Items', done: 'All Done', value: total}}>
         <Pagination2 {...paginationState} {...PaginationAction} />
@@ -371,20 +385,44 @@ const TripPage = React.createClass({
           { this.state.isSuccessAssign &&
             <ModalContainer>
               <ModalDialog>
-                <div className={styles.modal}>
-                  <div className={styles.modalHeader}>
-                    <h2 className={styles.modalTitle}>Success</h2>
-                    <div className={styles.successContent + ' ' + styles.ordersContentEmpty}>
-                      <img className={styles.successIcon} src={"/img/icon-success.png"} />
-                      <div className={styles.mediumText}>You have successfully assigned this trip</div>
+                {
+                  errorIDs.length > 0 &&
+                  <div className={styles.modal}>
+                    <div className={styles.modalHeader}>
+                      <h2 className={styles.modalTitle}>Assign Report</h2>
+                      <div className={styles.successContent + ' ' + styles.ordersContentEmpty}>
+                        <div>
+                          Success: {successAssign}
+                        </div>
+                        <div>
+                          Error: {errorAssign}
+                        </div>
+                        <ErrorAssign errorIDs={errorIDs} />
+                      </div>
+                    </div>
+                    <div className={styles.modalFooter}>
+                      <button className={styles.endButton} onClick={this.props.CloseSuccessAssign}>
+                        <span className={styles.mediumText}>Got It</span>
+                      </button>
                     </div>
                   </div>
-                  <div className={styles.modalFooter}>
-                    <button className={styles.endButton} onClick={this.props.CloseSuccessAssign}>
-                      <span className={styles.mediumText}>Got It</span>
-                    </button>
+                }
+                { errorIDs.length === 0 &&
+                  <div className={styles.modal}>
+                    <div className={styles.modalHeader}>
+                      <h2 className={styles.modalTitle}>Success</h2>
+                      <div className={styles.successContent + ' ' + styles.ordersContentEmpty}>
+                        <img className={styles.successIcon} src={"/img/icon-success.png"} />
+                        <div className={styles.mediumText}>You have successfully assigned this trip</div>
+                      </div>
+                    </div>
+                    <div className={styles.modalFooter}>
+                      <button className={styles.endButton} onClick={this.props.CloseSuccessAssign}>
+                        <span className={styles.mediumText}>Got It</span>
+                      </button>
+                    </div>
                   </div>
-                </div>
+                }
               </ModalDialog>
             </ModalContainer>
           }
@@ -394,7 +432,7 @@ const TripPage = React.createClass({
 });
 
 function StoreToTripsPage(store) {
-  const {currentPage, limit, total, isFetching, filters, trips, expandedTrip, isExpandTrip, isExpandDriver, isExpandDriverBulk, selectedDriver, isSuccessAssign} = store.app.myTrips;  
+  const {currentPage, limit, total, isFetching, filters, trips, errorIDs, successAssign, errorAssign, expandedTrip, isExpandTrip, isExpandDriver, isExpandDriverBulk, selectedDriver, isSuccessAssign} = store.app.myTrips;  
   const userLogged = store.app.userLogged;  
   const driversStore = store.app.driversStore;
   const driverList = driversStore.driverList;
@@ -417,7 +455,10 @@ function StoreToTripsPage(store) {
     total,
     selectedDriver,
     isSuccessAssign,
-    isLoadingDriver
+    isLoadingDriver,
+    errorIDs,
+    successAssign,
+    errorAssign
   }
 }
 

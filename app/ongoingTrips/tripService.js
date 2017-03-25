@@ -51,7 +51,10 @@ const initialStore = {
   isSettingDriver: false,
   orders: [],
   selectedDriver: null,
-  isSuccessAssign: false
+  isSuccessAssign: false,
+  errorIDs: [],
+  successAssign: 0,
+  errorAssign: 0
 }
 
 export default function Reducer(store = initialStore, action) {
@@ -214,13 +217,19 @@ export default function Reducer(store = initialStore, action) {
 
     case Constants.SHOW_SUCCESS_ASSIGN: {
       return lodash.assign({}, store, {
-          isSuccessAssign: true
+          isSuccessAssign: true,
+          errorIDs: action.errorIDs,
+          successAssign: action.successAssign,  
+          errorAssign: action.errorAssign
       });
     }
 
     case Constants.CLOSE_SUCCESS_ASSIGN: {
       return lodash.assign({}, store, {
-          isSuccessAssign: false
+          isSuccessAssign: false,
+          errorIDs: [],  
+          successAssign: 0,
+          errorAssign: 0
       });
     }
 
@@ -511,7 +520,12 @@ export function ReassignDriver(tripID, driverID) {
           throw error;
         });
       }
-      dispatch({ type: Constants.SHOW_SUCCESS_ASSIGN });
+      dispatch({ 
+        type: Constants.SHOW_SUCCESS_ASSIGN,
+        errorIDs: [],  
+        successAssign: 0,
+        errorAssign: 0
+      });
       dispatch(ResetDriver());
       dispatch(ShrinkTrip());
       dispatch(FetchList());
@@ -596,12 +610,19 @@ export function BulkAssignDriver(trips, driverID) {
           throw error;
         });
       }
-      dispatch({ type: Constants.SHOW_SUCCESS_ASSIGN });
-      dispatch(ResetDriver());
-      dispatch(ShrinkTrip());
-      dispatch(FetchList());
-      dispatch(DashboardService.FetchCountTMS());
-      dispatch({type: modalAction.BACKDROP_HIDE});
+      response.json().then(function({data}) {
+        dispatch({ 
+          type: Constants.SHOW_SUCCESS_ASSIGN,
+          errorIDs: ((data.failedTripIDs.length > 0) && data.failedTripIDs) || [],  
+          successAssign: data.success,
+          errorAssign: data.error
+        });
+        dispatch(ResetDriver());
+        dispatch(ShrinkTrip());
+        dispatch(FetchList());
+        dispatch(DashboardService.FetchCountTMS());
+        dispatch({type: modalAction.BACKDROP_HIDE});
+      });
     }).catch((e) => {
       const message = (e && e.message) || "Failed to reassign driver";
       dispatch(ModalActions.addMessage(message));

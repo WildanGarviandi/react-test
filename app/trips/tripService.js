@@ -51,7 +51,10 @@ const initialStore = {
   isSettingDriver: false,
   orders: [],
   selectedDriver: null,
-  isSuccessAssign: false
+  isSuccessAssign: false,
+  errorIDs: [],
+  successAssign: 0,
+  errorAssign: 0
 }
 
 export default function Reducer(store = initialStore, action) {
@@ -214,13 +217,19 @@ export default function Reducer(store = initialStore, action) {
 
     case Constants.SHOW_SUCCESS_ASSIGN: {
       return lodash.assign({}, store, {
-          isSuccessAssign: true
+          isSuccessAssign: true,
+          errorIDs: action.errorIDs,
+          successAssign: action.successAssign,  
+          errorAssign: action.errorAssign
       });
     }
 
     case Constants.CLOSE_SUCCESS_ASSIGN: {
       return lodash.assign({}, store, {
-          isSuccessAssign: false
+          isSuccessAssign: false,
+          errorIDs: [],  
+          successAssign: 0,
+          errorAssign: 0
       });
     }
 
@@ -542,7 +551,12 @@ export function AssignDriver(tripID, driverID) {
           throw error;
         });
       }
-      dispatch({ type: Constants.SHOW_SUCCESS_ASSIGN });
+      dispatch({ 
+        type: Constants.SHOW_SUCCESS_ASSIGN,
+        errorIDs: [],  
+        successAssign: 0,
+        errorAssign: 0
+      });
       dispatch(ResetDriver());
       dispatch(ShrinkTrip());
       dispatch(FetchList());
@@ -571,21 +585,26 @@ export function BulkAssignDriver(trips, driverID) {
       tripIDs: tripIDs
     };
 
-    dispatch({ type: Constants.TRIP_DRIVER_ASSIGN_START });
     dispatch({type: modalAction.BACKDROP_SHOW});
     FetchPost(`/trip/bulk-assign`, token, body).then((response) => {
-      dispatch({ type: Constants.TRIP_DRIVER_ASSIGN_END });
       if(!response.ok) {
         return response.json().then(({error}) => {
           throw error;
         });
       }
-      dispatch({ type: Constants.SHOW_SUCCESS_ASSIGN });
-      dispatch(ResetDriver());
-      dispatch(ShrinkTrip());
-      dispatch(FetchList());
-      dispatch(DashboardService.FetchCountTMS());
-      dispatch({type: modalAction.BACKDROP_HIDE});
+      response.json().then(function({data}) {
+        dispatch({ 
+          type: Constants.SHOW_SUCCESS_ASSIGN,
+          errorIDs: ((data.failedTripIDs.length > 0) && data.failedTripIDs) || [],  
+          successAssign: data.success,
+          errorAssign: data.error
+        });
+        dispatch(ResetDriver());
+        dispatch(ShrinkTrip());
+        dispatch(FetchList());
+        dispatch(DashboardService.FetchCountTMS());
+        dispatch({type: modalAction.BACKDROP_HIDE});
+      });
     }).catch((e) => {
       const message = (e && e.message) || "Failed to set driver";
       dispatch(ModalActions.addMessage(message));
