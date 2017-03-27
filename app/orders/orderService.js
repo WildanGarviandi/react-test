@@ -431,7 +431,6 @@ export function BulkAssignDriver(orders, driverID) {
         dispatch(DashboardService.FetchCountTMS());
         dispatch({type: modalAction.BACKDROP_HIDE});
       });
-      
     }).catch((e) => {
       const message = (e && e.message) || "Failed to set driver";
       dispatch(ModalActions.addMessage(message));
@@ -467,7 +466,7 @@ export function addOrder(order) {
                 });
                 alert('Add Order Success');
                 dispatch({type: modalAction.BACKDROP_HIDE});
-                window.location.href='/myorders/details/' + data.UserOrderID;
+                window.location.href='/myorders';
             });
         } else {
             response.json().then(function({error}) {
