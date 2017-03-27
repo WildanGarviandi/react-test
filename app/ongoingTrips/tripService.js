@@ -7,6 +7,7 @@ import {modalAction} from '../modules/modals/constants';
 import moment from 'moment';
 import Promise from 'bluebird';
 import {fetchXhr} from '../modules/fetch/getXhr';
+import * as DashboardService from '../dashboard/dashboardService';
 
 const Constants = {
   BASE: "mytrip/defaultSet/",
@@ -50,7 +51,10 @@ const initialStore = {
   isSettingDriver: false,
   orders: [],
   selectedDriver: null,
-  isSuccessAssign: false
+  isSuccessAssign: false,
+  errorIDs: [],
+  successAssign: 0,
+  errorAssign: 0
 }
 
 export default function Reducer(store = initialStore, action) {
@@ -213,13 +217,19 @@ export default function Reducer(store = initialStore, action) {
 
     case Constants.SHOW_SUCCESS_ASSIGN: {
       return lodash.assign({}, store, {
-          isSuccessAssign: true
+          isSuccessAssign: true,
+          errorIDs: action.errorIDs,
+          successAssign: action.successAssign,  
+          errorAssign: action.errorAssign
       });
     }
 
     case Constants.CLOSE_SUCCESS_ASSIGN: {
       return lodash.assign({}, store, {
-          isSuccessAssign: false
+          isSuccessAssign: false,
+          errorIDs: [],  
+          successAssign: 0,
+          errorAssign: 0
       });
     }
 
@@ -510,13 +520,19 @@ export function ReassignDriver(tripID, driverID) {
           throw error;
         });
       }
-      dispatch({ type: Constants.SHOW_SUCCESS_ASSIGN });
+      dispatch({ 
+        type: Constants.SHOW_SUCCESS_ASSIGN,
+        errorIDs: [],  
+        successAssign: 0,
+        errorAssign: 0
+      });
       dispatch(ResetDriver());
       dispatch(ShrinkTrip());
       dispatch(FetchList());
+      dispatch(DashboardService.FetchCountTMS());
       dispatch({type: modalAction.BACKDROP_HIDE});
     }).catch((e) => {
-      const message = (e && e.message) || "Failed to set driver";
+      const message = (e && e.message) || "Failed to reassign driver";
       dispatch(ModalActions.addMessage(message));
       dispatch({type: modalAction.BACKDROP_HIDE});
     });
@@ -542,7 +558,7 @@ export function AssignDriver(tripID, driverID) {
       }
       window.location.reload(false); 
     }).catch((e) => {
-      const message = (e && e.message) || "Failed to set driver";
+      const message = (e && e.message) || "Failed to reassign driver";
       dispatch(ModalActions.addMessage(message));
     });
   }
@@ -571,23 +587,46 @@ export function BulkAssignDriver(trips, driverID) {
       tripIDs.push(trip.TripID);
     })
 
-    const body = {
-      DriverID: driverID,
-      TripIDs: tripIDs
+    const bodyDeassign = {
+      tripIDs: tripIDs
     };
 
-    dispatch({ type: Constants.TRIP_DRIVER_ASSIGN_START });
-    FetchPost(`/trip/driver/bulk-assign`, token, body).then((response) => {
-      dispatch({ type: Constants.TRIP_DRIVER_ASSIGN_END });
+    const body = {
+      driverID: driverID,
+      tripIDs: tripIDs
+    };
+
+    dispatch({type: modalAction.BACKDROP_SHOW});
+    FetchDelete(`/trip/bulk-deassign`, token, bodyDeassign).then((response) => { 
       if(!response.ok) {
         return response.json().then(({error}) => {
           throw error;
         });
       }
-      window.location.reload(false); 
+      return FetchPost(`/trip/bulk-assign`, token, body);
+    }).then((response) => {
+      if(!response.ok) {
+        return response.json().then(({error}) => {
+          throw error;
+        });
+      }
+      response.json().then(function({data}) {
+        dispatch({ 
+          type: Constants.SHOW_SUCCESS_ASSIGN,
+          errorIDs: ((data.failedTripIDs.length > 0) && data.failedTripIDs) || [],  
+          successAssign: data.success,
+          errorAssign: data.error
+        });
+        dispatch(ResetDriver());
+        dispatch(ShrinkTrip());
+        dispatch(FetchList());
+        dispatch(DashboardService.FetchCountTMS());
+        dispatch({type: modalAction.BACKDROP_HIDE});
+      });
     }).catch((e) => {
-      const message = (e && e.message) || "Failed to set driver";
+      const message = (e && e.message) || "Failed to reassign driver";
       dispatch(ModalActions.addMessage(message));
+      dispatch({type: modalAction.BACKDROP_HIDE});
     });
   }
 }
