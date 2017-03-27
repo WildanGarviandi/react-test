@@ -3,7 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Page} from '../views/base';
 import {Pagination2} from '../components/pagination2';
-import {ButtonWithLoading} from '../components/button';
+import {ButtonWithLoading, ButtonBase} from '../components/button';
 import * as Form from '../components/form';
 import Table, {Filter, Deadline} from './orderTable';
 import * as OrderService from './orderService';
@@ -13,6 +13,7 @@ import stylesButton from '../components/button.css';
 import * as UtilHelper from '../helper/utility';
 import NumberFormat from 'react-number-format';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import {Glyph} from '../views/base';
 
 const PanelDetails = React.createClass({
   render() {
@@ -206,7 +207,29 @@ const PanelDrivers = React.createClass({
 
 const OrderPage = React.createClass({
   getInitialState() {
-    return ({driverID: null, orders: [], selectedOrders: [], isSuccessAssign: false});
+    return ({opened: true, idsRaw: '', ids: [], idsStart: '', driverID: null, orders: [], selectedOrders: [], isSuccessAssign: false});
+  },
+  toggleOpen() {
+      this.setState({opened: !this.state.opened, idsStart: this.state.idsRaw});
+  },
+  cancelChange() {
+      this.setState({opened: true, idsRaw: '', ids: []});
+  },
+  textChange(e) {
+      this.setState({idsRaw: e.target.value});
+  },
+  processText() {
+      const {filterAction} = this.props;
+      const IDs = _.chain(this.state.idsRaw.match(/\S+/g)).uniq().value();
+      if (IDs.length === 0) {
+          alert('Please write EDS Number or Order ID');
+          return;
+      }
+      this.setState({ids: IDs});
+      this.toggleOpen();
+      const newFilters = {['userOrderNumbers']: IDs};
+      this.props.UpdateFilters(newFilters);
+      this.props.FetchList();
   },
   componentWillMount() {
     this.props.ShrinkOrder();
@@ -237,99 +260,132 @@ const OrderPage = React.createClass({
     const {paginationState, PaginationAction, drivers, total, orders, expandedOrder, isExpandOrder, isExpandDriver, isExpandDriverBulk, AssignOrder, BulkAssignOrder, ShrinkOrder, ExpandDriver, selectedDriver, SetDriver} = this.props;
     return (
       <Page title="My Orders" count={{itemName: 'Items', done: 'All Done', value: total}}>
-        <Pagination2 {...paginationState} {...PaginationAction} />
-          <div className={styles.filterOption}>
-            <Filter expandDriver={this.expandBulkAssign} />
+        <div>
+          <div className={styles.addCompanyOrderButton} onClick={this.props.GoToAddOrder}>
+            + Add Company Order
+          </div>        
+          <div className={styles.filterOrderArea}>
+              {
+              this.state.opened ? 
+              <div className={styles.top2} onClick={this.toggleOpen}>
+                <h4 className={styles.title}>
+                  <Glyph name='chevron-down' className={styles.glyphFilter} />
+                  {(this.state.ids.length ? 'Search multiple orders (' + this.state.ids.length + ' keywords)' : 'Search multiple orders')}
+                </h4>
+              </div> :
+              <div className={styles.panel2}>
+                <div className={styles.top} onClick={this.toggleOpen}>
+                  <h4 className={styles.title}>
+                    <Glyph name='chevron-up' className={styles.glyphFilter} />
+                    {'Search multiple orders:'}
+                  </h4>
+                </div>
+                <div className={styles.bottom}>
+                  <textarea 
+                      style={{height: 100, width: '100%'}} 
+                      value={this.state.idsRaw} 
+                      onChange={this.textChange} 
+                      placeholder={'Write/Paste EDS Number or Order ID here, separated with newline'} />
+                  <ButtonBase styles={styles.modalBtn} onClick={this.processText}>Filter</ButtonBase>
+                  <ButtonBase styles={styles.modalBtn} onClick={this.cancelChange}>Cancel</ButtonBase>
+                </div>
+              </div>
+              }
           </div>
-          {
-            (this.props.isFetching || this.props.isLoadingDriver) &&
-            <div>
-              <div style={{clear: 'both'}} />
-              <div style={{textAlign:'center'}}>
-                <div style={{fontSize: 20}}>
-                  Fetching data....
-                </div>
+        </div>
+        <Pagination2 {...paginationState} {...PaginationAction} />
+        <div className={styles.filterOption}>
+          <Filter expandDriver={this.expandBulkAssign} />
+        </div>
+        {
+          (this.props.isFetching || this.props.isLoadingDriver) &&
+          <div>
+            <div style={{clear: 'both'}} />
+            <div style={{textAlign:'center'}}>
+              <div style={{fontSize: 20}}>
+                Fetching data....
               </div>
             </div>
-          }
-          {
-            !this.props.isFetching && this.props.orders.length === 0 && !lodash.isEmpty(this.props.filters) &&
-            <div>
-              <div style={{clear: 'both'}} />
-              <div className={styles.noOrderDesc}>
-                <img src="/img/icon-orders-done.png" />
-                <div style={{fontSize: 20}}>
-                  Orders not found
-                </div>
-                <div style={{fontSize: 12, marginTop: 20}}>
-                  Please choose another filter to get the orders.
-                </div>
+          </div>
+        }
+        {
+          !this.props.isFetching && this.props.orders.length === 0 && !lodash.isEmpty(this.props.filters) &&
+          <div>
+            <div style={{clear: 'both'}} />
+            <div className={styles.noOrderDesc}>
+              <img src="/img/icon-orders-done.png" />
+              <div style={{fontSize: 20}}>
+                Orders not found
+              </div>
+              <div style={{fontSize: 12, marginTop: 20}}>
+                Please choose another filter to get the orders.
               </div>
             </div>
-          }
-          {
-            !this.props.isFetching && this.props.orders.length === 0 && lodash.isEmpty(this.props.filters) &&
-            <div>
-              <div style={{clear: 'both'}} />
-              <div className={styles.noOrderDesc}>
-                <img src="/img/icon-orders-done.png" />
-                <div style={{fontSize: 20}}>
-                  You dont have any orders right now!
-                </div>
-                <div style={{fontSize: 12, marginTop: 20}}>
-                  You have assign all orders
-                </div>
+          </div>
+        }
+        {
+          !this.props.isFetching && this.props.orders.length === 0 && lodash.isEmpty(this.props.filters) &&
+          <div>
+            <div style={{clear: 'both'}} />
+            <div className={styles.noOrderDesc}>
+              <img src="/img/icon-orders-done.png" />
+              <div style={{fontSize: 20}}>
+                You dont have any orders right now!
               </div>
-            </div>   
-          }
-          {
-            !this.props.isFetching && !this.props.isLoadingDriver && this.props.orders.length > 0 &&
-            <div>
-              <Table orders={orders} />
-              {   
-                isExpandOrder &&
-                <PanelDetails 
-                  isExpandDriver={isExpandDriver} 
-                  expandedOrder={expandedOrder} 
-                  shrinkOrder={ShrinkOrder} 
-                  expandDriver={ExpandDriver} />
-              }
-              {   
-                isExpandDriver &&
-                <PanelDrivers 
-                  selectedOrders={this.state.selectedOrders} 
-                  isExpandDriverBulk={isExpandDriverBulk} 
-                  shrinkOrder={ShrinkOrder} 
-                  expandedOrder={expandedOrder} 
-                  assignOrder={AssignOrder} 
-                  bulkAssignOrder={BulkAssignOrder} 
-                  selectedDriver={selectedDriver} 
-                  setDriver={SetDriver} 
-                  drivers={drivers} />
-              }
+              <div style={{fontSize: 12, marginTop: 20}}>
+                You have assign all orders
+              </div>
             </div>
-          }
+          </div>   
+        }
+        {
+          !this.props.isFetching && !this.props.isLoadingDriver && this.props.orders.length > 0 &&
+          <div>
+            <Table orders={orders} />
+            {   
+              isExpandOrder &&
+              <PanelDetails 
+                isExpandDriver={isExpandDriver} 
+                expandedOrder={expandedOrder} 
+                shrinkOrder={ShrinkOrder} 
+                expandDriver={ExpandDriver} />
+            }
+            {   
+              isExpandDriver &&
+              <PanelDrivers 
+                selectedOrders={this.state.selectedOrders} 
+                isExpandDriverBulk={isExpandDriverBulk} 
+                shrinkOrder={ShrinkOrder} 
+                expandedOrder={expandedOrder} 
+                assignOrder={AssignOrder} 
+                bulkAssignOrder={BulkAssignOrder} 
+                selectedDriver={selectedDriver} 
+                setDriver={SetDriver} 
+                drivers={drivers} />
+            }
+          </div>
+        }
 
-          { this.state.isSuccessAssign &&
-            <ModalContainer>
-              <ModalDialog>
-                <div className={styles.modal}>
-                  <div className={styles.modalHeader}>
-                    <h2 className={styles.modalTitle}>Success</h2>
-                    <div className={styles.successContent + ' ' + styles.ordersContentEmpty}>
-                      <img className={styles.successIcon} src={"/img/icon-success.png"} />
-                      <div className={styles.mediumText}>You have successfully assigned this order</div>
-                    </div>
-                  </div>
-                  <div className={styles.modalFooter}>
-                    <button className={styles.endButton} onClick={this.props.CloseSuccessAssign}>
-                      <span className={styles.mediumText}>Got It</span>
-                    </button>
+        { this.state.isSuccessAssign &&
+          <ModalContainer>
+            <ModalDialog>
+              <div className={styles.modal}>
+                <div className={styles.modalHeader}>
+                  <h2 className={styles.modalTitle}>Success</h2>
+                  <div className={styles.successContent + ' ' + styles.ordersContentEmpty}>
+                    <img className={styles.successIcon} src={"/img/icon-success.png"} />
+                    <div className={styles.mediumText}>You have successfully assigned this order</div>
                   </div>
                 </div>
-              </ModalDialog>
-            </ModalContainer>
-          }
+                <div className={styles.modalFooter}>
+                  <button className={styles.endButton} onClick={this.props.CloseSuccessAssign}>
+                    <span className={styles.mediumText}>Got It</span>
+                  </button>
+                </div>
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
       </Page>
     );
   }
@@ -400,6 +456,9 @@ function DispatchToOrdersPage(dispatch) {
       setLimit: (limit) => {
         dispatch(OrderService.SetLimit(limit));
       },
+    },
+    UpdateFilters: (newFilters) => {
+      dispatch(OrderService.UpdateFilters(newFilters));
     }
   }
 }
