@@ -14,7 +14,8 @@ const Constants = {
   DRIVER_DETAILS_SET: "mydriver/drivers/details",
   FETCHING_PAGE: "mydriver/drivers/fetching",
   FETCHING_PAGE_STOP: "mydriver/drivers/fetchingStop",
-  SET_DRIVERS_ORDERS: "mydriver/drivers/orders"
+  SET_DRIVERS_ORDERS: "mydriver/drivers/orders",
+  DRIVER_RESET: "mydriver/drivers/reset"
 }
 
 const initialStore = {
@@ -105,6 +106,15 @@ export default function Reducer(store = initialStore, action) {
         totalOrders: action.total,
         orders: action.orders,
         driverOrdersIDActive: action.driverID
+      });
+    }
+
+    case Constants.DRIVER_RESET: {
+      return lodash.assign({}, store, {
+        driver: {},
+        driverOrdersIDActive: 0,
+        totalOrders: 0,
+        orders: [],
       });
     }
 
@@ -227,7 +237,7 @@ export function editDriver(id, updateData) {
         });
         alert('Edit Driver Success');
         dispatch({type: modalAction.BACKDROP_HIDE});
-        dispatch(fetchDetails(id));
+        dispatch(FetchDetails(id));
     });
     } else {
       dispatch({type: modalAction.BACKDROP_HIDE});
@@ -400,6 +410,14 @@ export function FetchListOrders(id) {
     }).catch((e) => {
         dispatch({type: modalAction.BACKDROP_HIDE});
         dispatch(ModalActions.addMessage(e.message));
+    });
+  }
+}
+
+export function ResetDriver() {
+  return (dispatch, getState) => {
+    dispatch({
+      type: Constants.DRIVER_RESET
     });
   }
 }
