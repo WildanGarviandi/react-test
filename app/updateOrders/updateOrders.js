@@ -20,7 +20,7 @@ function calculatePricing (pricingData, editedData, isPricingByWeight) {
     return (volumeWeight > weight) ? volumeWeight * pricingData : weight * pricingData;
   } else {
     const priceData = pricingData.find((price) => {
-      return (weight < price.weight) && (height < price.height) && (length < price.length) && (width < price.width);
+      return (weight <= price.weight) && (height <= price.height) && (length <= price.length) && (width <= price.width);
     });
     return (priceData) ? priceData.price : 0;
   }
