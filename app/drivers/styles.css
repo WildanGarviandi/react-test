@@ -1,18 +1,42 @@
+.mainDriverPage {
+  width: 100%;
+}
+
 .mainDriverPanel {
   top: 50px;
-  width: 400px;
+  width: 33%;
   background-color: #ffffff;
-  height: 100%;
+  height: 580px;
+  float: left;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+}
+
+.mainDriverDetailsPanel {
+  top: 36px;
+  width: 33%;
+  float: left;
+  background-color: #ffffff;
+  height: 580px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+}
+
+.mainDriverOrdersPanel {
+  top: 36px;
+  width: 33%;
+  float: left;
+  background-color: #ffffff;
+  height: 580px;
   border-radius: 4px;
   border: solid 1px #e8e8e8;
 }
 
 .mainDriver {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .tripDriver {
-  width: 360px;
   height: 60px;
   border-radius: 4px;
   border: solid 1px #e8e8e8;
@@ -27,7 +51,6 @@
 }
 
 .panelDriverList {
-  width: 400px;
   height: 440px;
   overflow-y: scroll; 
   border-radius: 4px;
@@ -64,7 +87,7 @@
   border-radius: 4px;
   background-color: #f1f1f1;
   border: solid 1px #e8e8e8;
-  width: 348px;
+  width: 298px;
   height: 30px;
 }
 
@@ -103,4 +126,178 @@
   color: #000000;
   margin-left: 20px;
   margin-top: 20px;
+}
+
+.driverDetailsMain {
+  width: 100%;
+  margin-top: 19px;
+}
+
+.driverDetailsSecondary {
+  width: 100%;
+  clear: both;
+  margin-left: 16px;
+  padding-top: 10px;
+}
+
+.driverDetailsPicture {
+  width: 45%;
+  float: left;
+  margin-left: 16px;
+}
+
+.driverDetailsName {
+  width: 45%;
+  float: left;
+}
+
+.driverDetailsLabel {
+  opacity: 0.5;
+  margin-bottom: 10px;
+}
+
+.driverDetailsValue {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.driverNumOrders {
+  width: 90%;
+  height: 20px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #d5d5d5;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 14px;
+  text-align: center;
+  color: #000000;
+  padding-top: 5px;
+  margin-top: 15px;
+}
+
+.numOrderLeft {
+  float: left;
+  margin-left: 10px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.numOrderRight {
+  float: right;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.orderCOD {
+  float: left;
+  width: 12%;
+  border-radius: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  font-weight: bold;
+  font-size: 14px;
+  border: solid 1px #e8e8e8;
+}
+
+.orderNum {
+  float: left;
+  width: 52%;
+  font-weight: bold;
+}
+
+.orderEDS {
+  float: left;
+  width: 30%;
+  font-weight: bold;
+}
+
+.mainOrder {
+  padding-bottom: 8px;
+  padding-top: 8px;
+  border-bottom: solid 1px #e8e8e8;
+}
+
+.driverDetailsOrder {
+  width: 85%;
+  max-height: 315px;
+  overflow-y: scroll; 
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 12px;
+  color: #000000;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-bottom: 10px;
+}
+
+.orderDetailsLabel {
+  font-size: 12px;
+  margin-top: 8px;
+  opacity: 0.5;
+}
+
+.orderDetailsValue {
+  font-size: 12px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.orderDetailsValue2 {
+  font-size: 12px;
+  opacity: 0.5;
+  margin-top: 5px;
+}
+
+.deadlineValue {
+  margin-top: 10px;
+  font-weight: bold;
+  text-align: right;
+}
+
+.orderDetails {
+  width: 90%;
+  border-radius: 4px;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 12px;
+  color: #000000;
+  margin-top: 15px;
+  padding-right: 10px;
+  overflow-y: auto;
+}
+
+
+.orderAdditionalInfo {
+  float: left;
+  width: 30%;
+}
+
+.orderValue {
+  width: 90%;
+  height: 40px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 5px;
+  margin-top: 15px;
+}
+
+.orderValueLabel {
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+.orderTotalValue {
+  font-size: 24px;
 }
