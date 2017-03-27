@@ -13,6 +13,7 @@ import stylesButton from '../components/button.css';
 import * as UtilHelper from '../helper/utility';
 import NumberFormat from 'react-number-format';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import {push} from 'react-router-redux';
 import {Glyph} from '../views/base';
 
 const PanelDetails = React.createClass({
@@ -37,7 +38,7 @@ const PanelDetails = React.createClass({
             </div>   
             <div className={styles.orderDetails}>
               <div className={styles.reassignButton}>
-                <ButtonWithLoading {...reassignOrderButton} />
+                <button className={stylesButton.greenButton2} onClick={this.props.expandDriver}>Assign</button>
               </div>
               <div className={styles.orderDetailsLabel}>
                 Order ID
@@ -117,7 +118,14 @@ const Drivers = React.createClass({
   render: function() {
     var driverComponents = this.props.drivers.map(function(driver, idx) {
       const isSelected = this.props.selectedDriver === driver.UserID;
-      const totalWeight = parseFloat(driver.TotalCurrentWeight) + parseFloat(this.props.selectedOrder.Weight);
+      let selectedWeight = this.props.selectedOrder.PackageWeight;
+      if (this.props.selectedOrders.length > 0) {
+        selectedWeight = 0;
+        this.props.selectedOrders.forEach(function(order) {
+          selectedWeight += order.PackageWeight;
+        })
+      } 
+      const totalWeight = parseFloat(driver.TotalCurrentWeight) + parseFloat(selectedWeight);
       const driverWeight = isSelected ? totalWeight : parseFloat(driver.TotalCurrentWeight);
       let orderDriverStyle = isSelected ? styles.orderDriverSelected : styles.orderDriver;
       if (isSelected && (totalWeight > driver.AvailableWeight)) {
@@ -195,13 +203,26 @@ const PanelDrivers = React.createClass({
           <input className={styles.inputDriverSearch} onChange={this.searchDriver} placeholder={'Search Driver...'} />
         </div>
         <div className={styles.panelDriverList}>
-          <Drivers selectedDriver={this.props.selectedDriver} selectedOrder={this.props.expandedOrder} setDriver={this.props.setDriver} drivers={this.state.driverList} />
+          <Drivers selectedDriver={this.props.selectedDriver} selectedOrders={this.props.selectedOrders} selectedOrder={this.props.expandedOrder} setDriver={this.props.setDriver} drivers={this.state.driverList} />
         </div>
         <div className={styles.setDriverButton}>
           <ButtonWithLoading {...setDriverButton} />
         </div>
       </div>
     );
+  }
+});
+
+const ErrorAssign = React.createClass({
+  render: function() {
+    var errorComponents = this.props.errorIDs.map(function(error, idx) {
+      return (
+        <div key={idx}>
+          {error.UserOrderID} : {error.error}
+        </div>
+      );
+    }.bind(this));
+    return <div>{errorComponents}</div>;
   }
 });
 
@@ -227,11 +248,17 @@ const OrderPage = React.createClass({
       }
       this.setState({ids: IDs});
       this.toggleOpen();
-      const newFilters = {['userOrderNumbers']: IDs};
-      this.props.UpdateFilters(newFilters);
-      this.props.FetchList();
+      const newFilters = {['userOrderNumbers']: JSON.stringify(IDs)};
+      this.props.UpdateAndFetch(newFilters);
+  },
+  clearText() {
+      this.setState({opened: true, idsRaw: '', ids: []});
+      this.setState({ids: []});
+      const newFilters = {['userOrderNumbers']: []};
+      this.props.UpdateAndFetch(newFilters);
   },
   componentWillMount() {
+    this.clearText();
     this.props.ShrinkOrder();
     this.props.FetchList();
     this.props.FetchDrivers(this.props.userLogged.userID);
@@ -257,7 +284,7 @@ const OrderPage = React.createClass({
     }.bind(this), 100);
   },
   render() {
-    const {paginationState, PaginationAction, drivers, total, orders, expandedOrder, isExpandOrder, isExpandDriver, isExpandDriverBulk, AssignOrder, BulkAssignOrder, ShrinkOrder, ExpandDriver, selectedDriver, SetDriver} = this.props;
+    const {paginationState, PaginationAction, drivers, total, errorIDs, successAssign, errorAssign, orders, expandedOrder, isExpandOrder, isExpandDriver, isExpandDriverBulk, AssignOrder, BulkAssignOrder, ShrinkOrder, ExpandDriver, selectedDriver, SetDriver} = this.props;
     return (
       <Page title="My Orders" count={{itemName: 'Items', done: 'All Done', value: total}}>
         <div>
@@ -287,6 +314,7 @@ const OrderPage = React.createClass({
                       onChange={this.textChange} 
                       placeholder={'Write/Paste EDS Number or Order ID here, separated with newline'} />
                   <ButtonBase styles={styles.modalBtn} onClick={this.processText}>Filter</ButtonBase>
+                  <ButtonBase styles={styles.modalBtn} onClick={this.clearText}>Clear</ButtonBase>
                   <ButtonBase styles={styles.modalBtn} onClick={this.cancelChange}>Cancel</ButtonBase>
                 </div>
               </div>
@@ -369,20 +397,44 @@ const OrderPage = React.createClass({
         { this.state.isSuccessAssign &&
           <ModalContainer>
             <ModalDialog>
-              <div className={styles.modal}>
-                <div className={styles.modalHeader}>
-                  <h2 className={styles.modalTitle}>Success</h2>
-                  <div className={styles.successContent + ' ' + styles.ordersContentEmpty}>
-                    <img className={styles.successIcon} src={"/img/icon-success.png"} />
-                    <div className={styles.mediumText}>You have successfully assigned this order</div>
+              {
+                errorIDs.length > 0 &&
+                <div className={styles.modal}>
+                  <div className={styles.modalHeader}>
+                    <h2 className={styles.modalTitle}>Assign Report</h2>
+                    <div className={styles.successContent + ' ' + styles.ordersContentEmpty}>
+                      <div>
+                        Success: {successAssign}
+                      </div>
+                      <div>
+                        Error: {errorAssign}
+                      </div>
+                      <ErrorAssign errorIDs={errorIDs} />
+                    </div>
+                  </div>
+                  <div className={styles.modalFooter}>
+                    <button className={styles.endButton} onClick={this.props.CloseSuccessAssign}>
+                      <span className={styles.mediumText}>Got It</span>
+                    </button>
                   </div>
                 </div>
-                <div className={styles.modalFooter}>
-                  <button className={styles.endButton} onClick={this.props.CloseSuccessAssign}>
-                    <span className={styles.mediumText}>Got It</span>
-                  </button>
+              }
+              { errorIDs.length === 0 &&
+                <div className={styles.modal}>
+                  <div className={styles.modalHeader}>
+                    <h2 className={styles.modalTitle}>Success</h2>
+                    <div className={styles.successContent + ' ' + styles.ordersContentEmpty}>
+                      <img className={styles.successIcon} src={"/img/icon-success.png"} />
+                      <div className={styles.mediumText}>You have successfully assigned this order</div>
+                    </div>
+                  </div>
+                  <div className={styles.modalFooter}>
+                    <button className={styles.endButton} onClick={this.props.CloseSuccessAssign}>
+                      <span className={styles.mediumText}>Got It</span>
+                    </button>
+                  </div>
                 </div>
-              </div>
+              }
             </ModalDialog>
           </ModalContainer>
         }
@@ -392,7 +444,7 @@ const OrderPage = React.createClass({
 });
 
 function StoreToOrdersPage(store) {
-  const {currentPage, limit, total, isFetching, filters, orders, expandedOrder, isExpandOrder, isExpandDriver, isExpandDriverBulk, selectedDriver, isSuccessAssign} = store.app.myOrders;  
+  const {currentPage, limit, total, isFetching, filters, errorIDs, successAssign, errorAssign, orders, expandedOrder, isExpandOrder, isExpandDriver, isExpandDriverBulk, selectedDriver, isSuccessAssign} = store.app.myOrders;  
   const userLogged = store.app.userLogged;  
   const driversStore = store.app.driversStore;
   const driverList = driversStore.driverList;
@@ -415,7 +467,10 @@ function StoreToOrdersPage(store) {
     total,
     selectedDriver,
     isSuccessAssign,
-    isLoadingDriver
+    isLoadingDriver,
+    errorIDs,
+    successAssign,
+    errorAssign
   }
 }
 
@@ -457,8 +512,11 @@ function DispatchToOrdersPage(dispatch) {
         dispatch(OrderService.SetLimit(limit));
       },
     },
-    UpdateFilters: (newFilters) => {
-      dispatch(OrderService.UpdateFilters(newFilters));
+    GoToAddOrder: () => {
+      dispatch(push(`/myorders/add/`));
+    },
+    UpdateAndFetch: (newFilters) => {
+      dispatch(OrderService.UpdateAndFetch(newFilters));
     }
   }
 }

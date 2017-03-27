@@ -265,3 +265,8 @@ table th:last-child{
 .orderIDColumn {
   font-size: 16px;
 }
+
+.orderLoadImage {
+  height: 40px;
+  width: 40px;
+}

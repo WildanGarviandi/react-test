@@ -247,7 +247,7 @@
 
 .tripDetailsOrder {
   width: 360px;
-  max-height: 280px;
+  height: calc(100vh - 370px);
   overflow-y: scroll; 
   border-radius: 4px;
   border: solid 1px #e8e8e8;
@@ -278,7 +278,7 @@
 
 .filterOption {
   float: left;
-  width: 45%;
+  width: 50%;
   margin-top: 0px;
 }
 
@@ -389,7 +389,7 @@
 
 .panelDriverList {
   width: 400px;
-  height: 450px;
+  height: calc(100vh - 200px);
   overflow-y: scroll; 
   border-radius: 4px;
   background-color: #ffffff;

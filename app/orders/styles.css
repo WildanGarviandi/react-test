@@ -228,7 +228,7 @@
 
 .filterOption {
   float: left;
-  width: 45%;
+  width: 60%;
   margin-top: 30px;
 }
 
@@ -339,13 +339,13 @@
 
 .panelDriverList {
   width: 400px;
-  height: 450px;
   overflow-y: scroll; 
   border-radius: 4px;
   background-color: #ffffff;
   font-family: Helvetica;
   font-size: 12px;
   color: #000000;
+  height: calc(100vh - 200px);
 }
 
 .driverName {
@@ -467,6 +467,188 @@
   text-align: right;
 }
 
+.itemLabel {
+  display: block;
+  padding: 5px;
+  width: 140px;
+  float: left;
+}
+
+.itemValue {
+  padding: 5px;
+  display: block;
+  margin-left: 150px;
+  max-width: 350px;
+  text-indent: 0px;
+  font-weight: bold;
+}
+
+.itemLabel2 {
+  display: block;
+  padding: 5px;
+  width: 130px;
+  float: left;
+}
+
+.itemValue2 {
+  padding: 5px;
+  display: block;
+  float: left;
+  margin-left: 10px;
+  max-width: 94px;
+  text-indent: 0px;
+  font-weight: bold;
+}
+
+.itemValue3 {
+  padding: 5px;
+  display: block;
+  float: left;
+  margin-left: 10px;
+  max-width: 150px;
+  text-indent: 0px;
+  font-weight: bold;
+}
+
+.itemDateValue {
+  height: 44px;
+}
+
+.orderDetailsHeader {
+  background-color: #ffffff;
+  color: #000000;
+  text-indent: 10px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 15px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom: 1px solid #e8e8e8;
+  clear: both;
+}
+
+.orderDetailsInformation {
+  background-color: #ffffff;
+  text-indent: 10px;
+  border-radius: 5px;
+  padding: 15px;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  clear: both;
+  padding-bottom: 30px;
+  margin-bottom: 20px;
+  min-height: 120px;
+}
+
+.orderDetailsBoxLeft {
+  float: left;
+  width: 48%;
+}
+
+.orderDetailsBoxRight {
+  float: right;
+  width: 48%;
+}
+
+.editOrderHeaders {
+  margin-bottom: 10px;
+  background-color: #eee;
+  color: #000;
+  font-weight: bold;
+  text-indent: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 15px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  clear: both;
+}
+
+.addOrderButton {
+  border: 0;
+  border-radius: 5px;
+  background-color: #FF5A60;
+  color: #fff;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.orderDetailsContact {
+  float: left;
+  width: 50%;
+}
+
+.contactDetails {
+  float: left;
+  width: 32%;
+  overflow-x: auto;
+  margin-left: 5px;
+}
+
+.contactDetailsBox {
+  min-height: 260px;
+  padding: 15px;
+  background-color: #ffffff;
+  color: #000;
+  clear: both;
+  padding-bottom: 30px;
+  margin-bottom: 20px;
+}
+
+.detailsTableColumn {
+  min-width: 40px;
+}
+
+.attemptInformationHeader {
+  background-color: #222D32;
+  color: #eee;
+  text-indent: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 15px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  clear: both;
+}
+
+.itemImage {
+  padding: 5px;
+  display: block;
+  margin-left: 160px;
+  max-width: 150px;
+  max-height: 200px;
+  text-indent: 0px;
+}
+
+.orderDetailsFullWidth {
+  float: left;
+  width: 100%;
+}
+
+.assignOrderButton {
+  border: 0;
+  border-radius: 5px;
+  background-color: #FF5A60;
+  color: #fff;
+  cursor: pointer;
+  padding: 5px;
+  margin-left: 5px;
+}
+
+.selectDriver { 
+  width: 300px;
+}
+
+.panel {
+  border-radius: 5px;
+  border: solid 1px #ccc;
+}
+
+.bottom {
+  padding: 0 15px 45px;
+}
+
 .addCompanyOrderButton {
   color: #2196f3;
   padding: 14px;
@@ -514,6 +696,164 @@
 }
 
 .modalLink:hover {
+  color: #337ab7;
+}
+
+.top2 {
+  background-color: #371e38;
+  color: #ccc;
+  text-indent: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.glyphFilter {
+  position: relative;
+  left: -13px;
+}
+
+.arrowDown {
+  float: left;
+}
+
+.addContactButton {
+  margin-left: 5px;
+  width: 28;
+  height: 28px;
+  border-radius: 4px;
+  padding: 10px;
+  background-color: #ffffff;
+  border: solid 1px #e8e8e8;
+  cursor: pointer;
+}
+
+.contactAddress {
+  background-color: #4cc38e;
+  color: #eee;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 8px;
+  clear: both;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+
+.arrowRight {
+  float: right;
+}
+
+.removeShipperButton {
+  background-color: #FF5A60;
+  color: #eee;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 8px;
+  clear: both;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+
+.activeContactButton {
+  background-color: #4cc370;
+  color: #eee;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 8px;
+  clear: both;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+
+.container {
+  float: left;
+  display: inline-block;
+  border-radius: 5px;
+  width: 15%;
+  height: 110px;
+  position: relative;
+  color: #fff;
+  background-color: #5cb85c;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  border: solid 1px #fff;
+}
+
+.num {
+  font-size: 35px;
+  position: absolute;
+  top: 0;
+  right: 10px;
+}
+
+.attr {
+  font-size: 20px;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+
+.glyph {
+  font-size: 50px;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+.container:hover {
+  border: solid 1px #337ab7;
+}
+
+.addShipper {
+  width: 296px;
+  height: 48px;
+  border-radius: 4px;
+  background-color: #ffffff;
+  border: solid 1px #e8e8e8;
+  color: #38b393;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.addShipperDesc {
+  text-align: center;
+  width: 296px;
+  margin-top: 10px;
+  opacity: 0.5;
+  color: #000000;
+}
+
+.addCompanyOrderButton {
+  color: #2196f3;
+  padding: 14px;
+  border-radius: 3px;
+  border: solid 1px #d5d5d5;
+  font-weight: bold;
+  width: 160px;
+  margin-bottom: -20px;
+  cursor: pointer;
+}
+
+.modalClose {
+  font-size: 26px;
+  float: right;
+  top: 10px;
+  position: absolute;
+  right: 20px;
+  cursor: pointer;
+}
+
+.modalTitle {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
   color: #2196f3;
 }
 

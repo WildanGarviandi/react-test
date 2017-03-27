@@ -21,6 +21,7 @@ import TripDetailsPage from './tripDetails/tripDetails';
 import TripManifestPage from './views/trips/tripManifest';
 import MyAssignedTripsPage from './trips/tripPage';
 import MyOrdersPage from './orders/orderPage';
+import MyOrdersManagePage from './orders/orderManage';
 import TripHistoryList from './tripHistory/listPage';
 import TripHistoryDetails from './tripHistory/detailsPage';
 import MyContactPage from './contacts/contactPage';
@@ -82,6 +83,7 @@ export default (
         <Route path="/mytrips" component={MyAssignedTripsPage} onEnter={requireAuth} />
         <Route path="/myongoingtrips" component={MyOngoingTripsPage} onEnter={requireAuth} />
         <Route path="/myorders" component={()=>(<MyOrdersPage />)} onEnter={requireAuth} />
+        <Route path="/myorders/add" component={MyOrdersManagePage} onEnter={requireAuth} />
         <Route path="/history" component={TripHistoryList} onEnter={requireAuth}/>
         <Route path="/history/:id" component={TripHistoryDetails} onEnter={requireAuth}/>
         <Route path="/mycontacts" component={MyContactPage} onEnter={requireAuth} />

@@ -30,7 +30,7 @@ const LimitSelector = React.createClass({
   render() {
     return (
       <span className={styles.pageList}>
-        <span style={{opacity: 0.5}}>{'Show me'}</span>
+        <span style={{opacity: 0.5}}>{'Show'}</span>
         <span className="btn-group dropup">
           <Dropdown opened={this.state.opened} val={this.props.limit} options={[5, 10, 25, 50, 100, 200, 500, 1000]} onClick={this.toggleOpened} selectVal={this.setLimit} />
         </span>

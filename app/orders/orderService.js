@@ -7,6 +7,7 @@ import {modalAction} from '../modules/modals/constants';
 import moment from 'moment';
 import Promise from 'bluebird';
 import {fetchXhr} from '../modules/fetch/getXhr';
+import * as DashboardService from '../dashboard/dashboardService';
 
 const Constants = {
   BASE: "myorder/defaultSet/",
@@ -32,6 +33,7 @@ const initialStore = {
   limit: 10,
   statusName: "SHOW ALL",
   sortOptions: "Sort By",
+  orderTypeOptions: "All",
   total: 0,
   orders: [],
   selectedAll: false,
@@ -42,7 +44,10 @@ const initialStore = {
   isExpandDriver: false,
   isExpandDriverBulk: false,
   selectedDriver: null,
-  isSuccessAssign: false
+  isSuccessAssign: false,
+  errorIDs: [],
+  successAssign: 0,
+  errorAssign: 0
 }
 
 export default function Reducer(store = initialStore, action) {
@@ -149,13 +154,19 @@ export default function Reducer(store = initialStore, action) {
 
     case Constants.SHOW_SUCCESS_ASSIGN: {
       return lodash.assign({}, store, {
-          isSuccessAssign: true
+          isSuccessAssign: true,
+          errorIDs: action.errorIDs,
+          successAssign: action.successAssign,
+          errorAssign: action.errorAssign
       });
     }
 
     case Constants.CLOSE_SUCCESS_ASSIGN: {
       return lodash.assign({}, store, {
-          isSuccessAssign: false
+          isSuccessAssign: false,
+          errorIDs: [],
+          successAssign: 0,
+          errorAssign: 0
       });
     }
 
@@ -184,7 +195,8 @@ export function UpdateFilters(filters) {
 export function SetDropDownFilter(keyword) {
   const filterNames = {
     "statusName": "status",
-    "sortOptions": "sortOptions"
+    "sortOptions": "sortOptions",
+    "orderTypeOptions": "isTrunkeyOrder"
   };
 
   return (selectedOption) => {
@@ -250,7 +262,10 @@ export function FetchList() {
       delete filters.sortOptions;
     }
 
-    filters.userOrderNumbers = JSON.stringify(filters.userOrderNumbers);
+    if (filters.isTrunkeyOrder === 'All') {
+      delete filters.isTrunkeyOrder;
+    }
+
     const params = lodash.assign({}, filters, {
       limit: limit,
       offset: (currentPage - 1) * limit
@@ -352,20 +367,26 @@ export function AssignDriver(orderID, driverID) {
     const {token} = userLogged;
 
     const body = {
-      DriverID: driverID,
+      driverID: driverID,
     };
 
     dispatch({type: modalAction.BACKDROP_SHOW});
     FetchPost(`/order/${orderID}/driver`, token, body).then((response) => {
-      dispatch({ type: Constants.ORDER_DRIVER_ASSIGN_END });
       if(!response.ok) {
         return response.json().then(({error}) => {
           throw error;
         });
       }
+      dispatch({ 
+        type: Constants.SHOW_SUCCESS_ASSIGN,
+        errorIDs: [],
+        successAssign: 0,
+        errorAssign: 0
+      });
       dispatch(ResetDriver());
       dispatch(ShrinkOrder());
       dispatch(FetchList());
+      dispatch(DashboardService.FetchCountTMS());
       dispatch({type: modalAction.BACKDROP_HIDE});
     }).catch((e) => {
       const message = (e && e.message) || "Failed to set driver";
@@ -386,20 +407,35 @@ export function BulkAssignDriver(orders, driverID) {
     })
 
     const body = {
-      DriverID: driverID,
-      OrderIDs: orderIDs
-    };
+      driverID: driverID,
+      orderIDs: orderIDs
+    };    
 
-    FetchPost(`/order/driver/bulk-assign`, token, body).then((response) => {
+    dispatch({type: modalAction.BACKDROP_SHOW});
+    FetchPost(`/order/bulk-assign`, token, body).then((response) => {
       if(!response.ok) {
         return response.json().then(({error}) => {
           throw error;
         });
       }
-      window.location.reload(false); 
+      response.json().then(function({data}) {
+        dispatch({ 
+          type: Constants.SHOW_SUCCESS_ASSIGN,
+          errorIDs: ((data.failedUserOrderIDs.length > 0) && data.failedUserOrderIDs) || [],
+          successAssign: data.success,
+          errorAssign: data.error
+        });
+        dispatch(ResetDriver());
+        dispatch(ShrinkOrder());
+        dispatch(FetchList());
+        dispatch(DashboardService.FetchCountTMS());
+        dispatch({type: modalAction.BACKDROP_HIDE});
+      });
+      
     }).catch((e) => {
       const message = (e && e.message) || "Failed to set driver";
       dispatch(ModalActions.addMessage(message));
+      dispatch({type: modalAction.BACKDROP_HIDE});
     });
   }
 }
@@ -415,4 +451,43 @@ export function ResetDriver() {
   return {
     type: Constants.RESET_DRIVER
   }
+}
+
+export function addOrder(order) {
+    return (dispatch, getState) => {
+        const {userLogged} = getState().app;
+        const {token} = userLogged;
+        dispatch({type: modalAction.BACKDROP_SHOW});
+        FetchPost('/order/company', token, order).then((response) => {
+        if(response.ok) {
+            response.json().then(function({data}) {
+                dispatch({
+                    type: Constants.ORDER_DETAILS_SET,
+                    order: lodash.assign({}, order),
+                });
+                alert('Add Order Success');
+                dispatch({type: modalAction.BACKDROP_HIDE});
+                window.location.href='/myorders/details/' + data.UserOrderID;
+            });
+        } else {
+            response.json().then(function({error}) {
+                var message = '';
+                error.message.forEach(function(m) {
+                    message += m + '\n';
+                });
+                alert(message);
+                dispatch({type: modalAction.BACKDROP_HIDE});
+            });
+        }
+        }).catch(() => { 
+            dispatch({type: modalAction.BACKDROP_HIDE});
+            dispatch(ModalActions.addMessage('Network error'));
+        });
+    }
+}
+
+export function resetManageOrder() {
+    return (dispatch) => {
+        dispatch({type: Constants.FETCHING_PAGE_STOP});
+    }
 }

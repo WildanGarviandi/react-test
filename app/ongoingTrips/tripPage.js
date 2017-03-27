@@ -106,7 +106,7 @@ const PanelDetails = React.createClass({
             }
             <div className={styles.tripDetails}>
               <div className={styles.reassignButton}>
-                <ButtonWithLoading {...reassignTripButton} />
+                <button className={stylesButton.greenButton2} onClick={this.props.expandDriver}>Assign</button>
               </div>
               <div className={styles.tripDetailsLabel}>
                 TripID

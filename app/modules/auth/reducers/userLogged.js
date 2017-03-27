@@ -39,6 +39,7 @@ export default (state = initialUserState, action) => {
       localStorage.fleetName = action.user && action.user.User && action.user.User.CompanyDetail && action.user.User.CompanyDetail.CompanyName;
       return _.assign({}, state, {
         hubID: action.hub && action.hub.HubID,
+        user: action.user,
         hubName: action.hub && action.hub.Name,
         fleetName: action.user && action.user.User && action.user.User.CompanyDetail && action.user.User.CompanyDetail.CompanyName,
         isCentralHub: action.hub && ("CENTRAL" === action.hub.Type),
