@@ -14,6 +14,18 @@ export function CheckboxHeader({isChecked, onToggle}) {
     );
 }
 
+export function CheckboxHeader2({isChecked, onToggle}) {
+    return (
+        <div className={styles.checkboxHeader2} onClick={onToggle}>
+            {
+                isChecked ?
+                'Unselect All' :
+                'Select All'
+            }
+        </div>
+    );
+}
+
 export function CheckboxCell({isChecked, onToggle}) {
     return (
         <span style={{textAlign: 'center', display: 'block'}} onClick={onToggle}>

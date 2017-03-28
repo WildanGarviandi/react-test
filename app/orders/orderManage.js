@@ -48,14 +48,22 @@ const InputStaticRow = React.createClass({
 
 const DropdownRow = React.createClass({
   render() {
-    const {isEditing, label, value, onChange, type, options, handleSelect} = this.props;
-
+    const {isEditing, label, value, onChange, type, options, handleSelect, withoutLabel} = this.props;
     return (
       <div style={{clear: 'both'}}>
-        <span className={styles.itemLabel}>{label}</span>
-          <span className={styles.itemValue}>
-            <Form.DropdownWithState initialValue={value} options={options} handleSelect={handleSelect} />
-          </span>
+        { withoutLabel &&
+            <span>
+              <Form.DropdownWithState initialValue={value} options={options} handleSelect={handleSelect} />
+            </span>
+        }
+        { !withoutLabel &&
+          <div>
+              <span className={styles.itemLabel}>{label}</span>
+              <div className={styles.itemValue}>
+                <Form.DropdownWithState initialValue={value} options={options} handleSelect={handleSelect} />
+              </div>
+          </div>
+        }
       </div>
     );
   }
@@ -66,11 +74,11 @@ const DatetimeRow = React.createClass({
         const {isEditing, label, value, onChange, type, options, handleSelect} = this.props;
 
         return (
-          <div style={{clear: 'both'}}>
+          <div className='nb' style={{clear: 'both'}}>
             <span className={styles.itemLabel}>{label}</span>
-              <span className={styles.itemValue}>
-                <DateTime onChange={this.props.onChange} defaultValue={value} />
-              </span>
+              <div className={styles.itemValue}>
+                <DateTime parentEl="#bootstrapPlaceholder" onChange={this.props.onChange} defaultValue={value} />
+              </div>
           </div>
         );
     }
@@ -103,9 +111,21 @@ const AddContact = React.createClass({
         const mandatoryFields = ['FirstName', 'LastName', 'Phone', 'Email', 'Street', 'StateID', 'City', 'ZipCode'];
         const filledFields = Object.keys(this.state);
         const unfilledFields = lodash.difference(mandatoryFields, filledFields);
+        var regexEmail = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+        var regexPhone = /^[+]?([\d]{3}(-| )?[\d]{3}(-| )?[\d]{4}|[\d]{5,12}|}|[(][\d]{3}[)](-| )?[\d]{3}(-| )?[\d]{4})$/;
+        let errorMessage = [];
         if (unfilledFields.length > 0) {
-            alert('Missing ' + unfilledFields.join())
-            return;
+          errorMessage.push('Missing ' + unfilledFields.join())
+        }
+        if (this.state.Email && !regexEmail.test(this.state.Email)) {
+          errorMessage.push('Invalid email');  
+        }
+        if (this.state.Phone && !regexPhone.test(this.state.Phone)) {
+          errorMessage.push('Invalid phone');  
+        }
+        if (errorMessage.length > 0) {
+          alert(errorMessage.join())
+          return;
         }
         let addedData = lodash.assign({}, this.state);
         delete addedData.showContactModal;
@@ -118,31 +138,28 @@ const AddContact = React.createClass({
               .sortBy((arr) => (arr.key))
               .value();
 
-        const addContactButton = {
-            textBase: '+',
-            onClick: this.openModal,
-            styles: {
-                base: styles.addContactButton
-            }
-        };
-
         const saveBtnContact = {
             textBase: "Save",
             textLoading: "Saving Changes",
             onClick: this.saveContact,
             styles: {
-                base: stylesButton.greenButton,
+                base: stylesButton.greenButton5,
             },
         };
 
         return (
-            <span onClick={this.openModal}>
-              { <ButtonWithLoading {...addContactButton} /> }
+            <span>
+              <img src={"/img/icon-add.png"} className={styles.addContactButton} onClick={this.openModal}/>
               {
                 this.state.showContactModal &&
-                <ModalContainer onClose={this.closeModal}>
-                  <ModalDialog onClose={this.closeModal}>
-                    <h1>Add New Contact</h1>
+                <ModalContainer>
+                  <ModalDialog>
+                    <div className={styles.modalTitle}>
+                      Add New Contact
+                    </div>
+                    <div onClick={this.closeModal} className={styles.modalClose}>
+                      X
+                    </div>
                     <InputRow label={'First Name'} type={'text'} onChange={this.stateChange('FirstName') } />
                     <InputRow label={'Last Name'} type={'text'} onChange={this.stateChange('LastName') } />
                     <InputRow label={'Phone'} type={'text'} onChange={this.stateChange('Phone') } />
@@ -166,18 +183,12 @@ const AddContact = React.createClass({
 const ManagePage = React.createClass({
     getInitialState() {
         return ({
-            PickupTime: new Date(),
-            activeContact: null,
             HasShipper: false
         });
     },
     componentWillMount() {
-        if (this.props.params.id) {
-            this.props.GetDetails();
-        } else {
-            this.props.ResetManageOrder();
-            this.props.ResetFilter();
-        }
+        this.props.ResetFilter();
+        this.props.ResetManageOrder();
     },
     stateChange(key) {
         return (value) => {
@@ -329,171 +340,68 @@ const ManagePage = React.createClass({
                         Contact Information
                     </div>
                     { !isEditing &&
-                        <div className={styles.orderDetailsInformation, styles.contactDetailsBox}>
-                            <div className={styles.contactDetails}>
-                                { 
-                                    !isFetchingContact &&
-                                    <div>
-                                        <DropdownRow label={'Pickup'} value={this.state.PickupName} options={contactOptions} handleSelect={this.selectContact('pickup')} />
-                                        <AddContact contactClick={this.contactClick('pickup')} AddContact={this.props.AddContact} stateList={this.props.stateList} contactType={'pickup'} />
-                                        { this.state.PickupName && this.state.activeContact !== 'pickup' &&
-                                            <div className={styles.contactAddress} onClick={this.contactClick('pickup')}>
-                                                Pickup : {`${this.state.PickupName} - ${this.state.PickupAddress}`}
-                                                <span className={styles.arrowRight}>
-                                                    <Glyph name={'chevron-right'}/>
-                                                </span>
-                                            </div>
-                                        }
-                                        { this.state.PickupName && this.state.activeContact === 'pickup' &&
-                                            <div className={styles.activeContactButton} onClick={this.contactClick('pickup')}>
-                                                Pickup : {`${this.state.PickupName} - ${this.state.PickupAddress}`}
-                                                <span className={styles.arrowRight}>
-                                                    <Glyph name={'chevron-right'}/>
-                                                </span>
-                                            </div>
-                                        }
-                                    </div>
-                                }
-                                { 
-                                    !isFetchingContact &&
-                                    <div>
-                                        <DropdownRow label={'Dropoff'} value={this.state.DropoffName} options={contactOptions} handleSelect={this.selectContact('dropoff')} />
-                                        <AddContact contactClick={this.contactClick('dropoff')} AddContact={this.props.AddContact} stateList={this.props.stateList} contactType={'dropoff'} />
-                                        { this.state.DropoffName && this.state.activeContact !== 'dropoff' &&
-                                            <div className={styles.contactAddress}  onClick={this.contactClick('dropoff')}>
-                                                Dropoff : {`${this.state.DropoffName} - ${this.state.DropoffAddress}`}
-                                                <span className={styles.arrowRight}>
-                                                    <Glyph name={'chevron-right'}/>
-                                                </span>
-                                            </div>
-                                        }
-                                        { this.state.DropoffName && this.state.activeContact === 'dropoff' &&
-                                            <div className={styles.activeContactButton}  onClick={this.contactClick('dropoff')}>
-                                                Dropoff : {`${this.state.DropoffName} - ${this.state.DropoffAddress}`}
-                                                <span className={styles.arrowRight}>
-                                                    <Glyph name={'chevron-right'}/>
-                                                </span>
-                                            </div>
-                                        }
-                                    </div>
-                                }
-                                <div style={{clear: 'both'}}>
+                        <div className={styles.orderDetailsInformation}>
+                            { 
+                                !isFetchingContact &&
+                                <div className={styles.contactDetails}>
+                                    <DropdownRow withoutLabel={true} label={'Pickup'} value={this.state.PickupName} options={contactOptions} handleSelect={this.selectContact('pickup')} />
+                                    <AddContact contactClick={this.contactClick('pickup')} AddContact={this.props.AddContact} stateList={this.props.stateList} contactType={'pickup'} />
+                                    <InputStaticRow label={'Pickup Name'} value={this.state.PickupName || '-'} type={'text'} />
+                                    <InputStaticRow label={'Pickup Mobile'} value={this.state.PickupMobile || '-'} type={'text'} />
+                                    <InputStaticRow label={'Pickup Email'} value={this.state.PickupEmail || '-'} type={'text'} />
+                                    <InputStaticRow label={'Pickup Address'} value={this.state.PickupAddress || '-'} type={'text'} />
+                                    <InputStaticRow label={'Pickup City'} value={this.state.PickupCity || '-'} type={'text'} />
+                                    <InputStaticRow label={'Pickup State'} value={this.state.PickupState || '-'} type={'text'} />
+                                    <InputStaticRow label={'Pickup Zip'} value={this.state.PickupZip || '-'} type={'text'} />
                                 </div>
-                                { 
-                                    !isFetchingContact &&
-                                    <div>
-                                        { !this.state.HasShipper &&
-                                            <span>
-                                                <button className={styles.contactAddress} onClick={this.hasShipper()}> 
-                                                    Add Shipper
-                                                </button>
-                                                (only select if different than pickup)
-                                            </span>
-                                        }
-                                        { this.state.HasShipper &&
-                                            <button className={styles.removeShipperButton} onClick={this.hasShipper()}> 
-                                                Delete Shipper
+                            }
+                            { 
+                                !isFetchingContact &&
+                                <div className={styles.contactDetails}>
+                                    <DropdownRow withoutLabel={true} label={'Dropoff'} value={this.state.DropoffName} options={contactOptions} handleSelect={this.selectContact('dropoff')} />
+                                    <AddContact contactClick={this.contactClick('dropoff')} AddContact={this.props.AddContact} stateList={this.props.stateList} contactType={'dropoff'} />
+                                    <InputStaticRow label={'Dropoff Name'} value={this.state.DropoffName || '-'} type={'text'} />
+                                    <InputStaticRow label={'Dropoff Mobile'} value={this.state.DropoffMobile || '-'} type={'text'} />
+                                    <InputStaticRow label={'Dropoff Email'} value={this.state.DropoffEmail || '-'} type={'text'} />
+                                    <InputStaticRow label={'Dropoff Address'} value={this.state.DropoffAddress || '-'} type={'text'} />
+                                    <InputStaticRow label={'Dropoff City'} value={this.state.DropoffCity || '-'} type={'text'} />
+                                    <InputStaticRow label={'Dropoff State'} value={this.state.DropoffState || '-'} type={'text'}  />
+                                    <InputStaticRow label={'Dropoff Zip'} value={this.state.DropoffZip || '-'} type={'text'} />
+                                </div>
+                            }
+                            { 
+                                !isFetchingContact &&
+                                <div className={styles.contactDetails}>
+                                    { !this.state.HasShipper &&
+                                        <span>
+                                            <button className={styles.addShipper} onClick={this.hasShipper()}> 
+                                              + Add Shipper
                                             </button>
-                                        }
-                                        { this.state.HasShipper &&
-                                            <div>
-                                                <DropdownRow label={'Shipper'} value={this.state.ShipperName} options={contactOptions} handleSelect={this.selectContact('shipper')} />
-                                                <AddContact contactClick={this.contactClick('shipper')} AddContact={this.props.AddContact} stateList={this.props.stateList} contactType={'shipper'} />
+                                            <div className={styles.addShipperDesc}>
+                                              only select if different than pickup
                                             </div>
-                                        }
-                                        { this.state.HasShipper && this.state.ShipperName && this.state.activeContact !== 'shipper' &&
-                                            <div className={styles.contactAddress}  onClick={this.contactClick('shipper')}>
-                                                Shipper : {`${this.state.ShipperName} - ${this.state.ShipperAddress}`}
-                                                <span className={styles.arrowRight}>
-                                                    <Glyph name={'chevron-right'}/>
-                                                </span>
-                                            </div>
-                                        }
-                                        { this.state.HasShipper && this.state.ShipperName && this.state.activeContact === 'shipper' &&
-                                            <div className={styles.activeContactButton}  onClick={this.contactClick('shipper')}>
-                                                Shipper : {`${this.state.ShipperName} - ${this.state.ShipperAddress}`}
-                                                <span className={styles.arrowRight}>
-                                                    <Glyph name={'chevron-right'}/>
-                                                </span>
-                                            </div>
-                                        }
-                                    </div>
-                                }
-                            </div>
-                            <div className={styles.contactDetails}>
-                                { this.state.activeContact === 'shipper' &&
-                                    <div>
-                                        <h4>
-                                            Address Details
-                                        </h4>
-                                        <InputStaticRow label={'Shipper Name'} value={this.state.ShipperName} type={'text'} />
-                                        <InputStaticRow label={'Shipper Mobile'} value={this.state.ShipperMobile} type={'text'} />
-                                        <InputStaticRow label={'Shipper Email'} value={this.state.ShipperEmail} type={'text'} />
-                                        <InputStaticRow label={'Shipper Address'} value={this.state.ShipperAddress} type={'text'} />
-                                        <InputStaticRow label={'Shipper City'} value={this.state.ShipperCity} type={'text'} />
-                                        <InputStaticRow label={'Shipper State'} value={this.state.ShipperState} type={'text'} />
-                                        <InputStaticRow label={'Shipper Zip'} value={this.state.ShipperZip} type={'text'} />
-                                    </div>
-                                }
-                                { this.state.activeContact === 'pickup' &&
-                                    <div>
-                                        <h4>
-                                            Address Details
-                                        </h4>
-                                        <InputStaticRow label={'Pickup Name'} value={this.state.PickupName} type={'text'} />
-                                        <InputStaticRow label={'Pickup Mobile'} value={this.state.PickupMobile} type={'text'} />
-                                        <InputStaticRow label={'Pickup Email'} value={this.state.PickupEmail} type={'text'} />
-                                        <InputStaticRow label={'Pickup Address'} value={this.state.PickupAddress} type={'text'} />
-                                        <InputStaticRow label={'Pickup City'} value={this.state.PickupCity} type={'text'} />
-                                        <InputStaticRow label={'Pickup State'} value={this.state.PickupState} type={'text'} />
-                                        <InputStaticRow label={'Pickup Zip'} value={this.state.PickupZip} type={'text'} />
-                                    </div>
-                                }                                
-                                { this.state.activeContact === 'dropoff' &&
-                                    <div>
-                                        <h4>
-                                            Address Details
-                                        </h4>
-                                        <InputStaticRow label={'Dropoff Name'} value={this.state.DropoffName} type={'text'} />
-                                        <InputStaticRow label={'Dropoff Mobile'} value={this.state.DropoffMobile} type={'text'} />
-                                        <InputStaticRow label={'Dropoff Email'} value={this.state.DropoffEmail} type={'text'} />
-                                        <InputStaticRow label={'Dropoff Address'} value={this.state.DropoffAddress} type={'text'} />
-                                        <InputStaticRow label={'Dropoff City'} value={this.state.DropoffCity} type={'text'} />
-                                        <InputStaticRow label={'Dropoff State'} value={this.state.DropoffState} type={'text'}  />
-                                        <InputStaticRow label={'Dropoff Zip'} value={this.state.DropoffZip} type={'text'} />
-                                    </div>
-                                }
-                            </div>
-                            <div className={styles.contactDetails}>
-                            </div>
-                        </div>
-                    }
-                    { isEditing && order.PickupAddress &&
-                        <div className={styles.orderDetailsContact}>
-                            <div className={styles.orderDetailsInformation}>
-                                <InputRow label={'Pickup Name'} value={order.PickupAddress.FirstName} type={'text'} onChange={this.stateChange('PickupName') } />
-                                <InputRow label={'Pickup Mobile'} value={order.PickupAddress.MobileNumber} type={'text'} onChange={this.stateChange('PickupMobile') } />
-                                <InputRow label={'Pickup Email'} value={order.PickupAddress.EmailID} type={'text'} onChange={this.stateChange('PickupEmail') } />
-                                <InputRow label={'Pickup Address'} value={order.PickupAddress.Address1} type={'text'} onChange={this.stateChange('PickupAddress') } />
-                                <InputRow label={'Pickup Address Detail'} value={order.PickupAddress.Address2} type={'text'} onChange={this.stateChange('PickupAddressDetail') } />
-                                <InputRow label={'Pickup City'} value={order.PickupAddress.City} type={'text'} onChange={this.stateChange('PickupCity') } />
-                                <InputRow label={'Pickup State'} value={order.PickupAddress.State} type={'text'} onChange={this.stateChange('PickupState') } />
-                                <InputRow label={'Pickup Zip'} value={order.PickupAddress.ZipCode} type={'text'} onChange={this.stateChange('PickupZip') } />
-                            </div>
-                        </div> 
-                    }
-                    { isEditing && order.DropoffAddress &&
-                        <div className={styles.orderDetailsContact}>
-                            <div className={styles.orderDetailsInformation}>
-                                <InputRow label={'Dropoff Name'} value={order.DropoffAddress.FirstName} type={'text'} onChange={this.stateChange('DropoffName') } />
-                                <InputRow label={'Dropoff Mobile'} value={order.DropoffAddress.MobileNumber} type={'text'} onChange={this.stateChange('DropoffMobile') } />
-                                <InputRow label={'Dropoff Email'} value={order.DropoffAddress.EmailID} type={'text'} onChange={this.stateChange('DropoffEmail') } />
-                                <InputRow label={'Dropoff Address'} value={order.DropoffAddress.Address1} type={'text'} onChange={this.stateChange('DropoffAddress') } />
-                                <InputRow label={'Dropoff Address Detail'} value={order.DropoffAddress.Address2} type={'text'} onChange={this.stateChange('DropoffAddressDetail') } />
-                                <InputRow label={'Dropoff City'} value={order.DropoffAddress.City} type={'text'} onChange={this.stateChange('DropoffCity') } />
-                                <InputRow label={'Dropoff State'} value={order.DropoffAddress.State} type={'text'} onChange={this.stateChange('DropoffState') } />
-                                <InputRow label={'Dropoff Zip'} value={order.DropoffAddress.ZipCode} type={'text'} onChange={this.stateChange('DropoffZip') } />
-                            </div>
+                                        </span>
+                                    }
+                                    { /*this.state.HasShipper &&
+                                        <button className={styles.addShipper} onClick={this.hasShipper()}> 
+                                            Delete Shipper
+                                        </button>*/
+                                    }
+                                    { this.state.HasShipper &&
+                                        <div>
+                                            <DropdownRow withoutLabel={true} label={'Shipper'} value={this.state.ShipperName} options={contactOptions} handleSelect={this.selectContact('shipper')} />
+                                            <AddContact contactClick={this.contactClick('shipper')} AddContact={this.props.AddContact} stateList={this.props.stateList} contactType={'shipper'} />
+                                            <InputStaticRow label={'Shipper Name'} value={this.state.ShipperName || '-'} type={'text'} />
+                                            <InputStaticRow label={'Shipper Mobile'} value={this.state.ShipperMobile || '-'} type={'text'} />
+                                            <InputStaticRow label={'Shipper Email'} value={this.state.ShipperEmail || '-'} type={'text'} />
+                                            <InputStaticRow label={'Shipper Address'} value={this.state.ShipperAddress || '-'} type={'text'} />
+                                            <InputStaticRow label={'Shipper City'} value={this.state.ShipperCity || '-'} type={'text'} />
+                                            <InputStaticRow label={'Shipper State'} value={this.state.ShipperState || '-'} type={'text'} />
+                                            <InputStaticRow label={'Shipper Zip'} value={this.state.ShipperZip || '-'} type={'text'} />
+                                        </div>
+                                    }
+                                </div>
+                            }
                         </div>
                     }
                     <div style={{clear: 'both'}}>
@@ -503,14 +411,12 @@ const ManagePage = React.createClass({
                             Order Details
                         </div>
                         <div className={styles.orderDetailsInformation}>
-                            <InputRow label={'Web Order ID'} value={order.WebOrderID} type={'text'} onChange={this.stateChange('WebOrderID') } />
-                            <DropdownRow label={'Vehicle'} value={order.Vehicle && order.Vehicle.Name} options={vehicleOptions} handleSelect={this.stateChange('PackageSize')} />
-                            <InputRow label={'Package Details'} value={order.OrderMessage} type={'text'} onChange={this.stateChange('PackageComments') } />
-                            <InputRow label={'Delivery Instructions'} value={order.DeliveryInstructions} type={'text'} onChange={this.stateChange('DeliveryInstructions') } />
-                            <DatetimeRow label={'Pickup Time'} value={formatDate(order.PickupTime)} onChange={this.stateChange('PickupTime') } />
-                            { isEditing &&
-                                <DatetimeRow label={'Deadline'} value={formatDate(order.DueTime)} onChange={this.stateChange('DueTime') } />
-                            }
+                            <InputRow label={'Web Order ID'} type={'text'} onChange={this.stateChange('WebOrderID') } />
+                            <DropdownRow label={'Vehicle'} options={vehicleOptions} handleSelect={this.stateChange('PackageSize')} />
+                            <InputRow label={'Details'} type={'text'} onChange={this.stateChange('PackageComments') } />
+                            <InputRow label={'Instructions'} type={'text'} onChange={this.stateChange('DeliveryInstructions') } />
+                            <DatetimeRow label={'Pickup Time'} onChange={this.stateChange('PickupTime') } />
+                            <DatetimeRow label={'Deadline'} onChange={this.stateChange('DueTime') } />
                         </div>
                     </div> 
                     <div className={styles.orderDetailsBoxRight}>
@@ -518,15 +424,37 @@ const ManagePage = React.createClass({
                             Order Dimension and Cost
                         </div>
                         <div className={styles.orderDetailsInformation}>
-                            <InputRow label={'Delivery Fee'} value={order.OrderCost} type={'number'} onChange={this.stateChange('DeliveryFee') } />
-                            <InputRow label={'Package Weight'} value={order.PackageWeight} type={'number'} onChange={this.stateChange('PackageWeight') } />
-                            <InputRow label={'Package Volume'} value={order.PackageVolume} type={'number'} onChange={this.stateChange('PackageVolume') } />
-                            <InputRow label={'Package Width'} value={order.PackageWidth} type={'number'} onChange={this.stateChange('PackageWidth') } />
-                            <InputRow label={'Package Height'} value={order.PackageHeight} type={'number'} onChange={this.stateChange('PackageHeight') } />
-                            <InputRow label={'Package Length'} value={order.PackageLength} type={'number'} onChange={this.stateChange('PackageLength') } />
+                            <InputRow label={'Delivery Fee'} type={'number'} onChange={this.stateChange('DeliveryFee') } />
+                            <div>
+                              <div className={styles.itemLabel2}>Weight/Volume</div>
+                              <div className={styles.itemValue3}>
+                                <Form.InputWithDefault onChange={this.stateChange('PackageWeight')} type={'number'} />
+                              </div>
+                              <div className={styles.unitValue}>kg</div>
+                              <div className={styles.itemValue3}>
+                                <Form.InputWithDefault onChange={this.stateChange('PackageVolume')} type={'number'} />
+                              </div>
+                              <div className={styles.unitValue}>cbm</div>
+                            </div>
+                            <div style={{clear: 'both'}} />
+                            <div>
+                              <div className={styles.itemLabel2}>Width/Height/Length</div>
+                              <div className={styles.itemValue2}>
+                                <Form.InputWithDefault onChange={this.stateChange('PackageWidth')} type={'number'} />
+                              </div>
+                              <div className={styles.unitValue}>cm</div>
+                              <div className={styles.itemValue2}>
+                                <Form.InputWithDefault onChange={this.stateChange('PackageHeight')} type={'number'} />
+                              </div>
+                              <div className={styles.unitValue}>cm</div>
+                              <div className={styles.itemValue2}>
+                                <Form.InputWithDefault onChange={this.stateChange('PackageLength')} type={'number'} />
+                              </div>
+                              <div className={styles.unitValue}>cm</div>
+                            </div>
                         </div> 
                     </div>
-                    <div style={{clear: 'both', float: 'right'}}>
+                    <div style={{float: 'right'}}>
                         { <ButtonWithLoading {...saveBtnProps} /> }
                     </div>
                 </Page>
@@ -563,9 +491,6 @@ function StoreToOrdersPage(store) {
 
 function mapDispatchToOrders(dispatch, ownProps) {
   return {
-    ResetManageOrder: () => {
-      dispatch(OrderService.resetManageOrder());
-    },
     GetDetails: () => {
       dispatch(OrderService.fetchDetails(ownProps.params.id));
     },
@@ -580,6 +505,9 @@ function mapDispatchToOrders(dispatch, ownProps) {
     },
     AddOrder: (order) => {
       dispatch(OrderService.addOrder(order));
+    },
+    ResetManageOrder: () => {
+      dispatch(ContactService.resetManageContact());
     },
     EditOrder: (order) => {
       dispatch(OrderService.editOrder(ownProps.params.id, order));

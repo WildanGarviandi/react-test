@@ -32,7 +32,7 @@ const PickupOrdersPage = React.createClass({
     //this.props.CheckAutoGroup();
     //this.checkAutoGroup();
     if (!this.props.userLogged.hubID) {
-      window.location.href ='/myorders/open';
+      window.location.href = config.defaultMainPageTMS;
     }
   },
   checkAutoGroup() {
@@ -63,7 +63,7 @@ const PickupOrdersPage = React.createClass({
           }
           {
             this.state.showNotReady &&
-            <Filter isFetching={this.props.isFetching} />
+            <Filter isSetPickupActive={this.props.isSetPickupActive} isFetching={this.props.isFetching} />
           }
         </div>
         { this.state.showReady &&
@@ -87,7 +87,9 @@ function mapState(state) {
   const isFetchingReady = pickupOrdersReady.isFetching;
   const isAutoGroupActive = pickupOrdersReady.isAutoGroupActive;
   const trips = pickupOrdersReady.trips;
+  const notReady = pickupOrders.orders;
   let isGroupActive = true;
+  let isSetPickupActive = true;
 
   const checkedOrdersIDs = lodash.chain(trips)
     .filter((order) => {
@@ -100,6 +102,17 @@ function mapState(state) {
     isGroupActive = false;
   }
 
+  const checkedOrdersIDsNotReady = lodash.chain(notReady)
+    .filter((order) => {
+      return order.IsChecked;
+    })
+    .map((order) => (order.UserOrderID))
+    .value();
+
+  if (checkedOrdersIDsNotReady.length === 0) {
+    isSetPickupActive = false;
+  }
+
   return {
     totalReady,
     totalNotReady,
@@ -107,7 +120,8 @@ function mapState(state) {
     isFetchingNotReady,
     userLogged,
     isAutoGroupActive,
-    isGroupActive
+    isGroupActive,
+    isSetPickupActive
   }
 }
 

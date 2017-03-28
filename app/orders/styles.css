@@ -1,293 +1,892 @@
-.itemLabel {
-    display: block;
-    padding: 5px;
-    width: 150px;
-    float: left;
+.panel {
+  border: solid 1px #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 20px;
 }
 
-.itemValue {
-    padding: 5px;
-    display: block;
-    margin-left: 160px;
-    max-width: 350px;
-    text-indent: 0px;
+.panel2 {
+  border: solid 1px #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+  padding-bottom: 10px;
 }
 
-.orderDetailsHeader {
-    background-color: #222D32;
-    color: #eee;
-    text-indent: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    padding: 15px;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    clear: both;
+.panel .title {
+  background-color: #222D32;
+  color: #f2f2f2;
+  cursor: pointer;
+  margin: 0;
+  padding: 10px;
 }
 
-.orderDetailsInformation {
-    background-color: #eee;
-    color: #000;
-    text-indent: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    padding: 15px;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    clear: both;
-    padding-bottom: 30px;
-    margin-bottom: 20px;
+.subtitle {
+  text-indent: 10px;
 }
 
-.orderDetailsBoxLeft {
-    float: left;
-    width: 48%;
+.body {
+  background-color: #f2f2f2;
 }
 
-.orderDetailsBoxRight {
-    float: right;
-    width: 48%;
+.row {
+  display: block;
+  padding: 10px;
 }
 
-.editOrderHeaders {
-    margin-bottom: 10px;
-    background-color: #eee;
-    color: #000;
-    font-weight: bold;
-    text-indent: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    padding: 15px;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    clear: both;
+.row:nth-of-type(odd) {
+  background-color: #f9f9f9;
 }
 
-.addOrderButton {
-    border: 0;
-    border-radius: 5px;
-    background-color: #FF5A60;
-    color: #fff;
-    cursor: pointer;
-    padding: 5px;
+.label {
+  display: inline-block;
+  position: absolute;
+  width: 150px;
 }
 
-.orderDetailsContact {
-    float: left;
-    width: 50%;
+.value {
+  display: inline-block;
+  margin-left: 150px;
 }
 
-.contactDetails {
-    float: left;
-    width: 45%;
-    margin-left: 15px;
-    margin-right: 25px;
-}
-
-.contactDetailsBox {
-    min-height: 360px;
-    padding: 15px;
-    background-color: #eee;
-    color: #000;
-    clear: both;
-    padding-bottom: 30px;
-    margin-bottom: 20px;
-}
-
-.detailsTableColumn {
-    min-width: 40px;
-}
-
-.attemptInformationHeader {
-    background-color: #222D32;
-    color: #eee;
-    text-indent: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    padding: 15px;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    clear: both;
-}
-
-.itemImage {
-    padding: 5px;
-    display: block;
-    margin-left: 160px;
-    max-width: 150px;
-    max-height: 200px;
-    text-indent: 0px;
-}
-
-.orderDetailsFullWidth {
-    float: left;
-    width: 100%;
+.detail {
+  border: solid 1px #eee;
+  margin-bottom: 10px;
 }
 
 .assignOrderButton {
-    border: 0;
-    border-radius: 5px;
-    background-color: #FF5A60;
-    color: #fff;
-    cursor: pointer;
-    padding: 5px;
-    margin-left: 5px;
+  border: 0;
+  border-radius: 5px;
+  background-color: #FF5A60;
+  color: #fff;
+  cursor: pointer;
+  padding: 5px;
+  margin-left: 5px;
 }
 
 .selectDriver { 
-    width: 300px;
+  width: 300px;
+}
+
+/* The animation code */
+@keyframes panelDetailsAnimation {
+  from {right: -400px;}
+  to {right: 0px;}
+}
+
+.panelDetails {
+  position: fixed;
+  right: 0px;
+  top: 50px;
+  width: 400px;
+  background-color: white;
+  height: 100%;
+  box-shadow: -1px 2px 10px 0px rgba(50, 50, 50, 0.75);
+  animation-name: panelDetailsAnimation;
+  animation-duration: 0.5s;
+}
+
+/* The animation code */
+@keyframes panelDetailsAnimation2 {
+  from {right: 0px;}
+  to {right: 400px;}
+}
+
+.panelDetails2 {
+  position: fixed;
+  right: 400px;
+  top: 50px;
+  width: 400px;
+  background-color: white;
+  height: 100%; 
+  border-right: 1px solid #e8e8e8;
+  box-shadow: -1px 2px 10px 0px rgba(50, 50, 50, 0.75);
+  animation-name: panelDetailsAnimation2;
+  animation-duration: 0.5s;
+}
+
+.orderDueTime {
+  width: 360px;
+  height: 40px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 10px;
+  margin-top: 15px;
+}
+
+.orderDriver {
+  width: 360px;
+  height: 60px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 5px;
+  margin-top: 15px;
+}
+
+.orderDriverSelected {
+  width: 360px;
+  height: 60px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 5px;
+  margin-top: 15px;
+  border: 2px solid #4cc38e;
+}
+
+.orderDriverSelectedExceed {
+  width: 360px;
+  height: 60px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 5px;
+  margin-top: 15px;
+  border: 2px solid #ff0000;
+}
+
+.orderValue {
+  width: 360px;
+  height: 40px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 5px;
+  margin-top: 15px;
+}
+
+.orderDetails {
+  width: 360px;
+  border-radius: 4px;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 12px;
+  color: #000000;
+  margin-top: 15px;
+  padding-right: 10px;
+  overflow-y: auto;
+}
+
+.orderDetailsLabel {
+  font-size: 12px;
+  margin-top: 8px;
+  opacity: 0.5;
+}
+
+.orderDetailsValue {
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.orderDetailsValue2 {
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.closeButton {
+  background-color: #fff;
+  box-shadow: none;
+  border: none;
+  font-size: 24px;
+  color: #cccccc;
+  cursor: pointer;
+  padding: 8px;
+  margin-left: -32px;
+  float: left;
+  z-index: -1;
+  border-left: 1px solid #e8e8e8;
+  box-shadow: -2px 1px 2px 0px rgba(50, 50, 50, 0.75);
+}
+
+.filterOption {
+  float: left;
+  width: 60%;
+  margin-top: 30px;
+}
+
+.vendorName {
+  font-size: 18px;
+}
+
+.vendorLoad {
+  font-family: Helvetica;
+  font-size: 14px;
+  font-style: normal;
+  font-stretch: normal;
+}
+
+.orderAdditionalInfo {
+  float: left;
+  width: 30%;
+}
+
+.vehicleIcon {
+  float: left;
+  margin-left: 15px;
+}
+
+.vendorLoadImage {    
+  margin-left: 40px;
+  margin-right: -70px;
+  height: 50px;
+}
+
+.reassignButton {
+  position: absolute;
+  right: 20px;
+  cursor: pointer;
+}
+
+.orderNum {
+  float: left;
+  width: 45%;
+  opacity: 0.5;
+}
+
+.orderEDS {
+  float: left;
+  width: 40%;
+  font-weight: bold;
+}
+
+.numOrderLeft {
+  float: left;
+  margin-left: 10px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.numOrderRight {
+  float: right;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.orderCOD {
+  float: left;
+  width: 8%;
+  border-radius: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  font-weight: bold;
+  font-size: 14px;
+  border: solid 1px #e8e8e8;
+}
+
+.mainOrder {
+  padding-bottom: 8px;
+  padding-top: 8px;
+  border-bottom: solid 1px #e8e8e8;
+}
+
+/* The animation code */
+@keyframes panelDriversAnimation {
+  from {right: -400px;}
+  to {right: 0px;}
+}
+
+.mainDriverPanel {
+  position: fixed;
+  right: 0px;
+  top: 50px;
+  width: 400px;
+  background-color: white;
+  height: 100%;
+  box-shadow: 3px 2px 8px 0px rgba(50, 50, 50, 0.75);
+  animation-name: panelDriversAnimation;
+  animation-duration: 0.5s;
+}
+
+.mainDriver {
+  cursor: pointer;
+}
+
+.panelDriverChoose {
+  text-align: center;
+  font-size: 14px;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.panelDriverList {
+  width: 400px;
+  overflow-y: scroll; 
+  border-radius: 4px;
+  background-color: #ffffff;
+  font-family: Helvetica;
+  font-size: 12px;
+  color: #000000;
+  height: calc(100vh - 200px);
+}
+
+.driverName {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.driverInput {
+  margin-left: 16px;
+  margin-top: 16px;
+  float: left;
+}
+
+.driverLoadImage {    
+  height: 40px;
+  margin-top: 10px;
+}
+
+.panelDriverSearch {
+  text-align: center;
+  padding-top: 10px;
+}
+
+.inputDriverSearch {
+  background-color: #e8e8e8;
+  border-radius: 4px;
+  background-color: #f1f1f1;
+  border: solid 1px #e8e8e8;
+  width: 288px;
+  height: 30px;
+}
+
+.driverDetails {
+  float: left;
+  margin-left: 20px;
+  width: 200px;
+  text-align: left;
+}
+
+.setDriverButton {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.orderValueLabel {
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+.orderTotalValue {
+  font-size: 24px;
+}
+
+.noOrderDesc {
+  margin-top: 80px;
+  margin-bottom: 80px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #ffffff;
+  height: 200px;
+  text-align: center;
+  width: 480px;
+  padding: 32px;
+  border-radius: 12px;
+}
+
+.modal {
+  background-color: #f1f1f1;
+  margin-left: -20px;
+  margin-right: -20px;
+  width: 550px;
+}
+
+.modalHeader {
+  background-color: white;
+  padding: 0 20px 16px;
+  text-align: center;
+}
+
+.modalTitle {
+  font-size: 20px;
+  margin-top: 0;
+  text-align: center;
+}
+
+.modalFooter {
+  background-color: white;
+  text-align: center;
+  padding: 20px 20px 0;
+}
+
+.mediumText {
+  font-size: 16px;
+  margin: 2px 0;
+}
+
+.mediumTextBold {
+  font-size: 16px;
+  margin: 2px 0;
+  font-weight: bold;
+}
+
+.endButton {
+  font-size: 20px;
+  font-weight: 700;
+  background-color: #38b393;
+  box-shadow: none;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  width: 100%;
+  height: 50px;
+  cursor: pointer;
+}
+
+.deadlineValue {
+  margin-top: 10px;
+  font-weight: bold;
+  text-align: right;
+}
+
+.itemLabel {
+  display: block;
+  padding: 5px;
+  width: 140px;
+  float: left;
+}
+
+.itemValue {
+  padding: 5px;
+  display: block;
+  margin-left: 150px;
+  max-width: 350px;
+  text-indent: 0px;
+  font-weight: bold;
+}
+
+.itemLabel2 {
+  display: block;
+  padding: 5px;
+  width: 140px;
+  float: left;
+}
+
+.itemValue2 {
+  padding: 5px;
+  display: block;
+  float: left;
+  width: 100px;
+  text-indent: 0px;
+  font-weight: bold;
+}
+
+.itemValue3 {
+  padding: 5px;
+  display: block;
+  float: left;
+  width: 155px;
+  text-indent: 0px;
+  font-weight: bold;
+  text-align: right;
+}
+
+.itemDateValue {
+  height: 44px;
+}
+
+.unitValue {
+  margin-left: -40px;
+  margin-top: 6px;
+  background-color: #fff;
+  font-weight: bold;
+  float: left;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  border-bottom-right-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.orderDetailsHeader {
+  background-color: #ffffff;
+  color: #000000;
+  text-indent: 10px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 15px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  clear: both;
+}
+
+.orderDetailsInformation {
+  min-height: 260px;
+  background-color: #ffffff;
+  padding: 15px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  border: solid 1px #e8e8e8;
+  clear: both;
+  padding-bottom: 30px;
+  margin-bottom: 20px;
+}
+
+.orderDetailsBoxLeft {
+  float: left;
+  width: 48%;
+}
+
+.orderDetailsBoxRight {
+  float: right;
+  width: 48%;
+}
+
+.editOrderHeaders {
+  margin-bottom: 10px;
+  background-color: #eee;
+  color: #000;
+  font-weight: bold;
+  text-indent: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 15px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  clear: both;
+}
+
+.addOrderButton {
+  border: 0;
+  border-radius: 5px;
+  background-color: #FF5A60;
+  color: #fff;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.orderDetailsContact {
+  float: left;
+  width: 50%;
+}
+
+.contactDetails {
+  float: left;
+  width: 32%;
+  overflow-x: auto;
+  margin-left: 5px;
+}
+
+.contactDetailsBox {
+  min-height: 260px;
+  padding: 15px;
+  background-color: #ffffff;
+  color: #000;
+  clear: both;
+  padding-bottom: 30px;
+  margin-bottom: 20px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+}
+
+.detailsTableColumn {
+  min-width: 40px;
+}
+
+.attemptInformationHeader {
+  background-color: #222D32;
+  color: #eee;
+  text-indent: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 15px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  clear: both;
+}
+
+.itemImage {
+  padding: 5px;
+  display: block;
+  margin-left: 160px;
+  max-width: 150px;
+  max-height: 200px;
+  text-indent: 0px;
+}
+
+.orderDetailsFullWidth {
+  float: left;
+  width: 100%;
+}
+
+.assignOrderButton {
+  border: 0;
+  border-radius: 5px;
+  background-color: #FF5A60;
+  color: #fff;
+  cursor: pointer;
+  padding: 5px;
+  margin-left: 5px;
+}
+
+.selectDriver { 
+  width: 300px;
 }
 
 .panel {
-    border-radius: 5px;
-    border: solid 1px #ccc;
+  border-radius: 5px;
+  border: solid 1px #ccc;
 }
 
 .bottom {
-    padding: 0 15px 45px;
+  padding: 0 15px 45px;
+}
+
+.addCompanyOrderButton {
+  color: #2196f3;
+  padding: 14px;
+  border-radius: 3px;
+  border: solid 1px #d5d5d5;
+  font-weight: bold;
+  width: 160px;
+  margin-bottom: -20px;
+  cursor: pointer;
+  float: left;
+}
+
+.filterOrderArea {
+  float: left;
+  width: calc(100% - 220px);
+  margin-left: 20px;
 }
 
 .title {
-    margin-top: 0;
-    padding: 10px;
+  margin-top: 0;
+  padding: 10px;
 }
 
 .top {
-    background-color: #371e38;
-    color: #ccc;
-    text-indent: 10px;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    cursor: pointer;
+  background-color: #fff;
+  color: #333;
+  text-indent: 10px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  cursor: pointer;
+}
+
+.top h4 {
+  background-color: #fff !important;
+  color: #333 !important;
+  margin: 0;
 }
 
 .modalBtn, .modalLink {
-    padding: 8px;
-    display: inline-block;
-    margin-left: 4px;
-    margin-top: 5px;
-    float: right;
+  padding: 8px;
+  display: inline-block;
+  margin-left: 4px;
+  margin-top: 5px;
+  float: right;
 }
 
 .modalLink:hover {
-    color: #337ab7;
+  color: #337ab7;
 }
 
 .top2 {
-    background-color: #371e38;
-    color: #ccc;
-    text-indent: 10px;
-    border-radius: 5px;
-    cursor: pointer;
+  background-color: #371e38;
+  color: #ccc;
+  text-indent: 10px;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 .glyphFilter {
-    position: relative;
-    left: -13px;
+  position: relative;
+  left: -13px;
 }
 
 .arrowDown {
-    float: left;
+  float: left;
 }
 
 .addContactButton {
-    margin-left: 5px;
+  margin-left: 5px;
+  width: 28;
+  height: 28px;
+  border-radius: 4px;
+  padding: 10px;
+  background-color: #ffffff;
+  border: solid 1px #e8e8e8;
+  cursor: pointer;
 }
 
 .contactAddress {
-    background-color: #4cc38e;
-    color: #eee;
-    border-radius: 5px;
-    cursor: pointer;
-    padding: 8px;
-    clear: both;
-    margin-top: 8px;
-    margin-bottom: 8px;
-    font-size: 12px;
+  background-color: #4cc38e;
+  color: #eee;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 8px;
+  clear: both;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12px;
 }
 
 .arrowRight {
-    float: right;
+  float: right;
 }
 
 .removeShipperButton {
-    background-color: #FF5A60;
-    color: #eee;
-    border-radius: 5px;
-    cursor: pointer;
-    padding: 8px;
-    clear: both;
-    margin-top: 8px;
-    margin-bottom: 8px;
-    font-size: 12px;
+  background-color: #FF5A60;
+  color: #eee;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 8px;
+  clear: both;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12px;
 }
 
 .activeContactButton {
-    background-color: #4cc370;
-    color: #eee;
-    border-radius: 5px;
-    cursor: pointer;
-    padding: 8px;
-    clear: both;
-    margin-top: 8px;
-    margin-bottom: 8px;
-    font-size: 12px;
+  background-color: #4cc370;
+  color: #eee;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 8px;
+  clear: both;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12px;
 }
 
 .container {
-    float: left;
-    display: inline-block;
-    border-radius: 5px;
-    width: 15%;
-    height: 110px;
-    position: relative;
-    color: #fff;
-    background-color: #5cb85c;
-    margin-right: 20px;
-    margin-bottom: 20px;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    border: solid 1px #fff;
+  float: left;
+  display: inline-block;
+  border-radius: 5px;
+  width: 15%;
+  height: 110px;
+  position: relative;
+  color: #fff;
+  background-color: #5cb85c;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  border: solid 1px #fff;
 }
 
 .num {
-    font-size: 35px;
-    position: absolute;
-    top: 0;
-    right: 10px;
+  font-size: 35px;
+  position: absolute;
+  top: 0;
+  right: 10px;
 }
 
 .attr {
-    font-size: 20px;
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
+  font-size: 20px;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
 }
 
 .glyph {
-    font-size: 50px;
-    position: absolute;
-    top: 10px;
-    left: 10px;
+  font-size: 50px;
+  position: absolute;
+  top: 10px;
+  left: 10px;
 }
 
 .container:hover {
-    border: solid 1px #337ab7;
+  border: solid 1px #337ab7;
 }
 
-.attrAll {
-    background-color: #337ab7;
+.addShipper {
+  width: 296px;
+  height: 48px;
+  border-radius: 4px;
+  background-color: #ffffff;
+  border: solid 1px #e8e8e8;
+  color: #38b393;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
 }
 
-.attrOpen {
-    background-color: #d9534f;
+.addShipperDesc {
+  text-align: center;
+  width: 296px;
+  margin-top: 10px;
+  opacity: 0.5;
+  color: #000000;
 }
 
-.attrProcessed {
-    background-color: #f0ad4e;
+.addCompanyOrderButton {
+  color: #2196f3;
+  padding: 14px;
+  border-radius: 3px;
+  border: solid 1px #d5d5d5;
+  font-weight: bold;
+  width: 160px;
+  margin-bottom: -20px;
+  cursor: pointer;
 }
 
-.attrFinished {
-    background-color: #5cb85c;
+.modalClose {
+  font-size: 26px;
+  float: right;
+  top: 10px;
+  position: absolute;
+  right: 20px;
+  cursor: pointer;
+}
+
+.modalTitle {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #2196f3;
+}
+
+.top2 {
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #e8e8e8;
+  border-radius: 5px;
+  text-indent: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.top2 h4 {
+  margin: 0px;
+}
+
+.glyphFilter {
+  position: relative;
+  left: -13px;
 }

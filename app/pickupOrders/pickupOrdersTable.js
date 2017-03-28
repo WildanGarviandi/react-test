@@ -34,7 +34,7 @@ const conf = {
   ZipCode: {filterType: "String", title: "Zip Code", cellType: "String"},
 }
 
-const pickupOrdersColumns = ["ID", "WebstoreName", "Weight", "PickupFullAddress", "PickupCity", "PickupZip", "DueTime"];
+const pickupOrdersColumns = ["IsChecked", "ID", "WebstoreName", "Weight", "PickupFullAddress", "PickupCity", "PickupZip", "DueTime"];
 
 let cityList = {}; 
 let fleetList: [];
@@ -142,6 +142,28 @@ const MerchantFilter = connectFilterText('merchant', 'Merchant')(FilterText);
 const CityFilter = connectFilterDropdown('city', 'City')(FilterTop);
 const ZipFilter = connectFilterText('zipCode', 'ZIP Code')(FilterText);
 
+function ButtonPickup({onClick, disabled}) {
+  return (
+    <button className={disabled ? styles.manualGroupButtonDisable : styles.manualGroupButton} disabled={disabled} onClick={onClick}>
+      Mark as Ready
+    </button>
+  );
+}
+
+/*
+ * Dispatch for button manual group
+ *
+*/
+function mapDispatchToSetPickupButtonGroup(dispatch, ownParams) {
+  return {
+    onClick: function() {
+      dispatch(PickupOrders.MarkPickup());
+    }
+  }
+}
+
+const SetPickupButton = connect(undefined, mapDispatchToSetPickupButtonGroup)(ButtonPickup);
+
 /*
  * Get store for checkbox header
  *
@@ -231,6 +253,7 @@ function PickupOrdersHeaders() {
   return (
     <thead>
       <tr>
+        <PickupOrdersCheckBoxHeader />
         <th>{'AWB'}<br/>{'(Web Order ID)'}</th>
         <th>{'Merchant'}</th>
         <th>{'Weight'}</th>
@@ -336,13 +359,7 @@ function PickupOrdersBody({items}) {
 
       const className = stylesTable.td + ' ' + stylesTable[column.keyword];
 
-      let style = {};
-      if (item.IsChecked && column.type !== "Checkbox") {
-        style.color = '#fff';
-        style.backgroundColor = '#ff5a60';
-      }
-
-      return <td key={column.keyword} style={style} className={className}>{cell}</td>;
+      return <td key={column.keyword} className={className}>{cell}</td>;
     });
 
     return <tr key={idx} className={stylesTable.tr + ' ' + styles.noPointer}>{cells}</tr>
@@ -368,6 +385,7 @@ export const Filter = React.createClass({
         <MerchantFilter />
         <CityFilter />
         <ZipFilter />
+        <SetPickupButton disabled={!this.props.isSetPickupActive} />
       </div>
     );
   }

@@ -1,53 +1,518 @@
 .panel {
-    border: solid 1px #ccc;
-    border-radius: 5px;
-    overflow: hidden;
-    margin-bottom: 20px;
+  border: solid 1px #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 20px;
 }
+
 .panel .title {
-    background-color: #222D32;
-    color: #f2f2f2;
-    cursor: pointer;
-    margin: 0;
-    padding: 10px;
+  background-color: #222D32;
+  color: #f2f2f2;
+  cursor: pointer;
+  margin: 0;
+  padding: 10px;
 }
+
 .subtitle {
-    text-indent: 10px;
+  text-indent: 10px;
 }
+
 .body {
-    background-color: #f2f2f2;
+  background-color: #f2f2f2;
 }
+
 .row {
-    display: block;
-    padding: 10px;
+  display: block;
+  padding: 10px;
 }
+
 .row:nth-of-type(odd) {
-    background-color: #f9f9f9;
+  background-color: #f9f9f9;
 }
+
 .label {
-    display: inline-block;
-    position: absolute;
-    width: 150px;
+  display: inline-block;
+  position: absolute;
+  width: 150px;
 }
+
 .value {
-    display: inline-block;
-    margin-left: 150px;
+  display: inline-block;
+  margin-left: 150px;
 }
+
 .detail {
-    border: solid 1px #eee;
-    margin-bottom: 10px;
+  border: solid 1px #eee;
+  margin-bottom: 10px;
 }
 
 .assignTripButton {
-    border: 0;
-    border-radius: 5px;
-    background-color: #FF5A60;
-    color: #fff;
-    cursor: pointer;
-    padding: 5px;
-    margin-left: 5px;
+  border: 0;
+  border-radius: 5px;
+  background-color: #FF5A60;
+  color: #fff;
+  cursor: pointer;
+  padding: 5px;
+  margin-left: 5px;
 }
 
 .selectDriver { 
-    width: 300px;
+  width: 300px;
+}
+
+/* The animation code */
+@keyframes panelDetailsAnimation {
+  from {right: -400px;}
+  to {right: 0px;}
+}
+
+.panelDetails {
+  position: fixed;
+  right: 0px;
+  top: 50px;
+  width: 400px;
+  background-color: white;
+  height: 100%;
+  box-shadow: -1px 2px 10px 0px rgba(50, 50, 50, 0.75);
+  animation-name: panelDetailsAnimation;
+  animation-duration: 0.5s;
+}
+
+/* The animation code */
+@keyframes panelDetailsAnimation2 {
+  from {right: 0px;}
+  to {right: 400px;}
+}
+
+.panelDetails2 {
+  position: fixed;
+  right: 400px;
+  top: 50px;
+  width: 400px;
+  background-color: white;
+  height: 100%; 
+  border-right: 1px solid #e8e8e8;
+  box-shadow: -1px 2px 10px 0px rgba(50, 50, 50, 0.75);
+  animation-name: panelDetailsAnimation2;
+  animation-duration: 0.5s;
+}
+
+.tripStatus1 {
+  width: 360px;
+  height: 30px;
+  border-radius: 4px;
+  background-color: rgba(33, 150, 243, 0.15);
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-top: 15px;
+}
+
+.tripStatus2, .tripStatus3, .tripStatus4 {
+  width: 360px;
+  height: 30px;
+  border-radius: 4px;
+  background-color: rgba(255, 228, 191, 0.15);
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-top: 15px;
+}
+
+.tripStatus5 {
+  width: 360px;
+  height: 30px;
+  border-radius: 4px;
+  background-color: rgba(255, 90, 96, 0.15);
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-top: 15px;
+}
+
+.tripDriver {
+  width: 360px;
+  height: 60px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 5px;
+  margin-top: 15px;
+}
+
+.tripDriverSelected {
+  width: 360px;
+  height: 60px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 5px;
+  margin-top: 15px;
+  border: 2px solid #4cc38e;
+}
+
+.tripDriverSelectedExceed {
+  width: 360px;
+  height: 60px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 5px;
+  margin-top: 15px;
+  border: 2px solid #ff0000;
+}
+
+.tripValue {
+  width: 360px;
+  height: 40px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 5px;
+  margin-top: 15px;
+}
+
+.tripNumOrders {
+  width: 360px;
+  height: 20px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 14px;
+  text-align: center;
+  color: #000000;
+  padding-top: 5px;
+  margin-top: 15px;
+}
+
+.tripDetails {
+  width: 360px;
+  height: 180px;
+  border-radius: 4px;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 12px;
+  color: #000000;
+  margin-top: 15px;
+  padding-right: 10px;
+  overflow-y: auto;
+}
+
+.tripDetailsLabel {
+  font-size: 12px;
+  margin-top: 8px;
+  opacity: 0.5;
+}
+
+.tripDetailsValue {
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.tripDetailsOrder {
+  width: 360px;
+  height: calc(100vh - 370px);
+  overflow-y: scroll; 
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 12px;
+  color: #000000;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-bottom: 50px;
+}
+
+.closeButton {
+  background-color: #fff;
+  box-shadow: none;
+  border: none;
+  font-size: 24px;
+  color: #cccccc;
+  cursor: pointer;
+  padding: 8px;
+  margin-left: -32px;
+  float: left;
+  z-index: -1;
+  border-left: 1px solid #e8e8e8;
+  box-shadow: -2px 1px 2px 0px rgba(50, 50, 50, 0.75);
+}
+
+.filterOption {
+  float: left;
+  width: 50%;
+  margin-top: 0px;
+}
+
+.vendorName {
+  font-size: 18px;
+}
+
+.vendorLoad {
+  font-family: Helvetica;
+  font-size: 14px;
+  font-style: normal;
+  font-stretch: normal;
+}
+
+.tripAdditionalInfo {
+  float: left;
+  width: 30%;
+}
+
+.vehicleIcon {
+  float: left;
+  margin-left: 15px;
+}
+
+.vendorLoadImage {    
+  margin-left: 40px;
+  margin-right: -70px;
+  height: 50px;
+}
+
+.reassignButton {
+  position: absolute;
+  right: 20px;
+  cursor: pointer;
+}
+
+.orderNum {
+  float: left;
+  width: 45%;
+  opacity: 0.5;
+}
+
+.orderEDS {
+  float: left;
+  width: 40%;
+  font-weight: bold;
+}
+
+.numOrderLeft {
+  float: left;
+  margin-left: 10px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.numOrderRight {
+  float: right;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.orderCOD {
+  float: left;
+  width: 8%;
+  border-radius: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  font-weight: bold;
+  font-size: 14px;
+  border: solid 1px #e8e8e8;
+}
+
+.mainOrder {
+  padding-bottom: 8px;
+  padding-top: 8px;
+  border-bottom: solid 1px #e8e8e8;
+}
+
+/* The animation code */
+@keyframes panelDriversAnimation {
+  from {right: -400px;}
+  to {right: 0px;}
+}
+
+.mainDriverPanel {
+  position: fixed;
+  right: 0px;
+  top: 50px;
+  width: 400px;
+  background-color: white;
+  height: 100%;
+  box-shadow: 3px 2px 8px 0px rgba(50, 50, 50, 0.75);
+  animation-name: panelDriversAnimation;
+  animation-duration: 0.5s;
+}
+
+.mainDriver {
+  cursor: pointer;
+}
+
+.panelDriverChoose {
+  text-align: center;
+  font-size: 14px;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.panelDriverList {
+  width: 400px;
+  height: calc(100vh - 200px);
+  overflow-y: scroll; 
+  border-radius: 4px;
+  background-color: #ffffff;
+  font-family: Helvetica;
+  font-size: 12px;
+  color: #000000;
+}
+
+.driverName {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.driverInput {
+  margin-left: 16px;
+  margin-top: 16px;
+  float: left;
+}
+
+.driverLoadImage {    
+  height: 40px;
+  margin-top: 10px;
+}
+
+.panelDriverSearch {
+  text-align: center;
+  padding-top: 10px;
+}
+
+.inputDriverSearch {
+  background-color: #e8e8e8;
+  border-radius: 4px;
+  background-color: #f1f1f1;
+  border: solid 1px #e8e8e8;
+  width: 288px;
+  height: 30px;
+}
+
+.driverDetails {
+  float: left;
+  margin-left: 20px;
+  width: 200px;
+  text-align: left;
+}
+
+.setDriverButton {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.tripValueLabel {
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+.tripTotalValue {
+  font-size: 24px;
+}
+
+.noTripDesc {
+  margin-top: 80px;
+  margin-bottom: 80px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #ffffff;
+  height: 200px;
+  text-align: center;
+  width: 480px;
+  padding: 32px;
+  border-radius: 12px;
+}
+
+.modal {
+  background-color: #f1f1f1;
+  margin-left: -20px;
+  margin-right: -20px;
+  width: 550px;
+}
+
+.modalHeader {
+  background-color: white;
+  padding: 0 20px 16px;
+  text-align: center;
+}
+
+.modalTitle {
+  font-size: 20px;
+  margin-top: 0;
+  text-align: center;
+}
+
+.modalFooter {
+  background-color: white;
+  text-align: center;
+  padding: 20px 20px 0;
+}
+
+.mediumText {
+  font-size: 16px;
+  margin: 2px 0;
+}
+
+.mediumTextBold {
+  font-size: 16px;
+  margin: 2px 0;
+  font-weight: bold;
+}
+
+.endButton {
+  font-size: 20px;
+  font-weight: 700;
+  background-color: #38b393;
+  box-shadow: none;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  width: 100%;
+  height: 50px;
+  cursor: pointer;
+}
+
+.deadlineValue {
+  margin-top: 10px;
+  font-weight: bold;
+  text-align: right;
 }

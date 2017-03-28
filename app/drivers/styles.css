@@ -1,55 +1,420 @@
-.itemLabel {
-    display: block;
-    padding: 5px;
-    width: 150px;
-    float: left;
-}
-.itemValue {
-    padding: 5px;
-    display: block;
-    margin-left: 160px;
-    max-width: 350px;
-    text-indent: 0px;
+.mainDriverPage {
+  width: 100%;
 }
 
-.addDriverButton {
-    border: 0;
-    border-radius: 5px;
-    background-color: #FF5A60;
-    color: #fff;
-    cursor: pointer;
-    padding: 5px;
+.mainDriverPanel {
+  top: 50px;
+  width: 33%;
+  background-color: #ffffff;
+  height: 100vh;
+  float: left;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
 }
 
-.driverDetailsHeader {
-    background-color: #222D32;
-    color: #eee;
-    text-indent: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    padding: 15px;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    clear: both;
+.mainDriverDetailsPanel {
+  top: 36px;
+  width: 33%;
+  float: left;
+  background-color: #ffffff;
+  height: 100vh;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
 }
 
-.driverDetailsInformation {
-    background-color: #eee;
-    color: #000;
-    text-indent: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    padding: 15px;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    clear: both;
-    padding-bottom: 30px;
-    margin-bottom: 20px;
+.mainDriverOrdersPanel {
+  top: 36px;
+  width: 33%;
+  float: left;
+  background-color: #ffffff;
+  height: 100vh;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
 }
 
-.changePassword {
-    background-color: #FF5A60;
-    color: #fff;
-    width: 150px;
-    padding: 5px;
+.mainDriver {
+  cursor: pointer;
+}
+
+.tripDriver {
+  height: 60px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 5px;
+  margin-top: 15px;
+}
+
+.tripDriver:hover {
+  height: 60px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 5px;
+  margin-top: 15px;
+  box-shadow: -1px 2px 10px 0px rgba(50, 50, 50, 0.75);
+}
+
+.tripDriverSelected {
+  height: 60px;
+  border-radius: 4px;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 5px;
+  margin-top: 15px;
+  border: solid 2px #2196f3;
+}
+
+.panelDriverList {
+  height: 440px;
+  overflow-y: scroll; 
+  border-radius: 4px;
+  background-color: #ffffff;
+  font-family: Helvetica;
+  font-size: 12px;
+  color: #000000;
+  margin-bottom: 10px;
+}
+
+.driverName {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.driverInput {
+  margin-left: 16px;
+  margin-top: 16px;
+  float: left;
+}
+
+.driverLoadImage {    
+  height: 40px;
+  margin-top: 10px;
+}
+
+.panelDriverSearch {
+  text-align: center;
+  padding-top: 10px;
+}
+
+.inputDriverSearch {
+  background-color: #e8e8e8;
+  border-radius: 4px;
+  background-color: #f1f1f1;
+  border: solid 1px #e8e8e8;
+  width: 80%;
+  height: 30px;
+}
+
+.driverDetails {
+  float: left;
+  margin-left: 20px;
+  width: 200px;
+  text-align: left;
+}
+
+.vendorName {
+  font-size: 18px;
+}
+
+.vendorLoad {
+  font-family: Helvetica;
+  font-size: 14px;
+  font-style: normal;
+  font-stretch: normal;
+}
+
+.vehicleIcon {
+  float: left;
+  margin-left: 15px;
+}
+
+.vendorLoadImage {    
+  margin-left: 40px;
+  margin-right: -70px;
+  height: 50px;
+}
+
+.driverTitle {
+  font-size: 14px;
+  font-weight: bold;
+  color: #000000;
+  margin-left: 20px;
+  margin-top: 20px;
+}
+
+.driverDetailsMain {
+  width: 100%;
+  margin-top: 19px;
+}
+
+.driverDetailsMain2 {
+  width: 100%;
+}
+
+.driverDetailsSecondary {
+  width: 100%;
+  clear: both;
+  margin-left: 16px;
+}
+
+.driverDetailsPicture {
+  width: 40%;
+  float: left;
+  margin-left: 16px;
+}
+
+.driverDetailsName {
+  width: 50%;
+  float: left;
+  margin-left: 5px;
+}
+
+.driverDetailsLabel {
+  opacity: 0.5;
+  margin-bottom: 5px;
+}
+
+.driverDetailsValue {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.driverNumOrders {
+  width: 90%;
+  height: 20px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #d5d5d5;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 14px;
+  text-align: center;
+  color: #000000;
+  padding-top: 5px;
+  margin-top: 15px;
+}
+
+.numOrderLeft {
+  float: left;
+  margin-left: 10px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.numOrderRight {
+  float: right;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.orderCOD {
+  float: left;
+  width: 12%;
+  border-radius: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  font-weight: bold;
+  font-size: 14px;
+  border: solid 1px #e8e8e8;
+}
+
+.orderNum {
+  float: left;
+  width: 52%;
+  font-weight: bold;
+}
+
+.orderEDS {
+  float: left;
+  width: 30%;
+  font-weight: bold;
+}
+
+.mainOrder {
+  padding-bottom: 8px;
+  padding-top: 8px;
+  border-bottom: solid 1px #e8e8e8;
+}
+
+.driverDetailsOrder {
+  width: 85%;
+  max-height: 315px;
+  overflow-y: scroll; 
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 12px;
+  color: #000000;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-bottom: 10px;
+}
+
+.orderDetailsLabel {
+  font-size: 12px;
+  margin-top: 8px;
+  opacity: 0.5;
+}
+
+.orderDetailsValue {
+  font-size: 12px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.orderDetailsValue2 {
+  font-size: 12px;
+  opacity: 0.5;
+  margin-top: 5px;
+}
+
+.deadlineValue {
+  margin-top: 10px;
+  font-weight: bold;
+  text-align: right;
+}
+
+.orderDetails {
+  width: 90%;
+  border-radius: 4px;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 12px;
+  color: #000000;
+  margin-top: 15px;
+  padding-right: 10px;
+  overflow-y: auto;
+}
+
+
+.orderAdditionalInfo {
+  float: left;
+  width: 30%;
+}
+
+.orderValue {
+  width: 90%;
+  height: 40px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 5px;
+  margin-top: 15px;
+}
+
+.orderValueLabel {
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+.orderTotalValue {
+  font-size: 24px;
+}
+
+.inputDetails {  
+  width: 85%;
+  height: 25px;
+  border-radius: 4px;
+  background-color: #ffffff;
+  border: solid 1px #e8e8e8;
+}
+
+.driverEditButton {
+  float: right;
+  text-align: right;
+  margin-top: -20px;
+  margin-right: 10px;
+  cursor: pointer;
+  background-color: #ffffff;
+  border: solid 1px #d8d8d8;
+  float: right;
+  border-radius: 5px;
+  color: #2196f3;
+  cursor: pointer;
+  padding: 4px;
+  padding-right: 20px;
+  padding-left: 20px;
+}
+
+.editIcon {
+  margin-right: 5px;
+  height: 14px;
+}
+
+.editSpan {  
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.updateButton {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.modalTitle {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.modalClose {
+  font-size: 24px;
+  float: right;
+  top: 10px;
+  position: absolute;
+  right: 20px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.loadingImage {
+  text-align: center;
+  width: 80%;
+  margin-left: 10%;
+}
+
+.noDriverDesc {
+  margin-top: 80px;
+  margin-bottom: 80px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #ffffff;
+  height: 200px;
+  text-align: center;
+  padding: 32px;
+  border-radius: 12px;
+}
+
+.clickDriverDesc {
+  position: fixed;
+  top: 50%;
+  right: 10%;
+  height: 100vh;
+  opacity: 0.5;
+  font-family: Helvetica;
+  font-size: 20px;
 }

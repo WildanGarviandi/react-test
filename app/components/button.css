@@ -7,7 +7,6 @@
 }
 
 .btnBase:hover {
-  color: #fff;
   text-decoration: underline;
 }
 
@@ -38,23 +37,114 @@
 }
 
 .greenButton {
-    border: 0;
-    border-radius: 5px;
-    background-color: #4cc38e;
-    color: #fff;
-    cursor: pointer;
-    min-width: 120px;
-    min-height: 30px;
-    margin-left: 5px;
+  border: 0;
+  border-radius: 5px;
+  background-color: #4cc38e;
+  color: #fff;
+  cursor: pointer;
+  min-width: 120px;
+  min-height: 30px;
+  margin-left: 5px;
 }
 
+.greenButton2 {
+  border: 0;
+  border-radius: 5px;
+  background-color: #ffffff;
+  color: #38b393;
+  cursor: pointer;
+  min-width: 120px;
+  min-height: 30px;
+  margin-left: 5px;
+  border: solid 1px #d8d8d8;
+  font-weight: bold;
+}
+
+.greenButton3 {
+  border: 0;
+  border-radius: 5px;
+  background-color: #4cc38e;
+  color: #fff;
+  cursor: pointer;
+  min-width: 120px;
+  min-height: 30px;
+  margin-left: 5px;
+  font-weight: bold;
+  padding: 15px;
+}
+
+.greenButton4 {
+  border: 0;
+  border-radius: 5px;
+  background-color: #4cc38e;
+  color: #fff;
+  cursor: pointer;
+  min-width: 350px;
+  min-height: 30px;
+  margin-left: 5px;
+}
+
+.greenButton5 {
+  border: 0;
+  border-radius: 5px;
+  background-color: #4cc38e;
+  color: #fff;
+  cursor: pointer;
+  min-width: 350px;
+  min-height: 40px;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+
+
 .redButton {
-    border: 0;
+  border: 0;
+  border-radius: 5px;
+  background-color: #4cc38e;
+  color: #fff;
+  cursor: pointer;
+  min-width: 120px;
+  min-height: 30px;
+  margin-left: 5px;
+}
+
+.whiteButton {
+    background-color: #ffffff;
+    border: solid 1px #d8d8d8;
+    float: right;
     border-radius: 5px;
-    background-color: #4cc38e;
-    color: #fff;
+    color: #2196f3;
     cursor: pointer;
-    min-width: 120px;
-    min-height: 30px;
-    margin-left: 5px;
+    padding: 4px;
+    padding-right: 20px;
+    padding-left: 20px;
+    font-weight: bold;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.blueButton {
+    background-color: #2196f3;
+    border: solid 1px #d8d8d8;
+    border-radius: 5px;
+    color: #ffffff;
+    cursor: pointer;
+    width: 288px;
+    height: 44px;
+    font-weight: bold;
+}
+
+.whiteButton2 {
+    background-color: #ffffff;
+    border: solid 1px #d8d8d8;
+    float: right;
+    border-radius: 5px;
+    color: #2196f3;
+    cursor: pointer;
+    padding: 4px;
+    padding-right: 20px;
+    padding-left: 20px;
+    font-weight: bold;
+    margin-right: 10px;
+    margin-bottom: 10px;
 }

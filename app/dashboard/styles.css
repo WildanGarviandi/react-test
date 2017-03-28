@@ -247,12 +247,14 @@
 .switchLink {
   text-align: center;
   margin-top: 5px;
-  background-color: #ff5a60;
+  background-color: #ffffff;
+  color: #38b393;
+  font-weight: bold;
   cursor: pointer;
   position: fixed;
-  bottom: 30px;
-  left: 35px;
-  padding: 5px;
+  bottom: 5px;
+  left: 0px;
+  padding: 10px 80px;
   box-sizing: border-box;
   border-radius: 5px;
 }
@@ -267,15 +269,6 @@
 .logoutButton {
   color: #ff5a60;
   cursor: pointer;
-  position: fixed;
-  bottom: 20px;
-  left: 50px;
-}
-
-.menuLogout {
-  position: absolute;
-  left: -35px;
-  top: -5px;
 }
 
 .counterNumber {
@@ -294,4 +287,30 @@
   text-indent: 5px;
   padding-right: 10px;
   padding-left: 5px;
+}
+
+.titleMenu {
+  margin-left: 20px;
+  color: #000000;
+  opacity: 0.5;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.titlePanel {
+  margin-top: 20px;
+}
+
+.menuSeparator {
+  color: #e8e8e8;
+  margin-left: 18px;
+  margin-right: 18px;
+}
+
+.menuSwitch {
+  position: absolute;
+  top: 40%;
+  margin-top: -8px;
+  left: 55px;
+  font-size: 17px;
 }

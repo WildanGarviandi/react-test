@@ -61,6 +61,26 @@
   border-color: #adadad;
 }
 
+.fileLabel2 {
+  color: #333;
+  background-color: #fff;
+  border-radius: 5px;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+  text-indent: 0;
+  position: relative;
+  margin-right: 20px;
+  margin-left: -10px;
+  margin-bottom: 10px;
+}
+
+.fileLabel2:hover {
+  opacity: 0.5;
+}
+
+
 .modalClose {
   position: absolute;
   top: 5px;
@@ -82,4 +102,16 @@
 
 .textIndent {
   text-indent: 10px;
+}
+
+.imgPreview {
+  width: 130px;
+  height: 130px;
+  border-radius: 70px;
+}
+
+.editIcon {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
 }

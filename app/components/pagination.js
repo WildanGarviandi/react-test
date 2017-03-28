@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'underscore';
 import {Dropdown} from '../views/base';
-import styles from '../views/base/pagination.css';
+import styles from './pagination.css';
 
 function PaginationInfo(props) {
   var {limit, total, page} = props;

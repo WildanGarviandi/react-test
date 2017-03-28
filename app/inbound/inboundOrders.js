@@ -7,6 +7,8 @@ import styles from './styles.css';
 import {ButtonWithLoading, Input, Page} from '../views/base';
 import * as InboundOrders from './inboundOrdersService';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import {Glyph} from '../views/base';
+import {ButtonBase} from '../components/button';
 
 const DuplicateModal = React.createClass({
   componentWillUnmount() {
@@ -63,15 +65,75 @@ const DuplicateModal = React.createClass({
   }
 });
 
+const PanelSuggestion = React.createClass({
+  render() {
+    const { nextDestination, lastDestination, successScanned, scannedOrder, closeModalMessage, bulkScan, errorIDs, countSuccess, countError } = this.props;
+    return (
+      <div className={styles.panelSuggestion}>
+        { !bulkScan &&
+          <div>
+            <div className={styles.scanMessage}>
+              <div onClick={closeModalMessage} className={styles.modalClose}>
+                X
+              </div> 
+              <div className={styles.successScanned}>
+                Success: {successScanned}
+              </div>
+            </div>
+            <div className={styles.scannedOrder}>
+              {scannedOrder}
+            </div>
+            <div>
+              {lastDestination.City}
+            </div>
+            <div className={styles.scannedOrder}>
+              {nextDestination.Hub ? `via Hub ${nextDestination.Hub.Name}` : (nextDestination && `Dropoff`)}
+            </div>
+            <div className={styles.scannedOrder}>
+              {lastDestination.District && `Kec. ${lastDestination.District}`}
+            </div>
+            <div className={styles.scannedOrder}>
+              {lastDestination.ZipCode}
+            </div>
+          </div>
+        }
+        { bulkScan &&
+          <div>
+            <div className={styles.scanMessage}>
+              <div onClick={closeModalMessage} className={styles.modalClose}>
+                X
+              </div> 
+            </div>
+            <div className={styles.bulkScanInformation}>
+              Success: {countSuccess}, Error: {countError}
+            </div>
+            { errorIDs.length > 0 &&
+              <div className={styles.bulkScanFailed}>
+                Error Order: {errorIDs.join(', ')}
+              </div>
+            }
+          </div>
+        }
+      </div>
+    );
+  }
+});
+
 const InboundOrdersPage = React.createClass({
   getInitialState() {
     return {
       orderMarked: '',
-      isDuplicate: false
+      isDuplicate: false,
+      opened: true,
+      idsRaw: '',
+      ids: [],
+      idsStart: '',
+      showModalMessage: false
     }
   },
   componentDidMount() {
     document.getElementById('markReceivedInput').focus();
+    this.props.resetSuggestion();
   },
   componentWillReceiveProps(nextProps) {
     if (nextProps['isDuplicate']) {
@@ -90,10 +152,36 @@ const InboundOrdersPage = React.createClass({
     this.props.markReceived(val);
     this.setState({
       orderMarked: "",
+      showModalMessage: true
     });
   },
   closeModal() {
     this.setState({isDuplicate: false});
+  },
+  toggleOpen() {
+    this.setState({opened: !this.state.opened, idsStart: this.state.idsRaw});
+  },
+  cancelChange() {
+    this.setState({opened: true, idsRaw: this.state.idsStart});
+  },
+  textChange(e) {
+    this.setState({idsRaw: e.target.value});
+  },
+  processText() {
+    const IDs = _.chain(this.state.idsRaw.match(/\S+/g)).uniq().value();
+    if (IDs.length === 0) {
+        alert('Please write EDS Number or Order ID');
+        return;
+    }
+    this.setState({ids: IDs, showModalMessage: true});
+    this.props.bulkMarkReceived(IDs);
+  },
+  clearText() {
+    const {filterAction} = this.props;
+    this.setState({ids: [], idsRaw: ''});
+  },
+  closeModalMessage() {
+    this.setState({showModalMessage: false});
   },
   render() {
     const inputVerifyStyles = {
@@ -114,7 +202,49 @@ const InboundOrdersPage = React.createClass({
           <button onClick={this.markReceived.bind(null, this.state.orderMarked)} className={styles.verifyButton} 
             disabled={this.state.orderMarked === ''} >Verify</button>
         </div>
+        <div style={{clear: 'both'}} />
+        <div style={{marginBottom: 15}}>
+          { this.state.opened ?
+            <div className={styles.top2} onClick={this.toggleOpen}>
+              <h4 className={styles.title}>
+                <Glyph name='chevron-down' className={styles.glyphFilter} />
+                {(this.state.ids.length ? 'Scan multiple orders (' + this.state.ids.length + ' keywords)' : 'Scan multiple orders')}
+              </h4>
+            </div> :
+            <div className={styles.panel}>
+              <div className={styles.top2} onClick={this.toggleOpen}>
+                <h4 className={styles.title}>
+                  <Glyph name='chevron-up' className={styles.glyphFilter} />
+                  {'Scan multiple orders:'}
+                </h4>
+              </div>
+              <div className={styles.bottom}>
+                <textarea 
+                    className={styles.textArea} 
+                    value={this.state.idsRaw} 
+                    onChange={this.textChange} 
+                    placeholder={'Write/Paste EDS Number or Order ID here, separated with newline'} />
+                <ButtonBase styles={styles.greenButton} onClick={this.processText}>Scan</ButtonBase>
+                <ButtonBase styles={styles.redButton} onClick={this.cancelChange}>Cancel</ButtonBase>
+                <ButtonBase styles={styles.redButton} onClick={this.clearText}>Clear</ButtonBase>
+              </div>
+            </div>
+          }
+        </div>
         <InboundOrdersTable />
+        {
+          (!lodash.isEmpty(this.props.lastDestination) || this.props.bulkScan) && this.state.showModalMessage &&
+          <PanelSuggestion 
+            closeModalMessage={this.closeModalMessage} 
+            nextDestination={this.props.suggestion} 
+            lastDestination={this.props.lastDestination} 
+            successScanned={this.props.successScanned} 
+            scannedOrder={this.props.scannedOrder}
+            bulkScan={this.props.bulkScan}
+            errorIDs={this.props.errorIDs}
+            countSuccess={this.props.countSuccess}
+            countError={this.props.countError} />
+        }
       </Page>
     );
   }
@@ -123,13 +253,21 @@ const InboundOrdersPage = React.createClass({
 function mapStateToProps (state) {
   const { inboundOrders } = state.app;
   const userLogged = state.app.userLogged;
-  const { duplicateOrders, isDuplicate, total } = inboundOrders;
+  const { duplicateOrders, isDuplicate, total, suggestion, lastDestination, successScanned, scannedOrder, bulkScan, errorIDs, countSuccess, countError } = inboundOrders;
 
   return {
     userLogged,
     duplicateOrders,
     isDuplicate,
-    total
+    total,
+    suggestion,
+    lastDestination,
+    scannedOrder,
+    successScanned,
+    errorIDs,
+    countSuccess,
+    countError,
+    bulkScan
   }
 }
 
@@ -137,6 +275,12 @@ function mapDispatchToProps (dispatch) {
   return {
     markReceived: function(scannedID) {
       dispatch(InboundOrders.MarkReceived(scannedID));
+    },
+    bulkMarkReceived: function(scannedIDs) {
+      dispatch(InboundOrders.BulkMarkReceived(scannedIDs));
+    },
+    resetSuggestion: function() {
+      dispatch(InboundOrders.ResetSuggestion());
     }
   }
 }

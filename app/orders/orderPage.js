@@ -1,316 +1,524 @@
 import lodash from 'lodash';
 import React from 'react';
 import {connect} from 'react-redux';
-import {Link} from 'react-router';
-import {Page} from '../components/page';
-import {Pagination} from '../components/pagination';
+import {Page} from '../views/base';
+import {Pagination2} from '../components/pagination2';
 import {ButtonWithLoading, ButtonBase} from '../components/button';
-import Table from './orderTable';
 import * as Form from '../components/form';
+import Table, {Filter, Deadline} from './orderTable';
 import * as OrderService from './orderService';
 import driversFetch from '../modules/drivers/actions/driversFetch';
 import styles from './styles.css';
 import stylesButton from '../components/button.css';
-import {ModalContainer, ModalDialog} from 'react-modal-dialog';
-import moment from 'moment';
-import DateRangePicker from 'react-bootstrap-daterangepicker';
 import * as UtilHelper from '../helper/utility';
+import NumberFormat from 'react-number-format';
+import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import {push} from 'react-router-redux';
 import {Glyph} from '../views/base';
-import classNaming from 'classnames';
-import defaultStatusValues from '../../defaultValues.json';
 
-const ExportOrder = React.createClass({
-    getInitialState() {
-        return ({
-            showExportModal: false,
-            startDate: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() - 7),
-            endDate: new Date(),
-        });
-    },
-    openModal() {
-        this.setState({showExportModal: true});
-    },
-    closeModal() {
-        this.setState({showExportModal: false});
-    },
-    pickDate(event, picker) {
-        this.setState({['startDate']: picker.startDate});
-        this.setState({['endDate']: picker.endDate});
-        this.setState({showExportModal: true});
-    },
-    exportOrder() {
-        this.props.ExportOrder(this.state.startDate, this.state.endDate);
-    },
-    render() {
-        const addExportButton = {
-            textBase: 'Export Orders',
-            onClick: this.openModal,
-            styles: {
-                base: stylesButton.greenButton,
-            }
-        };
-        const proceedExportBtn = {
-            textBase: "Export",
-            onClick: this.exportOrder,
-            styles: {
-                base: stylesButton.greenButton,
-            }
-        };
-        const startDateFormatted = moment(this.state.startDate).format('MM-DD-YYYY');
-        const endDateFormatted = moment(this.state.endDate).format('MM-DD-YYYY');
-        let dateValue = startDateFormatted + ' - ' + endDateFormatted;
+const PanelDetails = React.createClass({
+  render() {
+    const { expandedOrder, shrinkOrder, isExpandDriver } = this.props;
+    const reassignOrderButton = {
+      textBase: 'Assign',
+      onClick: this.props.expandDriver,
+      styles: {
+        base: stylesButton.greenButton2,
+      }
+    };
+    return (
+      <div>
+        { expandedOrder &&
+          <div className={isExpandDriver ? styles.panelDetails2 : styles.panelDetails}>
+            <div onClick={shrinkOrder} className={styles.closeButton}>
+              X
+            </div>
+            <div className={styles.orderDueTime}>
+              <Deadline deadline={expandedOrder.DueTime} />
+            </div>   
+            <div className={styles.orderDetails}>
+              <div className={styles.reassignButton}>
+                <button className={stylesButton.greenButton2} onClick={this.props.expandDriver}>Assign</button>
+              </div>
+              <div className={styles.orderDetailsLabel}>
+                Order ID
+              </div>
+              <div className={styles.orderDetailsValue}>
+                {expandedOrder.UserOrderNumber}
+              </div>
+              <div className={styles.orderDetailsLabel}>
+                Origin
+              </div>
+              <div className={styles.orderDetailsValue}>
+                {expandedOrder.PickupAddress && expandedOrder.PickupAddress.City}
+              </div>
+              <div className={styles.orderDetailsLabel}>
+                Destination
+              </div>
+              <div className={styles.orderDetailsValue}>
+                {expandedOrder.DropoffAddress && expandedOrder.DropoffAddress.City}
+              </div>
+              <div>
+                <div className={styles.orderAdditionalInfo}>
+                  <div className={styles.orderDetailsLabel}>
+                    Weight
+                  </div>
+                  <div className={styles.orderDetailsValue}>
+                    {expandedOrder.PackageWeight} kg
+                  </div>
+                </div>
+                <div className={styles.orderAdditionalInfo}>
+                  <div className={styles.orderDetailsLabel}>
+                    COD Type
+                  </div>
+                  <div className={styles.orderDetailsValue}>
+                    {expandedOrder.IsCOD ? 'COD' : 'Non-COD'}
+                  </div>
+                </div>
+              </div>
+            </div>            
+            <div className={styles.orderValue}>                            
+              <div className={styles.orderValueLabel}>
+                Total Value
+              </div>
+              <div className={styles.orderTotalValue}>
+                <NumberFormat displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp '} value={expandedOrder.TotalValue} />    
+              </div>
+            </div>
+            <div className={styles.orderDetails}>            
+              <div className={styles.orderDetailsLabel}>
+                From
+              </div>
+              <div className={styles.orderDetailsValue}>
+                {expandedOrder.PickupAddress && expandedOrder.PickupAddress.FirstName + ' ' + expandedOrder.PickupAddress.LastName}
+              </div>
+              <div className={styles.orderDetailsValue2}>
+                {expandedOrder.PickupAddress && expandedOrder.PickupAddress.Address1}
+              </div>
+            </div>
+            <div className={styles.orderDetails}>            
+              <div className={styles.orderDetailsLabel}>
+                To
+              </div>
+              <div className={styles.orderDetailsValue}>
+                {expandedOrder.DropoffAddress && expandedOrder.DropoffAddress.FirstName + ' ' + expandedOrder.DropoffAddress.LastName}
+              </div>
+              <div className={styles.orderDetailsValue2}>
+                {expandedOrder.DropoffAddress && expandedOrder.DropoffAddress.Address1}
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    );
+  }
+});
 
-        return (
-            <span onClick={this.openModal}>
-              { <ButtonWithLoading {...addExportButton} /> }
-              {
-                this.state.showExportModal &&
-                <ModalContainer onClose={this.closeModal}>
-                  <ModalDialog onClose={this.closeModal}>
-                    <h4>
-                        Select Date:
-                    </h4>
-                    <DateRangePicker startDate={startDateFormatted} endDate={endDateFormatted} onApply={this.pickDate} >
-                        <input type="text" value={dateValue} />
-                    </DateRangePicker>   
-                    <div style={{clear: 'both'}}>
-                        { <ButtonWithLoading {...proceedExportBtn} /> }
-                    </div>
-                  </ModalDialog>
-                </ModalContainer>
-              }
-            </span>
-        );
-    }
-})
+const Drivers = React.createClass({
+  render: function() {
+    var driverComponents = this.props.drivers.map(function(driver, idx) {
+      const isSelected = this.props.selectedDriver === driver.UserID;
+      let selectedWeight = this.props.selectedOrder.PackageWeight;
+      if (this.props.selectedOrders.length > 0) {
+        selectedWeight = 0;
+        this.props.selectedOrders.forEach(function(order) {
+          selectedWeight += order.PackageWeight;
+        })
+      } 
+      const totalWeight = parseFloat(driver.TotalCurrentWeight) + parseFloat(selectedWeight);
+      const driverWeight = isSelected ? totalWeight : parseFloat(driver.TotalCurrentWeight);
+      let orderDriverStyle = isSelected ? styles.orderDriverSelected : styles.orderDriver;
+      if (isSelected && (totalWeight > driver.AvailableWeight)) {
+        orderDriverStyle = styles.orderDriverSelectedExceed;
+      }
+      return (
+        <div className={styles.mainDriver} key={idx}>
+          <div className={orderDriverStyle} onClick={()=>{this.props.setDriver(driver.UserID)}}>
+            <div className={styles.driverInput}>
+              <img src={this.props.selectedDriver === driver.UserID ? "/img/icon-radio-on.png" : "/img/icon-radio-off.png"} />
+            </div>
+            <div className={styles.vehicleIcon}>
+              <img className={styles.driverLoadImage} 
+                src={driver.Vehicle && driver.Vehicle.VehicleID === 1 ? "/img/icon-vehicle-motor.png" : "/img/icon-vehicle-van.png"} />
+            </div>
+            <div className={styles.driverDetails}>
+              <span className={styles.driverName}>
+                {driver.FirstName + ' ' + driver.LastName} 
+              </span>
+            </div>
+            <div className={styles.driverDetails}>
+              <span className={styles.vendorLoad}>
+                Available Weight {driverWeight} / {driver.AvailableWeight}
+              </span>
+            </div>
+          </div>
+        </div>
+      );
+    }.bind(this));
+    return <div>{driverComponents}</div>;
+  }
+});
+
+const PanelDrivers = React.createClass({
+  getInitialState() {
+    return ({driverList: this.props.drivers, searchValue: ''})
+  },
+  searchDriver(e) {
+    this.setState({searchValue: e.target.value});
+    let driverList = lodash.filter(this.props.drivers, function(driver) { 
+      let driverName = driver.FirstName + ' ' + driver.LastName;
+      let searchValue = e.target.value;
+      return driverName.toLowerCase().includes(searchValue);
+    });
+    this.setState({driverList: driverList});
+  },
+  render() {
+    const setDriverButton = {
+      textBase: 'Assign Driver',
+      onClick: this.props.isExpandDriverBulk ? 
+        this.props.bulkAssignOrder.bind(null, this.props.selectedOrders, this.props.selectedDriver) :
+        this.props.assignOrder.bind(null, this.props.expandedOrder.UserOrderID, this.props.selectedDriver),
+      styles: {
+        base: stylesButton.greenButton4,
+      }
+    };
+    return (
+      <div className={styles.mainDriverPanel}>
+        { this.props.isExpandDriverBulk && 
+          <div onClick={this.props.shrinkOrder} className={styles.closeButton}>
+            X
+          </div>
+        }
+        { this.props.isExpandDriverBulk && 
+          <div className={styles.panelDriverChoose}>
+            Choose a driver for {this.props.selectedOrders.length} order: 
+          </div>
+        }
+        { !this.props.isExpandDriverBulk && 
+          <div className={styles.panelDriverChoose}>
+            Choose a driver for this order
+          </div>
+        }
+        <div className={styles.panelDriverSearch}>
+          <input className={styles.inputDriverSearch} onChange={this.searchDriver} placeholder={'Search Driver...'} />
+        </div>
+        <div className={styles.panelDriverList}>
+          <Drivers selectedDriver={this.props.selectedDriver} selectedOrders={this.props.selectedOrders} selectedOrder={this.props.expandedOrder} setDriver={this.props.setDriver} drivers={this.state.driverList} />
+        </div>
+        <div className={styles.setDriverButton}>
+          <ButtonWithLoading {...setDriverButton} />
+        </div>
+      </div>
+    );
+  }
+});
+
+const ErrorAssign = React.createClass({
+  render: function() {
+    var errorComponents = this.props.errorIDs.map(function(error, idx) {
+      return (
+        <div key={idx}>
+          {error.UserOrderID} : {error.error}
+        </div>
+      );
+    }.bind(this));
+    return <div>{errorComponents}</div>;
+  }
+});
 
 const OrderPage = React.createClass({
-    getInitialState() {
-        return ({opened: true, idsRaw: '', ids: [], idsStart: '', driverID: null, orders: []})
-    },
-    toggleOpen() {
-        this.setState({opened: !this.state.opened, idsStart: this.state.idsRaw});
-    },
-    cancelChange() {
-        this.setState({opened: true, idsRaw: this.state.idsStart});
-    },
-    textChange(e) {
-        this.setState({idsRaw: e.target.value});
-    },
-    textChange(e) {
-        this.setState({idsRaw: e.target.value});
-    },
-    processText() {
-        const {filterAction} = this.props;
-        const IDs = _.chain(this.state.idsRaw.match(/\S+/g)).uniq().value();
-        this.setState({ids: IDs});
-        this.toggleOpen();
-        const newFilters = {['userOrderNumbers']: JSON.stringify(IDs)};
-        this.props.UpdateFilters(newFilters);
-        this.props.StoreSetter("currentPage", 1);
-        this.props.FetchList();
-    },
-    clearText() {
-        const {filterAction} = this.props;
-        this.setState({ids: [], idsRaw: ''});
-        this.toggleOpen();
-        const newFilters = {['userOrderNumbers']: []};
-        this.props.UpdateFilters(newFilters);
-        this.props.StoreSetter("currentPage", 1);
-        this.props.FetchList();
-    },
-    componentWillMount() {
-        this.setStatusFilter();
-        this.props.FetchList();
-        this.props.FetchDrivers(this.props.userLogged.userID);
-    },
-    setStatusFilter() {
-        switch(this.props.statusFilter) {
-            case 'ongoing' :
-                this.props.SetStatusFilter('ongoing');
-                break;
-            case 'completed' :
-                this.props.SetStatusFilter('completed');
-                break;
-            default :
-                this.props.SetStatusFilter('open');
-                break;
-        }
-    },
-    selectDriver(e) {
-        this.setState({driverID: e.key});
-    },
-    assignOrder() {
-        let selectedOrders = lodash.filter(this.props.orders, ['IsChecked', true]);
-        if (selectedOrders.length < 1) {
-            alert('Must selected one or more orders');
-            return;
-        }
-        if (!this.state.driverID) {
-            alert('Driver must be set');
-            return;
-        }
-        var orderPage = this;
-        orderPage.props.AssignOrder(selectedOrders, orderPage.state.driverID);
-    },
-    cancelOrder() {
-        let selectedOrders = lodash.filter(this.props.orders, ['IsChecked', true]);
-        if (selectedOrders.length < 1) {
-            alert('Must selected one or more orders');
-            return;
-        }
-        var orderPage = this;
-        orderPage.props.CancelOrder(selectedOrders);
-    },
-    exportOrder() {
-        this.props.ExportOrder();
-    },
-    render() {
-        const {paginationState, PaginationAction, orders, drivers, userLogged, countOpen, countInProgress, countFinished, isFetching} = this.props;
-        const assignOrderButton = {
-            textBase: 'Assign Order',
-            onClick: this.assignOrder,
-            styles: {
-                base: stylesButton.greenButton,
-            }
-        };
-        const exportOrderButton = {
-            textBase: 'Export Order',
-            onClick: this.exportOrder,
-            styles: {
-                base: stylesButton.greenButton,
-            }
-        };
-        const cancelOrderButton = {
-            textBase: 'Cancel Order',
-            onClick: this.cancelOrder,
-            styles: {
-                base: stylesButton.greenButton,
-            }
-        };
-        let pageTitle;
-        switch (this.props.statusFilter) {
-            case 'ongoing' :
-                pageTitle = 'My Ongoing Orders';
-                break;
-            case 'completed' :
-                pageTitle = 'My Completed Orders';
-                break;
-            default :
-                pageTitle = 'My Open Orders';
-                break;
-        };
-        return (
-            <Page title={pageTitle}>
-                <div style={{clear: 'both'}} />
-                <div style={{marginBottom: 15}}>
-                  {
-                    this.state.opened ? 
-                    <div className={styles.top2} onClick={this.toggleOpen}>
-                      <h4 className={styles.title}>
-                        <Glyph name='chevron-down' className={styles.glyphFilter} />
-                        {'Filter Order (' + this.state.ids.length + ' keywords)'}
-                      </h4>
-                    </div> :
-                    <div className={styles.panel}>
-                      <div className={styles.top} onClick={this.toggleOpen}>
-                        <h4 className={styles.title}>
-                          <Glyph name='chevron-up' className={styles.glyphFilter} />
-                          {'Web Order ID or User Order Number:'}
-                        </h4>
-                      </div>
-                      <div className={styles.bottom}>
-                        <textarea style={{height: 100, width: '100%'}} value={this.state.idsRaw} onChange={this.textChange} placeholder={'Write/Paste EDS Number or Order ID here, separated with newline'} />
-                        <ButtonBase styles={styles.modalBtn} onClick={this.processText}>Filter</ButtonBase>
-                        <a href="javascript:;" className={styles.modalLink} onClick={this.cancelChange}>Cancel</a>
-                        <a href="javascript:;" className={styles.modalLink} onClick={this.clearText}>Clear</a>
-                      </div>
-                    </div>
-                  }
-                </div>
-                <div style={{opacity: isFetching ? 0.5 : 1}}>
-                    <Pagination {...paginationState} {...PaginationAction} />
-                    {
-                        this.props.statusFilter === 'open' &&
-                        <div style={{marginTop: '1em', marginBottom: '1em'}}>
-                            <ButtonWithLoading {...assignOrderButton} />
-                            <ButtonWithLoading {...cancelOrderButton} />
-                            <Link to={'/myorders/add'}>
-                                <button className={stylesButton.greenButton}>Add Orders</button> 
-                            </Link>
-                            <Form.DropdownWithState options={drivers} handleSelect={this.selectDriver} />
-                            <ButtonWithLoading {...exportOrderButton} />
-                        </div>
-                    }
-                    <Table orders={orders} />
-                    <Pagination {...paginationState} {...PaginationAction} />
-                </div>
-            </Page>
-        );
+  getInitialState() {
+    return ({opened: true, idsRaw: '', ids: [], idsStart: '', driverID: null, orders: [], selectedOrders: [], isSuccessAssign: false});
+  },
+  toggleOpen() {
+      this.setState({opened: !this.state.opened, idsStart: this.state.idsRaw});
+  },
+  cancelChange() {
+      this.setState({opened: true, idsRaw: '', ids: []});
+  },
+  textChange(e) {
+      this.setState({idsRaw: e.target.value});
+  },
+  processText() {
+      const {filterAction} = this.props;
+      const IDs = _.chain(this.state.idsRaw.match(/\S+/g)).uniq().value();
+      if (IDs.length === 0) {
+          alert('Please write EDS Number or Order ID');
+          return;
+      }
+      this.setState({ids: IDs});
+      this.toggleOpen();
+      const newFilters = {['userOrderNumbers']: JSON.stringify(IDs)};
+      this.props.UpdateAndFetch(newFilters);
+  },
+  clearText() {
+      this.setState({opened: true, idsRaw: '', ids: []});
+      this.setState({ids: []});
+      const newFilters = {['userOrderNumbers']: []};
+      this.props.UpdateAndFetch(newFilters);
+  },
+  componentWillMount() {
+    this.clearText();
+    this.props.ShrinkOrder();
+    this.props.FetchList();
+    this.props.FetchDrivers(this.props.userLogged.userID);
+  },
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      isSuccessAssign: nextProps['isSuccessAssign']
+    });
+  },
+  selectDriver(e) {
+    this.setState({driverID: e.key});
+  },
+  expandBulkAssign() {
+    let selectedOrders = lodash.filter(this.props.orders, ['IsChecked', true]);
+    if (selectedOrders.length < 1) {
+      alert('No order selected');
+      return;
     }
+    this.setState({selectedOrders: selectedOrders});
+    this.props.ShrinkOrder();
+    setTimeout(function() {
+      this.props.ExpandDriverBulk();
+    }.bind(this), 100);
+  },
+  render() {
+    const {paginationState, PaginationAction, drivers, total, errorIDs, successAssign, errorAssign, orders, expandedOrder, isExpandOrder, isExpandDriver, isExpandDriverBulk, AssignOrder, BulkAssignOrder, ShrinkOrder, ExpandDriver, selectedDriver, SetDriver} = this.props;
+    return (
+      <Page title="My Orders" count={{itemName: 'Items', done: 'All Done', value: total}}>
+        <div>
+          <div className={styles.addCompanyOrderButton} onClick={this.props.GoToAddOrder}>
+            + Add Company Order
+          </div>        
+          <div className={styles.filterOrderArea}>
+              {
+              this.state.opened ? 
+              <div className={styles.top2} onClick={this.toggleOpen}>
+                <h4 className={styles.title}>
+                  <Glyph name='chevron-down' className={styles.glyphFilter} />
+                  {(this.state.ids.length ? 'Search multiple orders (' + this.state.ids.length + ' keywords)' : 'Search multiple orders')}
+                </h4>
+              </div> :
+              <div className={styles.panel2}>
+                <div className={styles.top} onClick={this.toggleOpen}>
+                  <h4 className={styles.title}>
+                    <Glyph name='chevron-up' className={styles.glyphFilter} />
+                    {'Search multiple orders:'}
+                  </h4>
+                </div>
+                <div className={styles.bottom}>
+                  <textarea 
+                      style={{height: 100, width: '100%'}} 
+                      value={this.state.idsRaw} 
+                      onChange={this.textChange} 
+                      placeholder={'Write/Paste EDS Number or Order ID here, separated with newline'} />
+                  <ButtonBase styles={styles.modalBtn} onClick={this.processText}>Filter</ButtonBase>
+                  <ButtonBase styles={styles.modalBtn} onClick={this.clearText}>Clear</ButtonBase>
+                  <ButtonBase styles={styles.modalBtn} onClick={this.cancelChange}>Cancel</ButtonBase>
+                </div>
+              </div>
+              }
+          </div>
+        </div>
+        <Pagination2 {...paginationState} {...PaginationAction} />
+        <div className={styles.filterOption}>
+          <Filter expandDriver={this.expandBulkAssign} />
+        </div>
+        {
+          (this.props.isFetching || this.props.isLoadingDriver) &&
+          <div>
+            <div style={{clear: 'both'}} />
+            <div style={{textAlign:'center'}}>
+              <div style={{fontSize: 20}}>
+                Fetching data....
+              </div>
+            </div>
+          </div>
+        }
+        {
+          !this.props.isFetching && this.props.orders.length === 0 && !lodash.isEmpty(this.props.filters) &&
+          <div>
+            <div style={{clear: 'both'}} />
+            <div className={styles.noOrderDesc}>
+              <img src="/img/icon-orders-done.png" />
+              <div style={{fontSize: 20}}>
+                Orders not found
+              </div>
+              <div style={{fontSize: 12, marginTop: 20}}>
+                Please choose another filter to get the orders.
+              </div>
+            </div>
+          </div>
+        }
+        {
+          !this.props.isFetching && this.props.orders.length === 0 && lodash.isEmpty(this.props.filters) &&
+          <div>
+            <div style={{clear: 'both'}} />
+            <div className={styles.noOrderDesc}>
+              <img src="/img/icon-orders-done.png" />
+              <div style={{fontSize: 20}}>
+                You dont have any orders right now!
+              </div>
+              <div style={{fontSize: 12, marginTop: 20}}>
+                You have assign all orders
+              </div>
+            </div>
+          </div>   
+        }
+        {
+          !this.props.isFetching && !this.props.isLoadingDriver && this.props.orders.length > 0 &&
+          <div>
+            <Table orders={orders} />
+            {   
+              isExpandOrder &&
+              <PanelDetails 
+                isExpandDriver={isExpandDriver} 
+                expandedOrder={expandedOrder} 
+                shrinkOrder={ShrinkOrder} 
+                expandDriver={ExpandDriver} />
+            }
+            {   
+              isExpandDriver &&
+              <PanelDrivers 
+                selectedOrders={this.state.selectedOrders} 
+                isExpandDriverBulk={isExpandDriverBulk} 
+                shrinkOrder={ShrinkOrder} 
+                expandedOrder={expandedOrder} 
+                assignOrder={AssignOrder} 
+                bulkAssignOrder={BulkAssignOrder} 
+                selectedDriver={selectedDriver} 
+                setDriver={SetDriver} 
+                drivers={drivers} />
+            }
+          </div>
+        }
+
+        { this.state.isSuccessAssign &&
+          <ModalContainer>
+            <ModalDialog>
+              {
+                errorIDs.length > 0 &&
+                <div className={styles.modal}>
+                  <div className={styles.modalHeader}>
+                    <h2 className={styles.modalTitle}>Assign Report</h2>
+                    <div className={styles.successContent + ' ' + styles.ordersContentEmpty}>
+                      <div>
+                        Success: {successAssign}
+                      </div>
+                      <div>
+                        Error: {errorAssign}
+                      </div>
+                      <ErrorAssign errorIDs={errorIDs} />
+                    </div>
+                  </div>
+                  <div className={styles.modalFooter}>
+                    <button className={styles.endButton} onClick={this.props.CloseSuccessAssign}>
+                      <span className={styles.mediumText}>Got It</span>
+                    </button>
+                  </div>
+                </div>
+              }
+              { errorIDs.length === 0 &&
+                <div className={styles.modal}>
+                  <div className={styles.modalHeader}>
+                    <h2 className={styles.modalTitle}>Success</h2>
+                    <div className={styles.successContent + ' ' + styles.ordersContentEmpty}>
+                      <img className={styles.successIcon} src={"/img/icon-success.png"} />
+                      <div className={styles.mediumText}>You have successfully assigned this order</div>
+                    </div>
+                  </div>
+                  <div className={styles.modalFooter}>
+                    <button className={styles.endButton} onClick={this.props.CloseSuccessAssign}>
+                      <span className={styles.mediumText}>Got It</span>
+                    </button>
+                  </div>
+                </div>
+              }
+            </ModalDialog>
+          </ModalContainer>
+        }
+      </Page>
+    );
+  }
 });
 
 function StoreToOrdersPage(store) {
-    const {currentPage, limit, total, orders, countOpen, countInProgress, countFinished, isFetching} = store.app.myOrders;
-    const userLogged = store.app.userLogged;
-    const driversStore = store.app.driversStore;
-    const driverList = driversStore.driverList;
-    const fleetDrivers = driversStore.fleetDrivers;
-    const drivers = lodash.chain(fleetDrivers.dict[userLogged.userID] || []).map((driverID) => {
-        return {
-            key: driverID,
-            value: UtilHelper.UserFullName(driverList.dict[driverID]),
-        }
-    }).sortBy((arr) => (arr.value)).value();
-    return {
-        orders: orders,
-        drivers: drivers,
-        userLogged: userLogged,
-        paginationState: {
-            currentPage, limit, total,
-        },
-        countOpen: countOpen,
-        countInProgress: countInProgress,
-        countFinished: countFinished,
-        isFetching: isFetching
-    }
+  const {currentPage, limit, total, isFetching, filters, errorIDs, successAssign, errorAssign, orders, expandedOrder, isExpandOrder, isExpandDriver, isExpandDriverBulk, selectedDriver, isSuccessAssign} = store.app.myOrders;  
+  const userLogged = store.app.userLogged;  
+  const driversStore = store.app.driversStore;
+  const driverList = driversStore.driverList;
+  const isLoadingDriver = driverList.isLoading;
+  const fleetDrivers = driversStore.fleetDrivers;
+  const drivers = fleetDrivers.driverList;
+  return {
+    orders: orders,
+    drivers: drivers,
+    userLogged: userLogged,
+    paginationState: {
+        currentPage, limit, total,
+    },
+    expandedOrder,
+    isFetching,
+    filters,
+    isExpandOrder,
+    isExpandDriver,
+    isExpandDriverBulk,
+    total,
+    selectedDriver,
+    isSuccessAssign,
+    isLoadingDriver,
+    errorIDs,
+    successAssign,
+    errorAssign
+  }
 }
 
 function DispatchToOrdersPage(dispatch) {
-    return {
-        FetchList: () => {
-            dispatch(OrderService.FetchList());
-        },
-        UpdateFilters: (newFilters) => {
-            dispatch(OrderService.UpdateFilters(newFilters));
-        },
-        StoreSetter: (name, value) => {
-            dispatch(OrderService.StoreSetter(name, value));
-        },
-        ExportOrder: () => {
-            dispatch(OrderService.ExportOrder());
-        },
-        FetchDrivers: (fleetID) => {
-            dispatch(driversFetch(fleetID));
-        },
-        AssignOrder: (orders, driverID) => {
-            dispatch(OrderService.AssignOrder(orders, driverID));
-        },
-        CancelOrder: (orders) => {
-            dispatch(OrderService.CancelOrder(orders));
-        },
-        SetStatusFilter: (filter) => {
-            dispatch(OrderService.SetStatusFilter(filter));
-        },
-        PaginationAction: {
-            setCurrentPage: (currentPage) => {
-                dispatch(OrderService.SetCurrentPage(currentPage));
-            },
-            setLimit: (limit) => {
-                dispatch(OrderService.SetLimit(limit));
-            },
-        }
+  return {
+    FetchList: () => {
+      dispatch(OrderService.FetchList());
+    },
+    FetchDrivers: (fleetID) => {
+      dispatch(driversFetch(fleetID, true));
+    },
+    AssignOrder: (orders, driverID) => {
+      dispatch(OrderService.AssignDriver(orders, driverID));
+    },
+    BulkAssignOrder: (orders, driverID) => {
+      dispatch(OrderService.BulkAssignDriver(orders, driverID));
+    },
+    ShrinkOrder: () => {
+      dispatch(OrderService.ShrinkOrder());
+      dispatch(OrderService.ResetDriver());
+    },
+    ExpandDriver: () => {
+      dispatch(OrderService.ExpandDriver());
+    },
+    ExpandDriverBulk: () => {
+      dispatch(OrderService.ExpandDriverBulk());
+    },
+    CloseSuccessAssign: () => {
+      dispatch(OrderService.CloseSuccessAssign());
+    },
+    SetDriver: (driverID) => {
+      dispatch(OrderService.SetDriver(driverID));
+    },
+    PaginationAction: {
+      setCurrentPage: (currentPage) => {
+        dispatch(OrderService.SetCurrentPage(currentPage));
+      },
+      setLimit: (limit) => {
+        dispatch(OrderService.SetLimit(limit));
+      },
+    },
+    GoToAddOrder: () => {
+      dispatch(push(`/myorders/add/`));
+    },
+    UpdateAndFetch: (newFilters) => {
+      dispatch(OrderService.UpdateAndFetch(newFilters));
     }
+  }
 }
 
 export default connect(StoreToOrdersPage, DispatchToOrdersPage)(OrderPage);

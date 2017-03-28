@@ -1,0 +1,82 @@
+.paginationDetail {
+  float: right;
+  font-size: 12px;
+  width: 50%;
+}
+
+.paginationControl {
+  float: right;
+  font-size: 12px;
+  margin-top: 3px;
+  width: 20%;
+  margin-right: 20%;
+}
+
+.paginationItem li {
+  display: inline-block;
+}
+
+.paginationItem a {
+  position: relative;
+  float: left;
+  padding: 6px 12px;
+  margin-left: -1px;
+  line-height: 1.42857143;
+  color: #337ab7;
+  text-decoration: none;
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+
+.paginationActive a {
+  color: #fff;
+  cursor: default;
+  background-color: #337ab7;
+  border-color: #337ab7;
+}
+
+.paginationInfo {
+  font-size: 12px;
+  color: #000;
+  font-weight: 600;
+  display: inline-block;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  width: 168px;
+  text-align: center;
+  line-height: 24px;
+}
+
+.pageList {
+  font-size: 12px;
+  font-weight: 600;
+  font-style: normal;
+  font-stretch: normal;
+  color: #000000;
+}
+
+.leftArrow, .rightArrow {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.leftArrow {
+  float: left;
+}
+
+.rightArrow {
+  float: right;
+}
+
+.paginationTable {
+  background: transparent;
+  border-top: 0;
+  padding: 10px 12px 0px;
+  border-radius: 0px 0px 5px 5px;
+  float: right;
+  margin-top: 30px;
+  width: 35%;
+}
