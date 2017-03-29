@@ -94,7 +94,7 @@ const PanelDetails = React.createClass({
                 </div>
                 <div className={styles.driverDetails}>
                   <span className={styles.driverName}>
-                    {UtilHelper.trimString(expandedTrip.Driver && expandedTrip.Driver.FirstName + ' ' + expandedTrip.Driver.LastName, 25)} 
+                    {UtilHelper.trimString(expandedTrip.Driver && expandedTrip.Driver.FirstName + ' ' + expandedTrip.Driver.LastName, 20)} 
                   </span>
                 </div>
                 <div className={styles.driverDetails}>
@@ -212,7 +212,7 @@ const Drivers = React.createClass({
             </div>
             <div className={styles.driverDetails}>
               <span className={styles.driverName}>
-                {UtilHelper.trimString(driver.FirstName + ' ' + driver.LastName, 25)} 
+                {UtilHelper.trimString(driver.FirstName + ' ' + driver.LastName, 20)} 
               </span>
             </div>
             <div className={styles.driverDetails}>

@@ -412,7 +412,7 @@ const TripRow = React.createClass({
               </div>
               <br />
               <div className={styles.cardValue}>
-                {Helper.trimString(trip.Driver && `${trip.Driver.FirstName} ${trip.Driver.LastName}`, 25)}
+                {Helper.trimString(trip.Driver && `${trip.Driver.FirstName} ${trip.Driver.LastName}`, 20)}
               </div>
             </div>
           }
