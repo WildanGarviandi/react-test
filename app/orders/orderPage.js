@@ -64,7 +64,7 @@ const PanelDetails = React.createClass({
                     Weight
                   </div>
                   <div className={styles.orderDetailsValue}>
-                    {expandedOrder.PackageWeight} kg
+                    {parseFloat(expandedOrder.PackageWeight).toFixed(2)} kg
                   </div>
                 </div>
                 <div className={styles.orderAdditionalInfo}>
@@ -143,12 +143,12 @@ const Drivers = React.createClass({
             </div>
             <div className={styles.driverDetails}>
               <span className={styles.driverName}>
-                {driver.FirstName + ' ' + driver.LastName} 
+                {UtilHelper.trimString(driver.FirstName + ' ' + driver.LastName, 25)} 
               </span>
             </div>
             <div className={styles.driverDetails}>
               <span className={styles.vendorLoad}>
-                Available Weight {driverWeight} / {driver.AvailableWeight}
+                Available Weight {parseFloat(driverWeight).toFixed(2)} / {driver.AvailableWeight}
               </span>
             </div>
           </div>
