@@ -190,7 +190,7 @@ function ProcessTrip(trip) {
     numberPackages: trip.UserOrderRoutes.length,
     remarks: trip.Notes,
     tripID: `Trip-${trip.TripID}`,
-    weight: `${trip.Weight} kg`,
+    weight: `${parseFloat(trip.Weight).toFixed(2)} kg`,
     scannedOrders: trip.ScannedOrders,
     verifiedOrders: `${trip.ScannedOrders}/${trip.UserOrderRoutes.length} order(s) are verified`,
     assignedTo: assignedTo,

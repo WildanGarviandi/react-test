@@ -291,7 +291,7 @@ function TripParser(trip) {
     TripDropoffAll: uniqueDropoffNamesAll,
     TripDropoffDetails: getDropoffDetails(uniqueDropoffNames),
     IsChecked: ('IsChecked' in trip) ? trip.IsChecked : false,
-    Weight: Weight,
+    Weight: parseFloat(Weight).toFixed(2),
     TotalValue: _.reduce(orders, (total, order) => {
       return total + order.TotalValue;
     }, 0),

@@ -196,7 +196,7 @@ const Table = React.createClass({
 
           case 'weight': {
             return (
-              <td className={tableStyles.td} key={columnKey}>{item.weight} Kg</td>
+              <td className={tableStyles.td} key={columnKey}>{parseFloat(item.weight).toFixed(2)} Kg</td>
             );
           }
 

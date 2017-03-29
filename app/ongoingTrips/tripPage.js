@@ -217,7 +217,7 @@ const Drivers = React.createClass({
             </div>
             <div className={styles.driverDetails}>
               <span className={styles.vendorLoad}>
-                Available Weight {driverWeight} / {driver.AvailableWeight}
+                Available Weight {parseFloat(driverWeight).toFixed(2)} / {driver.AvailableWeight}
               </span>
             </div>
           </div>
