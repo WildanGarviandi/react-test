@@ -24,6 +24,7 @@ import {FilterTop, FilterText} from '../components/form';
 import * as TripDetails from '../modules/inboundTripDetails';
 import config from '../config/configValues.json';
 import Countdown from 'react-cntdwn';
+import * as UtilHelper from '../helper/utility';
 
 let fleetList = [];
 let driverList = [];
@@ -232,7 +233,7 @@ const Driver = React.createClass({
           </div>
           <table className={styles.driverMaskName}>
             <tr>
-              <span className={styles.driverName}>{driver.FirstName} {driver.LastName}</span>
+              <span className={styles.driverName}>{UtilHelper.trimString(`${driver.FirstName} ${driver.LastName}`, 25)}</span>
             </tr>
           </table>
           <table className={styles.driverLocation}>

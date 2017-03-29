@@ -14,6 +14,7 @@ import ImagePreview from '../views/base/imagePreview'
 import ImageUploader from '../views/base/imageUploader'
 import {Weight, DstHub, DstDistrict, HubSetter} from './outboundTripsHelper'
 import config from '../config/configValues.json'
+import * as UtilHelper from '../helper/utility'
 
 const DetailRow = React.createClass({
   generateTypeContent () {
@@ -254,7 +255,7 @@ const DriverInModal = React.createClass({
             </div>
           </div>
           <div className={styles.colMd7 + ' ' + styles.vendorName}>
-            <span className={styles.mediumText}><strong>{item.FirstName + ' ' + item.LastName}</strong></span>
+            <span className={styles.mediumText}><strong>{UtilHelper.trimString(item.FirstName + ' ' + item.LastName, 25)}</strong></span>
             <br/>
           </div>
           { trip &&
