@@ -143,7 +143,7 @@ const Drivers = React.createClass({
             </div>
             <div className={styles.driverDetails}>
               <span className={styles.driverName}>
-                {driver.FirstName + ' ' + driver.LastName} 
+                {UtilHelper.trimString(driver.FirstName + ' ' + driver.LastName, 25)} 
               </span>
             </div>
             <div className={styles.driverDetails}>
