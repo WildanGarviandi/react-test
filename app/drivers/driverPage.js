@@ -17,6 +17,7 @@ import * as Form from '../components/form';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import ImagePreview from '../views/base/imagePreview';
 import ImageUploader from '../views/base/imageUploader';
+import * as UtilHelper from '../helper/utility';
 
 const DEFAULT_IMAGE="/img/photo-default.png";
 
@@ -80,7 +81,7 @@ const Drivers = React.createClass({
             </div>
             <div className={styles.driverDetails}>
               <span className={styles.driverName}>
-                {driver.FirstName + ' ' + driver.LastName} 
+                {UtilHelper.trimString(driver.FirstName + ' ' + driver.LastName, 25)} 
               </span>
             </div>
             <div className={styles.driverDetails}>

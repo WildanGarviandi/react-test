@@ -21,3 +21,7 @@ export function FleetNameWithCapacity (fleet) {
     `${fleet.CompanyDetail.CompanyName} (${fleet.OrderCapacity}/${fleet.CompanyDetail.OrderVolumeLimit})` :
     '';
 }
+
+export function trimString(string, length) {
+  return string.substring(0, length);
+}

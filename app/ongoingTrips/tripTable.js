@@ -17,6 +17,7 @@ import stylesButton from '../components/button.css';
 import {ButtonWithLoading} from '../components/button';
 import config from '../config/configValues.json';
 import Countdown from 'react-cntdwn';
+import * as Helper from '../helper/utility';
 
 function StoreBuilder(keyword) {
   return (store) => {
@@ -411,7 +412,7 @@ const TripRow = React.createClass({
               </div>
               <br />
               <div className={styles.cardValue}>
-                {trip.Driver && `${trip.Driver.FirstName} ${trip.Driver.LastName}`}
+                {Helper.trimString(trip.Driver && `${trip.Driver.FirstName} ${trip.Driver.LastName}`, 25)}
               </div>
             </div>
           }
