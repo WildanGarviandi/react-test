@@ -512,7 +512,7 @@ const PanelDriversOrders = React.createClass({
                     Weight
                   </div>
                   <div className={styles.orderDetailsValue}>
-                    {weight} kg
+                    {parseFloat(weight).toFixed(2)} kg
                   </div>
                 </div>
                 <div className={styles.orderAdditionalInfo}>

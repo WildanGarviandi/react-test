@@ -457,7 +457,7 @@ function ProcessTrip(trip) {
       webstoreNames: parsedTrip.WebstoreNames,
       quantity: trip.UserOrderRoutes.length,
       tripID: `${trip.TripID}`,
-      weight: parsedTrip.Weight,
+      weight: parseFloat(parsedTrip.Weight).toFixed(2),
       isTrip: true,
       deadline: trip.Deadline,
       IsChecked: trip.IsChecked
@@ -471,7 +471,7 @@ function ProcessTrip(trip) {
       quantity: 1,
       webstoreNames: trip.User && `${trip.User.FirstName} ${trip.User.LastName}`,
       tripID: `${trip.UserOrderID}`,
-      weight: trip.PackageWeight,
+      weight: parseFloat(trip.PackageWeight).toFixed(2),
       isTrip: false,
       deadline: trip.Deadline,
       IsChecked: trip.IsChecked,

@@ -200,7 +200,7 @@ function TripHistoryRow({trip, goToDetails}) {
             <TextCell text={trip.OrderStatus && trip.OrderStatus.OrderStatus} />
             <TextCell text={createdDate} />
             <TextCell text={trip.UserOrderRoutes.length} />
-            <TextCell text={Weight(trip) + ' Kg'} />
+            <TextCell text={parseFloat(Weight(trip)).toFixed(2) + ' Kg'} />
             <TextCell text={Remarks(trip)} />
         </tr>
     );

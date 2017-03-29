@@ -304,7 +304,7 @@ const OrderRow = React.createClass({
           </div>
           <br />
           <div className={styles.cardValue}>
-            {order.PackageWeight} kg
+            {parseFloat(order.PackageWeight).toFixed(2)} kg
           </div>
         </td>
         <td onClick={()=>{this.expandOrder(order)}}><div className={styles.cardSeparator} /></td>
