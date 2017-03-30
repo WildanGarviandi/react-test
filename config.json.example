@@ -10,5 +10,6 @@
     "menuTMS": true,
     "menuUpdateOrder": true
   },
-  "googleSiteKey": ""
+  "googleSiteKey": "",
+  "googleAnalyticsKey": ""
 }

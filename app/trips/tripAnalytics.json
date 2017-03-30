@@ -1,0 +1,34 @@
+{
+  "listTrips": {
+    "category": "Trips",
+    "action": "Finished list trips"
+  },
+  "openTripsDetails": {
+    "category": "Trips",
+    "action": "Clicked trip details"
+  },
+  "openSingleAssign": {
+    "category": "Trips",
+    "action": "Clicked single assign"
+  },
+  "openBulkAssign": {
+    "category": "Trips",
+    "action": "Clicked bulk assign"
+  },
+  "chooseDriver": {
+    "category": "Trips",
+    "action": "Clicked choose driver"
+  },
+  "assignDriver": {
+    "category": "Trips",
+    "action": "Clicked assign driver"
+  },
+  "searchDriver": {
+    "category": "Trips",
+    "action": "Search driver"
+  },
+  "successAssign": {
+    "category": "Trips",
+    "action": "Success assign"
+  }
+}

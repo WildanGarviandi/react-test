@@ -13,6 +13,8 @@ import stylesButton from '../components/button.css';
 import * as UtilHelper from '../helper/utility';
 import NumberFormat from 'react-number-format';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import ReactGA from 'react-ga';
+import tripAnalytics from './tripAnalytics.json';
 
 const TripOrders = React.createClass({
   render: function() {
@@ -211,6 +213,11 @@ const PanelDrivers = React.createClass({
   },
   searchDriver(e) {
     this.setState({searchValue: e.target.value});
+    ReactGA.event({
+      category: tripAnalytics.searchDriver.category,
+      action: tripAnalytics.searchDriver.action,
+      label: this.state.searchValue
+    });
     let driverList = lodash.filter(this.props.drivers, function(driver) { 
       let driverName = driver.FirstName + ' ' + driver.LastName;
       let searchValue = e.target.value;
