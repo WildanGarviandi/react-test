@@ -306,7 +306,6 @@ const TripPage = React.createClass({
   },
   render() {
     const {paginationState, PaginationAction, drivers, total, errorIDs, successAssign, errorAssign, trips, expandedTrip, isExpandTrip, isExpandDriver, isExpandDriverBulk, AssignTrip, BulkAssignTrip, ShrinkTrip, ExpandDriver, selectedDriver, SetDriver} = this.props;
-    console.log(errorIDs, successAssign, errorAssign)
     return (
       <Page title="My Trips" count={{itemName: 'Items', done: 'All Done', value: total}}>
         <Pagination2 {...paginationState} {...PaginationAction} />
