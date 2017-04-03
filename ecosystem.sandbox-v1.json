@@ -14,7 +14,7 @@
     "sandbox" : {
       "user" : "ubuntu",
       "host": "sandbox-v1.hub.etobee.com",
-      "ref"  : "origin/release/alpha",
+      "ref"  : "origin/master",
       "repo" : "git@gitlab.com:etobee-techgroup/etobee-hub.git",
       "path" : "/home/ubuntu/hub-sandbox-v1",
       "post-deploy" : "npm install ; npm run build; pm2 startOrRestart ecosystem.sandbox-v1.json --env production"
