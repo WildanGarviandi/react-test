@@ -32,6 +32,8 @@ const Constants = {
   ORDERS_PICKUP_AUTO_GROUP_DISABLE: "pickupReady/autoGroup/disable",
   ORDERS_PICKUP_READY_SHOW_MODAL_DETAILS: "pickupReady/showModalDetails",
   ORDERS_PICKUP_READY_HIDE_MODAL_DETAILS: "pickupReady/hideModalDetails",
+  ORDERS_PICKUP_DRIVER_CURRENT_PAGE_SET: "pickupReady/driver/currentPage",
+  ORDERS_PICKUP_DRIVER_LIMIT_SET: "pickupReady/driver/limit",
 }
 
 //
@@ -52,6 +54,10 @@ const initialState = {
   showModal: false,
   tripActive: {},
   drivers: [],
+  filtersDrivers: {},
+  currentPageDrivers: 1,
+  limitDrivers: 10,
+  totalDrivers: 0,
   isFetchingDriver: false,
   isAutoGroupActive: false,
   showDetails: false
@@ -166,15 +172,28 @@ export function Reducer(state = initialState, action) {
       });
     }
 
+    case Constants.ORDERS_PICKUP_DRIVER_CURRENT_PAGE_SET: {
+      return lodash.assign({}, state, {currentPageDrivers: action.currentPage});
+    }
+
+    case Constants.ORDERS_PICKUP_DRIVER_LIMIT_SET: {
+      return lodash.assign({}, state, {limitDrivers: action.limit});
+    }
+
     case Constants.ORDERS_PICKUP_SET_DRIVERS: {
         return lodash.assign({}, state, {
-            drivers: action.drivers
+          drivers: action.drivers,
+          totalDrivers: action.totalDrivers
         });
     }
 
     case Constants.ORDERS_PICKUP_RESET_DRIVERS: {
         return lodash.assign({}, state, {
-            drivers: []
+          drivers: [],
+          filtersDrivers: {},
+          totalDrivers: 0,
+          currentPageDrivers: 1,
+          limitDrivers: 10
         });
     }
 
@@ -415,15 +434,58 @@ export function SplitTrip(id, vehicleID) {
   }
 }
 
+export function SetFiltersDrivers(filters) {
+    return StoreSetter("filtersDrivers", filters);
+}
+
+export function UpdateFiltersDrivers(filters) {
+  return (dispatch, getState) => {
+    const prevFilters = getState().app.pickupOrdersReady.filtersDrivers;
+    const nextFilter = lodash.assign({}, prevFilters, filters);
+    dispatch(SetFiltersDrivers(nextFilter));
+  }
+}
+
+export function UpdateAndFetchDrivers(filters) {
+  return (dispatch) => {
+    dispatch(StoreSetter("currentPageDrivers", 1));
+    dispatch(UpdateFiltersDrivers(filters));
+    dispatch(FetchDrivers());
+    }
+}
+
+export function SetCurrentPageDrivers(currentPage) {
+  return (dispatch) => {
+    dispatch({
+      type: Constants.ORDERS_PICKUP_DRIVER_CURRENT_PAGE_SET,
+      currentPage: currentPage,
+    });
+
+    dispatch(FetchDrivers());
+  }
+}
+
+export function SetLimitDrivers(limit) {
+  return (dispatch) => {
+    dispatch({
+      type: Constants.ORDERS_PICKUP_DRIVER_LIMIT_SET,
+      limit: limit,
+    });
+
+    dispatch(SetCurrentPageDrivers(1));
+  }
+}
+
 export function FetchDrivers(tripID) {
   return (dispatch, getState) => {
-    const {userLogged} = getState().app;
+    const {pickupOrdersReady, userLogged} = getState().app;
     const {token} = userLogged;
+    const {currentPageDrivers, filtersDrivers, limitDrivers} = pickupOrdersReady;
 
-    const query = {
-      offset: 0,
-      limit: 'all'
-    };
+    const query = lodash.assign({}, filtersDrivers, {
+      limit: limitDrivers,
+      offset: (currentPageDrivers-1)*limitDrivers,
+    });
         
     dispatch({type: Constants.ORDERS_PICKUP_DRIVER_FETCH_START});
     FetchGet('/driver', token, query).then((response) => {
@@ -437,7 +499,8 @@ export function FetchDrivers(tripID) {
         dispatch({type: Constants.ORDERS_PICKUP_DRIVER_FETCH_END});
         dispatch({
           type: Constants.ORDERS_PICKUP_SET_DRIVERS,
-          drivers: data.rows
+          drivers: data.rows,
+          totalDrivers: data.count
         })
       });
     }).catch((e) => {

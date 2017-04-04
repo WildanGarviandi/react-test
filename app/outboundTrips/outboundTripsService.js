@@ -64,7 +64,10 @@ const Constants = {
   TRIPS_INBOUND_RESET_FILTER: 'inbound/trips/resetFilter',
 
   HUB_UPDATE_START: 'outbound/hub/update/start',
-  HUB_UPDATE_END: 'outbound/hub/update/end'
+  HUB_UPDATE_END: 'outbound/hub/update/end',
+  BASE_OUTBOUND: "outbound/defaultSet/",
+  DRIVER_CURRENT_PAGE_SET: "outbound/driver/currentPage",
+  DRIVER_LIMIT_SET: "outbound/driver/limit"
 }
 
 const initialState = {
@@ -90,6 +93,10 @@ const initialState = {
     drivers: [],
     total: 0,
   },
+  filtersDrivers: {},
+  currentPageDrivers: 1,
+  limitDrivers: 10,
+  totalDrivers: 0,
   driver: null,
   isSetDriver: false,
   fleet: null,
@@ -107,6 +114,12 @@ const initialState = {
 }
 
 export function Reducer(state = initialState, action) {
+  const parsedActionType = action.type.split('/');
+  if (parsedActionType.length > 2 && parsedActionType[0] === "outbound" && parsedActionType[1] === "defaultSet") {
+      const fieldName = parsedActionType[2];
+      return lodash.assign({}, state, {[fieldName]: action[fieldName]});
+  }
+
   switch(action.type) {
     case Constants.TRIPS_OUTBOUND_CURRENTPAGE_SET: {
       return lodash.assign({}, state, {currentPage: action.currentPage});
@@ -192,6 +205,14 @@ export function Reducer(state = initialState, action) {
       });
     }
 
+    case Constants.DRIVER_CURRENT_PAGE_SET: {
+      return lodash.assign({}, state, {currentPageDrivers: action.currentPage});
+    }
+
+    case Constants.ORDERS_PICKUP_DRIVER_LIMIT_SET: {
+      return lodash.assign({}, state, {limitDrivers: action.limit});
+    }
+
     case Constants.NEARBY_FLEETS_DRIVERS_SET: {
       return lodash.assign({}, state, {
         nearbyFleets: {
@@ -221,7 +242,8 @@ export function Reducer(state = initialState, action) {
         nearbyDrivers: {
           drivers: action.drivers,
           total: action.total
-        }
+        },
+        totalDrivers: action.totalDrivers
       });
     }
 
@@ -253,7 +275,16 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.TRIPS_OUTBOUND_ASSIGNING_END: {
-      return lodash.assign({}, state, {isAssigning: false});
+      return lodash.assign({}, state, {
+        isAssigning: false,
+        nearbyDrivers: {
+          drivers: []
+        },
+        filtersDrivers: {},
+        totalDrivers: 0,
+        currentPageDrivers: 1,
+        limitDrivers: 10
+      });
     }
 
     case Constants.TRIPS_OUTBOUND_DETAILS_DRIVER_START: {
@@ -468,15 +499,62 @@ export function FetchListFleetDrivers (fleetID) {
   }
 }
 
+export function StoreSetter(keyword, value) {
+    return {type: Constants.BASE_OUTBOUND + keyword, [keyword]: value};
+}
+
+export function SetFiltersDrivers(filters) {
+    return StoreSetter("filtersDrivers", filters);
+}
+
+export function UpdateFiltersDrivers(filters) {
+  return (dispatch, getState) => {
+    const prevFilters = getState().app.pickupOrdersReady.filtersDrivers;
+    const nextFilter = lodash.assign({}, prevFilters, filters);
+    dispatch(SetFiltersDrivers(nextFilter));
+  }
+}
+
+export function UpdateAndFetchDrivers(filters) {
+  return (dispatch) => {
+    dispatch(StoreSetter("currentPageDrivers", 1));
+    dispatch(UpdateFiltersDrivers(filters));
+    dispatch(FetchListNearbyDrivers());
+    }
+}
+
+export function SetCurrentPageDrivers(currentPage) {
+  return (dispatch) => {
+    dispatch({
+      type: Constants.DRIVER_CURRENT_PAGE_SET,
+      currentPage: currentPage,
+    });
+
+    dispatch(FetchListNearbyDrivers());
+  }
+}
+
+export function SetLimitDrivers(limit) {
+  return (dispatch) => {
+    dispatch({
+      type: Constants.DRIVER_LIMIT_SET,
+      limit: limit,
+    });
+
+    dispatch(SetCurrentPageDrivers(1));
+  }
+}
+
 export function FetchListNearbyDrivers(tripID) {
   return (dispatch, getState) => {
     const {outboundTripsService, userLogged} = getState().app;
     const {token} = userLogged;
+    const {currentPageDrivers, filtersDrivers, limitDrivers} = outboundTripsService;
 
-    const query = {
-      offset: 0,
-      limit: 'all'
-    };
+    const query = lodash.assign({}, filtersDrivers, {
+      limit: limitDrivers,
+      offset: (currentPageDrivers-1)*limitDrivers,
+    });
 
     const isHubAPI = true;
 
@@ -495,7 +573,7 @@ export function FetchListNearbyDrivers(tripID) {
         dispatch({
           type: Constants.NEARBY_DRIVERS_SET,
           drivers: data.rows,
-          total: data.count,
+          totalDrivers: data.count,
         });
 
         dispatch({

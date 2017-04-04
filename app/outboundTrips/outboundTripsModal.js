@@ -1,20 +1,21 @@
-import lodash from 'lodash'
-import moment from 'moment'
-import React from 'react'
-import {connect} from 'react-redux'
-import * as OutboundTrips from './outboundTripsService'
-import {Input, EmptySpace, ButtonBase} from '../views/base'
-import styles from './styles.css'
-import {ModalDialog} from 'react-modal-dialog'
+import lodash from 'lodash';
+import moment from 'moment';
+import React from 'react';
+import {connect} from 'react-redux';
+import * as OutboundTrips from './outboundTripsService';
+import {Input, EmptySpace, ButtonBase} from '../views/base';
+import styles from './styles.css';
+import {ModalDialog} from 'react-modal-dialog';
 
-import DateTime from 'react-datetime'
-import {RadioGroup, Radio} from '../components/form'
-import {formatDate, formatDateHourOnly} from '../helper/time'
-import ImagePreview from '../views/base/imagePreview'
-import ImageUploader from '../views/base/imageUploader'
-import {Weight, DstHub, DstDistrict, HubSetter} from './outboundTripsHelper'
-import config from '../config/configValues.json'
-import * as UtilHelper from '../helper/utility'
+import DateTime from 'react-datetime';
+import {RadioGroup, Radio} from '../components/form';
+import {formatDate, formatDateHourOnly} from '../helper/time';
+import ImagePreview from '../views/base/imagePreview';
+import ImageUploader from '../views/base/imageUploader';
+import {Weight, DstHub, DstDistrict, HubSetter} from './outboundTripsHelper';
+import config from '../config/configValues.json';
+import * as UtilHelper from '../helper/utility';
+import {Pagination3} from '../components/pagination3';
 
 const DetailRow = React.createClass({
   generateTypeContent () {
@@ -219,11 +220,34 @@ const FleetInModal = React.createClass({
 
 const DriverInModal = React.createClass({
   getInitialState() {
-    return {selected: this.props.selected}
+    return {selected: this.props.selected, driverFleetList: this.props.items, searchValue: ''}
   },
   select(key) {
     this.props.driverInModalSelected(key)
     this.setState({selected: key})
+  },
+  searchDriver(e) {
+    if (e.key === 'Enter') {
+      const newFilters = {['name']: e.target.value};
+      this.props.updateAndFetchDrivers(newFilters);
+      this.props.fetchDrivers();
+    }
+  },
+  componentWillReceiveProps(nextProps) {
+    this.setState({driverFleetList: nextProps.items});
+  },
+  enterDriverSearch(e) {
+    const newFilters = {['name']: e.target.value};
+    this.props.updateFiltersDrivers(newFilters);
+  },
+  enterDriverFleetSearch(e) {
+    this.setState({searchValue: e.target.value});
+    let driverFleetList = lodash.filter(this.props.items, function(driver) { 
+      let driverName = driver.FirstName + ' ' + driver.LastName;
+      let searchValue = e.target.value;
+      return driverName.toLowerCase().includes(searchValue);
+    });
+    this.setState({driverFleetList: driverFleetList});
   },
   render() {
     const {trip} = this.props
@@ -232,7 +256,7 @@ const DriverInModal = React.createClass({
     if (trip) {
       weight = Weight(trip)
     }
-    const selected = (this.props.selected) ? this.props.selected : this.state.selected
+    const selected = (this.props.selected) ? this.props.selected : this.state.selected;
 
     const Drivers = lodash.map(this.props.items, (item, key) => {
       let currentLoad, isOverload
@@ -364,7 +388,9 @@ const AssignTripModalClass = React.createClass({
       Fee: 0,
       isExternalDataValid: false,
       isHubAssigning: false,
-      AwbNumber: ' '
+      AwbNumber: ' ',
+      driverFleetList: this.props.nearbyFleets.drivers, 
+      searchValue: ''
     }
   },
   isLastMile () {
@@ -457,6 +483,28 @@ const AssignTripModalClass = React.createClass({
   onHubSet () {
     this.setState({isHubAssigning: false})
   },
+  componentWillReceiveProps(nextProps) {
+    this.setState({driverFleetList: nextProps.nearbyFleets.drivers});
+  },
+  searchDriver(e) {
+    if (e.key === 'Enter') {
+      const newFilters = {['name']: e.target.value};
+      this.props.UpdateAndFetchDrivers(newFilters);
+    }
+  },
+  enterDriverSearch(e) {
+    const newFilters = {['name']: e.target.value};
+    this.props.UpdateFiltersDrivers(newFilters);
+  },
+  enterDriverFleetSearch(e) {
+    this.setState({searchValue: e.target.value});
+    let driverFleetList = lodash.filter(this.props.nearbyFleets.drivers, function(driver) { 
+      let driverName = driver.FirstName + ' ' + driver.LastName;
+      let searchValue = e.target.value;
+      return driverName.toLowerCase().includes(searchValue);
+    });
+    this.setState({driverFleetList: driverFleetList});
+  },
   render () {
     const trip = this.props.trip
 
@@ -469,7 +517,7 @@ const AssignTripModalClass = React.createClass({
     }
 
     const fleetDriverProps = {
-      items: this.props.nearbyFleets.drivers,
+      items: this.state.driverFleetList,
       isFetching: this.props.nearbyFleets.isDriverFetching,
       selected: this.state.selectedDriver,
       driverInModalSelected: this.fleetDriverInModalSelected
@@ -601,9 +649,13 @@ const AssignTripModalClass = React.createClass({
                 <Tabs selected={0}>
                   <Pane label="Assign To My Driver">
                     <div>
+                      <div className={styles.panelDriverSearch}>
+                        <input className={styles.inputDriverSearch} onChange={this.enterDriverSearch} onKeyPress={this.searchDriver} placeholder={'Search Driver...'} />
+                      </div>
                       <div className={styles.modalTabPanel}>
                         <DriverInModal {...driversProps} />
                       </div>
+                      <Pagination3 {...this.props.paginationStateDrivers} {...this.props.PaginationActionDrivers} />
                       <div className={styles.modalFooter}>
                         { !this.state.isDriverSet &&
                           <p>
@@ -631,6 +683,9 @@ const AssignTripModalClass = React.createClass({
                           <EmptySpace height={10} />
                           <div className={styles.mediumText + ' ' + styles.centerItems}>Choose the driver</div>
                           <EmptySpace height={10} />
+                          <div className={styles.panelDriverSearch}>
+                            <input className={styles.inputDriverSearch} onChange={this.enterDriverFleetSearch} placeholder={'Search Driver...'} />
+                          </div>
                         </div>
                       }
                       <div className={styles.modalTabPanel}>
@@ -738,14 +793,19 @@ const AssignTripModalClass = React.createClass({
 
 function ModalStateToProps (state) {
   const {outboundTripsService} = state.app
-  const {trip, nearbyFleets, nearbyDrivers, isSuccessAssigning, isHubAssigning} = outboundTripsService
+  const {trip, nearbyFleets, nearbyDrivers, isSuccessAssigning, isHubAssigning, currentPageDrivers, limitDrivers, totalDrivers} = outboundTripsService
 
   return {
     trip,
     nearbyFleets,
     nearbyDrivers,
     isSuccessAssigning,
-    isHubAssigning
+    isHubAssigning,
+    paginationStateDrivers: {
+      currentPage: currentPageDrivers, 
+      limit: limitDrivers, 
+      total: totalDrivers
+    }
   }
 }
 
@@ -771,6 +831,23 @@ function ModalDispatchToProps (dispatch, ownProps) {
     },
     SetHub: (tripID) => {
       dispatch(OutboundTrips.setHub(tripID, null))
+    },
+    PaginationActionDrivers: {
+      setCurrentPage: (currentPage) => {
+          dispatch(OutboundTrips.SetCurrentPageDrivers(currentPage));
+      },
+      setLimit: (limit) => {
+          dispatch(OutboundTrips.SetLimitDrivers(limit));
+      },
+    },
+    FetchDrivers() {
+      dispatch(OutboundTrips.FetchListNearbyDrivers());
+    },
+    UpdateFiltersDrivers(filters) {
+      dispatch(OutboundTrips.UpdateFiltersDrivers(filters));
+    },
+    UpdateAndFetchDrivers(filters) {
+      dispatch(OutboundTrips.UpdateAndFetchDrivers(filters));
     }
   }
 }
