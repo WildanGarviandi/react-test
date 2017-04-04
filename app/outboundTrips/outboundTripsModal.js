@@ -708,7 +708,9 @@ const AssignTripModalClass = React.createClass({
                         
                         { !this.state.isLastMile &&
                           <button className="btn btn-md btn-success" onClick={this.fleetSet} 
-                            disabled={!this.state.isFleetSet || (this.props.nearbyFleets.drivers.length === 0) || !this.state.isFleetDriverSet}>
+                            disabled={!this.state.isFleetSet || 
+                              (this.props.nearbyFleets && this.props.nearbyFleets.drivers && this.props.nearbyFleets.drivers.length === 0) || 
+                              !this.state.isFleetDriverSet}>
                             Choose Driver</button>
                         }
                         { this.state.isLastMile && this.state.isFleetSet &&
