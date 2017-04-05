@@ -390,7 +390,8 @@ const AssignTripModalClass = React.createClass({
       isHubAssigning: false,
       AwbNumber: ' ',
       driverFleetList: this.props.nearbyFleets.drivers, 
-      searchValue: ''
+      searchValue: '',
+      searchValueDriver: ''
     }
   },
   isLastMile () {
@@ -493,6 +494,7 @@ const AssignTripModalClass = React.createClass({
     }
   },
   enterDriverSearch(e) {
+    this.setState({searchValueDriver: e.target.value});
     const newFilters = {['name']: e.target.value};
     this.props.UpdateFiltersDrivers(newFilters);
   },
@@ -650,7 +652,7 @@ const AssignTripModalClass = React.createClass({
                   <Pane label="Assign To My Driver">
                     <div>
                       <div className={styles.panelDriverSearch}>
-                        <input className={styles.inputDriverSearch} onChange={this.enterDriverSearch} onKeyPress={this.searchDriver} placeholder={'Search Driver...'} />
+                        <input className={styles.inputDriverSearch} value={this.state.searchValueDriver} onChange={this.enterDriverSearch} onKeyPress={this.searchDriver} placeholder={'Search Driver...'} />
                       </div>
                       <div className={styles.modalTabPanel}>
                         <DriverInModal {...driversProps} />
@@ -684,7 +686,7 @@ const AssignTripModalClass = React.createClass({
                           <div className={styles.mediumText + ' ' + styles.centerItems}>Choose the driver</div>
                           <EmptySpace height={10} />
                           <div className={styles.panelDriverSearch}>
-                            <input className={styles.inputDriverSearch} onChange={this.enterDriverFleetSearch} placeholder={'Search Driver...'} />
+                            <input className={styles.inputDriverSearch} value={this.state.searchValue} onChange={this.enterDriverFleetSearch} placeholder={'Search Driver...'} />
                           </div>
                         </div>
                       }
