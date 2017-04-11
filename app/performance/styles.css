@@ -1,0 +1,250 @@
+.mainTable {
+  width: 75%;
+}
+
+.tripIDColumn {
+  width: 70px;
+  vertical-align: top;
+}
+
+.link {
+  color: #33c;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.lineStepsLeft {
+  border-bottom-left-radius: 4px;
+  border-top-left-radius: 4px;
+  margin-right: 0.25%;
+}
+
+.lineStepsRight {
+  border-bottom-right-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.lineStepsRed {
+  height: 12px;
+  background-color: #ff5a60;
+  float: left;
+  margin-right: 0.25%;
+}
+
+.lineStepsYellow {
+  height: 12px;
+  background-color: #ffa500;
+  float: left;
+  margin-right: 0.25%;
+}
+
+.lineStepsGreen {
+  height: 12px;
+  background-color: #38b393;
+  float: left;
+  margin-right: 0.25%;
+}
+
+.nameStep {
+  height: 14px;
+  opacity: 0.5;
+  font-family: Helvetica;
+  font-size: 12px;
+  text-align: center;
+  color: #000000;
+  padding-top: 20px;
+}
+
+.boxSteps {  
+  margin-top: 60px;
+  width: 18%;
+  height: 84px;
+  border-radius: 4px;
+  background-color: #ffffff;
+  border: solid 1px #d5d5d5;
+  float: left;
+  margin-right: 1%;
+}
+
+.nameBoxStep {
+  opacity: 0.5;
+  font-family: Helvetica;
+  font-size: 10px;
+  line-height: 2;
+  color: #000000;
+  float: left;
+  padding-left: 5px;
+}
+
+.performanceBoxStep {
+  opacity: 0.5;
+  font-family: Helvetica;
+  font-size: 10px;
+  color: #000000;
+  float: right;
+  padding-right: 5px; 
+  padding-top: 5px; 
+}
+
+.timeBoxStep {
+  width: 100%;
+  font-family: Helvetica;
+  font-size: 32px;
+  opacity: 0.5;
+  line-height: 1.25;
+  color: #000000;
+  float: left;
+  margin-top: 20px;
+  padding-left: 5px;
+}
+
+.timeBoxStepAverage {
+  width: 100%;
+  font-family: Helvetica;
+  font-size: 32px;
+  font-weight: bold;
+  line-height: 1.25;
+  color: #000000;
+  float: left;
+  margin-top: 20px;
+  padding-left: 5px;
+}
+
+.timeBoxStepBottleneck {
+  width: 100%;
+  font-family: Helvetica;
+  font-size: 32px;
+  font-weight: bold;
+  line-height: 1.25;
+  color: #ff5a60;
+  float: left;
+  margin-top: 20px;
+  padding-left: 5px;
+}
+
+.separatorLine {
+  width: 84%;
+  margin-top: 30px;
+  margin-bottom: 30px;  
+  height: 1px;
+  background-color: #d5d5d5;
+  float: left;
+  position: static;
+}
+
+.separatorBox {
+  width: 10%;
+  margin-top: 15px;
+  margin-bottom: -30px; 
+  background-color: #ffffff;
+  border: 1px solid #d5d5d5;
+  float: left;
+  position: static;  
+  border-radius: 4px;
+  padding: 10px;
+  line-height: 1.5em;
+  opacity: 0.5;
+  font-family: Helvetica;
+  font-size: 10px;
+}
+
+.ovalGreen {
+  background-color: #38b393;
+  width: 12px;
+  height: 12px;
+  border-radius: 10px;
+  float: left;
+  margin-right: 10px;
+}
+
+.ovalYellow {
+  background-color: #ffa500;
+  width: 12px;
+  height: 12px;
+  border-radius: 10px;
+  float: left;
+  margin-right: 10px;
+}
+
+.ovalRed {
+  background-color: #ff5a60;
+  width: 12px;
+  height: 12px;
+  border-radius: 10px;
+  float: left;
+  margin-right: 10px;
+}
+
+.boxStats {  
+  width: 35%;
+  height: 84px;
+  border-radius: 4px;
+  background-color: #ffffff;
+  border: solid 1px #d5d5d5;
+  float: left;
+  margin-right: 1%;
+  margin-bottom: 30px;  
+}
+
+.mainPerformance {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 4px;
+  background-color: #ffffff;
+  border: solid 1px #e8e8e8;
+}
+
+.filterDate {
+  float: left;
+  width: 15%;
+}
+
+.titlePerformance {  
+  font-family: Helvetica;
+  font-size: 24px;
+  font-weight: bold;
+  float: left;
+  width: 80%;
+  margin-bottom: 20px;
+}
+
+.dateInput {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  height: 28px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+}
+
+.unitTime {
+  font-size: 14px;
+  margin-right: 10px;
+}
+
+.unitTime2 {
+  font-size: 12px;
+  font-weight: normal;
+  margin-right: 10px;
+  margin-left: 5px;
+  opacity: 0.5;
+  color: #000000;
+}
+
+.noPerformance {
+  text-align: center;
+  height: 100%;
+  margin: auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.imgNoPerformance {
+  width: 200px;
+  height: 200px;
+  margin-bottom: 20px;
+}
