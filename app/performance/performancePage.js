@@ -31,9 +31,18 @@ const borderStep = 0.25;
 class StepLine extends React.Component {
   render() {
     const {percentage, maxIndexValue, step, stepName} = this.props;
+    let styleLine;
+    if (step === 'pickupOrders') {
+      styleLine = styles.lineStepsLeft;
+    }
+
+    if (step === 'outbound') {
+      styleLine = styles.lineStepsRight;
+    }
+
     return (
       <div style={{width: ((percentage[step] - borderStep)) + "%"}} 
-        className={styles.lineStepsLeft + ' ' + (maxIndexValue === arrayStep[step] ? styles.lineStepsRed : styles.lineStepsGreen)}>
+        className={styleLine + ' ' + (maxIndexValue === arrayStep[step] ? styles.lineStepsRed : styles.lineStepsGreen)}>
         <div className={styles.nameStep}>{stepName}</div>
       </div>
     );
