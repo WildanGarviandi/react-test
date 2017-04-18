@@ -11,6 +11,7 @@ import formStyles from '../components/form.css';
 import {push} from 'react-router-redux';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import moment from 'moment';
+import ReactTooltip from 'react-tooltip'
 
 function getTimeFromSeconds(seconds) {
   let h = seconds / 3600;
@@ -40,9 +41,12 @@ class StepLine extends React.Component {
       styleLine = styles.lineStepsRight;
     }
 
+    const tooltip = "Average Time " + stepName;
+
     return (
       <div style={{width: ((percentage[step] - borderStep)) + "%"}} 
         className={styleLine + ' ' + (maxIndexValue === arrayStep[step] ? styles.lineStepsRed : styles.lineStepsGreen)}>
+        <ReactTooltip />
         <div className={styles.nameStep}>{stepName}</div>
       </div>
     );
@@ -180,8 +184,8 @@ class InboundTripPage extends React.Component {
               </div>
               { performances.total &&
                 <div> 
-                  <StatBox name={'Average Processing Time'} value={totalDuration} style={styles.timeBoxStepAverage} />  
-                  <StatBox name={'Bottleneck Process'} value={totalDuration} style={styles.timeBoxStepBottleneck} />
+                  <StatBox name={'Average Processing Time'} value={performances.total.totalAverage.averageProcessingTime} style={styles.timeBoxStepAverage} />  
+                  <StatBox name={'Bottleneck Process'} value={performances.total.bottleNeck.averageProcessingTime} style={styles.timeBoxStepBottleneck} />
                 </div>
               }
               <div style={{clear: 'both'}} />
