@@ -50,6 +50,12 @@ class Table extends React.Component {
       });
     }
   }
+  componentWillReceiveProps(nextProps) {    
+    this.setState({
+      performances: _.sortBy(nextProps.performances, 'date'),
+      sortedDesc: true
+    });
+  }
   render() {
     const Headers = _.map(ColumnsOrder, (columnKey) => {
       if (columnKey === 'date') {
