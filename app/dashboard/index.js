@@ -67,10 +67,12 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
       <ul className={styles.menuList}>
         { hubID && !tmsMenu &&
           <div>
-            <MenuItem active={activeMenuIdx == 0} to={'/performance'}>
-              <img src="/img/icon-hub-performance.png" className={styles.menuGlyph} />
-              <span>Hub Performance </span>
-            </MenuItem>
+            { config.features.hubPerformances &&
+              <MenuItem active={activeMenuIdx == 0} to={'/performance'}>
+                <img src="/img/icon-hub-performance.png" className={styles.menuGlyph} />
+                <span>Hub Performance </span>
+              </MenuItem>
+            }
             <hr className={styles.menuSeparator} />
             <MenuItem active={activeMenuIdx == 1} to={'/orders/pickup'}>
               <img src="/img/icon-pickup-orders.png" className={styles.menuGlyph} />
