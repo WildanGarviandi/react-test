@@ -108,15 +108,19 @@ class InboundTripPage extends React.Component {
     const startDateFormatted = moment(filters.startDate).format('MM-DD-YYYY');
     const endDateFormatted = moment(filters.endDate).format('MM-DD-YYYY');
     let dateValue = startDateFormatted + ' - ' + endDateFormatted;
+    let noPerformance = lodash.isEmpty(performances) || performances.rows.length === 0;
     return (
       <div>
         <Page title="Hub Performance">
           {
-            lodash.isEmpty(performances) &&
+            noPerformance &&
             <div className={styles.mainPerformance}>
               <div>
                 <div className={styles.titlePerformance}>
                   Your Performance
+                </div>
+                <div className={styles.filterDateTitle}>
+                  Filter By Date
                 </div>
                 <div className={styles.filterDate}>
                   <DateRangePicker onApply={this.props.changeDate} parentEl="#bootstrapPlaceholder" >
@@ -134,11 +138,14 @@ class InboundTripPage extends React.Component {
             </div>
           }
           {
-            !lodash.isEmpty(performances) &&
+            !noPerformance &&
             <div className={styles.mainPerformance}>
               <div>
                 <div className={styles.titlePerformance}>
                   Your Performance
+                </div>
+                <div className={styles.filterDateTitle}>
+                  Filter By Date
                 </div>
                 <div className={styles.filterDate}>
                   <DateRangePicker onApply={this.props.changeDate} parentEl="#bootstrapPlaceholder" >

@@ -32,12 +32,35 @@ function getTimeFromSeconds(seconds) {
 }
 
 class Table extends React.Component {
+  constructor(props, context) {
+    super(props, context);
+    this.state = {
+      performances: _.sortBy(this.props.performances, 'date'),
+      sortedDesc: true
+    };
+  }
+  sortTable(criteria) {
+    this.setState({
+      performances: _.sortBy(this.state.performances, 'date'),
+      sortedDesc: !this.state.sortedDesc
+    });
+    if (this.state.sortedDesc) {
+      this.setState({
+        performances: _.sortBy(this.state.performances, 'date').reverse()
+      });
+    }
+  }
   render() {
     const Headers = _.map(ColumnsOrder, (columnKey) => {
+      if (columnKey === 'date') {
+        return <th onClick={this.sortTable.bind(this)} key={columnKey}>
+          {ColumnsTitle[columnKey]} <img className={styles.sortDate} src="/img/icon-sort.png" />
+        </th>;
+      }
       return <th key={columnKey}>{ColumnsTitle[columnKey]}</th>;
     });
 
-    const Body = _.map(this.props.performances, (item, idx) => {
+    const Body = _.map(this.state.performances, (item, idx) => {
       const cells = _.map(ColumnsOrder, (columnKey) => {
         const contentsProcess = ['Pickup Orders', 'Inbound', 'Update Orders', 'Grouping', 'Outbound'];
         const contentsProcessingTime = [
@@ -78,7 +101,7 @@ class Table extends React.Component {
           </td>;
         }
         if (columnKey === 'processingTime') {
-          return <td key={columnKey}>
+          return <td className={styles.processingColumn} key={columnKey}>
             <div>
               <TableInside contents={contentsProcessingTime}/>
             </div>
