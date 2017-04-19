@@ -8,6 +8,8 @@ import moment from 'moment';
 import Promise from 'bluebird';
 import {fetchXhr} from '../modules/fetch/getXhr';
 import * as DashboardService from '../dashboard/dashboardService';
+import ReactGA from 'react-ga';
+import tripAnalytics from './tripAnalytics.json';
 
 const Constants = {
   BASE: "mytrip/defaultSet/",
@@ -353,6 +355,11 @@ export function FetchList() {
           total: data.count,
         });
         dispatch({type: Constants.FETCHING_PAGE_STOP});
+        ReactGA.event({
+          category: tripAnalytics.listTrips.category,
+          action: tripAnalytics.listTrips.action,
+          label: userLogged.hubName
+        });
       });
     }).catch((e) => {
       dispatch({type: modalAction.BACKDROP_HIDE});
@@ -462,21 +469,45 @@ export function ToggleOrderCheckedAll() {
 }
 
 export function ExpandTrip(trip) {
-  return {
-    type: Constants.TRIP_EXPAND_ORDER,
-    trip: trip
+  return (dispatch, getState) => {
+    const {userLogged} = getState().app;
+    ReactGA.event({
+      category: tripAnalytics.openTripsDetails.category,
+      action: tripAnalytics.openTripsDetails.action,
+      label: userLogged.hubName
+    });
+    dispatch({
+      type: Constants.TRIP_EXPAND_ORDER,
+      trip: trip
+    });
   }
 }
 
 export function ExpandDriver() {
-  return {
-    type: Constants.TRIP_EXPAND_DRIVER
+  return (dispatch, getState) => {
+    const {userLogged} = getState().app;
+    ReactGA.event({
+      category: tripAnalytics.openSingleAssign.category,
+      action: tripAnalytics.openSingleAssign.action,
+      label: userLogged.hubName
+    });
+    dispatch({
+      type: Constants.TRIP_EXPAND_DRIVER
+    });
   }
 }
 
-export function ExpandDriverBulk() {
-  return {
-    type: Constants.TRIP_EXPAND_DRIVER_BULK
+export function ExpandDriverBulk() {  
+  return (dispatch, getState) => {
+    const {userLogged} = getState().app;
+    ReactGA.event({
+      category: tripAnalytics.openBulkAssign.category,
+      action: tripAnalytics.openBulkAssign.action,
+      label: userLogged.hubName
+    });
+    dispatch({
+      type: Constants.TRIP_EXPAND_DRIVER_BULK
+    });
   }
 }
 
@@ -544,6 +575,11 @@ export function AssignDriver(tripID, driverID) {
 
     dispatch({ type: Constants.TRIP_DRIVER_ASSIGN_START });
     dispatch({type: modalAction.BACKDROP_SHOW});
+    ReactGA.event({
+      category: tripAnalytics.assignDriver.category,
+      action: tripAnalytics.assignDriver.action,
+      label: userLogged.hubName
+    });
     FetchPost(`/trip/${tripID}/driver`, token, body).then((response) => {
       dispatch({ type: Constants.TRIP_DRIVER_ASSIGN_END });
       if(!response.ok) {
@@ -562,6 +598,11 @@ export function AssignDriver(tripID, driverID) {
       dispatch(FetchList());
       dispatch(DashboardService.FetchCountTMS());
       dispatch({type: modalAction.BACKDROP_HIDE});
+      ReactGA.event({
+        category: tripAnalytics.successAssign.category,
+        action: tripAnalytics.successAssign.action,
+        label: userLogged.hubName
+      });
     }).catch((e) => {
       const message = (e && e.message) || "Failed to set driver";
       dispatch(ModalActions.addMessage(message));
@@ -586,6 +627,11 @@ export function BulkAssignDriver(trips, driverID) {
     };
 
     dispatch({type: modalAction.BACKDROP_SHOW});
+    ReactGA.event({
+      category: tripAnalytics.assignDriver.category,
+      action: tripAnalytics.assignDriver.action,
+      label: userLogged.hubName
+    });
     FetchPost(`/trip/bulk-assign`, token, body).then((response) => {
       if(!response.ok) {
         return response.json().then(({error}) => {
@@ -604,6 +650,11 @@ export function BulkAssignDriver(trips, driverID) {
         dispatch(FetchList());
         dispatch(DashboardService.FetchCountTMS());
         dispatch({type: modalAction.BACKDROP_HIDE});
+        ReactGA.event({
+          category: tripAnalytics.successAssign.category,
+          action: tripAnalytics.successAssign.action,
+          label: userLogged.hubName
+        });
       });
     }).catch((e) => {
       const message = (e && e.message) || "Failed to set driver";
@@ -614,9 +665,17 @@ export function BulkAssignDriver(trips, driverID) {
 }
 
 export function SetDriver(driverID) {
-  return {
-    type: Constants.SET_DRIVER,
-    driverID: driverID
+  return (dispatch, getState) => {
+    const {userLogged} = getState().app;
+    ReactGA.event({
+      category: tripAnalytics.chooseDriver.category,
+      action: tripAnalytics.chooseDriver.action,
+      label: userLogged.hubName
+    });
+    dispatch({
+      type: Constants.SET_DRIVER,
+      driverID: driverID
+    });
   }
 }
 
