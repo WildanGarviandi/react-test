@@ -112,6 +112,12 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
         { config.features.menuTMS && (tmsMenu || !hubID) &&
           <div>
             <div className={styles.titlePanel}>
+              <MenuItem active={activeMenuIdx == 14} to={'/fleetmanagement'}>
+                <img src="/img/icon-hub-performance.png" className={styles.menuGlyph} />
+                <span>Fleet Management</span>
+              </MenuItem>
+            </div>
+            <div className={styles.titlePanel}>
               <span className={styles.titleMenu}>
                 My Jobs
               </span>
@@ -164,7 +170,7 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
           </div>
         }
       </ul>
-      { 
+      {
          hubID &&
          <div>
            <a className={styles.switchLink} onClick={switchMenu}>
@@ -248,12 +254,12 @@ const DashboardContainer = React.createClass({
     return (
       <div style={{display: 'table', width: '100%', minHeight: '100%'}}>
         <div className={panelClass} >
-          <DashboardMenu 
-            activeMenuIdx={activeMenuIdx} 
-            handleLogout={this.handleLogout} 
-            toggleCompact={this.toggleCompact} 
-            hubID={hubID} 
-            loggedName={loggedName} 
+          <DashboardMenu
+            activeMenuIdx={activeMenuIdx}
+            handleLogout={this.handleLogout}
+            toggleCompact={this.toggleCompact}
+            hubID={hubID}
+            loggedName={loggedName}
             counterOrder={this.props.counterOrder}
             count={this.props.count}
             countTMS={this.props.countTMS}

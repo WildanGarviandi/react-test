@@ -1,0 +1,59 @@
+.widgetOuterContainer {
+  float: left;
+  width: 100%;
+  margin-top: 40px;
+  position: relative;
+}
+
+.widgetContainer {
+  float: left;
+  min-width: 138px;
+}
+
+.toggleWidget, .toggleWidgetActive {
+  border: 1px solid transparent;
+  border-radius: 5px 5px 0 0;
+  padding: 10px 10px 0;
+  cursor: pointer;
+}
+
+.toggleWidgetActive {
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  /*-webkit-box-shadow: inset 0px 1px 3px 0px rgba(0,0,0,0.2);
+  -moz-box-shadow: inset 0px 1px 3px 0px rgba(0,0,0,0.2);
+  box-shadow: inset 0px 1px 3px 0px rgba(0,0,0,0.2);*/
+  border-bottom: none;
+  background: #ffffff;
+}
+
+.toggleWidget .total, .toggleWidgetActive .total {
+  font-size: 20px;
+  display: block;
+  color: #000000;
+  padding-bottom: 15px;
+}
+
+.toggleWidgetActive .total {
+  border-bottom: 3px solid #2196f3
+}
+
+.arbitTogglePickup {
+  color: #e8e8e8;
+  height: 24px;
+  margin: 20px;
+  float: left;
+}
+
+.contentContainer {
+  width: 100%;
+  padding: 10px;
+}
+
+.contentOuterContainer {
+  background: #ffffff;
+  width: 100%;
+  float: left;
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  margin-top: -1px;
+  border-radius: 0 5px 5px 5px;
+}

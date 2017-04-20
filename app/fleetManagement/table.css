@@ -1,0 +1,72 @@
+.table {
+  border-image-source: initial;
+  border-image-slice: initial;
+  border-image-width: initial;
+  border-image-outset: initial;
+  border-image-repeat: initial;
+
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 20px;
+
+  background-color: transparent;
+  border-collapse: separate;
+  border-spacing: 0px 10px;
+
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.th {
+  border-top: 0;
+  border-bottom-width: 2px;
+  background-color: #1A2226;
+  vertical-align: middle;
+  text-align: left;
+
+  color: #fff;
+  font-size: 12px;
+  font-weight: 400;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.tr {
+  cursor: pointer;
+  color: #333;
+  background-color: #ffffff;
+}
+
+.td {
+  height: 20px;
+  font-size: 12px;
+  padding: 14px;
+}
+
+.cardSeparator {
+  width: 2px;
+  background-color: #eee;
+  height: 25px;
+  float: left;
+}
+
+.cardLabel {
+  float: left;
+  color: #000000;
+  opacity: 0.5;
+  font-size: 12px;
+}
+
+.cardValue {
+  float: left;
+  font-weight: normal;
+  font-size: 16px;
+  margin-top: 5px;
+  color: #000000;
+  opacity: 0.8;
+  text-align: left;
+}
+
+.orderLoadImage {
+  height: 40px;
+  width: 40px;
+}
