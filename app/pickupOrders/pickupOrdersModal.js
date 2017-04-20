@@ -25,6 +25,7 @@ import * as TripDetails from '../modules/inboundTripDetails';
 import config from '../config/configValues.json';
 import Countdown from 'react-cntdwn';
 import * as UtilHelper from '../helper/utility';
+import {Pagination3} from '../components/pagination3';
 
 let fleetList = [];
 let driverList = [];
@@ -271,6 +272,17 @@ export const AssignDriver = React.createClass({
     selectedDriver = id;
     this.setState({selectedDriver: id});
   },
+  searchDriver(e) {
+    if (e.key === 'Enter') {
+      const newFilters = {['name']: e.target.value};
+      this.props.updateAndFetchDrivers(newFilters);
+      this.props.fetchDrivers();
+    }
+  },
+  enterDriverSearch(e) {
+    const newFilters = {['name']: e.target.value};
+    this.props.updateFiltersDrivers(newFilters);
+  },
   render() {
     const vehicleList = config.vehicle;
 
@@ -334,8 +346,11 @@ export const AssignDriver = React.createClass({
               </div>
           }
           <div style={{clear: 'both'}} />
+        </div>      
+        <div className={styles.panelDriverSearch}>
+          <input className={styles.inputDriverSearch} onChange={this.enterDriverSearch} onKeyPress={this.searchDriver} placeholder={'Search Driver...'} />
         </div>
-        <div className={styles.driverList}>
+        <div className={styles.driverList}>  
           { this.props.isFetchingDriver &&
             <div className={styles.searchingDriver}>
               <img className={styles.searchingIcon} src="/img/icon-search-color.png" />
@@ -359,6 +374,7 @@ export const AssignDriver = React.createClass({
             </div>
           }
         </div>
+        <Pagination3 {...this.props.paginationState} {...this.props.PaginationAction} />
         <div>
           { this.props.trip.Weight > config.motorcycleMaxWeight && this.state.selectedVehicle === 'Motorcycle' 
             && !this.state.allowNoSeparate &&
@@ -554,8 +570,11 @@ const PickupOrdersModal = React.createClass({
                     <div onClick={this.activateVendor} className={this.state.showVendor ? styles.toggleAssignActive : styles.toggleAssign}>Assign to Vendor</div>
                   </div>
                   { this.state.showDriver &&
-                    <AssignDriver trip={this.props.trip} assignDriver={this.assignDriver} 
-                      splitTrip={this.splitTrip} isFetchingDriver={this.props.isFetchingDriver} />
+                    <AssignDriver paginationState={this.props.paginationStateDrivers} 
+                      PaginationAction={this.props.PaginationActionDrivers} trip={this.props.trip} assignDriver={this.assignDriver} 
+                      splitTrip={this.splitTrip} isFetchingDriver={this.props.isFetchingDriver}
+                      updateAndFetchDrivers={this.props.UpdateAndFetchDrivers} updateFiltersDrivers={this.props.UpdateFiltersDrivers} 
+                      fetchDrivers={this.props.FetchDrivers} />
                   }
                   {
                     this.state.showVendor && driverVendorList.length === 0 &&
@@ -577,7 +596,7 @@ const PickupOrdersModal = React.createClass({
 
 function StateToProps(state) {
   const {pickupOrdersReady, driversStore} = state.app;
-  const {tripActive, showModal, splitTrip, drivers, isFetchingDriver} = pickupOrdersReady;
+  const {tripActive, showModal, splitTrip, drivers, isFetchingDriver, currentPageDrivers, limitDrivers, totalDrivers} = pickupOrdersReady;
 
   const {fleets, driversVendors} = state.app.nearbyFleets;
   fleetList = fleets;
@@ -590,7 +609,12 @@ function StateToProps(state) {
   return { 
     trip,
     showModal,
-    isFetchingDriver
+    isFetchingDriver,
+    paginationStateDrivers: {
+      currentPage: currentPageDrivers, 
+      limit: limitDrivers, 
+      total: totalDrivers
+    }
   };
 }
 
@@ -612,6 +636,23 @@ function DispatchToProps(dispatch, ownProps) {
     },
     FetchDriverVendorList: function(fleetID) {
       dispatch(NearbyFleets.FetchDriverFleet(fleetID));
+    },
+    PaginationActionDrivers: {
+      setCurrentPage: (currentPage) => {
+          dispatch(PickupOrdersReady.SetCurrentPageDrivers(currentPage));
+      },
+      setLimit: (limit) => {
+          dispatch(PickupOrdersReady.SetLimitDrivers(limit));
+      },
+    },
+    FetchDrivers() {
+      dispatch(PickupOrdersReady.FetchDrivers());
+    },
+    UpdateFiltersDrivers(filters) {
+      dispatch(PickupOrdersReady.UpdateFiltersDrivers(filters));
+    },
+    UpdateAndFetchDrivers(filters) {
+      dispatch(PickupOrdersReady.UpdateAndFetchDrivers(filters));
     },
   };
 }

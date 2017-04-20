@@ -7,6 +7,9 @@ import store from './store';
 import './main.css';
 import routes from './routes';
 import { IntlProvider } from 'react-intl-redux';
+import ReactGA from 'react-ga';
+import config from '../config.json'
+ReactGA.initialize(config.googleAnalyticsKey);
 
 const Root = () => {
   return (

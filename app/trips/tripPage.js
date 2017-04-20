@@ -13,6 +13,8 @@ import stylesButton from '../components/button.css';
 import * as UtilHelper from '../helper/utility';
 import NumberFormat from 'react-number-format';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import ReactGA from 'react-ga';
+import tripAnalytics from './tripAnalytics.json';
 
 const TripOrders = React.createClass({
   render: function() {
@@ -211,6 +213,11 @@ const PanelDrivers = React.createClass({
   },
   searchDriver(e) {
     this.setState({searchValue: e.target.value});
+    ReactGA.event({
+      category: tripAnalytics.searchDriver.category,
+      action: tripAnalytics.searchDriver.action,
+      label: this.props.userLogged.hubName
+    });
     let driverList = lodash.filter(this.props.drivers, function(driver) { 
       let driverName = driver.FirstName + ' ' + driver.LastName;
       let searchValue = e.target.value;
@@ -305,7 +312,7 @@ const TripPage = React.createClass({
     this.props.ExportTrip();
   },
   render() {
-    const {paginationState, PaginationAction, drivers, total, errorIDs, successAssign, errorAssign, trips, expandedTrip, isExpandTrip, isExpandDriver, isExpandDriverBulk, AssignTrip, BulkAssignTrip, ShrinkTrip, ExpandDriver, selectedDriver, SetDriver} = this.props;
+    const {paginationState, PaginationAction, drivers, total, userLogged, errorIDs, successAssign, errorAssign, trips, expandedTrip, isExpandTrip, isExpandDriver, isExpandDriverBulk, AssignTrip, BulkAssignTrip, ShrinkTrip, ExpandDriver, selectedDriver, SetDriver} = this.props;
     return (
       <Page title="My Trips" count={{itemName: 'Items', done: 'All Done', value: total}}>
         <Pagination2 {...paginationState} {...PaginationAction} />
@@ -376,7 +383,8 @@ const TripPage = React.createClass({
                   bulkAssignTrip={BulkAssignTrip} 
                   selectedDriver={selectedDriver} 
                   setDriver={SetDriver} 
-                  drivers={drivers} />
+                  drivers={drivers}
+                  userLogged={userLogged} />
               }
             </div>
           }
