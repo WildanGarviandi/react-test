@@ -15,11 +15,13 @@ const Constants = {
   PERFORMANCE_DATE_RESET: "performance/trips/dateReset"
 }
 
+const defaultDateRange = 6;
+
 const initialState = {
   performances: {},
   filters: {
-    startDate: moment(new Date()).subtract(5, 'days'),
-    endDate: moment(new Date())
+    startDate: moment(new Date()).subtract(defaultDateRange, 'days').startOf('day'),
+    endDate: moment(new Date()).endOf('day')
   }
 }
 
@@ -50,8 +52,8 @@ export function Reducer(state = initialState, action) {
       return lodash.assign({}, state, {
         performances: {},
         filters: {
-          startDate: moment(new Date()).subtract(5, 'days'),
-          endDate: moment(new Date())
+          startDate: moment(new Date()).subtract(defaultDateRange, 'days').startOf('day'),
+          endDate: moment(new Date()).endOf('day')
         }
       });
     }
