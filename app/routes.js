@@ -10,7 +10,7 @@ import RegisterPage from './views/register';
 import OrderDetailsPage from './orderDetails/orderDetails';
 import PickupFillPage from './views/order/pickupFill';
 import PickupOrdersPage from './pickupOrders/pickupOrdersPage';
-import FleetManagementPage from './fleetManagement/fleetPage'
+import OrderMonitoringPage from './orderMonitoring/orderMonitoringPage'
 import ReceivedFillPage from './views/order/receivedFill';
 import ReceivedOrdersPage from './views/order/receivedOrders';
 import GroupingPage from './grouping/grouping';
@@ -81,7 +81,7 @@ export default (
         <Route path="/trips/:id" component={TripDetailsPage} onEnter={requireHubAuth}/>
         <Route path="/trips/:tripID/fillReceived" component={ReceivedFillPage} onEnter={requireHubAuth}/>
         <Route path="/trips/:tripID/fillPickup" component={PickupFillPage} onEnter={requireHubAuth}/>
-        <Route path="/fleetmanagement" component={FleetManagementPage} onEnter={requireAuth} />
+        <Route path="/ordermonitoring" component={OrderMonitoringPage} onEnter={requireAuth} />
         <Route path="/mytrips" component={MyAssignedTripsPage} onEnter={requireAuth} />
         <Route path="/myongoingtrips" component={MyOngoingTripsPage} onEnter={requireAuth} />
         <Route path="/myorders" component={()=>(<MyOrdersPage />)} onEnter={requireAuth} />

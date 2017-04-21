@@ -8,10 +8,12 @@
   width: 100%;
   max-width: 100%;
   margin-bottom: 20px;
+  padding: 0 10px;
 
-  background-color: transparent;
+  background: #f1f1f1;
   border-collapse: separate;
-  border-spacing: 0px 10px;
+  border-spacing: 0 10px;
+  border-radius: 5px;
 
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
@@ -36,10 +38,19 @@
   background-color: #ffffff;
 }
 
-.td {
+.tr:hover {
+  box-shadow: -1px 2px 8px 0px rgba(50, 50, 50, 0.75);
+}
+
+td {
   height: 20px;
   font-size: 12px;
   padding: 14px;
+}
+
+.card {
+  background-color: #fff;
+  color: #000;
 }
 
 .cardSeparator {
@@ -47,6 +58,11 @@
   background-color: #eee;
   height: 25px;
   float: left;
+}
+
+.orderIDColumn {
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .cardLabel {
@@ -58,12 +74,16 @@
 
 .cardValue {
   float: left;
-  font-weight: normal;
+  font-weight: bold;
   font-size: 16px;
   margin-top: 5px;
   color: #000000;
   opacity: 0.8;
   text-align: left;
+}
+
+.cardValue.cancelled {
+  color: #ff5a60;
 }
 
 .orderLoadImage {

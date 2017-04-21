@@ -2,9 +2,9 @@ import React from 'react';
 import {connect} from 'react-redux';
 import styles from './styles.css';
 import {ButtonWithLoading, Input, Page} from '../views/base';
-import OrderRow from './orderTable';
+import OrderTable, {Filter} from './orderTable';
 
-const FleetPage = React.createClass({
+const OrderMonitoringPage = React.createClass({
   getInitialState() {
     return ({
       showDelivery: true,
@@ -56,7 +56,7 @@ const FleetPage = React.createClass({
   },
   render() {
     return (
-      <Page title="Fleet Management">
+      <Page title="Order Monitoring">
         <div className={styles.widgetOuterContainer}>
           <div onClick={this.activateDelivery} className={`${styles.widgetContainer} ${this.state.showDelivery ? styles.toggleWidgetActive : styles.toggleWidget}`}>
             <span className={styles.widgetTitle}>Total Delivery</span>
@@ -83,7 +83,7 @@ const FleetPage = React.createClass({
           <div className={styles.contentContainer}>
             <div className={styles.mainTable}>
               { this.state.showDelivery &&
-                <div>Show Delivery</div>
+                <Filter />
               }
               {
                 this.state.showSucceed &&
@@ -99,7 +99,7 @@ const FleetPage = React.createClass({
               }
             </div>
             { this.state.showDelivery &&
-              <OrderRow />
+              <OrderTable />
             }
             {
               this.state.showSucceed &&
@@ -128,4 +128,4 @@ function mapState(state) {
   }
 }
 
-export default connect(mapState)(FleetPage)
+export default connect(mapState)(OrderMonitoringPage)

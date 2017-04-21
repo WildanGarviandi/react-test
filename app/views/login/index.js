@@ -91,7 +91,7 @@ const Login = ({input, handleInputChange, handleSubmit, loginState}) => {
 
 const LoginPage = React.createClass({
   getInitialState() {
-    return { email: '', password: '', rememberMe: false };
+    return { email: 'fleet@etobee.com', password: '123456', rememberMe: false };
   },
   handleInputChange(key) {
     return (val) => {

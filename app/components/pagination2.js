@@ -6,7 +6,7 @@ import styles from './pagination2.css';
 function PaginationInfo(props) {
   var {limit, total, page} = props;
   var infoString = `PAGE ${page} / ${Math.ceil(total/limit)}`;
-
+  console.log(style, 'sapi')
   return (
     <span className={styles.paginationInfo}>
       {infoString}
@@ -49,7 +49,7 @@ function PaginationDetail(props) {
     </div>
   );
 }
-  
+
 const PaginationControl = React.createClass({
   setPage(x) {
     if(x != this.props.currentPage && x >= 1 && x <= this.props.pagesCount) this.props.setPage(x);
@@ -97,11 +97,11 @@ const Pagination2 = React.createClass({
     this.props.setCurrentPage(x);
   },
   render() {
-    var {limit, total, currentPage} = this.props;
+    var {limit, total, currentPage, style} = this.props;
     var totalPages = this.countPages();
 
     return (
-      <div className={styles.paginationTable}>
+      <div className={styles.paginationTable} style={style && style}>
         <div style={{display: 'block'}}>
           <PaginationControl pagesCount={totalPages} currentPage={currentPage} setPage={this.setPage} />
           <PaginationDetail limit={limit} total={total} page={currentPage} setLimit={this.setLimit} />

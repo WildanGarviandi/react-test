@@ -112,9 +112,9 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
         { config.features.menuTMS && (tmsMenu || !hubID) &&
           <div>
             <div className={styles.titlePanel}>
-              <MenuItem active={activeMenuIdx == 14} to={'/fleetmanagement'}>
+              <MenuItem active={activeMenuIdx == 14} to={'/ordermonitoring'}>
                 <img src="/img/icon-hub-performance.png" className={styles.menuGlyph} />
-                <span>Fleet Management</span>
+                <span>Order Management</span>
               </MenuItem>
             </div>
             <div className={styles.titlePanel}>
