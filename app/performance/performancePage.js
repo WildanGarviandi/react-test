@@ -11,7 +11,8 @@ import formStyles from '../components/form.css';
 import {push} from 'react-router-redux';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import moment from 'moment';
-import ReactTooltip from 'react-tooltip'
+import ReactTooltip from 'react-tooltip';
+import config from '../config/configValues.json';
 
 function getTimeFromSeconds(seconds) {
   let h = seconds / 3600;
@@ -99,9 +100,15 @@ class StatBox extends React.Component {
   }
 };
 
-class InboundTripPage extends React.Component {
+class PerformancePage extends React.Component {
   componentWillMount() {
     this.props.resetList();
+    this.setPerformanceInterval();
+  }
+  setPerformanceInterval() {
+    setInterval(function() {
+      this.props.getList();
+    }.bind(this), config.performanceInterval);
   }
   render() {
     const {performances, percentage, totalDuration, filters, maxIndexValue} = this.props;
@@ -259,4 +266,4 @@ function DispatchToPage(dispatch) {
   }
 }
 
-export default connect(StateToProps, DispatchToPage)(InboundTripPage);
+export default connect(StateToProps, DispatchToPage)(PerformancePage);
