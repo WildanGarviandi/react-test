@@ -59,3 +59,114 @@
   margin-top: -1px;
   border-radius: 0 5px 5px 5px;
 }
+
+/* The animation code */
+@keyframes panelDetailsAnimation {
+  from {right: -400px;}
+  to {right: 0px;}
+}
+
+.panelDetails, .panelDetailsHidden {
+  position: fixed;
+  z-index: 1;
+  top: 50px;
+  width: 400px;
+  background-color: white;
+  height: 100%;
+  box-shadow: -1px 2px 10px 0px rgba(50, 50, 50, 0.75);
+}
+
+.panelDetails {
+  right: 0px;
+  animation-name: panelDetailsAnimation;
+  animation-duration: 0.5s;
+}
+
+/* The animation code */
+@keyframes panelDetailsAnimationHidden {
+  from {right: 0px;}
+  to {right: -400px;}
+}
+
+.panelDetailsHidden {
+  right: -400px;
+  border-right: 1px solid #e8e8e8;
+  animation-name: panelDetailsAnimationHidden;
+  animation-duration: 0.5s;
+}
+
+.closeButton {
+  background-color: #fff;
+  box-shadow: none;
+  border: none;
+  font-size: 24px;
+  color: #cccccc;
+  cursor: pointer;
+  padding: 8px;
+  margin-left: -32px;
+  float: left;
+  z-index: -1;
+  border-left: 1px solid #e8e8e8;
+  box-shadow: -2px 1px 2px 0px rgba(50, 50, 50, 0.75);
+  width: 15px;
+}
+
+.orderDetails {
+  width: 360px;
+  border-radius: 4px;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 12px;
+  color: #000000;
+  margin-top: 15px;
+  padding-right: 10px;
+  overflow-y: auto;
+}
+
+.orderDetailsLabel {
+  font-size: 12px;
+  margin-top: 8px;
+  opacity: 0.5;
+}
+
+.orderDetailsValue {
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.orderValue {
+  width: 360px;
+  height: 40px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 5px;
+  margin-top: 15px;
+}
+
+.orderAdditionalInfo {
+  float: left;
+  width: 30%;
+}
+
+.orderDueTime {
+  width: 360px;
+  height: 40px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 10px;
+  margin-top: 15px;
+}

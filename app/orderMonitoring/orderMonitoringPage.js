@@ -57,6 +57,7 @@ const OrderMonitoringPage = React.createClass({
   render() {
     return (
       <Page title="Order Monitoring">
+        <PanelDetails expandedOrder={false} />
         <div className={styles.widgetOuterContainer}>
           <div onClick={this.activateDelivery} className={`${styles.widgetContainer} ${this.state.showDelivery ? styles.toggleWidgetActive : styles.toggleWidget}`}>
             <span className={styles.widgetTitle}>Total Delivery</span>
@@ -100,19 +101,31 @@ const OrderMonitoringPage = React.createClass({
               }*/}
             </div>
             { this.state.showDelivery &&
-              <OrderTable />
+              <div>
+                Total
+                <OrderTable />
+              </div>
             }
             {
               this.state.showSucceed &&
-              <OrderTable />
+              <div>
+                Succeed
+                <OrderTable />
+              </div>
             }
             {
               this.state.showPending &&
-              <OrderTable />
+              <div>
+                Pending
+                <OrderTable />
+              </div>
             }
             {
               this.state.showFailed &&
-              <OrderTable />
+              <div>
+                Failed
+                <OrderTable />
+              </div>
             }
           </div>
         </div>
@@ -130,3 +143,91 @@ function mapState(state) {
 }
 
 export default connect(mapState)(OrderMonitoringPage)
+
+const PanelDetails = React.createClass({
+  render() {
+    const { expandedOrder, shrinkOrder, isExpandDriver } = this.props;
+    return (
+      <div>
+        { expandedOrder &&
+          <div className={expandedOrder ? styles.panelDetails : styles.panelDetailsHidden}>
+            <div className={styles.closeButton}>
+              &times;
+            </div>
+            <div className={styles.orderDueTime}>
+              14 Jam
+            </div>
+            <div className={styles.orderDetails}>
+              <div className={styles.orderDetailsLabel}>
+                Order ID
+              </div>
+              <div className={styles.orderDetailsValue}>
+
+              </div>
+              <div className={styles.orderDetailsLabel}>
+                Origin
+              </div>
+              <div className={styles.orderDetailsValue}>
+
+              </div>
+              <div className={styles.orderDetailsLabel}>
+                Destination
+              </div>
+              <div className={styles.orderDetailsValue}>
+
+              </div>
+              <div>
+                <div className={styles.orderAdditionalInfo}>
+                  <div className={styles.orderDetailsLabel}>
+                    Weight
+                  </div>
+                  <div className={styles.orderDetailsValue}>
+
+                  </div>
+                </div>
+                <div className={styles.orderAdditionalInfo}>
+                  <div className={styles.orderDetailsLabel}>
+                    COD Type
+                  </div>
+                  <div className={styles.orderDetailsValue}>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className={styles.orderValue}>
+              <div className={styles.orderValueLabel}>
+                Total Value
+              </div>
+              <div className={styles.orderTotalValue}>
+
+              </div>
+            </div>
+            <div className={styles.orderDetails}>
+              <div className={styles.orderDetailsLabel}>
+                From
+              </div>
+              <div className={styles.orderDetailsValue}>
+
+              </div>
+              <div className={styles.orderDetailsValue2}>
+
+              </div>
+            </div>
+            <div className={styles.orderDetails}>
+              <div className={styles.orderDetailsLabel}>
+                To
+              </div>
+              <div className={styles.orderDetailsValue}>
+
+              </div>
+              <div className={styles.orderDetailsValue2}>
+
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    );
+  }
+});
