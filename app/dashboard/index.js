@@ -112,7 +112,7 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
         { config.features.menuTMS && (tmsMenu || !hubID) &&
           <div>
             <div className={styles.titlePanel}>
-              <MenuItem active={activeMenuIdx == 14} to={'/ordermonitoring'}>
+              <MenuItem active={activeMenuIdx == 11} to={'/ordermonitoring'}>
                 <img src="/img/icon-hub-performance.png" className={styles.menuGlyph} />
                 <span>Order Management</span>
               </MenuItem>
@@ -198,7 +198,8 @@ const menuPaths = [
   '/myorders',
   '/mytrips',
   '/myongoingtrips',
-  '/mydrivers'
+  '/mydrivers',
+  '/ordermonitoring'
 ];
 
 const menuPathsTMS = [
@@ -206,7 +207,8 @@ const menuPathsTMS = [
   '/myorders/add',
   '/mytrips',
   '/myongoingtrips',
-  '/mydrivers'
+  '/mydrivers',
+  '/ordermonitoring'
 ];
 
 function GetActiveMenuIdx(path) {

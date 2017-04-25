@@ -60,6 +60,8 @@ const OrderRow = React.createClass({
   }
 });
 
+// START DROPDOWN FILTER
+
 function DropdownDispatchBuilder(filterKeyword) {
   return (dispatch) => {
     return {
@@ -115,6 +117,61 @@ function ConnectDropdownBuilder(keyword) {
 const SortFilter = ConnectDropdownBuilder('sortOptions')(FilterTop);
 const OrderTypeFilter = ConnectDropdownBuilder('orderTypeOptions')(FilterTop);
 
+// END DROPDOWN FILTER
+
+// START INPUT FILTER
+
+function InputStoreBuilder(keyword) {
+  // return (store) => {
+  //   const {filters} = store.app.myDrivers;
+  //
+  //   return {
+  //     value: filters[keyword],
+  //   }
+  // }
+}
+
+function InputDispatchBuilder(keyword, placeholder) {
+  return (dispatch) => {
+    function OnChange(e) {
+      const newFilters = {[keyword]: e.target.value};
+      // dispatch(DriverService.UpdateFilters(newFilters));
+    }
+
+    function OnKeyDown(e) {
+      if(e.keyCode !== 13) {
+        return;
+      }
+
+      // dispatch(DriverService.SetCurrentPage(1));
+      // dispatch(DriverService.FetchList());
+    }
+
+    return {
+      onChange: OnChange,
+      onKeyDown: OnKeyDown,
+      placeholder: placeholder
+    }
+  }
+}
+
+function ConnectBuilder(keyword, placeholder) {
+    return connect(InputStoreBuilder(keyword), InputDispatchBuilder(keyword, placeholder));
+}
+
+function InputFilter({value, onChange, onKeyDown, placeholder}) {
+  return (
+    <input className={styles.inputSearch} placeholder={placeholder} type="text" value={value} onChange={onChange} onKeyDown={onKeyDown} />
+  );
+}
+
+const EDSFilter = ConnectBuilder('eds', 'Search for EDS...')(InputFilter);
+const NameFilter = ConnectBuilder('name', 'Search for driver...')(InputFilter);
+const StatusFilter = ConnectBuilder('status', 'Search for order status...')(InputFilter);
+const FleetFilter = ConnectBuilder('fleet', "Search for fleet's area...")(InputFilter);
+
+// END INPUT FILTER
+
 export const Filter = React.createClass({
   render() {
     const paginationState = {
@@ -129,6 +186,13 @@ export const Filter = React.createClass({
         <OrderTypeFilter />
 
         <Pagination2 { ...paginationState }/>
+
+        <div className={styles.row}>
+          <EDSFilter />
+          <NameFilter />
+          <StatusFilter />
+          <FleetFilter />
+        </div>
       </div>
     );
   }

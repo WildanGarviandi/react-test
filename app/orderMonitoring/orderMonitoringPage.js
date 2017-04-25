@@ -70,19 +70,20 @@ const OrderMonitoringPage = React.createClass({
           <span className={styles.arbitTogglePickup}> | </span>
           <div onClick={this.activatePending} className={`${styles.widgetContainer} ${this.state.showPending ? styles.toggleWidgetActive : styles.toggleWidget}`}>
             <span className={styles.widgetTitle}>Total Pending Delivery</span>
-            <span className={styles.total}>650</span>
+            <span className={styles.total}>450</span>
           </div>
           <span className={styles.arbitTogglePickup}> | </span>
           <div onClick={this.activateFailed} className={`${styles.widgetContainer} ${this.state.showFailed ? styles.toggleWidgetActive : styles.toggleWidget}`}>
             <span className={styles.widgetTitle}>Total Failed Delivery</span>
-            <span className={styles.total}>650</span>
+            <span className={styles.total}>134</span>
           </div>
         </div>
 
         <div className={styles.contentOuterContainer}>
           <div className={styles.contentContainer}>
             <div className={styles.mainTable}>
-              { this.state.showDelivery &&
+              <Filter />
+              {/*{ this.state.showDelivery &&
                 <Filter />
               }
               {
@@ -96,22 +97,22 @@ const OrderMonitoringPage = React.createClass({
               {
                 this.state.showFailed &&
                 <div>Show Failed</div>
-              }
+              }*/}
             </div>
             { this.state.showDelivery &&
               <OrderTable />
             }
             {
               this.state.showSucceed &&
-              <div>Succeed Table</div>
+              <OrderTable />
             }
             {
               this.state.showPending &&
-              <div>Pending Table</div>
+              <OrderTable />
             }
             {
               this.state.showFailed &&
-              <div>Failed Table</div>
+              <OrderTable />
             }
           </div>
         </div>
