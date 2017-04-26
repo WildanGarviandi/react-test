@@ -32,6 +32,7 @@ import OutboundTripsManifestPage from './outboundTrips/outboundTripsManifest';
 import OutboundTripsCoverManifestPage from './outboundTrips/outboundTripsCoverManifest';
 import {modalAction} from './modules/modals/constants';
 import MyOngoingTripsPage from './ongoingTrips/tripPage';
+import PerformancePage from './performance/performancePage';
 
 function requireAuth(nextState, replace, callback) {
   store.dispatch({type: modalAction.BACKDROP_SHOW});
@@ -69,6 +70,7 @@ export default (
       <IndexRoute component={LoginPage} />
       <Route path="/home" component={DashboardPage}>
         <IndexRoute component={PickupOrdersPage} onEnter={requireAuth}/>
+        <Route path="/performance" component={PerformancePage} onEnter={requireHubAuth}/>
         <Route path="/orders/pickup" component={PickupOrdersPage} onEnter={requireAuth} />
         <Route path="/orders/received" component={ReceivedOrdersPage} onEnter={requireHubAuth}/>
         <Route path="/grouping" component={GroupingPage} onEnter={requireHubAuth}/>
