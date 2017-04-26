@@ -114,7 +114,7 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
             <div className={styles.titlePanel}>
               <MenuItem active={activeMenuIdx == 11} to={'/ordermonitoring'}>
                 <img src="/img/icon-hub-performance.png" className={styles.menuGlyph} />
-                <span>Order Management</span>
+                <span>Order Monitoring</span>
               </MenuItem>
             </div>
             <div className={styles.titlePanel}>

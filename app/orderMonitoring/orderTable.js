@@ -21,9 +21,10 @@ const OrderRow = React.createClass({
     const { order } = this.props;
     const DEFAULT_IMAGE = "/img/default-logo.png";
     const ETOBEE_IMAGE = "/img/etobee-logo.png";
+    console.log(this.props,'sapi');
     return (
       <tr className={styles.tr + ' ' + styles.card} onMouseEnter={this.onMouseOver} onMouseLeave={this.onMouseOut}>
-        <td><img className={styles.orderLoadImage} src={order.IsTrunkeyOrder ? ETOBEE_IMAGE : FLEET_IMAGE} onError={(e)=>{e.target.src=DEFAULT_IMAGE}} /></td>
+        <td onClick={this.props.ExpandOrder}><img className={styles.orderLoadImage} src={order.IsTrunkeyOrder ? ETOBEE_IMAGE : FLEET_IMAGE} onError={(e)=>{e.target.src=DEFAULT_IMAGE}} /></td>
         <td className={styles.orderIDColumn}>{order.UserOrderNumber}</td>
         <td><div className={styles.cardSeparator} /></td>
         <td>
@@ -65,9 +66,12 @@ const OrderRow = React.createClass({
 function DropdownDispatchBuilder(filterKeyword) {
   return (dispatch) => {
     return {
-      handleSelect: (selectedOption) => {
-        const SetFn = OrderService.SetDropDownFilter(filterKeyword);
-        dispatch(SetFn(selectedOption));
+      ExpandOrder: () => {
+        // dispatch(OrderService.ExpandOrder());
+        console.log('kuda');
+      },
+      HideOrder: () => {
+        dispatch(OrderService.HideOrder());
       }
     }
   }
@@ -135,16 +139,12 @@ function InputDispatchBuilder(keyword, placeholder) {
   return (dispatch) => {
     function OnChange(e) {
       const newFilters = {[keyword]: e.target.value};
-      // dispatch(DriverService.UpdateFilters(newFilters));
     }
 
     function OnKeyDown(e) {
       if(e.keyCode !== 13) {
         return;
       }
-
-      // dispatch(DriverService.SetCurrentPage(1));
-      // dispatch(DriverService.FetchList());
     }
 
     return {

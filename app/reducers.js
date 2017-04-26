@@ -37,8 +37,9 @@ import {Reducer as pickupOrders} from './pickupOrders/pickupOrdersService';
 import {Reducer as pickupOrdersReady} from './pickupOrders/pickupOrdersReadyService';
 import nearbyFleets from './nearbyFleets/nearbyFleetService';
 import dashboard from './dashboard/dashboardService';
+import orderMonitoring from './orderMonitoring/orderMonitoringService';
 
-export default combineReducers({ 
+export default combineReducers({
   userLogged: authReducers,
   containerList: containersReducers.containerList,
   containers: containersReducers.containers,
@@ -74,5 +75,6 @@ export default combineReducers({
   publicCityList,
   registerData,
   nearbyFleets,
-  dashboard
+  dashboard,
+  orderMonitoring
 });

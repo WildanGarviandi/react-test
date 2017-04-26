@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import styles from './styles.css';
 import {ButtonWithLoading, Input, Page} from '../views/base';
 import OrderTable, {Filter} from './orderTable';
+import * as orderService from './orderMonitoringService';
 
 const OrderMonitoringPage = React.createClass({
   getInitialState() {
@@ -46,84 +47,78 @@ const OrderMonitoringPage = React.createClass({
     });
   },
   componentWillMount() {
-    // this.props.ResetFilter();
-    // this.props.ResetFilterReady();
-    // this.props.GetList();
-    // this.props.GetListReady();
+    this.props.FetchCount();
     if (!this.props.userLogged.hubID) {
       window.location.href = config.defaultMainPageTMS;
     }
   },
   render() {
+    const { failedDelivery, pendingDelivery, succeedDelivery, totalDelivery } = this.props.count;
+    console.log(this.props, 'sapi');
     return (
       <Page title="Order Monitoring">
-        <PanelDetails expandedOrder={false} />
+        <PanelDetails expandedOrder={this.props.expandedOrder} />
         <div className={styles.widgetOuterContainer}>
           <div onClick={this.activateDelivery} className={`${styles.widgetContainer} ${this.state.showDelivery ? styles.toggleWidgetActive : styles.toggleWidget}`}>
             <span className={styles.widgetTitle}>Total Delivery</span>
-            <span className={styles.total}>1234</span>
+            <span className={styles.total}>{totalDelivery}</span>
           </div>
           <span className={styles.arbitTogglePickup}> | </span>
           <div onClick={this.activateSucceed} className={`${styles.widgetContainer} ${this.state.showSucceed ? styles.toggleWidgetActive : styles.toggleWidget}`}>
             <span className={styles.widgetTitle}>Total Succeed Delivery</span>
-            <span className={styles.total}>650</span>
+            <span className={styles.total}>{succeedDelivery}</span>
           </div>
           <span className={styles.arbitTogglePickup}> | </span>
           <div onClick={this.activatePending} className={`${styles.widgetContainer} ${this.state.showPending ? styles.toggleWidgetActive : styles.toggleWidget}`}>
             <span className={styles.widgetTitle}>Total Pending Delivery</span>
-            <span className={styles.total}>450</span>
+            <span className={styles.total}>{pendingDelivery}</span>
           </div>
           <span className={styles.arbitTogglePickup}> | </span>
           <div onClick={this.activateFailed} className={`${styles.widgetContainer} ${this.state.showFailed ? styles.toggleWidgetActive : styles.toggleWidget}`}>
             <span className={styles.widgetTitle}>Total Failed Delivery</span>
-            <span className={styles.total}>134</span>
+            <span className={styles.total}>{failedDelivery}</span>
           </div>
         </div>
 
         <div className={styles.contentOuterContainer}>
           <div className={styles.contentContainer}>
             <div className={styles.mainTable}>
-              <Filter />
-              {/*{ this.state.showDelivery &&
+              { this.state.showDelivery &&
                 <Filter />
               }
               {
                 this.state.showSucceed &&
-                <div>Show Succeed</div>
+                <Filter />
               }
               {
                 this.state.showPending &&
-                <div>Show Pending</div>
+                <Filter />
               }
               {
                 this.state.showFailed &&
-                <div>Show Failed</div>
-              }*/}
+                <Filter />
+              }
             </div>
             { this.state.showDelivery &&
               <div>
-                Total
                 <OrderTable />
               </div>
             }
             {
               this.state.showSucceed &&
               <div>
-                Succeed
                 <OrderTable />
               </div>
             }
             {
               this.state.showPending &&
               <div>
-                Pending
                 <OrderTable />
               </div>
             }
             {
               this.state.showFailed &&
               <div>
-                Failed
                 <OrderTable />
               </div>
             }
@@ -134,19 +129,39 @@ const OrderMonitoringPage = React.createClass({
   }
 });
 
-function mapState(state) {
-  const userLogged = state.app.userLogged;
+function mapState(store) {
+  const { userLogged } = store.app;
+  const { currentPage, limit, total, expandedOrder, count } = store.app.orderMonitoring
 
   return {
-    userLogged
+    userLogged,
+    paginationState: {
+        currentPage, limit, total,
+    },
+    expandedOrder,
+    count
   }
 }
 
-export default connect(mapState)(OrderMonitoringPage)
+function mapDispatch(dispatch) {
+  return {
+    FetchCount: () => {
+      dispatch(orderService.FetchCount());
+    },
+    ExpandOrder: () => {
+      dispatch(orderService.ExpandOrder());
+    },
+    HideOrder: () => {
+      dispatch(orderService.HideOrder());
+    }
+  }
+}
+
+export default connect(mapState, mapDispatch)(OrderMonitoringPage)
 
 const PanelDetails = React.createClass({
   render() {
-    const { expandedOrder, shrinkOrder, isExpandDriver } = this.props;
+    const { expandedOrder } = this.props;
     return (
       <div>
         { expandedOrder &&
