@@ -5,6 +5,7 @@ import { FilterTop } from '../components/form';
 import {Pagination2} from '../components/pagination2';
 import OrderStatusSelector from '../modules/orderStatus/selector';
 import * as OrderService from '../orders/orderService';
+import * as orderMonitoringService from './orderMonitoringService';
 import styles from './table.css';
 
 const OrderRow = React.createClass({
@@ -21,10 +22,9 @@ const OrderRow = React.createClass({
     const { order } = this.props;
     const DEFAULT_IMAGE = "/img/default-logo.png";
     const ETOBEE_IMAGE = "/img/etobee-logo.png";
-    console.log(this.props,'sapi');
     return (
-      <tr className={styles.tr + ' ' + styles.card} onMouseEnter={this.onMouseOver} onMouseLeave={this.onMouseOut}>
-        <td onClick={this.props.ExpandOrder}><img className={styles.orderLoadImage} src={order.IsTrunkeyOrder ? ETOBEE_IMAGE : FLEET_IMAGE} onError={(e)=>{e.target.src=DEFAULT_IMAGE}} /></td>
+      <tr className={styles.tr + ' ' + styles.card} onMouseEnter={this.onMouseOver} onMouseLeave={this.onMouseOut} onClick={this.props.expandOrder}>
+        <td><img className={styles.orderLoadImage} src={order.IsTrunkeyOrder ? ETOBEE_IMAGE : FLEET_IMAGE} onError={(e)=>{e.target.src=DEFAULT_IMAGE}} /></td>
         <td className={styles.orderIDColumn}>{order.UserOrderNumber}</td>
         <td><div className={styles.cardSeparator} /></td>
         <td>
@@ -66,12 +66,9 @@ const OrderRow = React.createClass({
 function DropdownDispatchBuilder(filterKeyword) {
   return (dispatch) => {
     return {
-      ExpandOrder: () => {
-        // dispatch(OrderService.ExpandOrder());
-        console.log('kuda');
-      },
-      HideOrder: () => {
-        dispatch(OrderService.HideOrder());
+      handleSelect: (selectedOption) => {
+        const SetFn = OrderService.SetDropDownFilter(filterKeyword);
+        dispatch(SetFn(selectedOption));
       }
     }
   }
@@ -198,21 +195,36 @@ export const Filter = React.createClass({
   }
 });
 
-function OrderTable() {
-  const order = {
-    order: {
-      DropoffAddress:{
-        City: "Jakarta Selatan"
+const OrderTable = React.createClass({
+  render() {
+    const order = {
+      order: {
+        DropoffAddress:{
+          City: "Jakarta Selatan"
+        },
+        IsTrunkeyOrder: true,
+        UserOrderNumber: "EDS21396244"
+      }
+    }
+    return (
+      <table className={styles.table}>
+        <OrderRow {...order} expandOrder={this.props.ExpandOrder}/>
+      </table>
+    );
+  }
+})
+
+function OrderTableDispatchBuilder() {
+  return (dispatch) => {
+    return {
+      ExpandOrder: () => {
+        dispatch(orderMonitoringService.ExpandOrder());
       },
-      IsTrunkeyOrder: true,
-      UserOrderNumber: "EDS21396244"
+      HideOrder: () => {
+        dispatch(orderMonitoringService.HideOrder());
+      }
     }
   }
-  return (
-    <table className={styles.table}>
-      <OrderRow {...order} />
-    </table>
-  );
 }
 
-export default OrderTable;
+export default connect(null, OrderTableDispatchBuilder)(OrderTable);

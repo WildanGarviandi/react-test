@@ -54,10 +54,9 @@ const OrderMonitoringPage = React.createClass({
   },
   render() {
     const { failedDelivery, pendingDelivery, succeedDelivery, totalDelivery } = this.props.count;
-    console.log(this.props, 'sapi');
     return (
       <Page title="Order Monitoring">
-        <PanelDetails expandedOrder={this.props.expandedOrder} />
+        <PanelDetails expandedOrder={this.props.expandedOrder} hideOrder={this.props.HideOrder} />
         <div className={styles.widgetOuterContainer}>
           <div onClick={this.activateDelivery} className={`${styles.widgetContainer} ${this.state.showDelivery ? styles.toggleWidgetActive : styles.toggleWidget}`}>
             <span className={styles.widgetTitle}>Total Delivery</span>
@@ -162,11 +161,12 @@ export default connect(mapState, mapDispatch)(OrderMonitoringPage)
 const PanelDetails = React.createClass({
   render() {
     const { expandedOrder } = this.props;
+    console.log(this.props, 'kerbau');
     return (
       <div>
         { expandedOrder &&
           <div className={expandedOrder ? styles.panelDetails : styles.panelDetailsHidden}>
-            <div className={styles.closeButton}>
+            <div className={styles.closeButton} onClick={this.props.hideOrder}>
               &times;
             </div>
             <div className={styles.orderDueTime}>
