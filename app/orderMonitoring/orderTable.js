@@ -1,30 +1,42 @@
-import React from 'react';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { FilterTop } from '../components/form';
-// import {DropdownWithState2 as FilterTop} from '../views/base/dropdown';
-import {Pagination2} from '../components/pagination2';
+import { Pagination2 } from '../components/pagination2';
 import OrderStatusSelector from '../modules/orderStatus/selector';
 import * as OrderService from '../orders/orderService';
 import styles from './table.css';
 
-const OrderRow = React.createClass({
-  getInitialState() {
-    return ({isHover: false, isEdit: false});
-  },
+class OrderRow extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isHover: false,
+      isEdit: false
+    }
+  }
+
   onMouseOver() {
     this.setState({isHover: true});
-  },
+  }
+
   onMouseOut() {
     this.setState({isHover: false});
-  },
+  }
+
   render() {
     const { order } = this.props;
     const DEFAULT_IMAGE = "/img/default-logo.png";
     const ETOBEE_IMAGE = "/img/etobee-logo.png";
-    console.log(this.props,'sapi');
+
     return (
       <tr className={styles.tr + ' ' + styles.card} onMouseEnter={this.onMouseOver} onMouseLeave={this.onMouseOut}>
-        <td onClick={this.props.ExpandOrder}><img className={styles.orderLoadImage} src={order.IsTrunkeyOrder ? ETOBEE_IMAGE : FLEET_IMAGE} onError={(e)=>{e.target.src=DEFAULT_IMAGE}} /></td>
+        <td onClick={this.props.ExpandOrder}>
+          <img
+            className={styles.orderLoadImage}
+            src={order.IsTrunkeyOrder ? ETOBEE_IMAGE : FLEET_IMAGE}
+            onError={(e)=>{e.target.src=DEFAULT_IMAGE}}
+          />
+        </td>
         <td className={styles.orderIDColumn}>{order.UserOrderNumber}</td>
         <td><div className={styles.cardSeparator} /></td>
         <td>
@@ -33,7 +45,7 @@ const OrderRow = React.createClass({
           </div>
           <br />
           <div className={styles.cardValue}>
-            Agung Santoso
+            &nbsp;
           </div>
         </td>
         <td><div className={styles.cardSeparator} /></td>
@@ -43,7 +55,7 @@ const OrderRow = React.createClass({
           </div>
           <br />
           <div className={styles.cardValue + ' ' + styles['cancelled']}>
-            Cancelled
+            &nbsp;
           </div>
         </td>
         <td><div className={styles.cardSeparator} /></td>
@@ -53,13 +65,13 @@ const OrderRow = React.createClass({
           </div>
           <br />
           <div className={styles.cardValue}>
-            Jakarta Pusat
+            &nbsp;
           </div>
         </td>
       </tr>
     );
   }
-});
+}
 
 // START DROPDOWN FILTER
 
@@ -67,8 +79,7 @@ function DropdownDispatchBuilder(filterKeyword) {
   return (dispatch) => {
     return {
       ExpandOrder: () => {
-        // dispatch(OrderService.ExpandOrder());
-        console.log('kuda');
+        dispatch(OrderService.ExpandOrder());
       },
       HideOrder: () => {
         dispatch(OrderService.HideOrder());
@@ -126,13 +137,6 @@ const OrderTypeFilter = ConnectDropdownBuilder('orderTypeOptions')(FilterTop);
 // START INPUT FILTER
 
 function InputStoreBuilder(keyword) {
-  // return (store) => {
-  //   const {filters} = store.app.myDrivers;
-  //
-  //   return {
-  //     value: filters[keyword],
-  //   }
-  // }
 }
 
 function InputDispatchBuilder(keyword, placeholder) {
@@ -172,7 +176,7 @@ const FleetFilter = ConnectBuilder('fleet', "Search for fleet's area...")(InputF
 
 // END INPUT FILTER
 
-export const Filter = React.createClass({
+export class Filter extends Component {
   render() {
     const paginationState = {
       currentPage: 1,
@@ -196,21 +200,11 @@ export const Filter = React.createClass({
       </div>
     );
   }
-});
+}
 
 function OrderTable() {
-  const order = {
-    order: {
-      DropoffAddress:{
-        City: "Jakarta Selatan"
-      },
-      IsTrunkeyOrder: true,
-      UserOrderNumber: "EDS21396244"
-    }
-  }
   return (
     <table className={styles.table}>
-      <OrderRow {...order} />
     </table>
   );
 }
