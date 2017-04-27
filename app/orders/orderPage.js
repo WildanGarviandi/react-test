@@ -35,7 +35,7 @@ const PanelDetails = React.createClass({
             </div>
             <div className={styles.orderDueTime}>
               <Deadline deadline={expandedOrder.DueTime} />
-            </div>   
+            </div>
             <div className={styles.orderDetails}>
               <div className={styles.reassignButton}>
                 <button className={stylesButton.greenButton2} onClick={this.props.expandDriver}>Assign</button>
@@ -76,16 +76,16 @@ const PanelDetails = React.createClass({
                   </div>
                 </div>
               </div>
-            </div>            
-            <div className={styles.orderValue}>                            
+            </div>
+            <div className={styles.orderValue}>
               <div className={styles.orderValueLabel}>
                 Total Value
               </div>
               <div className={styles.orderTotalValue}>
-                <NumberFormat displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp '} value={expandedOrder.TotalValue} />    
+                <NumberFormat displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp '} value={expandedOrder.TotalValue} />
               </div>
             </div>
-            <div className={styles.orderDetails}>            
+            <div className={styles.orderDetails}>
               <div className={styles.orderDetailsLabel}>
                 From
               </div>
@@ -96,7 +96,7 @@ const PanelDetails = React.createClass({
                 {expandedOrder.PickupAddress && expandedOrder.PickupAddress.Address1}
               </div>
             </div>
-            <div className={styles.orderDetails}>            
+            <div className={styles.orderDetails}>
               <div className={styles.orderDetailsLabel}>
                 To
               </div>
@@ -124,7 +124,7 @@ const Drivers = React.createClass({
         this.props.selectedOrders.forEach(function(order) {
           selectedWeight += order.PackageWeight;
         })
-      } 
+      }
       const totalWeight = parseFloat(driver.TotalCurrentWeight) + parseFloat(selectedWeight);
       const driverWeight = isSelected ? totalWeight : parseFloat(driver.TotalCurrentWeight);
       let orderDriverStyle = isSelected ? styles.orderDriverSelected : styles.orderDriver;
@@ -138,12 +138,12 @@ const Drivers = React.createClass({
               <img src={this.props.selectedDriver === driver.UserID ? "/img/icon-radio-on.png" : "/img/icon-radio-off.png"} />
             </div>
             <div className={styles.vehicleIcon}>
-              <img className={styles.driverLoadImage} 
+              <img className={styles.driverLoadImage}
                 src={driver.Vehicle && driver.Vehicle.VehicleID === 1 ? "/img/icon-vehicle-motor.png" : "/img/icon-vehicle-van.png"} />
             </div>
             <div className={styles.driverDetails}>
               <span className={styles.driverName}>
-                {UtilHelper.trimString(driver.FirstName + ' ' + driver.LastName, 20)} 
+                {UtilHelper.trimString(driver.FirstName + ' ' + driver.LastName, 20)}
               </span>
             </div>
             <div className={styles.driverDetails}>
@@ -165,7 +165,7 @@ const PanelDrivers = React.createClass({
   },
   searchDriver(e) {
     this.setState({searchValue: e.target.value});
-    let driverList = lodash.filter(this.props.drivers, function(driver) { 
+    let driverList = lodash.filter(this.props.drivers, function(driver) {
       let driverName = driver.FirstName + ' ' + driver.LastName;
       let searchValue = e.target.value;
       return driverName.toLowerCase().includes(searchValue);
@@ -175,7 +175,7 @@ const PanelDrivers = React.createClass({
   render() {
     const setDriverButton = {
       textBase: 'Assign Driver',
-      onClick: this.props.isExpandDriverBulk ? 
+      onClick: this.props.isExpandDriverBulk ?
         this.props.bulkAssignOrder.bind(null, this.props.selectedOrders, this.props.selectedDriver) :
         this.props.assignOrder.bind(null, this.props.expandedOrder.UserOrderID, this.props.selectedDriver),
       styles: {
@@ -184,17 +184,17 @@ const PanelDrivers = React.createClass({
     };
     return (
       <div className={styles.mainDriverPanel}>
-        { this.props.isExpandDriverBulk && 
+        { this.props.isExpandDriverBulk &&
           <div onClick={this.props.shrinkOrder} className={styles.closeButton}>
             X
           </div>
         }
-        { this.props.isExpandDriverBulk && 
+        { this.props.isExpandDriverBulk &&
           <div className={styles.panelDriverChoose}>
-            Choose a driver for {this.props.selectedOrders.length} order: 
+            Choose a driver for {this.props.selectedOrders.length} order:
           </div>
         }
-        { !this.props.isExpandDriverBulk && 
+        { !this.props.isExpandDriverBulk &&
           <div className={styles.panelDriverChoose}>
             Choose a driver for this order
           </div>
@@ -290,10 +290,10 @@ const OrderPage = React.createClass({
         <div>
           <div className={styles.addCompanyOrderButton} onClick={this.props.GoToAddOrder}>
             + Add Company Order
-          </div>        
+          </div>
           <div className={styles.filterOrderArea}>
               {
-              this.state.opened ? 
+              this.state.opened ?
               <div className={styles.top2} onClick={this.toggleOpen}>
                 <h4 className={styles.title}>
                   <Glyph name='chevron-down' className={styles.glyphFilter} />
@@ -308,10 +308,10 @@ const OrderPage = React.createClass({
                   </h4>
                 </div>
                 <div className={styles.bottom}>
-                  <textarea 
-                      style={{height: 100, width: '100%'}} 
-                      value={this.state.idsRaw} 
-                      onChange={this.textChange} 
+                  <textarea
+                      style={{height: 100, width: '100%'}}
+                      value={this.state.idsRaw}
+                      onChange={this.textChange}
                       placeholder={'Write/Paste EDS Number or Order ID here, separated with newline'} />
                   <ButtonBase styles={styles.modalBtn} onClick={this.processText}>Filter</ButtonBase>
                   <ButtonBase styles={styles.modalBtn} onClick={this.clearText}>Clear</ButtonBase>
@@ -364,31 +364,31 @@ const OrderPage = React.createClass({
                 You have assign all orders
               </div>
             </div>
-          </div>   
+          </div>
         }
         {
           !this.props.isFetching && !this.props.isLoadingDriver && this.props.orders.length > 0 &&
           <div>
             <Table orders={orders} />
-            {   
+            {
               isExpandOrder &&
-              <PanelDetails 
-                isExpandDriver={isExpandDriver} 
-                expandedOrder={expandedOrder} 
-                shrinkOrder={ShrinkOrder} 
+              <PanelDetails
+                isExpandDriver={isExpandDriver}
+                expandedOrder={expandedOrder}
+                shrinkOrder={ShrinkOrder}
                 expandDriver={ExpandDriver} />
             }
-            {   
+            {
               isExpandDriver &&
-              <PanelDrivers 
-                selectedOrders={this.state.selectedOrders} 
-                isExpandDriverBulk={isExpandDriverBulk} 
-                shrinkOrder={ShrinkOrder} 
-                expandedOrder={expandedOrder} 
-                assignOrder={AssignOrder} 
-                bulkAssignOrder={BulkAssignOrder} 
-                selectedDriver={selectedDriver} 
-                setDriver={SetDriver} 
+              <PanelDrivers
+                selectedOrders={this.state.selectedOrders}
+                isExpandDriverBulk={isExpandDriverBulk}
+                shrinkOrder={ShrinkOrder}
+                expandedOrder={expandedOrder}
+                assignOrder={AssignOrder}
+                bulkAssignOrder={BulkAssignOrder}
+                selectedDriver={selectedDriver}
+                setDriver={SetDriver}
                 drivers={drivers} />
             }
           </div>
@@ -444,8 +444,8 @@ const OrderPage = React.createClass({
 });
 
 function StoreToOrdersPage(store) {
-  const {currentPage, limit, total, isFetching, filters, errorIDs, successAssign, errorAssign, orders, expandedOrder, isExpandOrder, isExpandDriver, isExpandDriverBulk, selectedDriver, isSuccessAssign} = store.app.myOrders;  
-  const userLogged = store.app.userLogged;  
+  const {currentPage, limit, total, isFetching, filters, errorIDs, successAssign, errorAssign, orders, expandedOrder, isExpandOrder, isExpandDriver, isExpandDriverBulk, selectedDriver, isSuccessAssign} = store.app.myOrders;
+  const userLogged = store.app.userLogged;
   const driversStore = store.app.driversStore;
   const driverList = driversStore.driverList;
   const isLoadingDriver = driverList.isLoading;

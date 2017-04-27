@@ -83,7 +83,7 @@ const OrderMonitoringPage = React.createClass({
           <div className={styles.contentContainer}>
             <div className={styles.mainTable}>
               { this.state.showDelivery &&
-                <Filter />
+                <Filter pagination={{PaginationAction, paginationState}} />
               }
               {
                 this.state.showSucceed &&
@@ -152,7 +152,15 @@ function mapDispatch(dispatch) {
     },
     HideOrder: () => {
       dispatch(orderService.HideOrder());
-    }
+    },
+    PaginationAction: {
+      setCurrentPage: (currentPage) => {
+        dispatch(orderMonitoringService.SetCurrentPage(currentPage));
+      },
+      setLimit: (limit) => {
+        dispatch(orderMonitoringService.SetLimit(limit));
+      },
+    },
   }
 }
 

@@ -11,7 +11,9 @@ const Constants = {
   EXPAND_ORDER: 'EXPAND_ORDER',
   HIDE_ORDER: 'HIDE_ORDER',
   TOGGLE_CHECK_ALL: 'TOGGLE_CHECK_ALL',
-  TOGGLE_SELECT_ORDER: 'TOGGLE_SELECT_ORDER'
+  TOGGLE_SELECT_ORDER: 'TOGGLE_SELECT_ORDER',
+  SET_CURRENT_PAGE: 'SET_CURRENT_PAGE',
+  SET_LIMIT: 'SET_LIMIT'
 }
 
 const initialStore = {
@@ -71,6 +73,18 @@ export default function Reducer(store = initialStore, action) {
 
       return lodash.assign({}, store, {
         orders: newOrders,
+      });
+    }
+
+    case Constants.SET_CURRENT_PAGE: {
+      return lodash.assign({}, store, {
+        currentPage: action.currentPage
+      });
+    }
+
+    case Constants.SET_LIMIT: {
+      return lodash.assign({}, store, {
+        limit: action.limit
       });
     }
 
@@ -149,4 +163,12 @@ export function ToggleCheckAll() {
 
 export function ToggleSelectOrder(orderId) {
   return { type: Constants.TOGGLE_SELECT_ORDER, orderId: orderId }
+}
+
+export function SetCurrentPage(currentPage) {
+  return { type: Constants.SET_CURRENT_PAGE, currentPage: currentPage }
+}
+
+export function SetLimit(limit) {
+  return { type: Constants.SET_LIMIT, limit: limit }
 }
