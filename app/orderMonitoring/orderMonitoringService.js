@@ -7,8 +7,11 @@ import moment from 'moment';
 
 const Constants = {
   FETCH_COUNT: 'FETCH_COUNT',
+  FETCH_LIST: 'FETCH_LIST',
   EXPAND_ORDER: 'EXPAND_ORDER',
-  HIDE_ORDER: 'HIDE_ORDER'
+  HIDE_ORDER: 'HIDE_ORDER',
+  TOGGLE_CHECK_ALL: 'TOGGLE_CHECK_ALL',
+  TOGGLE_SELECT_ORDER: 'TOGGLE_SELECT_ORDER'
 }
 
 const initialStore = {
@@ -16,6 +19,8 @@ const initialStore = {
   limit: 100,
   total: 0,
   expandedOrder: false,
+  selectedAll: false,
+  orders: [],
   count: {
     totalDelivery: '-',
     pendingDelivery: '-',
@@ -41,6 +46,56 @@ export default function Reducer(store = initialStore, action) {
     case Constants.HIDE_ORDER: {
       return lodash.assign({}, store, {
         expandedOrder: false
+      });
+    }
+
+    case Constants.TOGGLE_CHECK_ALL: {
+      const {orders, selectedAll} = store;
+      const newOrders = lodash.map(orders, (order) => {
+        return lodash.assign({}, order, {IsChecked: !selectedAll});
+      });
+
+      return lodash.assign({}, store, {
+        selectedAll: !selectedAll,
+        orders: newOrders,
+      })
+    }
+
+    case Constants.TOGGLE_SELECT_ORDER: {
+      const newOrders= lodash.map(store.orders, (order) => {
+        if(order.UserOrderNumber !== action.orderId) {
+            return order;
+        }
+        return lodash.assign({}, order, {IsChecked: !order.IsChecked});
+      });
+
+      return lodash.assign({}, store, {
+        orders: newOrders,
+      });
+    }
+
+    case Constants.FETCH_LIST: {
+      const temp = [
+        {
+          DropoffAddress:{
+            City: "Jakarta Barat"
+          },
+          IsTrunkeyOrder: true,
+          UserOrderNumber: "EDS21396244",
+          IsChecked: false
+        },
+        {
+          DropoffAddress:{
+            City: "Jakarta Selatan"
+          },
+          IsTrunkeyOrder: true,
+          UserOrderNumber: "EDS21396245",
+          IsChecked: false
+        }
+      ];
+
+      return lodash.assign({}, store, {
+        orders: temp
       });
     }
 
@@ -76,10 +131,22 @@ export function FetchCount() {
   }
 }
 
+export function FetchList() {
+  return { type: Constants.FETCH_LIST }
+}
+
 export function ExpandOrder() {
   return { type: Constants.EXPAND_ORDER }
 }
 
 export function HideOrder() {
   return { type: Constants.HIDE_ORDER }
+}
+
+export function ToggleCheckAll() {
+  return { type: Constants.TOGGLE_CHECK_ALL }
+}
+
+export function ToggleSelectOrder(orderId) {
+  return { type: Constants.TOGGLE_SELECT_ORDER, orderId: orderId }
 }

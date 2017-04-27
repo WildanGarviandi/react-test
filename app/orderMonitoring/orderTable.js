@@ -6,6 +6,7 @@ import {Pagination2} from '../components/pagination2';
 import OrderStatusSelector from '../modules/orderStatus/selector';
 import * as OrderService from '../orders/orderService';
 import * as orderMonitoringService from './orderMonitoringService';
+import {CheckboxHeaderPlain as CheckboxHeaderBase, CheckboxCell } from '../views/base/tableCell';
 import styles from './table.css';
 
 const OrderRow = React.createClass({
@@ -19,15 +20,19 @@ const OrderRow = React.createClass({
     this.setState({isHover: false});
   },
   render() {
-    const { order } = this.props;
+    const { IsTrunkeyOrder, UserOrderNumber, IsChecked } = this.props;
     const DEFAULT_IMAGE = "/img/default-logo.png";
     const ETOBEE_IMAGE = "/img/etobee-logo.png";
     return (
-      <tr className={styles.tr + ' ' + styles.card} onMouseEnter={this.onMouseOver} onMouseLeave={this.onMouseOut} onClick={this.props.expandOrder}>
-        <td><img className={styles.orderLoadImage} src={order.IsTrunkeyOrder ? ETOBEE_IMAGE : FLEET_IMAGE} onError={(e)=>{e.target.src=DEFAULT_IMAGE}} /></td>
-        <td className={styles.orderIDColumn}>{order.UserOrderNumber}</td>
-        <td><div className={styles.cardSeparator} /></td>
-        <td>
+      <tr className={styles.tr + ' ' + styles.card} onMouseEnter={this.onMouseOver} onMouseLeave={this.onMouseOut}>
+        <td className={styles.driverInput}>
+          <Checkbox isChecked={IsChecked} orderID={UserOrderNumber}  />
+        </td>
+        <td onClick={this.props.expandOrder}><div className={styles.cardSeparator} /></td>
+        <td onClick={this.props.expandOrder}><img className={styles.orderLoadImage} src={IsTrunkeyOrder ? ETOBEE_IMAGE : FLEET_IMAGE} onError={(e)=>{e.target.src=DEFAULT_IMAGE}} /></td>
+        <td onClick={this.props.expandOrder} className={styles.orderIDColumn}>{UserOrderNumber}</td>
+        <td onClick={this.props.expandOrder}><div className={styles.cardSeparator} /></td>
+        <td onClick={this.props.expandOrder}>
           <div className={styles.cardLabel}>
             Driver's Name
           </div>
@@ -36,8 +41,8 @@ const OrderRow = React.createClass({
             Agung Santoso
           </div>
         </td>
-        <td><div className={styles.cardSeparator} /></td>
-        <td>
+        <td onClick={this.props.expandOrder}><div className={styles.cardSeparator} /></td>
+        <td onClick={this.props.expandOrder}>
           <div className={styles.cardLabel}>
             Order Status
           </div>
@@ -46,8 +51,8 @@ const OrderRow = React.createClass({
             Cancelled
           </div>
         </td>
-        <td><div className={styles.cardSeparator} /></td>
-        <td>
+        <td onClick={this.props.expandOrder}><div className={styles.cardSeparator} /></td>
+        <td onClick={this.props.expandOrder}>
           <div className={styles.cardLabel}>
             Fleet's Area
           </div>
@@ -169,6 +174,37 @@ const FleetFilter = ConnectBuilder('fleet', "Search for fleet's area...")(InputF
 
 // END INPUT FILTER
 
+// START CHECKBOX
+
+function CheckboxHeaderStore(store) {
+  return {
+    isChecked: store.app.orderMonitoring.selectedAll,
+  }
+}
+
+function CheckboxHeaderDispatch(dispatch) {
+  return {
+    onToggle: () => {
+      dispatch(orderMonitoringService.ToggleCheckAll());
+    }
+  }
+}
+
+const CheckboxHeader = connect(CheckboxHeaderStore, CheckboxHeaderDispatch)(CheckboxHeaderBase);
+
+
+function CheckboxDispatch(dispatch, props) {
+  return {
+    onToggle: () => {
+      dispatch(orderMonitoringService.ToggleSelectOrder(props.orderID));
+    }
+  }
+}
+
+const Checkbox = connect(null, CheckboxDispatch)(CheckboxCell);
+
+// END CHECKBOX
+
 export const Filter = React.createClass({
   render() {
     const paginationState = {
@@ -185,6 +221,7 @@ export const Filter = React.createClass({
         <Pagination2 { ...paginationState }/>
 
         <div className={styles.row}>
+          <CheckboxHeader />
           <EDSFilter />
           <NameFilter />
           <StatusFilter />
@@ -196,23 +233,29 @@ export const Filter = React.createClass({
 });
 
 const OrderTable = React.createClass({
+  componentWillMount(){
+    this.props.FetchList();
+  },
   render() {
-    const order = {
-      order: {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396244"
-      }
-    }
     return (
       <table className={styles.table}>
-        <OrderRow {...order} expandOrder={this.props.ExpandOrder}/>
+        { this.props.orders.map((order, idx) => (
+          <OrderRow key={idx} {...order} expandOrder={this.props.ExpandOrder} />
+        )) }
       </table>
     );
   }
 })
+
+function OrderTableStoreBuilder() {
+  return (store) => {
+    const { orders } = store.app.orderMonitoring;
+
+    return {
+      orders
+    }
+  }
+}
 
 function OrderTableDispatchBuilder() {
   return (dispatch) => {
@@ -222,9 +265,12 @@ function OrderTableDispatchBuilder() {
       },
       HideOrder: () => {
         dispatch(orderMonitoringService.HideOrder());
+      },
+      FetchList: () => {
+        dispatch(orderMonitoringService.FetchList());
       }
     }
   }
 }
 
-export default connect(null, OrderTableDispatchBuilder)(OrderTable);
+export default connect(OrderTableStoreBuilder, OrderTableDispatchBuilder)(OrderTable);

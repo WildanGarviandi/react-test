@@ -161,7 +161,6 @@ export default connect(mapState, mapDispatch)(OrderMonitoringPage)
 const PanelDetails = React.createClass({
   render() {
     const { expandedOrder } = this.props;
-    console.log(this.props, 'kerbau');
     return (
       <div>
         { expandedOrder &&
