@@ -123,15 +123,15 @@ class OrderMonitoringPage extends Component {
               }
               {
                 this.state.showSucceed &&
-                <Filter />
+                <Filter pagination={{PaginationAction, paginationState}} />
               }
               {
                 this.state.showPending &&
-                <Filter />
+                <Filter pagination={{PaginationAction, paginationState}} />
               }
               {
                 this.state.showFailed &&
-                <Filter />
+                <Filter pagination={{PaginationAction, paginationState}} />
               }
             </div>
             { this.state.showDelivery &&
