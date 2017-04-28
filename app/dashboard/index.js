@@ -67,39 +67,46 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
       <ul className={styles.menuList}>
         { hubID && !tmsMenu &&
           <div>
-            <MenuItem active={activeMenuIdx == 0} to={'/orders/pickup'}>
+            { config.features.hubPerformances &&
+              <MenuItem active={activeMenuIdx == 0} to={'/performance'}>
+                <img src="/img/icon-hub-performance.png" className={styles.menuGlyph} />
+                <span>Hub Performance </span>
+              </MenuItem>
+            }
+            <hr className={styles.menuSeparator} />
+            <MenuItem active={activeMenuIdx == 1} to={'/orders/pickup'}>
               <img src="/img/icon-pickup-orders.png" className={styles.menuGlyph} />
               <span>Pickup Orders </span>
               <span className={styles.counterNumber}>{count && count.pickup}</span>
             </MenuItem>
-            <MenuItem active={activeMenuIdx == 1} to={'/trips/inbound'}>
+            <MenuItem active={activeMenuIdx == 2} to={'/trips/inbound'}>
               <img src="/img/icon-inbound-trip.png" className={styles.menuGlyph} />
               <span>Inbound Trip </span>
               <span className={styles.counterNumber}>{count && count.inboundTrip}</span>
             </MenuItem>
-            <MenuItem active={activeMenuIdx == 2} to={'/inbound'}>
+            <MenuItem active={activeMenuIdx == 3} to={'/inbound'}>
               <img src="/img/icon-inbound.png" className={styles.menuGlyph} />
               <span>Inbound </span>
               <span className={styles.counterNumber}>{count && count.unscannedOrders}</span>
             </MenuItem>
             { config.features.menuUpdateOrder && isCentralHub &&
-              <MenuItem active={activeMenuIdx == 3} to={'/orders/update'}>
+              <MenuItem active={activeMenuIdx == 4} to={'/orders/update'}>
                 <img src="/img/icon-update-order.png" className={styles.menuGlyph} />
                 <span>Update Order </span>
                 <span className={styles.counterNumber}>{count && count.updateOrders}</span>
               </MenuItem>
             }
-            <MenuItem active={activeMenuIdx == 4} to={'/grouping'}>
+            <MenuItem active={activeMenuIdx == 5} to={'/grouping'}>
               <img src="/img/icon-grouping.png" className={styles.menuGlyph} />
               <span>Grouping </span>
               <span className={styles.counterNumber}>{count && count.receivedOrders}</span>
             </MenuItem>
-            <MenuItem active={activeMenuIdx == 5} to={'/trips/outbound'}>
+            <MenuItem active={activeMenuIdx == 6} to={'/trips/outbound'}>
               <img src="/img/icon-outbound.png" className={styles.menuGlyph} />
               <span>Outbound Trips </span>
               <span className={styles.counterNumber}>{count && count.outboundTrip}</span>
             </MenuItem>
-            <MenuItem active={activeMenuIdx == 6} to={'/history'}>
+            <MenuItem active={activeMenuIdx == 7} to={'/history'}>
               <img src="/img/icon-trip-history.png" className={styles.menuGlyph} />
               <span>Trips History</span>
             </MenuItem>
@@ -116,16 +123,16 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
                 My Jobs
               </span>
               <hr className={styles.menuSeparator} />
-              <MenuItem active={activeMenuIdx == 7} to={'/myorders'}>
+              <MenuItem active={activeMenuIdx == 8} to={'/myorders'}>
                 <img src="/img/icon-orders.png" className={styles.menuGlyph} />
                 <span>My Orders</span>
               </MenuItem>
-              <MenuItem active={activeMenuIdx == 8} to={'/mytrips'}>
+              <MenuItem active={activeMenuIdx == 9} to={'/mytrips'}>
                 <img src="/img/icon-my-trips.png" className={styles.menuGlyph} />
                 <span>My Trips</span>
                 <span className={styles.counterNumber}>{countTMS && countTMS.NotAssigned}</span>
               </MenuItem>
-              <MenuItem active={activeMenuIdx == 9} to={'/myongoingtrips'}>
+              <MenuItem active={activeMenuIdx == 10} to={'/myongoingtrips'}>
                 <img src="/img/icon-ongoing-trips.png" className={styles.menuGlyph} />
                 <span>My Ongoing Trips</span>
                 <span className={styles.counterNumber}>{countTMS && countTMS.NotDelivered}</span>
@@ -136,7 +143,7 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
                 Others
               </span>
               <hr className={styles.menuSeparator} />
-              <MenuItem active={activeMenuIdx == 10} to={'/mydrivers'}>
+              <MenuItem active={activeMenuIdx == 11} to={'/mydrivers'}>
                 <img src="/img/icon-driver.png" className={styles.menuGlyph} />
                 <span>My Drivers</span>
               </MenuItem>
@@ -182,6 +189,7 @@ const DashboardContent = ({children}) => {
 }
 
 const menuPaths = [
+  '/performance',
   '/orders/pickup',
   '/trips/inbound',
   '/inbound',

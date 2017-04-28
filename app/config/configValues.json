@@ -27,5 +27,6 @@
     "volumetricFactor": 6000,
     "outboundDeadlineFromCreated": 3,
     "defaultMainPage": "/orders/pickup",
-    "defaultMainPageTMS": "/mytrips"
+    "defaultMainPageTMS": "/mytrips",
+    "performanceInterval": 180000
 }

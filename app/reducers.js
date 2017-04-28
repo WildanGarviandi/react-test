@@ -37,6 +37,7 @@ import {Reducer as pickupOrders} from './pickupOrders/pickupOrdersService';
 import {Reducer as pickupOrdersReady} from './pickupOrders/pickupOrdersReadyService';
 import nearbyFleets from './nearbyFleets/nearbyFleetService';
 import dashboard from './dashboard/dashboardService';
+import {Reducer as performance} from './performance/performanceService';
 
 export default combineReducers({ 
   userLogged: authReducers,
@@ -74,5 +75,6 @@ export default combineReducers({
   publicCityList,
   registerData,
   nearbyFleets,
-  dashboard
+  dashboard,
+  performance
 });
