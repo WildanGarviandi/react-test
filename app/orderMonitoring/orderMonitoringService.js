@@ -51,8 +51,7 @@ export default function Reducer(store = initialStore, action) {
 
     case Constants.HIDE_ORDER: {
       return lodash.assign({}, store, {
-        expandedOrder: false,
-        expandedAttempt: false
+        expandedOrder: false
       });
     }
 
@@ -610,7 +609,10 @@ export function ExpandOrder() {
 }
 
 export function HideOrder() {
-  return { type: Constants.HIDE_ORDER }
+  return(dispatch, getApp) => {
+    dispatch({ type: Constants.HIDE_ORDER })
+    dispatch({ type: Constants.HIDE_ATTEMPT })
+  }
 }
 
 export function ExpandAttempt () {

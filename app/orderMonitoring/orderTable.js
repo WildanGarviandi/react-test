@@ -225,16 +225,14 @@ export class Filter extends Component {
 }
 
 class OrderTable extends Component {
-  componentWillMount(){
-    this.props.FetchList();
-  }
-
   render() {
     return (
       <table className={styles.table}>
-        { this.props.orders.map((order, idx) => (
-          <OrderRow key={idx} {...order} expandOrder={this.props.ExpandOrder} />
-        )) }
+        <tbody>
+          { this.props.orders.map((order, idx) => (
+            <OrderRow key={idx} {...order} expandOrder={this.props.ExpandOrder} />
+          )) }
+        </tbody>
       </table>
     );
   }

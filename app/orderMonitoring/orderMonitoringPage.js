@@ -54,6 +54,7 @@ class OrderMonitoringPage extends Component {
 
   componentWillMount() {
     this.props.FetchCount();
+    this.props.FetchList();
     if (!this.props.userLogged.hubID) {
       window.location.href = config.defaultMainPageTMS;
     }
@@ -78,7 +79,7 @@ class OrderMonitoringPage extends Component {
         }
         <div className={styles.widgetOuterContainer}>
           <div
-            onClick={this.activateDelivery}
+            onClick={() => this.activateDelivery()}
             className={`${styles.widgetContainer}
             ${this.state.showDelivery ? styles.toggleWidgetActive : styles.toggleWidget}`}
           >
@@ -87,7 +88,7 @@ class OrderMonitoringPage extends Component {
           </div>
           <span className={styles.arbitTogglePickup}> | </span>
           <div
-            onClick={this.activateSucceed}
+            onClick={() => this.activateSucceed()}
             className={`${styles.widgetContainer}
             ${this.state.showSucceed ? styles.toggleWidgetActive : styles.toggleWidget}`}
           >
@@ -96,7 +97,7 @@ class OrderMonitoringPage extends Component {
           </div>
           <span className={styles.arbitTogglePickup}> | </span>
           <div
-            onClick={this.activatePending}
+            onClick={() => this.activatePending()}
             className={`${styles.widgetContainer}
             ${this.state.showPending ? styles.toggleWidgetActive : styles.toggleWidget}`}
           >
@@ -105,7 +106,7 @@ class OrderMonitoringPage extends Component {
           </div>
           <span className={styles.arbitTogglePickup}> | </span>
           <div
-            onClick={this.activateFailed}
+            onClick={() => this.activateFailed()}
             className={`${styles.widgetContainer}
             ${this.state.showFailed ? styles.toggleWidgetActive : styles.toggleWidget}`}
           >
@@ -182,6 +183,9 @@ function mapDispatch(dispatch) {
   return {
     FetchCount: () => {
       dispatch(orderService.FetchCount());
+    },
+    FetchList: () => {
+      dispatch(orderService.FetchList());
     },
     ExpandOrder: () => {
       dispatch(orderService.ExpandOrder());
