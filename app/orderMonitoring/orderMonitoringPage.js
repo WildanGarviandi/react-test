@@ -54,9 +54,21 @@ const OrderMonitoringPage = React.createClass({
   },
   render() {
     const { failedDelivery, pendingDelivery, succeedDelivery, totalDelivery } = this.props.count;
+    const { PaginationAction, paginationState, expandedOrder, expandedAttempt } = this.props;
+
     return (
       <Page title="Order Monitoring">
-        <PanelDetails expandedOrder={this.props.expandedOrder} hideOrder={this.props.HideOrder} />
+        { expandedOrder &&
+          <PanelDetails
+            expandedOrder={this.props.expandedOrder}
+            hideOrder={this.props.HideOrder}
+            expandedAttempt={this.props.expandedAttempt}
+            expandAttempt={this.props.ExpandAttempt}
+          />
+        }
+        { expandedAttempt &&
+          <AttemptDetails hideAttempt={this.props.HideAttempt} />
+        }
         <div className={styles.widgetOuterContainer}>
           <div onClick={this.activateDelivery} className={`${styles.widgetContainer} ${this.state.showDelivery ? styles.toggleWidgetActive : styles.toggleWidget}`}>
             <span className={styles.widgetTitle}>Total Delivery</span>
@@ -130,7 +142,7 @@ const OrderMonitoringPage = React.createClass({
 
 function mapState(store) {
   const { userLogged } = store.app;
-  const { currentPage, limit, total, expandedOrder, count } = store.app.orderMonitoring
+  const { currentPage, limit, total, expandedOrder, expandedAttempt, count } = store.app.orderMonitoring
 
   return {
     userLogged,
@@ -138,6 +150,7 @@ function mapState(store) {
         currentPage, limit, total,
     },
     expandedOrder,
+    expandedAttempt,
     count
   }
 }
@@ -152,6 +165,12 @@ function mapDispatch(dispatch) {
     },
     HideOrder: () => {
       dispatch(orderService.HideOrder());
+    },
+    ExpandAttempt: () => {
+      dispatch(orderService.ExpandAttempt());
+    },
+    HideAttempt: () => {
+      dispatch(orderService.HideAttempt());
     },
     PaginationAction: {
       setCurrentPage: (currentPage) => {
@@ -168,20 +187,21 @@ export default connect(mapState, mapDispatch)(OrderMonitoringPage)
 
 const PanelDetails = React.createClass({
   render() {
-    const { expandedOrder } = this.props;
+    const { expandedOrder, expandedAttempt, expandAttempt } = this.props;
+
     return (
       <div>
         { expandedOrder &&
-          <div className={expandedOrder ? styles.panelDetails : styles.panelDetailsHidden}>
+          <div className={expandedAttempt ? styles.panelDetailsShiftLeft : styles.panelDetails}>
             <div className={styles.closeButton} onClick={this.props.hideOrder}>
               &times;
             </div>
-            <div className={styles.orderDueTime}>
-              14 Jam
+            <div onClick={expandAttempt} className={styles.orderDueTime}>
+
             </div>
             <div className={styles.orderDetails}>
               <div className={styles.orderDetailsLabel}>
-                Order ID
+                Order Id
               </div>
               <div className={styles.orderDetailsValue}>
 
@@ -253,3 +273,81 @@ const PanelDetails = React.createClass({
     );
   }
 });
+
+function AttemptDetails({hideAttempt}) {
+  return(
+      <div className={styles.attemptPanel}>
+        <div className={styles.orderDueTime} onClick={hideAttempt}>
+
+        </div>
+        <div className={styles.orderDetails}>
+          <div className={styles.orderDetailsLabel}>
+            Attempts detail
+          </div>
+          <div className={styles.orderDetailsValue}>
+
+          </div>
+          <div className={styles.orderDetailsLabel}>
+            Origin
+          </div>
+          <div className={styles.orderDetailsValue}>
+
+          </div>
+          <div className={styles.orderDetailsLabel}>
+            Destination
+          </div>
+          <div className={styles.orderDetailsValue}>
+
+          </div>
+          <div>
+            <div className={styles.orderAdditionalInfo}>
+              <div className={styles.orderDetailsLabel}>
+                Weight
+              </div>
+              <div className={styles.orderDetailsValue}>
+
+              </div>
+            </div>
+            <div className={styles.orderAdditionalInfo}>
+              <div className={styles.orderDetailsLabel}>
+                COD Type
+              </div>
+              <div className={styles.orderDetailsValue}>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className={styles.orderValue}>
+          <div className={styles.orderValueLabel}>
+            Total Value
+          </div>
+          <div className={styles.orderTotalValue}>
+
+          </div>
+        </div>
+        <div className={styles.orderDetails}>
+          <div className={styles.orderDetailsLabel}>
+            From
+          </div>
+          <div className={styles.orderDetailsValue}>
+
+          </div>
+          <div className={styles.orderDetailsValue2}>
+
+          </div>
+        </div>
+        <div className={styles.orderDetails}>
+          <div className={styles.orderDetailsLabel}>
+            To
+          </div>
+          <div className={styles.orderDetailsValue}>
+
+          </div>
+          <div className={styles.orderDetailsValue2}>
+
+          </div>
+        </div>
+      </div>
+  );
+}

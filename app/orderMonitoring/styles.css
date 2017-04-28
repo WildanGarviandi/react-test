@@ -66,7 +66,7 @@
   to {right: 0px;}
 }
 
-.panelDetails, .panelDetailsHidden {
+.panelDetails, .panelDetailsShiftLeft, .attemptPanel {
   position: fixed;
   z-index: 1;
   top: 50px;
@@ -82,16 +82,27 @@
   animation-duration: 0.5s;
 }
 
-/* The animation code */
-@keyframes panelDetailsAnimationHidden {
-  from {right: 0px;}
-  to {right: -400px;}
+@keyframes panelDriversAnimation {
+  from {right: -400px;}
+  to {right: 0px;}
 }
 
-.panelDetailsHidden {
-  right: -400px;
+.attemptPanel {
+  right: 0px;
+  animation-name: panelDriversAnimation;
+  animation-duration: 0.5s;
+}
+
+/* The animation code */
+@keyframes panelDetailsShiftLeft {
+  from {right: 0px;}
+  to {right: 400px;}
+}
+
+.panelDetailsShiftLeft {
+  right: 400px;
   border-right: 1px solid #e8e8e8;
-  animation-name: panelDetailsAnimationHidden;
+  animation-name: panelDetailsShiftLeft;
   animation-duration: 0.5s;
 }
 

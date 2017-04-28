@@ -207,13 +207,13 @@ const Checkbox = connect(null, CheckboxDispatch)(CheckboxCell);
 
 export const Filter = React.createClass({
   render() {
-    console.log(this.props,'kambing');
     const paginationState = {
       currentPage: 1,
       limit: 10,
       total: 1,
       style: { marginTop: '5px'}
     }
+    
     return (
       <div>
         <SortFilter />

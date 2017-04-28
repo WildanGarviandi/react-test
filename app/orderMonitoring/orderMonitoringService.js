@@ -10,10 +10,12 @@ const Constants = {
   FETCH_LIST: 'FETCH_LIST',
   EXPAND_ORDER: 'EXPAND_ORDER',
   HIDE_ORDER: 'HIDE_ORDER',
+  EXPAND_ATTEMPT: 'EXPAND_ATTEMPT',
+  HIDE_ATTEMPT: 'HIDE_ATTEMPT',
   TOGGLE_CHECK_ALL: 'TOGGLE_CHECK_ALL',
   TOGGLE_SELECT_ORDER: 'TOGGLE_SELECT_ORDER',
   SET_CURRENT_PAGE: 'SET_CURRENT_PAGE',
-  SET_LIMIT: 'SET_LIMIT'
+  SET_LIMIT: 'SET_LIMIT',
 }
 
 const initialStore = {
@@ -21,6 +23,7 @@ const initialStore = {
   limit: 100,
   total: 0,
   expandedOrder: false,
+  expandedAttempt: false,
   selectedAll: false,
   orders: [],
   count: {
@@ -47,7 +50,20 @@ export default function Reducer(store = initialStore, action) {
 
     case Constants.HIDE_ORDER: {
       return lodash.assign({}, store, {
-        expandedOrder: false
+        expandedOrder: false,
+        expandedAttempt: false
+      });
+    }
+
+    case Constants.EXPAND_ATTEMPT: {
+      return lodash.assign({}, store, {
+        expandedAttempt: true
+      });
+    }
+
+    case Constants.HIDE_ATTEMPT: {
+      return lodash.assign({}, store, {
+        expandedAttempt: false
       });
     }
 
@@ -155,6 +171,14 @@ export function ExpandOrder() {
 
 export function HideOrder() {
   return { type: Constants.HIDE_ORDER }
+}
+
+export function ExpandAttempt () {
+  return { type: Constants.EXPAND_ATTEMPT }
+}
+
+export function HideAttempt () {
+  return { type: Constants.HIDE_ATTEMPT }
 }
 
 export function ToggleCheckAll() {
