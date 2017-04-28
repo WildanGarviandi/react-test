@@ -48,7 +48,7 @@ class StepLine extends React.Component {
       <div style={{width: ((percentage[step] - borderStep)) + "%"}} 
         className={styleLine + ' ' + (maxIndexValue === arrayStep[step] ? styles.lineStepsRed : styles.lineStepsGreen)}>
         <ReactTooltip />
-        <div className={styles.nameStep}>{stepName}</div>
+        <div className={styles.nameStep}>{(percentage[step] > 10) && stepName}</div>
       </div>
     );
   }
