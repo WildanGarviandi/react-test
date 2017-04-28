@@ -6,7 +6,6 @@ import styles from './pagination2.css';
 function PaginationInfo(props) {
   var {limit, total, page} = props;
   var infoString = `PAGE ${page} / ${Math.ceil(total/limit)}`;
-  console.log(style, 'sapi')
   return (
     <span className={styles.paginationInfo}>
       {infoString}

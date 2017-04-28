@@ -1,35 +1,38 @@
-import React from 'react';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { FilterTop } from '../components/form';
-// import {DropdownWithState2 as FilterTop} from '../views/base/dropdown';
-import {Pagination2} from '../components/pagination2';
+import { Pagination2 } from '../components/pagination2';
 import OrderStatusSelector from '../modules/orderStatus/selector';
 import * as OrderService from '../orders/orderService';
 import * as orderMonitoringService from './orderMonitoringService';
 import {CheckboxHeaderPlain as CheckboxHeaderBase, CheckboxCell } from '../views/base/tableCell';
 import styles from './table.css';
 
-const OrderRow = React.createClass({
-  getInitialState() {
-    return ({isHover: false, isEdit: false});
-  },
-  onMouseOver() {
-    this.setState({isHover: true});
-  },
-  onMouseOut() {
-    this.setState({isHover: false});
-  },
+class OrderRow extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+    }
+  }
+
   render() {
     const { IsTrunkeyOrder, UserOrderNumber, IsChecked } = this.props;
     const DEFAULT_IMAGE = "/img/default-logo.png";
     const ETOBEE_IMAGE = "/img/etobee-logo.png";
+
     return (
-      <tr className={styles.tr + ' ' + styles.card} onMouseEnter={this.onMouseOver} onMouseLeave={this.onMouseOut}>
+      <tr className={styles.tr + ' ' + styles.card}>
         <td className={styles.driverInput}>
           <Checkbox isChecked={IsChecked} orderID={UserOrderNumber}  />
         </td>
         <td onClick={this.props.expandOrder}><div className={styles.cardSeparator} /></td>
-        <td onClick={this.props.expandOrder}><img className={styles.orderLoadImage} src={IsTrunkeyOrder ? ETOBEE_IMAGE : FLEET_IMAGE} onError={(e)=>{e.target.src=DEFAULT_IMAGE}} /></td>
+        <td onClick={this.props.expandOrder}>
+          <img
+            className={styles.orderLoadImage}
+            src={IsTrunkeyOrder ? ETOBEE_IMAGE : FLEET_IMAGE}
+            onError={(e)=>{e.target.src=DEFAULT_IMAGE}}
+          />
+        </td>
         <td onClick={this.props.expandOrder} className={styles.orderIDColumn}>{UserOrderNumber}</td>
         <td onClick={this.props.expandOrder}><div className={styles.cardSeparator} /></td>
         <td onClick={this.props.expandOrder}>
@@ -38,7 +41,7 @@ const OrderRow = React.createClass({
           </div>
           <br />
           <div className={styles.cardValue}>
-            Agung Santoso
+            &nbsp;
           </div>
         </td>
         <td onClick={this.props.expandOrder}><div className={styles.cardSeparator} /></td>
@@ -48,7 +51,7 @@ const OrderRow = React.createClass({
           </div>
           <br />
           <div className={styles.cardValue + ' ' + styles['cancelled']}>
-            Cancelled
+            &nbsp;
           </div>
         </td>
         <td onClick={this.props.expandOrder}><div className={styles.cardSeparator} /></td>
@@ -58,13 +61,13 @@ const OrderRow = React.createClass({
           </div>
           <br />
           <div className={styles.cardValue}>
-            Jakarta Pusat
+            &nbsp;
           </div>
         </td>
       </tr>
     );
   }
-});
+}
 
 // START DROPDOWN FILTER
 
@@ -128,13 +131,6 @@ const OrderTypeFilter = ConnectDropdownBuilder('orderTypeOptions')(FilterTop);
 // START INPUT FILTER
 
 function InputStoreBuilder(keyword) {
-  // return (store) => {
-  //   const {filters} = store.app.myDrivers;
-  //
-  //   return {
-  //     value: filters[keyword],
-  //   }
-  // }
 }
 
 function InputDispatchBuilder(keyword, placeholder) {
@@ -205,21 +201,16 @@ const Checkbox = connect(null, CheckboxDispatch)(CheckboxCell);
 
 // END CHECKBOX
 
-export const Filter = React.createClass({
+export class Filter extends Component {
   render() {
-    const paginationState = {
-      currentPage: 1,
-      limit: 10,
-      total: 1,
-      style: { marginTop: '5px'}
-    }
-    
+    const { PaginationAction, paginationState } = this.props.pagination;
+
     return (
       <div>
         <SortFilter />
         <OrderTypeFilter />
 
-        <Pagination2 { ...paginationState }/>
+        <Pagination2 {...paginationState} {...PaginationAction} />
 
         <div className={styles.row}>
           <CheckboxHeader />
@@ -231,12 +222,13 @@ export const Filter = React.createClass({
       </div>
     );
   }
-});
+}
 
-const OrderTable = React.createClass({
+class OrderTable extends Component {
   componentWillMount(){
     this.props.FetchList();
-  },
+  }
+
   render() {
     return (
       <table className={styles.table}>
@@ -246,7 +238,7 @@ const OrderTable = React.createClass({
       </table>
     );
   }
-})
+}
 
 function OrderTableStoreBuilder() {
   return (store) => {
