@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import { FilterTop } from '../components/form';
 import { Pagination2 } from '../components/pagination2';
 import OrderStatusSelector from '../modules/orderStatus/selector';
@@ -7,6 +8,8 @@ import * as OrderService from '../orders/orderService';
 import * as orderMonitoringService from './orderMonitoringService';
 import {CheckboxHeaderPlain as CheckboxHeaderBase, CheckboxCell } from '../views/base/tableCell';
 import styles from './table.css';
+import config from '../config/configValues.json';
+import Countdown from 'react-cntdwn';
 
 class OrderRow extends Component {
   constructor(props) {
@@ -16,24 +19,38 @@ class OrderRow extends Component {
   }
 
   render() {
-    const { IsTrunkeyOrder, UserOrderNumber, IsChecked } = this.props;
+    const { IsChecked, expandedOrder, order } = this.props;
     const DEFAULT_IMAGE = "/img/default-logo.png";
     const ETOBEE_IMAGE = "/img/etobee-logo.png";
+    let rowStyles = `${styles.tr} ${styles.card} `;
+    if (expandedOrder.UserOrderNumber === order.UserOrderNumber) {
+      rowStyles += styles.select;
+    }
 
     return (
-      <tr className={styles.tr + ' ' + styles.card}>
+      <tr className={rowStyles}>
         <td className={styles.driverInput}>
-          <Checkbox isChecked={IsChecked} orderID={UserOrderNumber}  />
+          <Checkbox isChecked={IsChecked} orderID={order.UserOrderNumber}  />
         </td>
         <td onClick={this.props.expandOrder}><div className={styles.cardSeparator} /></td>
         <td onClick={this.props.expandOrder}>
           <img
             className={styles.orderLoadImage}
-            src={IsTrunkeyOrder ? ETOBEE_IMAGE : FLEET_IMAGE}
+            src={order.IsTrunkeyOrder ? ETOBEE_IMAGE : FLEET_IMAGE}
             onError={(e)=>{e.target.src=DEFAULT_IMAGE}}
           />
         </td>
-        <td onClick={this.props.expandOrder} className={styles.orderIDColumn}>{UserOrderNumber}</td>
+        <td onClick={this.props.expandOrder} className={styles.orderIDColumn}>{order.UserOrderNumber}</td>
+        <td onClick={this.props.expandOrder}><div className={styles.cardSeparator} /></td>
+        <td onClick={this.props.expandOrder}>
+          <div className={styles.cardLabel}>
+            Deadline
+          </div>
+          <br />
+          <div className={styles.cardValue + ' ' + styles['cancelled']}>
+            <Deadline deadline={order.DueTime} />
+          </div>
+        </td>
         <td onClick={this.props.expandOrder}><div className={styles.cardSeparator} /></td>
         <td onClick={this.props.expandOrder}>
           <div className={styles.cardLabel}>
@@ -41,7 +58,7 @@ class OrderRow extends Component {
           </div>
           <br />
           <div className={styles.cardValue}>
-            &nbsp;
+            {order.User.FirstName} {order.User.LastName}
           </div>
         </td>
         <td onClick={this.props.expandOrder}><div className={styles.cardSeparator} /></td>
@@ -50,8 +67,8 @@ class OrderRow extends Component {
             Order Status
           </div>
           <br />
-          <div className={styles.cardValue + ' ' + styles['cancelled']}>
-            &nbsp;
+          <div className={styles.cardValue + ' ' + styles[order.OrderStatus.OrderStatus]}>
+            {order.OrderStatus.OrderStatus}
           </div>
         </td>
         <td onClick={this.props.expandOrder}><div className={styles.cardSeparator} /></td>
@@ -61,7 +78,7 @@ class OrderRow extends Component {
           </div>
           <br />
           <div className={styles.cardValue}>
-            &nbsp;
+            {order.DropoffAddress.City}
           </div>
         </td>
       </tr>
@@ -201,6 +218,44 @@ const Checkbox = connect(null, CheckboxDispatch)(CheckboxCell);
 
 // END CHECKBOX
 
+// START COUNTDOWN
+
+export class Deadline extends Component{
+  render() {
+    let format = {
+      hour: 'hh',
+      minute: 'mm',
+      second: 'ss'
+    };
+    let Duration = moment.duration(moment(this.props.deadline).diff(moment(new Date())));
+    if (!this.props.deadline) {
+      return <span style={{color: 'black'}}>
+          -
+      </span>
+    } else if (Duration._milliseconds > config.deadline.day) {
+      return <span style={{color: 'black'}}>
+          {Duration.humanize()} remaining
+      </span>
+    } else if (Duration._milliseconds < 0) {
+      return <span style={{color: 'red'}}>
+          Passed
+      </span>
+    } else {
+      let normalDeadline = (Duration._milliseconds > config.deadline['3hours']) && (Duration._milliseconds < config.deadline.day);
+      return <span style={{color: normalDeadline ? 'black' : 'red'}}>
+        <Countdown targetDate={new Date(this.props.deadline)}
+         startDelay={500}
+         interval={1000}
+         format={format}
+         timeSeparator={':'}
+         leadingZero={true} />
+      </span>
+    }
+  }
+}
+
+// END COUNTDOWN
+
 export class Filter extends Component {
   render() {
     const { PaginationAction, paginationState } = this.props.pagination;
@@ -210,7 +265,7 @@ export class Filter extends Component {
         <SortFilter />
         <OrderTypeFilter />
 
-        <Pagination2 {...paginationState} {...PaginationAction} />
+        <Pagination2 {...paginationState} {...PaginationAction} style={{marginTop: "5px"}} />
 
         <div className={styles.row}>
           <CheckboxHeader />
@@ -225,10 +280,10 @@ export class Filter extends Component {
 }
 
 class OrderTable extends Component {
-  expand() {
+  expand(order) {
     this.props.HideOrder();
     setTimeout(() => {
-      this.props.ExpandOrder();
+      this.props.ExpandOrder(order);
     }, 1);
   }
 
@@ -237,7 +292,7 @@ class OrderTable extends Component {
       <table className={styles.table}>
         <tbody>
           { this.props.orders.map((order, idx) => (
-            <OrderRow key={idx} {...order} expandOrder={() => this.expand()} />
+            <OrderRow key={idx} order={order} expandOrder={() => this.expand(order)} expandedOrder={this.props.expandedOrder} />
           )) }
         </tbody>
       </table>
@@ -247,10 +302,11 @@ class OrderTable extends Component {
 
 function OrderTableStoreBuilder() {
   return (store) => {
-    const { orders } = store.app.orderMonitoring;
+    const { orders, expandedOrder } = store.app.orderMonitoring;
 
     return {
-      orders
+      orders,
+      expandedOrder
     }
   }
 }
@@ -258,8 +314,8 @@ function OrderTableStoreBuilder() {
 function OrderTableDispatchBuilder() {
   return (dispatch) => {
     return {
-      ExpandOrder: () => {
-        dispatch(orderMonitoringService.ExpandOrder());
+      ExpandOrder: (order) => {
+        dispatch(orderMonitoringService.ExpandOrder(order));
       },
       HideOrder: () => {
         dispatch(orderMonitoringService.HideOrder());

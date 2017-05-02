@@ -23,7 +23,8 @@ const initialStore = {
   currentPage: 1,
   limit: 100,
   total: 0,
-  expandedOrder: false,
+  isExpanded: false,
+  expandedOrder: {},
   expandedAttempt: false,
   selectedAll: false,
   orders: [],
@@ -45,13 +46,15 @@ export default function Reducer(store = initialStore, action) {
 
     case Constants.EXPAND_ORDER: {
       return lodash.assign({}, store, {
-        expandedOrder: true
+        isExpanded: true,
+        expandedOrder: action.order
       });
     }
 
     case Constants.HIDE_ORDER: {
       return lodash.assign({}, store, {
-        expandedOrder: false
+        isExpanded: false,
+        expandedOrder: {}
       });
     }
 
@@ -147,453 +150,90 @@ export function FetchList() {
   return (dispatch, getState) => {
     const temp = [
       {
-        DropoffAddress:{
-          City: "Jakarta Barat"
+        DropoffAddress: {
+          Address1: "Jl. Muara Karang Block A-V Utara No. 5,Jakarta Utara 14450",
+          City: "Jakarta Barat",
+          FirstName: "John",
+          LastName: "Doe"
         },
         IsTrunkeyOrder: true,
         UserOrderNumber: "EDS21396244",
-        IsChecked: false
+        IsChecked: false,
+        DueTime: "2017-05-05T11:00:00.000Z",
+        IsCOD: false,
+        PackageWeight: 1,
+        TotalValue: 130000,
+        PickupAddress: {
+          Address1: "Jl. Musi No. 36, Jelambar,Jakarta Pusat 10150",
+          FirstName: "Luck",
+          LastName: "Manthis"
+        },
+        User: {
+          FirstName: "Chuck",
+          LastName: "Norris"
+        },
+        OrderStatus: {
+          OrderStatus: "NOTASSIGNED",
+          OrderStatusID: 6
+        }
       },
       {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
+        DropoffAddress: {
+          Address1: "Jl. Musi No. 36, Jelambar,Jakarta Pusat 10150",
+          City: "Jakarta Barat",
+          FirstName: "John",
+          LastName: "Wick"
         },
         IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
+        UserOrderNumber: "EDS21353131",
+        IsChecked: false,
+        DueTime: "2017-05-09T11:00:00.000Z",
+        IsCOD: false,
+        PackageWeight: 1,
+        TotalValue: 130000,
+        PickupAddress: {
+          Address1: "Jl. Muara Karang Block A-V Utara No. 5,Jakarta Utara 14450",
+          FirstName: "Kurt",
+          LastName: "Skip"
+        },
+        User: {
+          FirstName: "Chuck",
+          LastName: "Norris"
+        },
+        OrderStatus: {
+          OrderStatus: "NOTASSIGNED",
+          OrderStatusID: 6
+        }
       },
       {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
+        DropoffAddress: {
+          Address1: "Jl. Muara Karang Block A-V Utara No. 5,Jakarta Utara 14450",
+          City: "Jakarta Barat",
+          FirstName: "John",
+          LastName: "Doe"
         },
         IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
+        UserOrderNumber: "EDS21512624",
+        IsChecked: false,
+        DueTime: "2017-05-07T11:00:00.000Z",
+        IsCOD: false,
+        PackageWeight: 1,
+        TotalValue: 130000,
+        PickupAddress: {
+          Address1: "Jl. Musi No. 36, Jelambar,Jakarta Pusat 10150",
+          FirstName: "Kil",
+          LastName: "Bill"
+        },
+        User: {
+          FirstName: "Chuck",
+          LastName: "Norris"
+        },
+        OrderStatus: {
+          OrderStatus: "NOTASSIGNED",
+          OrderStatusID: 6
+        }
       },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      },
-      {
-        DropoffAddress:{
-          City: "Jakarta Selatan"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396245",
-        IsChecked: false
-      }
+
     ];
 
     dispatch({
@@ -604,8 +244,8 @@ export function FetchList() {
   }
 }
 
-export function ExpandOrder() {
-  return { type: Constants.EXPAND_ORDER }
+export function ExpandOrder(order) {
+  return { type: Constants.EXPAND_ORDER, order: order }
 }
 
 export function HideOrder() {

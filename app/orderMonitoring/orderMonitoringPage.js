@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import styles from './styles.css';
 import {ButtonWithLoading, Input, Page} from '../views/base';
-import OrderTable, {Filter} from './orderTable';
+import OrderTable, {Filter, Deadline} from './orderTable';
 import * as orderService from './orderMonitoringService';
 
 class OrderMonitoringPage extends Component {
@@ -62,16 +62,25 @@ class OrderMonitoringPage extends Component {
 
   render() {
     const { failedDelivery, pendingDelivery, succeedDelivery, totalDelivery } = this.props.count;
-    const { PaginationAction, paginationState, expandedOrder, expandedAttempt } = this.props;
+    const {
+            PaginationAction,
+            paginationState,
+            isExpanded,
+            expandedAttempt,
+            expandedOrder,
+            ExpandAttempt,
+            HideOrder
+          } = this.props;
 
     return (
       <Page title="Order Monitoring">
-        { expandedOrder &&
+        { isExpanded &&
           <PanelDetails
-            expandedOrder={this.props.expandedOrder}
-            hideOrder={this.props.HideOrder}
-            expandedAttempt={this.props.expandedAttempt}
-            expandAttempt={this.props.ExpandAttempt}
+            isExpanded={isExpanded}
+            expandedOrder={expandedOrder}
+            hideOrder={HideOrder}
+            expandedAttempt={expandedAttempt}
+            expandAttempt={ExpandAttempt}
           />
         }
         { expandedAttempt &&
@@ -166,13 +175,14 @@ class OrderMonitoringPage extends Component {
 
 function mapState(store) {
   const { userLogged } = store.app;
-  const { currentPage, limit, total, expandedOrder, expandedAttempt, count } = store.app.orderMonitoring
+  const { currentPage, limit, total, expandedOrder, isExpanded, expandedAttempt, count } = store.app.orderMonitoring
 
   return {
     userLogged,
     paginationState: {
         currentPage, limit, total,
     },
+    isExpanded,
     expandedOrder,
     expandedAttempt,
     count
@@ -213,19 +223,55 @@ function mapDispatch(dispatch) {
 export default connect(mapState, mapDispatch)(OrderMonitoringPage)
 
 class PanelDetails extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showMenu: false
+    };
+  }
+
+  toggleMenu(){
+    this.setState({showMenu: !this.state.showMenu});
+  }
+
   render() {
-    const { expandedOrder, expandedAttempt, expandAttempt } = this.props;
+    const { isExpanded, expandedAttempt, expandedOrder, expandAttempt } = this.props;
 
     return (
       <div>
-        { expandedOrder &&
+        { isExpanded &&
           <div className={expandedAttempt ? styles.panelDetailsShiftLeft : styles.panelDetails}>
             <div className={styles.closeButton} onClick={this.props.hideOrder}>
               &times;
             </div>
-            <div onClick={expandAttempt} className={styles.orderDueTime}>
+            <div className={styles.orderDueTime}>
+              <Deadline deadline={expandedOrder.DueTime} />
+            </div>
+            <div className={styles.menuOuterContainer}>
+              <img src="/img/icon-menu.png" className={styles.iconMenu} onClick={() => this.toggleMenu()}/>
+              { this.state.showMenu &&
+                <ul className={styles.menuContainer}>
+                  <li>
+                    <img src="/img/icon-success.png" />
+                    <p>Deliver Confirmation</p>
+                  </li>
+                  <li>
+                    <img src="/img/icon-cod-transfered.png" />
+                    <p>COD Confirmation</p>
+                  </li>
+                  <li>
+                    <img src="/img/icon-report-attempt.png" />
+                    <p>Report Attempt</p>
+                  </li>
+                </ul>
+              }
             </div>
             <div className={styles.orderDetails}>
+              <button className={styles.orderAttemptBtn} onClick={expandAttempt} >
+                <img src="/img/icon-alert.png" className={styles.left} />
+                <span>2 Report Attempt</span>
+                <img src="/img/icon-open.png" className={styles.right} />
+              </button>
               <div className={styles.orderDetailsLabel}>
                 Order Id
               </div>
@@ -303,8 +349,9 @@ class PanelDetails extends Component {
 function AttemptDetails({hideAttempt}) {
   return(
       <div className={styles.attemptPanel}>
-        <div className={styles.orderDueTime} onClick={hideAttempt}>
-
+        <div className={styles.attemptHeader} onClick={hideAttempt}>
+          <img src="/img/icon-previous.png" />
+          2 Attempt Details
         </div>
         <div className={styles.orderDetails}>
           <div className={styles.orderDetailsLabel}>
