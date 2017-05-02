@@ -30,7 +30,7 @@ class OrderRow extends Component {
     return (
       <tr className={rowStyles}>
         <td className={styles.driverInput}>
-          <Checkbox isChecked={IsChecked} orderID={order.UserOrderNumber}  />
+          <Checkbox isChecked={order.IsChecked} orderID={order.UserOrderNumber}  />
         </td>
         <td onClick={this.props.expandOrder}><div className={styles.cardSeparator} /></td>
         <td onClick={this.props.expandOrder}>
