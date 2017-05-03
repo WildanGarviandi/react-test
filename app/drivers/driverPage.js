@@ -28,7 +28,7 @@ function StoreBuilder(keyword) {
     return {
       value: filters[keyword],
     }
-  }    
+  }
 }
 
 function DispatchBuilder(keyword, placeholder) {
@@ -48,7 +48,7 @@ function DispatchBuilder(keyword, placeholder) {
     }
 
     return {
-      onChange: OnChange, 
+      onChange: OnChange,
       onKeyDown: OnKeyDown,
       placeholder: placeholder
     }
@@ -81,7 +81,7 @@ const Drivers = React.createClass({
             </div>
             <div className={styles.driverDetails}>
               <span className={styles.driverName}>
-                {UtilHelper.trimString(driver.FirstName + ' ' + driver.LastName, 20)} 
+                {UtilHelper.trimString(driver.FirstName + ' ' + driver.LastName, 20)}
               </span>
             </div>
             <div className={styles.driverDetails}>
@@ -123,7 +123,7 @@ const PanelDrivers = React.createClass({
       }
     };
   },
-  setPicture(url) {    
+  setPicture(url) {
     this.setState({
         ProfilePicture: url
     })
@@ -138,23 +138,23 @@ const PanelDrivers = React.createClass({
     }
     let addedData = lodash.assign({}, this.state);
     delete addedData.showAddModals;
-    this.props.addDriver(addedData);  
+    this.props.addDriver(addedData);
   },
-  render() {    
+  render() {
     const addButton = {
       textBase: '+ Add',
       onClick: this.addDriverModal,
       styles: {
         base: stylesButton.whiteButton,
       }
-    };    
+    };
     const submitButton = {
       textBase: 'Add New Driver',
       onClick: this.addDriver,
       styles: {
         base: stylesButton.blueButton,
       }
-    };    
+    };
     const vehicleOptions = config.vehicle;
     const stateOptions = lodash.chain(this.props.stateList)
      .map((key, val) => ({key:key, value: val.toUpperCase()}))
@@ -191,10 +191,10 @@ const PanelDrivers = React.createClass({
               <div>
                 <div className={styles.modalTitle}>
                   Add Driver
-                </div> 
+                </div>
                 <div onClick={this.closeModal} className={styles.modalClose}>
                   X
-                </div> 
+                </div>
                 <div className={styles.topDescDetails}>
                   <div className={styles.driverDetailsMain}>
                   <div className={styles.driverDetailsPicture}>
@@ -208,7 +208,7 @@ const PanelDrivers = React.createClass({
                 <div className={styles.driverDetailsSecondary}>
                   <RowDetails onChange={this.stateChange('Email')} label={'Email'} isEditing={true} />
                   <RowDetails onChange={this.stateChange('PhoneNumber')} label={'Phone Number'} isEditing={true} />
-                  <RowDetails onChange={this.stateChange('Location')} label={'Address'} isEditing={true} />         
+                  <RowDetails onChange={this.stateChange('Location')} label={'Address'} isEditing={true} />
                 </div>
                 <div className={styles.driverDetailsMain2}>
                   <div className={styles.driverDetailsPicture}>
@@ -221,8 +221,8 @@ const PanelDrivers = React.createClass({
                 <div className={styles.driverDetailsSecondary}>
                   <RowDetailsDropdown label={'Vehicle'} options={vehicleOptions} handleSelect={this.stateChange('PackageSizeID')} isEditing={true} />
                   <div style={{clear: 'both'}} />
-                  <RowDetails onChange={this.stateChange('DrivingLicenseID')} label={'License Number'} isEditing={true} /> 
-                  <RowDetails onChange={this.stateChange('Password')} type={'password'} label={'Password'} isEditing={true} />       
+                  <RowDetails onChange={this.stateChange('DrivingLicenseID')} label={'License Number'} isEditing={true} />
+                  <RowDetails onChange={this.stateChange('Password')} type={'password'} label={'Password'} isEditing={true} />
                 </div>
                 <div className={styles.updateButton}>
                   <ButtonWithLoading {...submitButton} />
@@ -320,27 +320,27 @@ const PanelDriversDetails = React.createClass({
     delete updatedData.isEditing;
     this.props.editDriver(this.props.driver.UserID, updatedData);
   },
-  setPicture(url) {    
+  setPicture(url) {
     this.setState({
       ProfilePicture: url
     })
   },
   render() {
-    const {driver, stateList} = this.props;    
+    const {driver, stateList} = this.props;
     const updateButton = {
       textBase: 'Update Profile',
       onClick: this.updateDriver,
       styles: {
         base: stylesButton.greenButton3,
       }
-    };  
+    };
     const editButton = {
       textBase: this.state.isEditing ? 'Cancel' : 'Edit',
       onClick: this.toggleEditDriver,
       styles: {
         base: stylesButton.whiteButton2,
       }
-    };      
+    };
     const vehicleOptions = config.vehicle;
     const vehicleValue = lodash.find(vehicleOptions, { 'key': driver.PackageSizeMaster && driver.PackageSizeMaster.PackageSizeID });
     const stateOptions = lodash.chain(stateList)
@@ -357,13 +357,13 @@ const PanelDriversDetails = React.createClass({
           <span className={styles.editSpan}>{this.state.isEditing ? 'Cancel' : 'Edit'}</span>
         </div>
         <div className={styles.driverDetailsMain}>
-          <div className={styles.driverDetailsPicture}>       
+          <div className={styles.driverDetailsPicture}>
             { this.state.isEditing &&
               <ImageUploader withImagePreview={true} currentImageUrl={this.state.ProfilePicture} updateImageUrl={(data) => this.setPicture(data)} />
             }
             { !this.state.isEditing &&
               <ImagePreview imageUrl={this.state.ProfilePicture} />
-            }   
+            }
           </div>
           <div className={styles.driverDetailsName}>
             <RowDetails value={driver.FirstName} onChange={this.stateChange('FirstName')} label={'First Name'} isEditing={this.state.isEditing} />
@@ -373,7 +373,7 @@ const PanelDriversDetails = React.createClass({
         <div className={styles.driverDetailsSecondary}>
           <RowDetails value={driver.Email} onChange={this.stateChange('Email')} label={'Email'} isEditing={this.state.isEditing} />
           <RowDetails value={driver.PhoneNumber} onChange={this.stateChange('PhoneNumber')} label={'Phone Number'} isEditing={this.state.isEditing} />
-          <RowDetails value={driver.Location} onChange={this.stateChange('Location')} label={'Address'} isEditing={this.state.isEditing} />         
+          <RowDetails value={driver.Location} onChange={this.stateChange('Location')} label={'Address'} isEditing={this.state.isEditing} />
         </div>
         <div className={styles.driverDetailsMain2}>
           <div className={styles.driverDetailsPicture}>
@@ -386,7 +386,7 @@ const PanelDriversDetails = React.createClass({
         <div className={styles.driverDetailsSecondary}>
           <RowDetailsDropdown label={'Vehicle'} value={vehicleValue && vehicleValue.value} options={vehicleOptions} handleSelect={this.stateChange('PackageSizeID')} isEditing={this.state.isEditing} />
           <div style={{clear: 'both'}} />
-          <RowDetails value={driver.DrivingLicenseID} onChange={this.stateChange('DrivingLicenseID')} label={'License Number'} isEditing={this.state.isEditing} />       
+          <RowDetails value={driver.DrivingLicenseID} onChange={this.stateChange('DrivingLicenseID')} label={'License Number'} isEditing={this.state.isEditing} />
         </div>
         {
           this.state.isEditing &&
@@ -407,11 +407,11 @@ const Deadline = React.createClass({
       second: 'ss'
     };
     let Duration = moment.duration(moment(this.props.deadline).diff(moment(new Date())));
-    if (!this.props.deadline) {            
+    if (!this.props.deadline) {
       return <span style={{color: 'black'}}>
           -
       </span>
-    } else if (Duration._milliseconds > config.deadline.day) {            
+    } else if (Duration._milliseconds > config.deadline.day) {
       return <span style={{color: 'black'}}>
           {Duration.humanize()} remaining
       </span>
@@ -440,14 +440,14 @@ const DriverOrders = React.createClass({
         <div className={styles.mainOrder} key={idx}>
           <div className={styles.orderName}>
             <div className={styles.orderNum}>
-              {order.UserOrderNumber} 
+              {order.UserOrderNumber}
               <br />
               {order.WebOrderID}
             </div>
             <div className={styles.orderEDS}>
               Deadline: <Deadline deadline={order.DueTime} />
             </div>
-            { 
+            {
               order.IsCOD &&
               <div className={styles.orderCOD}>
                 COD
@@ -497,15 +497,15 @@ const PanelDriversOrders = React.createClass({
       <div className={styles.mainDriverOrdersPanel}>
         <div className={styles.driverTitle}>
           Driver Orders
-        </div>  
+        </div>
         {
-          isFetchingOrders && 
+          isFetchingOrders &&
           <div className={styles.orderDetails}>
             <img className={styles.loadingImage} src={"/img/loading.gif"} />
-          </div> 
+          </div>
         }
         { !isFetchingOrders &&
-          <div>     
+          <div>
             <div className={styles.orderDetails}>
               <div>
                 <div className={styles.orderAdditionalInfo}>
@@ -534,18 +534,18 @@ const PanelDriversOrders = React.createClass({
                 </div>
               </div>
             </div>
-            <div className={styles.orderValue}>                            
+            <div className={styles.orderValue}>
               <div className={styles.orderValueLabel}>
                 Total Value
               </div>
               <div className={styles.orderTotalValue}>
-                <NumberFormat displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp '} value={totalValue} />    
+                <NumberFormat displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp '} value={totalValue} />
               </div>
             </div>
             <div>
               <div className={styles.driverNumOrders}>
                 <div className={styles.numOrderLeft}>
-                  Number of orders: 
+                  Number of orders:
                 </div>
                 <div className={styles.numOrderRight}>
                   {orders.length}
@@ -554,7 +554,7 @@ const PanelDriversOrders = React.createClass({
               <div className={styles.driverDetailsOrder}>
                 <DriverOrders orders={orders} />
               </div>
-            </div>        
+            </div>
             <Pagination3 {...this.props.paginationState} {...this.props.PaginationAction} />
           </div>
         }
@@ -597,7 +597,7 @@ const DriverPage = React.createClass({
 function StoreToDriversPage(store) {
   const {currentPage, currentPageOrders, limit, limitOrders, total, totalOrders, drivers, driver, orders, isFetchingOrders} = store.app.myDrivers;
   const {states} = store.app.stateList;
-  let stateList = {}; 
+  let stateList = {};
   states.forEach(function(state) {
       stateList[state.Name] = state.StateID;
   });
@@ -607,8 +607,8 @@ function StoreToDriversPage(store) {
       currentPage, limit, total,
     },
     paginationStateOrders: {
-      currentPage: currentPageOrders, 
-      limit: limitOrders, 
+      currentPage: currentPageOrders,
+      limit: limitOrders,
       total: totalOrders
     },
     driver: driver,

@@ -46,6 +46,8 @@
   width: 100%;
   padding: 10px;
   box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
 }
 
 .contentOuterContainer {
@@ -268,4 +270,88 @@
   float: left;
   margin-left: 20px;
   cursor: pointer;
+}
+
+.addAttemptModal {
+  top: 100px !important;
+  width: 700px !important;
+  padding: 0 !important;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.addAttemptTitle {
+  padding: 20px 15px;
+  text-align: center;
+  font-weight: bold;
+  border-bottom: 1px solid #e8e8e8;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+.addAttemptTitle .close {
+  float: right;
+  cursor: pointer;
+  font-size: 40px;
+  margin-top: 2px;
+  line-height: 13px;
+  font-weight: lighter;
+  color: #7f7f7f;
+}
+
+.addAttemptTitle .attempt {
+  float: left;
+}
+
+.addAttemptBody {
+  display: flex;
+}
+
+.addAttemptBody .left, .addAttemptBody .right {
+  width: 50%;
+  float: left;
+  padding: 15px;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+.addAttemptBody .left {
+  background: #f1f1f1;
+  max-height: 70vh;
+  overflow: auto;
+}
+
+.addAttemptBody .left {
+  display: table-cell;
+}
+
+.addAttemptBody .reasons li img {
+  width: 30px;
+  float: left;
+}
+
+.addAttemptBody .reasons li {
+  padding: 15px;
+  border: 10px;
+  border-radius: 12px;
+  margin: 7px 0;
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  overflow: auto;
+  background: #fff;
+  border: solid 1px rgba(0, 0, 0, 0.12);
+}
+
+.addAttemptBody .reasons li:hover, .addAttemptBody .reasons li.active:hover, .addAttemptBody .reasons li.active {
+  background-color: rgba(33, 150, 242, 0.15);
+  border: solid 1px #2196f3;
+  cursor: pointer;
+}
+
+.addAttemptBody .reasons li span {
+  float: left;
+  margin: 6px 10px;
 }

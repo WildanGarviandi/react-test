@@ -11,6 +11,8 @@ const Constants = {
   EXPAND_ORDER: 'EXPAND_ORDER',
   HIDE_ORDER: 'HIDE_ORDER',
   EXPAND_ATTEMPT: 'EXPAND_ATTEMPT',
+  SHOW_ATTEMPT_MODAL: 'SHOW_ATTEMPT_MODAL',
+  HIDE_ATTEMPT_MODAL: 'HIDE_ATTEMPT_MODAL',
   HIDE_ATTEMPT: 'HIDE_ATTEMPT',
   TOGGLE_CHECK_ALL: 'TOGGLE_CHECK_ALL',
   TOGGLE_SELECT_ORDER: 'TOGGLE_SELECT_ORDER',
@@ -33,6 +35,9 @@ const initialStore = {
     pendingDelivery: '-',
     succeedDelivery: '-',
     failedDelivery: '-'
+  },
+  modal: {
+    addAttempt: false
   }
 }
 
@@ -99,6 +104,18 @@ export default function Reducer(store = initialStore, action) {
 
       return lodash.assign({}, store, {
         orders: newOrders,
+      });
+    }
+
+    case Constants.SHOW_ATTEMPT_MODAL: {
+      return lodash.assign({}, store, {
+        modal: {addAttempt: true}
+      });
+    }
+
+    case Constants.HIDE_ATTEMPT_MODAL: {
+      return lodash.assign({}, store, {
+        modal: {addAttempt: false}
       });
     }
 
@@ -233,7 +250,90 @@ export function FetchList() {
           OrderStatusID: 6
         }
       },
-
+      {
+        DropoffAddress: {
+          Address1: "Jl. Muara Karang Block A-V Utara No. 5,Jakarta Utara 14450",
+          City: "Jakarta Barat",
+          FirstName: "John",
+          LastName: "Doe"
+        },
+        IsTrunkeyOrder: true,
+        UserOrderNumber: "EDS21512412",
+        IsChecked: false,
+        DueTime: "2017-05-07T11:00:00.000Z",
+        IsCOD: false,
+        PackageWeight: 1,
+        TotalValue: 130000,
+        PickupAddress: {
+          Address1: "Jl. Musi No. 36, Jelambar,Jakarta Pusat 10150",
+          FirstName: "Kil",
+          LastName: "Bill"
+        },
+        User: {
+          FirstName: "Chuck",
+          LastName: "Norris"
+        },
+        OrderStatus: {
+          OrderStatus: "NOTASSIGNED",
+          OrderStatusID: 6
+        }
+      },
+      {
+        DropoffAddress: {
+          Address1: "Jl. Muara Karang Block A-V Utara No. 5,Jakarta Utara 14450",
+          City: "Jakarta Barat",
+          FirstName: "John",
+          LastName: "Doe"
+        },
+        IsTrunkeyOrder: true,
+        UserOrderNumber: "EDS21512312",
+        IsChecked: false,
+        DueTime: "2017-05-07T11:00:00.000Z",
+        IsCOD: false,
+        PackageWeight: 1,
+        TotalValue: 130000,
+        PickupAddress: {
+          Address1: "Jl. Musi No. 36, Jelambar,Jakarta Pusat 10150",
+          FirstName: "Kil",
+          LastName: "Bill"
+        },
+        User: {
+          FirstName: "Chuck",
+          LastName: "Norris"
+        },
+        OrderStatus: {
+          OrderStatus: "NOTASSIGNED",
+          OrderStatusID: 6
+        }
+      },
+      {
+        DropoffAddress: {
+          Address1: "Jl. Muara Karang Block A-V Utara No. 5,Jakarta Utara 14450",
+          City: "Jakarta Barat",
+          FirstName: "John",
+          LastName: "Doe"
+        },
+        IsTrunkeyOrder: true,
+        UserOrderNumber: "EDS21512332",
+        IsChecked: false,
+        DueTime: "2017-05-07T11:00:00.000Z",
+        IsCOD: false,
+        PackageWeight: 1,
+        TotalValue: 130000,
+        PickupAddress: {
+          Address1: "Jl. Musi No. 36, Jelambar,Jakarta Pusat 10150",
+          FirstName: "Kil",
+          LastName: "Bill"
+        },
+        User: {
+          FirstName: "Chuck",
+          LastName: "Norris"
+        },
+        OrderStatus: {
+          OrderStatus: "NOTASSIGNED",
+          OrderStatusID: 6
+        }
+      },
     ];
 
     dispatch({
@@ -261,6 +361,14 @@ export function ExpandAttempt () {
 
 export function HideAttempt () {
   return { type: Constants.HIDE_ATTEMPT }
+}
+
+export function ShowAttemptModal () {
+  return { type: Constants.SHOW_ATTEMPT_MODAL }
+}
+
+export function HideAttemptModal () {
+  return { type: Constants.HIDE_ATTEMPT_MODAL }
 }
 
 export function ToggleCheckAll() {

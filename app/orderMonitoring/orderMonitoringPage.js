@@ -3,6 +3,8 @@ import {connect} from 'react-redux';
 import styles from './styles.css';
 import {ButtonWithLoading, Input, Page} from '../views/base';
 import OrderTable, {Filter, Deadline} from './orderTable';
+import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import ImageUploader from '../views/base/imageUploader';
 import * as orderService from './orderMonitoringService';
 
 class OrderMonitoringPage extends Component {
@@ -12,7 +14,7 @@ class OrderMonitoringPage extends Component {
       showDelivery: true,
       showSucceed: false,
       showPending: false,
-      showFailed: false
+      showFailed: false,
     };
   }
 
@@ -69,7 +71,9 @@ class OrderMonitoringPage extends Component {
             expandedAttempt,
             expandedOrder,
             ExpandAttempt,
-            HideOrder
+            HideOrder,
+            ShowAttemptModal,
+            modal
           } = this.props;
 
     return (
@@ -81,10 +85,14 @@ class OrderMonitoringPage extends Component {
             hideOrder={HideOrder}
             expandedAttempt={expandedAttempt}
             expandAttempt={ExpandAttempt}
+            showAddAttemptModal={ShowAttemptModal}
           />
         }
         { expandedAttempt &&
           <AttemptDetails hideAttempt={this.props.HideAttempt} />
+        }
+        { modal.addAttempt &&
+          <AttemptModal hide={this.props.HideAttemptModal} />
         }
         <div className={styles.widgetOuterContainer}>
           <div
@@ -175,7 +183,7 @@ class OrderMonitoringPage extends Component {
 
 function mapState(store) {
   const { userLogged } = store.app;
-  const { currentPage, limit, total, expandedOrder, isExpanded, expandedAttempt, count } = store.app.orderMonitoring
+  const { currentPage, limit, total, expandedOrder, isExpanded, expandedAttempt, count, modal } = store.app.orderMonitoring
 
   return {
     userLogged,
@@ -185,7 +193,8 @@ function mapState(store) {
     isExpanded,
     expandedOrder,
     expandedAttempt,
-    count
+    count,
+    modal
   }
 }
 
@@ -208,6 +217,12 @@ function mapDispatch(dispatch) {
     },
     HideAttempt: () => {
       dispatch(orderService.HideAttempt());
+    },
+    ShowAttemptModal: () => {
+      dispatch(orderService.ShowAttemptModal());
+    },
+    HideAttemptModal: () => {
+      dispatch(orderService.HideAttemptModal());
     },
     PaginationAction: {
       setCurrentPage: (currentPage) => {
@@ -235,7 +250,7 @@ class PanelDetails extends Component {
   }
 
   render() {
-    const { isExpanded, expandedAttempt, expandedOrder, expandAttempt } = this.props;
+    const { isExpanded, expandedAttempt, expandedOrder, expandAttempt, showAddAttemptModal } = this.props;
 
     return (
       <div>
@@ -259,7 +274,7 @@ class PanelDetails extends Component {
                     <img src="/img/icon-cod-transfered.png" />
                     <p>COD Confirmation</p>
                   </li>
-                  <li>
+                  <li onClick={showAddAttemptModal}>
                     <img src="/img/icon-report-attempt.png" />
                     <p>Report Attempt</p>
                   </li>
@@ -343,6 +358,82 @@ class PanelDetails extends Component {
         }
       </div>
     );
+  }
+}
+
+class AttemptModal extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      ProfilePicture: '/img/photo-default.png'
+    };
+  }
+
+  setPicture(url) {
+    this.setState({ProfilePicture: url})
+  }
+
+  render() {
+    return(
+      <ModalContainer>
+        <ModalDialog className={styles.addAttemptModal}>
+          <div>
+            <div className={styles.addAttemptTitle}>
+              <div className={styles.attempt}>Attempt 1/2</div>
+              Report Attempt
+              <div className={styles.close} onClick={this.props.hide}>&times;</div>
+            </div>
+            <div className={styles.addAttemptBody}>
+              <div className={styles.left}>
+                Choose Reason <i style={{color: "#fc404e"}}>*</i>
+                <ul className={styles.reasons}>
+                  <li>
+                    <img src="/img/icon-no-receiver.png" />
+                    <span>Tidak ada orang</span>
+                  </li>
+                  <li>
+                    <img src="/img/icon-reject.png" />
+                    <span>Menolak kiriman</span>
+                  </li>
+                  <li>
+                    <img src="/img/icon-cannot-pay.png" />
+                    <span>Tidak bisa membayar</span>
+                  </li>
+                  <li>
+                    <img src="/img/icon-late-delivery.png" />
+                    <span>Pengiriman telat</span>
+                  </li>
+                  <li>
+                    <img src="/img/icon-damage-package.png" />
+                    <span>Paket rusak</span>
+                  </li>
+                  <li>
+                    <img src="/img/icon-move-address.png" />
+                    <span>Pindah alamat</span>
+                  </li>
+                  <li>
+                    <img src="/img/icon-tidak-dikenal.png" />
+                    <span>Tidak dikenal</span>
+                  </li>
+                  <li>
+                    <img src="/img/icon-late-delivery.png" />
+                    <span>Pengiriman telat</span>
+                  </li>
+                </ul>
+              </div>
+              <div className={styles.right}>
+                Add Image (Optional)
+                <ImageUploader
+                  withImagePreview={true}
+                  currentImageUrl={this.state.ProfilePicture}
+                  updateImageUrl={(data) => this.setPicture(data)}
+                />
+              </div>
+            </div>
+          </div>
+        </ModalDialog>
+      </ModalContainer>
+    )
   }
 }
 
