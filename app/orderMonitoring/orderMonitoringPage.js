@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import styles from './styles.css';
-import {ButtonWithLoading, Input, Page} from '../views/base';
+import { ButtonWithLoading, Input, Page } from '../views/base';
 import OrderTable, {Filter, Deadline} from './orderTable';
-import {ModalContainer, ModalDialog} from 'react-modal-dialog';
-import ImageUploader from '../views/base/imageUploader';
+import { ModalContainer, ModalDialog } from 'react-modal-dialog';
+import { DragoDropImageUploader as Dropzone } from '../views/base';
 import * as orderService from './orderMonitoringService';
 
 class OrderMonitoringPage extends Component {
@@ -245,12 +245,17 @@ class PanelDetails extends Component {
     };
   }
 
+  showAddAttemptModal() {
+    this.setState({showMenu: false});
+    this.props.showAddAttemptModal();
+  }
+
   toggleMenu(){
     this.setState({showMenu: !this.state.showMenu});
   }
 
   render() {
-    const { isExpanded, expandedAttempt, expandedOrder, expandAttempt, showAddAttemptModal } = this.props;
+    const { isExpanded, expandedAttempt, expandedOrder, expandAttempt } = this.props;
 
     return (
       <div>
@@ -274,7 +279,7 @@ class PanelDetails extends Component {
                     <img src="/img/icon-cod-transfered.png" />
                     <p>COD Confirmation</p>
                   </li>
-                  <li onClick={showAddAttemptModal}>
+                  <li onClick={() => this.showAddAttemptModal()}>
                     <img src="/img/icon-report-attempt.png" />
                     <p>Report Attempt</p>
                   </li>
@@ -423,11 +428,10 @@ class AttemptModal extends Component {
               </div>
               <div className={styles.right}>
                 Add Image (Optional)
-                <ImageUploader
-                  withImagePreview={true}
-                  currentImageUrl={this.state.ProfilePicture}
+                <Dropzone
                   updateImageUrl={(data) => this.setPicture(data)}
                 />
+                <button className={styles.sendReport}>Send Report</button>
               </div>
             </div>
           </div>

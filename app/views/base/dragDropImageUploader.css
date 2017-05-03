@@ -1,0 +1,30 @@
+.outerDropzone {
+  width: 100%;
+  margin-top: 15px;
+}
+
+.dragDropFiller {
+  text-align: center;
+  padding: 30px 15px;
+  border: dashed 1px #d8d8d8;
+  font-size: 12px;
+  color: #adadad;
+}
+
+.dragDropFiller img {
+  display: block;
+  width: 40px;
+  margin: 25px auto;
+}
+
+.dragDropFiller button {
+  display: block;
+  margin: 15px auto;
+  padding: 15px;
+  background: transparent;
+  color: #2196f3;
+  font-weight: bold;
+  border: solid 1px #d8d8d8;
+  border-radius: 3px;
+  cursor: pointer;
+}

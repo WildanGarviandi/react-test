@@ -321,10 +321,11 @@
   background: #f1f1f1;
   max-height: 70vh;
   overflow: auto;
+  display: table-cell;
 }
 
-.addAttemptBody .left {
-  display: table-cell;
+.addAttemptBody .right {
+  position: relative;
 }
 
 .addAttemptBody .reasons li img {
@@ -354,4 +355,18 @@
 .addAttemptBody .reasons li span {
   float: left;
   margin: 6px 10px;
+}
+
+button.sendReport {
+  width: 93%;
+  border: 0;
+  padding: 15px;
+  border-radius: 4px;
+  background: #38b393;
+  position: absolute;
+  bottom: 10px;
+  color: #fff;
+  text-align: center;
+  font-size: 16px;
+  cursor: pointer;
 }
