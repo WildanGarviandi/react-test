@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Dropzone from 'react-dropzone';
+import ImagePreview from '../base/imagePreview';
 import FetchPost from '../../modules/fetch/post';
 import styles from './dragDropImageUploader.css';
 
@@ -13,11 +14,9 @@ class DragoDropImageUploader extends Component {
   }
 
   uploadImage(acc, reject) {
-    console.log(acc, 'acc');
-    console.log(reject, 'reject');
-    if (acc && acc.file) {
+    if (acc) {
       var formData = new FormData();
-      formData.append('file', acc.file[0]);
+      formData.append('file', acc[0]);
       this.setState({'isUploading': true});
       FetchPost(`/upload/picture`, this.props.token, formData, false, true).then((res) => {
         if (res.status == 200) {
@@ -31,6 +30,8 @@ class DragoDropImageUploader extends Component {
   }
 
   render() {
+    const {currentImageUrl} = this.props;
+
     return(
       <Dropzone
         className={styles.outerDropzone}
@@ -41,14 +42,23 @@ class DragoDropImageUploader extends Component {
           if (isDragReject) {
             return "Some files will be rejected";
           }
-          return (
-            <div className={styles.dragDropFiller}>
-              <img src="/img/icon-add-image-drag-drop.png" />
-              Drag your image to this area or tap this button
-              below to choose from your folder
-              <button>Add Image</button>
-            </div>
-          )
+          if( currentImageUrl !== "") {
+            return (
+              <div className={styles.dragDropFiller}>
+                <img className={styles.imgPreview} src={currentImageUrl} />
+                <button>Edit Image</button>
+              </div>
+            )
+          } else {
+            return (
+              <div className={styles.dragDropFiller}>
+                <img src="/img/icon-add-image-drag-drop.png" />
+                Drag your image to this area or tap this button
+                below to choose from your folder
+                <button>Add Image</button>
+              </div>
+            );
+          }
         }}
       </Dropzone>
     )

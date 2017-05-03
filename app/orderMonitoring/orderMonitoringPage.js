@@ -4,7 +4,7 @@ import styles from './styles.css';
 import { ButtonWithLoading, Input, Page } from '../views/base';
 import OrderTable, {Filter, Deadline} from './orderTable';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
-import { DragoDropImageUploader as Dropzone } from '../views/base';
+import { DragDropImageUploader as Dropzone } from '../views/base';
 import * as orderService from './orderMonitoringService';
 
 class OrderMonitoringPage extends Component {
@@ -370,7 +370,7 @@ class AttemptModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ProfilePicture: '/img/photo-default.png'
+      ProfilePicture: ""
     };
   }
 
@@ -379,6 +379,7 @@ class AttemptModal extends Component {
   }
 
   render() {
+
     return(
       <ModalContainer>
         <ModalDialog className={styles.addAttemptModal}>
@@ -430,6 +431,7 @@ class AttemptModal extends Component {
                 Add Image (Optional)
                 <Dropzone
                   updateImageUrl={(data) => this.setPicture(data)}
+                  currentImageUrl={this.state.ProfilePicture}
                 />
                 <button className={styles.sendReport}>Send Report</button>
               </div>
