@@ -4,7 +4,6 @@ import moment from 'moment';
 import { FilterTop } from '../components/form';
 import { Pagination2 } from '../components/pagination2';
 import OrderStatusSelector from '../modules/orderStatus/selector';
-import * as OrderService from '../orders/orderService';
 import * as orderMonitoringService from './orderMonitoringService';
 import {CheckboxHeaderPlain as CheckboxHeaderBase, CheckboxCell } from '../views/base/tableCell';
 import styles from './table.css';
@@ -58,7 +57,7 @@ class OrderRow extends Component {
           </div>
           <br />
           <div className={styles.cardValue}>
-            {order.User.FirstName} {order.User.LastName}
+            {order.Driver ? order.Driver.FirstName : 'null' } {order.Driver ? order.Driver.LastName : 'null' }
           </div>
         </td>
         <td onClick={this.props.expandOrder}><div className={styles.cardSeparator} /></td>
@@ -88,18 +87,17 @@ class OrderRow extends Component {
 
 // START DROPDOWN FILTER
 
-function DropdownDispatchBuilder(filterKeyword) {
+function DropdownDispatchBuilder(keyword, tab) {
   return (dispatch) => {
     return {
-      handleSelect: (selectedOption) => {
-        const SetFn = OrderService.SetDropDownFilter(filterKeyword);
-        dispatch(SetFn(selectedOption));
+      handleSelect: (value, tab) => {
+        dispatch(orderMonitoringService.SetDropDownFilter(keyword, value, tab));
       }
     }
   }
 }
 
-function DropdownStoreBuilder(name) {
+function DropdownStoreBuilder(name, tab) {
   return (store) => {
 
     const sortOptions = [{
@@ -128,20 +126,28 @@ function DropdownStoreBuilder(name) {
       "orderTypeOptions": orderTypeOptions
     }
 
-
     return {
-      value: store.app.myOrders[name],
+      value: store.app.orderMonitoring[name][tab],
       options: options[name]
     }
   }
 }
 
-function ConnectDropdownBuilder(keyword) {
-  return connect(DropdownStoreBuilder(keyword), DropdownDispatchBuilder(keyword));
+function ConnectDropdownBuilder(keyword, tab) {
+  return connect(DropdownStoreBuilder(keyword, tab), DropdownDispatchBuilder(keyword, tab));
 }
 
-const SortFilter = ConnectDropdownBuilder('sortOptions')(FilterTop);
-const OrderTypeFilter = ConnectDropdownBuilder('orderTypeOptions')(FilterTop);
+const SortFilterTotal = ConnectDropdownBuilder('sortOptions', 'total')(FilterTop);
+const OrderTypeFilterTotal = ConnectDropdownBuilder('orderTypeOptions', 'total')(FilterTop);
+
+const SortFilterSucceed = ConnectDropdownBuilder('sortOptions', 'succeed')(FilterTop);
+const OrderTypeFilterSucceed = ConnectDropdownBuilder('orderTypeOptions', 'succeed')(FilterTop);
+
+const SortFilterPending = ConnectDropdownBuilder('sortOptions', 'pending')(FilterTop);
+const OrderTypeFilterPending = ConnectDropdownBuilder('orderTypeOptions', 'pending')(FilterTop);
+
+const SortFilterFailed = ConnectDropdownBuilder('sortOptions', 'failed')(FilterTop);
+const OrderTypeFilterFailed = ConnectDropdownBuilder('orderTypeOptions', 'failed')(FilterTop);
 
 // END DROPDOWN FILTER
 
@@ -259,13 +265,39 @@ export class Deadline extends Component{
 export class Filter extends Component {
   render() {
     const { PaginationAction, paginationState } = this.props.pagination;
+    const { tab } = this.props;
 
     return (
       <div>
-        <SortFilter />
-        <OrderTypeFilter />
+        { tab === "total" &&
+          <div>
+            <SortFilterTotal />
+            <OrderTypeFilterTotal />
+          </div>
+        }
 
-        <Pagination2 {...paginationState} {...PaginationAction} style={{marginTop: "5px"}} />
+        { tab === "succeed" &&
+          <div>
+            <SortFilterSucceed />
+            <OrderTypeFilterSucceed />
+          </div>
+        }
+
+        { tab === "pending" &&
+          <div>
+            <SortFilterPending />
+            <OrderTypeFilterPending />
+          </div>
+        }
+
+        { tab === "failed" &&
+          <div>
+            <SortFilterFailed />
+            <OrderTypeFilterFailed />
+          </div>
+        }
+
+        <Pagination2 {...paginationState} {...PaginationAction} tab={this.props.tab} style={{marginTop: "5px"}} />
 
         <div className={styles.row}>
           <CheckboxHeader />
@@ -288,11 +320,12 @@ class OrderTable extends Component {
   }
 
   render() {
+    const { orders, tab } = this.props;
     return (
       <table className={styles.table}>
         <tbody>
-          { this.props.orders.map((order, idx) => (
-            <OrderRow key={idx} order={order} expandOrder={() => this.expand(order)} expandedOrder={this.props.expandedOrder} />
+          { orders[tab].map((order, idx) => (
+            <OrderRow key={idx} order={order} expandOrder={(tab === "pending") && (() => this.expand(order))} expandedOrder={this.props.expandedOrder} tab={tab} />
           )) }
         </tbody>
       </table>
@@ -320,8 +353,8 @@ function OrderTableDispatchBuilder() {
       HideOrder: () => {
         dispatch(orderMonitoringService.HideOrder());
       },
-      FetchList: () => {
-        dispatch(orderMonitoringService.FetchList());
+      FetchList: (tab) => {
+        dispatch(orderMonitoringService.FetchList(tab));
       }
     }
   }

@@ -55,8 +55,11 @@ class OrderMonitoringPage extends Component {
   }
 
   componentWillMount() {
-    this.props.FetchCount();
-    this.props.FetchList();
+    // this.props.FetchCount();
+    this.props.FetchList('total');
+    this.props.FetchList('succeed');
+    this.props.FetchList('pending');
+    this.props.FetchList('failed');
     if (!this.props.userLogged.hubID) {
       window.location.href = config.defaultMainPageTMS;
     }
@@ -136,42 +139,42 @@ class OrderMonitoringPage extends Component {
           <div className={styles.contentContainer}>
             <div className={styles.mainTable}>
               { this.state.showDelivery &&
-                <Filter pagination={{PaginationAction, paginationState}} />
+                <Filter pagination={{PaginationAction, paginationState}} tab="total" />
               }
               {
                 this.state.showSucceed &&
-                <Filter pagination={{PaginationAction, paginationState}} />
+                <Filter pagination={{PaginationAction, paginationState}} tab="succeed" />
               }
               {
                 this.state.showPending &&
-                <Filter pagination={{PaginationAction, paginationState}} />
+                <Filter pagination={{PaginationAction, paginationState}} tab="pending" />
               }
               {
                 this.state.showFailed &&
-                <Filter pagination={{PaginationAction, paginationState}} />
+                <Filter pagination={{PaginationAction, paginationState}} tab="failed" />
               }
             </div>
             { this.state.showDelivery &&
               <div>
-                <OrderTable />
+                <OrderTable tab="total" />
               </div>
             }
             {
               this.state.showSucceed &&
               <div>
-                <OrderTable />
+                <OrderTable tab="succeed" />
               </div>
             }
             {
               this.state.showPending &&
               <div>
-                <OrderTable />
+                <OrderTable tab="pending" />
               </div>
             }
             {
               this.state.showFailed &&
               <div>
-                <OrderTable />
+                <OrderTable tab="failed" />
               </div>
             }
           </div>
@@ -181,9 +184,9 @@ class OrderMonitoringPage extends Component {
   }
 }
 
-function mapState(store) {
+function mapState(store, tab) {
   const { userLogged } = store.app;
-  const { currentPage, limit, total, expandedOrder, isExpanded, expandedAttempt, count, modal } = store.app.orderMonitoring
+  const { currentPage, limit, total, expandedOrder, isExpanded, expandedAttempt, count, modal } = store.app.orderMonitoring;
 
   return {
     userLogged,
@@ -203,8 +206,8 @@ function mapDispatch(dispatch) {
     FetchCount: () => {
       dispatch(orderService.FetchCount());
     },
-    FetchList: () => {
-      dispatch(orderService.FetchList());
+    FetchList: (tab) => {
+      dispatch(orderService.FetchList(tab));
     },
     ExpandOrder: () => {
       dispatch(orderService.ExpandOrder());
@@ -225,11 +228,11 @@ function mapDispatch(dispatch) {
       dispatch(orderService.HideAttemptModal());
     },
     PaginationAction: {
-      setCurrentPage: (currentPage) => {
-        dispatch(orderService.SetCurrentPage(currentPage));
+      setCurrentPage: (currentPage, tab) => {
+        dispatch(orderService.SetCurrentPage(currentPage, tab));
       },
-      setLimit: (limit) => {
-        dispatch(orderService.SetLimit(limit));
+      setLimit: (limit, tab) => {
+        dispatch(orderService.SetLimit(limit, tab));
       },
     },
   }
@@ -296,7 +299,7 @@ class PanelDetails extends Component {
                 Order Id
               </div>
               <div className={styles.orderDetailsValue}>
-                &nbsp;
+                { expandedOrder.UserOrderID }
               </div>
               <div className={styles.orderDetailsLabel}>
                 Origin

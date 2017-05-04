@@ -86,15 +86,15 @@ td {
   text-align: left;
 }
 
-.cardValue.cancelled {
+.cardValue.CANCELED {
   color: #ff5a60;
 }
 
-.cardValue.delivered {
+.cardValue.DELIVERED {
   color: #38b393;
 }
 
-.cardValue.on-going {
+.cardValue.ONGOING {
   color: #ffa500;
 }
 

@@ -20,7 +20,11 @@ const LimitSelector = React.createClass({
     return { opened: false }
   },
   setLimit(x) {
-    this.props.setLimit(x);
+    if(this.props.tab) {
+      this.props.setLimit(x, this.props.tab);
+    } else {
+      this.props.setLimit(x);
+    }
     this.setState({opened: false});
   },
   toggleOpened() {
@@ -40,18 +44,24 @@ const LimitSelector = React.createClass({
 });
 
 function PaginationDetail(props) {
-  var {limit, total, page, setLimit} = props;
+  var {limit, total, page, setLimit, tab} = props;
 
   return (
     <div className={styles.paginationDetail}>
-      <LimitSelector limit={limit} setLimit={setLimit} />
+      <LimitSelector limit={limit} setLimit={setLimit} tab={tab} />
     </div>
   );
 }
 
 const PaginationControl = React.createClass({
   setPage(x) {
-    if(x != this.props.currentPage && x >= 1 && x <= this.props.pagesCount) this.props.setPage(x);
+    if(x != this.props.currentPage && x >= 1 && x <= this.props.pagesCount) {
+      if(this.props.tab) {
+        this.props.setPage(x, this.props.tab);
+      } else {
+        this.props.setPage(x);
+      }
+    }
   },
   render() {
     var {pagesCount, currentPage} = this.props;
@@ -71,7 +81,8 @@ const PaginationControl = React.createClass({
       <div className={styles.paginationControl}>
         <span className={styles.paginationInfo}>
           {infoString}
-          <img className={styles.leftArrow} onClick={this.setPage.bind(this, currentPage - 1)} src="/img/icon-previous.png" />
+          <img className={styles.leftArrow} onClick={this.setPage.bind(this, currentPage - 1
+          )} src="/img/icon-previous.png" />
           <img className={styles.rightArrow} onClick={this.setPage.bind(this, currentPage + 1)} src="/img/icon-next.png" />
         </span>
       </div>
@@ -81,29 +92,45 @@ const PaginationControl = React.createClass({
 
 const Pagination2 = React.createClass({
   countPages() {
+    if (this.props.tab) {
+      return Math.ceil(this.props.total[this.props.tab] / this.props.limit[this.props.tab]);
+    }
     return Math.ceil(this.props.total / this.props.limit);
   },
   setLimit(x) {
     let {setLimit} = this.props;
     if(!setLimit) return;
-    setLimit(x);
+    if(this.props.tab) {
+      setLimit(x, this.props.tab);
+    } else {
+      setLimit(x);
+    }
   },
   setPage(x) {
     let {setCurrentPage} = this.props;
     if(!setCurrentPage) return;
 
     x = Math.max(1, Math.min(x, this.countPages()));
-    this.props.setCurrentPage(x);
+    if(this.props.tab) {
+      this.props.setCurrentPage(x, this.props.tab);
+    } else {
+      this.props.setCurrentPage(x);
+    }
   },
   render() {
-    var {limit, total, currentPage, style} = this.props;
+    var {limit, total, currentPage, style, tab} = this.props;
+    if(tab) {
+      limit = limit[tab];
+      total = total[tab];
+      currentPage = currentPage[tab];
+    }
     var totalPages = this.countPages();
 
     return (
       <div className={styles.paginationTable} style={style && style}>
         <div style={{display: 'block'}}>
-          <PaginationControl pagesCount={totalPages} currentPage={currentPage} setPage={this.setPage} />
-          <PaginationDetail limit={limit} total={total} page={currentPage} setLimit={this.setLimit} />
+          <PaginationControl tab={tab} pagesCount={totalPages} currentPage={currentPage} setPage={this.setPage} />
+          <PaginationDetail tab={tab} limit={limit} total={total} page={currentPage} setLimit={this.setLimit} />
         </div>
         <div style={{clear: 'both', marginBottom: 10}} />
       </div>

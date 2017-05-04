@@ -2,7 +2,7 @@ import lodash from 'lodash';
 import FetchGet from '../modules/fetch/get';
 import FetchPost from '../modules/fetch/post';
 import ModalActions from '../modules/modals/actions';
-import {modalAction} from '../modules/modals/constants';
+import { modalAction } from '../modules/modals/constants';
 import moment from 'moment';
 
 const Constants = {
@@ -18,18 +18,15 @@ const Constants = {
   TOGGLE_SELECT_ORDER: 'TOGGLE_SELECT_ORDER',
   SET_CURRENT_PAGE: 'SET_CURRENT_PAGE',
   SET_LIMIT: 'SET_LIMIT',
-  SET_ORDERS: 'SET_ORDERS'
+  SET_ORDERS: 'SET_ORDERS',
+  SET_DROPDOWN_FILTER: 'SET_DROPDOWN_FILTER'
 }
 
 const initialStore = {
-  currentPage: 1,
-  limit: 100,
-  total: 0,
   isExpanded: false,
   expandedOrder: {},
   expandedAttempt: false,
   selectedAll: false,
-  orders: [],
   count: {
     totalDelivery: '-',
     pendingDelivery: '-',
@@ -38,6 +35,48 @@ const initialStore = {
   },
   modal: {
     addAttempt: false
+  },
+  filters: {
+    total: {},
+    succeed: {},
+    pending: {},
+    failed: {}
+  },
+  orders: {
+    total: [],
+    succeed: [],
+    pending: [],
+    failed : []
+  },
+  sortOptions: {
+    total: "Sort By",
+    succeed: "Sort By",
+    pending: "Sort By",
+    failed: "Sort By"
+  },
+  orderTypeOptions: {
+    total: "All",
+    succeed: "All",
+    pending: "All",
+    failed: "All",
+  },
+  currentPage: {
+    total: 1,
+    succeed: 1,
+    pending: 1,
+    failed: 1
+  },
+  limit: {
+    total: 5,
+    succeed: 5,
+    pending: 5,
+    failed: 5
+  },
+  total: {
+    total: 0,
+    succeed: 0,
+    pending: 0,
+    failed: 0
   }
 }
 
@@ -76,10 +115,14 @@ export default function Reducer(store = initialStore, action) {
     }
 
     case Constants.SET_ORDERS: {
-      return lodash.assign({}, store, {
-        total: action.total,
-        orders: action.orders
-      });
+      const newOrders = {
+        total: {},
+        orders: {}
+      }
+      newOrders.total[action.tab] = action.total
+      newOrders.orders[action.tab] = action.orders
+
+      return lodash.merge({}, store, newOrders);
     }
 
     case Constants.TOGGLE_CHECK_ALL: {
@@ -120,14 +163,32 @@ export default function Reducer(store = initialStore, action) {
     }
 
     case Constants.SET_CURRENT_PAGE: {
-      return lodash.assign({}, store, {
-        currentPage: action.currentPage
-      });
+      const newCurrPage = {
+        currentPage: {}
+      }
+      newCurrPage.currentPage[action.tab] = action.currentPage;
+
+      return lodash.merge({}, store, newCurrPage);
     }
 
     case Constants.SET_LIMIT: {
+      const newLimit = {
+        limit: {}
+      }
+      newLimit.limit[action.tab] = action.limit;
+
+      return lodash.merge({}, store, newLimit);
+    }
+
+    case Constants.SET_DROPDOWN_FILTER: {
+      const newDropdownValue = {
+        [action.keyword]: {
+          
+        }
+      }
+
       return lodash.assign({}, store, {
-        limit: action.limit
+        modal: {addAttempt: false}
       });
     }
 
@@ -163,184 +224,44 @@ export function FetchCount() {
   }
 }
 
-export function FetchList() {
+export function FetchList(tab) {
   return (dispatch, getState) => {
-    const temp = [
-      {
-        DropoffAddress: {
-          Address1: "Jl. Muara Karang Block A-V Utara No. 5,Jakarta Utara 14450",
-          City: "Jakarta Barat",
-          FirstName: "John",
-          LastName: "Doe"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21396244",
-        IsChecked: false,
-        DueTime: "2017-05-05T11:00:00.000Z",
-        IsCOD: false,
-        PackageWeight: 1,
-        TotalValue: 130000,
-        PickupAddress: {
-          Address1: "Jl. Musi No. 36, Jelambar,Jakarta Pusat 10150",
-          FirstName: "Luck",
-          LastName: "Manthis"
-        },
-        User: {
-          FirstName: "Chuck",
-          LastName: "Norris"
-        },
-        OrderStatus: {
-          OrderStatus: "NOTASSIGNED",
-          OrderStatusID: 6
-        }
-      },
-      {
-        DropoffAddress: {
-          Address1: "Jl. Musi No. 36, Jelambar,Jakarta Pusat 10150",
-          City: "Jakarta Barat",
-          FirstName: "John",
-          LastName: "Wick"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21353131",
-        IsChecked: false,
-        DueTime: "2017-05-09T11:00:00.000Z",
-        IsCOD: false,
-        PackageWeight: 1,
-        TotalValue: 130000,
-        PickupAddress: {
-          Address1: "Jl. Muara Karang Block A-V Utara No. 5,Jakarta Utara 14450",
-          FirstName: "Kurt",
-          LastName: "Skip"
-        },
-        User: {
-          FirstName: "Chuck",
-          LastName: "Norris"
-        },
-        OrderStatus: {
-          OrderStatus: "NOTASSIGNED",
-          OrderStatusID: 6
-        }
-      },
-      {
-        DropoffAddress: {
-          Address1: "Jl. Muara Karang Block A-V Utara No. 5,Jakarta Utara 14450",
-          City: "Jakarta Barat",
-          FirstName: "John",
-          LastName: "Doe"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21512624",
-        IsChecked: false,
-        DueTime: "2017-05-07T11:00:00.000Z",
-        IsCOD: false,
-        PackageWeight: 1,
-        TotalValue: 130000,
-        PickupAddress: {
-          Address1: "Jl. Musi No. 36, Jelambar,Jakarta Pusat 10150",
-          FirstName: "Kil",
-          LastName: "Bill"
-        },
-        User: {
-          FirstName: "Chuck",
-          LastName: "Norris"
-        },
-        OrderStatus: {
-          OrderStatus: "NOTASSIGNED",
-          OrderStatusID: 6
-        }
-      },
-      {
-        DropoffAddress: {
-          Address1: "Jl. Muara Karang Block A-V Utara No. 5,Jakarta Utara 14450",
-          City: "Jakarta Barat",
-          FirstName: "John",
-          LastName: "Doe"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21512412",
-        IsChecked: false,
-        DueTime: "2017-05-07T11:00:00.000Z",
-        IsCOD: false,
-        PackageWeight: 1,
-        TotalValue: 130000,
-        PickupAddress: {
-          Address1: "Jl. Musi No. 36, Jelambar,Jakarta Pusat 10150",
-          FirstName: "Kil",
-          LastName: "Bill"
-        },
-        User: {
-          FirstName: "Chuck",
-          LastName: "Norris"
-        },
-        OrderStatus: {
-          OrderStatus: "NOTASSIGNED",
-          OrderStatusID: 6
-        }
-      },
-      {
-        DropoffAddress: {
-          Address1: "Jl. Muara Karang Block A-V Utara No. 5,Jakarta Utara 14450",
-          City: "Jakarta Barat",
-          FirstName: "John",
-          LastName: "Doe"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21512312",
-        IsChecked: false,
-        DueTime: "2017-05-07T11:00:00.000Z",
-        IsCOD: false,
-        PackageWeight: 1,
-        TotalValue: 130000,
-        PickupAddress: {
-          Address1: "Jl. Musi No. 36, Jelambar,Jakarta Pusat 10150",
-          FirstName: "Kil",
-          LastName: "Bill"
-        },
-        User: {
-          FirstName: "Chuck",
-          LastName: "Norris"
-        },
-        OrderStatus: {
-          OrderStatus: "NOTASSIGNED",
-          OrderStatusID: 6
-        }
-      },
-      {
-        DropoffAddress: {
-          Address1: "Jl. Muara Karang Block A-V Utara No. 5,Jakarta Utara 14450",
-          City: "Jakarta Barat",
-          FirstName: "John",
-          LastName: "Doe"
-        },
-        IsTrunkeyOrder: true,
-        UserOrderNumber: "EDS21512332",
-        IsChecked: false,
-        DueTime: "2017-05-07T11:00:00.000Z",
-        IsCOD: false,
-        PackageWeight: 1,
-        TotalValue: 130000,
-        PickupAddress: {
-          Address1: "Jl. Musi No. 36, Jelambar,Jakarta Pusat 10150",
-          FirstName: "Kil",
-          LastName: "Bill"
-        },
-        User: {
-          FirstName: "Chuck",
-          LastName: "Norris"
-        },
-        OrderStatus: {
-          OrderStatus: "NOTASSIGNED",
-          OrderStatusID: 6
-        }
-      },
-    ];
+    const { token } = getState().app.userLogged;
+    const { limit, currentPage, filters } = getState().app.orderMonitoring;
+    const statuses = {
+      total: "[2, 3, 4, 5, 8, 12, 13, 15, 16]",
+      succeed: "[5]",
+      pending: "[2, 3, 4]",
+      failed: "[8, 12, 13, 15, 16]"
+    }
 
-    dispatch({
-      type: Constants.SET_ORDERS,
-      total: temp.length,
-      orders: temp
-    })
+    const query = lodash.assign({}, filters[tab], {
+      limit: limit,
+      offset: (currentPage - 1) * limit,
+      statuses: statuses[tab],
+    });
+
+    dispatch({type: modalAction.BACKDROP_SHOW});
+    FetchGet('/order/delivery', token, query).then((response) => {
+      if(!response.ok) {
+        return response.json().then(({error}) => {
+          throw error;
+        })
+      }
+
+      return response.json().then(({data}) => {
+        dispatch({type: modalAction.BACKDROP_HIDE});
+        dispatch({
+          type: Constants.SET_ORDERS,
+          total: data.count,
+          orders: data.rows,
+          tab: tab
+        })
+      });
+    }).catch((e) => {
+      dispatch({type: modalAction.BACKDROP_HIDE});
+      dispatch(ModalActions.addMessage(e.message));
+    });
   }
 }
 
@@ -379,10 +300,29 @@ export function ToggleSelectOrder(orderId) {
   return { type: Constants.TOGGLE_SELECT_ORDER, orderId: orderId }
 }
 
-export function SetCurrentPage(currentPage) {
-  return { type: Constants.SET_CURRENT_PAGE, currentPage: currentPage }
+export function SetCurrentPage(currentPage, tab) {
+  return {
+    type: Constants.SET_CURRENT_PAGE,
+    currentPage: currentPage,
+    tab: tab
+  }
 }
 
-export function SetLimit(limit) {
-  return { type: Constants.SET_LIMIT, limit: limit }
+export function SetLimit(limit, tab) {
+  return (dispatch, getState) => {
+    dispatch({ type: Constants.SET_LIMIT, limit: limit, tab: tab });
+    dispatch(SetCurrentPage(1, tab));
+    dispatch(FetchList(tab));
+  }
+}
+
+export function SetDropDownFilter(keyword, value, tab) {
+  return (dispatch) => {
+    dispatch({
+      type: Constants.SET_DROPDOWN_FILTER,
+      keyword: keyword,
+      value: value,
+      tab: tab
+    })
+  }
 }
