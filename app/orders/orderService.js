@@ -177,7 +177,6 @@ export default function Reducer(store = initialStore, action) {
 }
 
 export function StoreSetter(keyword, value) {
-  console.log(value, 'storesetter');
   return {type: Constants.BASE + keyword, [keyword]: value};
 }
 
@@ -189,7 +188,6 @@ export function UpdateFilters(filters) {
   return (dispatch, getState) => {
     const prevFilters = getState().app.myOrders.filters;
     const nextFilter = lodash.assign({}, prevFilters, filters);
-    
     dispatch(SetFilters(nextFilter));
   }
 }
