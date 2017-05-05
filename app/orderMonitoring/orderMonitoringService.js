@@ -19,14 +19,14 @@ const Constants = {
   SET_CURRENT_PAGE: 'SET_CURRENT_PAGE',
   SET_LIMIT: 'SET_LIMIT',
   SET_ORDERS: 'SET_ORDERS',
-  SET_DROPDOWN_FILTER: 'SET_DROPDOWN_FILTER'
+  SET_DROPDOWN_FILTER: 'SET_DROPDOWN_FILTER',
+  SET_FILTER: 'SET_FILTER'
 }
 
 const initialStore = {
   isExpanded: false,
   expandedOrder: {},
   expandedAttempt: false,
-  selectedAll: false,
   count: {
     totalDelivery: '-',
     pendingDelivery: '-',
@@ -77,7 +77,13 @@ const initialStore = {
     succeed: 0,
     pending: 0,
     failed: 0
-  }
+  },
+  selectedAll: {
+    total: false,
+    pending: false,
+    succeed: false,
+    failed: false
+  },
 }
 
 export default function Reducer(store = initialStore, action) {
@@ -89,16 +95,20 @@ export default function Reducer(store = initialStore, action) {
     }
 
     case Constants.EXPAND_ORDER: {
-      return lodash.assign({}, store, {
+      return lodash.merge({}, store, {
         isExpanded: true,
-        expandedOrder: action.order
+        expandedOrder: {
+          [tab]: action.order
+        }
       });
     }
 
     case Constants.HIDE_ORDER: {
       return lodash.assign({}, store, {
         isExpanded: false,
-        expandedOrder: {}
+        expandedOrder: {
+          [tab]: {}
+        }
       });
     }
 
@@ -115,38 +125,57 @@ export default function Reducer(store = initialStore, action) {
     }
 
     case Constants.SET_ORDERS: {
+      const {total, orders} = store
       const newOrders = {
-        total: {},
-        orders: {}
-      }
+        total: {
+          total: total.total,
+          succeed: total.total,
+          pending: total.pending,
+          failed: total.failed,
+        },
+        orders: {
+          total: orders.total,
+          succeed: orders.total,
+          pending: orders.pending,
+          failed: orders.failed,
+        }
+      };
       newOrders.total[action.tab] = action.total
       newOrders.orders[action.tab] = action.orders
 
-      return lodash.merge({}, store, newOrders);
+      return lodash.assign({}, store, newOrders);
     }
 
     case Constants.TOGGLE_CHECK_ALL: {
       const {orders, selectedAll} = store;
-      const newOrders = lodash.map(orders, (order) => {
-        return lodash.assign({}, order, {IsChecked: !selectedAll});
+      const {tab} = action;
+      const newOrders = lodash.map(orders[tab], (order) => {
+        return lodash.assign({}, order, {IsChecked: !selectedAll[tab]});
       });
 
-      return lodash.assign({}, store, {
-        selectedAll: !selectedAll,
-        orders: newOrders,
+      return lodash.merge({}, store, {
+        selectedAll: {
+          [tab]: !selectedAll[tab]
+        },
+        orders: {
+            [tab]: newOrders,
+          }
       })
     }
 
     case Constants.TOGGLE_SELECT_ORDER: {
-      const newOrders= lodash.map(store.orders, (order) => {
-        if(order.UserOrderNumber !== action.orderId) {
+      const {orderId, tab} = action
+      const newOrders= lodash.map(store.orders[tab], (order) => {
+        if(order.UserOrderNumber !== orderId) {
             return order;
         }
         return lodash.assign({}, order, {IsChecked: !order.IsChecked});
       });
 
-      return lodash.assign({}, store, {
-        orders: newOrders,
+      return lodash.merge({}, store, {
+        orders: {
+          [tab]: newOrders,
+        }
       });
     }
 
@@ -165,7 +194,7 @@ export default function Reducer(store = initialStore, action) {
     case Constants.SET_CURRENT_PAGE: {
       const newCurrPage = {
         currentPage: {}
-      }
+      };
       newCurrPage.currentPage[action.tab] = action.currentPage;
 
       return lodash.merge({}, store, newCurrPage);
@@ -174,22 +203,41 @@ export default function Reducer(store = initialStore, action) {
     case Constants.SET_LIMIT: {
       const newLimit = {
         limit: {}
-      }
+      };
       newLimit.limit[action.tab] = action.limit;
 
       return lodash.merge({}, store, newLimit);
     }
 
     case Constants.SET_DROPDOWN_FILTER: {
-      const newDropdownValue = {
-        [action.keyword]: {
-          
-        }
+      const {keyword, tab, option} = action;
+      let newDropdownValue = {};
+      if(keyword === "sortOptions") {
+        const sortOptions = [{
+            sortBy: "Driver.FirstName", sortCriteria: 'ASC'
+          }, {
+            sortBy: "Driver.FirstName", sortCriteria: 'DESC'
+          }, {
+            sortBy: "DropoffAddress.City", sortCriteria: 'ASC'
+          }, {
+            sortBy: "DropoffAddress.City", sortCriteria: 'DESC'
+          }];
+        newDropdownValue = {
+          [keyword]: {[tab]: option.value},
+          filters: {[tab]:  sortOptions[option.key]}
+        };
+      } else {
+        newDropdownValue = {
+          [keyword]: {[tab]: option.value},
+          filters: {[tab]: {isTrunkeyOrder: option.key}}
+        };
       }
 
-      return lodash.assign({}, store, {
-        modal: {addAttempt: false}
-      });
+      return lodash.merge({}, store, newDropdownValue);
+    }
+
+    case Constants.SET_FILTER: {
+      return lodash.merge({}, store, action.newFilter);
     }
 
     default: {
@@ -233,12 +281,11 @@ export function FetchList(tab) {
       succeed: "[5]",
       pending: "[2, 3, 4]",
       failed: "[8, 12, 13, 15, 16]"
-    }
-
+    };
     const query = lodash.assign({}, filters[tab], {
-      limit: limit,
-      offset: (currentPage - 1) * limit,
-      statuses: statuses[tab],
+      limit: limit[tab],
+      offset: (currentPage[tab] - 1) * limit[tab],
+      statuses: statuses[tab]
     });
 
     dispatch({type: modalAction.BACKDROP_SHOW});
@@ -265,47 +312,50 @@ export function FetchList(tab) {
   }
 }
 
-export function ExpandOrder(order) {
-  return { type: Constants.EXPAND_ORDER, order: order }
+export function ExpandOrder(order, tab) {
+  return { type: Constants.EXPAND_ORDER, order, tab };
 }
 
 export function HideOrder() {
   return(dispatch, getApp) => {
-    dispatch({ type: Constants.HIDE_ORDER })
-    dispatch({ type: Constants.HIDE_ATTEMPT })
-  }
+    dispatch({ type: Constants.HIDE_ORDER });
+    dispatch({ type: Constants.HIDE_ATTEMPT });
+  };
 }
 
 export function ExpandAttempt () {
-  return { type: Constants.EXPAND_ATTEMPT }
+  return { type: Constants.EXPAND_ATTEMPT };
 }
 
 export function HideAttempt () {
-  return { type: Constants.HIDE_ATTEMPT }
+  return { type: Constants.HIDE_ATTEMPT };
 }
 
 export function ShowAttemptModal () {
-  return { type: Constants.SHOW_ATTEMPT_MODAL }
+  return { type: Constants.SHOW_ATTEMPT_MODAL };
 }
 
 export function HideAttemptModal () {
-  return { type: Constants.HIDE_ATTEMPT_MODAL }
+  return { type: Constants.HIDE_ATTEMPT_MODAL };
 }
 
-export function ToggleCheckAll() {
-  return { type: Constants.TOGGLE_CHECK_ALL }
+export function ToggleCheckAll(tab) {
+  return { type: Constants.TOGGLE_CHECK_ALL, tab };
 }
 
-export function ToggleSelectOrder(orderId) {
-  return { type: Constants.TOGGLE_SELECT_ORDER, orderId: orderId }
+export function ToggleSelectOrder(orderId, tab) {
+  return { type: Constants.TOGGLE_SELECT_ORDER, orderId, tab };
 }
 
 export function SetCurrentPage(currentPage, tab) {
-  return {
-    type: Constants.SET_CURRENT_PAGE,
-    currentPage: currentPage,
-    tab: tab
-  }
+  return (dispatch) => {
+    dispatch({
+      type: Constants.SET_CURRENT_PAGE,
+      currentPage: currentPage,
+      tab: tab
+    });
+    dispatch(FetchList(tab));
+  };
 }
 
 export function SetLimit(limit, tab) {
@@ -316,13 +366,16 @@ export function SetLimit(limit, tab) {
   }
 }
 
-export function SetDropDownFilter(keyword, value, tab) {
+export function SetDropDownFilter(keyword, option, tab) {
   return (dispatch) => {
     dispatch({
-      type: Constants.SET_DROPDOWN_FILTER,
-      keyword: keyword,
-      value: value,
-      tab: tab
+      type: Constants.SET_DROPDOWN_FILTER, keyword, option, tab
     })
+    dispatch(SetCurrentPage(1, tab));
+    dispatch(FetchList(tab));
   }
+}
+
+export function SetFilter(newFilter) {
+  return { type: Constants.SET_FILTER, newFilter };
 }

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import moment from 'moment';
 import { FilterTop } from '../components/form';
 import { Pagination2 } from '../components/pagination2';
@@ -18,9 +19,10 @@ class OrderRow extends Component {
   }
 
   render() {
-    const { IsChecked, expandedOrder, order } = this.props;
+    const { IsChecked, expandedOrder, order, profilePicture, tab } = this.props;
     const DEFAULT_IMAGE = "/img/default-logo.png";
     const ETOBEE_IMAGE = "/img/etobee-logo.png";
+    const FLEET_IMAGE = profilePicture;
     let rowStyles = `${styles.tr} ${styles.card} `;
     if (expandedOrder.UserOrderNumber === order.UserOrderNumber) {
       rowStyles += styles.select;
@@ -29,7 +31,7 @@ class OrderRow extends Component {
     return (
       <tr className={rowStyles}>
         <td className={styles.driverInput}>
-          <Checkbox isChecked={order.IsChecked} orderID={order.UserOrderNumber}  />
+          <Checkbox isChecked={order.IsChecked} orderID={order.UserOrderNumber} tab={tab} />
         </td>
         <td onClick={this.props.expandOrder}><div className={styles.cardSeparator} /></td>
         <td onClick={this.props.expandOrder}>
@@ -90,7 +92,7 @@ class OrderRow extends Component {
 function DropdownDispatchBuilder(keyword, tab) {
   return (dispatch) => {
     return {
-      handleSelect: (value, tab) => {
+      handleSelect: (value) => {
         dispatch(orderMonitoringService.SetDropDownFilter(keyword, value, tab));
       }
     }
@@ -101,23 +103,21 @@ function DropdownStoreBuilder(name, tab) {
   return (store) => {
 
     const sortOptions = [{
-      key: 'Default', value: "Sort By"
+      key: 0, value: "A-Z (Driver's Name)",
     }, {
-      key: 1, value: "A-Z (Driver's Name)",
+      key: 1, value: "Z-A (Driver's Name)",
     }, {
-      key: 2, value: "Z-A (Driver's Name)",
-    }, {
-      key: 3, value: "A-Z (Fleet's Area)",
+      key: 2, value: "A-Z (Fleet's Area)",
     },{
-      key: 4, value: "Z-A (Fleet's Area)",
+      key: 3, value: "Z-A (Fleet's Area)",
     }];
 
     const orderTypeOptions = [{
       key: 'All', value: "All",
     }, {
-      key: 0, value: 'Etobee',
+      key: 1, value: 'Etobee',
     }, {
-      key: 1, value: 'Company Orders',
+      key: 0, value: 'Company Orders',
     }];
 
     const options = {
@@ -154,18 +154,38 @@ const OrderTypeFilterFailed = ConnectDropdownBuilder('orderTypeOptions', 'failed
 // START INPUT FILTER
 
 function InputStoreBuilder(keyword) {
+  return(store, props) => {
+    const {filters} = store.app.orderMonitoring;
+    if(!_.isEmpty(filters[props.tab])){
+      return {value: filters[props.tab][keyword]};
+      }
+
+    return {};
+  }
 }
 
 function InputDispatchBuilder(keyword, placeholder) {
-  return (dispatch) => {
+  return (dispatch, props) => {
+    const {tab} = props;
     function OnChange(e) {
-      const newFilters = {[keyword]: e.target.value};
+      let value = (keyword == 'userOrderNumber') ? e.target.value.toUpperCase() : e.target.value ;
+
+      const newFilters = {
+        filters: {
+          [tab]: {
+            [keyword]: value
+          }
+        }
+      };
+      dispatch(orderMonitoringService.SetFilter(newFilters));
     }
 
     function OnKeyDown(e) {
       if(e.keyCode !== 13) {
         return;
       }
+      dispatch(orderMonitoringService.SetCurrentPage(1, tab));
+      dispatch(orderMonitoringService.FetchList(tab));
     }
 
     return {
@@ -186,36 +206,43 @@ function InputFilter({value, onChange, onKeyDown, placeholder}) {
   );
 }
 
-const EDSFilter = ConnectBuilder('eds', 'Search for EDS...')(InputFilter);
-const NameFilter = ConnectBuilder('name', 'Search for driver...')(InputFilter);
+const EDSFilter = ConnectBuilder('userOrderNumber', 'Search for EDS...')(InputFilter);
+const NameFilter = ConnectBuilder('driverName', 'Search for driver...')(InputFilter);
 const StatusFilter = ConnectBuilder('status', 'Search for order status...')(InputFilter);
-const FleetFilter = ConnectBuilder('fleet', "Search for fleet's area...")(InputFilter);
+const FleetFilter = ConnectBuilder('dropoffCity', "Search for fleet's area...")(InputFilter);
 
 // END INPUT FILTER
 
 // START CHECKBOX
 
-function CheckboxHeaderStore(store) {
-  return {
-    isChecked: store.app.orderMonitoring.selectedAll,
-  }
-}
-
-function CheckboxHeaderDispatch(dispatch) {
-  return {
-    onToggle: () => {
-      dispatch(orderMonitoringService.ToggleCheckAll());
+function CheckboxHeaderStore(tab) {
+  return (store) => {
+    return {
+      isChecked: store.app.orderMonitoring.selectedAll[tab],
     }
   }
 }
 
-const CheckboxHeader = connect(CheckboxHeaderStore, CheckboxHeaderDispatch)(CheckboxHeaderBase);
+function CheckboxHeaderDispatch(tab) {
+  return (dispatch) => {
+    return {
+      onToggle: () => {
+        dispatch(orderMonitoringService.ToggleCheckAll(tab));
+      }
+    }
+  }
+}
+
+const CheckboxHeaderTotal = connect(CheckboxHeaderStore('total'), CheckboxHeaderDispatch('total'))(CheckboxHeaderBase);
+const CheckboxHeaderSuccess = connect(CheckboxHeaderStore('succeed'), CheckboxHeaderDispatch('succeed'))(CheckboxHeaderBase);
+const CheckboxHeaderPending = connect(CheckboxHeaderStore('pending'), CheckboxHeaderDispatch('pending'))(CheckboxHeaderBase);
+const CheckboxHeaderFailed = connect(CheckboxHeaderStore('failed'), CheckboxHeaderDispatch('failed'))(CheckboxHeaderBase);
 
 
 function CheckboxDispatch(dispatch, props) {
   return {
     onToggle: () => {
-      dispatch(orderMonitoringService.ToggleSelectOrder(props.orderID));
+      dispatch(orderMonitoringService.ToggleSelectOrder(props.orderID, props.tab));
     }
   }
 }
@@ -300,11 +327,14 @@ export class Filter extends Component {
         <Pagination2 {...paginationState} {...PaginationAction} tab={this.props.tab} style={{marginTop: "5px"}} />
 
         <div className={styles.row}>
-          <CheckboxHeader />
-          <EDSFilter />
-          <NameFilter />
+          { tab === "total" && <CheckboxHeaderTotal /> }
+          { tab === "succeed" && <CheckboxHeaderSuccess /> }
+          { tab === "pending" && <CheckboxHeaderPending /> }
+          { tab === "failed" && <CheckboxHeaderFailed /> }
+          <EDSFilter tab={tab} />
+          <NameFilter tab={tab} />
           <StatusFilter />
-          <FleetFilter />
+          <FleetFilter tab={tab} />
         </div>
       </div>
     );
@@ -312,10 +342,10 @@ export class Filter extends Component {
 }
 
 class OrderTable extends Component {
-  expand(order) {
+  expand(order, tab) {
     this.props.HideOrder();
     setTimeout(() => {
-      this.props.ExpandOrder(order);
+      this.props.ExpandOrder(order, tab);
     }, 1);
   }
 
@@ -325,7 +355,13 @@ class OrderTable extends Component {
       <table className={styles.table}>
         <tbody>
           { orders[tab].map((order, idx) => (
-            <OrderRow key={idx} order={order} expandOrder={(tab === "pending") && (() => this.expand(order))} expandedOrder={this.props.expandedOrder} tab={tab} />
+            <OrderRow
+              key={idx}
+              order={order}
+              expandOrder={(tab === "pending") && (() => this.expand(order, tab))}
+              expandedOrder={this.props.expandedOrder}
+              tab={tab}
+            />
           )) }
         </tbody>
       </table>
@@ -347,8 +383,8 @@ function OrderTableStoreBuilder() {
 function OrderTableDispatchBuilder() {
   return (dispatch) => {
     return {
-      ExpandOrder: (order) => {
-        dispatch(orderMonitoringService.ExpandOrder(order));
+      ExpandOrder: (order, tab) => {
+        dispatch(orderMonitoringService.ExpandOrder(order, tab));
       },
       HideOrder: () => {
         dispatch(orderMonitoringService.HideOrder());
