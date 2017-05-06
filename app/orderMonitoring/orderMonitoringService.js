@@ -208,7 +208,13 @@ export default function Reducer(store = initialStore, action) {
 
     case Constants.SET_DROPDOWN_FILTER: {
       const {keyword, tab, option} = action;
-      let newDropdownValue = {};
+      let newValue = {
+        [keyword]: Object.assign({}, store[keyword]),
+        filters: store.filters
+      };
+      let newFilters = newValue.filters;
+      newValue[keyword][tab] = option.value;
+
       if(keyword === "sortOptions") {
         const sortOptions = [{
             sortBy: "Driver.FirstName", sortCriteria: 'ASC'
@@ -219,25 +225,16 @@ export default function Reducer(store = initialStore, action) {
           }, {
             sortBy: "DropoffAddress.City", sortCriteria: 'DESC'
           }];
-        newDropdownValue = {
-          [keyword]: {[tab]: option.value},
-          filters: {[tab]:  sortOptions[option.key]}
-        };
+        newFilters[tab] = sortOptions[option.key];
       } else if(keyword === "statusOptions") {
-        newDropdownValue = {
-          [keyword]: {[tab]: option.value},
-          filters: {[tab]: {
-            statuses: `[${option.key}]`
-          }}
-        };
+        newFilters[tab].statuses = `[${option.key}]`;
+        (option.key < 0) && delete newFilters[tab].statuses;
       } else {
-        newDropdownValue = {
-          [keyword]: {[tab]: option.value},
-          filters: {[tab]: {isTrunkeyOrder: option.key}}
-        };
+        newFilters[tab].isTrunkeyOrder = option.key;
+        isNaN(option.key) && delete newFilters[tab].isTrunkeyOrder;
       }
 
-      return lodash.merge({}, store, newDropdownValue);
+      return lodash.assign({}, store, newValue);
     }
 
     case Constants.SET_FILTER: {

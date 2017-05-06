@@ -54,6 +54,20 @@ class OrderMonitoringPage extends Component {
     });
   }
 
+  getActiveTab() {
+    const {
+        showDelivery,
+        showSucceed,
+        showPending,
+        showFailed
+      } = this.state;
+
+    if(showDelivery) {return 'total';}
+    if(showSucceed) {return 'succeed';}
+    if(showPending) {return 'pending';}
+    if(showFailed) {return 'failed';}
+  }
+
   componentWillMount() {
     // this.props.FetchCount();
     this.props.FetchList('total');
@@ -138,45 +152,9 @@ class OrderMonitoringPage extends Component {
         <div className={styles.contentOuterContainer}>
           <div className={styles.contentContainer}>
             <div className={styles.mainTable}>
-              { this.state.showDelivery &&
-                <Filter pagination={{PaginationAction, paginationState}} tab="total" />
-              }
-              {
-                this.state.showSucceed &&
-                <Filter pagination={{PaginationAction, paginationState}} tab="succeed" />
-              }
-              {
-                this.state.showPending &&
-                <Filter pagination={{PaginationAction, paginationState}} tab="pending" />
-              }
-              {
-                this.state.showFailed &&
-                <Filter pagination={{PaginationAction, paginationState}} tab="failed" />
-              }
+              <Filter pagination={{PaginationAction, paginationState}} tab={this.getActiveTab()} />
             </div>
-            { this.state.showDelivery &&
-              <div>
-                <OrderTable tab="total" />
-              </div>
-            }
-            {
-              this.state.showSucceed &&
-              <div>
-                <OrderTable tab="succeed" />
-              </div>
-            }
-            {
-              this.state.showPending &&
-              <div>
-                <OrderTable tab="pending" />
-              </div>
-            }
-            {
-              this.state.showFailed &&
-              <div>
-                <OrderTable tab="failed" />
-              </div>
-            }
+            <OrderTable tab={this.getActiveTab()} />
           </div>
         </div>
       </Page>

@@ -99,7 +99,7 @@ function DropdownDispatchBuilder(keyword, tab) {
   }
 }
 
-function DropdownStoreBuilder(name, tab) {
+function DropdownStoreBuilder(name) {
   return (store, props) => {
 
     const sortOptions = [{
@@ -152,29 +152,20 @@ function DropdownStoreBuilder(name, tab) {
     };
 
     return {
-      value: store.app.orderMonitoring[name][tab||props.tab],
+      value: store.app.orderMonitoring[name][props.tab],
       options: options[name]
     };
   }
 }
 
-function ConnectDropdownBuilder(keyword, tab) {
-  return connect(DropdownStoreBuilder(keyword, tab), DropdownDispatchBuilder(keyword, tab));
+function ConnectDropdownBuilder(keyword) {
+  return connect(DropdownStoreBuilder(keyword), DropdownDispatchBuilder(keyword));
 }
 
 const StatusFilter = ConnectDropdownBuilder('statusOptions')(FilterDropdown);
 
-const SortFilterTotal = ConnectDropdownBuilder('sortOptions', 'total')(FilterTop);
-const OrderTypeFilterTotal = ConnectDropdownBuilder('orderTypeOptions', 'total')(FilterTop);
-
-const SortFilterSucceed = ConnectDropdownBuilder('sortOptions', 'succeed')(FilterTop);
-const OrderTypeFilterSucceed = ConnectDropdownBuilder('orderTypeOptions', 'succeed')(FilterTop);
-
-const SortFilterPending = ConnectDropdownBuilder('sortOptions', 'pending')(FilterTop);
-const OrderTypeFilterPending = ConnectDropdownBuilder('orderTypeOptions', 'pending')(FilterTop);
-
-const SortFilterFailed = ConnectDropdownBuilder('sortOptions', 'failed')(FilterTop);
-const OrderTypeFilterFailed = ConnectDropdownBuilder('orderTypeOptions', 'failed')(FilterTop);
+const SortFilter = ConnectDropdownBuilder('sortOptions')(FilterTop);
+const OrderTypeFilter = ConnectDropdownBuilder('orderTypeOptions')(FilterTop);
 
 // END DROPDOWN FILTER
 
@@ -185,9 +176,9 @@ function InputStoreBuilder(keyword) {
     const {filters} = store.app.orderMonitoring;
     if(!_.isEmpty(filters[props.tab])){
       return {value: filters[props.tab][keyword]};
-      }
+    }
 
-    return {};
+    return {value: ""};
   }
 }
 
@@ -241,29 +232,25 @@ const FleetFilter = ConnectBuilder('dropoffCity', "Search for fleet's area...")(
 
 // START CHECKBOX
 
-function CheckboxHeaderStore(tab) {
-  return (store) => {
+function CheckboxHeaderStore() {
+  return (store, props) => {
     return {
-      isChecked: store.app.orderMonitoring.selectedAll[tab],
+      isChecked: store.app.orderMonitoring.selectedAll[props.tab],
     }
   }
 }
 
-function CheckboxHeaderDispatch(tab) {
-  return (dispatch) => {
+function CheckboxHeaderDispatch() {
+  return (dispatch, props) => {
     return {
       onToggle: () => {
-        dispatch(orderMonitoringService.ToggleCheckAll(tab));
+        dispatch(orderMonitoringService.ToggleCheckAll(props.tab));
       }
     }
   }
 }
 
-const CheckboxHeaderTotal = connect(CheckboxHeaderStore('total'), CheckboxHeaderDispatch('total'))(CheckboxHeaderBase);
-const CheckboxHeaderSuccess = connect(CheckboxHeaderStore('succeed'), CheckboxHeaderDispatch('succeed'))(CheckboxHeaderBase);
-const CheckboxHeaderPending = connect(CheckboxHeaderStore('pending'), CheckboxHeaderDispatch('pending'))(CheckboxHeaderBase);
-const CheckboxHeaderFailed = connect(CheckboxHeaderStore('failed'), CheckboxHeaderDispatch('failed'))(CheckboxHeaderBase);
-
+const CheckboxHeader = connect(CheckboxHeaderStore, CheckboxHeaderDispatch)(CheckboxHeaderBase);
 
 function CheckboxDispatch(dispatch, props) {
   return {
@@ -322,41 +309,13 @@ export class Filter extends Component {
 
     return (
       <div>
-        { tab === "total" &&
-          <div>
-            <SortFilterTotal />
-            <OrderTypeFilterTotal />
-          </div>
-        }
-
-        { tab === "succeed" &&
-          <div>
-            <SortFilterSucceed />
-            <OrderTypeFilterSucceed />
-          </div>
-        }
-
-        { tab === "pending" &&
-          <div>
-            <SortFilterPending />
-            <OrderTypeFilterPending />
-          </div>
-        }
-
-        { tab === "failed" &&
-          <div>
-            <SortFilterFailed />
-            <OrderTypeFilterFailed />
-          </div>
-        }
+        <SortFilter tab={tab} />
+        <OrderTypeFilter tab={tab} />
 
         <Pagination2 {...paginationState} {...PaginationAction} tab={this.props.tab} style={{marginTop: "5px"}} />
 
         <div className={styles.row}>
-          { tab === "total" && <CheckboxHeaderTotal /> }
-          { tab === "succeed" && <CheckboxHeaderSuccess /> }
-          { tab === "pending" && <CheckboxHeaderPending /> }
-          { tab === "failed" && <CheckboxHeaderFailed /> }
+          <CheckboxHeader tab={tab} />
           <EDSFilter tab={tab} />
           <NameFilter tab={tab} />
           <StatusFilter tab={tab} />
@@ -377,7 +336,6 @@ class OrderTable extends Component {
 
   render() {
     const { orders, tab } = this.props;
-    console.log('render OrderTable');
     return (
       <table className={styles.table}>
         <tbody>
