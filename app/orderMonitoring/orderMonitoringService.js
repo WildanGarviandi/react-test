@@ -283,8 +283,14 @@ export function FetchList(tab) {
       pending: "[2, 3, 4]",
       failed: "[8, 12, 13, 15, 16]"
     };
+    let startDate = new Date();
+    startDate.setDate(startDate.getDate() - 1);
+    startDate.setUTCHours(0,0,0,0);
+
     const query = lodash.assign({}, filters[tab], {
       limit: limit[tab],
+      startDate: startDate.toISOString(),
+      endDate: new Date().toISOString(),
       offset: (currentPage[tab] - 1) * limit[tab],
       statuses: filters[tab].statuses || defaultStatuses[tab]
     });
