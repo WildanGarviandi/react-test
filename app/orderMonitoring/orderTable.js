@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import moment from 'moment';
-import { FilterTop } from '../components/form';
+import { FilterTop, Filter as FilterDropdown } from '../components/form';
 import { Pagination2 } from '../components/pagination2';
 import OrderStatusSelector from '../modules/orderStatus/selector';
 import * as orderMonitoringService from './orderMonitoringService';
@@ -90,17 +90,17 @@ class OrderRow extends Component {
 // START DROPDOWN FILTER
 
 function DropdownDispatchBuilder(keyword, tab) {
-  return (dispatch) => {
+  return (dispatch, props) => {
     return {
       handleSelect: (value) => {
-        dispatch(orderMonitoringService.SetDropDownFilter(keyword, value, tab));
+        dispatch(orderMonitoringService.SetDropDownFilter(keyword, value, tab||props.tab));
       }
     }
   }
 }
 
 function DropdownStoreBuilder(name, tab) {
-  return (store) => {
+  return (store, props) => {
 
     const sortOptions = [{
       key: 0, value: "A-Z (Driver's Name)",
@@ -120,22 +120,49 @@ function DropdownStoreBuilder(name, tab) {
       key: 0, value: 'Company Orders',
     }];
 
+    const statusOptions = {
+      succeed: [
+        { key: 5, value: 'DELIVERED'}
+      ],
+      pending: [
+        { key: -1, value: 'SHOW ALL'},
+        { key: 2, value: 'ACCEPTED' },
+        { key: 3, value: 'PICKUP'},
+        { key: 4, value: 'IN-TRANSIT'},
+      ],
+      failed: [
+        { key: -1, value: 'SHOW ALL'},
+        { key: 8, value: 'REJECT' },
+        { key: 12, value: 'EXPIRED'},
+        { key: 13, value: 'CANCELLED'},
+        { key: 15, value: 'RETURNED_WAREHOUSE'},
+        { key: 16, value: 'RETURNED_SENDER'}
+      ]
+    };
+
+    statusOptions.total = _.union(
+      statusOptions.pending,
+      statusOptions.succeed,
+      statusOptions.failed
+    );
     const options = {
-      "statusName": OrderStatusSelector.GetList(store),
-      "sortOptions": sortOptions,
-      "orderTypeOptions": orderTypeOptions
-    }
+      statusOptions: statusOptions[props.tab],
+      sortOptions,
+      orderTypeOptions
+    };
 
     return {
-      value: store.app.orderMonitoring[name][tab],
+      value: store.app.orderMonitoring[name][tab||props.tab],
       options: options[name]
-    }
+    };
   }
 }
 
 function ConnectDropdownBuilder(keyword, tab) {
   return connect(DropdownStoreBuilder(keyword, tab), DropdownDispatchBuilder(keyword, tab));
 }
+
+const StatusFilter = ConnectDropdownBuilder('statusOptions')(FilterDropdown);
 
 const SortFilterTotal = ConnectDropdownBuilder('sortOptions', 'total')(FilterTop);
 const OrderTypeFilterTotal = ConnectDropdownBuilder('orderTypeOptions', 'total')(FilterTop);
@@ -208,7 +235,6 @@ function InputFilter({value, onChange, onKeyDown, placeholder}) {
 
 const EDSFilter = ConnectBuilder('userOrderNumber', 'Search for EDS...')(InputFilter);
 const NameFilter = ConnectBuilder('driverName', 'Search for driver...')(InputFilter);
-const StatusFilter = ConnectBuilder('status', 'Search for order status...')(InputFilter);
 const FleetFilter = ConnectBuilder('dropoffCity', "Search for fleet's area...")(InputFilter);
 
 // END INPUT FILTER
@@ -333,7 +359,7 @@ export class Filter extends Component {
           { tab === "failed" && <CheckboxHeaderFailed /> }
           <EDSFilter tab={tab} />
           <NameFilter tab={tab} />
-          <StatusFilter />
+          <StatusFilter tab={tab} />
           <FleetFilter tab={tab} />
         </div>
       </div>
@@ -351,6 +377,7 @@ class OrderTable extends Component {
 
   render() {
     const { orders, tab } = this.props;
+    console.log('render OrderTable');
     return (
       <table className={styles.table}>
         <tbody>

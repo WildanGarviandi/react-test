@@ -60,6 +60,12 @@ const initialStore = {
     pending: "All",
     failed: "All",
   },
+  statusOptions: {
+    total: "Search for order status...",
+    succeed: "Search for order status...",
+    pending: "Search for order status...",
+    failed: "Search for order status...",
+  },
   currentPage: {
     total: 1,
     succeed: 1,
@@ -127,19 +133,10 @@ export default function Reducer(store = initialStore, action) {
     case Constants.SET_ORDERS: {
       const {total, orders} = store
       const newOrders = {
-        total: {
-          total: total.total,
-          succeed: total.total,
-          pending: total.pending,
-          failed: total.failed,
-        },
-        orders: {
-          total: orders.total,
-          succeed: orders.total,
-          pending: orders.pending,
-          failed: orders.failed,
-        }
+        total: Object.assign({}, total),
+        orders: Object.assign({}, orders)
       };
+
       newOrders.total[action.tab] = action.total
       newOrders.orders[action.tab] = action.orders
 
@@ -226,6 +223,13 @@ export default function Reducer(store = initialStore, action) {
           [keyword]: {[tab]: option.value},
           filters: {[tab]:  sortOptions[option.key]}
         };
+      } else if(keyword === "statusOptions") {
+        newDropdownValue = {
+          [keyword]: {[tab]: option.value},
+          filters: {[tab]: {
+            statuses: `[${option.key}]`
+          }}
+        };
       } else {
         newDropdownValue = {
           [keyword]: {[tab]: option.value},
@@ -276,7 +280,7 @@ export function FetchList(tab) {
   return (dispatch, getState) => {
     const { token } = getState().app.userLogged;
     const { limit, currentPage, filters } = getState().app.orderMonitoring;
-    const statuses = {
+    const defaultStatuses = {
       total: "[2, 3, 4, 5, 8, 12, 13, 15, 16]",
       succeed: "[5]",
       pending: "[2, 3, 4]",
@@ -285,7 +289,7 @@ export function FetchList(tab) {
     const query = lodash.assign({}, filters[tab], {
       limit: limit[tab],
       offset: (currentPage[tab] - 1) * limit[tab],
-      statuses: statuses[tab]
+      statuses: filters[tab].statuses || defaultStatuses[tab]
     });
 
     dispatch({type: modalAction.BACKDROP_SHOW});
