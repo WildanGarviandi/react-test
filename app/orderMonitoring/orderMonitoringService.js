@@ -103,18 +103,14 @@ export default function Reducer(store = initialStore, action) {
     case Constants.EXPAND_ORDER: {
       return lodash.merge({}, store, {
         isExpanded: true,
-        expandedOrder: {
-          [tab]: action.order
-        }
+        expandedOrder: action.order
       });
     }
 
     case Constants.HIDE_ORDER: {
       return lodash.assign({}, store, {
         isExpanded: false,
-        expandedOrder: {
-          [tab]: {}
-        }
+        expandedOrder: false
       });
     }
 
@@ -289,8 +285,8 @@ export function FetchList(tab) {
 
     const query = lodash.assign({}, filters[tab], {
       limit: limit[tab],
-      startDate: startDate.toISOString(),
-      endDate: new Date().toISOString(),
+      // startDate: startDate.toISOString(),
+      // endDate: new Date().toISOString(),
       offset: (currentPage[tab] - 1) * limit[tab],
       statuses: filters[tab].statuses || defaultStatuses[tab]
     });

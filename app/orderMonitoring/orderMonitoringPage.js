@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import NumberFormat from 'react-number-format';
 import styles from './styles.css';
 import { ButtonWithLoading, Input, Page } from '../views/base';
 import OrderTable, {Filter, Deadline} from './orderTable';
@@ -277,19 +278,19 @@ class PanelDetails extends Component {
                 Order Id
               </div>
               <div className={styles.orderDetailsValue}>
-                { expandedOrder.UserOrderID }
+                {expandedOrder.UserOrderID}
               </div>
               <div className={styles.orderDetailsLabel}>
                 Origin
               </div>
               <div className={styles.orderDetailsValue}>
-                &nbsp;
+                {expandedOrder.PickupAddress && expandedOrder.PickupAddress.City}
               </div>
               <div className={styles.orderDetailsLabel}>
                 Destination
               </div>
               <div className={styles.orderDetailsValue}>
-                &nbsp;
+                {expandedOrder.DropoffAddress && expandedOrder.DropoffAddress.City}
               </div>
               <div>
                 <div className={styles.orderAdditionalInfo}>
@@ -297,7 +298,7 @@ class PanelDetails extends Component {
                     Weight
                   </div>
                   <div className={styles.orderDetailsValue}>
-                    &nbsp;
+                    {parseFloat(expandedOrder.PackageWeight).toFixed(2)} kg
                   </div>
                 </div>
                 <div className={styles.orderAdditionalInfo}>
@@ -305,17 +306,9 @@ class PanelDetails extends Component {
                     COD Type
                   </div>
                   <div className={styles.orderDetailsValue}>
-                    &nbsp;
+                    {expandedOrder.IsCOD ? 'COD' : 'Non-COD'}
                   </div>
                 </div>
-              </div>
-            </div>
-            <div className={styles.orderValue}>
-              <div className={styles.orderValueLabel}>
-                Total Value
-              </div>
-              <div className={styles.orderTotalValue}>
-                &nbsp;
               </div>
             </div>
             <div className={styles.orderDetails}>
@@ -323,10 +316,12 @@ class PanelDetails extends Component {
                 From
               </div>
               <div className={styles.orderDetailsValue}>
-                &nbsp;
+                {expandedOrder.PickupAddress &&
+                  `${expandedOrder.PickupAddress.FirstName} ${expandedOrder.PickupAddress.LastName}`
+                }
               </div>
               <div className={styles.orderDetailsValue2}>
-                &nbsp;
+                {expandedOrder.PickupAddress && expandedOrder.PickupAddress.Address1}
               </div>
             </div>
             <div className={styles.orderDetails}>
@@ -334,10 +329,26 @@ class PanelDetails extends Component {
                 To
               </div>
               <div className={styles.orderDetailsValue}>
-                &nbsp;
+                {expandedOrder.DropoffAddress &&
+                  `${expandedOrder.DropoffAddress.FirstName} ${expandedOrder.DropoffAddress.LastName}`
+                }
               </div>
               <div className={styles.orderDetailsValue2}>
-                &nbsp;
+                {expandedOrder.DropoffAddress && expandedOrder.DropoffAddress.Address1}
+              </div>
+            </div>
+            <div className={styles.orderValue}>
+              <div className={styles.orderValueLabel}>
+                Total Value
+              </div>
+              <div className={styles.orderTotalValue}>
+                <NumberFormat
+                  displayType={'text'}
+                  thousandSeparator={'.'}
+                  decimalSeparator={','}
+                  prefix={'Rp '}
+                  value={expandedOrder.TotalValue}
+                />
               </div>
             </div>
           </div>

@@ -161,6 +161,11 @@
   margin-top: 15px;
 }
 
+.orderValueLabel {
+  font-size: 12px;
+  opacity: 0.5;
+}
+
 .orderAdditionalInfo {
   float: left;
   width: 30%;
