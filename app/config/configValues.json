@@ -49,5 +49,24 @@
       "key": 0, "value": "Company Orders"
     }, {
       "key": 1, "value": "Etobee"
-    }]
+    }],
+    "statusOptions": {
+      "succeed": [
+        { "key": 5, "value": "DELIVERED" }
+      ],
+      "pending": [
+        { "key": -1, "value": "SHOW ALL" },
+        { "key": 2, "value": "ACCEPTED" },
+        { "key": 3, "value": "PICKUP" },
+        { "key": 4, "value": "IN-TRANSIT" }
+      ],
+      "failed": [
+        { "key": -1, "value": "SHOW ALL" },
+        { "key": 8, "value": "REJECT" },
+        { "key": 12, "value": "EXPIRED" },
+        { "key": 13, "value": "CANCELLED" },
+        { "key": 15, "value": "RETURNED_WAREHOUSE" },
+        { "key": 16, "value": "RETURNED_SENDER" }
+      ]
+    }
 }

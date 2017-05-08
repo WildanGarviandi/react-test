@@ -101,27 +101,7 @@ function DropdownDispatchBuilder(keyword, tab) {
 
 function DropdownStoreBuilder(name) {
   return (store, props) => {
-    const { sortOptions, orderTypeOptions } = config;
-    const statusOptions = {
-      succeed: [
-        { key: 5, value: 'DELIVERED'}
-      ],
-      pending: [
-        { key: -1, value: 'SHOW ALL'},
-        { key: 2, value: 'ACCEPTED' },
-        { key: 3, value: 'PICKUP'},
-        { key: 4, value: 'IN-TRANSIT'},
-      ],
-      failed: [
-        { key: -1, value: 'SHOW ALL'},
-        { key: 8, value: 'REJECT' },
-        { key: 12, value: 'EXPIRED'},
-        { key: 13, value: 'CANCELLED'},
-        { key: 15, value: 'RETURNED_WAREHOUSE'},
-        { key: 16, value: 'RETURNED_SENDER'}
-      ]
-    };
-
+    const { sortOptions, orderTypeOptions, statusOptions } = config;
     statusOptions.total = _.union(
       statusOptions.pending,
       statusOptions.succeed,
