@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Dropzone from 'react-dropzone';
-import ImagePreview from '../base/imagePreview';
-import FetchPost from '../../modules/fetch/post';
+import ImagePreview from '../views/base/imagePreview';
+import FetchPost from '../modules/fetch/post';
 import styles from './dragDropImageUploader.css';
 
-class DragoDropImageUploader extends Component {
+class DragDropImageUploader extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -74,4 +74,4 @@ function getToken(store) {
   };
 }
 
-export default connect(getToken)(DragoDropImageUploader);
+export default connect(getToken)(DragDropImageUploader);

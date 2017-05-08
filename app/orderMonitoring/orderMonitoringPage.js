@@ -4,7 +4,7 @@ import styles from './styles.css';
 import { ButtonWithLoading, Input, Page } from '../views/base';
 import OrderTable, {Filter, Deadline} from './orderTable';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
-import { DragDropImageUploader as Dropzone } from '../views/base';
+import { DragDropImageUploader as Dropzone } from '../components/dragDropImageUploader';
 import * as orderService from './orderMonitoringService';
 
 class OrderMonitoringPage extends Component {
@@ -104,12 +104,6 @@ class OrderMonitoringPage extends Component {
             expandAttempt={ExpandAttempt}
             showAddAttemptModal={ShowAttemptModal}
           />
-        }
-        { expandedAttempt &&
-          <AttemptDetails hideAttempt={this.props.HideAttempt} />
-        }
-        { modal.addAttempt &&
-          <AttemptModal hide={this.props.HideAttemptModal} />
         }
         <div className={styles.widgetOuterContainer}>
           <div
@@ -345,160 +339,4 @@ class PanelDetails extends Component {
       </div>
     );
   }
-}
-
-class AttemptModal extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      ProfilePicture: ""
-    };
-  }
-
-  setPicture(url) {
-    this.setState({ProfilePicture: url})
-  }
-
-  render() {
-
-    return(
-      <ModalContainer>
-        <ModalDialog className={styles.addAttemptModal}>
-          <div>
-            <div className={styles.addAttemptTitle}>
-              <div className={styles.attempt}>Attempt 1/2</div>
-              Report Attempt
-              <div className={styles.close} onClick={this.props.hide}>&times;</div>
-            </div>
-            <div className={styles.addAttemptBody}>
-              <div className={styles.left}>
-                Choose Reason <i style={{color: "#fc404e"}}>*</i>
-                <ul className={styles.reasons}>
-                  <li>
-                    <img src="/img/icon-no-receiver.png" />
-                    <span>Tidak ada orang</span>
-                  </li>
-                  <li>
-                    <img src="/img/icon-reject.png" />
-                    <span>Menolak kiriman</span>
-                  </li>
-                  <li>
-                    <img src="/img/icon-cannot-pay.png" />
-                    <span>Tidak bisa membayar</span>
-                  </li>
-                  <li>
-                    <img src="/img/icon-late-delivery.png" />
-                    <span>Pengiriman telat</span>
-                  </li>
-                  <li>
-                    <img src="/img/icon-damage-package.png" />
-                    <span>Paket rusak</span>
-                  </li>
-                  <li>
-                    <img src="/img/icon-move-address.png" />
-                    <span>Pindah alamat</span>
-                  </li>
-                  <li>
-                    <img src="/img/icon-tidak-dikenal.png" />
-                    <span>Tidak dikenal</span>
-                  </li>
-                  <li>
-                    <img src="/img/icon-late-delivery.png" />
-                    <span>Pengiriman telat</span>
-                  </li>
-                </ul>
-              </div>
-              <div className={styles.right}>
-                Add Image (Optional)
-                <Dropzone
-                  updateImageUrl={(data) => this.setPicture(data)}
-                  currentImageUrl={this.state.ProfilePicture}
-                />
-                <button className={styles.sendReport}>Send Report</button>
-              </div>
-            </div>
-          </div>
-        </ModalDialog>
-      </ModalContainer>
-    )
-  }
-}
-
-function AttemptDetails({hideAttempt}) {
-  return(
-      <div className={styles.attemptPanel}>
-        <div className={styles.attemptHeader} onClick={hideAttempt}>
-          <img src="/img/icon-previous.png" />
-          2 Attempt Details
-        </div>
-        <div className={styles.orderDetails}>
-          <div className={styles.orderDetailsLabel}>
-            Attempts detail
-          </div>
-          <div className={styles.orderDetailsValue}>
-
-          </div>
-          <div className={styles.orderDetailsLabel}>
-            Origin
-          </div>
-          <div className={styles.orderDetailsValue}>
-
-          </div>
-          <div className={styles.orderDetailsLabel}>
-            Destination
-          </div>
-          <div className={styles.orderDetailsValue}>
-
-          </div>
-          <div>
-            <div className={styles.orderAdditionalInfo}>
-              <div className={styles.orderDetailsLabel}>
-                Weight
-              </div>
-              <div className={styles.orderDetailsValue}>
-
-              </div>
-            </div>
-            <div className={styles.orderAdditionalInfo}>
-              <div className={styles.orderDetailsLabel}>
-                COD Type
-              </div>
-              <div className={styles.orderDetailsValue}>
-
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className={styles.orderValue}>
-          <div className={styles.orderValueLabel}>
-            Total Value
-          </div>
-          <div className={styles.orderTotalValue}>
-
-          </div>
-        </div>
-        <div className={styles.orderDetails}>
-          <div className={styles.orderDetailsLabel}>
-            From
-          </div>
-          <div className={styles.orderDetailsValue}>
-
-          </div>
-          <div className={styles.orderDetailsValue2}>
-
-          </div>
-        </div>
-        <div className={styles.orderDetails}>
-          <div className={styles.orderDetailsLabel}>
-            To
-          </div>
-          <div className={styles.orderDetailsValue}>
-
-          </div>
-          <div className={styles.orderDetailsValue2}>
-
-          </div>
-        </div>
-      </div>
-  );
 }

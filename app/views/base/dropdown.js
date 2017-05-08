@@ -192,7 +192,7 @@ const DropdownTypeAhead = React.createClass({
     const inputProps = {
       onFocus: this.openOption,
       value: this.state.opened ? this.state.temp : this.state.txt,
-      className: this.props.custClass||styles.typeBox,
+      className: this.props.custClass || styles.typeBox,
       onChange: this.handleTextChange,
       onKeyDown: this.handleKeyDown,
       ref: 'textInput',

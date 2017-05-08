@@ -101,25 +101,7 @@ function DropdownDispatchBuilder(keyword, tab) {
 
 function DropdownStoreBuilder(name) {
   return (store, props) => {
-
-    const sortOptions = [{
-      key: 0, value: "A-Z (Driver's Name)",
-    }, {
-      key: 1, value: "Z-A (Driver's Name)",
-    }, {
-      key: 2, value: "A-Z (Fleet's Area)",
-    },{
-      key: 3, value: "Z-A (Fleet's Area)",
-    }];
-
-    const orderTypeOptions = [{
-      key: 'All', value: "All",
-    }, {
-      key: 1, value: 'Etobee',
-    }, {
-      key: 0, value: 'Company Orders',
-    }];
-
+    const { sortOptions, orderTypeOptions } = config;
     const statusOptions = {
       succeed: [
         { key: 5, value: 'DELIVERED'}
