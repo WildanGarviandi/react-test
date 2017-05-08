@@ -23,6 +23,8 @@ Minimum:
 - node v5.x.x (Stable version is 5.1.1) or higher and npm 3.x.x or higher.
 - To check which version you are using, run node -v and npm -v in a terminal window.
 
+Add [Redux DevTools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en) for debugging application's state changes
+
 ## Installation and Run
 
 - Clone Repository
