@@ -20,11 +20,7 @@ const LimitSelector = React.createClass({
     return { opened: false }
   },
   setLimit(x) {
-    if(this.props.tab) {
-      this.props.setLimit(x, this.props.tab);
-    } else {
-      this.props.setLimit(x);
-    }
+    (this.props.tab) ? this.props.setLimit(x, this.props.tab) : this.props.setLimit(x);
     this.setState({opened: false});
   },
   toggleOpened() {
@@ -56,11 +52,7 @@ function PaginationDetail(props) {
 const PaginationControl = React.createClass({
   setPage(x) {
     if(x != this.props.currentPage && x >= 1 && x <= this.props.pagesCount) {
-      if(this.props.tab) {
-        this.props.setPage(x, this.props.tab);
-      } else {
-        this.props.setPage(x);
-      }
+      (this.props.tab) ? this.props.setPage(x, this.props.tab) : this.props.setPage(x);
     }
   },
   render() {
@@ -81,8 +73,7 @@ const PaginationControl = React.createClass({
       <div className={styles.paginationControl}>
         <span className={styles.paginationInfo}>
           {infoString}
-          <img className={styles.leftArrow} onClick={this.setPage.bind(this, currentPage - 1
-          )} src="/img/icon-previous.png" />
+          <img className={styles.leftArrow} onClick={this.setPage.bind(this, currentPage - 1)} src="/img/icon-previous.png" />
           <img className={styles.rightArrow} onClick={this.setPage.bind(this, currentPage + 1)} src="/img/icon-next.png" />
         </span>
       </div>
@@ -100,22 +91,14 @@ const Pagination2 = React.createClass({
   setLimit(x) {
     let {setLimit} = this.props;
     if(!setLimit) return;
-    if(this.props.tab) {
-      setLimit(x, this.props.tab);
-    } else {
-      setLimit(x);
-    }
+    (this.props.tab) ? setLimit(x, this.props.tab) : setLimit(x);
   },
   setPage(x) {
     let {setCurrentPage} = this.props;
     if(!setCurrentPage) return;
 
     x = Math.max(1, Math.min(x, this.countPages()));
-    if(this.props.tab) {
-      this.props.setCurrentPage(x, this.props.tab);
-    } else {
-      this.props.setCurrentPage(x);
-    }
+    (this.props.tab) ? this.props.setCurrentPage(x, this.props.tab) : this.props.setCurrentPage(x);
   },
   render() {
     var {limit, total, currentPage, style, tab} = this.props;

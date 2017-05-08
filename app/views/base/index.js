@@ -12,7 +12,6 @@ import Modal from './modal';
 import NotificationContainer from './notification';
 import classNaming from 'classnames';
 import baseStyle from './index.css';
-import DragDropImageUploader from './dragDropImageUploader';
 
 const ButtonBase = React.createClass({
   render() {
@@ -74,4 +73,4 @@ const EmptySpace = React.createClass({
   }
 })
 
-export { ButtonAtRightTop, ButtonBase, ButtonAction, ButtonWithLoading, ButtonStandard, CheckBox, Collection, Dropdown, DropdownTypeAhead, DropdownWithState, Glyph, Infograph, Input, InputWithDefault, InputWithDefaultNumberFormatted, Modal, ModalMessage, Page, PageTitle, Pagination, Rows, Tables, NotificationContainer, EmptySpace, DragDropImageUploader };
+export { ButtonAtRightTop, ButtonBase, ButtonAction, ButtonWithLoading, ButtonStandard, CheckBox, Collection, Dropdown, DropdownTypeAhead, DropdownWithState, Glyph, Infograph, Input, InputWithDefault, InputWithDefaultNumberFormatted, Modal, ModalMessage, Page, PageTitle, Pagination, Rows, Tables, NotificationContainer, EmptySpace };

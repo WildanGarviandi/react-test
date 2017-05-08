@@ -3,6 +3,7 @@ import FetchGet from '../modules/fetch/get';
 import FetchPost from '../modules/fetch/post';
 import ModalActions from '../modules/modals/actions';
 import { modalAction } from '../modules/modals/constants';
+import { defaultStatuses } from '../config/configValues';
 import moment from 'moment';
 
 const Constants = {
@@ -73,10 +74,10 @@ const initialStore = {
     failed: 1
   },
   limit: {
-    total: 5,
-    succeed: 5,
-    pending: 5,
-    failed: 5
+    total: 10,
+    succeed: 10,
+    pending: 10,
+    failed: 10
   },
   total: {
     total: 0,
@@ -163,7 +164,7 @@ export default function Reducer(store = initialStore, action) {
     case Constants.TOGGLE_SELECT_ORDER: {
       const {orderId, tab} = action
       const newOrders= lodash.map(store.orders[tab], (order) => {
-        if(order.UserOrderNumber !== orderId) {
+        if (order.UserOrderNumber !== orderId) {
             return order;
         }
         return lodash.assign({}, order, {IsChecked: !order.IsChecked});
@@ -215,7 +216,7 @@ export default function Reducer(store = initialStore, action) {
       let newFilters = newValue.filters;
       newValue[keyword][tab] = option.value;
 
-      if(keyword === "sortOptions") {
+      if (keyword === "sortOptions") {
         const sortOptions = [{
             sortBy: "Driver.FirstName", sortCriteria: 'ASC'
           }, {
@@ -226,7 +227,7 @@ export default function Reducer(store = initialStore, action) {
             sortBy: "DropoffAddress.City", sortCriteria: 'DESC'
           }];
         newFilters[tab] = sortOptions[option.key];
-      } else if(keyword === "statusOptions") {
+      } else if (keyword === "statusOptions") {
         newFilters[tab].statuses = `[${option.key}]`;
         (option.key < 0) && delete newFilters[tab].statuses;
       } else {
@@ -253,7 +254,7 @@ export function FetchCount() {
 
     dispatch({type: modalAction.BACKDROP_SHOW});
     FetchGet('/order/delivery-counter', token).then((response) => {
-      if(!response.ok) {
+      if (!response.ok) {
         return response.json().then(({error}) => {
           throw error;
         })
@@ -277,12 +278,6 @@ export function FetchList(tab) {
   return (dispatch, getState) => {
     const { token } = getState().app.userLogged;
     const { limit, currentPage, filters } = getState().app.orderMonitoring;
-    const defaultStatuses = {
-      total: "[2, 3, 4, 5, 8, 12, 13, 15, 16]",
-      succeed: "[5]",
-      pending: "[2, 3, 4]",
-      failed: "[8, 12, 13, 15, 16]"
-    };
     let startDate = new Date();
     startDate.setDate(startDate.getDate() - 1);
     startDate.setUTCHours(0,0,0,0);
@@ -297,7 +292,7 @@ export function FetchList(tab) {
 
     dispatch({type: modalAction.BACKDROP_SHOW});
     FetchGet('/order/delivery', token, query).then((response) => {
-      if(!response.ok) {
+      if (!response.ok) {
         return response.json().then(({error}) => {
           throw error;
         })
