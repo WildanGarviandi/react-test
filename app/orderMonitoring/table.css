@@ -86,20 +86,16 @@ td {
   text-align: left;
 }
 
-.cardValue.CANCELED {
-  color: #ff5a60;
-}
-
 .cardValue.DELIVERED {
   color: #38b393;
 }
 
-.cardValue.ONGOING {
-  color: #ffa500;
+.cardValue.CANCELLED, .cardValue.REJECT, .cardValue.EXPIRED, .cardValue.RETURNED_WAREHOUSE, .cardValue.RETURNED_SENDER {
+  color: #ff5a60;
 }
 
-.cardValue.NOTASSIGNED {
-  color: #ff5a60;
+.cardValue.ACCEPTED, .cardValue.PICKUP, .cardValue.IN-TRANSIT {
+  color: #ffa500;
 }
 
 .orderLoadImage {
