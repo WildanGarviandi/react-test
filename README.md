@@ -3,7 +3,7 @@
 ## Technologies
 - React 15.5.4 (JS Framework)
 - Webpack 1.15.0 (Module Bundler)
-- ESLint 3.19.0 (Linting Utility)
+- ESLint 3.19.0 (Linting Utility - AirBnB Style)
 - Lodash 4.17.4 (Data Manipulation)
 - Moment 2.18.1 (Date Utility)
 - Redux 3.6.0 (State Management)
