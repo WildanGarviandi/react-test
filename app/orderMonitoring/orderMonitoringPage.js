@@ -6,6 +6,7 @@ import { ButtonWithLoading, Input, Page } from '../views/base';
 import OrderTable, {Filter, Deadline} from './orderTable';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
 import { DragDropImageUploader as Dropzone } from '../views/base';
+import { reasonReturn } from '../config/attempt.json';
 import * as orderService from './orderMonitoringService';
 
 class OrderMonitoringPage extends Component {
@@ -362,12 +363,18 @@ class AttemptModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ProfilePicture: ""
+      proove: "",
+      selected: undefined
     };
   }
 
   setPicture(url) {
-    this.setState({ProfilePicture: url})
+    this.setState({proove: url});
+  }
+
+  selectReason(key) {
+    // this.setState({selected: key});
+    console.log('setState: ', key);
   }
 
   render() {
@@ -385,45 +392,20 @@ class AttemptModal extends Component {
               <div className={styles.left}>
                 Choose Reason <i style={{color: "#fc404e"}}>*</i>
                 <ul className={styles.reasons}>
-                  <li>
-                    <img src="/img/icon-no-receiver.png" />
-                    <span>Tidak ada orang</span>
-                  </li>
-                  <li>
-                    <img src="/img/icon-reject.png" />
-                    <span>Menolak kiriman</span>
-                  </li>
-                  <li>
-                    <img src="/img/icon-cannot-pay.png" />
-                    <span>Tidak bisa membayar</span>
-                  </li>
-                  <li>
-                    <img src="/img/icon-late-delivery.png" />
-                    <span>Pengiriman telat</span>
-                  </li>
-                  <li>
-                    <img src="/img/icon-damage-package.png" />
-                    <span>Paket rusak</span>
-                  </li>
-                  <li>
-                    <img src="/img/icon-move-address.png" />
-                    <span>Pindah alamat</span>
-                  </li>
-                  <li>
-                    <img src="/img/icon-tidak-dikenal.png" />
-                    <span>Tidak dikenal</span>
-                  </li>
-                  <li>
-                    <img src="/img/icon-late-delivery.png" />
-                    <span>Pengiriman telat</span>
-                  </li>
+                  {reasonReturn.map((reason) => (
+                    <Reason {...reason}
+                      key={reason.id}
+                      className={(this.state.selected == reason.id) && styles.active}
+                      onClick={() => this.selectReason(reason.id)}
+                    />
+                  ))}
                 </ul>
               </div>
               <div className={styles.right}>
                 Add Image (Optional)
                 <Dropzone
                   updateImageUrl={(data) => this.setPicture(data)}
-                  currentImageUrl={this.state.ProfilePicture}
+                  currentImageUrl={this.state.proove}
                 />
                 <button className={styles.sendReport}>Send Report</button>
               </div>
@@ -435,8 +417,17 @@ class AttemptModal extends Component {
   }
 }
 
+function Reason({img, text, className}) {
+  return (
+    <li className={className && className}>
+      <img src={img} />
+      <span>{text}</span>
+    </li>
+  )
+}
+
 function AttemptDetails({hideAttempt}) {
-  return(
+  return (
       <div className={styles.attemptPanel}>
         <div className={styles.attemptHeader} onClick={hideAttempt}>
           <img src="/img/icon-previous.png" />
