@@ -5,7 +5,7 @@ import styles from './styles.css';
 import { ButtonWithLoading, Input, Page } from '../views/base';
 import OrderTable, {Filter, Deadline} from './orderTable';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
-import { DragDropImageUploader as Dropzone } from '../views/base';
+import DragDropImageUploader from '../components/dragDropImageUploader';
 import { reasonReturn } from '../config/attempt.json';
 import * as orderService from './orderMonitoringService';
 
@@ -92,6 +92,7 @@ class OrderMonitoringPage extends Component {
             ExpandAttempt,
             HideOrder,
             ShowAttemptModal,
+            PostAttempt,
             modal
           } = this.props;
 
@@ -108,10 +109,10 @@ class OrderMonitoringPage extends Component {
           />
         }
         { expandedAttempt &&
-          <AttemptDetails hideAttempt={this.props.HideAttempt} />
+          <AttemptDetails expandedOrder={expandedOrder} hideAttempt={this.props.HideAttempt} />
         }
         { modal.addAttempt &&
-          <AttemptModal hide={this.props.HideAttemptModal} />
+          <AttemptModal hide={this.props.HideAttemptModal} submit={PostAttempt} />
         }
         <div className={styles.widgetOuterContainer}>
           <div
@@ -215,6 +216,9 @@ function mapDispatch(dispatch) {
         dispatch(orderService.SetLimit(limit, tab));
       },
     },
+    PostAttempt: (reasonID, proof) => {
+      dispatch(orderService.PostAttempt(reasonID, proof));
+    }
   }
 }
 
@@ -270,9 +274,12 @@ class PanelDetails extends Component {
               }
             </div>
             <div className={styles.orderDetails}>
-              <button className={styles.orderAttemptBtn} onClick={expandAttempt} >
+              <button
+                className={styles.orderAttemptBtn}
+                onClick={expandAttempt}
+                disabled={expandedOrder.UserOrderAttempts.length > 1 && true} >
                 <img src="/img/icon-alert.png" className={styles.left} />
-                <span>2 Report Attempt</span>
+                <span>{expandedOrder.UserOrderAttempts.length} Report Attempt</span>
                 <img src="/img/icon-open.png" className={styles.right} />
               </button>
               <div className={styles.orderDetailsLabel}>
@@ -363,7 +370,7 @@ class AttemptModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      proove: "",
+      proove: undefined,
       selected: undefined
     };
   }
@@ -373,8 +380,13 @@ class AttemptModal extends Component {
   }
 
   selectReason(key) {
-    // this.setState({selected: key});
-    console.log('setState: ', key);
+    this.setState({selected: key});
+  }
+
+  postAttempt() {
+    if (this.state.proove && this.state.selected) {
+      this.props.submit(this.state.selected, this.state.proove);
+    }
   }
 
   render() {
@@ -403,11 +415,11 @@ class AttemptModal extends Component {
               </div>
               <div className={styles.right}>
                 Add Image (Optional)
-                <Dropzone
+                <DragDropImageUploader
                   updateImageUrl={(data) => this.setPicture(data)}
                   currentImageUrl={this.state.proove}
                 />
-                <button className={styles.sendReport}>Send Report</button>
+                <button className={styles.sendReport} onClick={() => this.postAttempt()}>Send Report</button>
               </div>
             </div>
           </div>
@@ -417,21 +429,21 @@ class AttemptModal extends Component {
   }
 }
 
-function Reason({img, text, className}) {
+function Reason({img, text, className, onClick}) {
   return (
-    <li className={className && className}>
+    <li className={className && className} onClick={onClick}>
       <img src={img} />
       <span>{text}</span>
     </li>
   )
 }
 
-function AttemptDetails({hideAttempt}) {
+function AttemptDetails({hideAttempt, expandedOrder}) {
   return (
       <div className={styles.attemptPanel}>
         <div className={styles.attemptHeader} onClick={hideAttempt}>
           <img src="/img/icon-previous.png" />
-          2 Attempt Details
+          {expandedOrder.UserOrderAttempts.length} Attempt Details
         </div>
         <div className={styles.orderDetails}>
           <div className={styles.orderDetailsLabel}>

@@ -33,17 +33,17 @@ class OrderRow extends Component {
         <td className={styles.driverInput}>
           <Checkbox isChecked={order.IsChecked} orderID={order.UserOrderNumber} tab={tab} />
         </td>
-        <td onClick={this.props.expandOrder}><div className={styles.cardSeparator} /></td>
-        <td onClick={this.props.expandOrder}>
+        <td onClick={() => this.props.getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td onClick={() => this.props.getDetail(order.UserOrderID)}>
           <img
             className={styles.orderLoadImage}
             src={order.IsTrunkeyOrder ? ETOBEE_IMAGE : FLEET_IMAGE}
             onError={(e)=>{e.target.src=DEFAULT_IMAGE}}
           />
         </td>
-        <td onClick={this.props.expandOrder} className={styles.orderIDColumn}>{order.UserOrderNumber}</td>
-        <td onClick={this.props.expandOrder}><div className={styles.cardSeparator} /></td>
-        <td onClick={this.props.expandOrder}>
+        <td onClick={() => this.props.getDetail(order.UserOrderID)} className={styles.orderIDColumn}>{order.UserOrderNumber}</td>
+        <td onClick={() => this.props.getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td onClick={() => this.props.getDetail(order.UserOrderID)}>
           <div className={styles.cardLabel}>
             Deadline
           </div>
@@ -52,8 +52,8 @@ class OrderRow extends Component {
             <Deadline deadline={order.DueTime} />
           </div>
         </td>
-        <td onClick={this.props.expandOrder}><div className={styles.cardSeparator} /></td>
-        <td onClick={this.props.expandOrder}>
+        <td onClick={() => this.props.getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td onClick={() => this.props.getDetail(order.UserOrderID)}>
           <div className={styles.cardLabel}>
             Driver's Name
           </div>
@@ -62,8 +62,8 @@ class OrderRow extends Component {
             {order.Driver ? order.Driver.FirstName : 'null' } {order.Driver ? order.Driver.LastName : 'null' }
           </div>
         </td>
-        <td onClick={this.props.expandOrder}><div className={styles.cardSeparator} /></td>
-        <td onClick={this.props.expandOrder}>
+        <td onClick={() => this.props.getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td onClick={() => this.props.getDetail(order.UserOrderID)}>
           <div className={styles.cardLabel}>
             Order Status
           </div>
@@ -72,8 +72,8 @@ class OrderRow extends Component {
             {order.OrderStatus.OrderStatus}
           </div>
         </td>
-        <td onClick={this.props.expandOrder}><div className={styles.cardSeparator} /></td>
-        <td onClick={this.props.expandOrder}>
+        <td onClick={() => this.props.getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td onClick={() => this.props.getDetail(order.UserOrderID)}>
           <div className={styles.cardLabel}>
             Fleet's Area
           </div>
@@ -101,45 +101,7 @@ function DropdownDispatchBuilder(keyword, tab) {
 
 function DropdownStoreBuilder(name) {
   return (store, props) => {
-
-    const sortOptions = [{
-      key: 0, value: "A-Z (Driver's Name)",
-    }, {
-      key: 1, value: "Z-A (Driver's Name)",
-    }, {
-      key: 2, value: "A-Z (Fleet's Area)",
-    },{
-      key: 3, value: "Z-A (Fleet's Area)",
-    }];
-
-    const orderTypeOptions = [{
-      key: 'All', value: "All",
-    }, {
-      key: 1, value: 'Etobee',
-    }, {
-      key: 0, value: 'Company Orders',
-    }];
-
-    const statusOptions = {
-      succeed: [
-        { key: 5, value: 'DELIVERED'}
-      ],
-      pending: [
-        { key: -1, value: 'SHOW ALL'},
-        { key: 2, value: 'ACCEPTED' },
-        { key: 3, value: 'PICKUP'},
-        { key: 4, value: 'IN-TRANSIT'},
-      ],
-      failed: [
-        { key: -1, value: 'SHOW ALL'},
-        { key: 8, value: 'REJECT' },
-        { key: 12, value: 'EXPIRED'},
-        { key: 13, value: 'CANCELLED'},
-        { key: 15, value: 'RETURNED_WAREHOUSE'},
-        { key: 16, value: 'RETURNED_SENDER'}
-      ]
-    };
-
+    const { sortOptions, orderTypeOptions, statusOptions } = config;
     statusOptions.total = _.union(
       statusOptions.pending,
       statusOptions.succeed,
@@ -345,6 +307,7 @@ class OrderTable extends Component {
               order={order}
               expandOrder={(tab === "pending") && (() => this.expand(order, tab))}
               expandedOrder={this.props.expandedOrder}
+              getDetail={this.props.FetchDetails}
               tab={tab}
             />
           )) }
@@ -376,6 +339,9 @@ function OrderTableDispatchBuilder() {
       },
       FetchList: (tab) => {
         dispatch(orderMonitoringService.FetchList(tab));
+      },
+      FetchDetails: (orderID) => {
+        dispatch(orderMonitoringService.FetchDetails(orderID));
       }
     }
   }
