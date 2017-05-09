@@ -266,7 +266,10 @@ class PanelDetails extends Component {
                     <img src="/img/icon-cod-transfered.png" />
                     <p>COD Confirmation</p>
                   </li>
-                  <li onClick={() => this.showAddAttemptModal()}>
+                  <li
+                    className={(expandedOrder.UserOrderAttempts.length > 1) && styles.disabled}
+                    onClick={() => this.showAddAttemptModal()}
+                  >
                     <img src="/img/icon-report-attempt.png" />
                     <p>Report Attempt</p>
                   </li>
@@ -277,7 +280,7 @@ class PanelDetails extends Component {
               <button
                 className={styles.orderAttemptBtn}
                 onClick={expandAttempt}
-                disabled={expandedOrder.UserOrderAttempts.length > 1 && true} >
+              >
                 <img src="/img/icon-alert.png" className={styles.left} />
                 <span>{expandedOrder.UserOrderAttempts.length} Report Attempt</span>
                 <img src="/img/icon-open.png" className={styles.right} />
@@ -396,7 +399,6 @@ class AttemptModal extends Component {
         <ModalDialog className={styles.addAttemptModal}>
           <div>
             <div className={styles.addAttemptTitle}>
-              <div className={styles.attempt}>Attempt 1/2</div>
               Report Attempt
               <div className={styles.close} onClick={this.props.hide}>&times;</div>
             </div>
@@ -445,73 +447,32 @@ function AttemptDetails({hideAttempt, expandedOrder}) {
           <img src="/img/icon-previous.png" />
           {expandedOrder.UserOrderAttempts.length} Attempt Details
         </div>
-        <div className={styles.orderDetails}>
-          <div className={styles.orderDetailsLabel}>
-            Attempts detail
-          </div>
-          <div className={styles.orderDetailsValue}>
-
-          </div>
-          <div className={styles.orderDetailsLabel}>
-            Origin
-          </div>
-          <div className={styles.orderDetailsValue}>
-
-          </div>
-          <div className={styles.orderDetailsLabel}>
-            Destination
-          </div>
-          <div className={styles.orderDetailsValue}>
-
-          </div>
-          <div>
-            <div className={styles.orderAdditionalInfo}>
-              <div className={styles.orderDetailsLabel}>
-                Weight
+        <div className={styles.orderDetailsOuterContainer}>
+        {expandedOrder.UserOrderAttempts.map((attempt, key) => (
+          <div key={key} className={styles.attemptDetailContainer}>
+            <div className={styles.attemptDetailHeader}>Attempt {key + 1}</div>
+            <div className={styles.attemptDetailBody}>
+              <div>
+                <img className={styles.driverPict} src={attempt.Driver.PictureUrl} />
+                <span className={styles.driverName}>
+                  {attempt.Driver.FirstName} {attempt.Driver.LastName}
+                </span>
+                <span className={styles.attemptDate}>
+                  {(key == 0) ? "First" : "Second"} attempt on
+                  {new Date(attempt.CreatedDate).toDateString()}
+                </span>
               </div>
-              <div className={styles.orderDetailsValue}>
-
-              </div>
-            </div>
-            <div className={styles.orderAdditionalInfo}>
-              <div className={styles.orderDetailsLabel}>
-                COD Type
-              </div>
-              <div className={styles.orderDetailsValue}>
-
+              <div className={styles.reason}>
+                Alasan
+                <div className={styles.reasonDetail}>
+                  <img src={reasonReturn[attempt.ReasonReturn.ReasonID - 1].img} />
+                  <span>{reasonReturn[attempt.ReasonReturn.ReasonID - 1].text}</span>
+                </div>
+                <img className={styles.proof} src={attempt.ProofOfAttemptURL} />
               </div>
             </div>
           </div>
-        </div>
-        <div className={styles.orderValue}>
-          <div className={styles.orderValueLabel}>
-            Total Value
-          </div>
-          <div className={styles.orderTotalValue}>
-
-          </div>
-        </div>
-        <div className={styles.orderDetails}>
-          <div className={styles.orderDetailsLabel}>
-            From
-          </div>
-          <div className={styles.orderDetailsValue}>
-
-          </div>
-          <div className={styles.orderDetailsValue2}>
-
-          </div>
-        </div>
-        <div className={styles.orderDetails}>
-          <div className={styles.orderDetailsLabel}>
-            To
-          </div>
-          <div className={styles.orderDetailsValue}>
-
-          </div>
-          <div className={styles.orderDetailsValue2}>
-
-          </div>
+        ))}
         </div>
       </div>
   );

@@ -221,6 +221,12 @@
   width: 100%;
 }
 
+.menuContainer li.disabled {
+  cursor: not-allowed !important;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
 .menuContainer li:hover {
   background: #cccccc;
   cursor: pointer;
@@ -374,4 +380,82 @@ button.sendReport {
   text-align: center;
   font-size: 16px;
   cursor: pointer;
+}
+
+.attemptDetailContainer {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+.orderDetailsOuterContainer {
+  width: 100%;
+  float: left;
+  padding: 15px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  background-color: #ffffff;
+  font-family: Helvetica;
+  font-size: 12px;
+  color: #000000;
+  overflow-y: auto;
+  max-height: 80vh;
+}
+
+.attemptDetailHeader {
+  text-align: center;
+  font-weight: bold;
+  padding: 10px 0px;
+  border-bottom: 1px solid #ccc;
+}
+
+.attemptDetailBody {
+  box-sizing: border-box;
+  padding: 15px;
+}
+
+.driverPict {
+  width: 40px;
+  float: left;
+}
+
+.driverName, .attemptDate {
+  float: left;
+}
+
+.driverName {
+  min-width: 150px;
+}
+
+.reason {
+  display: inline-block;
+  box-sizing: border-box;
+  color: rgba(0, 0, 0, 0.5);
+  margin-top: 10px;
+}
+
+.reasonDetail {
+  color: #000;
+  font-weight: bold;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  overflow: auto;
+  margin-top: 5px;
+}
+
+.reasonDetail img {
+  width: 24px;
+  float: left;
+}
+
+.reasonDetail span {
+  float: left;
+  margin: 6px 15px;
+}
+
+img.proof {
+  width: 100%;
+  margin-top: 15px;
+  border-radius: 5px;
 }

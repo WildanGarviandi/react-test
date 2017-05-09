@@ -111,7 +111,7 @@ export default function Reducer(store = initialStore, action) {
     case Constants.HIDE_ORDER: {
       return lodash.assign({}, store, {
         isExpanded: false,
-        expandedOrder: false
+        expandedOrder: {}
       });
     }
 
@@ -275,13 +275,14 @@ export function FetchList(tab) {
     const { token } = getState().app.userLogged;
     const { limit, currentPage, filters } = getState().app.orderMonitoring;
     let startDate = new Date();
-    startDate.setDate(startDate.getDate() - 1);
+    startDate.setDate(startDate.getDate());
     startDate.setUTCHours(0,0,0,0);
-
+    let endDate = new Date();
+    endDate.setUTCHours(23,59,59);
     const query = lodash.assign({}, filters[tab], {
       limit: limit[tab],
       // startDate: startDate.toISOString(),
-      // endDate: new Date().toISOString(),
+      // endDate: endDate.toISOString(),
       offset: (currentPage[tab] - 1) * limit[tab],
       statuses: filters[tab].statuses || defaultStatuses[tab]
     });
@@ -381,21 +382,21 @@ export function SetFilter(newFilter) {
 export function PostAttempt(reasonID, proof) {
   return (dispatch, getState) => {
     const {token} = getState().app.userLogged;
+    const orderID = getState().app.orderMonitoring.expandedOrder.UserOrderID;
     const body = {
       reasonID: reasonID,
       proofOfAttemptURL: proof
     }
 
     dispatch({type: modalAction.BACKDROP_SHOW});
-    FetchPost(`/order/20358/attempt`, token, body).then((response) => {
+    FetchPost(`/order/${orderID}/attempt`, token, body).then((response) => {
       if(!response.ok) {
         return response.json().then(({error}) => {
           throw error;
         });
       }
-
-      console.log(response, 'response');
-
+      dispatch(HideOrder());
+      dispatch(HideAttemptModal());
       dispatch({type: modalAction.BACKDROP_HIDE});
     }).catch((e) => {
       const message = (e && e.message) || "Failed to add attempt";
@@ -409,6 +410,7 @@ export function FetchDetails(orderID) {
   return (dispatch, getState) => {
     const {token} = getState().app.userLogged;
 
+    dispatch(HideOrder());
     dispatch({type: modalAction.BACKDROP_SHOW});
     FetchGet(`/order/${orderID}`, token).then((response) => {
       if (!response.ok) {
