@@ -52,3 +52,7 @@ npm run dev
 npm run build
 npm run server
 ```
+
+## Style Guide
+
+Use [AirBnB React style guide](https://github.com/airbnb/javascript/tree/master/react#alignment)
