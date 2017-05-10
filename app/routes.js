@@ -5,7 +5,7 @@ import store from './store';
 import App from './views/app';
 import ContainerQRCodePage from './views/container/qrcode';
 import DashboardPage from './dashboard';
-import LoginPage from './views/login';
+import LoginPage from './views/login/LoginPage';
 import RegisterPage from './views/register';
 import OrderDetailsPage from './orderDetails/orderDetails';
 import PickupFillPage from './views/order/pickupFill';
