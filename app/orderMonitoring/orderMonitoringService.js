@@ -284,8 +284,8 @@ export function FetchList(tab) {
     let endDate = moment().utc().endOf('day').toISOString();
     const query = lodash.assign({}, filters[tab], {
       limit: limit[tab],
-      startDate: startDate,
-      endDate: endDate,
+      // startDate: startDate,
+      // endDate: endDate,
       offset: (currentPage[tab] - 1) * limit[tab],
       statuses: filters[tab].statuses || defaultStatuses[tab]
     });
@@ -314,8 +314,8 @@ export function FetchList(tab) {
   }
 }
 
-export function ExpandOrder(order, tab) {
-  return { type: Constants.EXPAND_ORDER, order, tab };
+export function ExpandOrder(order) {
+  return { type: Constants.EXPAND_ORDER, order };
 }
 
 export function HideOrder() {
@@ -423,11 +423,12 @@ export function FetchDetails(orderID) {
       }
 
       return response.json().then(({data}) => {
-        dispatch(ExpandOrder(data, 'pending'));
-        dispatch();
+        dispatch(ExpandOrder(data));
+        dispatch({type: modalAction.BACKDROP_HIDE});
       });
 
     }).catch((e) => {
+      console.log(e, 'catch');
       dispatch({type: modalAction.BACKDROP_HIDE});
       dispatch(ModalActions.addMessage(e.message));
     });

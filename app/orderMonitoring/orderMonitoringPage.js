@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import NumberFormat from 'react-number-format';
 import styles from './styles.css';
 import { ButtonWithLoading, Input, Page } from '../views/base';
@@ -7,6 +8,7 @@ import OrderTable, {Filter, Deadline} from './orderTable';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
 import DragDropImageUploader from '../components/dragDropImageUploader';
 import { reasonReturn } from '../config/attempt.json';
+import { statusOptions } from '../config/configValues.json';
 import * as orderService from './orderMonitoringService';
 
 class OrderMonitoringPage extends Component {
@@ -237,8 +239,14 @@ class PanelDetails extends Component {
     this.props.showAddAttemptModal();
   }
 
-  toggleMenu(){
+  toggleMenu() {
     this.setState({showMenu: !this.state.showMenu});
+  }
+
+  reportAttemptDisabled(length, status) {
+    return (
+        (length < 2 && _.find(statusOptions.pending, {key: status.OrderStatusID})) ? false : true
+    )
   }
 
   render() {
@@ -267,7 +275,10 @@ class PanelDetails extends Component {
                     <p>COD Confirmation</p>
                   </li>
                   <li
-                    className={(expandedOrder.UserOrderAttempts.length > 1) && styles.disabled}
+                    className={
+                      this.reportAttemptDisabled(expandedOrder.UserOrderAttempts.length, expandedOrder.OrderStatus)
+                      && styles.disabled
+                    }
                     onClick={() => this.showAddAttemptModal()}
                   >
                     <img src="/img/icon-report-attempt.png" />
@@ -404,7 +415,7 @@ class AttemptModal extends Component {
             </div>
             <div className={styles.addAttemptBody}>
               <div className={styles.left}>
-                Choose Reason <i className={styles.text-red}>*</i>
+                Choose Reason <i className={styles.text_red}>*</i>
                 <ul className={styles.reasons}>
                   {reasonReturn.map((reason) => (
                     <Reason {...reason}

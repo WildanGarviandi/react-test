@@ -19,7 +19,7 @@ class OrderRow extends Component {
   }
 
   render() {
-    const { IsChecked, expandedOrder, order, profilePicture, tab } = this.props;
+    const { IsChecked, expandedOrder, order, profilePicture, tab, getDetail } = this.props;
     const DEFAULT_IMAGE = "/img/default-logo.png";
     const ETOBEE_IMAGE = "/img/etobee-logo.png";
     const FLEET_IMAGE = profilePicture;
@@ -33,17 +33,17 @@ class OrderRow extends Component {
         <td className={styles.driverInput}>
           <Checkbox isChecked={order.IsChecked} orderID={order.UserOrderNumber} tab={tab} />
         </td>
-        <td onClick={() => this.props.getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
-        <td onClick={() => this.props.getDetail(order.UserOrderID)}>
+        <td onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td onClick={() => getDetail(order.UserOrderID)}>
           <img
             className={styles.orderLoadImage}
             src={order.IsTrunkeyOrder ? ETOBEE_IMAGE : FLEET_IMAGE}
             onError={(e)=>{e.target.src=DEFAULT_IMAGE}}
           />
         </td>
-        <td onClick={() => this.props.getDetail(order.UserOrderID)} className={styles.orderIDColumn}>{order.UserOrderNumber}</td>
-        <td onClick={() => this.props.getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
-        <td onClick={() => this.props.getDetail(order.UserOrderID)}>
+        <td onClick={() => getDetail(order.UserOrderID)} className={styles.orderIDColumn}>{order.UserOrderNumber}</td>
+        <td onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td onClick={() => getDetail(order.UserOrderID)}>
           <div className={styles.cardLabel}>
             Deadline
           </div>
@@ -52,8 +52,8 @@ class OrderRow extends Component {
             <Deadline deadline={order.DueTime} />
           </div>
         </td>
-        <td onClick={() => this.props.getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
-        <td onClick={() => this.props.getDetail(order.UserOrderID)}>
+        <td onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td onClick={() => getDetail(order.UserOrderID)}>
           <div className={styles.cardLabel}>
             Driver's Name
           </div>
@@ -62,8 +62,8 @@ class OrderRow extends Component {
             {order.Driver ? order.Driver.FirstName : 'null' } {order.Driver ? order.Driver.LastName : 'null' }
           </div>
         </td>
-        <td onClick={() => this.props.getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
-        <td onClick={() => this.props.getDetail(order.UserOrderID)}>
+        <td onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td onClick={() => getDetail(order.UserOrderID)}>
           <div className={styles.cardLabel}>
             Order Status
           </div>
@@ -72,8 +72,8 @@ class OrderRow extends Component {
             {order.OrderStatus.OrderStatus}
           </div>
         </td>
-        <td onClick={() => this.props.getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
-        <td onClick={() => this.props.getDetail(order.UserOrderID)}>
+        <td onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td onClick={() => getDetail(order.UserOrderID)}>
           <div className={styles.cardLabel}>
             Fleet's Area
           </div>
