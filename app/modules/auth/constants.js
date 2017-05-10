@@ -1,11 +1,11 @@
-export const CHECK_AUTH = 'CHECK_AUTH_START';
-export const AUTH_VALID = 'CHECK_AUTH_SUCCESS';
-export const AUTH_INVALID = 'CHECK_AUTH_FAILED';
+export const CHECK_AUTH = '[AUTH]CHECK_AUTH_START'; //eslint-disable-line
+export const AUTH_VALID = '[AUTH]CHECK_AUTH_SUCCESS';
+export const AUTH_INVALID = '[AUTH]CHECK_AUTH_FAILED';
 
-export const LOGIN_START = 'LOGIN_START';
-export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
-export const LOGIN_FAILED = 'LOGIN_FAILED';
+export const LOGIN_START = '[AUTH]LOGIN_START';
+export const LOGIN_SUCCESS = '[AUTH]LOGIN_SUCCESS';
+export const LOGIN_FAILED = '[AUTH]LOGIN_FAILED';
 
-export const LOGOUT_START = 'LOGOUT_START';
-export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
-export const LOGOUT_FAILED = 'LOGOUT_FAILED';
+export const LOGOUT_START = '[AUTH]LOGOUT_START';
+export const LOGOUT_SUCCESS = '[AUTH]LOGOUT_SUCCESS';
+export const LOGOUT_FAILED = '[AUTH]LOGOUT_FAILED';
