@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
-import _ from 'underscore';
+import * as _ from 'lodash';
 import ordersPrepareFetch from '../../modules/containers/actions/ordersPrepare';
 import {ButtonBase, PageTitle} from '../base';
 

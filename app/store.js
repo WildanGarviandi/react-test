@@ -3,15 +3,12 @@ import { routerMiddleware, routerReducer } from 'react-router-redux';
 import { combineReducers, applyMiddleware, createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunkMiddleware from 'redux-thunk';
-import createLogger from 'redux-logger';
 import { addLocaleData } from 'react-intl';
 import idLocaleData from 'react-intl/locale-data/id';
 import { intlReducer } from 'react-intl-redux';
 import rootReducer from './reducers';
 
 import configEnv from '../config.json';
-
-const loggerMiddleware = createLogger();
 
 let store;
 
@@ -53,7 +50,7 @@ if (process.env && process.env.NODE_ENV === "production") {
     }),
     initialState,
     composeWithDevTools(
-      applyMiddleware(routerMiddleware(browserHistory), thunkMiddleware, loggerMiddleware)
+      applyMiddleware(routerMiddleware(browserHistory), thunkMiddleware)
     )
   );
 }
