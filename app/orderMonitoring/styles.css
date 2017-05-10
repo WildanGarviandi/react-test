@@ -319,6 +319,10 @@
   display: flex;
 }
 
+.text-red {
+  color: #fc404e;
+}
+
 .addAttemptBody .left, .addAttemptBody .right {
   width: 50%;
   float: left;

@@ -247,9 +247,15 @@ export default function Reducer(store = initialStore, action) {
 export function FetchCount() {
   return (dispatch, getState) => {
     const {token} = getState().app.userLogged;
+    let startDate = moment().utc().startOf('day').toISOString();
+    let endDate = moment().utc().endOf('day').toISOString();
+    const query = {
+      startDate: startDate,
+      endDate: endDate
+    }
 
     dispatch({type: modalAction.BACKDROP_SHOW});
-    FetchGet('/order/delivery-counter', token).then((response) => {
+    FetchGet('/order/delivery-counter', token, query).then((response) => {
       if (!response.ok) {
         return response.json().then(({error}) => {
           throw error;
@@ -274,15 +280,12 @@ export function FetchList(tab) {
   return (dispatch, getState) => {
     const { token } = getState().app.userLogged;
     const { limit, currentPage, filters } = getState().app.orderMonitoring;
-    let startDate = new Date();
-    startDate.setDate(startDate.getDate());
-    startDate.setUTCHours(0,0,0,0);
-    let endDate = new Date();
-    endDate.setUTCHours(23,59,59);
+    let startDate = moment().utc().startOf('day').toISOString();
+    let endDate = moment().utc().endOf('day').toISOString();
     const query = lodash.assign({}, filters[tab], {
       limit: limit[tab],
-      // startDate: startDate.toISOString(),
-      // endDate: endDate.toISOString(),
+      startDate: startDate,
+      endDate: endDate,
       offset: (currentPage[tab] - 1) * limit[tab],
       statuses: filters[tab].statuses || defaultStatuses[tab]
     });

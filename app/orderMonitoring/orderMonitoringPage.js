@@ -71,7 +71,7 @@ class OrderMonitoringPage extends Component {
   }
 
   componentWillMount() {
-    // this.props.FetchCount();
+    this.props.FetchCount();
     this.props.FetchList('total');
     this.props.FetchList('succeed');
     this.props.FetchList('pending');
@@ -373,13 +373,13 @@ class AttemptModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      proove: undefined,
-      selected: undefined
+      prove: null,
+      selected: null
     };
   }
 
   setPicture(url) {
-    this.setState({proove: url});
+    this.setState({prove: url});
   }
 
   selectReason(key) {
@@ -387,8 +387,8 @@ class AttemptModal extends Component {
   }
 
   postAttempt() {
-    if (this.state.proove && this.state.selected) {
-      this.props.submit(this.state.selected, this.state.proove);
+    if (this.state.prove && this.state.selected) {
+      this.props.submit(this.state.selected, this.state.prove);
     }
   }
 
@@ -404,7 +404,7 @@ class AttemptModal extends Component {
             </div>
             <div className={styles.addAttemptBody}>
               <div className={styles.left}>
-                Choose Reason <i style={{color: "#fc404e"}}>*</i>
+                Choose Reason <i className={styles.text-red}>*</i>
                 <ul className={styles.reasons}>
                   {reasonReturn.map((reason) => (
                     <Reason {...reason}
@@ -419,7 +419,7 @@ class AttemptModal extends Component {
                 Add Image (Optional)
                 <DragDropImageUploader
                   updateImageUrl={(data) => this.setPicture(data)}
-                  currentImageUrl={this.state.proove}
+                  currentImageUrl={this.state.prove}
                 />
                 <button className={styles.sendReport} onClick={() => this.postAttempt()}>Send Report</button>
               </div>
