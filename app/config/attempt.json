@@ -46,34 +46,34 @@
       "id": 15, "val": "EKYC_FAILED", "text": "EKYC failed", "img": ""
     },
     {
-      "id": 16, "val": "CONSIGNEE_MOVE_OUT", "text": "Pindah alamat", "img": "/img/icon-move-address.png"
+      "id": 16, "val": "CONSIGNEE_MOVE_OUT", "text": "Penerima sudah pindah", "img": "/img/icon-move-address.png"
     },
     {
-      "id": 17, "val": "CONSIGNEE_NOT_RECOGNIZED", "text": "Tidak dikenal", "img": "/img/icon-tidak-dikenal.png"
+      "id": 17, "val": "CONSIGNEE_NOT_RECOGNIZED", "text": "Penerima tidak dikenal", "img": "/img/icon-tidak-dikenal.png"
     },
     {
-      "id": 18, "val": "CONSIGNEE_RARELY_IN_PLACE", "text": "Consignee rarely in place", "img": ""
+      "id": 18, "val": "CONSIGNEE_RARELY_IN_PLACE", "text": "Penerima jarang ditempat", "img": ""
     },
     {
-      "id": 19, "val": "OFFICE_CLOSED", "text": "Office closed", "img": ""
+      "id": 19, "val": "OFFICE_CLOSED", "text": "Rumah/Kantor tutup", "img": ""
     },
     {
-      "id": 20, "val": "LEAVE_HOLIDAY_SICK", "text": "Leave holiday sick", "img": ""
+      "id": 20, "val": "LEAVE_HOLIDAY_SICK", "text": "Cuti/Libur/Sakit", "img": ""
     },
     {
-      "id": 21, "val": "OUT_OF_TOWN", "text": "Out of town", "img": ""
+      "id": 21, "val": "OUT_OF_TOWN", "text": "Keluar Kota/Negeri", "img": ""
     },
     {
-      "id": 22, "val": "CONSIGNEE_PASSED_AWAY", "text": "Consignee passed away", "img": ""
+      "id": 22, "val": "CONSIGNEE_PASSED_AWAY", "text": "Meninggal dunia", "img": ""
     },
     {
-      "id": 23, "val": "CONSIGNEE_RETIRED_RESIGNED", "text": "Consignee retired resig", "img": ""
+      "id": 23, "val": "CONSIGNEE_RETIRED_RESIGNED", "text": "Pensiun/Resign", "img": ""
     },
     {
-      "id": 24, "val": "CONSIGNEE_DIFFICULT_TO_MEET", "text": "Consignee difficult to meet", "img": ""
+      "id": 24, "val": "CONSIGNEE_DIFFICULT_TO_MEET", "text": "Penerima sulit ditemui", "img": ""
     },
     {
-      "id": 25, "val": "NEGATIVE_LOCATION", "text": "Negative location", "img": ""
+      "id": 25, "val": "NEGATIVE_LOCATION", "text": "Lokasi terkesan negatif", "img": ""
     }
   ]
 }

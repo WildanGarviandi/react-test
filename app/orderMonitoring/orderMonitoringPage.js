@@ -88,9 +88,7 @@ class OrderMonitoringPage extends Component {
 
   componentWillMount() {
     this.props.FetchCount();
-    this.props.FetchList('succeed');
-    this.props.FetchList('pending');
-    this.props.FetchList('failed');
+    this.props.FetchAllList();
     if (!this.props.userLogged.hubID) {
       window.location.href = config.defaultMainPageTMS;
     }
@@ -202,8 +200,8 @@ function mapDispatch(dispatch) {
     FetchCount: () => {
       dispatch(orderService.FetchCount());
     },
-    FetchList: (tab) => {
-      dispatch(orderService.FetchList(tab));
+    FetchAllList: () => {
+      dispatch(orderService.FetchAllList());
     },
     ExpandOrder: () => {
       dispatch(orderService.ExpandOrder());

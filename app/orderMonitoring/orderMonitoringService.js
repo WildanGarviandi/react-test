@@ -1,10 +1,11 @@
 import lodash from 'lodash';
+import moment from 'moment';
+
 import FetchGet from '../modules/fetch/get';
 import FetchPost from '../modules/fetch/post';
 import ModalActions from '../modules/modals/actions';
 import { modalAction } from '../modules/modals/constants';
 import { defaultStatuses } from '../config/configValues';
-import moment from 'moment';
 
 const Constants = {
   FETCH_COUNT: 'FETCH_COUNT',
@@ -22,12 +23,15 @@ const Constants = {
   SET_ORDERS: 'SET_ORDERS',
   SET_DROPDOWN_FILTER: 'SET_DROPDOWN_FILTER',
   SET_FILTER: 'SET_FILTER',
+  SET_DATE: 'SET_DATE',
 }
 
 const initialStore = {
-  isExpanded: false,
   expandedOrder: {},
   expandedAttempt: false,
+  isExpanded: false,
+  startDate: moment().subtract(7, 'days').toISOString(),
+  endDate: moment().toISOString(),
   count: {
     pendingDelivery: '-',
     succeedDelivery: '-',
@@ -228,6 +232,10 @@ export default function Reducer(store = initialStore, action) {
       return lodash.merge({}, store, action.newFilter);
     }
 
+    case Constants.SET_DATE: {
+      return lodash.merge({}, store, action.newDate);
+    }
+
     default: {
       return store;
     }
@@ -237,8 +245,7 @@ export default function Reducer(store = initialStore, action) {
 export function FetchCount() {
   return (dispatch, getState) => {
     const {token} = getState().app.userLogged;
-    let startDate = moment().utc().startOf('day').toISOString();
-    let endDate = moment().utc().endOf('day').toISOString();
+    const {startDate, endDate} = getState().app.orderMonitoring;
     const query = {
       startDate: startDate,
       endDate: endDate
@@ -269,13 +276,11 @@ export function FetchCount() {
 export function FetchList(tab) {
   return (dispatch, getState) => {
     const { token } = getState().app.userLogged;
-    const { limit, currentPage, filters } = getState().app.orderMonitoring;
-    let startDate = moment().utc().startOf('day').toISOString();
-    let endDate = moment().utc().endOf('day').toISOString();
+    const { limit, currentPage, filters, startDate, endDate } = getState().app.orderMonitoring;
     const query = lodash.assign({}, filters[tab], {
       limit: limit[tab],
-      // startDate: startDate,
-      // endDate: endDate,
+      startDate: startDate,
+      endDate: endDate,
       offset: (currentPage[tab] - 1) * limit[tab],
       statuses: filters[tab].statuses || defaultStatuses[tab]
     });
@@ -290,6 +295,7 @@ export function FetchList(tab) {
 
       return response.json().then(({data}) => {
         dispatch({type: modalAction.BACKDROP_HIDE});
+        dispatch(FetchCount());
         dispatch({
           type: Constants.SET_ORDERS,
           total: data.count,
@@ -301,6 +307,14 @@ export function FetchList(tab) {
       dispatch({type: modalAction.BACKDROP_HIDE});
       dispatch(ModalActions.addMessage(e.message));
     });
+  }
+}
+
+export function FetchAllList() {
+  return (dispatch) => {
+    dispatch(FetchList('succeed'));
+    dispatch(FetchList('pending'));
+    dispatch(FetchList('failed'));
   }
 }
 
@@ -370,6 +384,10 @@ export function SetDropDownFilter(keyword, option, tab) {
 
 export function SetFilter(newFilter) {
   return { type: Constants.SET_FILTER, newFilter };
+}
+
+export function SetDate(newDate) {
+  return { type: Constants.SET_DATE, newDate };
 }
 
 export function PostAttempt(reasonID, proof) {

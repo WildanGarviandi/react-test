@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import moment from 'moment';
 import Countdown from 'react-cntdwn';
+import DateRangePicker from 'react-bootstrap-daterangepicker';
 
 import { FilterTop, Filter as FilterDropdown } from '../components/form';
 import { Pagination2 } from '../components/pagination2';
@@ -138,7 +139,7 @@ const OrderTypeFilter = ConnectDropdownBuilder('orderTypeOptions')(FilterTop);
 
 function InputStoreBuilder(keyword) {
   return(store, props) => {
-    const {filters} = store.app.orderMonitoring;
+    const { filters } = store.app.orderMonitoring;
     if(!_.isEmpty(filters[props.tab])){
       return {value: filters[props.tab][keyword]};
     }
@@ -149,7 +150,7 @@ function InputStoreBuilder(keyword) {
 
 function InputDispatchBuilder(keyword, placeholder) {
   return (dispatch, props) => {
-    const {tab} = props;
+    const { tab } = props;
     function OnChange(e) {
       let value = (keyword == 'userOrderNumber') ? e.target.value.toUpperCase() : e.target.value ;
 
@@ -194,6 +195,63 @@ const NameFilter = ConnectBuilder('driverName', 'Search for driver...')(InputFil
 const FleetFilter = ConnectBuilder('dropoffCity', "Search for fleet's area...")(InputFilter);
 
 // END INPUT FILTER
+
+// START DATERANGEPICKER
+
+function Daterangepicker({startDate, endDate, onChange}) {
+  const startDateFormatted = moment(startDate).format('MM-DD-YYYY');
+  const endDateFormatted = moment(endDate).format('MM-DD-YYYY');
+  let dateValue = startDateFormatted + ' - ' + endDateFormatted;
+  if (!startDate && !endDate) {
+      dateValue = '';
+  }
+
+  return (
+    <div className={styles.searchInputWrapper}>
+      <DateRangePicker 
+        startDate={startDateFormatted}
+        endDate={endDateFormatted}
+        onApply={onChange}
+        maxDate={moment()}
+        parentEl="#bootstrapPlaceholder"
+      >
+        <input className={styles.searchInput} type="text" defaultValue={dateValue} />
+      </ DateRangePicker>
+    </div>
+  )
+}
+
+function DaterangeStoreBuilder(keyword) {
+  return (store, props) => {
+    const { startDate, endDate } = store.app.orderMonitoring;
+    const { tab } = props;
+
+    return {startDate, endDate};
+  }
+}
+
+function DaterangeDispatch() {
+  return (dispatch, props) => {
+    const { tab } = props;
+
+    return {
+      onChange: (event, picker) => {
+        const {startDate, endDate} = picker;
+        const newDate = {
+          'startDate': startDate.toISOString(),
+          'endDate': endDate.toISOString(),
+        };
+
+        dispatch(orderMonitoringService.SetDate(newDate));
+        dispatch(orderMonitoringService.FetchAllList());
+      }
+    }
+  }
+}
+
+const Datepicker = connect(DaterangeStoreBuilder, DaterangeDispatch)(Daterangepicker)
+
+// END DATERANGEPICKER
 
 // START CHECKBOX
 
@@ -276,6 +334,7 @@ export class Filter extends Component {
       <div>
         <SortFilter tab={tab} />
         <OrderTypeFilter tab={tab} />
+        <Datepicker tab={tab} />
 
         <Pagination2 {...paginationState} {...PaginationAction} tab={this.props.tab} style={{marginTop: "5px"}} />
 
@@ -324,10 +383,7 @@ function OrderTableStoreBuilder() {
   return (store) => {
     const { orders, expandedOrder } = store.app.orderMonitoring;
 
-    return {
-      orders,
-      expandedOrder
-    }
+    return {orders, expandedOrder};
   }
 }
 

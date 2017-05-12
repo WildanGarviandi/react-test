@@ -120,3 +120,32 @@ td {
   margin-bottom: 5px;
   display: table
 }
+
+.searchInputWrapper {
+  width: 14%;
+  float: left;
+}
+
+.searchInputWrapper div {
+  float: left;
+  width: 100%;
+}
+
+.searchInput {
+  float: left;
+  margin: 9px 0;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  display: block;
+  left: 0;
+  right: 0;
+  padding: 0;
+  text-align: center;
+
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+
+  width: 100%;
+  height: 48px;
+}
