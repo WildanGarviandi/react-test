@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import NumberFormat from 'react-number-format';
+
 import styles from './styles.css';
 import { ButtonWithLoading, Input, Page } from '../views/base';
 import OrderTable, {Filter, Deadline} from './orderTable';
@@ -11,62 +12,75 @@ import { reasonReturn } from '../config/attempt.json';
 import { statusOptions } from '../config/configValues.json';
 import * as orderService from './orderMonitoringService';
 
+const pagePropTypes = {
+  ExpandAttempt: PropTypes.func.isRequired,
+  HideOrder: PropTypes.func.isRequired,
+  ShowAttemptModal: PropTypes.func.isRequired,
+  PostAttempt: PropTypes.func.isRequired,
+  isExpanded: PropTypes.bool.isRequired,
+  expandedAttempt: PropTypes.bool.isRequired,
+  PaginationAction: PropTypes.object.isRequired,
+  count: PropTypes.object.isRequired,
+  paginationState: PropTypes.object.isRequired,
+  expandedOrder: PropTypes.object.isRequired,
+  modal: PropTypes.object.isRequired,
+};
+
+const pageDefaultProps = {
+  ExpandAttempt: null,
+  HideOrder: null,
+  ShowAttemptModal: null,
+  PostAttempt: null,
+  isExpanded: false,
+  expandedAttempt: false,
+  PaginationAction: {},
+  count: {},
+  paginationState: {},
+  expandedOrder: {},
+  modal: {},
+};
+
 class OrderMonitoringPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showDelivery: true,
-      showSucceed: false,
+      showSucceed: true,
       showPending: false,
       showFailed: false,
     };
   }
 
-  activateDelivery() {
-    this.setState({
-      showDelivery: true,
-      showSucceed: false,
-      showPending: false,
-      showFailed: false
-    });
-  }
-
   activateSucceed() {
     this.setState({
-      showDelivery: false,
       showSucceed: true,
       showPending: false,
-      showFailed: false
+      showFailed: false,
     });
   }
 
   activatePending() {
     this.setState({
-      showDelivery: false,
       showSucceed: false,
       showPending: true,
-      showFailed: false
+      showFailed: false,
     });
   }
 
   activateFailed() {
     this.setState({
-      showDelivery: false,
       showSucceed: false,
       showPending: false,
-      showFailed: true
+      showFailed: true,
     });
   }
 
   getActiveTab() {
     const {
-        showDelivery,
         showSucceed,
         showPending,
-        showFailed
+        showFailed,
       } = this.state;
 
-    if(showDelivery) {return 'total';}
     if(showSucceed) {return 'succeed';}
     if(showPending) {return 'pending';}
     if(showFailed) {return 'failed';}
@@ -74,7 +88,6 @@ class OrderMonitoringPage extends Component {
 
   componentWillMount() {
     this.props.FetchCount();
-    this.props.FetchList('total');
     this.props.FetchList('succeed');
     this.props.FetchList('pending');
     this.props.FetchList('failed');
@@ -84,18 +97,18 @@ class OrderMonitoringPage extends Component {
   }
 
   render() {
-    const { failedDelivery, pendingDelivery, succeedDelivery, totalDelivery } = this.props.count;
+    const { succeedDelivery, pendingDelivery, failedDelivery } = this.props.count;
     const {
             PaginationAction,
-            paginationState,
-            isExpanded,
-            expandedAttempt,
-            expandedOrder,
             ExpandAttempt,
             HideOrder,
             ShowAttemptModal,
             PostAttempt,
-            modal
+            isExpanded,
+            expandedAttempt,
+            paginationState,
+            expandedOrder,
+            modal,
           } = this.props;
 
     return (
@@ -117,15 +130,6 @@ class OrderMonitoringPage extends Component {
           <AttemptModal hide={this.props.HideAttemptModal} submit={PostAttempt} />
         }
         <div className={styles.widgetOuterContainer}>
-          <div
-            onClick={() => this.activateDelivery()}
-            className={`${styles.widgetContainer}
-            ${this.state.showDelivery ? styles.toggleWidgetActive : styles.toggleWidget}`}
-          >
-            <span className={styles.widgetTitle}>Total Delivery</span>
-            <span className={styles.total}>{totalDelivery}</span>
-          </div>
-          <span className={styles.arbitTogglePickup}> | </span>
           <div
             onClick={() => this.activateSucceed()}
             className={`${styles.widgetContainer}
@@ -169,7 +173,16 @@ class OrderMonitoringPage extends Component {
 
 function mapState(store, tab) {
   const { userLogged } = store.app;
-  const { currentPage, limit, total, expandedOrder, isExpanded, expandedAttempt, count, modal } = store.app.orderMonitoring;
+  const { 
+    currentPage, 
+    limit, 
+    total, 
+    expandedOrder, 
+    isExpanded, 
+    expandedAttempt, 
+    count, 
+    modal,
+  } = store.app.orderMonitoring;
 
   return {
     userLogged,
@@ -180,7 +193,7 @@ function mapState(store, tab) {
     expandedOrder,
     expandedAttempt,
     count,
-    modal
+    modal,
   }
 }
 
@@ -224,7 +237,24 @@ function mapDispatch(dispatch) {
   }
 }
 
+OrderMonitoringPage.propTypes = pagePropTypes;
+OrderMonitoringPage.defaultProps = pageDefaultProps;
+
 export default connect(mapState, mapDispatch)(OrderMonitoringPage)
+
+const panelPropTypes = {
+  expandAttempt: PropTypes.func.isRequired,
+  expandedOrder: PropTypes.object.isRequired,
+  isExpanded: PropTypes.bool.isRequired,
+  expandedAttempt: PropTypes.bool.isRequired,
+}
+
+const panelDefaultProps = {
+  expandAttempt: null,
+  expandedOrder: {},
+  isExpanded: false,
+  expandedAttempt: false,
+}
 
 class PanelDetails extends Component {
   constructor(props) {
@@ -235,18 +265,18 @@ class PanelDetails extends Component {
   }
 
   showAddAttemptModal() {
-    this.setState({showMenu: false});
+    this.setState({ showMenu: false });
     this.props.showAddAttemptModal();
   }
 
   toggleMenu() {
-    this.setState({showMenu: !this.state.showMenu});
+    this.setState({ showMenu: !this.state.showMenu });
   }
 
   reportAttemptDisabled(length, status) {
     return (
         (length < 2 && _.find(statusOptions.pending, {key: status.OrderStatusID})) ? false : true
-    )
+    );
   }
 
   render() {
@@ -380,21 +410,24 @@ class PanelDetails extends Component {
   }
 }
 
+PanelDetails.propTypes = panelPropTypes;
+PanelDetails.defaultProps = panelDefaultProps;
+
 class AttemptModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
       prove: null,
-      selected: null
+      selected: null,
     };
   }
 
   setPicture(url) {
-    this.setState({prove: url});
+    this.setState({ prove: url });
   }
 
   selectReason(key) {
-    this.setState({selected: key});
+    this.setState({ selected: key });
   }
 
   postAttempt() {
@@ -432,7 +465,12 @@ class AttemptModal extends Component {
                   updateImageUrl={(data) => this.setPicture(data)}
                   currentImageUrl={this.state.prove}
                 />
-                <button className={styles.sendReport} onClick={() => this.postAttempt()}>Send Report</button>
+                <button 
+                  className={styles.sendReport} 
+                  onClick={() => this.postAttempt()}
+                >
+                  Send Report
+                </button>
               </div>
             </div>
           </div>

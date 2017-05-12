@@ -29,67 +29,57 @@ const initialStore = {
   expandedOrder: {},
   expandedAttempt: false,
   count: {
-    totalDelivery: '-',
     pendingDelivery: '-',
     succeedDelivery: '-',
-    failedDelivery: '-'
+    failedDelivery: '-',
   },
   modal: {
     addAttempt: false
   },
   filters: {
-    total: {},
     succeed: {},
     pending: {},
-    failed: {}
+    failed: {},
   },
   orders: {
-    total: [],
     succeed: [],
     pending: [],
-    failed : []
+    failed : [],
   },
   sortOptions: {
-    total: "Sort By",
     succeed: "Sort By",
     pending: "Sort By",
-    failed: "Sort By"
+    failed: "Sort By",
   },
   orderTypeOptions: {
-    total: "All",
     succeed: "All",
     pending: "All",
     failed: "All",
   },
   statusOptions: {
-    total: "Search for order status...",
     succeed: "Search for order status...",
     pending: "Search for order status...",
     failed: "Search for order status...",
   },
   currentPage: {
-    total: 1,
     succeed: 1,
     pending: 1,
-    failed: 1
+    failed: 1,
   },
   limit: {
-    total: 10,
     succeed: 10,
     pending: 10,
-    failed: 10
+    failed: 10,
   },
   total: {
-    total: 0,
     succeed: 0,
     pending: 0,
     failed: 0
   },
   selectedAll: {
-    total: false,
     pending: false,
     succeed: false,
-    failed: false
+    failed: false,
   },
 }
 

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import moment from 'moment';
+import Countdown from 'react-cntdwn';
+
 import { FilterTop, Filter as FilterDropdown } from '../components/form';
 import { Pagination2 } from '../components/pagination2';
 import OrderStatusSelector from '../modules/orderStatus/selector';
@@ -9,17 +11,18 @@ import * as orderMonitoringService from './orderMonitoringService';
 import {CheckboxHeaderPlain as CheckboxHeaderBase, CheckboxCell } from '../views/base/tableCell';
 import styles from './table.css';
 import config from '../config/configValues.json';
-import Countdown from 'react-cntdwn';
+
+const rowPropTypes = {
+
+}
 
 class OrderRow extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-    }
   }
 
   render() {
-    const { IsChecked, expandedOrder, order, profilePicture, tab, getDetail } = this.props;
+    const { expandedOrder, order, profilePicture, tab, getDetail } = this.props;
     const DEFAULT_IMAGE = "/img/default-logo.png";
     const ETOBEE_IMAGE = "/img/etobee-logo.png";
     const FLEET_IMAGE = profilePicture;
