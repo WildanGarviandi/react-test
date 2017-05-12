@@ -1,54 +1,50 @@
-import React, { Component } from 'react';
-import {connect} from 'react-redux';
+import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
+
 import styles from './styles.css';
-import {ButtonWithLoading, Input, Page} from '../views/base';
-import OrderTable, {Filter} from './orderTable';
+import { ButtonWithLoading, Input, Page } from '../views/base';
+import OrderTable, { Filter } from './orderTable';
 import * as orderService from './orderMonitoringService';
+
+const pagePropTypes = {
+  count: PropTypes.object.isRequired,
+};
+
+const pageDefaultProps = {
+  count: {},
+};
 
 class OrderMonitoringPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showDelivery: true,
-      showSucceed: false,
+      showSucceed: true,
       showPending: false,
-      showFailed: false
+      showFailed: false,
     };
-  }
-
-  activateDelivery() {
-    this.setState({
-      showDelivery: true,
-      showSucceed: false,
-      showPending: false,
-      showFailed: false
-    });
   }
 
   activateSucceed() {
     this.setState({
-      showDelivery: false,
       showSucceed: true,
       showPending: false,
-      showFailed: false
+      showFailed: false,
     });
   }
 
   activatePending() {
     this.setState({
-      showDelivery: false,
       showSucceed: false,
       showPending: true,
-      showFailed: false
+      showFailed: false,
     });
   }
 
   activateFailed() {
     this.setState({
-      showDelivery: false,
       showSucceed: false,
       showPending: false,
-      showFailed: true
+      showFailed: true,
     });
   }
 
@@ -60,21 +56,12 @@ class OrderMonitoringPage extends Component {
   }
 
   render() {
-    const { failedDelivery, pendingDelivery, succeedDelivery, totalDelivery } = this.props.count;
+    const { succeedDelivery, pendingDelivery, failedDelivery } = this.props.count;
 
     return (
       <Page title="Order Monitoring">
         <PanelDetails expandedOrder={this.props.expandedOrder} />
         <div className={styles.widgetOuterContainer}>
-          <div
-            onClick={() => this.activateDelivery()}
-            className={`${styles.widgetContainer}
-            ${this.state.showDelivery ? styles.toggleWidgetActive : styles.toggleWidget}`}
-          >
-            <span className={styles.widgetTitle}>Total Delivery</span>
-            <span className={styles.total}>{totalDelivery}</span>
-          </div>
-          <span className={styles.arbitTogglePickup}> | </span>
           <div
             onClick={() => this.activateSucceed()}
             className={`${styles.widgetContainer}
@@ -106,9 +93,6 @@ class OrderMonitoringPage extends Component {
         <div className={styles.contentOuterContainer}>
           <div className={styles.contentContainer}>
             <div className={styles.mainTable}>
-              { this.state.showDelivery &&
-                <Filter />
-              }
               {
                 this.state.showSucceed &&
                 <Filter />
@@ -122,11 +106,6 @@ class OrderMonitoringPage extends Component {
                 <Filter />
               }
             </div>
-            { this.state.showDelivery &&
-              <div>
-                <OrderTable />
-              </div>
-            }
             {
               this.state.showSucceed &&
               <div>
@@ -162,8 +141,8 @@ function mapState(store) {
         currentPage, limit, total,
     },
     expandedOrder,
-    count
-  }
+    count,
+  };
 }
 
 function mapDispatch(dispatch) {
@@ -177,10 +156,18 @@ function mapDispatch(dispatch) {
     HideOrder: () => {
       dispatch(orderService.HideOrder());
     }
-  }
+  };
 }
 
-export default connect(mapState, mapDispatch)(OrderMonitoringPage)
+export default connect(mapState, mapDispatch)(OrderMonitoringPage);
+
+const panelPropTypes = {
+  expandedOrder: PropTypes.bool.isRequired,
+};
+
+const panelDefaultProps = {
+  expandedOrder: false,
+};
 
 class PanelDetails extends Component {
   render() {
@@ -269,3 +256,6 @@ class PanelDetails extends Component {
     );
   }
 }
+
+PanelDetails.PropTypes = panelPropTypes;
+PanelDetails.DefaultProps = panelDefaultProps;
