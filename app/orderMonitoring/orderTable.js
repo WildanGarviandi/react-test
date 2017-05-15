@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import moment from 'moment';
+import PropTypes from 'prop-types';
 import Countdown from 'react-cntdwn';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 
@@ -14,7 +15,19 @@ import styles from './table.css';
 import config from '../config/configValues.json';
 
 const rowPropTypes = {
+  expandedOrder: PropTypes.any,
+  order: PropTypes.any,
+  profilePicture: PropTypes.any,
+  tab: PropTypes.any,
+  getDetail: PropTypes.func,
+}
 
+const rowDefaultProps = {
+  expandedOrder: null,
+  order: null,
+  profilePicture: null,
+  tab: null,
+  getDetail: null,
 }
 
 class OrderRow extends Component {
@@ -90,6 +103,9 @@ class OrderRow extends Component {
     );
   }
 }
+
+OrderRow.propTypes = rowPropTypes;
+OrderRow.defaultProps = rowDefaultProps;
 
 // START DROPDOWN FILTER
 
@@ -325,6 +341,16 @@ export class Deadline extends Component{
 
 // END COUNTDOWN
 
+const filterPropTypes = {
+  pagination: PropTypes.any,
+  tab: PropTypes.any,
+}
+
+const filterDefaultProps = {
+  pagination: null,
+  tab: null,
+}
+
 export class Filter extends Component {
   render() {
     const { PaginationAction, paginationState } = this.props.pagination;
@@ -348,6 +374,19 @@ export class Filter extends Component {
       </div>
     );
   }
+}
+
+Filter.propTypes = filterPropTypes;
+Filter.defaultProps = filterDefaultProps;
+
+const tablePropsType = {
+  orders: PropTypes.any,
+  tab: PropTypes.any,
+}
+
+const tableDefaultProps = {
+  orders: null,
+  tab: null,
 }
 
 class OrderTable extends Component {
@@ -405,5 +444,9 @@ function OrderTableDispatchBuilder() {
     }
   }
 }
+
+
+OrderTable.propTypes = tablePropsType;
+OrderTable.defaultProps = tableDefaultProps;
 
 export default connect(OrderTableStoreBuilder, OrderTableDispatchBuilder)(OrderTable);

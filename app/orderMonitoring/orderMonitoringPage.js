@@ -21,10 +21,10 @@ const pagePropTypes = {
   isExpanded: PropTypes.bool.isRequired,
   expandedAttempt: PropTypes.bool.isRequired,
   PaginationAction: PropTypes.object.isRequired,
-  count: PropTypes.object.isRequired,
-  paginationState: PropTypes.object.isRequired,
-  expandedOrder: PropTypes.object.isRequired,
-  modal: PropTypes.object.isRequired,
+  count: PropTypes.any.isRequired,
+  paginationState: PropTypes.any.isRequired,
+  expandedOrder: PropTypes.any.isRequired,
+  modal: PropTypes.any.isRequired,
 };
 
 const pageDefaultProps = {
@@ -35,10 +35,10 @@ const pageDefaultProps = {
   isExpanded: false,
   expandedAttempt: false,
   PaginationAction: {},
-  count: {},
-  paginationState: {},
-  expandedOrder: {},
-  modal: {},
+  count: null,
+  paginationState: null,
+  expandedOrder: null,
+  modal: null,
 };
 
 class OrderMonitoringPage extends Component {

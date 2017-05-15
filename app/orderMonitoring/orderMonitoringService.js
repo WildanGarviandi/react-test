@@ -1,4 +1,4 @@
-import lodash from 'lodash';
+import _ from 'lodash';
 import moment from 'moment';
 
 import FetchGet from '../modules/fetch/get';
@@ -90,33 +90,33 @@ const initialStore = {
 export default function Reducer(store = initialStore, action) {
   switch(action.type) {
     case Constants.FETCH_COUNT: {
-      return lodash.assign({}, store, {
+      return Object.assign({}, store, {
         count: action.count
       });
     }
 
     case Constants.EXPAND_ORDER: {
-      return lodash.merge({}, store, {
+      return _.merge({}, store, {
         isExpanded: true,
         expandedOrder: action.order
       });
     }
 
     case Constants.HIDE_ORDER: {
-      return lodash.assign({}, store, {
+      return Object.assign({}, store, {
         isExpanded: false,
         expandedOrder: {}
       });
     }
 
     case Constants.EXPAND_ATTEMPT: {
-      return lodash.assign({}, store, {
+      return Object.assign({}, store, {
         expandedAttempt: true
       });
     }
 
     case Constants.HIDE_ATTEMPT: {
-      return lodash.assign({}, store, {
+      return Object.assign({}, store, {
         expandedAttempt: false
       });
     }
@@ -131,17 +131,17 @@ export default function Reducer(store = initialStore, action) {
       newOrders.total[action.tab] = action.total
       newOrders.orders[action.tab] = action.orders
 
-      return lodash.assign({}, store, newOrders);
+      return Object.assign({}, store, newOrders);
     }
 
     case Constants.TOGGLE_CHECK_ALL: {
       const {orders, selectedAll} = store;
       const {tab} = action;
-      const newOrders = lodash.map(orders[tab], (order) => {
-        return lodash.assign({}, order, {IsChecked: !selectedAll[tab]});
+      const newOrders = _.map(orders[tab], (order) => {
+        return Object.assign({}, order, {IsChecked: !selectedAll[tab]});
       });
 
-      return lodash.merge({}, store, {
+      return _.merge({}, store, {
         selectedAll: {
           [tab]: !selectedAll[tab]
         },
@@ -153,14 +153,14 @@ export default function Reducer(store = initialStore, action) {
 
     case Constants.TOGGLE_SELECT_ORDER: {
       const {orderId, tab} = action
-      const newOrders= lodash.map(store.orders[tab], (order) => {
+      const newOrders= _.map(store.orders[tab], (order) => {
         if (order.UserOrderNumber !== orderId) {
             return order;
         }
-        return lodash.assign({}, order, {IsChecked: !order.IsChecked});
+        return Object.assign({}, order, {IsChecked: !order.IsChecked});
       });
 
-      return lodash.merge({}, store, {
+      return _.merge({}, store, {
         orders: {
           [tab]: newOrders,
         }
@@ -168,13 +168,13 @@ export default function Reducer(store = initialStore, action) {
     }
 
     case Constants.SHOW_ATTEMPT_MODAL: {
-      return lodash.assign({}, store, {
+      return Object.assign({}, store, {
         modal: {addAttempt: true}
       });
     }
 
     case Constants.HIDE_ATTEMPT_MODAL: {
-      return lodash.assign({}, store, {
+      return Object.assign({}, store, {
         modal: {addAttempt: false}
       });
     }
@@ -185,7 +185,7 @@ export default function Reducer(store = initialStore, action) {
       };
       newCurrPage.currentPage[action.tab] = action.currentPage;
 
-      return lodash.merge({}, store, newCurrPage);
+      return _.merge({}, store, newCurrPage);
     }
 
     case Constants.SET_LIMIT: {
@@ -194,7 +194,7 @@ export default function Reducer(store = initialStore, action) {
       };
       newLimit.limit[action.tab] = action.limit;
 
-      return lodash.merge({}, store, newLimit);
+      return _.merge({}, store, newLimit);
     }
 
     case Constants.SET_DROPDOWN_FILTER: {
@@ -225,15 +225,15 @@ export default function Reducer(store = initialStore, action) {
         isNaN(option.key) && delete newFilters[tab].isTrunkeyOrder;
       }
 
-      return lodash.assign({}, store, newValue);
+      return Object.assign({}, store, newValue);
     }
 
     case Constants.SET_FILTER: {
-      return lodash.merge({}, store, action.newFilter);
+      return _.merge({}, store, action.newFilter);
     }
 
     case Constants.SET_DATE: {
-      return lodash.merge({}, store, action.newDate);
+      return _.merge({}, store, action.newDate);
     }
 
     default: {
@@ -247,8 +247,8 @@ export function FetchCount() {
     const {token} = getState().app.userLogged;
     const {startDate, endDate} = getState().app.orderMonitoring;
     const query = {
-      startDate: startDate,
-      endDate: endDate
+      startDate: moment(startDate).startOf('day').toISOString(),
+      endDate: moment(endDate).endOf('day').toISOString()
     }
 
     dispatch({type: modalAction.BACKDROP_SHOW});
@@ -277,10 +277,10 @@ export function FetchList(tab) {
   return (dispatch, getState) => {
     const { token } = getState().app.userLogged;
     const { limit, currentPage, filters, startDate, endDate } = getState().app.orderMonitoring;
-    const query = lodash.assign({}, filters[tab], {
+    const query = Object.assign({}, filters[tab], {
       limit: limit[tab],
-      startDate: startDate,
-      endDate: endDate,
+      startDate: moment(startDate).startOf('day').toISOString(),
+      endDate: moment(endDate).endOf('day').toISOString(),
       offset: (currentPage[tab] - 1) * limit[tab],
       statuses: filters[tab].statuses || defaultStatuses[tab]
     });
