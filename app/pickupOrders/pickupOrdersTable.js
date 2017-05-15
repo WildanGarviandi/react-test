@@ -36,7 +36,7 @@ const conf = {
 
 const pickupOrdersColumns = ["IsChecked", "ID", "WebstoreName", "Weight", "PickupFullAddress", "PickupCity", "PickupZip", "DueTime"];
 
-let cityList = {}; 
+let cityList = {};
 let fleetList: [];
 
 /*
@@ -50,7 +50,7 @@ function getStoreFilterText(keyword, title) {
       value: filters[keyword],
       title: title
     }
-  }    
+  }
 }
 
 /*
@@ -74,7 +74,7 @@ function dispatchFilterText(keyword) {
     }
 
     return {
-      onChange: OnChange, 
+      onChange: OnChange,
       onKeyDown: OnKeyDown,
     }
   }
@@ -95,7 +95,7 @@ function connectFilterText(keyword, title) {
 function getStoreFilterDropdown(name, title) {
   return (store) => {
     let cityOptions = [{
-      key: 0, value: "All", 
+      key: 0, value: "All",
     }];
 
     cityOptions = cityOptions.concat(lodash.chain(cityList)
@@ -304,7 +304,7 @@ function BodyComponent(type, keyword, item, index, onClick) {
             second: 'ss'
           };
           let Duration = moment.duration(moment(item[keyword]).diff(moment(new Date())));
-          if (Duration._milliseconds > config.deadline.day) {            
+          if (Duration._milliseconds > config.deadline.day) {
             return <span style={{color: 'black'}}>
               <span>
                 {Duration.humanize()}
@@ -411,7 +411,7 @@ const Table = React.createClass({
     this.setState({showDriver: true});
   },
   closeModal() {
-    this.props.CloseModal();    
+    this.props.CloseModal();
   },
   render() {
     const {Headers, Body, PaginationActions, isFetching, isFill, isPickup, items, pagination} = this.props;
@@ -427,7 +427,7 @@ const Table = React.createClass({
 
     if (!isFetching) {
       if (items.length === 0) {
-        if (!lodash.isEmpty(this.props.filters)) {          
+        if (!lodash.isEmpty(this.props.filters)) {
           bodyComponents = (
             <tbody className={styles.noOrder}>
               <tr>
@@ -464,7 +464,7 @@ const Table = React.createClass({
             </tbody>
           );
         }
-      } else {        
+      } else {
         bodyComponents = (
           <Body items={items} />
         )

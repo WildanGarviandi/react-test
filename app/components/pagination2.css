@@ -8,8 +8,6 @@
   float: right;
   font-size: 12px;
   margin-top: 3px;
-  width: 20%;
-  margin-right: 20%;
 }
 
 .paginationItem li {
@@ -43,7 +41,6 @@
   margin: 0 auto;
   left: 0;
   right: 0;
-  width: 168px;
   text-align: center;
   line-height: 24px;
 }
@@ -65,10 +62,12 @@
 
 .leftArrow {
   float: left;
+  margin-right: 10px;
 }
 
 .rightArrow {
   float: right;
+  margin-left: 10px;
 }
 
 .paginationTable {
