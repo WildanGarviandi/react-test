@@ -38,8 +38,9 @@ import {Reducer as pickupOrdersReady} from './pickupOrders/pickupOrdersReadyServ
 import nearbyFleets from './nearbyFleets/nearbyFleetService';
 import dashboard from './dashboard/dashboardService';
 import {Reducer as performance} from './performance/performanceService';
+import orderMonitoring from './orderMonitoring/orderMonitoringService';
 
-export default combineReducers({ 
+export default combineReducers({
   userLogged: authReducers,
   containerList: containersReducers.containerList,
   containers: containersReducers.containers,
@@ -76,5 +77,6 @@ export default combineReducers({
   registerData,
   nearbyFleets,
   dashboard,
-  performance
+  performance,
+  orderMonitoring
 });

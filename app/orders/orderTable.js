@@ -26,7 +26,7 @@ function StoreBuilder(keyword) {
     return {
       value: filters[keyword],
     }
-  }    
+  }
 }
 
 function DispatchBuilder(keyword) {
@@ -46,7 +46,7 @@ function DispatchBuilder(keyword) {
     }
 
     return {
-      onChange: OnChange, 
+      onChange: OnChange,
       onKeyDown: OnKeyDown,
     }
   }
@@ -62,15 +62,15 @@ function DispatchDateTime(dispatch) {
 
 function DropdownStoreBuilder(name) {
   return (store) => {
-    
+
     const sortOptions = [{
-      key: 1, value: 'Deadline (newest)', 
+      key: 1, value: 'Deadline (newest)',
     }, {
       key: 2, value: 'Deadline (oldest)',
     }];
 
     const orderTypeOptions = [{
-      key: 'All', value: "All", 
+      key: 'All', value: "All",
     }, {
       key: 0, value: 'Company',
     }, {
@@ -109,13 +109,13 @@ function CheckboxDispatch(dispatch, props) {
     }
   }
 }
- 
+
 function CheckboxHeaderStore(store) {
   return {
     isChecked: store.app.myOrders.selectedAll,
   }
 }
- 
+
 function CheckboxHeaderDispatch(dispatch) {
   return {
     onToggle: () => {
@@ -133,7 +133,7 @@ function DateRangeBuilder(keyword) {
     }
   }
 }
- 
+
 function DateRangeDispatch(keyword) {
   return (dispatch) => {
     return {
@@ -199,11 +199,11 @@ export const Deadline = React.createClass({
       second: 'ss'
     };
     let Duration = moment.duration(moment(this.props.deadline).diff(moment(new Date())));
-    if (!this.props.deadline) {            
+    if (!this.props.deadline) {
       return <span style={{color: 'black'}}>
           -
       </span>
-    } else if (Duration._milliseconds > config.deadline.day) {            
+    } else if (Duration._milliseconds > config.deadline.day) {
       return <span style={{color: 'black'}}>
           {Duration.humanize()} remaining
       </span>
@@ -261,7 +261,7 @@ const OrderRow = React.createClass({
     const ETOBEE_IMAGE = "/img/etobee-logo.png";
     const FLEET_IMAGE = profilePicture;
     return (
-      <tr className={rowStyles} 
+      <tr className={rowStyles}
         onMouseEnter={this.onMouseOver} onMouseLeave={this.onMouseOut}>
         <td><CheckboxRow isChecked={order.IsChecked} orderID={order.UserOrderID} /></td>
         <td onClick={()=>{this.expandOrder(order)}}><div className={styles.cardSeparator} /></td>
