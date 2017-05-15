@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import styles from './styles.css';
-import { ButtonWithLoading, Input, Page } from '../views/base';
+import { Page } from '../views/base';
 import OrderTable, { Filter } from './orderTable';
 import * as orderService from './orderMonitoringService';
 
