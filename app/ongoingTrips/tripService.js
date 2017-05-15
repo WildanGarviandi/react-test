@@ -51,7 +51,7 @@ const initialStore = {
   isSettingDriver: false,
   orders: [],
   selectedDriver: null,
-  isSuccessAssign: false,
+  isSuccessAssign: true,
   errorIDs: [],
   successAssign: 0,
   errorAssign: 0

@@ -193,7 +193,7 @@ const DropdownTypeAhead = React.createClass({
     const inputProps = {
       onFocus: this.openOption,
       value: this.state.opened ? this.state.temp : this.state.txt,
-      className: styles.typeBox,
+      className: this.props.custClass || styles.typeBox,
       onChange: this.handleTextChange,
       onKeyDown: this.handleKeyDown,
       ref: 'textInput',
@@ -243,10 +243,10 @@ const DropdownWithState2 = React.createClass({
     this.props.handleSelect(val);
   },
   render() {
-    const {options} = this.props;
+    const {options, custClass} = this.props;
 
     return (
-      <DropdownTypeAhead options={options} selectVal={this.handleSelect} val={this.props.val} />
+      <DropdownTypeAhead options={options} selectVal={this.handleSelect} val={this.props.val} custClass={custClass} />
     );
   }
 });
