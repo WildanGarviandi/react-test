@@ -1,10 +1,11 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import NumberFormat from 'react-number-format';
 
 import styles from './styles.css';
-import { ButtonWithLoading, Input, Page } from '../views/base';
+import { Page } from '../views/base';
 import OrderTable, {Filter, Deadline} from './orderTable';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
 import DragDropImageUploader from '../components/dragDropImageUploader';
@@ -50,6 +51,14 @@ class OrderMonitoringPage extends Component {
     };
   }
 
+  componentWillMount() {
+    this.props.FetchCount();
+    this.props.FetchAllList();
+    if (!this.props.userLogged.hubID) {
+      window.location.href = config.defaultMainPageTMS;
+    }
+  }
+
   activateSucceed() {
     this.setState({
       showSucceed: true,
@@ -84,14 +93,6 @@ class OrderMonitoringPage extends Component {
     if(showSucceed) {return 'succeed';}
     if(showPending) {return 'pending';}
     if(showFailed) {return 'failed';}
-  }
-
-  componentWillMount() {
-    this.props.FetchCount();
-    this.props.FetchAllList();
-    if (!this.props.userLogged.hubID) {
-      window.location.href = config.defaultMainPageTMS;
-    }
   }
 
   render() {
