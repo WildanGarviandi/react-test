@@ -1,5 +1,6 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import styles from './styles.css';
 import { ButtonWithLoading, Input, Page } from '../views/base';
@@ -7,11 +8,13 @@ import OrderTable, { Filter } from './orderTable';
 import * as orderService from './orderMonitoringService';
 
 const pagePropTypes = {
-  count: PropTypes.object.isRequired,
+  count: PropTypes.any,
+  expandedOrder: PropTypes.bool,
 };
 
 const pageDefaultProps = {
-  count: {},
+  count: null,
+  expandedOrder: false,
 };
 
 class OrderMonitoringPage extends Component {
@@ -22,6 +25,13 @@ class OrderMonitoringPage extends Component {
       showPending: false,
       showFailed: false,
     };
+  }
+
+  componentWillMount() {
+    this.props.FetchCount();
+    if (!this.props.userLogged.hubID) {
+      window.location.href = config.defaultMainPageTMS;
+    }
   }
 
   activateSucceed() {
@@ -46,13 +56,6 @@ class OrderMonitoringPage extends Component {
       showPending: false,
       showFailed: true,
     });
-  }
-
-  componentWillMount() {
-    this.props.FetchCount();
-    if (!this.props.userLogged.hubID) {
-      window.location.href = config.defaultMainPageTMS;
-    }
   }
 
   render() {
@@ -158,6 +161,9 @@ function mapDispatch(dispatch) {
     }
   };
 }
+
+OrderMonitoringPage.propTypes = pagePropTypes;
+OrderMonitoringPage.defaultProps = pageDefaultProps;
 
 export default connect(mapState, mapDispatch)(OrderMonitoringPage);
 

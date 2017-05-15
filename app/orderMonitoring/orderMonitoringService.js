@@ -1,4 +1,4 @@
-import lodash from 'lodash';
+import _ from 'lodash';
 import moment from 'moment';
 
 import FetchGet from '../modules/fetch/get';
@@ -25,21 +25,21 @@ const initialStore = {
 };
 
 export default function Reducer(store = initialStore, action) {
-  switch(action.type) {
+  switch (action.type) {
     case Constants.FETCH_COUNT: {
-      return lodash.assign({}, store, {
+      return _.assign({}, store, {
         count: action.count
       });
     };
 
     case Constants.EXPAND_ORDER: {
-      return lodash.assign({}, store, {
+      return _.assign({}, store, {
         expandedOrder: true
       });
     };
 
     case Constants.HIDE_ORDER: {
-      return lodash.assign({}, store, {
+      return _.assign({}, store, {
         expandedOrder: false
       });
     };
