@@ -13,6 +13,7 @@ import { reasonReturn } from '../config/attempt.json';
 import { statusOptions } from '../config/configValues.json';
 import * as orderService from './orderMonitoringService';
 import config from '../config/configValues.json';
+import envConfig from '../../config.json';
 import {InputWithDefault} from '../views/base/input';
 
 const pagePropTypes = {
@@ -434,11 +435,13 @@ class PanelDetails extends Component {
                     <img src="/img/icon-success.png" />
                     <p>Deliver Confirmation</p>
                   </li>
-                  <li className={!validUpdateCOD && styles.disabled}
-                    onClick={() => this.showUpdateCODModal()}>
-                    <img src="/img/icon-cod-transfered.png" />
-                    <p>COD Confirmation</p>
-                  </li>
+                  { envConfig.features.updateCODVendor &&
+                    <li className={!validUpdateCOD && styles.disabled}
+                      onClick={() => this.showUpdateCODModal()}>
+                      <img src="/img/icon-cod-transfered.png" />
+                      <p>COD Confirmation</p>
+                    </li>
+                  }
                   <li
                     className={
                       this.reportAttemptDisabled(expandedOrder.UserOrderAttempts.length, expandedOrder.OrderStatus)

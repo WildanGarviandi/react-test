@@ -15,6 +15,7 @@ import {CheckboxHeaderPlain as CheckboxHeaderBase, CheckboxCell } from '../views
 import styles from './table.css';
 import mainStyles from './styles.css';
 import config from '../config/configValues.json';
+import envConfig from '../../config.json';
 
 const rowPropTypes = {
   expandedOrder: PropTypes.any,
@@ -450,9 +451,11 @@ export class Filter extends Component {
                   <li onClick={() => this.showDelivery()}>
                     Mark Delivered
                   </li>
-                  <li onClick={() => this.showUpdateCOD()}>
-                    Update COD
-                  </li>
+                  { envConfig.features.updateCODVendor &&
+                    <li onClick={() => this.showUpdateCOD()}>
+                      Update COD
+                    </li>
+                  }
                 </ul>
               }
           </div>
