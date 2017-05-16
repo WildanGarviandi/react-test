@@ -390,6 +390,7 @@ export class Filter extends Component {
   }
 
   showDelivery() {
+    this.props.hideOrder();
     let checkedInvalidStatus = false;
     let validStatus = config.deliverableOrderStatus;
     this.props.checkedOrders.some(function(order) {
@@ -405,6 +406,7 @@ export class Filter extends Component {
   }
 
   showUpdateCOD() {
+    this.props.hideOrder();
     let checkedInvalidStatus = false;
     let validStatus = config.updatableCOD;
     this.props.checkedOrders.some(function(order) {

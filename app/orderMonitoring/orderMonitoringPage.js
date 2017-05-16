@@ -219,6 +219,7 @@ class OrderMonitoringPage extends Component {
                 showUpdateCOD={ShowUpdateCODModal}
                 orders={orders}
                 checkedOrders={checkedOrders}
+                hideOrder={HideOrder}
               />
             </div>
             <OrderTable tab={this.getActiveTab()} />
