@@ -92,6 +92,16 @@ class OrderRow extends Component {
         <td onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
         <td onClick={() => getDetail(order.UserOrderID)}>
           <div className={styles.cardLabel}>
+            COD Type
+          </div>
+          <br />
+          <div className={styles.cardValue}>
+            {order.IsCOD ? 'COD' : 'Non-COD'}
+          </div>
+        </td>
+        <td onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td onClick={() => getDetail(order.UserOrderID)}>
+          <div className={styles.cardLabel}>
             Fleet's Area
           </div>
           <br />
@@ -121,7 +131,7 @@ function DropdownDispatchBuilder(keyword, tab) {
 
 function DropdownStoreBuilder(name) {
   return (store, props) => {
-    const { sortOptions, orderTypeOptions, statusOptions } = config;
+    const { sortOptions, orderTypeOptions, statusOptions, codOptions } = config;
     statusOptions.total = _.union(
       statusOptions.pending,
       statusOptions.succeed,
@@ -130,7 +140,8 @@ function DropdownStoreBuilder(name) {
     const options = {
       statusOptions: statusOptions[props.tab],
       sortOptions,
-      orderTypeOptions
+      orderTypeOptions,
+      codOptions,
     };
 
     return {
@@ -145,6 +156,7 @@ function ConnectDropdownBuilder(keyword) {
 }
 
 const StatusFilter = ConnectDropdownBuilder('statusOptions')(FilterDropdown);
+const CODFilter = ConnectDropdownBuilder('codOptions')(FilterDropdown);
 
 const SortFilter = ConnectDropdownBuilder('sortOptions')(FilterTop);
 const OrderTypeFilter = ConnectDropdownBuilder('orderTypeOptions')(FilterTop);
@@ -375,6 +387,7 @@ export class Filter extends Component {
           <EDSFilter tab={tab} />
           <NameFilter tab={tab} />
           <StatusFilter tab={tab} />
+          <CODFilter tab={tab} />
           <FleetFilter tab={tab} />
         </div>
       </div>

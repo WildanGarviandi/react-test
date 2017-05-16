@@ -68,6 +68,11 @@ const initialStore = {
     pending: "Search for order status...",
     failed: "Search for order status...",
   },
+  codOptions: {
+    succeed: "Search for COD status...",
+    pending: "Search for COD status...",
+    failed: "Search for COD status...",
+  },
   currentPage: {
     succeed: 1,
     pending: 1,
@@ -237,6 +242,8 @@ export default function Reducer(store = initialStore, action) {
       } else if (keyword === "statusOptions") {
         newFilters[tab].statuses = `[${option.key}]`;
         (option.key < 0) && delete newFilters[tab].statuses;
+      } else if (keyword === "codOptions") {
+        newFilters[tab].isCOD = option.key;
       } else {
         newFilters[tab].isTrunkeyOrder = option.key;
         isNaN(option.key) && delete newFilters[tab].isTrunkeyOrder;
@@ -307,7 +314,7 @@ export function FetchList(tab) {
       offset: (currentPage[tab] - 1) * limit[tab],
       statuses: filters[tab].statuses || defaultStatuses[tab]
     });
-
+    
     dispatch(SetSearchResult(tab, null));
     dispatch({type: modalAction.BACKDROP_SHOW});
     FetchGet('/order/delivery', token, query).then((response) => {

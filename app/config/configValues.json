@@ -68,5 +68,12 @@
         { "key": 15, "value": "RETURNED_WAREHOUSE" },
         { "key": 16, "value": "RETURNED_SENDER" }
       ]
-    }
+    },
+    "codOptions": [{
+      "key": "", "value": "All"
+    }, {
+      "key": "true", "value": "COD"
+    }, {
+      "key": "false", "value": "Non-COD"
+    }]
 }
