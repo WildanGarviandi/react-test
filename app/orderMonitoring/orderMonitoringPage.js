@@ -204,7 +204,7 @@ class OrderMonitoringPage extends Component {
         {
           showDelivery &&
           <ModalDelivery DeliverOrder={DeliverOrder} 
-            checkedOrders={checkedOrders.length > 0 ? checkedOrders : [expandedOrder]}
+            checkedOrders={isExpanded ? [expandedOrder] : checkedOrders}
             HideDeliveryModal={HideDeliveryModal} 
           />
         }
@@ -709,7 +709,7 @@ class ModalDelivery extends Component {
                 {
                   !this.state.orderActive && 
                   <div className={styles.notesDelivery}>
-                    Please choose the order
+                    Please choose the order on the left
                   </div>
                 }
                 { this.state.orderActive && 
