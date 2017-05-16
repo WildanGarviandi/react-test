@@ -15,6 +15,7 @@ import { CheckboxHeaderPlain, CheckboxCell } from '../views/base/tableCell';
 import styles from './table.css';
 import mainStyles from './styles.css';
 import config from '../config/configValues.json';
+import envConfig from '../../config.json';
 
 const rowPropTypes = {
   expandedOrder: PropTypes.any,
@@ -403,6 +404,24 @@ export class Filter extends Component {
     this.props.showDelivery();
   }
 
+  showUpdateCOD() {
+    let checkedInvalidStatus = false;
+    let validStatus = config.updatableCOD;
+    this.props.checkedOrders.some(function(order) {
+      if (!_.includes(validStatus, order.OrderStatus.OrderStatusID)) {
+          checkedInvalidStatus = true;
+      }
+      if (!order.IsCOD) {
+        checkedInvalidStatus = true;
+      }
+    });
+    if (checkedInvalidStatus) {
+      alert('You have checked one or more order with invalid status or non-COD');
+      return;
+    }
+    this.props.showUpdateCOD();
+  }
+
   render() {
     const { PaginationAction, paginationState } = this.props.pagination;
     const { tab, orders } = this.props;
@@ -432,9 +451,11 @@ export class Filter extends Component {
                   <li onClick={() => this.showDelivery()}>
                     Mark Delivered
                   </li>
-                  <li>
-                    Update COD
-                  </li>
+                  { envConfig.features.updateCODVendor &&
+                    <li onClick={() => this.showUpdateCOD()}>
+                      Update COD
+                    </li>
+                  }
                 </ul>
               }
           </div>

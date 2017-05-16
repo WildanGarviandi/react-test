@@ -773,3 +773,18 @@ img.proof {
   height: 50px;
   cursor: pointer;
 }
+
+.listOrderUpdateCOD {
+  float: left;
+  width: 300px;
+  background-color: #e8e8e8;
+  height: 300px;
+  padding: 10px;
+  position: relative;
+}
+
+.detailsOrderUpdateCOD {
+  float: left;
+  width: 270px;
+  padding: 10px;
+}

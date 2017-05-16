@@ -70,5 +70,6 @@
         { "key": 16, "value": "RETURNED_SENDER" }
       ]
     },
-    "deliverableOrderStatus": [2, 3, 4]
+    "deliverableOrderStatus": [2, 3, 4],
+    "updatableCOD": [4, 5]
 }
