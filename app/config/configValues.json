@@ -69,5 +69,6 @@
         { "key": 15, "value": "RETURNED_WAREHOUSE" },
         { "key": 16, "value": "RETURNED_SENDER" }
       ]
-    }
+    },
+    "deliverableOrderStatus": [2, 3, 4]
 }

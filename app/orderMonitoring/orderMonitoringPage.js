@@ -12,6 +12,8 @@ import DragDropImageUploader from '../components/dragDropImageUploader';
 import { reasonReturn } from '../config/attempt.json';
 import { statusOptions } from '../config/configValues.json';
 import * as orderService from './orderMonitoringService';
+import config from '../config/configValues.json';
+import {InputWithDefault} from '../views/base/input';
 
 const pagePropTypes = {
   ExpandAttempt: PropTypes.func.isRequired,
@@ -25,6 +27,14 @@ const pagePropTypes = {
   paginationState: PropTypes.any.isRequired,
   expandedOrder: PropTypes.any.isRequired,
   modal: PropTypes.any.isRequired,
+  orders: PropTypes.any.isRequired,
+  showDelivery: PropTypes.bool.isRequired,
+  ShowDeliveryModal: PropTypes.func.isRequired,
+  HideDeliveryModal: PropTypes.func.isRequired,
+  DeliverOrder: PropTypes.func.isRequired,
+  isSuccessDelivered: PropTypes.bool.isRequired,
+  HideSuccessDelivery: PropTypes.func.isRequired,
+  deliveryReport: PropTypes.object.isRequired
 };
 
 const pageDefaultProps = {
@@ -39,6 +49,14 @@ const pageDefaultProps = {
   paginationState: null,
   expandedOrder: null,
   modal: null,
+  orders: null,
+  showDelivery: null,
+  ShowDeliveryModal: null,
+  HideDeliveryModal: null,
+  DeliverOrder: null,
+  isSuccessDelivered: null,
+  HideSuccessDelivery: null,
+  deliveryReport: null
 };
 
 class OrderMonitoringPage extends Component {
@@ -108,7 +126,17 @@ class OrderMonitoringPage extends Component {
             paginationState,
             expandedOrder,
             modal,
+            orders,
+            showDelivery,
+            ShowDeliveryModal,
+            HideDeliveryModal,
+            DeliverOrder,
+            isSuccessDelivered,
+            HideSuccessDelivery,
+            deliveryReport,
           } = this.props;
+
+    const checkedOrders = _.filter(orders[this.getActiveTab()], {IsChecked: true});
 
     return (
       <Page title="Order Monitoring">
@@ -120,6 +148,7 @@ class OrderMonitoringPage extends Component {
             expandedAttempt={expandedAttempt}
             expandAttempt={ExpandAttempt}
             showAddAttemptModal={ShowAttemptModal}
+            showDeliveryModal={ShowDeliveryModal}
           />
         }
         { expandedAttempt &&
@@ -160,11 +189,30 @@ class OrderMonitoringPage extends Component {
         <div className={styles.contentOuterContainer}>
           <div className={styles.contentContainer}>
             <div className={styles.mainTable}>
-              <Filter pagination={{PaginationAction, paginationState}} tab={this.getActiveTab()} />
+              <Filter 
+                pagination={{PaginationAction, paginationState}} 
+                tab={this.getActiveTab()}
+                showDelivery={ShowDeliveryModal}
+                orders={orders}
+                checkedOrders={checkedOrders}
+              />
             </div>
             <OrderTable tab={this.getActiveTab()} />
           </div>
         </div>
+
+        {
+          showDelivery &&
+          <ModalDelivery DeliverOrder={DeliverOrder} 
+            checkedOrders={checkedOrders.length > 0 ? checkedOrders : [expandedOrder]}
+            HideDeliveryModal={HideDeliveryModal} 
+          />
+        }
+
+        {
+          isSuccessDelivered &&
+          <ModalDeliveryReport HideSuccessDelivery={HideSuccessDelivery} deliveryReport={deliveryReport} />
+        }
       </Page>
     );
   }
@@ -181,6 +229,10 @@ function mapState(store, tab) {
     expandedAttempt, 
     count, 
     modal,
+    orders,
+    showDelivery,
+    isSuccessDelivered,
+    deliveryReport,
   } = store.app.orderMonitoring;
 
   return {
@@ -193,6 +245,10 @@ function mapState(store, tab) {
     expandedAttempt,
     count,
     modal,
+    orders,
+    showDelivery,
+    isSuccessDelivered,
+    deliveryReport,
   }
 }
 
@@ -232,6 +288,18 @@ function mapDispatch(dispatch) {
     },
     PostAttempt: (reasonID, proof) => {
       dispatch(orderService.PostAttempt(reasonID, proof));
+    },    
+    ShowDeliveryModal: () => {
+      dispatch(orderService.ShowDeliveryModal());
+    },
+    HideDeliveryModal: () => {
+      dispatch(orderService.HideDeliveryModal());
+    },
+    DeliverOrder: (data) => {
+      dispatch(orderService.DeliverOrder(data));
+    },
+    HideSuccessDelivery: () => {
+      dispatch(orderService.HideSuccessDelivery());
     }
   }
 }
@@ -239,7 +307,7 @@ function mapDispatch(dispatch) {
 OrderMonitoringPage.propTypes = pagePropTypes;
 OrderMonitoringPage.defaultProps = pageDefaultProps;
 
-export default connect(mapState, mapDispatch)(OrderMonitoringPage)
+export default connect(mapState, mapDispatch)(OrderMonitoringPage);
 
 const panelPropTypes = {
   expandAttempt: PropTypes.func.isRequired,
@@ -266,6 +334,11 @@ class PanelDetails extends Component {
   showAddAttemptModal() {
     this.setState({ showMenu: false });
     this.props.showAddAttemptModal();
+  }
+
+  showDeliveryModal() {
+    this.setState({showMenu: false});
+    this.props.showDeliveryModal();
   }
 
   toggleMenu() {
@@ -295,7 +368,8 @@ class PanelDetails extends Component {
               <img src="/img/icon-menu.png" className={styles.iconMenu} onClick={() => this.toggleMenu()}/>
               { this.state.showMenu &&
                 <ul className={styles.menuContainer}>
-                  <li>
+                <li className={(!_.includes(config.deliverableOrderStatus, expandedOrder.OrderStatus.OrderStatusID)) && styles.disabled}
+                    onClick={() => this.showDeliveryModal()}>
                     <img src="/img/icon-success.png" />
                     <p>Deliver Confirmation</p>
                   </li>
@@ -524,4 +598,239 @@ function AttemptDetails({hideAttempt, expandedOrder}) {
         </div>
       </div>
   );
+}
+
+class InputForm extends Component {
+  render() {
+    const {value, label, onChange, type} = this.props;
+    return (
+      <div className={styles.rowDetailsMain}>
+        <div className={styles.rowDetailsLabel}>
+          {label}
+        </div>
+        <div className={styles.rowDetailsValue}>
+          <span>
+            <InputWithDefault type={type || 'text'} className={styles.inputDetails} currentText={value} onChange={onChange} />
+          </span>
+        </div>
+      </div>
+      )
+  }
+}
+
+class ModalDelivery extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      orders: [],
+      orderActive: null
+    };
+  }
+  stateChange(key, i) {
+    return (value) => {
+      let v = {[key]: value, ['UserOrderID']: this.state.orderActive}
+      let ordersSelected = this.state.orders;
+      ordersSelected[i] = _.merge({}, ordersSelected[i], v);
+      this.setState({['orders']: ordersSelected});
+    };
+  }
+  confirmDelivery() {
+    let incompleteData = false;
+    if (this.state.orders.length !== this.props.checkedOrders.length) {
+      incompleteData = true;
+    }
+    this.state.orders.forEach(function(order){
+      if (!order.RecipientName || !order.RecipientRelation || !order.RecipientPhone) {
+        incompleteData = true;
+      }
+    })
+    if (incompleteData) {
+      alert('Please complete all data');
+      return;
+    }
+    delete this.state.orderActive;
+    this.props.DeliverOrder(this.state);
+  }
+  setOrderActive(orderID) {
+    this.setState({['orderActive']: orderID});
+  }
+  setPicture(url, i) {
+    let v = {['RecipientPicture']: url}
+    let ordersSelected = this.state.orders;
+    ordersSelected[i] = _.merge({}, ordersSelected[i], v);
+    this.setState({['orders']: ordersSelected});
+  }
+  closeModal() {
+    this.props.HideDeliveryModal();
+  }
+  render() {
+    return (
+      <div>
+        <ModalContainer>
+          <ModalDialog>
+            <div className={styles.modalMain}>
+              <div className={styles.modalTitle}>
+                Delivery Confirmation
+              </div>
+              <div onClick={() => this.closeModal()} className={styles.modalClose}>
+                X
+              </div> 
+              <div className={styles.divider} />
+              <div className={styles.listOrderDelivery}>
+                <div>
+                  {
+                    this.props.checkedOrders.map((object, i) => {
+                      if (this.state.orders[i]) {
+                        this.state.orders[i]['completed'] = false;
+                      }
+                      if (this.state.orders[i] && this.state.orders[i].RecipientName &&
+                        this.state.orders[i].RecipientPhone && this.state.orders[i].RecipientRelation) {
+                        this.state.orders[i]['completed'] = true;
+                      }
+                      const orderClass = (this.state.orderActive === object.UserOrderID) ?
+                        styles.orderDeliverySelected : styles.orderDelivery;
+                      return (
+                        <div className={orderClass} onClick={() => this.setOrderActive(object.UserOrderID)} key={i}>
+                          <img className={styles.imageOrderDelivery} src="/img/etobee-logo.png" />
+                          <div className={styles.orderNumberDelivery}>
+                            {object.UserOrderNumber} 
+                            { 
+                              (this.state.orders[i] && this.state.orders[i].completed) &&
+                              <img src="/img/icon-ready.png" className={styles.iconCompleted} />
+                            }
+                          </div>
+                        </div>
+                      );
+                    })
+                  }
+                </div>
+              </div>
+              <div className={styles.detailsOrderDelivery}>
+                {
+                  !this.state.orderActive && 
+                  <div className={styles.notesDelivery}>
+                    Please choose the order
+                  </div>
+                }
+                { this.state.orderActive && 
+                  <div>
+                    <div className={styles.notesDelivery}>
+                      Please fill in the receiver details here
+                    </div>
+                    <div>
+                      {
+                        this.props.checkedOrders.map((object, i) => {
+                          return (
+                            <div key={i}>
+                              { this.state.orderActive === object.UserOrderID &&
+                                <div>
+                                  <div className={styles.orderTitle}>
+                                    Order: {object.UserOrderNumber}
+                                  </div>
+                                  <InputForm 
+                                    onChange={this.stateChange('RecipientName', i).bind()} 
+                                    label={'Name'} 
+                                    value={this.state.orders[i] && this.state.orders[i].RecipientName} />
+                                  <InputForm 
+                                    onChange={this.stateChange('RecipientRelation', i).bind()} 
+                                    label={'Relation'} 
+                                    value={this.state.orders[i] && this.state.orders[i].RecipientRelation} />
+                                  <InputForm 
+                                    onChange={this.stateChange('RecipientPhone', i).bind()} 
+                                    label={'Phone Number'} 
+                                    value={this.state.orders[i] && this.state.orders[i].RecipientPhone}/>    
+                                  <div className={styles.imageNotesDelivery}>
+                                    <DragDropImageUploader
+                                      updateImageUrl={(data) => this.setPicture(data, i)}
+                                      currentImageUrl={this.state.orders[i] && this.state.orders[i].RecipientPicture}
+                                    />
+                                  </div>
+                                </div>
+                              }
+                            </div>
+                          );
+                        })
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+              <div>
+                <div>
+                  <button onClick={() => this.confirmDelivery()} className={styles.confirmButton}>Confirm</button>
+                </div>
+              </div>
+            </div> 
+          </ModalDialog>
+        </ModalContainer>
+      </div>
+    )
+  }
+}
+
+class ModalDeliveryReport extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+  closeModal() {
+    this.props.HideSuccessDelivery();
+  }
+  render() {
+    const {deliveryReport} = this.props;
+    return (
+      <div>
+        <ModalContainer>
+          <ModalDialog>
+            {
+              deliveryReport.errorIDs.length > 0 &&
+              <div className={styles.modal}>
+                <div className={styles.modalHeader}>
+                  <h2 className={styles.modalTitle}>Delivery Report</h2>
+                  <div>
+                    <div>
+                      Success: {deliveryReport.successReport}
+                    </div>
+                    <div>
+                      Error: {deliveryReport.errorReport}
+                    </div>
+                    {
+                      deliveryReport.errorIDs.map(function(error, idx) {
+                        return (
+                          <div key={idx}>
+                            {error.UserOrderID} : {error.error}
+                          </div>
+                        );
+                      }.bind(this))
+                    }
+                  </div>
+                </div>
+                <div className={styles.modalFooter}>
+                  <button className={styles.endButton} onClick={() => this.closeModal()}>
+                    <span className={styles.mediumText}>Got It</span>
+                  </button>
+                </div>
+              </div>
+            }
+            { deliveryReport.errorIDs.length === 0 &&
+              <div className={styles.modal}>
+                <div className={styles.modalHeader}>
+                  <h2 className={styles.modalTitle}>Success</h2>
+                  <div>
+                    <img className={styles.successIcon} src={"/img/icon-success.png"} />
+                    <div className={styles.mediumText}>You have successfully set delivered</div>
+                  </div>
+                </div>
+                <div className={styles.modalFooter}>
+                  <button className={styles.endButton} onClick={() => this.closeModal()}>
+                    <span className={styles.mediumText}>Got It</span>
+                  </button>
+                </div>
+              </div>
+            }
+          </ModalDialog>
+        </ModalContainer>
+      </div>
+    )
+  }
 }
