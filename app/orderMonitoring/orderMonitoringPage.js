@@ -798,7 +798,7 @@ class ModalDeliveryReport extends Component {
                       deliveryReport.errorIDs.map(function(error, idx) {
                         return (
                           <div key={idx}>
-                            {error.UserOrderID} : {error.error}
+                            Order {error.order.UserOrderID} : {error.error}
                           </div>
                         );
                       }.bind(this))
