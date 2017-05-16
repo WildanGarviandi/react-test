@@ -56,7 +56,7 @@ npm run server
 ## Style Guide
 
 - React
-Use [AirBnB React style guide](https://github.com/airbnb/javascript/tree/master/react#alignment)
+Use [AirBnB React Style Guide](https://github.com/airbnb/javascript/tree/master/react#alignment)
 
 - Redux
 Use [Ducks Redux Reducer Bundles](https://github.com/erikras/ducks-modular-redux)
@@ -82,3 +82,6 @@ have a meta property.
 MUST NOT
 include properties other than type, payload, error, and meta
 ```
+
+- CSS Format
+Use [AirBnb CSS/SASS Style Guide](https://github.com/airbnb/css)
