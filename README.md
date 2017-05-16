@@ -55,4 +55,33 @@ npm run server
 
 ## Style Guide
 
-Use [AirBnB React style guide](https://github.com/airbnb/javascript/tree/master/react#alignment)
+- React
+Use [AirBnB React Style Guide](https://github.com/airbnb/javascript/tree/master/react#alignment)
+
+- Redux
+Use [Ducks Redux Reducer Bundles](https://github.com/erikras/ducks-modular-redux)
+```
+MUST export default a function called reducer()
+MUST export its action creators as functions
+MUST have action types in the form npm-module-or-app/reducer/ACTION_TYPE
+MAY export its action types as UPPER_SNAKE_CASE, if an external reducer needs to listen for them, or if it is a published reusable library
+```
+
+- Action Format
+Use [Flux Standard Action](https://github.com/acdlite/flux-standard-action)
+```
+MUST
+be a plain JavaScript object.
+have a type property.
+
+MAY
+have an error property.
+have a payload property.
+have a meta property.
+
+MUST NOT
+include properties other than type, payload, error, and meta
+```
+
+- CSS Format
+Use [AirBnb CSS/SASS Style Guide](https://github.com/airbnb/css)
