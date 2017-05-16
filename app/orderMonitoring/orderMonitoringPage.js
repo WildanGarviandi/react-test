@@ -655,7 +655,7 @@ class ModalDelivery extends Component {
     this.setState({['orderActive']: orderID});
   }
   setPicture(url, i) {
-    let v = {['RecipientPicture']: url}
+    let v = {['RecipientPhoto']: url}
     let ordersSelected = this.state.orders;
     ordersSelected[i] = _.merge({}, ordersSelected[i], v);
     this.setState({['orders']: ordersSelected});
@@ -742,7 +742,7 @@ class ModalDelivery extends Component {
                                   <div className={styles.imageNotesDelivery}>
                                     <DragDropImageUploader
                                       updateImageUrl={(data) => this.setPicture(data, i)}
-                                      currentImageUrl={this.state.orders[i] && this.state.orders[i].RecipientPicture}
+                                      currentImageUrl={this.state.orders[i] && this.state.orders[i].RecipientPhoto}
                                     />
                                   </div>
                                 </div>
