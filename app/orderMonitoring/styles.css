@@ -468,6 +468,7 @@ img.proof {
   float: left;
   position: relative;
   margin-left: 10px;
+  width: 5%;
 }
 
 .actionContainer {
