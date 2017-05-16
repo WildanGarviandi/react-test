@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Dropzone from 'react-dropzone';
 
+import ImagePreview from '../views/base/imagePreview';
 import FetchPost from '../modules/fetch/post';
 import styles from './dragDropImageUploader.css';
 
@@ -9,11 +10,11 @@ class DragDropImageUploader extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isUploading: false,
+      isUploading: false
     };
   }
 
-  uploadImage(acc) {
+  uploadImage(acc, reject) {
     if (acc) {
       var formData = new FormData();
       formData.append('file', acc[0]);
@@ -38,7 +39,7 @@ class DragDropImageUploader extends Component {
         accept="image/jpeg, image/png"
         onDrop={(acc, reject) => this.uploadImage(acc, reject)}
       >
-        {({ isDragReject }) => {
+        {({ isDragActive, isDragReject }) => {
           if (isDragReject) {
             return "Some files will be rejected";
           }

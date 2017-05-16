@@ -24,6 +24,10 @@ const Constants = {
   SET_DROPDOWN_FILTER: 'SET_DROPDOWN_FILTER',
   SET_FILTER: 'SET_FILTER',
   SET_DATE: 'SET_DATE',
+  SHOW_DELIVERY: 'SHOW_DELIVERY',
+  HIDE_DELIVERY: 'HIDE_DELIVERY',
+  SHOW_SUCCESS_DELIVERED: 'SHOW_SUCCESS_DELIVERED',
+  HIDE_SUCCESS_DELIVERED: 'HIDE_SUCCESS_DELIVERED',
 }
 
 const initialStore = {
@@ -84,6 +88,13 @@ const initialStore = {
     pending: false,
     succeed: false,
     failed: false,
+  },
+  showDelivery: false,
+  isSuccessDelivered: false,
+  deliveryReport: {
+    errorIDs: [],
+    successReport: 0,
+    errorReport: 0    
   },
 }
 
@@ -170,6 +181,103 @@ export default function Reducer(store = initialStore, action) {
     case Constants.SHOW_ATTEMPT_MODAL: {
       return Object.assign({}, store, {
         modal: {addAttempt: true}
+      });
+    }
+
+    case Constants.HIDE_ATTEMPT_MODAL: {
+      return Object.assign({}, store, {
+        modal: {addAttempt: false}
+      });
+    }
+
+    case Constants.SET_CURRENT_PAGE: {
+      const newCurrPage = {
+        currentPage: {}
+      };
+      newCurrPage.currentPage[action.tab] = action.currentPage;
+
+      return _.merge({}, store, newCurrPage);
+    }
+
+    case Constants.SET_LIMIT: {
+      const newLimit = {
+        limit: {}
+      };
+      newLimit.limit[action.tab] = action.limit;
+
+      return _.merge({}, store, newLimit);
+    }
+
+    case Constants.SET_DROPDOWN_FILTER: {
+      const {keyword, tab, option} = action;
+      let newValue = {
+        [keyword]: Object.assign({}, store[keyword]),
+        filters: store.filters
+      };
+      let newFilters = newValue.filters;
+      newValue[keyword][tab] = option.value;
+
+      if (keyword === "sortOptions") {
+        const sortOptions = [{
+            sortBy: "Driver.FirstName", sortCriteria: 'ASC'
+          }, {
+            sortBy: "Driver.FirstName", sortCriteria: 'DESC'
+          }, {
+            sortBy: "DropoffAddress.City", sortCriteria: 'ASC'
+          }, {
+            sortBy: "DropoffAddress.City", sortCriteria: 'DESC'
+          }];
+        newFilters[tab] = sortOptions[option.key];
+      } else if (keyword === "statusOptions") {
+        newFilters[tab].statuses = `[${option.key}]`;
+        (option.key < 0) && delete newFilters[tab].statuses;
+      } else {
+        newFilters[tab].isTrunkeyOrder = option.key;
+        isNaN(option.key) && delete newFilters[tab].isTrunkeyOrder;
+      }
+
+      return Object.assign({}, store, newValue);
+    }
+
+    case Constants.SET_FILTER: {
+      return _.merge({}, store, action.newFilter);
+    }
+
+    case Constants.SET_DATE: {
+      return _.merge({}, store, action.newDate);
+    }
+
+    case Constants.SHOW_DELIVERY: {
+      return Object.assign({}, store, {
+        showDelivery: true
+      });
+    }
+
+    case Constants.HIDE_DELIVERY: {
+      return Object.assign({}, store, {
+        showDelivery: false
+      });
+    }
+
+    case Constants.SHOW_SUCCESS_DELIVERED: {
+      return Object.assign({}, store, {
+        isSuccessDelivered: true,
+        deliveryReport: {
+          errorIDs: action.errorIDs,
+          successReport: action.successReport,
+          errorReport: action.errorReport
+        }
+      });
+    }
+
+    case Constants.HIDE_SUCCESS_DELIVERED: {
+      return Object.assign({}, store, {
+        isSuccessDelivered: false,
+        deliveryReport: {
+          errorIDs: [],
+          successReport: 0,
+          errorReport: 0
+        }
       });
     }
 
@@ -441,5 +549,49 @@ export function FetchDetails(orderID) {
       dispatch(ModalActions.addMessage(e.message));
     });
   }
+}
 
+export function ShowDeliveryModal () {
+  return { type: Constants.SHOW_DELIVERY };
+}
+
+export function HideDeliveryModal () {
+  return { type: Constants.HIDE_DELIVERY };
+}
+
+export function DeliverOrder(query) {
+  return (dispatch, getState) => {
+    const { token } = getState().app.userLogged;
+    const { limit, currentPage, filters } = getState().app.orderMonitoring;
+
+    dispatch({type: modalAction.BACKDROP_SHOW});
+    FetchPost('/order/delivered', token, query).then((response) => {
+      if (!response.ok) {
+        return response.json().then(({error}) => {
+          throw error;
+        })
+      }
+
+      return response.json().then(({data}) => {
+        dispatch({ 
+          type: Constants.SHOW_SUCCESS_DELIVERED,
+          errorIDs: ((data.failed.length > 0) && data.failed) || [],  
+          successReport: data.success,
+          errorReport: data.error
+        });
+        dispatch(FetchCount());
+        dispatch(FetchAllList());
+        dispatch(HideDeliveryModal());
+        dispatch({type: modalAction.BACKDROP_HIDE});
+      });
+    }).catch((e) => {
+      const message = (e && e.message) || "Failed to set delivered";
+      dispatch(ModalActions.addMessage(message));
+      dispatch({type: modalAction.BACKDROP_HIDE});
+    });
+  }
+}
+
+export function HideSuccessDelivery () {
+  return { type: Constants.HIDE_SUCCESS_DELIVERED };
 }

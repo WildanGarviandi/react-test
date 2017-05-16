@@ -463,3 +463,312 @@ img.proof {
   margin-top: 15px;
   border-radius: 5px;
 }
+
+.menuActionContainer {
+  float: left;
+  position: relative;
+  margin-left: 10px;
+}
+
+.actionContainer {
+  position: absolute;
+  z-index: 1;
+  right: 0;
+  min-width: 151px;
+  background-color: #fff;
+  color: #38b393;
+  border: 1px solid #38b393;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: -1px 2px 3px 0px rgba(50, 50, 50, 0.08);
+  font-weight: bold;
+  text-align: center;
+}
+
+.actionContainer li {
+  display: block;
+  float: left;
+  padding: 10px;
+  min-width: 131px;
+  border: 4px solid #38b393;
+}
+
+.actionContainer li:hover {
+  background: #38b393;
+  color: #fff;
+  cursor: pointer;
+}
+
+.actionContainer li p {
+  margin: 4px 0 0 6px;
+  float: left;
+}
+
+.actionContainer li img {
+  width: 24px;
+  float: left;
+}
+
+.buttonAction {
+  border-radius: 3px;
+  background-color: #38b393;
+  border: 0;
+  color: #fff;
+  width: 161px;
+  height: 44px;
+  margin-top: 12px;
+  cursor: pointer;
+}
+
+.buttonAction:disabled {
+  opacity: 0.5;
+}
+
+.spanAction {
+  float: left;
+  width: 80px;
+  text-align: right;
+  margin-top: 5px;
+  margin-right: 5px;
+  font-weight: bold;
+}
+
+.iconAction {
+  float: left;
+}
+
+.modalTitle {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.modalClose {
+  font-size: 26px;
+  float: right;
+  top: 10px;
+  position: absolute;
+  right: 20px;
+  cursor: pointer;
+}
+
+.modalMain {
+  width: 616px;
+}
+
+.divider {
+  width: 416px;
+  height: 1px;
+  background-color: #e8e8e8;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.notesDelivery {  
+  font-family: Helvetica;
+  font-size: 12px;
+  line-height: 3.33;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.rowDetailsMain {
+  border-radius: 4px;
+  background-color: #ffffff;
+  border: solid 1px #e8e8e8; 
+  padding-left: 10px; 
+  padding-top: 10px; 
+}
+
+.rowDetailsLabel {
+  opacity: 0.5;
+  margin-bottom: 5px;
+}
+
+.rowDetailsValue {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.inputDetails {  
+  width: 95%;
+  height: 25px;
+  border: solid 0px #e8e8e8;  
+}
+
+.imageNotesDelivery {  
+  opacity: 0.5;
+  font-family: Helvetica;
+  font-size: 10px;
+  line-height: 4.8;
+  color: #000000;
+}
+
+.dropImage {
+  width: 396px;
+  height: 240px;
+  border-radius: 4px;
+  background-color: #ffffff;
+  border: solid 1px #e8e8e8;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.imageNotesDrop {  
+  opacity: 0.5;
+  font-size: 12px;
+  line-height: 1.25;
+  letter-spacing: -0.3px;
+  text-align: center;
+  color: #000000;
+}
+
+.cancelButton {
+  width: 188px;
+  height: 44px;
+  border-radius: 4px;
+  background-color: #ff5a60;
+  color: #ffffff;
+  border: 0;
+  float: left;
+  margin-left: 5px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.confirmButton {
+  width: 578px;
+  height: 44px;
+  border-radius: 4px;
+  background-color: #38b393;
+  color: #ffffff;
+  border: 0;
+  float: left;
+  margin-left: 20px;
+  margin-top: 30px;
+  cursor: pointer;
+}
+
+.confirmButton:disabled {
+  opacity: 0.5;
+}
+
+.labelCOD {
+  font-family: Helvetica;
+  font-size: 14px;
+  line-height: 1.71;
+  color: #000000;
+}
+
+.checkCOD {
+  margin-top: 20px;
+  margin-right: 20px;
+}
+
+.listOrderDelivery {
+  float: left;
+  width: 300px;
+  background-color: #e8e8e8;
+  height: 600px;
+  padding: 10px;
+  position: relative;
+}
+
+.detailsOrderDelivery {
+  float: left;
+  width: 270px;
+  padding: 10px;
+}
+
+.orderDelivery {
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  border: solid 1px #e8e8e8;
+  height: 40px;
+  cursor: pointer;
+}
+
+.orderDeliverySelected {
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  border: solid 4px #38b393;
+  height: 40px;
+  cursor: pointer;
+}
+
+.orderNumberDelivery {
+  float: left;
+  margin-top: 12px;
+  font-size: 16px;
+}
+
+.imageOrderDelivery {
+  float: left;
+  margin-right: 10px;
+}
+
+.iconCompleted {
+  float: right;
+  margin-left: 70px;
+  width: 20px;
+}
+
+.orderTitle {
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.modal {
+  background-color: #f1f1f1;
+  margin-left: -20px;
+  margin-right: -20px;
+  width: 550px;
+}
+
+.modalHeader {
+  background-color: white;
+  padding: 0 20px 16px;
+  text-align: center;
+}
+
+.modalTitle {
+  font-size: 20px;
+  margin-top: 0;
+  text-align: center;
+}
+
+.modalFooter {
+  background-color: white;
+  text-align: center;
+  padding: 20px 20px 0;
+}
+
+.mediumText {
+  font-size: 16px;
+  margin: 2px 0;
+}
+
+.mediumTextBold {
+  font-size: 16px;
+  margin: 2px 0;
+  font-weight: bold;
+}
+
+.endButton {
+  font-size: 20px;
+  font-weight: 700;
+  background-color: #38b393;
+  box-shadow: none;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  width: 100%;
+  height: 50px;
+  cursor: pointer;
+}
