@@ -79,7 +79,7 @@ class OrderRow extends Component {
           </div>
           <br />
           <div className={styles.cardValue}>
-            {order.Driver ? order.Driver.FirstName : 'null' } {order.Driver ? order.Driver.LastName : 'null' }
+            {order.Driver ? `${order.Driver.FirstName} ${order.Driver.LastName}` : '-'}
           </div>
         </td>
         <td onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
@@ -90,6 +90,16 @@ class OrderRow extends Component {
           <br />
           <div className={styles.cardValue + ' ' + styles[order.OrderStatus.OrderStatus]}>
             {order.OrderStatus.OrderStatus}
+          </div>
+        </td>
+        <td onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td onClick={() => getDetail(order.UserOrderID)}>
+          <div className={styles.cardLabel}>
+            COD Type
+          </div>
+          <br />
+          <div className={styles.cardValue}>
+            {order.IsCOD ? 'COD' : 'Non-COD'}
           </div>
         </td>
         <td onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
@@ -124,7 +134,7 @@ function DropdownDispatchBuilder(keyword, tab) {
 
 function DropdownStoreBuilder(name) {
   return (store, props) => {
-    const { sortOptions, orderTypeOptions, statusOptions } = config;
+    const { sortOptions, orderTypeOptions, statusOptions, codOptions } = config;
     statusOptions.total = _.union(
       statusOptions.pending,
       statusOptions.succeed,
@@ -133,7 +143,8 @@ function DropdownStoreBuilder(name) {
     const options = {
       statusOptions: statusOptions[props.tab],
       sortOptions,
-      orderTypeOptions
+      orderTypeOptions,
+      codOptions,
     };
 
     return {
@@ -148,6 +159,7 @@ function ConnectDropdownBuilder(keyword) {
 }
 
 const StatusFilter = ConnectDropdownBuilder('statusOptions')(FilterDropdown);
+const CODFilter = ConnectDropdownBuilder('codOptions')(FilterDropdown);
 
 const SortFilter = ConnectDropdownBuilder('sortOptions')(FilterTop);
 const OrderTypeFilter = ConnectDropdownBuilder('orderTypeOptions')(FilterTop);
@@ -426,7 +438,7 @@ export class Filter extends Component {
 
   render() {
     const { PaginationAction, paginationState } = this.props.pagination;
-    const { tab, orders } = this.props;
+    const { tab, orders, searchResult } = this.props;
     
     let checked = false;
     orders[tab].some(function(order) {
@@ -463,6 +475,10 @@ export class Filter extends Component {
           </div>
         }
 
+        { searchResult[tab] && 
+          <span className={styles.searchResult}>{searchResult[tab]} order found from search result.</span>
+        }
+
         <Pagination2 {...paginationState} {...PaginationAction} tab={this.props.tab} style={{marginTop: "5px"}} />
 
         <div className={styles.row}>
@@ -470,6 +486,7 @@ export class Filter extends Component {
           <EDSFilter tab={tab} />
           <NameFilter tab={tab} />
           <StatusFilter tab={tab} />
+          <CODFilter tab={tab} />
           <FleetFilter tab={tab} />
         </div>
       </div>

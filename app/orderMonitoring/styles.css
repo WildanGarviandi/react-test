@@ -421,6 +421,7 @@ button.sendReport {
 .driverPict {
   width: 40px;
   float: left;
+  padding-right: 3px;
 }
 
 .driverName, .attemptDate {
@@ -428,6 +429,7 @@ button.sendReport {
 }
 
 .driverName {
+  margin-top: 7px;
   min-width: 150px;
 }
 
@@ -730,6 +732,7 @@ img.proof {
   margin-left: -20px;
   margin-right: -20px;
   width: 550px;
+  text-align: center;
 }
 
 .modalHeader {

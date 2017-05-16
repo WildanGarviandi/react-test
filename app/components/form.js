@@ -666,6 +666,14 @@ const FilterText = React.createClass({
   }
 });
 
+function Filter({value, options, handleSelect}) {
+  return (
+    <div className={styles.custFilterTop}>
+      <Dropdown2 val={value} options={options} handleSelect={handleSelect} custClass={styles.custDropdown} />
+    </div>
+  )
+}
+
 const RadioGroup = React.createClass({
   displayName: 'RadioGroup',
 

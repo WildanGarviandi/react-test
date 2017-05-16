@@ -71,5 +71,12 @@
       ]
     },
     "deliverableOrderStatus": [2, 3, 4],
-    "updatableCOD": [4, 5]
+    "updatableCOD": [4, 5],
+    "codOptions": [{
+      "key": "", "value": "All"
+    }, {
+      "key": "true", "value": "COD"
+    }, {
+      "key": "false", "value": "Non-COD"
+    }]
 }
