@@ -103,12 +103,16 @@ class OrderMonitoringPage extends Component {
             HideOrder,
             ShowAttemptModal,
             PostAttempt,
+            HideSucceedAttempt,
             isExpanded,
             expandedAttempt,
             paginationState,
             expandedOrder,
             modal,
+            searchResult,
+            succeedAttempt,
           } = this.props;
+    const DEFAULT_IMAGE = "/img/default-logo.png";
 
     return (
       <Page title="Order Monitoring">
@@ -123,10 +127,30 @@ class OrderMonitoringPage extends Component {
           />
         }
         { expandedAttempt &&
-          <AttemptDetails expandedOrder={expandedOrder} hideAttempt={this.props.HideAttempt} />
+          <AttemptDetails expandedOrder={expandedOrder} hideAttempt={this.props.HideAttempt} defaultImg={DEFAULT_IMAGE} />
         }
         { modal.addAttempt &&
           <AttemptModal hide={this.props.HideAttemptModal} submit={PostAttempt} />
+        }
+        { succeedAttempt &&
+          <ModalContainer>
+            <ModalDialog>
+                <div className={styles.modal}>
+                  <div className={styles.modalHeader}>
+                    <h2 className={styles.modalTitle}>Success</h2>
+                    <div className={styles.successContent + ' ' + styles.ordersContentEmpty}>
+                      <img className={styles.successIcon} src={"/img/icon-success.png"} />
+                      <div className={styles.mediumText}>You have successfully assigned the attempt</div>
+                    </div>
+                  </div>
+                  <div className={styles.modalFooter}>
+                    <button className={styles.endButton} onClick={HideSucceedAttempt}>
+                      <span className={styles.mediumText}>Got It</span>
+                    </button>
+                  </div>
+                </div>
+            </ModalDialog>
+          </ModalContainer>
         }
         <div className={styles.widgetOuterContainer}>
           <div
@@ -160,7 +184,7 @@ class OrderMonitoringPage extends Component {
         <div className={styles.contentOuterContainer}>
           <div className={styles.contentContainer}>
             <div className={styles.mainTable}>
-              <Filter pagination={{PaginationAction, paginationState}} tab={this.getActiveTab()} />
+              <Filter pagination={{PaginationAction, paginationState}} tab={this.getActiveTab()} searchResult={searchResult} />
             </div>
             <OrderTable tab={this.getActiveTab()} />
           </div>
@@ -181,6 +205,8 @@ function mapState(store, tab) {
     expandedAttempt, 
     count, 
     modal,
+    searchResult,
+    succeedAttempt,
   } = store.app.orderMonitoring;
 
   return {
@@ -193,6 +219,8 @@ function mapState(store, tab) {
     expandedAttempt,
     count,
     modal,
+    searchResult,
+    succeedAttempt,
   }
 }
 
@@ -232,6 +260,9 @@ function mapDispatch(dispatch) {
     },
     PostAttempt: (reasonID, proof) => {
       dispatch(orderService.PostAttempt(reasonID, proof));
+    },
+    HideSucceedAttempt: () => {
+      dispatch(orderService.HideSucceedAttempt());
     }
   }
 }
@@ -488,25 +519,30 @@ function Reason({img, text, className, onClick}) {
   )
 }
 
-function AttemptDetails({hideAttempt, expandedOrder}) {
+function AttemptDetails({hideAttempt, expandedOrder, defaultImg}) {
   return (
       <div className={styles.attemptPanel}>
         <div className={styles.attemptHeader} onClick={hideAttempt}>
           <img src="/img/icon-previous.png" />
-          {expandedOrder.UserOrderAttempts.length} Attempt Details
+          {expandedOrder.UserOrderAttempts && expandedOrder.UserOrderAttempts.length} Attempt Details
         </div>
         <div className={styles.orderDetailsOuterContainer}>
-        {expandedOrder.UserOrderAttempts.map((attempt, key) => (
+        {expandedOrder.UserOrderAttempts && 
+          expandedOrder.UserOrderAttempts.map((attempt, key) => (
           <div key={key} className={styles.attemptDetailContainer}>
             <div className={styles.attemptDetailHeader}>Attempt {key + 1}</div>
             <div className={styles.attemptDetailBody}>
               <div>
-                <img className={styles.driverPict} src={attempt.Driver.PictureUrl} />
+                <img 
+                  className={styles.driverPict} 
+                  src={attempt.Driver.PictureUrl} 
+                  onError={(e) => {e.target.src=defaultImg}}
+                />
                 <span className={styles.driverName}>
                   {attempt.Driver.FirstName} {attempt.Driver.LastName}
                 </span>
                 <span className={styles.attemptDate}>
-                  {(key == 0) ? "First" : "Second"} attempt on
+                  {(key == 0) ? "First" : "Second"} attempt on&nbsp;
                   {new Date(attempt.CreatedDate).toDateString()}
                 </span>
               </div>

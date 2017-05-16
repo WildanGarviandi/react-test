@@ -658,6 +658,14 @@ const FilterText = React.createClass({
   }
 });
 
+function Filter({value, options, handleSelect}) {
+  return (
+    <div className={styles.custFilterTop}>
+      <Dropdown2 val={value} options={options} handleSelect={handleSelect} custClass={styles.custDropdown} />
+    </div>
+  )
+}
+
 const RadioGroup = React.createClass({
   displayName: 'RadioGroup',
 
@@ -702,4 +710,4 @@ const RadioGroup = React.createClass({
   }
 });
 
-export {Form, CheckBox, FilterTop, FilterTop2, FilterText, Input, InputWithDefault, InputWithState, Dropdown, DropdownTypeAhead, DropdownWithState, DropdownWithState2, DropdownWithState3, Textarea, TextareaWithDefault, RadioGroup, Radio };
+export {Form, CheckBox, Filter, FilterTop, FilterTop2, FilterText, Input, InputWithDefault, InputWithState, Dropdown, DropdownTypeAhead, DropdownWithState, DropdownWithState2, DropdownWithState3, Textarea, TextareaWithDefault, RadioGroup, Radio };

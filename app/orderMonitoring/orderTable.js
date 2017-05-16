@@ -76,7 +76,7 @@ class OrderRow extends Component {
           </div>
           <br />
           <div className={styles.cardValue}>
-            {order.Driver ? order.Driver.FirstName : 'null' } {order.Driver ? order.Driver.LastName : 'null' }
+            {order.Driver ? order.Driver.FirstName : '-' } {order.Driver ? order.Driver.LastName : '' }
           </div>
         </td>
         <td onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
@@ -144,7 +144,7 @@ function ConnectDropdownBuilder(keyword) {
   return connect(DropdownStoreBuilder(keyword), DropdownDispatchBuilder(keyword));
 }
 
-// const StatusFilter = ConnectDropdownBuilder('statusOptions')(FilterDropdown);
+const StatusFilter = ConnectDropdownBuilder('statusOptions')(FilterDropdown);
 
 const SortFilter = ConnectDropdownBuilder('sortOptions')(FilterTop);
 const OrderTypeFilter = ConnectDropdownBuilder('orderTypeOptions')(FilterTop);
@@ -210,7 +210,7 @@ const EDSFilter = ConnectBuilder('userOrderNumber', 'Search for EDS...')(InputFi
 const NameFilter = ConnectBuilder('driverName', 'Search for driver...')(InputFilter);
 const FleetFilter = ConnectBuilder('dropoffCity', "Search for fleet's area...")(InputFilter);
 
-const StatusFilter = ConnectBuilder('status', 'Search for order status...')(InputFilter);
+// const StatusFilter = ConnectBuilder('status', 'Search for order status...')(InputFilter);
 
 // END INPUT FILTER
 
@@ -356,13 +356,17 @@ const filterDefaultProps = {
 export class Filter extends Component {
   render() {
     const { PaginationAction, paginationState } = this.props.pagination;
-    const { tab } = this.props;
+    const { tab, searchResult } = this.props;
 
     return (
       <div>
         <SortFilter tab={tab} />
         <OrderTypeFilter tab={tab} />
         <Datepicker tab={tab} />
+
+        { searchResult[tab] && 
+          <span className={styles.searchResult}>{searchResult[tab]} order found from search result.</span>
+        }
 
         <Pagination2 {...paginationState} {...PaginationAction} tab={this.props.tab} style={{marginTop: "5px"}} />
 

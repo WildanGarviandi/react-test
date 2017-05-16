@@ -24,6 +24,8 @@ const Constants = {
   SET_DROPDOWN_FILTER: 'SET_DROPDOWN_FILTER',
   SET_FILTER: 'SET_FILTER',
   SET_DATE: 'SET_DATE',
+  SET_SEARCH_RESULT: 'SET_SEARCH_RESULT',
+  SET_SUCCEED_ATTEMPT: 'SET_SUCCEED_ATTEMPT',
 }
 
 const initialStore = {
@@ -32,6 +34,7 @@ const initialStore = {
   isExpanded: false,
   startDate: moment().subtract(7, 'days').toISOString(),
   endDate: moment().toISOString(),
+  succeedAttempt: false,
   count: {
     pendingDelivery: '-',
     succeedDelivery: '-',
@@ -85,6 +88,11 @@ const initialStore = {
     succeed: false,
     failed: false,
   },
+  searchResult: {
+    pending: null,
+    succeed: null,
+    failed: null,
+  }
 }
 
 export default function Reducer(store = initialStore, action) {
@@ -197,6 +205,15 @@ export default function Reducer(store = initialStore, action) {
       return _.merge({}, store, newLimit);
     }
 
+    case Constants.SET_SEARCH_RESULT: {
+      const newResult = {
+        searchResult: {}
+      };
+      newResult.searchResult[action.tab] = action.value;
+
+      return _.merge({}, store, newResult);
+    }
+
     case Constants.SET_DROPDOWN_FILTER: {
       const {keyword, tab, option} = action;
       let newValue = {
@@ -234,6 +251,12 @@ export default function Reducer(store = initialStore, action) {
 
     case Constants.SET_DATE: {
       return _.merge({}, store, action.newDate);
+    }
+
+    case Constants.SET_SUCCEED_ATTEMPT: {
+      return _.merge({}, store, {
+        succeedAttempt: action.value
+      });
     }
 
     default: {
@@ -285,6 +308,7 @@ export function FetchList(tab) {
       statuses: filters[tab].statuses || defaultStatuses[tab]
     });
 
+    dispatch(SetSearchResult(tab, null));
     dispatch({type: modalAction.BACKDROP_SHOW});
     FetchGet('/order/delivery', token, query).then((response) => {
       if (!response.ok) {
@@ -302,6 +326,9 @@ export function FetchList(tab) {
           orders: data.rows,
           tab: tab
         })
+        if (!_.isEmpty(filters[tab]) && data.count > 0) {
+          dispatch(SetSearchResult(tab, data.count))
+        }
       });
     }).catch((e) => {
       dispatch({type: modalAction.BACKDROP_HIDE});
@@ -386,8 +413,25 @@ export function SetFilter(newFilter) {
   return { type: Constants.SET_FILTER, newFilter };
 }
 
+export function SetSearchResult(tab, value) {
+  return { type: Constants.SET_SEARCH_RESULT, tab, value };
+}
+
 export function SetDate(newDate) {
   return { type: Constants.SET_DATE, newDate };
+}
+
+export function ShowSucceedAttempt() {
+  return (dispatch) => { 
+    dispatch({type: Constants.SET_SUCCEED_ATTEMPT, value: true});
+  };
+}
+
+export function HideSucceedAttempt() {
+  return (dispatch) => { 
+    dispatch({type: Constants.SET_SUCCEED_ATTEMPT, value: false});
+    dispatch({type: modalAction.BACKDROP_HIDE});
+  };
 }
 
 export function PostAttempt(reasonID, proof) {
@@ -409,6 +453,7 @@ export function PostAttempt(reasonID, proof) {
       dispatch(HideOrder());
       dispatch(HideAttemptModal());
       dispatch({type: modalAction.BACKDROP_HIDE});
+      dispatch(ShowSucceedAttempt());
     }).catch((e) => {
       const message = (e && e.message) || "Failed to add attempt";
       dispatch(ModalActions.addMessage(message));
@@ -436,7 +481,6 @@ export function FetchDetails(orderID) {
       });
 
     }).catch((e) => {
-      console.log(e, 'catch');
       dispatch({type: modalAction.BACKDROP_HIDE});
       dispatch(ModalActions.addMessage(e.message));
     });

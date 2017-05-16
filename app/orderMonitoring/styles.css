@@ -421,6 +421,7 @@ button.sendReport {
 .driverPict {
   width: 40px;
   float: left;
+  padding-right: 3px;
 }
 
 .driverName, .attemptDate {
@@ -428,6 +429,7 @@ button.sendReport {
 }
 
 .driverName {
+  margin-top: 7px;
   min-width: 150px;
 }
 
@@ -462,4 +464,43 @@ img.proof {
   width: 100%;
   margin-top: 15px;
   border-radius: 5px;
+}
+
+.modal {
+  background-color: #f1f1f1;
+  margin-left: -20px;
+  margin-right: -20px;
+  width: 550px;
+  text-align: center;
+}
+
+.modalHeader {
+  background-color: white;
+  padding: 0 20px 16px;
+  text-align: center;
+}
+
+.modalTitle {
+  font-size: 20px;
+  margin-top: 0;
+  text-align: center;
+}
+
+.modalFooter {
+  background-color: white;
+  text-align: center;
+  padding: 20px 20px 0;
+}
+
+.endButton {
+  font-size: 20px;
+  font-weight: 700;
+  background-color: #38b393;
+  box-shadow: none;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  width: 100%;
+  height: 50px;
+  cursor: pointer;
 }
