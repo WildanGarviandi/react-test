@@ -28,6 +28,10 @@ const Constants = {
   HIDE_DELIVERY: 'HIDE_DELIVERY',
   SHOW_SUCCESS_DELIVERED: 'SHOW_SUCCESS_DELIVERED',
   HIDE_SUCCESS_DELIVERED: 'HIDE_SUCCESS_DELIVERED',
+  SHOW_UPDATE_COD: 'SHOW_UPDATE_COD',
+  HIDE_UPDATE_COD: 'HIDE_UPDATE_COD',
+  SHOW_SUCCESS_UPDATE_COD: 'SHOW_SUCCESS_UPDATE_COD',
+  HIDE_SUCCESS_UPDATE_COD: 'HIDE_SUCCESS_UPDATE_COD',
 }
 
 const initialStore = {
@@ -92,6 +96,13 @@ const initialStore = {
   showDelivery: false,
   isSuccessDelivered: false,
   deliveryReport: {
+    errorIDs: [],
+    successReport: 0,
+    errorReport: 0    
+  },
+  showUpdateCOD: false,
+  isSuccessUpdateCOD: false,
+  updateCODReport: {
     errorIDs: [],
     successReport: 0,
     errorReport: 0    
@@ -274,6 +285,40 @@ export default function Reducer(store = initialStore, action) {
       return Object.assign({}, store, {
         isSuccessDelivered: false,
         deliveryReport: {
+          errorIDs: [],
+          successReport: 0,
+          errorReport: 0
+        }
+      });
+    }
+
+    case Constants.SHOW_UPDATE_COD: {
+      return Object.assign({}, store, {
+        showUpdateCOD: true
+      });
+    }
+
+    case Constants.HIDE_UPDATE_COD: {
+      return Object.assign({}, store, {
+        showUpdateCOD: false
+      });
+    }
+
+    case Constants.SHOW_SUCCESS_UPDATE_COD: {
+      return Object.assign({}, store, {
+        isSuccessUpdateCOD: true,
+        updateCODReport: {
+          errorIDs: action.errorIDs,
+          successReport: action.successReport,
+          errorReport: action.errorReport
+        }
+      });
+    }
+
+    case Constants.HIDE_SUCCESS_UPDATE_COD: {
+      return Object.assign({}, store, {
+        isSuccessUpdateCOD: false,
+        updateCODReport: {
           errorIDs: [],
           successReport: 0,
           errorReport: 0
@@ -532,4 +577,51 @@ export function DeliverOrder(query) {
 
 export function HideSuccessDelivery () {
   return { type: Constants.HIDE_SUCCESS_DELIVERED };
+}
+
+export function ShowUpdateCODModal () {
+  return { type: Constants.SHOW_UPDATE_COD };
+}
+
+export function HideUpdateCODModal () {
+  return { type: Constants.HIDE_UPDATE_COD };
+}
+
+export function UpdateCODOrder(query) {
+  return (dispatch, getState) => {
+    const { token } = getState().app.userLogged;
+    const { limit, currentPage, filters } = getState().app.orderMonitoring;
+
+    dispatch({type: modalAction.BACKDROP_SHOW});
+    let params = {}
+    params.orderIDs = query.ordersChecked;
+    FetchPost('/order/bulk-paid-vendor', token, params).then((response) => {
+      if (!response.ok) {
+        return response.json().then(({error}) => {
+          throw error;
+        })
+      }
+
+      return response.json().then(({data}) => {
+        dispatch({ 
+          type: Constants.SHOW_SUCCESS_UPDATE_COD,
+          errorIDs: ((data.failed.length > 0) && data.failed) || [],  
+          successReport: data.success,
+          errorReport: data.error
+        });
+        dispatch(FetchCount());
+        dispatch(FetchAllList());
+        dispatch(HideUpdateCODModal());
+        dispatch({type: modalAction.BACKDROP_HIDE});
+      });
+    }).catch((e) => {
+      const message = (e && e.message) || "Failed to set COD status";
+      dispatch(ModalActions.addMessage(message));
+      dispatch({type: modalAction.BACKDROP_HIDE});
+    });
+  }
+}
+
+export function HideSuccessUpdateCOD () {
+  return { type: Constants.HIDE_SUCCESS_UPDATE_COD };
 }
