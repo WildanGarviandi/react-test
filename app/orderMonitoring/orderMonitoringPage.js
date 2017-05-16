@@ -1062,7 +1062,7 @@ class ModalUpdateCODReport extends Component {
               updateCODReport.errorIDs.length > 0 &&
               <div className={styles.modal}>
                 <div className={styles.modalHeader}>
-                  <h2 className={styles.modalTitle}>Delivery Report</h2>
+                  <h2 className={styles.modalTitle}>Update COD Report</h2>
                   <div>
                     <div>
                       Success: {updateCODReport.successReport}
@@ -1094,7 +1094,7 @@ class ModalUpdateCODReport extends Component {
                   <h2 className={styles.modalTitle}>Success</h2>
                   <div>
                     <img className={styles.successIcon} src={"/img/icon-success.png"} />
-                    <div className={styles.mediumText}>You have successfully set delivered</div>
+                    <div className={styles.mediumText}>You have successfully set COD status</div>
                   </div>
                 </div>
                 <div className={styles.modalFooter}>
