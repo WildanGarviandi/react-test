@@ -76,7 +76,7 @@ class OrderRow extends Component {
           </div>
           <br />
           <div className={styles.cardValue}>
-            {order.Driver ? order.Driver.FirstName : '-' } {order.Driver ? order.Driver.LastName : '' }
+            {order.Driver ? `${order.Driver.FirstName} ${order.Driver.LastName}` : '-'}
           </div>
         </td>
         <td onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
@@ -221,8 +221,6 @@ function InputFilter({value, onChange, onKeyDown, placeholder}) {
 const EDSFilter = ConnectBuilder('userOrderNumber', 'Search for EDS...')(InputFilter);
 const NameFilter = ConnectBuilder('driverName', 'Search for driver...')(InputFilter);
 const FleetFilter = ConnectBuilder('dropoffCity', "Search for fleet's area...")(InputFilter);
-
-// const StatusFilter = ConnectBuilder('status', 'Search for order status...')(InputFilter);
 
 // END INPUT FILTER
 
