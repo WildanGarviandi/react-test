@@ -690,11 +690,11 @@ function AttemptDetails({hideAttempt, expandedOrder, defaultImg}) {
               <div>
                 <img 
                   className={styles.driverPict} 
-                  src={attempt.Driver.PictureUrl} 
+                  src={attempt.Driver && attempt.Driver.PictureUrl} 
                   onError={(e) => {e.target.src=defaultImg}}
                 />
                 <span className={styles.driverName}>
-                  {attempt.Driver.FirstName} {attempt.Driver.LastName}
+                  {attempt.Driver && `${attempt.Driver.FirstName} ${attempt.Driver.LastName}`}
                 </span>
                 <span className={styles.attemptDate}>
                   {(key == 0) ? "First" : "Second"} attempt on&nbsp;
