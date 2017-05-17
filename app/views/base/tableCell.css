@@ -17,3 +17,17 @@
     border: solid 1px #e8e8e8;
     font-size: 14px;
 }
+
+.checkboxHeaderPlain {
+    float: left;
+    margin-right: 1%;
+    background-color: #fff;
+    padding: 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    background-color: #ffffff;
+    border: solid 1px #e8e8e8;
+    font-size: 14px;
+    min-width: 100px;
+    text-align: center;
+}
