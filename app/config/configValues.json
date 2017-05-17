@@ -77,5 +77,6 @@
     }, {
       "key": "false", "value": "Non-COD"
     }],
-    "deliverableOrderStatus": [2, 3, 4]
+    "deliverableOrderStatus": [2, 3, 4],
+    "updatableCOD": [4, 5]
 }

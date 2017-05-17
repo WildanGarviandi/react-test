@@ -9,7 +9,8 @@
   "features": {
     "menuTMS": true,
     "menuUpdateOrder": true,
-    "hubPerformances": true
+    "hubPerformances": true,
+    "updateCODVendor": true
   },
   "googleSiteKey": "",
   "googleAnalyticsKey": ""

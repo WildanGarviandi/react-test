@@ -675,6 +675,7 @@ img.proof {
   height: 600px;
   padding: 10px;
   position: relative;
+  overflow-y: auto;
 }
 
 .detailsOrderDelivery {
@@ -775,4 +776,20 @@ img.proof {
   width: 100%;
   height: 50px;
   cursor: pointer;
+}
+
+.listOrderUpdateCOD {
+  float: left;
+  width: 300px;
+  background-color: #e8e8e8;
+  height: 300px;
+  padding: 10px;
+  position: relative;
+  overflow-y: auto;
+}
+
+.detailsOrderUpdateCOD {
+  float: left;
+  width: 270px;
+  padding: 10px;
 }
