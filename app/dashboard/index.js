@@ -119,6 +119,12 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
         { config.features.menuTMS && (tmsMenu || !hubID) &&
           <div>
             <div className={styles.titlePanel}>
+              <MenuItem active={activeMenuIdx == 11} to={'/ordermonitoring'}>
+                <img src="/img/icon-hub-performance.png" className={styles.menuGlyph} />
+                <span>Order Monitoring</span>
+              </MenuItem>
+            </div>
+            <div className={styles.titlePanel}>
               <span className={styles.titleMenu}>
                 My Jobs
               </span>
@@ -171,7 +177,7 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
           </div>
         }
       </ul>
-      { 
+      {
          hubID &&
          <div>
            <a className={styles.switchLink} onClick={switchMenu}>
@@ -200,7 +206,8 @@ const menuPaths = [
   '/myorders',
   '/mytrips',
   '/myongoingtrips',
-  '/mydrivers'
+  '/mydrivers',
+  '/ordermonitoring'
 ];
 
 const menuPathsTMS = [
@@ -208,7 +215,8 @@ const menuPathsTMS = [
   '/myorders/add',
   '/mytrips',
   '/myongoingtrips',
-  '/mydrivers'
+  '/mydrivers',
+  '/ordermonitoring'
 ];
 
 function GetActiveMenuIdx(path) {
@@ -256,12 +264,12 @@ const DashboardContainer = React.createClass({
     return (
       <div style={{display: 'table', width: '100%', minHeight: '100%'}}>
         <div className={panelClass} >
-          <DashboardMenu 
-            activeMenuIdx={activeMenuIdx} 
-            handleLogout={this.handleLogout} 
-            toggleCompact={this.toggleCompact} 
-            hubID={hubID} 
-            loggedName={loggedName} 
+          <DashboardMenu
+            activeMenuIdx={activeMenuIdx}
+            handleLogout={this.handleLogout}
+            toggleCompact={this.toggleCompact}
+            hubID={hubID}
+            loggedName={loggedName}
             counterOrder={this.props.counterOrder}
             count={this.props.count}
             countTMS={this.props.countTMS}

@@ -1,0 +1,117 @@
+.table {
+  border-image-source: initial;
+  border-image-slice: initial;
+  border-image-width: initial;
+  border-image-outset: initial;
+  border-image-repeat: initial;
+
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 20px;
+  padding: 0 10px;
+
+  background: #f1f1f1;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+  border-radius: 5px;
+
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.th {
+  border-top: 0;
+  border-bottom-width: 2px;
+  background-color: #1A2226;
+  vertical-align: middle;
+  text-align: left;
+
+  color: #fff;
+  font-size: 12px;
+  font-weight: 400;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.tr {
+  cursor: pointer;
+  color: #333;
+  background-color: #ffffff;
+}
+
+.tr:hover {
+  box-shadow: -1px 2px 8px 0px rgba(50, 50, 50, 0.75);
+}
+
+td {
+  height: 20px;
+  font-size: 12px;
+  padding: 14px;
+}
+
+.card {
+  background-color: #fff;
+  color: #000;
+}
+
+.cardSeparator {
+  width: 2px;
+  background-color: #eee;
+  height: 25px;
+  float: left;
+}
+
+.orderIDColumn {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.cardLabel {
+  float: left;
+  color: #000000;
+  opacity: 0.5;
+  font-size: 12px;
+}
+
+.cardValue {
+  float: left;
+  font-weight: bold;
+  font-size: 16px;
+  margin-top: 5px;
+  color: #000000;
+  opacity: 0.8;
+  text-align: left;
+}
+
+.cardValue.cancelled {
+  color: #ff5a60;
+}
+
+.cardValue.delivered {
+  color: #38b393;
+}
+
+.cardValue.on-going {
+  color: #ffa500;
+}
+
+.orderLoadImage {
+  height: 40px;
+  width: 40px;
+}
+
+.inputSearch {
+    border-radius: 4px;
+    border: solid 1px #e8e8e8;
+    height: 30px;
+    display: table-cell;
+    margin-right: 1%;
+    width: 22.8%;
+    padding: 5px 0px 5px 10px;
+}
+
+.row {
+  width: 100%;
+  float: left;
+  margin-bottom: 5px;
+  display: table
+}

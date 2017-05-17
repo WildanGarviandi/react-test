@@ -42,7 +42,7 @@ const ColumnsTitle = {
   checkbox: ''
 }
 
-let cityList = {}; 
+let cityList = {};
 
 /*
  * Get filter text from store
@@ -55,7 +55,7 @@ function getStoreFilterText(keyword, title) {
       value: filters[keyword],
       title: title
     }
-  }    
+  }
 }
 
 /*
@@ -79,7 +79,7 @@ function dispatchFilterText(keyword) {
     }
 
     return {
-      onChange: OnChange, 
+      onChange: OnChange,
       onKeyDown: OnKeyDown,
     }
   }
@@ -100,7 +100,7 @@ function connectFilterText(keyword, title) {
 function getStoreFilterDropdown(name, title) {
   return (store) => {
     let cityOptions = [{
-      key: 0, value: "All", 
+      key: 0, value: "All",
     }];
 
     let listOptions = [{
@@ -108,7 +108,7 @@ function getStoreFilterDropdown(name, title) {
     }, {
       key: 1, value: "Trip",
     }, {
-      key: 2, value: "Order", 
+      key: 2, value: "Order",
     }];
 
     cityOptions = cityOptions.concat(lodash.chain(cityList)
@@ -340,7 +340,7 @@ const Table = React.createClass({
             second: 'ss'
           };
           let Duration = moment.duration(moment(item[columnKey]).diff(moment(new Date())));
-          if (Duration._milliseconds > config.deadline.day) {            
+          if (Duration._milliseconds > config.deadline.day) {
             return <td key={columnKey} className={tableStyles.td} key={columnKey}>
               <span style={{color: 'black'}}>
                 <span>
@@ -374,7 +374,7 @@ const Table = React.createClass({
         }
         return <td key={columnKey} className={tableStyles.td} key={columnKey}>{item[columnKey]}</td>;
       });
-      
+
       return <tr className={tableStyles.tr + ' ' + styles.noPointer} key={item.key}>{cells}</tr>;
     });
 
@@ -461,7 +461,7 @@ function ProcessTrip(trip) {
       isTrip: true,
       deadline: trip.Deadline,
       IsChecked: trip.IsChecked
-    }    
+    }
   } else {
     return {
       key: trip.UserOrderID,
@@ -476,7 +476,7 @@ function ProcessTrip(trip) {
       deadline: trip.Deadline,
       IsChecked: trip.IsChecked,
       orderID: `${trip.UserOrderNumber} (${trip.WebOrderID})`
-    }   
+    }
   }
 }
 
@@ -506,7 +506,7 @@ const OrderList = React.createClass({
 
 const TableStateful = React.createClass({
   closeModal() {
-    this.props.CloseModal();   
+    this.props.CloseModal();
   },
   render() {
     const {filters, paginationAction, paginationState, statusParams, tripDetails, tripsIsFetching} = this.props;
@@ -542,10 +542,10 @@ const TableStateful = React.createClass({
               <div>
                 <div className={styles.modalTitle}>
                   TRIP-{this.props.trip.TripID}
-                </div> 
+                </div>
                 <div onClick={this.closeModal} className={styles.modalClose}>
                   X
-                </div> 
+                </div>
                 <div className={styles.topDescDetails}>
                   <div className={styles.modalDescDetails}>
                     <p className={styles.mainLabelDetails}>
@@ -562,7 +562,7 @@ const TableStateful = React.createClass({
                     <p className={styles.weightLabelDetails}>
                       {this.props.trip.Weight}
                       <span className={styles.unitWeightLabelDetails}> kg</span>
-                    </p>                    
+                    </p>
                   </div>
                 <div style={{clear: 'both'}} />
                 </div>

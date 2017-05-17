@@ -1,0 +1,169 @@
+.widgetOuterContainer {
+  float: left;
+  width: 100%;
+  margin-top: 40px;
+  position: relative;
+}
+
+.widgetContainer {
+  float: left;
+  min-width: 138px;
+}
+
+.toggleWidget, .toggleWidgetActive {
+  border: 1px solid transparent;
+  border-radius: 5px 5px 0 0;
+  padding: 10px 10px 0;
+  cursor: pointer;
+}
+
+.toggleWidgetActive {
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  border-bottom: none;
+  background: #ffffff;
+}
+
+.toggleWidget .total, .toggleWidgetActive .total {
+  font-size: 20px;
+  display: block;
+  color: #000000;
+  padding-bottom: 15px;
+  font-weight: bold;
+}
+
+.toggleWidgetActive .total {
+  border-bottom: 3px solid #2196f3
+}
+
+.arbitTogglePickup {
+  color: #e8e8e8;
+  height: 24px;
+  margin: 20px 10px;
+  float: left;
+}
+
+.contentContainer {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.contentOuterContainer {
+  background: #ffffff;
+  width: 100%;
+  float: left;
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  margin-top: -1px;
+  border-radius: 0 5px 5px 5px;
+}
+
+/* The animation code */
+@keyframes panelDetailsAnimation {
+  from {right: -400px;}
+  to {right: 0px;}
+}
+
+.panelDetails, .panelDetailsHidden {
+  position: fixed;
+  z-index: 1;
+  top: 50px;
+  width: 400px;
+  background-color: white;
+  height: 100%;
+  box-shadow: -1px 2px 10px 0px rgba(50, 50, 50, 0.75);
+}
+
+.panelDetails {
+  right: 0px;
+  animation-name: panelDetailsAnimation;
+  animation-duration: 0.5s;
+}
+
+/* The animation code */
+@keyframes panelDetailsAnimationHidden {
+  from {right: 0px;}
+  to {right: -400px;}
+}
+
+.panelDetailsHidden {
+  right: -400px;
+  border-right: 1px solid #e8e8e8;
+  animation-name: panelDetailsAnimationHidden;
+  animation-duration: 0.5s;
+}
+
+.closeButton {
+  background-color: #fff;
+  box-shadow: none;
+  border: none;
+  font-size: 24px;
+  color: #cccccc;
+  cursor: pointer;
+  padding: 8px;
+  margin-left: -32px;
+  float: left;
+  z-index: -1;
+  border-left: 1px solid #e8e8e8;
+  box-shadow: -2px 1px 2px 0px rgba(50, 50, 50, 0.75);
+  width: 15px;
+}
+
+.orderDetails {
+  width: 360px;
+  border-radius: 4px;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 12px;
+  color: #000000;
+  margin-top: 15px;
+  padding-right: 10px;
+  overflow-y: auto;
+}
+
+.orderDetailsLabel {
+  font-size: 12px;
+  margin-top: 8px;
+  opacity: 0.5;
+}
+
+.orderDetailsValue {
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.orderValue {
+  width: 360px;
+  height: 40px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 5px;
+  margin-top: 15px;
+}
+
+.orderAdditionalInfo {
+  float: left;
+  width: 30%;
+}
+
+.orderDueTime {
+  width: 360px;
+  height: 40px;
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  background-color: #ffffff;
+  margin-left: 20px;
+  font-family: Helvetica;
+  font-size: 24px;
+  text-align: center;
+  color: #000000;
+  padding-top: 10px;
+  margin-top: 15px;
+}
