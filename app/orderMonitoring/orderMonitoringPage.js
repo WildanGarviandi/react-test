@@ -78,8 +78,8 @@ class OrderMonitoringPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showSucceed: true,
-      showPending: false,
+      showSucceed: false,
+      showPending: true,
       showFailed: false,
     };
   }
@@ -208,21 +208,21 @@ class OrderMonitoringPage extends Component {
 
         <div className={styles.widgetOuterContainer}>
           <div
-            onClick={() => this.activateSucceed()}
-            className={`${styles.widgetContainer}
-            ${this.state.showSucceed ? styles.toggleWidgetActive : styles.toggleWidget}`}
-          >
-            <span className={styles.widgetTitle}>Total Succeed Delivery</span>
-            <span className={styles.total}>{succeedDelivery}</span>
-          </div>
-          <span className={styles.arbitTogglePickup}> | </span>
-          <div
             onClick={() => this.activatePending()}
             className={`${styles.widgetContainer}
             ${this.state.showPending ? styles.toggleWidgetActive : styles.toggleWidget}`}
           >
             <span className={styles.widgetTitle}>Total Pending Delivery</span>
             <span className={styles.total}>{pendingDelivery}</span>
+          </div>
+          <span className={styles.arbitTogglePickup}> | </span>
+          <div
+            onClick={() => this.activateSucceed()}
+            className={`${styles.widgetContainer}
+            ${this.state.showSucceed ? styles.toggleWidgetActive : styles.toggleWidget}`}
+          >
+            <span className={styles.widgetTitle}>Total Succeed Delivery</span>
+            <span className={styles.total}>{succeedDelivery}</span>
           </div>
           <span className={styles.arbitTogglePickup}> | </span>
           <div
