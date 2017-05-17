@@ -189,7 +189,6 @@ const DropdownTypeAhead = React.createClass({
 
       return <Options2 {...optionProps} />
     });
-
     const inputProps = {
       onFocus: this.openOption,
       value: this.state.opened ? this.state.temp : this.state.txt,

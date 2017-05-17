@@ -5,6 +5,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import Countdown from 'react-cntdwn';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
+import ReactDOM from 'react-dom';
 
 import { FilterTop, Filter as FilterDropdown } from '../components/form';
 import { Pagination2 } from '../components/pagination2';
@@ -12,6 +13,7 @@ import OrderStatusSelector from '../modules/orderStatus/selector';
 import * as orderMonitoringService from './orderMonitoringService';
 import { CheckboxHeaderPlain, CheckboxCell } from '../views/base/tableCell';
 import styles from './table.css';
+import mainStyles from './styles.css';
 import config from '../config/configValues.json';
 
 const rowPropTypes = {
@@ -47,10 +49,10 @@ class OrderRow extends Component {
 
     return (
       <tr className={rowStyles}>
-        <td className={styles.driverInput}>
+        <td className={styles.driverInput + ' ' + styles.td}>
           <Checkbox isChecked={order.IsChecked} orderID={order.UserOrderNumber} tab={tab} />
         </td>
-        <td onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
         <td onClick={() => getDetail(order.UserOrderID)}>
           <img
             className={styles.orderLoadImage}
@@ -58,9 +60,9 @@ class OrderRow extends Component {
             onError={(e)=>{e.target.src=DEFAULT_IMAGE}}
           />
         </td>
-        <td onClick={() => getDetail(order.UserOrderID)} className={styles.orderIDColumn}>{order.UserOrderNumber}</td>
-        <td onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
-        <td onClick={() => getDetail(order.UserOrderID)}>
+        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)} className={styles.orderIDColumn}>{order.UserOrderNumber}</td>
+        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}>
           <div className={styles.cardLabel}>
             Deadline
           </div>
@@ -69,8 +71,8 @@ class OrderRow extends Component {
             <Deadline deadline={order.DueTime} />
           </div>
         </td>
-        <td onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
-        <td onClick={() => getDetail(order.UserOrderID)}>
+        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}>
           <div className={styles.cardLabel}>
             Driver's Name
           </div>
@@ -79,8 +81,8 @@ class OrderRow extends Component {
             {order.Driver ? `${order.Driver.FirstName} ${order.Driver.LastName}` : '-'}
           </div>
         </td>
-        <td onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
-        <td onClick={() => getDetail(order.UserOrderID)}>
+        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}>
           <div className={styles.cardLabel}>
             Order Status
           </div>
@@ -89,8 +91,8 @@ class OrderRow extends Component {
             {order.OrderStatus.OrderStatus}
           </div>
         </td>
-        <td onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
-        <td onClick={() => getDetail(order.UserOrderID)}>
+        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}>
           <div className={styles.cardLabel}>
             COD Type
           </div>
@@ -99,8 +101,8 @@ class OrderRow extends Component {
             {order.IsCOD ? 'COD' : 'Non-COD'}
           </div>
         </td>
-        <td onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
-        <td onClick={() => getDetail(order.UserOrderID)}>
+        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}>
           <div className={styles.cardLabel}>
             Fleet's Area
           </div>
@@ -141,7 +143,7 @@ function DropdownStoreBuilder(name) {
       statusOptions: statusOptions[props.tab],
       sortOptions,
       orderTypeOptions,
-      codOptions,
+      codOptions
     };
 
     return {
@@ -356,17 +358,73 @@ export class Deadline extends Component{
 const filterPropTypes = {
   pagination: PropTypes.any,
   tab: PropTypes.any,
+  orders: PropTypes.any,
 }
 
 const filterDefaultProps = {
   pagination: null,
   tab: null,
+  orders: null,
 }
 
 export class Filter extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showMenu: false
+    };
+  }
+
+  toggleMenu(){
+    this.setState({showMenu: !this.state.showMenu});
+  }
+
+  componentDidMount() {
+    document.addEventListener('click', this.handleClickOutside.bind(this), true);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('click', this.handleClickOutside.bind(this), true);
+  }
+
+  handleClickOutside(event) {
+    try {
+      const domNode = ReactDOM.findDOMNode(this);
+      if ((!domNode || !domNode.contains(event.target))) {
+        this.setState({
+            showMenu : false
+        });
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
+  showDelivery() {
+    let checkedInvalidStatus = false;
+    let validStatus = config.deliverableOrderStatus;
+    this.props.checkedOrders.some(function(order) {
+      if (!_.includes(validStatus, order.OrderStatus.OrderStatusID)) {
+          checkedInvalidStatus = true;
+      }
+    });
+    if (checkedInvalidStatus) {
+      alert('You have checked one or more order with invalid status');
+      return;
+    }
+    this.props.showDelivery();
+  }
+
   render() {
     const { PaginationAction, paginationState } = this.props.pagination;
-    const { tab, searchResult } = this.props;
+    const { tab, orders, searchResult } = this.props;
+    
+    let checked = false;
+    orders[tab].some(function(order) {
+      if (order.IsChecked) {
+          checked = true;
+      }
+    });
 
     return (
       <div>
@@ -376,6 +434,26 @@ export class Filter extends Component {
 
         { searchResult[tab] && 
           <span className={styles.searchResult}>{searchResult[tab]} order found from search result.</span>
+        }
+
+        { (tab === 'succeed' || tab === 'pending') &&
+          <div className={mainStyles.menuActionContainer}>
+            <button disabled={!checked} className={mainStyles.buttonAction} onClick={() => this.toggleMenu()}>
+              <div className={mainStyles.spanAction}>Action</div>
+              <img src={this.state.showMenu ? "/img/icon-collapse.png" : "/img/icon-dropdown-2.png"} 
+                className={mainStyles.iconAction} />
+            </button>
+              { this.state.showMenu &&
+                <ul className={mainStyles.actionContainer}>
+                  <li onClick={() => this.showDelivery()}>
+                    Mark Delivered
+                  </li>
+                  <li>
+                    Update COD
+                  </li>
+                </ul>
+              }
+          </div>
         }
 
         <Pagination2 {...paginationState} {...PaginationAction} tab={this.props.tab} style={{marginTop: "5px"}} />
@@ -395,6 +473,21 @@ export class Filter extends Component {
 
 Filter.propTypes = filterPropTypes;
 Filter.defaultProps = filterDefaultProps;
+
+function FilterDispatchBuilder() {
+  return (dispatch) => {
+    return {
+      ShowDeliveryModal: () => {
+        dispatch(orderMonitoringService.ShowDeliveryModal());
+      },
+      HideDeliveryModal: () => {
+        dispatch(orderMonitoringService.HideDeliveryModal());
+      }
+    }
+  }
+}
+
+connect(undefined, FilterDispatchBuilder)(Filter);
 
 const tablePropsType = {
   orders: PropTypes.any,

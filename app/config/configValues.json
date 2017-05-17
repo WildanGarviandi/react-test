@@ -28,6 +28,7 @@
     "outboundDeadlineFromCreated": 3,
     "defaultMainPage": "/orders/pickup",
     "defaultMainPageTMS": "/mytrips",
+    "performanceInterval": 180000,
     "defaultStatuses": {
       "total": "[2, 3, 4, 5, 8, 12, 13, 15, 16]",
       "succeed": "[5]",
@@ -75,5 +76,6 @@
       "key": "true", "value": "COD"
     }, {
       "key": "false", "value": "Non-COD"
-    }]
+    }],
+    "deliverableOrderStatus": [2, 3, 4]
 }

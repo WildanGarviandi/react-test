@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Dropzone from 'react-dropzone';
 
+import ImagePreview from '../views/base/imagePreview';
 import FetchPost from '../modules/fetch/post';
 import styles from './dragDropImageUploader.css';
 
