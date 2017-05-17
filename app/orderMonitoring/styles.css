@@ -673,6 +673,7 @@ img.proof {
   height: 600px;
   padding: 10px;
   position: relative;
+  overflow-y: auto;
 }
 
 .detailsOrderDelivery {
@@ -781,6 +782,7 @@ img.proof {
   height: 300px;
   padding: 10px;
   position: relative;
+  overflow-y: auto;
 }
 
 .detailsOrderUpdateCOD {
