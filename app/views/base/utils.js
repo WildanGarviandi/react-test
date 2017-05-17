@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import * as _ from 'lodash';
 
 export function ObjectFieldValue(obj, field) {
   var fields = field.split('.');

@@ -12,7 +12,7 @@ import * as FleetService from '../../nearbyFleets/nearbyFleetService';
 import {Glyph} from '../base';
 import Accordion from '../base/accordion';
 import styles from './styles.css';
-import _ from 'underscore';
+import * as _ from 'lodash';
 import config from '../../../config.json';
 import {push} from 'react-router-redux';
 
