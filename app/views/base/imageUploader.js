@@ -36,7 +36,7 @@ const ImageUploader = React.createClass({
           </span>
         }
         { !this.props.withoutPreview && this.props.withImagePreview && typeof this.props.currentImageUrl === "string" &&
-          <span className={styles.textIndent}>  
+          <span className={styles.textIndent}>
             { this.state.isUploading &&
               <div>
                 <label className={styles.disabledFileLabel}>
@@ -61,7 +61,7 @@ const ImageUploader = React.createClass({
           </span>
         }
         { !this.props.withoutPreview && !this.props.withImagePreview &&
-          <span className={styles.textIndent}>  
+          <span className={styles.textIndent}>
             { this.state.isUploading &&
               <div>
                 <label className={styles.disabledFileLabel}>
@@ -82,7 +82,7 @@ const ImageUploader = React.createClass({
                 </label>
               </div>
             }
-          </span>          
+          </span>
         }
       </div>
     );

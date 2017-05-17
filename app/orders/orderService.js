@@ -150,7 +150,7 @@ export default function Reducer(store = initialStore, action) {
       return lodash.assign({}, store, {
         selectedDriver: action.driverID
       });
-    }        
+    }
 
     case Constants.SHOW_SUCCESS_ASSIGN: {
       return lodash.assign({}, store, {
@@ -239,7 +239,7 @@ export function ToggleChecked(orderID) {
     orderID: orderID
   }
 }
- 
+
 export function ToggleCheckedAll() {
   return { type: Constants.TOGGLE_SELECT_ALL };
 }
@@ -250,9 +250,9 @@ export function FetchList() {
     const {currentPage, limit, total, filters} = myOrders;
     const {token} = userLogged;
     const sortFilter = [{
-      key: 1, sortBy: 'DueTime', sortCriteria: 'ASC'      
+      key: 1, sortBy: 'DueTime', sortCriteria: 'ASC'
     }, {
-      key: 2, sortBy: 'DueTime', sortCriteria: 'DESC'      
+      key: 2, sortBy: 'DueTime', sortCriteria: 'DESC'
     }];
 
     if (filters.sortOptions) {
@@ -377,7 +377,7 @@ export function AssignDriver(orderID, driverID) {
           throw error;
         });
       }
-      dispatch({ 
+      dispatch({
         type: Constants.SHOW_SUCCESS_ASSIGN,
         errorIDs: [],
         successAssign: 0,
@@ -409,7 +409,7 @@ export function BulkAssignDriver(orders, driverID) {
     const body = {
       driverID: driverID,
       orderIDs: orderIDs
-    };    
+    };
 
     dispatch({type: modalAction.BACKDROP_SHOW});
     FetchPost(`/order/bulk-assign`, token, body).then((response) => {
@@ -419,7 +419,7 @@ export function BulkAssignDriver(orders, driverID) {
         });
       }
       response.json().then(function({data}) {
-        dispatch({ 
+        dispatch({
           type: Constants.SHOW_SUCCESS_ASSIGN,
           errorIDs: ((data.failedUserOrderIDs.length > 0) && data.failedUserOrderIDs) || [],
           successAssign: data.success,
@@ -478,7 +478,7 @@ export function addOrder(order) {
                 dispatch({type: modalAction.BACKDROP_HIDE});
             });
         }
-        }).catch(() => { 
+        }).catch(() => {
             dispatch({type: modalAction.BACKDROP_HIDE});
             dispatch(ModalActions.addMessage('Network error'));
         });

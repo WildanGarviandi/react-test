@@ -138,3 +138,25 @@ input {
   background-color: #ffffff;
   border: solid 1px #e8e8e8;
 }
+
+.custDropdown {
+  display: block;
+  text-indent: 5px;
+
+  border: solid 1px #ccc;
+  border-right: 0;
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+
+  width: 80%;
+  height: 42px;
+}
+
+.custFilterTop {
+  float: left;
+  margin-right: 10px;
+  width: 16.5%;
+}
