@@ -15,7 +15,7 @@ import * as FleetService from '../nearbyFleets/nearbyFleetService';
 import {Glyph} from '../views/base';
 import Accordion from '../views/base/accordion';
 import styles from './styles.css';
-import _ from 'underscore';
+import * as _ from 'lodash';
 import config from '../../config.json';
 import configValues from '../config/configValues.json';
 import {push} from 'react-router-redux';

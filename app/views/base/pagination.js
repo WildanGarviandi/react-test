@@ -1,5 +1,5 @@
 import React from 'react';
-import _ from 'underscore';
+import * as _ from 'lodash';
 import {Dropdown} from './';
 import styles from './pagination.css';
 

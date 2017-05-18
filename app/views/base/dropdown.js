@@ -1,7 +1,7 @@
 import classNaming from 'classnames';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import _ from 'underscore';
+import * as _ from 'lodash';
 import {ButtonBase} from './';
 import {Glyph} from './glyph';
 import styles from './dropdown.css';
