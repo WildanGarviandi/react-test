@@ -24,6 +24,8 @@ const Constants = {
   SET_DROPDOWN_FILTER: 'SET_DROPDOWN_FILTER',
   SET_FILTER: 'SET_FILTER',
   SET_DATE: 'SET_DATE',
+  SET_SEARCH_RESULT: 'SET_SEARCH_RESULT',
+  SET_SUCCEED_ATTEMPT: 'SET_SUCCEED_ATTEMPT',
   SHOW_DELIVERY: 'SHOW_DELIVERY',
   HIDE_DELIVERY: 'HIDE_DELIVERY',
   SHOW_SUCCESS_DELIVERED: 'SHOW_SUCCESS_DELIVERED',
@@ -32,8 +34,6 @@ const Constants = {
   HIDE_UPDATE_COD: 'HIDE_UPDATE_COD',
   SHOW_SUCCESS_UPDATE_COD: 'SHOW_SUCCESS_UPDATE_COD',
   HIDE_SUCCESS_UPDATE_COD: 'HIDE_SUCCESS_UPDATE_COD',
-  SET_SEARCH_RESULT: 'SET_SEARCH_RESULT',
-  SET_SUCCEED_ATTEMPT: 'SET_SUCCEED_ATTEMPT',
 }
 
 const initialStore = {
@@ -101,6 +101,11 @@ const initialStore = {
     succeed: false,
     failed: false,
   },
+  searchResult: {
+    pending: null,
+    succeed: null,
+    failed: null,
+  },
   showDelivery: false,
   isSuccessDelivered: false,
   deliveryReport: {
@@ -115,11 +120,6 @@ const initialStore = {
     successReport: 0,
     errorReport: 0    
   },
-  searchResult: {
-    pending: null,
-    succeed: null,
-    failed: null,
-  }
 }
 
 export default function Reducer(store = initialStore, action) {
@@ -280,6 +280,12 @@ export default function Reducer(store = initialStore, action) {
 
     case Constants.SET_DATE: {
       return _.merge({}, store, action.newDate);
+    }
+
+    case Constants.SET_SUCCEED_ATTEMPT: {
+      return _.merge({}, store, {
+        succeedAttempt: action.value
+      });
     }
 
     case Constants.SHOW_DELIVERY: {

@@ -50,10 +50,10 @@ class OrderRow extends Component {
 
     return (
       <tr className={rowStyles}>
-        <td className={styles.driverInput}>
+        <td className={styles.driverInput + ' ' + styles.td}>
           <Checkbox isChecked={order.IsChecked} orderID={order.UserOrderNumber} tab={tab} />
         </td>
-        <td onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
         <td onClick={() => getDetail(order.UserOrderID)}>
           <img
             className={styles.orderLoadImage}
@@ -61,9 +61,9 @@ class OrderRow extends Component {
             onError={(e)=>{e.target.src=DEFAULT_IMAGE}}
           />
         </td>
-        <td onClick={() => getDetail(order.UserOrderID)} className={styles.orderIDColumn}>{order.UserOrderNumber}</td>
-        <td onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
-        <td onClick={() => getDetail(order.UserOrderID)}>
+        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)} className={styles.orderIDColumn}>{order.UserOrderNumber}</td>
+        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}>
           <div className={styles.cardLabel}>
             Deadline
           </div>
@@ -72,8 +72,8 @@ class OrderRow extends Component {
             <Deadline deadline={order.DueTime} />
           </div>
         </td>
-        <td onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
-        <td onClick={() => getDetail(order.UserOrderID)}>
+        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}>
           <div className={styles.cardLabel}>
             Driver's Name
           </div>
@@ -82,8 +82,8 @@ class OrderRow extends Component {
             {order.Driver ? `${order.Driver.FirstName} ${order.Driver.LastName}` : '-'}
           </div>
         </td>
-        <td onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
-        <td onClick={() => getDetail(order.UserOrderID)}>
+        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}>
           <div className={styles.cardLabel}>
             Order Status
           </div>
@@ -92,8 +92,8 @@ class OrderRow extends Component {
             {order.OrderStatus.OrderStatus}
           </div>
         </td>
-        <td onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
-        <td onClick={() => getDetail(order.UserOrderID)}>
+        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}>
           <div className={styles.cardLabel}>
             COD Type
           </div>
@@ -102,8 +102,8 @@ class OrderRow extends Component {
             {order.IsCOD ? 'COD' : 'Non-COD'}
           </div>
         </td>
-        <td onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
-        <td onClick={() => getDetail(order.UserOrderID)}>
+        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}>
           <div className={styles.cardLabel}>
             Fleet's Area
           </div>
@@ -144,7 +144,7 @@ function DropdownStoreBuilder(name) {
       statusOptions: statusOptions[props.tab],
       sortOptions,
       orderTypeOptions,
-      codOptions,
+      codOptions
     };
 
     return {
@@ -452,6 +452,10 @@ export class Filter extends Component {
         <SortFilter tab={tab} />
         <OrderTypeFilter tab={tab} />
         <Datepicker tab={tab} />
+
+        { searchResult[tab] && 
+          <span className={styles.searchResult}>{searchResult[tab]} order found from search result.</span>
+        }
 
         { (tab === 'succeed' || tab === 'pending') &&
           <div className={mainStyles.menuActionContainer}>

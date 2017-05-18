@@ -78,8 +78,8 @@ class OrderMonitoringPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showSucceed: true,
-      showPending: false,
+      showSucceed: false,
+      showPending: true,
       showFailed: false,
     };
   }
@@ -142,6 +142,8 @@ class OrderMonitoringPage extends Component {
             paginationState,
             expandedOrder,
             modal,
+            searchResult,
+            succeedAttempt,
             orders,
             showDelivery,
             ShowDeliveryModal,
@@ -157,9 +159,8 @@ class OrderMonitoringPage extends Component {
             isSuccessUpdateCOD,
             HideSuccessUpdateCOD,
             updateCODReport,
-            searchResult,
-            succeedAttempt,
           } = this.props;
+
     const DEFAULT_IMAGE = "/img/default-logo.png";
 
     const checkedOrders = _.filter(orders[this.getActiveTab()], {IsChecked: true});
@@ -204,16 +205,8 @@ class OrderMonitoringPage extends Component {
             </ModalDialog>
           </ModalContainer>
         }
+
         <div className={styles.widgetOuterContainer}>
-          <div
-            onClick={() => this.activateSucceed()}
-            className={`${styles.widgetContainer}
-            ${this.state.showSucceed ? styles.toggleWidgetActive : styles.toggleWidget}`}
-          >
-            <span className={styles.widgetTitle}>Total Succeed Delivery</span>
-            <span className={styles.total}>{succeedDelivery}</span>
-          </div>
-          <span className={styles.arbitTogglePickup}> | </span>
           <div
             onClick={() => this.activatePending()}
             className={`${styles.widgetContainer}
@@ -221,6 +214,15 @@ class OrderMonitoringPage extends Component {
           >
             <span className={styles.widgetTitle}>Total Pending Delivery</span>
             <span className={styles.total}>{pendingDelivery}</span>
+          </div>
+          <span className={styles.arbitTogglePickup}> | </span>
+          <div
+            onClick={() => this.activateSucceed()}
+            className={`${styles.widgetContainer}
+            ${this.state.showSucceed ? styles.toggleWidgetActive : styles.toggleWidget}`}
+          >
+            <span className={styles.widgetTitle}>Total Succeed Delivery</span>
+            <span className={styles.total}>{succeedDelivery}</span>
           </div>
           <span className={styles.arbitTogglePickup}> | </span>
           <div
@@ -243,6 +245,7 @@ class OrderMonitoringPage extends Component {
                 showUpdateCOD={ShowUpdateCODModal}
                 orders={orders}
                 checkedOrders={checkedOrders}
+                searchResult={searchResult}
                 hideOrder={HideOrder}
                 searchResult={searchResult}
               />
@@ -292,6 +295,8 @@ function mapState(store, tab) {
     expandedAttempt, 
     count, 
     modal,
+    searchResult,
+    succeedAttempt,
     orders,
     showDelivery,
     isSuccessDelivered,
@@ -299,8 +304,6 @@ function mapState(store, tab) {
     showUpdateCOD,
     isSuccessUpdateCOD,
     updateCODReport,
-    searchResult,
-    succeedAttempt,
   } = store.app.orderMonitoring;
 
   return {
@@ -313,6 +316,8 @@ function mapState(store, tab) {
     expandedAttempt,
     count,
     modal,
+    searchResult,
+    succeedAttempt,
     orders,
     showDelivery,
     isSuccessDelivered,
@@ -320,8 +325,6 @@ function mapState(store, tab) {
     showUpdateCOD,
     isSuccessUpdateCOD,
     updateCODReport,
-    searchResult,
-    succeedAttempt,
   }
 }
 
@@ -361,6 +364,9 @@ function mapDispatch(dispatch) {
     },
     PostAttempt: (reasonID, proof) => {
       dispatch(orderService.PostAttempt(reasonID, proof));
+    },
+    HideSucceedAttempt: () => {
+      dispatch(orderService.HideSucceedAttempt());
     },    
     ShowDeliveryModal: () => {
       dispatch(orderService.ShowDeliveryModal());
@@ -385,9 +391,6 @@ function mapDispatch(dispatch) {
     },
     HideSuccessUpdateCOD: () => {
       dispatch(orderService.HideSuccessUpdateCOD());
-    },
-    HideSucceedAttempt: () => {
-      dispatch(orderService.HideSucceedAttempt());
     }
   }
 }
@@ -688,11 +691,11 @@ function AttemptDetails({hideAttempt, expandedOrder, defaultImg}) {
               <div>
                 <img 
                   className={styles.driverPict} 
-                  src={attempt.Driver.PictureUrl} 
+                  src={attempt.Driver && attempt.Driver.PictureUrl} 
                   onError={(e) => {e.target.src=defaultImg}}
                 />
                 <span className={styles.driverName}>
-                  {attempt.Driver.FirstName} {attempt.Driver.LastName}
+                  {attempt.Driver && `${attempt.Driver.FirstName} ${attempt.Driver.LastName}`}
                 </span>
                 <span className={styles.attemptDate}>
                   {(key == 0) ? "First" : "Second"} attempt on&nbsp;

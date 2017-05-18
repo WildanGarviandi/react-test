@@ -10,11 +10,11 @@ class DragDropImageUploader extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isUploading: false
+      isUploading: false,
     };
   }
 
-  uploadImage(acc, reject) {
+  uploadImage(acc) {
     if (acc) {
       var formData = new FormData();
       formData.append('file', acc[0]);
@@ -39,7 +39,7 @@ class DragDropImageUploader extends Component {
         accept="image/jpeg, image/png"
         onDrop={(acc, reject) => this.uploadImage(acc, reject)}
       >
-        {({ isDragActive, isDragReject }) => {
+        {({ isDragReject }) => {
           if (isDragReject) {
             return "Some files will be rejected";
           }

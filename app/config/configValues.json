@@ -70,13 +70,13 @@
         { "key": 16, "value": "RETURNED_SENDER" }
       ]
     },
-    "deliverableOrderStatus": [2, 3, 4],
-    "updatableCOD": [4, 5],
     "codOptions": [{
       "key": "", "value": "All"
     }, {
       "key": "true", "value": "COD"
     }, {
       "key": "false", "value": "Non-COD"
-    }]
+    }],
+    "deliverableOrderStatus": [2, 3, 4],
+    "updatableCOD": [4, 5]
 }
