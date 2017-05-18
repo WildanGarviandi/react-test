@@ -245,7 +245,7 @@ const DashboardContainer = React.createClass({
     const activeMenuIdx = GetActiveMenuIdx(routes[routes.length - 1].path);
     const panelClass = classnaming('panel', { compact: this.state.isCompact });
     const loggedName = hubID ? `${fleetName} \n ${hubName}` : `${fleetName}`;
-    document.title = `Etobee TMS ${util.capitalize(this.props.cityTitle)}`;
+    document.title = `TMS ${util.capitalize(this.props.additionalTitle)}`;
 
     return (
       <div style={{ display: 'table', width: '100%', minHeight: '100%' }}>
@@ -274,13 +274,17 @@ function StoreToDashboard(dashboardStore) {
   const userLogged = dashboardStore.app.userLogged;
   const { countOpen, countInProgress, countFinished } = dashboardStore.app.myOrders;
   const { count, countTMS } = dashboardStore.app.dashboard;
-  let cityTitle = userLogged.hubName.toLocaleLowerCase();
-  cityTitle = cityTitle.replace(configValues.branchType.LOCAL.toLocaleLowerCase(), '')
-    .replace(configValues.branchType.CENTRAL.toLocaleLowerCase(), '').trim();
+  let additionalTitle = userLogged.hubName || userLogged.fleetName;
+  additionalTitle = additionalTitle
+    .toLocaleLowerCase()
+    .replace(configValues.branchType.LOCAL.toLocaleLowerCase(), '')
+    .replace(configValues.branchType.CENTRAL.toLocaleLowerCase(), '')
+    .replace('indonesia', '')
+    .trim();
 
   return {
     userLogged,
-    cityTitle,
+    additionalTitle,
     counterOrder: {
       countOpen,
       countInProgress,
