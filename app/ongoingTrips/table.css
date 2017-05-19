@@ -4,25 +4,21 @@
   border-image-width: initial;
   border-image-outset: initial;
   border-image-repeat: initial;
-
   width: 100%;
   max-width: 100%;
   margin-bottom: 20px;
-
   background-color: transparent;
-  border-collapse:separate; 
-  border-spacing: 0px 10px;
-
+  border-collapse: separate;
+  border-spacing: 0 10px;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 .th {
   border-top: 0;
   border-bottom-width: 2px;
-  background-color: #1A2226;
+  background-color: #1a2226;
   vertical-align: middle;
   text-align: left;
-
   color: #fff;
   font-size: 12px;
   font-weight: 400;
@@ -33,7 +29,7 @@
 .tr {
   cursor: pointer;
   color: #333;
-  background-color: #ffffff;
+  background-color: #fff;
 }
 
 tbody:last-child .tr:nth-of-type(odd) .td {
@@ -53,20 +49,36 @@ tbody:last-child .tr:nth-of-type(odd) .td {
   color: inherit;
 }
 
-tbody:last-child .tr:nth-of-type(odd).hovered, .hovered {
-  box-shadow: -1px 2px 8px 0px rgba(50, 50, 50, 0.75);
+tbody:last-child .tr:nth-of-type(odd).hovered,
+.hovered {
+  box-shadow: -1px 2px 8px 0 rgba(50, 50, 50, 0.75);
   cursor: pointer;
 }
 
-tbody:last-child .tr:nth-of-type(odd).select, .select {
-  box-shadow: 0px 0px 2px 2px rgba(0, 0, 255, 0.8);
+tbody:last-child .tr:nth-of-type(odd).select,
+.select {
+  box-shadow: 0 0 2px 2px rgba(0, 0, 255, 0.8);
 }
 
-tr:nth-of-type(odd) td:first-child { border-top-left-radius: 4px; border-bottom-left-radius: 4px; }
-tr:nth-of-type(odd) td:last-child { border-top-right-radius: 4px; border-bottom-right-radius: 4px; }
+tr:nth-of-type(odd) td:first-child {
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
 
-tr:nth-of-type(even) td:first-child { border-top-left-radius: 4px; border-bottom-left-radius: 4px; }
-tr:nth-of-type(even) td:last-child { border-top-right-radius: 4px; border-bottom-right-radius: 4px; }
+tr:nth-of-type(odd) td:last-child {
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+tr:nth-of-type(even) td:first-child {
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+tr:nth-of-type(even) td:last-child {
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
 
 .tr .td.gray {
   opacity: 0.5;
@@ -94,11 +106,9 @@ tr:nth-of-type(even) td:last-child { border-top-right-radius: 4px; border-bottom
   left: 0;
   right: 0;
   margin: 0 auto;
-
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-
   width: 100%;
   height: 28px;
 }
@@ -109,7 +119,7 @@ tr:nth-of-type(even) td:last-child { border-top-right-radius: 4px; border-bottom
 }
 
 .checkbox {
-  background-image: url(../img/login-checkbox-unchecked.png);
+  background-image: url('../../img/login-checkbox-unchecked.png');
   background-position: 50% 50%;
   background-repeat: no-repeat;
   -webkit-background-size: cover;
@@ -121,11 +131,11 @@ tr:nth-of-type(even) td:last-child { border-top-right-radius: 4px; border-bottom
 }
 
 .checkbox.Active {
-  background-image: url(../img/login-checkbox-checked.png);
+  background-image: url('../../img/login-checkbox-checked.png');
 }
 
 .checkbox.Loading {
-  background-image: url(../img/loading.gif);
+  background-image: url('../../img/loading.gif');
 }
 
 .currentHubMarker {
@@ -189,10 +199,7 @@ tr:nth-of-type(even) td:last-child { border-top-right-radius: 4px; border-bottom
 
 .table td {
   text-align: center;
-  padding-top: 15px;
-  padding-bottom: 15px;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding: 15px 10px;
 }
 
 .card {
@@ -205,31 +212,31 @@ thead {
 }
 
 table {
-  margin-bottom: 0px !important;
+  margin-bottom: 0 !important;
   border: none !important;
   border-collapse: separate !important;
 }
 
-table th:first-child{
-  border-radius:5px 0 0 0px;
+table th:first-child {
+  border-radius: 5px 0;
 }
 
-table th:last-child{
-  border-radius:0 5px 0px 0;
+table th:last-child {
+  border-radius: 0 5px 0 0;
 }
 
 .cardSeparator {
   width: 2px;
   background-color: #eee;
   height: 25px;
-  float: left; 
+  float: left;
 }
 
 .cardLabel {
   float: left;
-  color: #000000;
+  color: #000;
   opacity: 0.5;
-  font-size: 14px; 
+  font-size: 14px;
 }
 
 .cardValue {
@@ -237,7 +244,7 @@ table th:last-child{
   font-weight: bold;
   font-size: 14px;
   margin-top: 5px;
-  color: #000000;
+  color: #000;
   opacity: 0.8;
 }
 
@@ -245,7 +252,7 @@ table th:last-child{
   font-weight: bold;
   font-size: 16px;
   margin-top: 5px;
-  color: #000000;
+  color: #000;
   border-radius: 4px;
   background-color: rgba(33, 150, 243, 0.15);
   padding: 10px;
@@ -256,7 +263,7 @@ table th:last-child{
   font-weight: bold;
   font-size: 16px;
   margin-top: 5px;
-  color: #000000;
+  color: #000;
   border-radius: 4px;
   background-color: rgba(255, 228, 191, 0.15);
   padding: 10px;
@@ -267,7 +274,7 @@ table th:last-child{
   font-weight: bold;
   font-size: 16px;
   margin-top: 5px;
-  color: #000000;
+  color: #000;
   border-radius: 4px;
   background-color: rgba(255, 90, 96, 0.15);
   padding: 10px;
@@ -279,7 +286,7 @@ table th:last-child{
 }
 
 .tripIDColumn {
-    width: 90px;
+  width: 90px;
 }
 
 .reassignBulkButton {
@@ -290,7 +297,7 @@ table th:last-child{
   float: left;
 }
 
-.driverLoadImage {    
+.driverLoadImage {
   height: 40px;
   margin-right: 10px;
 }

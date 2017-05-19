@@ -6,9 +6,20 @@
   padding: 0 !important;
 }
 
-.colMd1, .colMd2, .colMd3, .colMd4, .colMd5, .colMd6, .colMd7, .colMd8, .colMd9, .colMd10, .colMd11, .colMd12 {
+.colMd1,
+.colMd2,
+.colMd3,
+.colMd4,
+.colMd5,
+.colMd6,
+.colMd7,
+.colMd8,
+.colMd9,
+.colMd10,
+.colMd11,
+.colMd12 {
   padding-right: 15px;
-  padding-left: 15px; 
+  padding-left: 15px;
   min-height: 1px;
 }
 
@@ -78,19 +89,19 @@
   border-radius: 5px;
 }
 
-.tick{
-    background-image: url('../img/tick.png');
-    background-size: 20px 20px;
-    background-position: center; 
-    background-repeat: no-repeat;
+.tick {
+  background-image: url('../../img/tick.png');
+  background-size: 20px 20px;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .stats h3 {
-  margin-top: 0px;
+  margin-top: 0;
 }
 
 .cod h3 {
-  margin-top: 0px;
+  margin-top: 0;
 }
 
 p.title {
@@ -189,20 +200,20 @@ p.title {
 
 .filterDropDown > div > input {
   border: 1px solid #e8e8e8;
-  border-right: 0px;
+  border-right: 0;
   padding: 8px;
   height: inherit;
 }
 
 .filterDropDown > div > span {
   border: 1px solid #e8e8e8;
-  border-left: 0px;
+  border-left: 0;
   background-color: #fff;
 }
 
 .filterDropDown > div > div {
-  border: 0px;
-  margin-top: 0px;
+  border: 0;
+  margin-top: 0;
 }
 
 .filterDropDown > div > div > span {
@@ -212,7 +223,8 @@ p.title {
   color: #929292 !important;
 }
 
-.filterDropDown > div > div > span:hover, .filterDropDown > div > div > span:focus {
+.filterDropDown > div > div > span:hover,
+.filterDropDown > div > div > span:focus {
   background-image: url('/img/icon-checkmark.png');
   background-repeat: no-repeat;
   background-size: 25px;
@@ -221,7 +233,7 @@ p.title {
 }
 
 .mainDetails {
-  background-color: #ffffff;
+  background-color: #fff;
   padding: 20px;
   border-radius: 4px;
 }
@@ -237,7 +249,7 @@ p.title {
 
 .submitButton {
   cursor: pointer;
-  color: #ffffff !important;
+  color: #fff !important;
   text-decoration: none !important;
 }
 
@@ -262,7 +274,7 @@ p.title {
   font-weight: bold;
   font-style: normal;
   font-stretch: normal;
-  color: #000000;
+  color: #000;
   cursor: pointer;
   width: calc(50% - 2px);
   float: left;
@@ -275,7 +287,7 @@ p.title {
   font-weight: bold;
   font-style: normal;
   font-stretch: normal;
-  color: #000000;
+  color: #000;
   border-bottom: 6px solid #2196f3;
   cursor: pointer;
   width: calc(50% - 2px);
@@ -386,14 +398,14 @@ p.title {
 }
 
 .vendorInformation {
-  background-color: #ffffff;
+  background-color: #fff;
   vertical-align: middle;
   height: 72px;
   cursor: pointer;
 }
 
 .vendorInformationSelected {
-  background-color: #ffffff;
+  background-color: #fff;
   vertical-align: middle;
   height: 72px;
   border-radius: 4px;
@@ -402,7 +414,7 @@ p.title {
 }
 
 .vendorInformationSelectedExceed {
-  background-color: #ffffff;
+  background-color: #fff;
   vertical-align: middle;
   height: 72px;
   border-radius: 4px;
@@ -411,7 +423,7 @@ p.title {
 }
 
 .vendorInformationNone {
-  background-color: #ffffff;
+  background-color: #fff;
   vertical-align: middle;
   height: 72px;
   pointer-events: none;
@@ -420,11 +432,10 @@ p.title {
 
 .buttonSplitNo {
   border: 0;
-  border-radius: 5px;
   width: 80px;
   height: 44px;
   border-radius: 4px;
-  background-color: #FF5A60;
+  background-color: #ff5a60;
   color: #fff;
   cursor: pointer;
   padding: 5px;
@@ -435,7 +446,6 @@ p.title {
 
 .buttonSplitYes {
   border: 0;
-  border-radius: 5px;
   width: 80px;
   height: 44px;
   border-radius: 4px;
@@ -516,14 +526,11 @@ p.title {
   width: 163px;
   height: 23px;
   border-radius: 4px;
-  background-color: #ffffff;
+  background-color: #fff;
   border: solid 1px #e8e8e8;
   float: right;
   margin-right: 16px;
-  padding-top: 15px;
-  padding-bottom: 15px;
-  padding-left: 5px;
-  padding-right: 5px;
+  padding: 15px 5px;
   margin-top: 10px;
 }
 
@@ -531,7 +538,7 @@ p.title {
   width: 163px;
   height: 23px;
   border-radius: 4px;
-  background-color: #ffffff;
+  background-color: #fff;
   border: solid 1px #e8e8e8;
   float: right;
   margin-right: 16px;
@@ -549,10 +556,9 @@ p.title {
 
 .buttonAssign {
   border: 0;
-  border-radius: 5px;
+  border-radius: 4px;
   width: 160px;
   height: 44px;
-  border-radius: 4px;
   background-color: #38b393;
   color: #fff;
   cursor: pointer;
@@ -606,27 +612,27 @@ p.title {
 
 /* The animation code */
 @keyframes searchingIcon {
-  0% {margin-left: -60px;}
-  5% {margin-left: 60px;}
-  10% {margin-left: -60px;}
-  15% {margin-left: 60px;}
-  20% {margin-left: -60px;}
-  25% {margin-left: 60px;}
-  30% {margin-left: -60px;}
-  35% {margin-left: 60px;}
-  40% {margin-left: -60px;}
-  45% {margin-left: 60px;}
-  50% {margin-left: -60px;}
-  55% {margin-left: 60px;}
-  60% {margin-left: -60px;}
-  65% {margin-left: 60px;}
-  70% {margin-left: -60px;}
-  75% {margin-left: 60px;}
-  80% {margin-left: -60px;}
-  85% {margin-left: 60px;}
-  90% {margin-left: -60px;}
-  95% {margin-left: 60px;}
-  100% {margin-left: 0px;}
+  0% { margin-left: -60px; }
+  5% { margin-left: 60px; }
+  10% { margin-left: -60px; }
+  15% { margin-left: 60px; }
+  20% { margin-left: -60px; }
+  25% { margin-left: 60px; }
+  30% { margin-left: -60px; }
+  35% { margin-left: 60px; }
+  40% { margin-left: -60px; }
+  45% { margin-left: 60px; }
+  50% { margin-left: -60px; }
+  55% { margin-left: 60px; }
+  60% { margin-left: -60px; }
+  65% { margin-left: 60px; }
+  70% { margin-left: -60px; }
+  75% { margin-left: 60px; }
+  80% { margin-left: -60px; }
+  85% { margin-left: 60px; }
+  90% { margin-left: -60px; }
+  95% { margin-left: 60px; }
+  100% { margin-left: 0; }
 }
 
 .searchingDriver {
@@ -652,7 +658,7 @@ p.title {
 }
 
 .noOrder {
-  background-color: #ffffff;
+  background-color: #fff;
   height: 200px;
 }
 
@@ -663,10 +669,9 @@ p.title {
 
 .autoGroupButton {
   border: 0;
-  border-radius: 5px;
+  border-radius: 4px;
   width: 110px;
   height: 44px;
-  border-radius: 4px;
   background-color: #ffa500;
   color: #fff;
   cursor: pointer;
@@ -680,10 +685,9 @@ p.title {
 
 .autoGroupButtonDisable {
   border: 0;
-  border-radius: 5px;
+  border-radius: 4px;
   width: 110px;
   height: 44px;
-  border-radius: 4px;
   background-color: #ffa500;
   color: #fff;
   cursor: pointer;
@@ -699,10 +703,9 @@ p.title {
 
 .manualGroupButton {
   border: 0;
-  border-radius: 5px;
+  border-radius: 4px;
   width: 110px;
   height: 44px;
-  border-radius: 4px;
   background-color: #2196f3;
   color: #fff;
   cursor: pointer;
@@ -716,10 +719,9 @@ p.title {
 
 .manualGroupButtonDisable {
   border: 0;
-  border-radius: 5px;
+  border-radius: 4px;
   width: 110px;
   height: 44px;
-  border-radius: 4px;
   background-color: #2196f3;
   color: #fff;
   cursor: pointer;
@@ -747,8 +749,8 @@ p.title {
 
 .modalOrderMain {
   border-radius: 4px;
-  background-color: #ffffff;
-  border: solid 1px #eeeeee;
+  background-color: #fff;
+  border: solid 1px #eee;
   padding: 10px;
   width: 550px;
 }
@@ -768,7 +770,7 @@ p.title {
 
 .topDescDetails {
   border-radius: 4px;
-  background-color: #ffffff;
+  background-color: #fff;
   border: solid 1px #e8e8e8;
   padding: 5px;
   margin-bottom: 20px;
@@ -808,7 +810,7 @@ p.title {
   font-style: normal;
   font-stretch: normal;
   text-align: center !important;
-  color: #ffffff !important;
+  color: #fff !important;
   height: 32px !important;
   cursor: default;
   opacity: 0.5;
@@ -835,7 +837,7 @@ p.title {
 
 .modalTabPanel {
   padding: 15px;
-  background: #ffffff;
+  background: #fff;
   height: 300px;
   max-height: 400px;
   overflow-y: auto;
@@ -844,7 +846,7 @@ p.title {
 
 .modalTabPanel3pL {
   padding: 15px;
-  background: #ffffff;
+  background: #fff;
   max-height: 400px;
   height: 300px;
   overflow-y: auto;
@@ -901,7 +903,7 @@ p.title {
 .imageUploaderWrapper::before {
   content: ':';
   position: absolute;
-  left: 0px;
+  left: 0;
   top: 10px;
   text-indent: 0;
 }
@@ -918,7 +920,7 @@ p.title {
   font-weight: bold;
   font-style: normal;
   font-stretch: normal;
-  color: #000000;
+  color: #000;
   margin-bottom: 8px;
 }
 
@@ -935,7 +937,8 @@ p.title {
   text-align: left;
 }
 
-.uploadButton, .uploadButton label {
+.uploadButton,
+.uploadButton label {
   padding: 0;
   margin: 0;
 }
@@ -949,17 +952,17 @@ p.title {
   color: #fff;
   background-color: #2196f3;
   float: right;
-  width: 50%; 
+  width: 50%;
 }
 
 .uploadButton label:hover {
   color: #fff;
-  background-color: #1682d8; 
+  background-color: #1682d8;
 }
 
 .uploadButton input {
   width: 100%;
-  padding: 0; 
+  padding: 0;
   height: 10px;
 }
 
@@ -970,10 +973,10 @@ p.title {
 }
 
 .arrowDown {
-  width: 0; 
-  height: 0; 
+  width: 0;
+  height: 0;
   border-left: 6px solid transparent;
-  border-right: 6px solid transparent;  
+  border-right: 6px solid transparent;
   border-top: 6px solid #000;
   float: left;
   margin-top: 7.5px;
@@ -981,10 +984,10 @@ p.title {
 }
 
 .arrowUp {
-  width: 0; 
-  height: 0; 
+  width: 0;
+  height: 0;
   border-left: 6px solid transparent;
-  border-right: 6px solid transparent;  
+  border-right: 6px solid transparent;
   border-bottom: 6px solid #000;
   float: left;
   margin-top: 7.5px;
