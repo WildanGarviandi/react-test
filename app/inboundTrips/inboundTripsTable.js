@@ -46,7 +46,7 @@ const ColumnsTitle = {
   scannedOrders: 'Scanned Orders',
   verifiedOrders: 'Verified Orders',
   tripType: 'Trip Type',
-  origin: 'Origin'
+  origin: 'Origin',
 };
 
 let fleetList = {};
@@ -61,6 +61,7 @@ const Table = React.createClass({
       const cells = _.map(ColumnsOrder, (columnKey) => {
         if (columnKey === 'tripID') {
           return <td className={tableStyles.td + ' ' + styles.tripIDColumn} key={columnKey}>
+            {item.isNew && <img src={'/img/label-new.png'} />}
             <Link to={`/trips/${item.key}`} className={styles.link}>{item[columnKey]}</Link>
           </td>;
         }
@@ -151,6 +152,11 @@ function TripDropOff(trip) {
   return destinationHub || dropoffAddress || '';
 }
 
+function IsNew(trip) {
+  const diff = moment().diff(moment(trip.AssignedTime), 'minutes');
+  return (diff >= 0 && diff < 4) || false;
+}
+
 export function GetTripType(trip) {
   if (!trip) return '-';
 
@@ -199,7 +205,8 @@ function ProcessTrip(trip) {
     verifiedOrders: `${trip.ScannedOrders}/${trip.UserOrderRoutes.length} order(s) are verified`,
     assignedTo,
     tripType: GetTripType(trip),
-    origin: trip.OriginHub ? `Hub ${trip.OriginHub.Name}` : parsedTrip.WebstoreNames
+    origin: trip.OriginHub ? `Hub ${trip.OriginHub.Name}` : parsedTrip.WebstoreNames,
+    isNew: IsNew(trip),
   };
 }
 
