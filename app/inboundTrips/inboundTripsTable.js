@@ -5,10 +5,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { Link } from 'react-router';
-import * as InboundTrips from './inboundTripsService';
 import classnaming from 'classnames';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
 
+import * as InboundTrips from './inboundTripsService';
 import { DropdownTypeAhead, Input, Pagination } from '../views/base';
 import DateRangePicker from '../views/base/dateRangePicker';
 import tableStyles from '../views/base/table.css';
@@ -21,6 +21,7 @@ import stylesModal from '../views/base/modal.css';
 import styles from './styles.css';
 import { CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered } from '../modules/trips';
 import { OrderParser } from '../modules/orders';
+import { time } from '../config/configValues';
 
 const ColumnsOrder = ['tripID', 'origin', 'tripType', 'weight', 'driver', 'driverPhone', 'status', 'verifiedOrders'];
 
@@ -152,9 +153,9 @@ function TripDropOff(trip) {
   return destinationHub || dropoffAddress || '';
 }
 
-function IsNew(trip) {
-  const diff = moment().diff(moment(trip.AssignedTime), 'minutes');
-  return (diff >= 0 && diff < 4) || false;
+function isNew(trip) {
+  const diff = moment().diff(moment(trip.AssignedTime), time.MINUTES);
+  return (diff >= 0 && diff < 4);
 }
 
 export function GetTripType(trip) {
@@ -206,7 +207,7 @@ function ProcessTrip(trip) {
     assignedTo,
     tripType: GetTripType(trip),
     origin: trip.OriginHub ? `Hub ${trip.OriginHub.Name}` : parsedTrip.WebstoreNames,
-    isNew: IsNew(trip),
+    isNew: isNew(trip),
   };
 }
 
