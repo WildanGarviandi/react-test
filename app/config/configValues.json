@@ -80,10 +80,6 @@
     "deliverableOrderStatus": [2, 3, 4],
     "updatableCOD": [4, 5],
     "time": {
-<<<<<<< HEAD
       "MINUTES": "minutes"
-=======
-      "minutes": "minutes"
->>>>>>> 4a065bb... function name fix, add config value, refactor
     }
 }
