@@ -21,7 +21,7 @@ import stylesModal from '../views/base/modal.css';
 import styles from './styles.css';
 import { CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered } from '../modules/trips';
 import { OrderParser } from '../modules/orders';
-import { time } from '../config/configValues';
+import { time } from '../config/configValues.json';
 
 const ColumnsOrder = ['tripID', 'origin', 'tripType', 'weight', 'driver', 'driverPhone', 'status', 'verifiedOrders'];
 
