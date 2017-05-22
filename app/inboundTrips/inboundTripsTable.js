@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import ClassName from 'classnames';
 import moment from 'moment';
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { Link } from 'react-router';
@@ -21,6 +21,8 @@ import stylesModal from '../views/base/modal.css';
 import styles from './styles.css';
 import { CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered } from '../modules/trips';
 import { OrderParser } from '../modules/orders';
+import { FilterTop, FilterText } from '../components/form';
+import * as config from '../config/configValues.json';
 
 const ColumnsOrder = ['tripID', 'origin', 'tripType', 'weight', 'driver', 'driverPhone', 'status', 'verifiedOrders'];
 
@@ -245,6 +247,47 @@ const VerifiedOrder = React.createClass({
   },
 });
 
+function dropdownStateToProps(keyword, title) {
+  return (store) => {
+    const value = store.app.inboundTrips[keyword];
+    const options = config[keyword];
+
+    return { value, options, title };
+  };
+}
+
+function dropdownDispatchToProps(keyword) {
+  return (dispatch) => {
+    return {
+      handleSelect: ({ value }) => {
+        dispatch(InboundTrips.setDropdownFilter(keyword, value));
+      },
+    };
+  };
+}
+
+const TripProblemDropdown = connect(
+  dropdownStateToProps('tripCategory', 'Filter by Trip Category'),
+  dropdownDispatchToProps('tripCategory'),
+)(FilterTop);
+
+export class Filter extends Component {
+  render() {
+    return (
+      <div>
+        <TripProblemDropdown />
+      </div>
+    );
+  }
+}
+
+function filterStateToProps(state) {
+
+}
+
+function filterDispatchToProps(state) {
+
+}
 
 const TableStateful = React.createClass({
   getInitialState() {

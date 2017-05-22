@@ -4,7 +4,7 @@ import { push } from 'react-router-redux';
 
 import { Input, Page } from '../views/base';
 import * as InboundTrips from './inboundTripsService';
-import InboundTable from './inboundTripsTable';
+import InboundTable, { Filter } from './inboundTripsTable';
 import FleetsFetch from '../modules/drivers/actions/fleetsFetch';
 import styles from './styles.css';
 import formStyles from '../components/form.css';
@@ -32,19 +32,7 @@ const InboundTripPage = React.createClass({
     return (
       <div>
         <Page title="Inbound Trips" count={{ itemName: 'Items', done: 'All Done', value: this.props.total }}>
-          <div>
-            <span>
-              <Input
-                base={{ placeholder: 'Search Trip ID here ...' }}
-                className={styles.searchInput}
-                onChange={this.onChange}
-                onEnterKeyPressed={this.gotoTrip}
-              />
-            </span>
-            <span>
-              <button onClick={this.gotoTrip} className={styles.searchButton}>Search</button>
-            </span>
-          </div>
+          <Filter />
           <div className={styles.mainTable}>
             <InboundTable
               key={this.props.lastPath}

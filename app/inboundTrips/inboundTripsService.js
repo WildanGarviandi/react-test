@@ -19,7 +19,8 @@ const Constants = {
   TRIPS_INBOUND_SET: 'inbound/trips/set',
   TRIPS_INBOUND_RESET_FILTER: 'inbound/trips/resetFilter',
   TRIPS_INBOUND_SHOW_DETAILS: 'inbound/trips/showDetails',
-  TRIPS_INBOUND_HIDE_DETAILS: 'inbound/trips/hideDetails'
+  TRIPS_INBOUND_HIDE_DETAILS: 'inbound/trips/hideDetails',
+  TRIPS_INBOUND_SET_DROPDOWN_FILTER: 'inbound/trips/setDropdownFilter',
 };
 
 const initialState = {
@@ -34,6 +35,7 @@ const initialState = {
   trips: [],
   showDetails: false,
   tripActive: {},
+  tripCategory: 'All',
 };
 
 export function Reducer(state = initialState, action) {
@@ -86,6 +88,12 @@ export function Reducer(state = initialState, action) {
 
     case Constants.TRIPS_INBOUND_HIDE_DETAILS: {
       return _.assign({}, state, { showDetails: false, tripActive: {} });
+    }
+
+    case Constants.TRIPS_INBOUND_SET_DROPDOWN_FILTER: {
+      const { keyword, value } = action;
+
+      return _.assign({}, state, { [keyword]: value });
     }
 
     default: return state;
@@ -291,6 +299,16 @@ export function ShowDetails(tripID) {
 export function HideDetails() {
   return (dispatch) => {
     dispatch({ type: Constants.TRIPS_INBOUND_HIDE_DETAILS });
+  };
+}
+
+export function setDropdownFilter(keyword, value) {
+  return (dispatch) => {
+    dispatch({
+      type: Constants.TRIPS_INBOUND_SET_DROPDOWN_FILTER,
+      keyword,
+      value,
+    });
   };
 }
 
