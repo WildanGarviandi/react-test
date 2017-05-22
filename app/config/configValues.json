@@ -81,7 +81,6 @@
     "updatableCOD": [4, 5],
     "tripProblem": [
       { "key": -1, "value": "All" },
-      { "key": 0, "value": "New" },
       { "key": 1, "value": "Not Confirmed" },
       { "key": 2, "value": "Not Arrived" },
       { "key": 3, "value": "Not Finished" }
