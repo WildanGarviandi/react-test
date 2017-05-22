@@ -48,7 +48,7 @@ const ColumnsTitle = {
   scannedOrders: 'Scanned Orders',
   verifiedOrders: 'Verified Orders',
   tripType: 'Trip Type',
-  origin: 'Origin'
+  origin: 'Origin',
 };
 
 let fleetList = {};
@@ -250,7 +250,17 @@ const VerifiedOrder = React.createClass({
 function dropdownStateToProps(keyword, title) {
   return (store) => {
     const value = store.app.inboundTrips[keyword];
-    const options = config[keyword];
+    const cities = store.app.cityList.cities;
+    let cityOptions = [{
+      key: 0, value: 'All',
+    }];
+
+    cityOptions = cityOptions.concat(_.chain(cities)
+      .map((city) => ({ key: city.CityID, value: city.Name }))
+      .sortBy((arr) => (arr.key))
+      .value());
+
+    const options = config[keyword] || cityOptions;
 
     return { value, options, title };
   };
@@ -266,27 +276,19 @@ function dropdownDispatchToProps(keyword) {
   };
 }
 
-const TripProblemDropdown = connect(
-  dropdownStateToProps('tripProblem', 'Filter by Trip Problem'),
-  dropdownDispatchToProps('tripProblem'),
+const CityDropdown = connect(
+  dropdownStateToProps('city', 'Filter by City'),
+  dropdownDispatchToProps('city'),
 )(FilterTop);
 
 export class Filter extends Component {
   render() {
     return (
       <div>
-        <TripProblemDropdown />
+        <CityDropdown />
       </div>
     );
   }
-}
-
-function filterStateToProps(state) {
-
-}
-
-function filterDispatchToProps(state) {
-
 }
 
 const TableStateful = React.createClass({
