@@ -1,8 +1,7 @@
 .page {
-  background: url('../../img/bg-login.jpg') no-repeat center center fixed;
+  background: url('../../../img/bg-login.jpg') no-repeat center center fixed;
   -webkit-background-size: cover;
   background-size: cover;
-
   padding-top: 50px;
   padding-bottom: 50px;
 }
@@ -11,19 +10,16 @@
   border: solid 1px #eee;
   border-radius: 5px;
   background-color: #fff;
-
   width: 510px;
   margin: 0 auto;
 }
 
 .logo {
-  background-image: url('../../img/etobee-hd-logo-plain.png');
+  background-image: url('../../../img/etobee-hd-logo-plain.png');
   -webkit-background-size: cover;
   background-size: cover;
-
   width: 75px;
   height: 113px;
-
   margin: 0 auto 30px;
 }
 
@@ -32,7 +28,6 @@
   margin: 0 auto;
   padding-top: 30px;
   padding-bottom: 30px;
-
   font-size: 12px;
   font-weight: 400;
 }
@@ -50,12 +45,9 @@
   background-color: transparent;
   border: 1px solid #dbdbdb;
   border-radius: 3px;
-
   height: 34px;
   width: 100%;
-
   padding: 0;
-
   color: #222;
   font-size: 12px;
   text-indent: 20px;
@@ -71,18 +63,14 @@
   background-color: transparent;
   border: 1px solid #dbdbdb;
   border-radius: 3px;
-
   width: 340px;
-
   margin-top: 10px;
   margin-bottom: 10px;
   padding: 0;
-
   color: #222;
   font-size: 12px;
-  text-indent: 20px;
   margin-left: 5px;
-  text-indent: 0px;
+  text-indent: 0;
 }
 
 .inputError {
@@ -96,16 +84,14 @@
 
 .checkbox {
   display: inline-block;
-
-  background-image: url('../../img/login-checkbox-unchecked.png');
+  background-image: url('../../../img/login-checkbox-unchecked.png');
   background-position: 0 0;
   background-repeat: no-repeat;
-
   height: 20px;
 }
 
 .checkbox.checked {
-  background-image: url('../../img/login-checkbox-checked.png');
+  background-image: url('../../../img/login-checkbox-checked.png');
 }
 
 .checkboxInput {
@@ -118,7 +104,6 @@
 .checkboxLabel {
   position: relative;
   top: -3px;
-
   margin-left: 5px;
 }
 
@@ -137,13 +122,10 @@
 
 .submitBtn {
   display: block;
-
   width: 100%;
   height: 40px;
-
   padding: 10px;
   margin-top: 10px;
-
   font-size: 18px;
 }
 
@@ -157,7 +139,7 @@
   padding: 5px;
   display: block;
   max-width: 350px;
-  text-indent: 0px;
+  text-indent: 0;
 }
 
 .prefix {

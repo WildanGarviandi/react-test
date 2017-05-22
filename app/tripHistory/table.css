@@ -1,5 +1,5 @@
 :global(.createdDate) :global(.rdt) {
-    width: 100%;
+  width: 100%;
 }
 
 :global(.createdDate) :global(.rdtPicker) {
@@ -16,26 +16,22 @@
   border-width: 1px;
   border-style: solid;
   border-color: rgb(221, 221, 221);
-
   width: 100%;
   max-width: 100%;
   margin-bottom: 20px;
-
   background-color: transparent;
   border-collapse: collapse;
-  border-spacing: 0px;
-
+  border-spacing: 0;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 .th {
   border-top: 0;
-  border-bottom-width: 2px;
+  border-bottom: 2px;
   border: solid 1px #ddd;
-  background-color: #1A2226;
+  background-color: #1a2226;
   vertical-align: middle;
   text-align: left;
-
   color: #fff;
   font-size: 12px;
   font-weight: 400;
@@ -97,17 +93,15 @@
   left: 0;
   right: 0;
   margin: 0 auto;
-
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-
   width: 100%;
   height: 28px;
 }
 
 .checkbox {
-  background-image: url(../img/login-checkbox-unchecked.png);
+  background-image: url('../../img/login-checkbox-unchecked.png');
   background-position: 50% 50%;
   background-repeat: no-repeat;
   -webkit-background-size: cover;
@@ -119,11 +113,11 @@
 }
 
 .checkbox.Active {
-  background-image: url(../img/login-checkbox-checked.png);
+  background-image: url('../../img/login-checkbox-checked.png');
 }
 
 .checkbox.Loading {
-  background-image: url(../img/loading.gif);
+  background-image: url('../../img/loading.gif');
 }
 
 .currentHubMarker {

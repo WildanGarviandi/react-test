@@ -82,5 +82,8 @@
     "branchType": {
       "LOCAL": "Local",
       "CENTRAL": "Central"
+    },
+    "time": {
+      "MINUTES": "minutes"
     }
 }
