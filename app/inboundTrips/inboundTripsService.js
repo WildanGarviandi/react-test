@@ -35,7 +35,7 @@ const initialState = {
   trips: [],
   showDetails: false,
   tripActive: {},
-  tripCategory: 'All',
+  tripProblem: 'All',
 };
 
 export function Reducer(state = initialState, action) {

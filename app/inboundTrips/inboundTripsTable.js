@@ -267,8 +267,8 @@ function dropdownDispatchToProps(keyword) {
 }
 
 const TripProblemDropdown = connect(
-  dropdownStateToProps('tripCategory', 'Filter by Trip Category'),
-  dropdownDispatchToProps('tripCategory'),
+  dropdownStateToProps('tripProblem', 'Filter by Trip Problem'),
+  dropdownDispatchToProps('tripProblem'),
 )(FilterTop);
 
 export class Filter extends Component {
