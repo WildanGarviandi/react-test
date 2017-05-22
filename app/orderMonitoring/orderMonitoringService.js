@@ -5,7 +5,7 @@ import FetchGet from '../modules/fetch/get';
 import FetchPost from '../modules/fetch/post';
 import ModalActions from '../modules/modals/actions';
 import { modalAction } from '../modules/modals/constants';
-import { defaultStatuses } from '../config/configValues';
+import { defaultStatuses } from '../config/configValues.json';
 
 const Constants = {
   FETCH_COUNT: 'FETCH_COUNT',
