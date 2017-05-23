@@ -292,6 +292,11 @@ function inputDispatchToProps(keyword, placeholder) {
   };
 }
 
+const TripIDSearch = connect(
+  inputStateToProps('tripID'),
+  inputDispatchToProps('tripID', 'Search "Trip ID" here....'),
+)(InputFilter);
+
 const ChildMerchantSearch = connect(
   inputStateToProps('childMerchant'),
   inputDispatchToProps('childMerchant', 'Search "Child Merchant Name"....'),
@@ -301,6 +306,7 @@ export class Filter extends Component {
   render() {
     return (
       <div>
+        <TripIDSearch />
         <ChildMerchantSearch />
       </div>
     );
