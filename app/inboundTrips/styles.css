@@ -552,3 +552,14 @@
 .link:hover {
   text-decoration: underline;
 }
+
+.inputSearch {
+  border-radius: 4px;
+  border: solid 1px #e8e8e8;
+  height: 30px;
+  display: table-cell;
+  margin-right: 1%;
+  width: 25%;
+  padding: 5px 0 5px 10px;
+  float: left;
+}

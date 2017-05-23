@@ -247,46 +247,64 @@ const VerifiedOrder = React.createClass({
   },
 });
 
-function dropdownStateToProps(keyword, title) {
+function InputFilter({ value, onChange, onKeyDown, placeholder }) {
+  return (
+    <input
+      className={styles.inputSearch}
+      placeholder={placeholder}
+      type="text"
+      value={value}
+      onChange={onChange}
+      onKeyDown={onKeyDown}
+    />
+  );
+}
+
+function inputStateToProps(keyword) {
   return (store) => {
-    const value = store.app.inboundTrips[keyword];
+    const value = store.app.inboundTrips.filters[keyword];
     const options = config[keyword];
 
-    return { value, options, title };
+    return { value, options };
   };
 }
 
-function dropdownDispatchToProps(keyword) {
+function inputDispatchToProps(keyword, placeholder) {
   return (dispatch) => {
+    function OnChange(e) {
+      const value = e.target.value;
+
+      dispatch(InboundTrips.AddFilters({ [keyword]: value }));
+    }
+
+    function OnKeyDown(e) {
+      if (e.keyCode !== 13) {
+        return;
+      }
+      dispatch(InboundTrips.SetCurrentPage(1));
+    }
+
     return {
-      handleSelect: ({ value }) => {
-        dispatch(InboundTrips.setDropdownFilter(keyword, value));
-      },
+      onChange: OnChange,
+      onKeyDown: OnKeyDown,
+      placeholder,
     };
   };
 }
 
-const TripProblemDropdown = connect(
-  dropdownStateToProps('tripProblem', 'Filter by Trip Problem'),
-  dropdownDispatchToProps('tripProblem'),
-)(FilterTop);
+const ChildMerchantSearch = connect(
+  inputStateToProps('childMerchant'),
+  inputDispatchToProps('childMerchant', 'Search "Child Merchant Name"....'),
+)(InputFilter);
 
 export class Filter extends Component {
   render() {
     return (
       <div>
-        <TripProblemDropdown />
+        <ChildMerchantSearch />
       </div>
     );
   }
-}
-
-function filterStateToProps(state) {
-
-}
-
-function filterDispatchToProps(state) {
-
 }
 
 const TableStateful = React.createClass({

@@ -21,6 +21,7 @@ const Constants = {
   TRIPS_INBOUND_SHOW_DETAILS: 'inbound/trips/showDetails',
   TRIPS_INBOUND_HIDE_DETAILS: 'inbound/trips/hideDetails',
   TRIPS_INBOUND_SET_DROPDOWN_FILTER: 'inbound/trips/setDropdownFilter',
+
 };
 
 const initialState = {
@@ -113,8 +114,6 @@ export function AddFilters(newFilters) {
       type: Constants.TRIPS_INBOUND_FILTERS_SET,
       filters: _.assign({}, filters, newFilters),
     });
-
-    dispatch(SetCurrentPage(1));
   };
 }
 
