@@ -8,6 +8,7 @@ import InboundTable from './inboundTripsTable';
 import FleetsFetch from '../modules/drivers/actions/fleetsFetch';
 import styles from './styles.css';
 import formStyles from '../components/form.css';
+import InboundTripsModal from './inboundTripsModal';
 
 const InboundTripPage = React.createClass({
   getInitialState() {
@@ -52,6 +53,7 @@ const InboundTripPage = React.createClass({
               isInbound={this.props.isInbound}
             />
           </div>
+          <InboundTripsModal />
         </Page>
       </div>
     );

@@ -34,6 +34,7 @@ const initialState = {
   trips: [],
   showDetails: false,
   tripActive: {},
+  showModal: true,
 };
 
 export function Reducer(state = initialState, action) {
@@ -321,6 +322,40 @@ export function TripDeliver(tripID, reuse) {
       const message = (e && e.message) ? e.message : 'Failed to mark trip as delivered';
       dispatch({ type: modalAction.BACKDROP_HIDE });
       dispatch(ModalActions.addMessage(message));
+    });
+  };
+}
+
+export function FetchDrivers(tripID) {
+  return (dispatch, getState) => {
+    const { pickupOrdersReady, userLogged } = getState().app;
+    const { token } = userLogged;
+    const { currentPageDrivers, filtersDrivers, limitDrivers } = pickupOrdersReady;
+
+    const query = _.assign({}, filtersDrivers, {
+      limit: limitDrivers,
+      offset: (currentPageDrivers - 1) * limitDrivers,
+    });
+
+    dispatch({ type: Constants.ORDERS_PICKUP_DRIVER_FETCH_START });
+    FetchGet('/driver', token, query).then((response) => {
+      if (!response.ok) {
+        return response.json().then(({ error }) => {
+          throw error;
+        })
+      }
+
+      return response.json().then(({ data }) => {
+        dispatch({ type: Constants.ORDERS_PICKUP_DRIVER_FETCH_END });
+        dispatch({
+          type: Constants.ORDERS_PICKUP_SET_DRIVERS,
+          drivers: data.rows,
+          totalDrivers: data.count,
+        });
+      });
+    }).catch((e) => {
+      dispatch({ type: Constants.ORDERS_PICKUP_DRIVER_FETCH_END });
+      dispatch(ModalActions.addMessage(e.message));
     });
   };
 }
