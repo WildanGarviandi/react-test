@@ -279,8 +279,12 @@ function inputDispatchToProps(keyword, placeholder) {
 
     function OnKeyDown(e) {
       if (e.keyCode !== 13) {
+        if (keyword === 'zipCode' && ((e.keyCode > 64 && e.keyCode < 91) || e.keyCode > 185)) {
+          e.preventDefault();
+        }
         return;
       }
+
       dispatch(InboundTrips.SetCurrentPage(1));
     }
 
@@ -292,16 +296,16 @@ function inputDispatchToProps(keyword, placeholder) {
   };
 }
 
-const ChildMerchantSearch = connect(
-  inputStateToProps('childMerchant'),
-  inputDispatchToProps('childMerchant', 'Search "Child Merchant Name"....'),
+const ZipCodeSearch = connect(
+  inputStateToProps('zipCode'),
+  inputDispatchToProps('zipCode', 'Search "Zip Code"....'),
 )(InputFilter);
 
 export class Filter extends Component {
   render() {
     return (
       <div>
-        <ChildMerchantSearch />
+        <ZipCodeSearch />
       </div>
     );
   }
