@@ -297,9 +297,9 @@ const TripIDSearch = connect(
   inputDispatchToProps('tripID', 'Search "Trip ID" here....'),
 )(InputFilter);
 
-const ChildMerchantSearch = connect(
-  inputStateToProps('childMerchant'),
-  inputDispatchToProps('childMerchant', 'Search "Child Merchant Name"....'),
+const OriginSearch = connect(
+  inputStateToProps('origin'),
+  inputDispatchToProps('origin', 'Search "Origin" here....'),
 )(InputFilter);
 
 export class Filter extends Component {
@@ -307,7 +307,7 @@ export class Filter extends Component {
     return (
       <div>
         <TripIDSearch />
-        <ChildMerchantSearch />
+        <OriginSearch />
       </div>
     );
   }
