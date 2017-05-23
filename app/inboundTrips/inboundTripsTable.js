@@ -296,15 +296,21 @@ function inputDispatchToProps(keyword, placeholder) {
   };
 }
 
+const TripIDSearch = connect(
+  inputStateToProps('tripID'),
+  inputDispatchToProps('tripID', 'Search "Trip ID" here....'),
+)(InputFilter);
+
 const ZipCodeSearch = connect(
   inputStateToProps('zipCode'),
-  inputDispatchToProps('zipCode', 'Search "Zip Code"....'),
+  inputDispatchToProps('zipCode', 'Search "Zip Code" here....'),
 )(InputFilter);
 
 export class Filter extends Component {
   render() {
     return (
       <div>
+        <TripIDSearch />
         <ZipCodeSearch />
       </div>
     );
