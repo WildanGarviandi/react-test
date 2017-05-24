@@ -1,28 +1,20 @@
 import * as _ from 'lodash';
-import ClassName from 'classnames';
-import moment from 'moment';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { Link } from 'react-router';
-import * as InboundTrips from './inboundTripsService';
-import classnaming from 'classnames';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
 
-import { DropdownTypeAhead, Input, Pagination } from '../views/base';
-import DateRangePicker from '../views/base/dateRangePicker';
+import { Pagination } from '../views/base';
 import tableStyles from '../views/base/table.css';
-import StatusDropdown from '../views/base/statusDropdown';
-import { TripParser } from '../modules/trips';
 import { formatDate } from '../helper/time';
-import { modalAction } from '../modules/modals/constants';
 import ModalActions from '../modules/modals/actions';
-import stylesModal from '../views/base/modal.css';
 import styles from './styles.css';
-import { CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered } from '../modules/trips';
+import { CanMarkContainer, TripParser, CanMarkTripDelivered } from '../modules/trips';
 import { OrderParser } from '../modules/orders';
+import * as InboundTrips from './inboundTripsService';
 
-const ColumnsOrder = ['tripID', 'driver', 'origin', 'childMerch', 'pickup', 'pickupCity', 'zip', 'weight', 'status', 'verifiedOrders'];
+const ColumnsOrder = ['tripID', 'driver', 'origin', 'childMerchant', 'pickup', 'pickupCity', 'zip', 'weight', 'status', 'verifiedOrders'];
 
 const ColumnsTitle = {
   containerNumber: 'Container',
@@ -45,8 +37,8 @@ const ColumnsTitle = {
   scannedOrders: 'Scanned Orders',
   verifiedOrders: 'Verified Orders',
   origin: 'Origin',
-  childMerch: 'Child Merchant',
   zip: 'ZIP Code',
+  childMerchant: 'Child Merchant',
 };
 
 let fleetList = {};
@@ -202,7 +194,12 @@ class RightTable extends Component {
 }
 
 function FullAddress(address) {
-  const Addr = address.Address1 && address.Address2 && (address.Address1.length < address.Address2.length) ? address.Address2 : address.Address1;
+  const Addr = address.Address1 &&
+    address.Address2 &&
+    (address.Address1.length < address.Address2.length) ?
+    address.Address2 :
+    address.Address1;
+
   return _.chain([Addr, address.City, address.State, address.ZipCode])
     .filter((str) => (str && str.length > 0))
     .value()
@@ -266,13 +263,14 @@ function ProcessTrip(trip) {
     tripType: GetTripType(trip),
     origin: trip.OriginHub ? `Hub ${trip.OriginHub.Name}` : parsedTrip.WebstoreNames,
     zip: trip.PickupAddress.ZipCode,
+    childMerchant: parsedTrip.WebstoreUser,
   };
 }
 
-const VerifiedOrder = React.createClass({
-  render: function () {
-    const orderComponents = this.props.routes.map((route, idx) => {
-      return (
+function VerifiedOrder({ routes }) {
+  return (
+    <div>
+      {routes.map((route, idx) => (
         <div
           key={idx}
           className={route.OrderStatus && route.OrderStatus.OrderStatus === 'DELIVERED' ?
@@ -309,27 +307,28 @@ const VerifiedOrder = React.createClass({
             </tbody>
           </table>
         </div>
-      );
-    });
-    return <div>{orderComponents}</div>;
-  },
-});
+      ))}
+    </div>
+  );
+}
 
+class TableStateful extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      trip: this.props.trip,
+      filters: this.props.filters,
+    };
+  }
 
-const TableStateful = React.createClass({
-  getInitialState() {
-    return { trip: this.props.trip, filters: this.props.filters };
-  },
-  closeModal() {
-    this.props.closeModal();
-  },
   componentWillReceiveProps(nextProps) {
-    if (nextProps['trip']) {
+    if (nextProps.trip) {
       this.setState({
-        trip: nextProps['trip']
+        trip: nextProps.trip,
       });
     }
-  },
+  }
+
   completeTrip(tripID) {
     if (this.props.canMarkTripDelivered) {
       if (this.props.trip.ScannedOrders < _.size(this.props.orders)) {
@@ -348,7 +347,8 @@ const TableStateful = React.createClass({
         cancel: this.props.deliverTrip.bind(null, this.props.trip.TripID),
       });
     }
-  },
+  }
+
   render() {
     const {
       filters,
@@ -404,7 +404,7 @@ const TableStateful = React.createClass({
                 <div className={styles.modalTitle}>
                   TRIP-{this.state.trip.TripID}
                 </div>
-                <div role="button" onClick={this.closeModal} className={styles.modalClose}>
+                <div role="button" onClick={() => this.props.closeModal()} className={styles.modalClose}>
                   &times;
                 </div>
                 <div className={styles.topDesc}>
@@ -451,8 +451,8 @@ const TableStateful = React.createClass({
         }
       </div>
     );
-  },
-});
+  }
+}
 
 function StateToProps(state) {
   const { inboundTrips, driversStore, userLogged } = state.app;

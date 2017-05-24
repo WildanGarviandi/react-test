@@ -600,7 +600,8 @@ td.verifiedOrders,
 td.driver,
 td.origin,
 td.weight,
-td.pickupCity {
+td.pickupCity,
+td.childMerchant {
   white-space: nowrap;
 }
 
@@ -614,7 +615,8 @@ td.pickup {
 }
 
 td.tripType,
-td.weight {
+td.weight,
+td.webstoreNames {
   max-width: 70px;
 }
 
