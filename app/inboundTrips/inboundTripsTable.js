@@ -298,8 +298,8 @@ const TripIDSearch = connect(
 )(InputFilter);
 
 const ChildMerchantSearch = connect(
-  inputStateToProps('childMerchant'),
-  inputDispatchToProps('childMerchant', 'Search "Child Merchant Name"....'),
+  inputStateToProps('webstoreUserName'),
+  inputDispatchToProps('webstoreUserName', 'Search "Child Merchant Name"....'),
 )(InputFilter);
 
 export class Filter extends Component {
