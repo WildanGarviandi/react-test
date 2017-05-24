@@ -78,5 +78,12 @@
       "key": "false", "value": "Non-COD"
     }],
     "deliverableOrderStatus": [2, 3, 4],
-    "updatableCOD": [4, 5]
+    "updatableCOD": [4, 5],
+    "branchType": {
+      "LOCAL": "Local",
+      "CENTRAL": "Central"
+    },
+    "time": {
+      "MINUTES": "minutes"
+    }
 }

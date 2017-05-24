@@ -5,7 +5,7 @@ function camelize(str) {
 };
 
 export function UserFullName(user) {
-  if(user) {
+  if (user) {
     return camelize(`${user.FirstName} ${user.LastName} (${user.CountryCode}${user.PhoneNumber})`);
   }
 
@@ -16,12 +16,19 @@ export function FleetName(fleet) {
   return fleet && fleet.CompanyDetail ? fleet.CompanyDetail.CompanyName : '';
 };
 
-export function FleetNameWithCapacity (fleet) {
-  return (fleet && fleet.CompanyDetail) ? 
+export function FleetNameWithCapacity(fleet) {
+  return (fleet && fleet.CompanyDetail) ?
     `${fleet.CompanyDetail.CompanyName} (${fleet.OrderCapacity}/${fleet.CompanyDetail.OrderVolumeLimit})` :
     '';
 }
 
 export function trimString(string, length) {
   return string.substring(0, length);
+}
+
+export function capitalize(str) {
+  return str.replace(/\w\S*/g, (txt) => {
+    const result = txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    return result;
+  });
 }

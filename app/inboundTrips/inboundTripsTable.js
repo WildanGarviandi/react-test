@@ -5,10 +5,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { Link } from 'react-router';
-import * as InboundTrips from './inboundTripsService';
 import classnaming from 'classnames';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
 
+import * as InboundTrips from './inboundTripsService';
 import { DropdownTypeAhead, Input, Pagination } from '../views/base';
 import DateRangePicker from '../views/base/dateRangePicker';
 import tableStyles from '../views/base/table.css';
@@ -63,6 +63,7 @@ const Table = React.createClass({
       const cells = _.map(ColumnsOrder, (columnKey) => {
         if (columnKey === 'tripID') {
           return <td className={tableStyles.td + ' ' + styles.tripIDColumn} key={columnKey}>
+            {item.isNew && <img src={'/img/label-new.png'} />}
             <Link to={`/trips/${item.key}`} className={styles.link}>{item[columnKey]}</Link>
           </td>;
         }
@@ -153,6 +154,11 @@ function TripDropOff(trip) {
   return destinationHub || dropoffAddress || '';
 }
 
+function isNew(trip) {
+  const diff = moment().diff(moment(trip.AssignedTime), config.time.MINUTES);
+  return (diff >= 0 && diff < 4);
+}
+
 export function GetTripType(trip) {
   if (!trip) return '-';
 
@@ -201,7 +207,8 @@ function ProcessTrip(trip) {
     verifiedOrders: `${trip.ScannedOrders}/${trip.UserOrderRoutes.length} order(s) are verified`,
     assignedTo,
     tripType: GetTripType(trip),
-    origin: trip.OriginHub ? `Hub ${trip.OriginHub.Name}` : parsedTrip.WebstoreNames
+    origin: trip.OriginHub ? `Hub ${trip.OriginHub.Name}` : parsedTrip.WebstoreNames,
+    isNew: isNew(trip),
   };
 }
 
