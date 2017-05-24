@@ -279,7 +279,7 @@ function inputDispatchToProps(keyword, placeholder) {
 
     function OnKeyDown(e) {
       if (e.keyCode !== 13) {
-        if (keyword === 'zipCode' && ((e.keyCode > 64 && e.keyCode < 91) || e.keyCode > 185)) {
+        if (keyword === 'pickupZipCode' && ((e.keyCode > 64 && e.keyCode < 91) || e.keyCode > 185)) {
           e.preventDefault();
         }
         return;
@@ -302,8 +302,8 @@ const TripIDSearch = connect(
 )(InputFilter);
 
 const ZipCodeSearch = connect(
-  inputStateToProps('zipCode'),
-  inputDispatchToProps('zipCode', 'Search "Zip Code" here....'),
+  inputStateToProps('pickupZipCode'),
+  inputDispatchToProps('pickupZipCode', 'Search "Zip Code" here....'),
 )(InputFilter);
 
 export class Filter extends Component {
@@ -375,6 +375,7 @@ const TableStateful = React.createClass({
     };
 
     const trips = _.map(this.props.trips, ProcessTrip);
+    console.log(this.props.trips, 'trips');
     const tableProps = {
       items: trips,
       toDetails: tripDetails,
