@@ -18,6 +18,7 @@ const Constants = {
   TRIPS_INBOUND_LIMIT_SET: 'inbound/limit/set',
   TRIPS_INBOUND_SET: 'inbound/trips/set',
   TRIPS_INBOUND_RESET_FILTER: 'inbound/trips/resetFilter',
+  TRIPS_INBOUND_RESET_STATE: 'inbound/trips/resetState',
   TRIPS_INBOUND_SHOW_DETAILS: 'inbound/trips/showDetails',
   TRIPS_INBOUND_HIDE_DETAILS: 'inbound/trips/hideDetails',
   TRIPS_INBOUND_SET_DROPDOWN_FILTER: 'inbound/trips/setDropdownFilter',
@@ -95,6 +96,10 @@ export function Reducer(state = initialState, action) {
       const { keyword, value } = action;
 
       return _.assign({}, state, { [keyword]: value });
+    }
+
+    case Constants.TRIPS_INBOUND_RESET_STATE: {
+      return initialState;
     }
 
     default: return state;
@@ -339,5 +344,11 @@ export function TripDeliver(tripID, reuse) {
       dispatch({ type: modalAction.BACKDROP_HIDE });
       dispatch(ModalActions.addMessage(message));
     });
+  };
+}
+
+export function ResetState() {
+  return (dispatch) => {
+    dispatch({ type: Constants.TRIPS_INBOUND_RESET_STATE });
   };
 }

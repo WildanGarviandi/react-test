@@ -346,6 +346,9 @@ const TableStateful = React.createClass({
       });
     }
   },
+  componentWillUnmount() {
+    this.props.resetState();
+  },
   render() {
     const {
       filters,
@@ -526,6 +529,9 @@ function DispatchToProps(dispatch, ownProps) {
     },
     reuse(tripID) {
       dispatch(InboundTrips.TripDeliver(tripID, true));
+    },
+    resetState() {
+      dispatch(InboundTrips.ResetState());
     },
   };
 }
