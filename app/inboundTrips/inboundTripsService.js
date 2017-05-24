@@ -18,6 +18,7 @@ const Constants = {
   TRIPS_INBOUND_LIMIT_SET: 'inbound/limit/set',
   TRIPS_INBOUND_SET: 'inbound/trips/set',
   TRIPS_INBOUND_RESET_FILTER: 'inbound/trips/resetFilter',
+  TRIPS_INBOUND_RESET_STATE: 'inbound/trips/resetState',
   TRIPS_INBOUND_SHOW_DETAILS: 'inbound/trips/showDetails',
   TRIPS_INBOUND_HIDE_DETAILS: 'inbound/trips/hideDetails',
   TRIPS_INBOUND_SET_DROPDOWN_FILTER: 'inbound/trips/setDropdownFilter',
@@ -35,7 +36,7 @@ const initialState = {
   trips: [],
   showDetails: false,
   tripActive: {},
-  city: 'All',
+  pickupCity: 'All',
 };
 
 export function Reducer(state = initialState, action) {
@@ -96,6 +97,10 @@ export function Reducer(state = initialState, action) {
       return _.assign({}, state, { [keyword]: value });
     }
 
+    case Constants.TRIPS_INBOUND_RESET_STATE: {
+      return initialState;
+    }
+
     default: return state;
   }
 }
@@ -122,12 +127,13 @@ export function FetchList() {
   return (dispatch, getState) => {
     const { inboundTrips, userLogged } = getState().app;
     const { token } = userLogged;
-    const { currentPage, filters, limit } = inboundTrips;
+    const { currentPage, filters, limit, pickupCity } = inboundTrips;
 
     const query = _.assign({}, filters, {
       limit,
       nonDelivered: true,
       offset: (currentPage - 1) * limit,
+      pickupCity: (pickupCity === 'All') ? '' : pickupCity,
     });
 
     dispatch({
@@ -245,6 +251,12 @@ export function GoToContainer(containerNumber) {
 export function ResetFilter() {
   return (dispatch) => {
     dispatch({ type: Constants.TRIPS_INBOUND_RESET_FILTER });
+  };
+}
+
+export function ResetState() {
+  return (dispatch) => {
+    dispatch({ type: Constants.TRIPS_INBOUND_RESET_STATE });
   };
 }
 

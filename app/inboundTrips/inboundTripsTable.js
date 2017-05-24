@@ -271,14 +271,15 @@ function dropdownDispatchToProps(keyword) {
     return {
       handleSelect: ({ value }) => {
         dispatch(InboundTrips.setDropdownFilter(keyword, value));
+        dispatch(InboundTrips.FetchList());
       },
     };
   };
 }
 
 const CityDropdown = connect(
-  dropdownStateToProps('city', 'Filter by City'),
-  dropdownDispatchToProps('city'),
+  dropdownStateToProps('pickupCity', 'Filter by City'),
+  dropdownDispatchToProps('pickupCity'),
 )(FilterTop);
 
 export class Filter extends Component {
@@ -304,6 +305,9 @@ const TableStateful = React.createClass({
         trip: nextProps['trip']
       });
     }
+  },
+  componentWillUnmount() {
+    this.props.resetState();
   },
   completeTrip(tripID) {
     if (this.props.canMarkTripDelivered) {
@@ -504,6 +508,9 @@ function DispatchToProps(dispatch, ownProps) {
     },
     reuse(tripID) {
       dispatch(InboundTrips.TripDeliver(tripID, true));
+    },
+    resetState() {
+      dispatch(InboundTrips.ResetState());
     },
   };
 }
