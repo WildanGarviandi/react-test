@@ -11,6 +11,9 @@
   padding: 20px;
   padding-left: 260px;
   background-color: #f1f1f1;
+  width: 100vw;
+  float: left;
+  box-sizing: border-box;
 }
 
 .compact .content {
