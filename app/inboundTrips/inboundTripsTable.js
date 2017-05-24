@@ -350,6 +350,9 @@ const TableStateful = React.createClass({
       });
     }
   },
+  componentWillUnmount() {
+    this.props.resetState();
+  },
   render() {
     const {
       filters,
@@ -375,7 +378,6 @@ const TableStateful = React.createClass({
     };
 
     const trips = _.map(this.props.trips, ProcessTrip);
-    console.log(this.props.trips, 'trips');
     const tableProps = {
       items: trips,
       toDetails: tripDetails,
@@ -531,6 +533,9 @@ function DispatchToProps(dispatch, ownProps) {
     },
     reuse(tripID) {
       dispatch(InboundTrips.TripDeliver(tripID, true));
+    },
+    resetState() {
+      dispatch(InboundTrips.ResetState());
     },
   };
 }
