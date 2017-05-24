@@ -247,6 +247,7 @@ class OrderMonitoringPage extends Component {
                 checkedOrders={checkedOrders}
                 searchResult={searchResult}
                 hideOrder={HideOrder}
+                searchResult={searchResult}
               />
             </div>
             <OrderTable tab={this.getActiveTab()} />
