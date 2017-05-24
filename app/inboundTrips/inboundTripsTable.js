@@ -217,7 +217,7 @@ function TripDropOff(trip) {
 }
 
 function isNew(trip) {
-  const diff = moment(trip.AssignedTime).add(4, 'minutes').diff(moment(trip.AssignedTime), time.MINUTES);
+  const diff = moment().diff(moment(trip.AssignedTime), time.MINUTES);
   return (diff >= 0 && diff < 4);
 }
 
