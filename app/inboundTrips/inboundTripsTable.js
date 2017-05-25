@@ -278,7 +278,7 @@ function inputDispatchToProps(keyword, placeholder) {
     }
 
     function OnKeyDown(e) {
-      if (e.keyCode !== 13) {
+      if (e.keyCode !== config.KEY_ACTION.ENTER) {
         return;
       }
       dispatch(InboundTrips.SetCurrentPage(1));
