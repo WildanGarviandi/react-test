@@ -21,9 +21,9 @@ module.exports = {
         loader: "json"
       },
       {
-        test: /\.js$/,
+        test: /\.(js|jsx)$/,
         exclude: /node_modules/,
-        loader: 'babel'
+        loader: 'babel-loader'
       },
       {
         test: /\.css$/,
@@ -68,6 +68,7 @@ module.exports = {
   resolve: {
     alias: {
       soundmanager2: 'soundmanager2/script/soundmanager2-nodebug-jsmin.js'
-    }
+    },
+    extensions: ['', '.js', '.jsx'],
   }
 }

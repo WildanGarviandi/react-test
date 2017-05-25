@@ -86,9 +86,16 @@
       { "key": 3, "value": "Not Finished" }
     ],
     "KEY_ACTION": {
-      "ENTER": "13",
-      "SEMI-COLON": "186",
-      "A": "65",
-      "Z": "90"
+      "ENTER": 13,
+      "SEMI_COLON": 186,
+      "A": 65,
+      "Z": 90
+    },
+    "branchType": {
+      "LOCAL": "Local",
+      "CENTRAL": "Central"
+    },
+    "time": {
+      "MINUTES": "minutes"
     }
 }
