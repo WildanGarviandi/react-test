@@ -19,7 +19,8 @@ const Constants = {
   TRIPS_INBOUND_SET: 'inbound/trips/set',
   TRIPS_INBOUND_RESET_FILTER: 'inbound/trips/resetFilter',
   TRIPS_INBOUND_SHOW_DETAILS: 'inbound/trips/showDetails',
-  TRIPS_INBOUND_HIDE_DETAILS: 'inbound/trips/hideDetails'
+  TRIPS_INBOUND_HIDE_DETAILS: 'inbound/trips/hideDetails',
+  TRIPS_INBOUND_SET_DROPDOWN_FILTER: 'inbound/trips/setDropdownFilter',
 };
 
 const initialState = {
@@ -34,6 +35,7 @@ const initialState = {
   trips: [],
   showDetails: false,
   tripActive: {},
+  tripProblem: {},
 };
 
 export function Reducer(state = initialState, action) {
@@ -88,6 +90,12 @@ export function Reducer(state = initialState, action) {
       return _.assign({}, state, { showDetails: false, tripActive: {} });
     }
 
+    case Constants.TRIPS_INBOUND_SET_DROPDOWN_FILTER: {
+      const { keyword, option } = action.payload;
+
+      return _.assign({}, state, { [keyword]: option });
+    }
+
     default: return state;
   }
 }
@@ -114,12 +122,14 @@ export function FetchList() {
   return (dispatch, getState) => {
     const { inboundTrips, userLogged } = getState().app;
     const { token } = userLogged;
-    const { currentPage, filters, limit } = inboundTrips;
+    const { currentPage, filters, limit, tripProblem } = inboundTrips;
 
     const query = _.assign({}, filters, {
       limit,
       nonDelivered: true,
       offset: (currentPage - 1) * limit,
+      tripProblemMasterID: (tripProblem.key || '') &&
+      (tripProblem.key === 0 ? '' : tripProblem.key),
     });
 
     dispatch({
@@ -291,6 +301,18 @@ export function ShowDetails(tripID) {
 export function HideDetails() {
   return (dispatch) => {
     dispatch({ type: Constants.TRIPS_INBOUND_HIDE_DETAILS });
+  };
+}
+
+export function setDropdownFilter(keyword, option) {
+  return (dispatch) => {
+    dispatch({
+      type: Constants.TRIPS_INBOUND_SET_DROPDOWN_FILTER,
+      payload: {
+        keyword,
+        option,
+      },
+    });
   };
 }
 

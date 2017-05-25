@@ -13,7 +13,8 @@ import ModalActions from '../modules/modals/actions';
 import styles from './styles.css';
 import { CanMarkContainer, TripParser, CanMarkTripDelivered } from '../modules/trips';
 import { OrderParser } from '../modules/orders';
-import { time } from '../config/configValues.json';
+import { FilterTop, FilterText } from '../components/form';
+import * as config from '../config/configValues.json';
 import * as InboundTrips from './inboundTripsService';
 
 const ColumnsOrder = ['tripID', 'driver', 'origin', 'childMerchant', 'pickup', 'pickupCity', 'zip', 'weight', 'status', 'verifiedOrders'];
@@ -217,7 +218,7 @@ function TripDropOff(trip) {
 }
 
 function isNew(trip) {
-  const diff = moment().diff(moment(trip.AssignedTime), time.MINUTES);
+  const diff = moment().diff(moment(trip.AssignedTime), config.time.MINUTES);
   return (diff >= 0 && diff < 4);
 }
 
@@ -319,6 +320,53 @@ function VerifiedOrder({ routes }) {
       ))}
     </div>
   );
+}
+
+function dropdownStateToProps(keyword, title) {
+  return (store) => {
+    const value = store.app.inboundTrips[keyword].value || 'All';
+    let options = [{
+      key: 0, value: 'All',
+    }];
+
+    if (keyword === 'tripProblem') {
+      const optionsTemplate = store.app.tripProblems.problems;
+
+      options = options.concat(optionsTemplate
+        .map((option) => ({
+          key: option.TripProblemMasterID,
+          value: option.Problem,
+        })));
+    }
+
+    return { value, options, title };
+  };
+}
+
+function dropdownDispatchToProps(keyword) {
+  return (dispatch) => {
+    return {
+      handleSelect: (option) => {
+        dispatch(InboundTrips.setDropdownFilter(keyword, option));
+        dispatch(InboundTrips.FetchList());
+      },
+    };
+  };
+}
+
+const TripProblemDropdown = connect(
+  dropdownStateToProps('tripProblem', 'Filter by Trip Problem'),
+  dropdownDispatchToProps('tripProblem'),
+)(FilterTop);
+
+export class Filter extends Component {
+  render() {
+    return (
+      <div>
+        <TripProblemDropdown />
+      </div>
+    );
+  }
 }
 
 class TableStateful extends Component {
