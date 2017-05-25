@@ -147,7 +147,7 @@ export function FetchList() {
   return (dispatch, getState) => {
     const { inboundTrips, userLogged } = getState().app;
     const { token } = userLogged;
-    const { currentPage, filters, limit, tripProblem } = inboundTrips;
+    const { currentPage, filters, limit, tripProblem, hubIDs } = inboundTrips;
 
     const query = _.assign({}, filters, {
       limit,
@@ -155,6 +155,7 @@ export function FetchList() {
       offset: (currentPage - 1) * limit,
       tripProblemMasterID: (tripProblem.key || '') &&
       (tripProblem.key === 0 ? '' : tripProblem.key),
+      hubIDs: hubIDs.join(),
     });
 
     dispatch({
@@ -380,7 +381,7 @@ export function TripDeliver(tripID, reuse) {
 
 export function addHubFilter(hub) {
   return {
-    type: Constants.ORDERS_PICKUP_READY_ADD_HUB,
+    type: Constants.TRIPS_INBOUND_ADD_HUB,
     payload: {
       hub,
     },
@@ -389,7 +390,7 @@ export function addHubFilter(hub) {
 
 export function deleteHubFilter(hub) {
   return {
-    type: Constants.ORDERS_PICKUP_READY_DELETE_HUB,
+    type: Constants.TRIPS_INBOUND_DELETE_HUB,
     payload: {
       hub,
     },

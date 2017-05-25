@@ -326,19 +326,40 @@ function VerifiedOrder({ routes }) {
 function dropdownStateToProps(keyword, title) {
   return (store) => {
     const { inboundTrips, hubs } = store.app;
-    const value = inboundTrips[keyword].value || 'All';
-    let options = [{
-      key: 0, value: 'All',
-    }];
+    const value = inboundTrips[keyword] ? inboundTrips[keyword].value : 'All';
+    let options = [];
 
     if (keyword === 'tripProblem') {
       const optionsTemplate = store.app.tripProblems.problems;
-
-      options = options.concat(optionsTemplate
+      options = [{
+        key: 0, value: 'All',
+      }].concat(optionsTemplate
         .map((option) => ({
           key: option.TripProblemMasterID,
           value: option.Problem,
         })));
+    }
+
+    if (keyword === 'hubs') {
+      options = _.chain(hubs.list)
+        .map(hub => ({
+          key: hub.HubID,
+          value: `Hub ${hub.Name}`,
+          checked: false,
+        }))
+        .sortBy(arr => arr.key)
+        .value();
+
+      if (inboundTrips && inboundTrips.hubIDs &&
+        inboundTrips.hubIDs.length > 0) {
+        const ids = inboundTrips.hubIDs;
+        options = options.map((hub) => {
+          const data = Object.assign({}, hub, {
+            checked: _.some(ids, id => id === hub.key),
+          });
+          return data;
+        });
+      }
     }
 
     return { value, options, title };
@@ -356,14 +377,13 @@ function dropdownDispatchToProps(keyword) {
   };
 }
 
-function multiDropdownDispatchToProps(keyword) {
+function multiDropdownDispatchToProps() {
   return (dispatch) => {
     const action = {
       handleSelect: (selectedOption) => {
         dispatch(selectedOption.checked ? InboundTrips.addHubFilter(selectedOption) :
           InboundTrips.deleteHubFilter(selectedOption));
-        const SetFn = InboundTrips.SetDropDownFilter(keyword);
-        dispatch(SetFn(selectedOption));
+        dispatch(InboundTrips.FetchList());
       },
     };
     return action;
@@ -384,7 +404,7 @@ export class Filter extends Component {
     return (
       <div>
         <CityDropdown />
-        { this.props.userLogged.roleName === config.role.SUPERHUB && <HubDropdown /> }
+        {this.props.userLogged.roleName === config.role.SUPERHUB && <HubDropdown />}
       </div>
     );
   }
@@ -395,6 +415,10 @@ Filter.propTypes = {
   userLogged: PropTypes.object.isRequired,
 };
 /* eslint-enable */
+
+Filter.defaultProps = {
+  userLogged: {},
+};
 
 class TableStateful extends Component {
   constructor(props) {
@@ -411,6 +435,10 @@ class TableStateful extends Component {
         trip: nextProps.trip,
       });
     }
+  }
+
+  componentWillUnmount() {
+    this.props.resetFilter();
   }
 
   completeTrip(tripID) {
@@ -538,6 +566,14 @@ class TableStateful extends Component {
   }
 }
 
+TableStateful.propTypes = {
+  resetFilter: PropTypes.func.isRequired,
+};
+
+TableStateful.propTypes = {
+  resetFilter: () => { },
+};
+
 function StateToProps(state) {
   const { inboundTrips, driversStore, userLogged } = state.app;
   const { hubID, isCentralHub } = userLogged;
@@ -623,6 +659,9 @@ function DispatchToProps(dispatch, ownProps) {
     },
     resetState() {
       dispatch(InboundTrips.ResetState());
+    },
+    resetFilter() {
+      dispatch(InboundTrips.ResetFilter());
     },
   };
 }

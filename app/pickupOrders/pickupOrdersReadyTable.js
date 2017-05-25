@@ -661,7 +661,7 @@ function StateToProps(state) {
   };
 }
 
-function DispatchToProps(dispatch, ownProps) {
+function DispatchToProps(dispatch) {
   return {
     initialLoad() {
       dispatch(PickupOrdersReady.FetchList());
