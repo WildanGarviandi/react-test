@@ -479,6 +479,10 @@ export class Filter extends Component {
           </div>
         }
 
+        { searchResult[tab] && 
+          <span className={styles.searchResult}>{searchResult[tab]} order found from search result.</span>
+        }
+
         <Pagination2 {...paginationState} {...PaginationAction} tab={this.props.tab} style={{marginTop: "5px"}} />
 
         <div className={styles.row}>
@@ -548,6 +552,14 @@ class OrderTable extends Component {
         </tbody>
       </table>
     );
+  }
+}
+
+function OrderTableStoreBuilder() {
+  return (store) => {
+    const { orders, expandedOrder } = store.app.orderMonitoring;
+
+    return {orders, expandedOrder};
   }
 }
 
