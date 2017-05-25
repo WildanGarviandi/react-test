@@ -67,10 +67,14 @@ function JoinAttr(orders, attr) {
 
 export function GetWebstoreNameByCount(orders) {
   let arrayOfWebstore = [];
-  const WebstoreNames = lodash.countBy(orders, 'WebstoreName');
-  for (const p in WebstoreNames) {
-    if (WebstoreNames.hasOwnProperty(p)) {
-      arrayOfWebstore.push(`${p} (${WebstoreNames[p]} ${WebstoreNames[p] > 1 ? 'orders' : 'order'})`);
+  const WebstoreNamesCount = lodash.countBy(orders, 'WebstoreName');
+  for (let WebstoreNameCount in WebstoreNamesCount) {
+    if (WebstoreNamesCount.hasOwnProperty(WebstoreNameCount)) {
+      arrayOfWebstore.push(
+        `${WebstoreNameCount}
+         (${WebstoreNamesCount[WebstoreNameCount]}
+          ${WebstoreNamesCount[WebstoreNameCount] > 1 ? 'orders' : 'order'})`,
+      );
     }
   }
   return arrayOfWebstore.join(', ');
@@ -78,12 +82,13 @@ export function GetWebstoreNameByCount(orders) {
 
 export function GetWebstoreUserByCount(orders) {
   let arrayOfWebstore = [];
-  const WebstoreUser = lodash.countBy(orders, 'WebstoreUser');
-  for (const p in WebstoreUser) {
-    if (WebstoreUser.hasOwnProperty(p)) {
+  const WebstoreUsersCount = lodash.countBy(orders, 'WebstoreUser');
+  for (let WebstoreUserCount in WebstoreUsersCount) {
+    if (WebstoreUsersCount.hasOwnProperty(WebstoreUserCount)) {
       arrayOfWebstore.push(
-        `${p === 'null' ? 'No Child Merchant' : p}
-        (${WebstoreUser[p]} ${(WebstoreUser[p] > 1 ? 'orders' : 'order')})`,
+        `${WebstoreUserCount === 'null' ? 'No Child Merchant' : WebstoreUserCount}
+        (${WebstoreUsersCount[WebstoreUserCount]}
+         ${(WebstoreUsersCount[WebstoreUserCount] > 1 ? 'orders' : 'order')})`,
       );
     }
   }
@@ -91,11 +96,11 @@ export function GetWebstoreUserByCount(orders) {
 }
 
 export function GetWebstoreNameWithoutCount(orders) {
-  var arrayOfWebstore = [];
-  var WebstoreNames = lodash.countBy(orders, 'WebstoreName');
-  for (let p in WebstoreNames) {
-    if (WebstoreNames.hasOwnProperty(p)) {
-      arrayOfWebstore.push(p);
+  let arrayOfWebstore = [];
+  const WebstoreNamesCount = lodash.countBy(orders, 'WebstoreName');
+  for (let WebstoreNameCount in WebstoreNamesCount) {
+    if (WebstoreNamesCount.hasOwnProperty(WebstoreNameCount)) {
+      arrayOfWebstore.push(WebstoreNameCount);
     }
   }
   return arrayOfWebstore.join(', ');
@@ -116,11 +121,11 @@ export function GetScannedRoutes(routes) {
 }
 
 export function GetWebstoreNameWithMores(orders) {
-  var arrayOfWebstore = [];
-  var WebstoreNames = lodash.countBy(orders, 'WebstoreName');
-  for (var p in WebstoreNames) {
-    if (WebstoreNames.hasOwnProperty(p)) {
-      arrayOfWebstore.push(p);
+  let arrayOfWebstore = [];
+  const WebstoreNames = lodash.countBy(orders, 'WebstoreName');
+  for (let WebstoreName in WebstoreNames) {
+    if (WebstoreNames.hasOwnProperty(WebstoreName)) {
+      arrayOfWebstore.push(WebstoreName);
     }
   }
   if (arrayOfWebstore.length === 1) {
