@@ -7,6 +7,7 @@ import { push } from 'react-router-redux';
 import { Link } from 'react-router';
 import classnaming from 'classnames';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
+import PropTypes from 'prop-types';
 
 import * as InboundTrips from './inboundTripsService';
 import { DropdownTypeAhead, Input, Pagination } from '../views/base';
@@ -21,7 +22,7 @@ import stylesModal from '../views/base/modal.css';
 import styles from './styles.css';
 import { CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered } from '../modules/trips';
 import { OrderParser } from '../modules/orders';
-import { FilterTop, FilterText } from '../components/form';
+import { FilterTop, FilterTopMultiple } from '../components/form';
 import * as config from '../config/configValues.json';
 
 const ColumnsOrder = ['tripID', 'origin', 'tripType', 'weight', 'driver', 'driverPhone', 'status', 'verifiedOrders'];
@@ -256,7 +257,8 @@ const VerifiedOrder = React.createClass({
 
 function dropdownStateToProps(keyword, title) {
   return (store) => {
-    const value = store.app.inboundTrips[keyword];
+    const { inboundTrips, hubs } = store.app;
+    const value = inboundTrips[keyword];
     const cities = store.app.cityList.cities;
     let cityOptions = [{
       key: 0, value: 'All',
@@ -284,20 +286,45 @@ function dropdownDispatchToProps(keyword) {
   };
 }
 
+function multiDropdownDispatchToProps(keyword) {
+  return (dispatch) => {
+    const action = {
+      handleSelect: (selectedOption) => {
+        dispatch(selectedOption.checked ? InboundTrips.addHubFilter(selectedOption) :
+          InboundTrips.deleteHubFilter(selectedOption));
+        const SetFn = InboundTrips.SetDropDownFilter(keyword);
+        dispatch(SetFn(selectedOption));
+      },
+    };
+    return action;
+  };
+}
+
 const CityDropdown = connect(
   dropdownStateToProps('pickupCity', 'Filter by City'),
   dropdownDispatchToProps('pickupCity'),
 )(FilterTop);
+const HubDropdown = connect(
+  dropdownStateToProps('hubs', 'Filter by Hubs (can be multiple)'),
+  multiDropdownDispatchToProps('hubIDs'),
+)(FilterTopMultiple);
 
 export class Filter extends Component {
   render() {
     return (
       <div>
         <CityDropdown />
+        { this.props.userLogged.roleName === config.role.SUPERHUB && <HubDropdown /> }
       </div>
     );
   }
 }
+
+/* eslint-disable */
+Filter.propTypes = {
+  userLogged: PropTypes.object.isRequired,
+};
+/* eslint-enable */
 
 const TableStateful = React.createClass({
   getInitialState() {

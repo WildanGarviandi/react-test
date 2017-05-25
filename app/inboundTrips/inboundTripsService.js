@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import * as _ from 'lodash'; //eslint-disable-line
 import { push } from 'react-router-redux';
 
 import FetchGet from '../modules/fetch/get';
@@ -22,6 +22,8 @@ const Constants = {
   TRIPS_INBOUND_SHOW_DETAILS: 'inbound/trips/showDetails',
   TRIPS_INBOUND_HIDE_DETAILS: 'inbound/trips/hideDetails',
   TRIPS_INBOUND_SET_DROPDOWN_FILTER: 'inbound/trips/setDropdownFilter',
+  TRIPS_INBOUND_ADD_HUB: 'inbound/trips/hub/add',
+  TRIPS_INBOUND_DELETE_HUB: 'inbound/trips/hub/delete',
 };
 
 const initialState = {
@@ -37,6 +39,7 @@ const initialState = {
   showDetails: false,
   tripActive: {},
   pickupCity: 'All',
+  hubIDs: [],
 };
 
 export function Reducer(state = initialState, action) {
@@ -80,6 +83,7 @@ export function Reducer(state = initialState, action) {
         currentPage: 1,
         filterStatus: 'SHOW ALL',
         limit: 100,
+        hubIDs: [],
       });
     }
 
@@ -101,7 +105,23 @@ export function Reducer(state = initialState, action) {
       return initialState;
     }
 
-    default: return state;
+    case Constants.TRIPS_INBOUND_ADD_HUB: {
+      const hubIDs = state.hubIDs.concat([action.payload.hub.key]);
+      return Object.assign({}, state, {
+        hubIDs,
+      });
+    }
+
+    case Constants.TRIPS_INBOUND_DELETE_HUB: {
+      const hubIDs = _.filter(state.hubIDs, hubID =>
+        hubID !== action.payload.hub.key);
+      return Object.assign({}, state, {
+        hubIDs,
+      });
+    }
+
+    default:
+      return state;
   }
 }
 
@@ -326,13 +346,13 @@ export function setDropdownFilter(keyword, value) {
 
 export function TripDeliver(tripID, reuse) {
   return (dispatch, getState) => {
-    const { inboundTripDetails, userLogged } = getState().app;
+    const { userLogged } = getState().app;
     const { token } = userLogged;
 
     dispatch({ type: modalAction.BACKDROP_SHOW });
 
     const query = {
-      reusePackage: reuse ? true : false,
+      reusePackage: reuse,
     };
 
     FetchPost(`/trip/${tripID}/markdeliver`, token, query).then((response) => {
@@ -354,3 +374,22 @@ export function TripDeliver(tripID, reuse) {
     });
   };
 }
+
+export function addHubFilter(hub) {
+  return {
+    type: Constants.ORDERS_PICKUP_READY_ADD_HUB,
+    payload: {
+      hub,
+    },
+  };
+}
+
+export function deleteHubFilter(hub) {
+  return {
+    type: Constants.ORDERS_PICKUP_READY_DELETE_HUB,
+    payload: {
+      hub,
+    },
+  };
+}
+
