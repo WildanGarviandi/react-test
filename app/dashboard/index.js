@@ -20,6 +20,7 @@ import config from '../../config.json';
 import configValues from '../config/configValues.json';
 import {push} from 'react-router-redux';
 import ModalActions from '../modules/modals/actions';
+import * as hubService from '../modules/hubs';
 
 var classnaming = require('classnames/bind').bind(styles);
 let interval = null;
@@ -307,6 +308,7 @@ function DispatchToProps(dispatch) {
       dispatch(CityService.FetchList());
       dispatch(StateService.FetchList());
       dispatch(DashboardService.FetchCountTMS());
+      dispatch(hubService.fetchList());
       if (hubID) {
         dispatch(DashboardService.FetchCount());
         dispatch(FleetService.FetchList());

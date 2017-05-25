@@ -1,31 +1,31 @@
-import lodash from 'lodash';
-import ClassName from 'classnames';
+import * as _ from 'lodash'; //eslint-disable-line
 import moment from 'moment';
 import React from 'react';
-import {connect} from 'react-redux';
-import {push} from 'react-router-redux';
+import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
+
 import * as PickupOrdersReady from './pickupOrdersReadyService';
 import * as NearbyFleets from '../nearbyFleets/nearbyFleetService';
-import {DropdownTypeAhead, Input, Pagination, ButtonStandard} from '../views/base';
+import { DropdownTypeAhead, Input, Pagination, ButtonStandard } from '../views/base';
 import DateRangePicker from '../views/base/dateRangePicker';
 import tableStyles from '../views/base/table.css';
 import StatusDropdown from '../views/base/statusDropdown';
-import {TripParser} from '../modules/trips';
-import {OrderParser} from '../modules/orders';
-import {formatDate} from '../helper/time';
-import {modalAction} from '../modules/modals/constants';
+import { TripParser } from '../modules/trips';
+import { OrderParser } from '../modules/orders';
+import { formatDate } from '../helper/time';
+import { modalAction } from '../modules/modals/constants';
 import stylesModal from '../views/base/modal.css';
 import classnaming from 'classnames';
-import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import { ModalContainer, ModalDialog } from 'react-modal-dialog';
 import styles from './styles.css';
-import BodyRow, {CheckBoxCell, LinkCell, TextCell, OrderIDLinkCell, ButtonCell, IDCell} from '../views/base/cells';
-import {CheckboxHeader, CheckboxCell} from '../views/base/tableCell';
-import {FilterTop, FilterText} from '../components/form';
+import BodyRow, { CheckBoxCell, LinkCell, TextCell, OrderIDLinkCell, ButtonCell, IDCell } from '../views/base/cells';
+import { CheckboxHeader, CheckboxCell } from '../views/base/tableCell';
+import { FilterTop, FilterText, FilterTopMultiple } from '../components/form';
 import * as TripDetails from '../modules/inboundTripDetails';
 import config from '../config/configValues.json';
 import Countdown from 'react-cntdwn';
 import PickupOrdersModal from './pickupOrdersModal';
-import {Link} from 'react-router';
+import { Link } from 'react-router';
 
 const ColumnsOrder = ['checkbox', 'tripID', 'webstoreNames', 'weight', 'quantity', 'pickup', 'pickupCity', 'pickupZip', 'deadline', 'action'];
 
@@ -50,12 +50,12 @@ let cityList = {};
 */
 function getStoreFilterText(keyword, title) {
   return (store) => {
-    const {filters} = store.app.pickupOrdersReady;
+    const { filters } = store.app.pickupOrdersReady;
     return {
       value: filters[keyword],
-      title: title
-    }
-  }
+      title,
+    };
+  };
 }
 
 /*
@@ -65,12 +65,12 @@ function getStoreFilterText(keyword, title) {
 function dispatchFilterText(keyword) {
   return (dispatch) => {
     function OnChange(e) {
-      const newFilters = {[keyword]: e.target.value};
+      const newFilters = { [keyword]: e.target.value };
       dispatch(PickupOrdersReady.UpdateFilters(newFilters));
     }
 
     function OnKeyDown(e) {
-      if(e.keyCode !== 13) {
+      if (e.keyCode !== 13) {
         return;
       }
 
@@ -99,34 +99,60 @@ function connectFilterText(keyword, title) {
 */
 function getStoreFilterDropdown(name, title) {
   return (store) => {
+    const { hubs, pickupOrdersReady } = store.app;
     let cityOptions = [{
-      key: 0, value: "All",
+      key: 0, value: 'All',
     }];
 
-    let listOptions = [{
-      key: 0, value: "All"
+    const listOptions = [{
+      key: 0, value: 'All',
     }, {
-      key: 1, value: "Trip",
+      key: 1, value: 'Trip',
     }, {
-      key: 2, value: "Order",
+      key: 2, value: 'Order',
     }];
 
-    cityOptions = cityOptions.concat(lodash.chain(cityList)
-       .map((key, val) => ({key:key, value: val}))
-       .sortBy((arr) => (arr.key))
-         .value());
+    let hubOptions = [];
+
+    cityOptions = cityOptions.concat(_.chain(cityList)
+      .map((key, val) => ({ key, value: val }))
+      .sortBy(arr => (arr.key))
+      .value());
+
+    if (hubs && hubs.list) {
+      hubOptions = _.chain(hubs.list)
+        .map(hub => ({
+          key: hub.HubID,
+          value: `Hub ${hub.Name}`,
+          checked: false,
+        }))
+        .sortBy(arr => arr.key)
+        .value();
+
+      if (pickupOrdersReady && pickupOrdersReady.hubIDs &&
+        pickupOrdersReady.hubIDs.length > 0) {
+        const ids = pickupOrdersReady.hubIDs;
+        hubOptions = hubOptions.map((hub) => {
+          const data = Object.assign({}, hub, {
+            checked: _.some(ids, id => id === hub.key),
+          });
+          return data;
+        });
+      }
+    }
 
     const options = {
-      "city": cityOptions,
-      "listType": listOptions
-    }
+      city: cityOptions,
+      listType: listOptions,
+      hubs: hubOptions,
+    };
 
     return {
       value: store.app.pickupOrdersReady[name],
       options: options[name],
-      title: title
-    }
-  }
+      title,
+    };
+  };
 }
 
 /*
@@ -135,14 +161,30 @@ function getStoreFilterDropdown(name, title) {
 */
 function dispatchFilterDropdown(filterKeyword) {
   return (dispatch) => {
-    return {
+    const action = {
       handleSelect: (selectedOption) => {
         const SetFn = PickupOrdersReady.SetDropDownFilter(filterKeyword);
         dispatch(SetFn(selectedOption));
-      }
-    }
-  }
+      },
+    };
+    return action;
+  };
 }
+
+function dispatchFilterMultiDropdown(filterKeyword) {
+  return (dispatch) => {
+    const action = {
+      handleSelect: (selectedOption) => {
+        dispatch(selectedOption.checked ? PickupOrdersReady.addHubFilter(selectedOption) :
+          PickupOrdersReady.deleteHubFilter(selectedOption));
+        const SetFn = PickupOrdersReady.SetDropDownFilter(filterKeyword);
+        dispatch(SetFn(selectedOption));
+      },
+    };
+    return action;
+  };
+}
+
 
 /*
  * Connect store and dispatch for filter dropdown
@@ -152,10 +194,15 @@ function connectFilterDropdown(keyword, title) {
   return connect(getStoreFilterDropdown(keyword, title), dispatchFilterDropdown(keyword));
 }
 
+function connectFilterMultiDropdown(keyword, requestParam, title) {
+  return connect(getStoreFilterDropdown(keyword, title), dispatchFilterMultiDropdown(requestParam));
+}
+
 const MerchantFilter = connectFilterText('merchant', 'Merchant')(FilterText);
 const CityFilter = connectFilterDropdown('city', 'City')(FilterTop);
 const TypeFilter = connectFilterDropdown('listType', 'Type')(FilterTop);
 const ZipFilter = connectFilterText('zipCode', 'ZIP Code')(FilterText);
+const HubFilter = connectFilterMultiDropdown('hubs', 'hubIDs', 'Hubs (can be multiple)')(FilterTopMultiple);
 
 /*
  * Dispatch for link cell
@@ -163,10 +210,10 @@ const ZipFilter = connectFilterText('zipCode', 'ZIP Code')(FilterText);
 */
 function mapDispatchToLink(dispatch, ownParams) {
   return {
-    onClickModals: function() {
+    onClickModals: function () {
       dispatch(PickupOrdersReady.ShowDetails(parseInt(ownParams.item.tripID)));
     },
-    onClickDetails: function() {
+    onClickDetails: function () {
       dispatch(push(`/trips/${parseInt(ownParams.item.tripID)}/`));
     }
   }
@@ -178,7 +225,7 @@ function mapDispatchToLink(dispatch, ownParams) {
 */
 function mapDispatchToButton(dispatch, ownParams) {
   return {
-    onClick: function() {
+    onClick: function () {
       dispatch(PickupOrdersReady.ShowAssignModal(parseInt(ownParams.item.tripID)));
       dispatch(NearbyFleets.FetchList());
       dispatch(PickupOrdersReady.FetchDrivers(parseInt(ownParams.item.tripID)));
@@ -189,7 +236,7 @@ function mapDispatchToButton(dispatch, ownParams) {
 const PickupOrdersID = connect(undefined, mapDispatchToLink)(IDCell);
 const PickupOrdersButton = connect(undefined, mapDispatchToButton)(ButtonCell);
 
-function AutoButtonGroup({onClick, disabled}) {
+function AutoButtonGroup({ onClick, disabled }) {
   return (
     <button className={disabled ? styles.autoGroupButtonDisable : styles.autoGroupButton} disabled={disabled} onClick={onClick}>
       {disabled ? 'Auto Group On Progress' : 'Auto Group'}
@@ -203,7 +250,7 @@ function AutoButtonGroup({onClick, disabled}) {
 */
 function mapDispatchToAutoButtonGroup(dispatch, ownParams) {
   return {
-    onClick: function() {
+    onClick: function () {
       dispatch(PickupOrdersReady.AutoGroup());
     }
   }
@@ -211,7 +258,7 @@ function mapDispatchToAutoButtonGroup(dispatch, ownParams) {
 
 const AutoGroupButton = connect(undefined, mapDispatchToAutoButtonGroup)(AutoButtonGroup);
 
-function ManualButtonGroup({onClick, disabled}) {
+function ManualButtonGroup({ onClick, disabled }) {
   return (
     <button className={disabled ? styles.manualGroupButtonDisable : styles.manualGroupButton} disabled={disabled} onClick={onClick}>
       Group Orders
@@ -225,7 +272,7 @@ function ManualButtonGroup({onClick, disabled}) {
 */
 function mapDispatchToManualButtonGroup(dispatch, ownParams) {
   return {
-    onClick: function() {
+    onClick: function () {
       dispatch(PickupOrdersReady.GroupOrders());
     }
   }
@@ -246,7 +293,7 @@ function stateToCheckboxHeader(state) {
 */
 function mapDispatchToCheckBoxHeader(dispatch) {
   return {
-    onToggle: function() {
+    onToggle: function () {
       dispatch(PickupOrdersReady.ToggleSelectAll());
     }
   }
@@ -260,7 +307,7 @@ const PickupOrdersCheckBoxHeader = connect(stateToCheckboxHeader, mapDispatchToC
 */
 function mapDispatchToCheckBox(dispatch, ownProps) {
   return {
-    onToggle: function(val) {
+    onToggle: function (val) {
       dispatch(PickupOrdersReady.ToggleSelectOne(parseInt(ownProps.item.tripID)));
     }
   }
@@ -274,8 +321,8 @@ const PickupOrdersCheckBox = connect(undefined, mapDispatchToCheckBox)(CheckboxC
 */
 export const FilterReady = React.createClass({
   render() {
-    const {isFetching} = this.props;
-    const style = isFetching ? {opacity: 0.5} : {};
+    const { isFetching } = this.props;
+    const style = isFetching ? { opacity: 0.5 } : {};
 
     return (
       <div className={styles.filterTop}>
@@ -283,7 +330,7 @@ export const FilterReady = React.createClass({
         <MerchantFilter />
         <CityFilter />
         <ZipFilter />
-        {/* <AutoGroupButton disabled={!this.props.isAutoGroupActive} /> */}
+        { this.props.userLogged.roleName === config.role.SUPERHUB && <HubFilter /> }
         <ManualGroupButton disabled={!this.props.isGroupActive} />
       </div>
     );
@@ -342,7 +389,7 @@ const Table = React.createClass({
           let Duration = moment.duration(moment(item[columnKey]).diff(moment(new Date())));
           if (Duration._milliseconds > config.deadline.day) {
             return <td key={columnKey} className={tableStyles.td} key={columnKey}>
-              <span style={{color: 'black'}}>
+              <span style={{ color: 'black' }}>
                 <span>
                   {Duration.humanize()}
                 </span>
@@ -350,7 +397,7 @@ const Table = React.createClass({
             </td>
           } else if (Duration._milliseconds < 0) {
             return <td key={columnKey} className={tableStyles.td} key={columnKey}>
-              <span style={{color: 'red'}}>
+              <span style={{ color: 'red' }}>
                 <span>
                   Passed
                 </span>
@@ -359,14 +406,14 @@ const Table = React.createClass({
           } else {
             let normalDeadline = (Duration._milliseconds > config.deadline['3hours']) && (Duration._milliseconds < config.deadline.day);
             return <td key={columnKey} className={tableStyles.td} key={columnKey}>
-              <span style={{color: normalDeadline ? 'black' : 'red'}}>
+              <span style={{ color: normalDeadline ? 'black' : 'red' }}>
                 <span>
                   <Countdown targetDate={new Date(item[columnKey])}
-                   startDelay={500}
-                   interval={1000}
-                   format={format}
-                   timeSeparator={':'}
-                   leadingZero={true} />
+                    startDelay={500}
+                    interval={1000}
+                    format={format}
+                    timeSeparator={':'}
+                    leadingZero={true} />
                 </span>
               </span>
             </td>
@@ -380,15 +427,15 @@ const Table = React.createClass({
 
     if (this.props.isFetching) {
       return (
-        <div style={{textAlign:'center'}}>
-          <div style={{fontSize: 20}}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: 20 }}>
             Fetching data....
           </div>
         </div>
       );
     } else {
       if (this.props.items.length === 0) {
-        if (!lodash.isEmpty(this.props.filters)) {
+        if (!_.isEmpty(this.props.filters)) {
           return (
             <table className={styles.table}>
               <thead><tr>{Headers}</tr></thead>
@@ -397,10 +444,10 @@ const Table = React.createClass({
                   <td colSpan={ColumnsOrder.length}>
                     <div className={styles.noOrderDesc}>
                       <img src="/img/image-ok-ready.png" />
-                      <div style={{fontSize: 20}}>
+                      <div style={{ fontSize: 20 }}>
                         Orders not found
                       </div>
-                      <div style={{fontSize: 12, marginTop: 20}}>
+                      <div style={{ fontSize: 12, marginTop: 20 }}>
                         Please choose another filter to get the orders.
                       </div>
                     </div>
@@ -418,10 +465,10 @@ const Table = React.createClass({
                   <td colSpan={ColumnsOrder.length}>
                     <div className={styles.noOrderDesc}>
                       <img src="/img/image-ok-ready.png" />
-                      <div style={{fontSize: 20}}>
+                      <div style={{ fontSize: 20 }}>
                         You have assigned all orders!
                       </div>
-                      <div style={{fontSize: 12, marginTop: 20}}>
+                      <div style={{ fontSize: 12, marginTop: 20 }}>
                         Please open the Inbound Menu to see the the pickup status .
                       </div>
                     </div>
@@ -481,8 +528,8 @@ function ProcessTrip(trip) {
 }
 
 const OrderList = React.createClass({
-  render: function() {
-    var orderComponents = this.props.routes.map(function(route, idx) {
+  render: function () {
+    var orderComponents = this.props.routes.map(function (route, idx) {
       return (
         <div key={idx} className={styles.modalOrderMain}>
           <table>
@@ -505,11 +552,14 @@ const OrderList = React.createClass({
 });
 
 const TableStateful = React.createClass({
+  componentWillUnmount() {
+    this.props.resetFilter();
+  },
   closeModal() {
     this.props.CloseModal();
   },
   render() {
-    const {filters, paginationAction, paginationState, statusParams, tripDetails, tripsIsFetching} = this.props;
+    const { filters, paginationAction, paginationState, statusParams, tripDetails, tripsIsFetching } = this.props;
 
     const paginationProps = _.assign({}, paginationAction, paginationState);
 
@@ -530,7 +580,7 @@ const TableStateful = React.createClass({
 
     return (
       <div>
-        <div style={{opacity: tripsIsFetching ? 0.5 : 1}}>
+        <div style={{ opacity: tripsIsFetching ? 0.5 : 1 }}>
           <Table {...tableProps} />
           <Pagination {...paginationProps} />
         </div>
@@ -564,7 +614,7 @@ const TableStateful = React.createClass({
                       <span className={styles.unitWeightLabelDetails}> kg</span>
                     </p>
                   </div>
-                <div style={{clear: 'both'}} />
+                  <div style={{ clear: 'both' }} />
                 </div>
                 <div className={styles.orderList}>
                   <OrderList routes={this.props.trip.UserOrderRoutes} />
@@ -579,12 +629,14 @@ const TableStateful = React.createClass({
 });
 
 function StateToProps(state) {
-  const {pickupOrdersReady, driversStore} = state.app;
-  const {isFetching, limit, total, currentPage, trips, tripActive, filters, showDetails} = pickupOrdersReady;
+  const { pickupOrdersReady } = state.app;
+  const { isFetching, limit, total, currentPage, trips, tripActive, filters,
+    showDetails } = pickupOrdersReady;
 
-  const {cities} = state.app.cityList;
-  cities.forEach(function(city) {
-      cityList[city.Name] = city.CityID;
+  const { cities } = state.app.cityList;
+
+  cities.forEach(function (city) {
+    cityList[city.Name] = city.CityID;
   });
 
   const paginationState = {
@@ -605,7 +657,7 @@ function StateToProps(state) {
     }, {}),
     filters,
     trip,
-    showDetails
+    showDetails,
   };
 }
 
@@ -632,6 +684,9 @@ function DispatchToProps(dispatch, ownProps) {
       dispatch(PickupOrdersReady.HideAssignModal());
       dispatch(PickupOrdersReady.HideDetails());
       dispatch(NearbyFleets.ResetVendorList());
+    },
+    resetFilter() {
+      dispatch(PickupOrdersReady.ResetFilter());
     },
   };
 }
