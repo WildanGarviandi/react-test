@@ -82,5 +82,12 @@
     "role": {
       "DEFAULT": "DEFAULT",
       "SUPERHUB": "SUPERHUB"
+    },
+    "branchType": {
+      "LOCAL": "Local",
+      "CENTRAL": "Central"
+    },
+    "time": {
+      "MINUTES": "minutes"
     }
 }
