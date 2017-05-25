@@ -249,8 +249,20 @@ const VerifiedOrder = React.createClass({
 
 function dropdownStateToProps(keyword, title) {
   return (store) => {
-    const value = store.app.inboundTrips[keyword];
-    const options = config[keyword];
+    const value = store.app.inboundTrips[keyword].value || 'All';
+    let options = [{
+      key: 0, value: 'All',
+    }];
+
+    if (keyword === 'tripProblem') {
+      const optionsTemplate = store.app.tripProblems.problems;
+
+      options = options.concat(optionsTemplate
+        .map((option) => ({
+          key: option.TripProblemMasterID,
+          value: option.Problem,
+        })));
+    }
 
     return { value, options, title };
   };
@@ -259,8 +271,9 @@ function dropdownStateToProps(keyword, title) {
 function dropdownDispatchToProps(keyword) {
   return (dispatch) => {
     return {
-      handleSelect: ({ value }) => {
-        dispatch(InboundTrips.setDropdownFilter(keyword, value));
+      handleSelect: (option) => {
+        dispatch(InboundTrips.setDropdownFilter(keyword, option));
+        dispatch(InboundTrips.FetchList());
       },
     };
   };
@@ -279,14 +292,6 @@ export class Filter extends Component {
       </div>
     );
   }
-}
-
-function filterStateToProps(state) {
-
-}
-
-function filterDispatchToProps(state) {
-
 }
 
 const TableStateful = React.createClass({

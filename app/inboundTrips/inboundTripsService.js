@@ -35,7 +35,7 @@ const initialState = {
   trips: [],
   showDetails: false,
   tripActive: {},
-  tripProblem: 'All',
+  tripProblem: {},
 };
 
 export function Reducer(state = initialState, action) {
@@ -91,9 +91,9 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.TRIPS_INBOUND_SET_DROPDOWN_FILTER: {
-      const { keyword, value } = action;
+      const { keyword, option } = action.payload;
 
-      return _.assign({}, state, { [keyword]: value });
+      return _.assign({}, state, { [keyword]: option });
     }
 
     default: return state;
@@ -122,12 +122,14 @@ export function FetchList() {
   return (dispatch, getState) => {
     const { inboundTrips, userLogged } = getState().app;
     const { token } = userLogged;
-    const { currentPage, filters, limit } = inboundTrips;
+    const { currentPage, filters, limit, tripProblem } = inboundTrips;
 
     const query = _.assign({}, filters, {
       limit,
       nonDelivered: true,
       offset: (currentPage - 1) * limit,
+      tripProblemMasterID: (tripProblem.key || '') &&
+      (tripProblem.key === 0 ? '' : tripProblem.key),
     });
 
     dispatch({
@@ -302,12 +304,14 @@ export function HideDetails() {
   };
 }
 
-export function setDropdownFilter(keyword, value) {
+export function setDropdownFilter(keyword, option) {
   return (dispatch) => {
     dispatch({
       type: Constants.TRIPS_INBOUND_SET_DROPDOWN_FILTER,
-      keyword,
-      value,
+      payload: {
+        keyword,
+        option,
+      },
     });
   };
 }

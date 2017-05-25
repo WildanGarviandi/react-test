@@ -12,6 +12,7 @@ import * as CityService from '../cities/cityService';
 import * as OrderService from '../orders/orderService';
 import * as DashboardService from './dashboardService';
 import * as FleetService from '../nearbyFleets/nearbyFleetService';
+import * as TripProblemService from '../tripProblems/tripProblemsService';
 import {Glyph} from '../views/base';
 import Accordion from '../views/base/accordion';
 import styles from './styles.css';
@@ -306,6 +307,7 @@ function DispatchToProps(dispatch) {
       dispatch(ContactService.FetchList());
       dispatch(CityService.FetchList());
       dispatch(StateService.FetchList());
+      dispatch(TripProblemService.FetchList());
       dispatch(DashboardService.FetchCountTMS());
       if (hubID) {
         dispatch(DashboardService.FetchCount());
