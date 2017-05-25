@@ -542,11 +542,19 @@
 }
 
 .tripIDColumn {
-  width: 70px;
+  min-width: 85px;
+}
+
+.tripIDColumn img {
+  width: 30px;
+  float: left;
 }
 
 .link {
   color: #33c;
+  white-space: nowrap;
+  float: left;
+  margin: 9px 0 9px 3px;
 }
 
 .link:hover {
