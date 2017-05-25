@@ -4,5 +4,10 @@
         "react",
         "jsx-a11y",
         "import"
-    ]
+    ],
+    "globals": {
+        "document": true,
+        "window": true,
+        "localStorage": true
+    }
 }
