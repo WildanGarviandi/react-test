@@ -278,8 +278,10 @@ function inputDispatchToProps(keyword, placeholder) {
     }
 
     function OnKeyDown(e) {
-      if (e.keyCode !== 13) {
-        if (keyword === 'pickupZipCode' && ((e.keyCode > 64 && e.keyCode < 91) || e.keyCode > 185)) {
+      if (e.keyCode !== config.KEY_ACTION.ENTER) {
+        if (keyword === 'pickupZipCode' &&
+        ((e.keyCode >= config.KEY_ACTION.A && e.keyCode <= config.KEY_ACTION.Z)
+        || e.keyCode >= config.KEY_ACTION['SEMI-COLON'])) {
           e.preventDefault();
         }
         return;

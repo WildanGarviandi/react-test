@@ -22,7 +22,6 @@ const Constants = {
   TRIPS_INBOUND_SHOW_DETAILS: 'inbound/trips/showDetails',
   TRIPS_INBOUND_HIDE_DETAILS: 'inbound/trips/hideDetails',
   TRIPS_INBOUND_SET_DROPDOWN_FILTER: 'inbound/trips/setDropdownFilter',
-
 };
 
 const initialState = {
@@ -93,7 +92,7 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.TRIPS_INBOUND_SET_DROPDOWN_FILTER: {
-      const { keyword, value } = action;
+      const { keyword, value } = action.payload;
 
       return _.assign({}, state, { [keyword]: value });
     }
@@ -310,8 +309,10 @@ export function setDropdownFilter(keyword, value) {
   return (dispatch) => {
     dispatch({
       type: Constants.TRIPS_INBOUND_SET_DROPDOWN_FILTER,
-      keyword,
-      value,
+      payload: {
+        keyword,
+        value,
+      },
     });
   };
 }
