@@ -1,6 +1,4 @@
 import * as _ from 'lodash';
-import ClassName from 'classnames';
-import moment from 'moment';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
@@ -341,6 +339,56 @@ function inputStateToProps(keyword) {
   return (store) => {
     const value = store.app.inboundTrips.filters[keyword];
     const options = config[keyword];
+
+    return { value, options };
+  };
+}
+
+function inputDispatchToProps(keyword, placeholder) {
+  return (dispatch) => {
+    function OnChange(e) {
+      const value = e.target.value;
+
+      dispatch(InboundTrips.AddFilters({ [keyword]: value }));
+    }
+
+    function OnKeyDown(e) {
+      if (e.keyCode !== config.KEY_ACTION.ENTER) {
+        if (keyword === 'pickupZipCode' &&
+        ((e.keyCode >= config.KEY_ACTION.A && e.keyCode <= config.KEY_ACTION.Z)
+        || e.keyCode >= config.KEY_ACTION.SEMI_COLON)) {
+          e.preventDefault();
+        }
+        return;
+      }
+
+      dispatch(InboundTrips.SetCurrentPage(1));
+    }
+
+    return {
+      onChange: OnChange,
+      onKeyDown: OnKeyDown,
+      placeholder,
+    };
+  };
+}
+
+function dropdownStateToProps(keyword, title) {
+  return (store) => {
+    const value = store.app.inboundTrips[keyword].value || 'All';
+    let options = [{
+      key: 0, value: 'All',
+    }];
+
+    if (keyword === 'tripProblem') {
+      const optionsTemplate = store.app.tripProblems.problems;
+
+      options = options.concat(optionsTemplate
+        .map((option) => ({
+          key: option.TripProblemMasterID,
+          value: option.Problem,
+        })));
+    }
 
     return { value, options };
   };

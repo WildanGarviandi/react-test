@@ -39,6 +39,7 @@ import nearbyFleets from './nearbyFleets/nearbyFleetService';
 import dashboard from './dashboard/dashboardService';
 import {Reducer as performance} from './performance/performanceService';
 import orderMonitoring from './orderMonitoring/orderMonitoringService';
+import tripProblems from './tripProblems/tripProblemsService';
 
 export default combineReducers({
   userLogged: authReducers,
@@ -78,5 +79,6 @@ export default combineReducers({
   nearbyFleets,
   dashboard,
   performance,
-  orderMonitoring
+  orderMonitoring,
+  tripProblems,
 });

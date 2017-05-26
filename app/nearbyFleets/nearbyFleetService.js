@@ -15,7 +15,7 @@ const Constants = {
 
 const initialStore = {
     currentPage: 1,
-    limit: 100,
+    limit: 10000,
     fleets: [],
     driversVendors: []
 }
@@ -59,9 +59,14 @@ export function FetchList() {
         const {nearbyFleets, userLogged} = getState().app;
         const {currentPage, limit} = nearbyFleets;
         const {token} = userLogged;
+
+        const query = {
+          limit: limit,
+          offset: (currentPage-1) * limit,
+        };
         
         dispatch({type: modalAction.BACKDROP_SHOW});
-        FetchGet('/fleet/nearby-fleets', token, {}, true).then((response) => {
+        FetchGet('/fleet/nearby-fleets', token, query, true).then((response) => {
             if(!response.ok) {
                 return response.json().then(({error}) => {
                     throw error;

@@ -91,6 +91,10 @@
       "A": 65,
       "Z": 90
     },
+    "role": {
+      "DEFAULT": "DEFAULT",
+      "SUPERHUB": "SUPERHUB"
+    },
     "branchType": {
       "LOCAL": "Local",
       "CENTRAL": "Central"

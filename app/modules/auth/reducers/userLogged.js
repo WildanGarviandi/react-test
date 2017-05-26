@@ -55,6 +55,7 @@ export default (state = initialUserState, action) => {
         editCOD: action.order && action.order.edit_cod,
         editVolume: action.order && action.order.edit_volume,
         editWeight: action.order && action.order.edit_weight,
+        // roleName: action.hub.Role.Name,
       });
     case actionTypes.AUTH_INVALID:
       localStorage.clear();
