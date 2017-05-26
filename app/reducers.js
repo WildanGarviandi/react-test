@@ -20,7 +20,7 @@ import {Reducer as inboundOrders} from './inbound/inboundOrdersService';
 import {Reducer as updateOrders} from './updateOrders/updateOrdersService';
 import orderDetails from './modules/orders/reducers/details';
 // import outboundTrips from './modules/trips/reducers/outbound';
-import hubs from './modules/hubs/reducers';
+import hubs from './modules/hubs';
 import myTrips from './trips/tripService';
 import myOngoingTrips from './ongoingTrips/tripService';
 import myOrders from './orders/orderService';
@@ -39,6 +39,7 @@ import nearbyFleets from './nearbyFleets/nearbyFleetService';
 import dashboard from './dashboard/dashboardService';
 import {Reducer as performance} from './performance/performanceService';
 import orderMonitoring from './orderMonitoring/orderMonitoringService';
+import tripProblems from './tripProblems/tripProblemsService';
 
 export default combineReducers({
   userLogged: authReducers,
@@ -78,5 +79,6 @@ export default combineReducers({
   nearbyFleets,
   dashboard,
   performance,
-  orderMonitoring
+  orderMonitoring,
+  tripProblems,
 });

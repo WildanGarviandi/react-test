@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { Link } from 'react-router';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
+import PropTypes from 'prop-types';
 import moment from 'moment';
 
 import { Pagination } from '../views/base';
@@ -13,9 +14,10 @@ import ModalActions from '../modules/modals/actions';
 import styles from './styles.css';
 import { CanMarkContainer, TripParser, CanMarkTripDelivered } from '../modules/trips';
 import { OrderParser } from '../modules/orders';
-import { FilterTop, FilterText } from '../components/form';
+import { FilterTop, FilterText, FilterTopMultiple } from '../components/form';
 import * as config from '../config/configValues.json';
 import * as InboundTrips from './inboundTripsService';
+import { checkPermission } from '../helper/permission';
 
 const ColumnsOrder = ['tripID', 'driver', 'origin', 'childMerchant', 'pickup', 'pickupCity', 'zip', 'weight', 'status', 'verifiedOrders'];
 
@@ -322,50 +324,153 @@ function VerifiedOrder({ routes }) {
   );
 }
 
+function InputFilter({ value, onChange, onKeyDown, placeholder }) {
+  return (
+    <input
+      className={styles.inputSearch}
+      placeholder={placeholder}
+      type="text"
+      value={value}
+      onChange={onChange}
+      onKeyDown={onKeyDown}
+    />
+  );
+}
+
+function inputStateToProps(keyword) {
+  return (store) => {
+    const value = store.app.inboundTrips.filters[keyword];
+    const options = config[keyword];
+
+    return { value, options };
+  };
+}
+
+function inputDispatchToProps(keyword, placeholder) {
+  return (dispatch) => {
+    function OnChange(e) {
+      const value = e.target.value;
+
+      dispatch(InboundTrips.AddFilters({ [keyword]: value }));
+    }
+
+    function OnKeyDown(e) {
+      if (e.keyCode !== config.KEY_ACTION.ENTER) {
+        if (keyword === 'pickupZipCode' &&
+        ((e.keyCode >= config.KEY_ACTION.A && e.keyCode <= config.KEY_ACTION.Z)
+        || e.keyCode >= config.KEY_ACTION.SEMI_COLON)) {
+          e.preventDefault();
+        }
+        return;
+      }
+
+      dispatch(InboundTrips.SetCurrentPage(1));
+    }
+
+    return {
+      onChange: OnChange,
+      onKeyDown: OnKeyDown,
+      placeholder,
+    };
+  };
+}
+
 function dropdownStateToProps(keyword, title) {
   return (store) => {
-    const value = store.app.inboundTrips[keyword];
-    const cities = store.app.cityList.cities;
-    let cityOptions = [{
-      key: 0, value: 'All',
-    }];
+    const { inboundTrips, hubs } = store.app;
+    const value = inboundTrips[keyword] ? inboundTrips[keyword].value : 'All';
+    let options = [];
 
-    cityOptions = cityOptions.concat(_.chain(cities)
-      .map((city) => ({ key: city.CityID, value: city.Name }))
-      .sortBy((arr) => (arr.key))
-      .value());
+    if (keyword === 'tripProblem') {
+      const optionsTemplate = store.app.tripProblems.problems;
+      options = [{
+        key: 0, value: 'All',
+      }].concat(optionsTemplate
+        .map((option) => ({
+          key: option.TripProblemMasterID,
+          value: option.Problem,
+        })));
+    }
 
-    const options = config[keyword] || cityOptions;
+    if (keyword === 'hubs') {
+      options = _.chain(hubs.list)
+        .map(hub => ({
+          key: hub.HubID,
+          value: `Hub ${hub.Name}`,
+          checked: false,
+        }))
+        .sortBy(arr => arr.key)
+        .value();
+
+      if (inboundTrips && inboundTrips.hubIDs &&
+        inboundTrips.hubIDs.length > 0) {
+        const ids = inboundTrips.hubIDs;
+        options = options.map((hub) => {
+          const data = Object.assign({}, hub, {
+            checked: _.some(ids, id => id === hub.key),
+          });
+          return data;
+        });
+      }
+    }
 
     return { value, options, title };
   };
 }
 
-function dropdownDispatchToProps(keyword) {
+function multiDropdownDispatchToProps() {
   return (dispatch) => {
-    return {
-      handleSelect: ({ value }) => {
-        dispatch(InboundTrips.setDropdownFilter(keyword, value));
+    const action = {
+      handleSelect: (selectedOption) => {
+        dispatch(selectedOption.checked ? InboundTrips.addHubFilter(selectedOption) :
+          InboundTrips.deleteHubFilter(selectedOption));
         dispatch(InboundTrips.FetchList());
       },
     };
+    return action;
   };
 }
 
-const CityDropdown = connect(
-  dropdownStateToProps('pickupCity', 'Filter by City'),
-  dropdownDispatchToProps('pickupCity'),
-)(FilterTop);
+const TripIDSearch = connect(
+  inputStateToProps('tripID'),
+  inputDispatchToProps('tripID', 'Search "Trip ID" here....'),
+)(InputFilter);
+
+const ZipCodeSearch = connect(
+  inputStateToProps('pickupZipCode'),
+  inputDispatchToProps('pickupZipCode', 'Search "Zip Code" here....'),
+)(InputFilter);
+
+const HubDropdown = connect(
+  dropdownStateToProps('hubs', 'Filter by Hubs (can be multiple)'),
+  multiDropdownDispatchToProps('hubIDs'),
+)(FilterTopMultiple);
 
 export class Filter extends Component {
   render() {
     return (
-      <div>
-        <CityDropdown />
+      <div className={styles['filter-container']}>
+        <div className={styles['filter-box']}>
+          {this.props.userLogged.roleName === config.role.SUPERHUB && <HubDropdown />}
+        </div>
+        <div className={styles['filter-box']}>
+          <TripIDSearch />
+          <ZipCodeSearch />
+        </div>
       </div>
     );
   }
 }
+
+/* eslint-disable */
+Filter.propTypes = {
+  userLogged: PropTypes.object.isRequired,
+};
+/* eslint-enable */
+
+Filter.defaultProps = {
+  userLogged: {},
+};
 
 class TableStateful extends Component {
   constructor(props) {
@@ -383,7 +488,7 @@ class TableStateful extends Component {
       });
     }
   }
-  
+
   componentWillUnmount() {
     this.props.resetState();
   }
@@ -407,6 +512,9 @@ class TableStateful extends Component {
       });
     }
   }
+  componentWillUnmount() {
+    this.props.resetState();
+  }
 
   render() {
     const {
@@ -415,7 +523,8 @@ class TableStateful extends Component {
       paginationState,
       statusParams,
       tripDetails,
-      tripsIsFetching
+      tripsIsFetching,
+      userLogged,
     } = this.props;
 
     const paginationProps = _.assign({}, paginationAction, paginationState);
@@ -441,6 +550,8 @@ class TableStateful extends Component {
       isFetching: tripsIsFetching,
       showModals: this.props.showModals
     };
+
+    const hasPermission = checkPermission(userLogged, 'COMPLETE_ORDERS');
 
     return (
       <div>
@@ -489,7 +600,7 @@ class TableStateful extends Component {
                 <div className={styles.orderList}>
                   <VerifiedOrder routes={this.state.trip.UserOrderRoutes} />
                 </div>
-                {this.state.trip.UserOrderRoutes.length - this.state.trip.ScannedOrders !== 0 &&
+                {hasPermission && this.state.trip.UserOrderRoutes.length - this.state.trip.ScannedOrders !== 0 &&
                   <div className={styles.bottomNotes}>
                     <span className={styles.completeNotes}>
                       {`${this.state.trip.UserOrderRoutes.length - this.state.trip.ScannedOrders} `}
@@ -512,6 +623,14 @@ class TableStateful extends Component {
     );
   }
 }
+
+TableStateful.propTypes = {
+  resetFilter: PropTypes.func.isRequired,
+};
+
+TableStateful.propTypes = {
+  resetFilter: () => { },
+};
 
 function StateToProps(state) {
   const { inboundTrips, driversStore, userLogged } = state.app;
@@ -558,7 +677,8 @@ function StateToProps(state) {
     trip,
     canMarkTripDelivered: CanMarkTripDelivered(trip, rawOrders),
     canMarkContainer: CanMarkContainer(trip, hubID),
-    orders: rawOrders
+    orders: rawOrders,
+    userLogged,
   };
 }
 
@@ -598,6 +718,9 @@ function DispatchToProps(dispatch, ownProps) {
     },
     resetState() {
       dispatch(InboundTrips.ResetState());
+    },
+    resetFilter() {
+      dispatch(InboundTrips.ResetFilter());
     },
   };
 }
