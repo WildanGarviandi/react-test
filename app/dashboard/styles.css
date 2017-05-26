@@ -11,9 +11,6 @@
   padding: 20px;
   padding-left: 260px;
   background-color: #f1f1f1;
-  width: 100vw;
-  float: left;
-  box-sizing: border-box;
 }
 
 .compact .content {
@@ -290,6 +287,35 @@
   text-indent: 5px;
   padding-right: 10px;
   padding-left: 5px;
+}
+
+.counter-number-problem {
+  font-family: Helvetica;
+  font-size: 16px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  text-align: right;
+  float: right;
+}
+
+.number-notif {
+  color: #fff;
+  border-radius: 24px;
+  background-color: #2196f3;
+  line-height: 1.5em;
+  text-indent: 5px;
+  padding-right: 10px;
+  padding-left: 5px;
+}
+
+.problem-notif {
+  line-height: 1.5em;
+  text-indent: 5px;
+  padding-right: 10px;
+  padding-left: 5px;
+  color: #f00;
+  margin-top: 5px;
 }
 
 .titleMenu {

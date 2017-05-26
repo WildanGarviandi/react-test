@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import * as _ from 'lodash'; //eslint-disable-line
 import { push } from 'react-router-redux';
 
 import FetchGet from '../modules/fetch/get';
@@ -17,7 +17,7 @@ const Constants = {
   TRIPS_INBOUND_FILTERS_STATUS_SET: 'inbound/filtersStatus/set',
   TRIPS_INBOUND_LIMIT_SET: 'inbound/limit/set',
   TRIPS_INBOUND_SET: 'inbound/trips/set',
-  TRIPS_INBOUND_RESET_FILTER: 'inbound/trips/resetFilter',
+  TRIPS_INBOUND_RESET_STATE: 'inbound/trips/resetState',
   TRIPS_INBOUND_SHOW_DETAILS: 'inbound/trips/showDetails',
   TRIPS_INBOUND_HIDE_DETAILS: 'inbound/trips/hideDetails',
   TRIPS_INBOUND_SET_CURRENT_TRIP: 'inbound/trips/setCurrentTrip',
@@ -29,6 +29,9 @@ const Constants = {
   TRIPS_INBOUND_SET_FILTER_HUB: 'inbound/trips/setFilterHub',
   TRIPS_INBOUND_SET_CURRENT_PAGE_DRIVER: 'inbound/trips/setCurrentPageDriver',
   TRIPS_INBOUND_SET_LIMIT_DRIVERS: 'inbound/trips/setLimitDrivers',
+  TRIPS_INBOUND_SET_DROPDOWN_FILTER: 'inbound/trips/setDropdownFilter',
+  TRIPS_INBOUND_ADD_HUB: 'inbound/trips/hub/add',
+  TRIPS_INBOUND_DELETE_HUB: 'inbound/trips/hub/delete',
 };
 
 const initialState = {
@@ -54,6 +57,8 @@ const initialState = {
   hubs: [],
   totalHubs: 0,
   filterHubs: {},
+  hubIDs: [],
+  tripProblem: {},
 };
 
 export function Reducer(state = initialState, action) {
@@ -86,17 +91,6 @@ export function Reducer(state = initialState, action) {
       return _.assign({}, state, {
         trips: action.trips,
         total: action.total,
-      });
-    }
-
-    case Constants.TRIPS_INBOUND_RESET_FILTER: {
-      return _.assign({}, state, {
-        filters: {
-          tripType: 0,
-        },
-        currentPage: 1,
-        filterStatus: 'SHOW ALL',
-        limit: 100,
       });
     }
 
@@ -143,6 +137,35 @@ export function Reducer(state = initialState, action) {
     case Constants.TRIPS_INBOUND_SET_LIMIT_DRIVERS: {
       return _.assign({}, state, action.payload);
     }
+    
+    case Constants.TRIPS_INBOUND_SET_DROPDOWN_FILTER: {
+      const { keyword, option } = action.payload;
+
+      return _.assign({}, state, { [keyword]: option });
+    }
+
+    case Constants.TRIPS_INBOUND_RESET_STATE: {
+      return initialState;
+    }
+
+    case Constants.TRIPS_INBOUND_ADD_HUB: {
+      const hubIDs = state.hubIDs.concat([action.payload.hub.key]);
+      return Object.assign({}, state, {
+        hubIDs,
+      });
+    }
+
+    case Constants.TRIPS_INBOUND_DELETE_HUB: {
+      const hubIDs = _.filter(state.hubIDs, hubID =>
+        hubID !== action.payload.hub.key);
+      return Object.assign({}, state, {
+        hubIDs,
+      });
+    }
+
+    case Constants.TRIPS_INBOUND_RESET_STATE: {
+      return initialState;
+    }
 
     default: return state;
   }
@@ -161,8 +184,6 @@ export function AddFilters(newFilters) {
       type: Constants.TRIPS_INBOUND_FILTERS_SET,
       filters: _.assign({}, filters, newFilters),
     });
-
-    dispatch(SetCurrentPage(1));
   };
 }
 
@@ -170,12 +191,15 @@ export function FetchList() {
   return (dispatch, getState) => {
     const { inboundTrips, userLogged } = getState().app;
     const { token } = userLogged;
-    const { currentPage, filters, limit } = inboundTrips;
+    const { currentPage, filters, limit, tripProblem, hubIDs } = inboundTrips;
 
     const query = _.assign({}, filters, {
       limit,
       nonDelivered: true,
       offset: (currentPage - 1) * limit,
+      tripProblemMasterID: (tripProblem.key || '') &&
+      (tripProblem.key === 0 ? '' : tripProblem.key),
+      hubIDs: hubIDs.join(),
     });
 
     dispatch({
@@ -290,9 +314,9 @@ export function GoToContainer(containerNumber) {
   };
 }
 
-export function ResetFilter() {
+export function ResetState() {
   return (dispatch) => {
-    dispatch({ type: Constants.TRIPS_INBOUND_RESET_FILTER });
+    dispatch({ type: Constants.TRIPS_INBOUND_RESET_STATE });
   };
 }
 
@@ -350,15 +374,27 @@ export function HideDetails() {
   };
 }
 
+export function setDropdownFilter(keyword, option) {
+  return (dispatch) => {
+    dispatch({
+      type: Constants.TRIPS_INBOUND_SET_DROPDOWN_FILTER,
+      payload: {
+        keyword,
+        option,
+      },
+    });
+  };
+}
+
 export function TripDeliver(tripID, reuse) {
   return (dispatch, getState) => {
-    const { inboundTripDetails, userLogged } = getState().app;
+    const { userLogged } = getState().app;
     const { token } = userLogged;
 
     dispatch({ type: modalAction.BACKDROP_SHOW });
 
     const query = {
-      reusePackage: reuse ? true : false,
+      reusePackage: reuse,
     };
 
     FetchPost(`/trip/${tripID}/markdeliver`, token, query).then((response) => {
@@ -569,5 +605,23 @@ export function setLimitDrivers(limitDrivers) {
       payload: { limitDrivers },
     });
     dispatch(SetCurrentPageDrivers(1));
+  };
+}
+
+export function addHubFilter(hub) {
+  return {
+    type: Constants.TRIPS_INBOUND_ADD_HUB,
+    payload: {
+      hub,
+    },
+  };
+}
+
+export function deleteHubFilter(hub) {
+  return {
+    type: Constants.TRIPS_INBOUND_DELETE_HUB,
+    payload: {
+      hub,
+    },
   };
 }

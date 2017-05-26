@@ -4,7 +4,7 @@ import { push } from 'react-router-redux';
 
 import { Input, Page } from '../views/base';
 import * as InboundTrips from './inboundTripsService';
-import InboundTable from './inboundTripsTable';
+import InboundTable, { Filter } from './inboundTripsTable';
 import FleetsFetch from '../modules/drivers/actions/fleetsFetch';
 import styles from './styles.css';
 import formStyles from '../components/form.css';
@@ -29,23 +29,13 @@ const InboundTripPage = React.createClass({
   },
   render() {
     const title = this.props.isFetching ? 'Inbound Trips' : this.props.total > 0 ? `Inbound Trips (${this.props.total})` : 'Inbound Trips (All Done)';
-
+    const { userLogged } = this.props;
     return (
       <div>
         <Page title="Inbound Trips" count={{ itemName: 'Items', done: 'All Done', value: this.props.total }}>
-          <div>
-            <span>
-              <Input
-                base={{ placeholder: 'Search Trip ID here ...' }}
-                className={styles.searchInput}
-                onChange={this.onChange}
-                onEnterKeyPressed={this.gotoTrip}
-              />
-            </span>
-            <span>
-              <button onClick={this.gotoTrip} className={styles.searchButton}>Search</button>
-            </span>
-          </div>
+          <Filter
+            userLogged={userLogged}
+          />
           <div className={styles.mainTable}>
             <InboundTable
               key={this.props.lastPath}
@@ -64,13 +54,14 @@ function StateToProps(state, ownProps) {
   const routes = ownProps.routes;
   const paths = routes[routes.length - 1].path.split('/');
   const lastPath = paths[paths.length - 1];
-  const { inboundTrips } = state.app;
+  const { inboundTrips, userLogged } = state.app;
   const { total, isFetching } = inboundTrips;
 
   return {
     lastPath,
     total,
     isFetching,
+    userLogged,
   };
 }
 
