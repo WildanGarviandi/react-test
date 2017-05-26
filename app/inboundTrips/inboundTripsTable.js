@@ -449,10 +449,14 @@ const HubDropdown = connect(
 export class Filter extends Component {
   render() {
     return (
-      <div>
-        <TripIDSearch />
-        <ZipCodeSearch />
-        {this.props.userLogged.roleName === config.role.SUPERHUB && <HubDropdown />}
+      <div className={styles['filter-container']}>
+        <div className={styles['filter-box']}>
+          {this.props.userLogged.roleName === config.role.SUPERHUB && <HubDropdown />}
+        </div>
+        <div className={styles['filter-box']}>
+          <TripIDSearch />
+          <ZipCodeSearch />
+        </div>
       </div>
     );
   }
