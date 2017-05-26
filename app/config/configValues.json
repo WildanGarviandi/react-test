@@ -79,6 +79,18 @@
     }],
     "deliverableOrderStatus": [2, 3, 4],
     "updatableCOD": [4, 5],
+    "tripProblem": [
+      { "key": -1, "value": "All" },
+      { "key": 1, "value": "Not Confirmed" },
+      { "key": 2, "value": "Not Arrived" },
+      { "key": 3, "value": "Not Finished" }
+    ],
+    "KEY_ACTION": {
+      "ENTER": 13,
+      "SEMI_COLON": 186,
+      "A": 65,
+      "Z": 90
+    },
     "role": {
       "DEFAULT": "DEFAULT",
       "SUPERHUB": "SUPERHUB"
