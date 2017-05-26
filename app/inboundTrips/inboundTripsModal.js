@@ -19,11 +19,10 @@ import { OrderParser } from '../modules/orders';
 import { formatDate } from '../helper/time';
 import { modalAction } from '../modules/modals/constants';
 import stylesModal from '../views/base/modal.css';
-import styles from '../pickupOrders/styles.css';
+import styles from '../inboundTrips/styles.css';
 import BodyRow, { CheckBoxCell, LinkCell, TextCell, OrderIDLinkCell, ButtonCell, IDCell } from '../views/base/cells';
 import { CheckboxHeader, CheckboxCell } from '../views/base/tableCell';
 import { FilterTop, FilterText } from '../components/form';
-import * as TripDetails from '../modules/inboundTripDetails';
 import config from '../config/configValues.json';
 import * as UtilHelper from '../helper/utility';
 import { Pagination3 } from '../components/pagination3';
@@ -79,7 +78,7 @@ function ProcessTrip(trip) {
 
 class Fleet extends Component {
   render() {
-    let fleetComponents = fleetList.map(function (fleet, idx) {
+    let fleetComponents = fleetList.map((fleet, idx) => {
       let vendorLoad = styles.vendorLoad;
       let availableLoad = fleet.CurrentLoad;
       let rowStyle = styles.vendorInformation;
@@ -119,7 +118,7 @@ class Fleet extends Component {
           </div>
         </div>
       );
-    }.bind(this));
+    });
     return <div>{fleetComponents}</div>;
   }
 }
@@ -138,6 +137,7 @@ class AssignVendor extends Component {
   }
 
   render() {
+
     return (
       <div>
         <div className={styles.mainAssignBox}>
@@ -189,19 +189,19 @@ class AssignVendor extends Component {
           }
           {fleetList.length === 0 &&
             <div className={styles.noTransportation}>
-              No vendor found for this trip
+              No hub found for this trip
             </div>
           }
         </div>
         <div>
           {!this.state.selectedFleet &&
             <div className={styles.notesBelow}>
-              Please select a vendor for this trip and click on button to continue.
+              Please select a hub for this trip and click on button to continue.
             </div>
           }
           {this.state.selectedFleet &&
             <div className={styles.notesBelow}>
-              You have selected a vendor for this trip! Please click on this button to continue.
+              You have selected a hub for this trip! Please click on this button to continue.
             </div>
           }
           <div>
@@ -210,7 +210,7 @@ class AssignVendor extends Component {
               className={styles.buttonAssign}
               onClick={this.props.assignFleet}
             >
-              Assign to Vendor
+              Assign to Hub
             </button>
           </div>
         </div>
@@ -319,73 +319,6 @@ class AssignDriver extends Component {
 
     return (
       <div>
-        <div className={styles.mainAssignBox}>
-          <div>
-            <div className={styles.modalDesc}>
-              <div className={styles.mainLabelWebstore}>
-                {this.props.trip.ListWebstoreMores}
-              </div>
-              <div className={styles.secondLabel}>
-                {this.props.trip.PickupAddress && this.props.trip.PickupAddress.City}
-              </div>
-            </div>
-            <div className={styles.borderDesc} />
-            <div className={styles.modalDesc2}>
-              <div className={styles.secondLabel}>
-                Total Weight
-              </div>
-              <div className={styles.mainLabel}>
-                {this.props.trip.Weight} kg
-              </div>
-            </div>
-            <div className={styles.borderDesc} />
-            <div className={styles.modalDesc3}>
-              <div className={styles.secondLabel}>
-                Quantity
-              </div>
-              <div className={styles.mainLabel}>
-                {this.props.trip.UserOrderRoutes && this.props.trip.UserOrderRoutes.length}
-              </div>
-            </div>
-            <div className={styles.borderDesc} />
-            <div className={styles.modalDesc4}>
-              <div className={styles.secondLabel}>
-                Vehicle
-              </div>
-              <div className={styles.secondLabelVehicle}>
-                <DropdownTypeAhead
-                  options={vehicleList}
-                  selectVal={this.chooseVehicle}
-                  val={this.state.selectedVehicle}
-                />
-              </div>
-            </div>
-          </div>
-          <div style={{ clear: 'both' }} />
-          {this.props.trip.Weight > config.motorcycleMaxWeight &&
-            this.state.selectedVehicle === 'Motorcycle' &&
-            !this.state.allowNoSeparate &&
-
-            <div className={styles.modalDescBottom}>
-              This trip is too big. Take {config.motorcycleMaxWeight} kg only and separate the rest?
-              <div style={{ clear: 'both' }} />
-              <button className={styles.buttonSplitNo} onClick={this.noSeparate}>No</button>
-              <button className={styles.buttonSplitYes} onClick={this.props.splitTrip}>Yes</button>
-            </div>
-          }
-          {this.props.trip.Weight > config.vanMaxWeight &&
-            this.state.selectedVehicle === 'Van' &&
-            !this.state.allowNoSeparate &&
-
-            <div className={styles.modalDescBottom}>
-              This trip is too big. Take {config.vanMaxWeight} kg only and separate the rest?
-              <div style={{ clear: 'both' }} />
-              <button className={styles.buttonSplitNo} onClick={this.noSeparate}>No</button>
-              <button className={styles.buttonSplitYes} onClick={this.props.splitTrip}>Yes</button>
-            </div>
-          }
-          <div style={{ clear: 'both' }} />
-        </div>
         <div className={styles.panelDriverSearch}>
           <input
             className={styles.inputDriverSearch}
@@ -558,11 +491,61 @@ class AssignDriverVendor extends Component {
   }
 }
 
+function TripDetails ({ trip }) {
+  return (
+    <div className={styles['trip-details-container']}>
+      <div className={styles.row}>
+        <div className={styles.section}>
+          <div className={styles.label}>Order ID</div>
+          <div className={styles.value}>
+            {`TRIP-${trip.TripID}`}
+          </div>
+        </div>
+        <div className={styles.separator} />
+        <div className={styles.section}>
+          <div className={styles.label}>Total Weight</div>
+          <div className={styles.value}>
+            {`${trip.Weight} kg`}
+          </div>
+        </div>
+        <div className={styles.separator} />
+        <div className={styles.section}>
+          <div className={styles.label}>Quantity</div>
+          <div className={styles.value}>
+            {trip.UserOrderRoutes && trip.UserOrderRoutes.length}
+          </div>
+        </div>
+        <div className={styles.separator} />
+        <div className={styles.section}>
+          <div className={styles.label}>Origin</div>
+          <div className={styles.value}>
+            {trip.WebstoreNames}
+          </div>
+        </div>
+      </div>
+      <div className={styles.row}>
+        <div className={styles.section}>
+          <div className={styles.label}>Child Merchant</div>
+          <div className={styles.value}>
+            {trip.WebstoreUser}
+          </div>
+        </div>
+        <div className={styles.separator} />
+        <div className={styles.section}>
+          <div className={styles.label}>
+            {trip.PickupAddress && trip.PickupAddress.Address1}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 class InboundTripsModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      howVendor: false,
+      showVendor: false,
       showDriver: false,
     };
   }
@@ -588,8 +571,8 @@ class InboundTripsModal extends Component {
   }
 
   closeModal() {
-    this.props.CloseModal();
-    this.activateDriver();
+    this.props.HideModal();
+    // this.activateDriver();
   }
 
   assignDriver() {
@@ -628,45 +611,43 @@ class InboundTripsModal extends Component {
     this.props.DriverSet(this.props.trip.TripID, selectedDriverVendor);
   }
 
-  splitTrip() {
-    this.props.SplitTrip(this.props.trip.TripID, selectedVehicleID);
-  }
-
   render() {
-    const trips = _.map(this.props.trips, ProcessTrip);
+    const trip = this.props.currentTrip;
+
     return (
       <div>
         {
-          this.props.showModal &&
+          this.props.showReAssignModal &&
           <ModalContainer>
             <ModalDialog>
               <div>
                 <div>
                   <div className={styles.modalTitle}>
-                    Assign Trip
+                    Re-Assign Orders
                   </div>
-                  <div role="button" onClick={this.closeModal} className={styles.modalClose}>
+                  <div role="button" onClick={() => this.closeModal()} className={styles.modalClose}>
                     &times;
                   </div>
+                  <TripDetails trip={trip} />
                   <div className={styles.toggleAssignMain}>
                     <div
                       role="button"
-                      onClick={this.activateDriver}
+                      onClick={() => this.activateDriver()}
                       className={this.state.showDriver ?
                       styles.toggleAssignActive :
                       styles.toggleAssign}
                     >
-                      Assign to Driver
+                      Re-Assign To My Driver
                     </div>
                     <div className={styles.arbitToggleAssign}> | </div>
                     <div
                       role="button"
-                      onClick={this.activateVendor}
+                      onClick={() => this.activateVendor()}
                       className={this.state.showVendor ?
                       styles.toggleAssignActive :
                       styles.toggleAssign}
                     >
-                      Assign to Vendor
+                      Re-Assign To Hub
                     </div>
                   </div>
                   {this.state.showDriver &&
@@ -675,7 +656,6 @@ class InboundTripsModal extends Component {
                       PaginationAction={this.props.PaginationActionDrivers}
                       trip={this.props.trip}
                       assignDriver={this.assignDriver}
-                      splitTrip={this.splitTrip}
                       isFetchingDriver={this.props.isFetchingDriver}
                       updateAndFetchDrivers={this.props.UpdateAndFetchDrivers}
                       updateFiltersDrivers={this.props.UpdateFiltersDrivers}
@@ -684,12 +664,12 @@ class InboundTripsModal extends Component {
                   }
                   {
                     this.state.showVendor && driverVendorList.length === 0 &&
-                    <AssignVendor trip={this.props.trip} assignFleet={this.assignFleet} />
+                    <AssignVendor trip={trip} assignFleet={this.assignFleet} />
                   }
                   {
                     this.state.showVendor && driverVendorList.length > 0 &&
                     <AssignDriverVendor
-                      trip={this.props.trip}
+                      trip={trip}
                       assignDriver={this.assignDriverVendor}
                     />
                   }
@@ -707,8 +687,8 @@ function StateToProps(state) {
   const { inboundTrips, driversStore } = state.app;
   const {
     tripActive,
-    showModal,
-    splitTrip,
+    currentTrip,
+    showReAssignModal,
     drivers,
     isFetchingDriver,
     currentPageDrivers,
@@ -718,21 +698,22 @@ function StateToProps(state) {
   
   const { fleets, driversVendors } = state.app.nearbyFleets;
   fleetList = fleets;
-
+  console.log(drivers,'drivers');
   driverList = drivers;
   driverVendorList = driversVendors;
 
   const trip = TripParser(tripActive)
 
   return {
+    currentTrip,
     trip,
-    showModal,
     isFetchingDriver,
     paginationStateDrivers: {
       currentPage: currentPageDrivers,
       limit: limitDrivers,
       total: totalDrivers
     },
+    showReAssignModal,
   };
 }
 
@@ -748,9 +729,6 @@ function DispatchToProps(dispatch) {
     },
     FleetSet(tripID, fleetID) {
       dispatch(inboundTrips.AssignFleet(tripID, fleetID));
-    },
-    SplitTrip(id, vehicleID) {
-      dispatch(inboundTrips.SplitTrip(id, vehicleID));
     },
     FetchDriverVendorList: function (fleetID) {
       dispatch(NearbyFleets.FetchDriverFleet(fleetID));
@@ -771,6 +749,9 @@ function DispatchToProps(dispatch) {
     },
     UpdateAndFetchDrivers(filters) {
       dispatch(inboundTrips.UpdateAndFetchDrivers(filters));
+    },
+    HideModal() {
+      dispatch(inboundTrips.HideReAssignModal());
     },
   };
 }

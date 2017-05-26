@@ -151,16 +151,28 @@ const Table = React.createClass({
 });
 
 class RightTable extends Component {
+
+  showModals(item) {
+    this.props.setCurrentTrip(item);
+    this.props.showReAssignModal();
+  }
+
   render() {
-    const { items } = this.props;
+    const { parsedItems, items } = this.props;
+
     return (
       <table className={tableStyles.table}>
         <thead><tr><th>Action</th></tr></thead>
         <tbody>
-          {_.map(items, (item, key) => (
+          {_.map(parsedItems, (item, key) => (
             <tr key={key}>
               <td className={tableStyles.td}>
-                <button className={styles.reassignButton}>Re-Assign</button>
+                <button
+                  className={styles.reassignButton}
+                  onClick={() => this.showModals(items[key])}
+                >
+                  Re-Assign
+                </button>
               </td>
               <td className={`${tableStyles.td} ${styles.driverColumn}`}>
                 <span className={styles.inlineVehicle}>
@@ -389,7 +401,14 @@ class TableStateful extends Component {
       filteringAction, statusProps,
       filters: this.state,
       isFetching: tripsIsFetching,
-      showModals: this.props.showModals
+      showModals: this.props.showModals,
+    };
+
+    const rightTableProps = {
+      items: this.props.trips,
+      parsedItems: trips,
+      setCurrentTrip: this.props.setCurrentTrip,
+      showReAssignModal: this.props.showReAssignModal,
     };
 
     return (
@@ -400,7 +419,7 @@ class TableStateful extends Component {
           </div>
           {!tableProps.isFetching && tableProps.items.length !== 0 &&
             <div className={styles.tableRight}>
-              <RightTable items={tableProps.items} />
+              <RightTable {...rightTableProps} />
             </div>
           }
           <Pagination {...paginationProps} />
@@ -545,6 +564,12 @@ function DispatchToProps(dispatch, ownProps) {
     },
     reuse(tripID) {
       dispatch(InboundTrips.TripDeliver(tripID, true));
+    },
+    setCurrentTrip(trip) {
+      dispatch(InboundTrips.SetCurrentTrip(trip));
+    },
+    showReAssignModal: () => {
+      dispatch(InboundTrips.ShowReAssignModal());
     },
   };
 }

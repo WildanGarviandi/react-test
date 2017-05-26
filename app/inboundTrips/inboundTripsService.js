@@ -19,7 +19,10 @@ const Constants = {
   TRIPS_INBOUND_SET: 'inbound/trips/set',
   TRIPS_INBOUND_RESET_FILTER: 'inbound/trips/resetFilter',
   TRIPS_INBOUND_SHOW_DETAILS: 'inbound/trips/showDetails',
-  TRIPS_INBOUND_HIDE_DETAILS: 'inbound/trips/hideDetails'
+  TRIPS_INBOUND_HIDE_DETAILS: 'inbound/trips/hideDetails',
+  TRIPS_INBOUND_SET_CURRENT_TRIP: 'inbound/trips/setCurrentTrip',
+  TRIPS_INBOUND_SHOW_RE_ASSIGN_MODAL: 'inbound/trips/showReAssignModal',
+  TRIPS_INBOUND_HIDE_RE_ASSIGN_MODAL: 'inbound/trips/hideReAssignModal',
 };
 
 const initialState = {
@@ -34,7 +37,11 @@ const initialState = {
   trips: [],
   showDetails: false,
   tripActive: {},
-  showModal: true,
+  showModal: false,
+  showReAssignModal: false,
+  currentTrip: {},
+  drivers: [],
+  totalDrivers: 0,
 };
 
 export function Reducer(state = initialState, action) {
@@ -87,6 +94,18 @@ export function Reducer(state = initialState, action) {
 
     case Constants.TRIPS_INBOUND_HIDE_DETAILS: {
       return _.assign({}, state, { showDetails: false, tripActive: {} });
+    }
+
+    case Constants.TRIPS_INBOUND_SET_CURRENT_TRIP: {
+      return _.assign({}, state, action.payload);
+    }
+
+    case Constants.TRIPS_INBOUND_SHOW_RE_ASSIGN_MODAL: {
+      return _.assign({}, state, { showReAssignModal: true });
+    }
+
+    case Constants.TRIPS_INBOUND_HIDE_RE_ASSIGN_MODAL: {
+      return _.assign({}, state, { showReAssignModal: false });
     }
 
     default: return state;
@@ -346,6 +365,7 @@ export function FetchDrivers(tripID) {
       }
 
       return response.json().then(({ data }) => {
+        console.log(data, 'fetchdriver');
         dispatch({ type: Constants.ORDERS_PICKUP_DRIVER_FETCH_END });
         dispatch({
           type: Constants.ORDERS_PICKUP_SET_DRIVERS,
@@ -357,5 +377,28 @@ export function FetchDrivers(tripID) {
       dispatch({ type: Constants.ORDERS_PICKUP_DRIVER_FETCH_END });
       dispatch(ModalActions.addMessage(e.message));
     });
+  };
+}
+
+export function SetCurrentTrip(trip) {
+  return (dispatch) => {
+    dispatch({
+      type: Constants.TRIPS_INBOUND_SET_CURRENT_TRIP,
+      payload: {
+        currentTrip: trip,
+      },
+    });
+  };
+}
+
+export function ShowReAssignModal() {
+  return (dispatch) => {
+    dispatch({ type: Constants.TRIPS_INBOUND_SHOW_RE_ASSIGN_MODAL });
+  };
+}
+
+export function HideReAssignModal() {
+  return (dispatch) => {
+    dispatch({ type: Constants.TRIPS_INBOUND_HIDE_RE_ASSIGN_MODAL });
   };
 }
