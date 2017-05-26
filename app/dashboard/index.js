@@ -20,6 +20,7 @@ import styles from './styles.css';
 import config from '../../config.json';
 import configValues from '../config/configValues.json';
 import ModalActions from '../modules/modals/actions';
+import * as hubService from '../modules/hubs';
 import * as util from '../helper/utility';
 
 let classnaming = require('classnames/bind').bind(styles);
@@ -306,6 +307,7 @@ function DispatchToProps(dispatch) {
       dispatch(StateService.FetchList());
       dispatch(TripProblemService.FetchList());
       dispatch(DashboardService.FetchCountTMS());
+      dispatch(hubService.fetchList());
       if (hubID) {
         dispatch(DashboardService.FetchCount());
         dispatch(FleetService.FetchList());
