@@ -323,6 +323,57 @@ function VerifiedOrder({ routes }) {
   );
 }
 
+function InputFilter({ value, onChange, onKeyDown, placeholder }) {
+  return (
+    <input
+      className={styles.inputSearch}
+      placeholder={placeholder}
+      type="text"
+      value={value}
+      onChange={onChange}
+      onKeyDown={onKeyDown}
+    />
+  );
+}
+
+function inputStateToProps(keyword) {
+  return (store) => {
+    const value = store.app.inboundTrips.filters[keyword];
+    const options = config[keyword];
+
+    return { value, options };
+  };
+}
+
+function inputDispatchToProps(keyword, placeholder) {
+  return (dispatch) => {
+    function OnChange(e) {
+      const value = e.target.value;
+
+      dispatch(InboundTrips.AddFilters({ [keyword]: value }));
+    }
+
+    function OnKeyDown(e) {
+      if (e.keyCode !== config.KEY_ACTION.ENTER) {
+        if (keyword === 'pickupZipCode' &&
+        ((e.keyCode >= config.KEY_ACTION.A && e.keyCode <= config.KEY_ACTION.Z)
+        || e.keyCode >= config.KEY_ACTION.SEMI_COLON)) {
+          e.preventDefault();
+        }
+        return;
+      }
+
+      dispatch(InboundTrips.SetCurrentPage(1));
+    }
+
+    return {
+      onChange: OnChange,
+      onKeyDown: OnKeyDown,
+      placeholder,
+    };
+  };
+}
+
 function dropdownStateToProps(keyword, title) {
   return (store) => {
     const { inboundTrips, hubs } = store.app;
@@ -366,17 +417,6 @@ function dropdownStateToProps(keyword, title) {
   };
 }
 
-function dropdownDispatchToProps(keyword) {
-  return (dispatch) => {
-    return {
-      handleSelect: ({ value }) => {
-        dispatch(InboundTrips.setDropdownFilter(keyword, value));
-        dispatch(InboundTrips.FetchList());
-      },
-    };
-  };
-}
-
 function multiDropdownDispatchToProps() {
   return (dispatch) => {
     const action = {
@@ -390,10 +430,16 @@ function multiDropdownDispatchToProps() {
   };
 }
 
-const CityDropdown = connect(
-  dropdownStateToProps('pickupCity', 'Filter by City'),
-  dropdownDispatchToProps('pickupCity'),
-)(FilterTop);
+const TripIDSearch = connect(
+  inputStateToProps('tripID'),
+  inputDispatchToProps('tripID', 'Search "Trip ID" here....'),
+)(InputFilter);
+
+const ZipCodeSearch = connect(
+  inputStateToProps('pickupZipCode'),
+  inputDispatchToProps('pickupZipCode', 'Search "Zip Code" here....'),
+)(InputFilter);
+
 const HubDropdown = connect(
   dropdownStateToProps('hubs', 'Filter by Hubs (can be multiple)'),
   multiDropdownDispatchToProps('hubIDs'),
@@ -403,7 +449,8 @@ export class Filter extends Component {
   render() {
     return (
       <div>
-        <CityDropdown />
+        <TripIDSearch />
+        <ZipCodeSearch />
         {this.props.userLogged.roleName === config.role.SUPERHUB && <HubDropdown />}
       </div>
     );
@@ -459,6 +506,9 @@ class TableStateful extends Component {
         cancel: this.props.deliverTrip.bind(null, this.props.trip.TripID),
       });
     }
+  }
+  componentWillUnmount() {
+    this.props.resetState();
   }
 
   render() {

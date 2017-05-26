@@ -138,8 +138,6 @@ export function AddFilters(newFilters) {
       type: Constants.TRIPS_INBOUND_FILTERS_SET,
       filters: _.assign({}, filters, newFilters),
     });
-
-    dispatch(SetCurrentPage(1));
   };
 }
 
@@ -396,4 +394,3 @@ export function deleteHubFilter(hub) {
     },
   };
 }
-
