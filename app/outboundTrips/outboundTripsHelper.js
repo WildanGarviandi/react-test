@@ -5,7 +5,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {TripParser} from '../modules/trips'
 import styles from './styles.css'
-import * as Hubs from '../modules/hubs/actions'
+import * as Hubs from '../modules/hubs';
 import * as OutboundTrips from './outboundTripsService'
 import {ButtonWithLoading} from '../views/base'
 import {DropdownWithState} from '../views/base/dropdown'
@@ -229,7 +229,7 @@ function mapState (state, ownParams) {
 function mapDispatch (dispatch, ownParams) {
   return {
     FetchList: () => {
-      dispatch(Hubs.fetchList())
+      dispatch(Hubs.fetchNextDestinationList());
     },
     SetHub: (hubID) => {
       dispatch(OutboundTrips.setHub(ownParams.trip.TripID, hubID))

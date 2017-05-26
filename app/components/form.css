@@ -45,6 +45,11 @@
   position: relative;
 }
 
+.container-multi {
+  position: relative;
+  width: 250px;
+}
+
 .caretContainer {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -79,6 +84,21 @@
   box-sizing: border-box;
 
   width: 80%;
+  height: 48px;
+}
+
+.typeBox-multi {
+  display: block;
+  text-indent: 5px;
+
+  border: solid 1px #ccc;
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+
+  width: 100%;
   height: 48px;
 }
 
@@ -159,4 +179,8 @@ input {
   float: left;
   margin-right: 10px;
   width: 16.5%;
+}
+
+.check-multi {
+  float: right;
 }

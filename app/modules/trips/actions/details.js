@@ -1,6 +1,5 @@
 import lodash from 'lodash';
 import Constants from '../constants';
-import Hubs from '../../hubs/constants';
 import fetchGet from '../../fetch/get';
 import fetchPost from '../../fetch/post';
 import ModalActions from '../../modals/actions';

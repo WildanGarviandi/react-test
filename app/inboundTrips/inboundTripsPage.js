@@ -28,11 +28,13 @@ const InboundTripPage = React.createClass({
   },
   render() {
     const title = this.props.isFetching ? 'Inbound Trips' : this.props.total > 0 ? `Inbound Trips (${this.props.total})` : 'Inbound Trips (All Done)';
-
+    const { userLogged } = this.props;
     return (
       <div>
         <Page title="Inbound Trips" count={{ itemName: 'Items', done: 'All Done', value: this.props.total }}>
-          <Filter />
+          <Filter
+            userLogged={userLogged}
+          />
           <div className={styles.mainTable}>
             <InboundTable
               key={this.props.lastPath}
@@ -50,13 +52,14 @@ function StateToProps(state, ownProps) {
   const routes = ownProps.routes;
   const paths = routes[routes.length - 1].path.split('/');
   const lastPath = paths[paths.length - 1];
-  const { inboundTrips } = state.app;
+  const { inboundTrips, userLogged } = state.app;
   const { total, isFetching } = inboundTrips;
 
   return {
     lastPath,
     total,
     isFetching,
+    userLogged,
   };
 }
 

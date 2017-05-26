@@ -1,5 +1,6 @@
 import lodash from 'lodash';
-import {OrderParser} from './orders';
+import { OrderParser } from './orders';
+import config from '../config/configValues.json';
 
 export const TripType = {
   FIRSTLEG: "FIRSTLEG",
@@ -8,23 +9,23 @@ export const TripType = {
 }
 
 export function CanAssignFleet(trip) {
-  if(!trip || !trip.OrderStatus) return false;
+  if (!trip || !trip.OrderStatus) return false;
 
   return ['BOOKED'].indexOf(trip.OrderStatus.OrderStatus) > -1;
 }
 
 export function CanMarkContainer(trip, hubID) {
-  if(!trip || !trip.OrderStatus || !trip.OriginHub || !trip.DestinationHub) return false;
+  if (!trip || !trip.OrderStatus || !trip.OriginHub || !trip.DestinationHub) return false;
 
-  if(trip.DestinationHub.HubID !== hubID) return false;
+  if (trip.DestinationHub.HubID !== hubID) return false;
 
   return ['BOOKED', 'ACCEPTED', 'PICKUP', 'IN-TRANSIT'].indexOf(trip.OrderStatus.OrderStatus) > -1;
 }
 
 export function CanMarkOrderReceived(trip, orders) {
-  if(!trip || !trip.OrderStatus || trip.OriginHub) return false;
+  if (!trip || !trip.OrderStatus || trip.OriginHub) return false;
 
-  if(!lodash.some(orders, (order) => {
+  if (!lodash.some(orders, (order) => {
     return order.Status !== "DELIVERED";
   })) {
     return false;
@@ -34,23 +35,25 @@ export function CanMarkOrderReceived(trip, orders) {
 }
 
 export function CanMarkTripDelivered(trip, orders) {
-  if(!trip || !trip.OrderStatus || trip.OriginHub) return false;
+  if (!trip || !trip.OrderStatus || trip.OriginHub) return false;
 
   return ['BOOKED', 'ACCEPTED', 'PICKUP', 'IN-TRANSIT'].indexOf(trip.OrderStatus.OrderStatus) > -1;
 }
 
-export function GetTripType(trip, hubID) {
-  if(!trip) return "FETCH";
+export function GetTripType(trip, hubID, roleName) {
+  if (!trip) return "FETCH";
 
-  if(!trip.OriginHub && trip.DestinationHub && trip.DestinationHub.HubID === hubID) {
-    return TripType.FIRSTLEG;
+  if (!trip.OriginHub && trip.DestinationHub) {
+    if ((config.role.DEFAULT === roleName && trip.DestinationHub.HubID === hubID) || config.role.SUPERHUB) {
+      return TripType.FIRSTLEG;
+    }
   }
 
-  if(trip.OriginHub && trip.OriginHub.HubID === hubID) {
+  if (trip.OriginHub && trip.OriginHub.HubID === hubID) {
     return TripType.OUTBOUND;
   }
 
-  if(trip.DestinationHub && trip.DestinationHub.HubID === hubID) {
+  if (trip.DestinationHub && trip.DestinationHub.HubID === hubID) {
     return TripType.INBOUND;
   }
 
@@ -66,23 +69,42 @@ function JoinAttr(orders, attr) {
 }
 
 export function GetWebstoreNameByCount(orders) {
-  var arrayOfWebstore = [];
-  var WebstoreNames = lodash.countBy(orders, 'WebstoreName');
-  for (var p in WebstoreNames) {
-      if (WebstoreNames.hasOwnProperty(p)) {
-          arrayOfWebstore.push(p + ' (' + WebstoreNames[p] + (WebstoreNames[p] > 1 ? ' orders' : ' order') + ')');
-      }
+  let arrayOfWebstore = [];
+  const WebstoreNamesCount = lodash.countBy(orders, 'WebstoreName');
+  for (let WebstoreNameCount in WebstoreNamesCount) {
+    if (WebstoreNamesCount.hasOwnProperty(WebstoreNameCount)) {
+      arrayOfWebstore.push(
+        `${WebstoreNameCount}
+         (${WebstoreNamesCount[WebstoreNameCount]}
+          ${WebstoreNamesCount[WebstoreNameCount] > 1 ? 'orders' : 'order'})`,
+      );
+    }
+  }
+  return arrayOfWebstore.join(', ');
+}
+
+export function GetWebstoreUserByCount(orders) {
+  let arrayOfWebstore = [];
+  const WebstoreUsersCount = lodash.countBy(orders, 'WebstoreUser');
+  for (let WebstoreUserCount in WebstoreUsersCount) {
+    if (WebstoreUsersCount.hasOwnProperty(WebstoreUserCount)) {
+      arrayOfWebstore.push(
+        `${WebstoreUserCount === 'null' ? 'No Child Merchant' : WebstoreUserCount}
+        (${WebstoreUsersCount[WebstoreUserCount]}
+         ${(WebstoreUsersCount[WebstoreUserCount] > 1 ? 'orders' : 'order')})`,
+      );
+    }
   }
   return arrayOfWebstore.join(', ');
 }
 
 export function GetWebstoreNameWithoutCount(orders) {
-  var arrayOfWebstore = [];
-  var WebstoreNames = lodash.countBy(orders, 'WebstoreName');
-  for (var p in WebstoreNames) {
-      if (WebstoreNames.hasOwnProperty(p)) {
-          arrayOfWebstore.push(p);
-      }
+  let arrayOfWebstore = [];
+  const WebstoreNamesCount = lodash.countBy(orders, 'WebstoreName');
+  for (let WebstoreNameCount in WebstoreNamesCount) {
+    if (WebstoreNamesCount.hasOwnProperty(WebstoreNameCount)) {
+      arrayOfWebstore.push(WebstoreNameCount);
+    }
   }
   return arrayOfWebstore.join(', ');
 }
@@ -93,21 +115,21 @@ export function GetWeightTrip(orders) {
 
 export function GetScannedRoutes(routes) {
   let scannedOrders = 0;
-  routes.forEach(function(route) {
+  routes.forEach(function (route) {
     if (route.OrderStatus && route.OrderStatus.OrderStatus === 'DELIVERED') {
       scannedOrders++;
     }
   })
-  return scannedOrders;  
+  return scannedOrders;
 }
 
 export function GetWebstoreNameWithMores(orders) {
-  var arrayOfWebstore = [];
-  var WebstoreNames = lodash.countBy(orders, 'WebstoreName');
-  for (var p in WebstoreNames) {
-      if (WebstoreNames.hasOwnProperty(p)) {
-          arrayOfWebstore.push(p);
-      }
+  let arrayOfWebstore = [];
+  const WebstoreNames = lodash.countBy(orders, 'WebstoreName');
+  for (let WebstoreName in WebstoreNames) {
+    if (WebstoreNames.hasOwnProperty(WebstoreName)) {
+      arrayOfWebstore.push(WebstoreName);
+    }
   }
   if (arrayOfWebstore.length === 1) {
     return arrayOfWebstore[0];
@@ -122,10 +144,10 @@ export function TripParser(trip, hubID) {
   function GroupToString(colls) {
     return lodash.reduce(colls, (results, val, key) => {
       return `(${val.length}): ${key}\n${results}`;
-    }, "");
+    }, '');
   }
 
-  if(!trip) return {};
+  if (!trip) return {};
 
   const routes = lodash.map(trip.UserOrderRoutes, (route) => {
     return route;
@@ -136,14 +158,18 @@ export function TripParser(trip, hubID) {
   });
 
   const WebstoreNames = GetWebstoreNameByCount(orders);
+  const WebstoreUser = GetWebstoreUserByCount(orders);
   const Weight = GetWeightTrip(orders);
   const ScannedOrders = GetScannedRoutes(routes);
+  const ListWebstore = GetWebstoreNameWithoutCount(orders);
+  const ListWebstoreMores = GetWebstoreNameWithMores(orders);
 
   return lodash.assign({}, trip, {
-    WebstoreNames: WebstoreNames,
-    Weight: Weight,
-    ScannedOrders: ScannedOrders,
-    ListWebstore: GetWebstoreNameWithoutCount(orders),
-    ListWebstoreMores: GetWebstoreNameWithMores(orders)
+    WebstoreNames,
+    WebstoreUser,
+    Weight,
+    ScannedOrders,
+    ListWebstore,
+    ListWebstoreMores,
   });
 }
