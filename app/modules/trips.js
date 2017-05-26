@@ -1,5 +1,6 @@
 import lodash from 'lodash';
 import { OrderParser } from './orders';
+import config from '../config/configValues.json';
 
 export const TripType = {
   FIRSTLEG: "FIRSTLEG",
@@ -39,11 +40,13 @@ export function CanMarkTripDelivered(trip, orders) {
   return ['BOOKED', 'ACCEPTED', 'PICKUP', 'IN-TRANSIT'].indexOf(trip.OrderStatus.OrderStatus) > -1;
 }
 
-export function GetTripType(trip, hubID) {
+export function GetTripType(trip, hubID, roleName) {
   if (!trip) return "FETCH";
 
-  if (!trip.OriginHub && trip.DestinationHub && trip.DestinationHub.HubID === hubID) {
-    return TripType.FIRSTLEG;
+  if (!trip.OriginHub && trip.DestinationHub) {
+    if ((config.role.DEFAULT === roleName && trip.DestinationHub.HubID === hubID) || config.role.SUPERHUB) {
+      return TripType.FIRSTLEG;
+    }
   }
 
   if (trip.OriginHub && trip.OriginHub.HubID === hubID) {

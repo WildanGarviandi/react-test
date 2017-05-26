@@ -2,7 +2,7 @@ import classNaming from 'classnames';
 import lodash from 'lodash';
 import React from 'react';
 import {connect} from 'react-redux';
-import * as Hubs from '../../modules/hubs/actions';
+import * as Hubs from '../../modules/hubs';
 import {ButtonBase, ButtonWithLoading} from '../base';
 import {DropdownWithState} from '../base/dropdown';
 import styles from './styles.css';
@@ -100,7 +100,7 @@ function mapState(state, ownParams) {
 function mapDispatch(dispatch, ownParams) {
   return {
     FetchList: () => {
-      dispatch(Hubs.fetchList());
+      dispatch(Hubs.fetchNextDestinationList());
     },
     SetHub: (hubID) => {
       dispatch(Hubs.setHub(ownParams.trip.TripID, hubID));

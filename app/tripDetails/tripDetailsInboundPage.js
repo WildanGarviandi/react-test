@@ -24,6 +24,7 @@ import dateTimeStyles from '../views/container/datetime.css';
 import PickupOrdersModal from '../pickupOrders/pickupOrdersModal';
 import * as PickupOrdersReady from '../pickupOrders//pickupOrdersReadyService';
 import * as NearbyFleets from '../nearbyFleets/nearbyFleetService';
+import { checkPermission } from '../helper/permission';
 
 const columns = ['id', 'id2', 'pickup', 'time', 'CODValue', 'IsCOD', 'orderStatus', 'routeStatus', 'isSuccess', 'action'];
 const nonFillColumn = columns.slice(0, columns.length - 1);
@@ -165,9 +166,18 @@ const DetailPage = React.createClass({
     }
   },
   render() {
-    const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, fillAble, hasDriver, isFetching, isInbound, orders, reusable, statusList, TotalCODValue, CODCount, totalDeliveryFee, trip, TotalWeight} = this.props;
+    const {activeDistrict, backToContainer, canDeassignDriver, container,
+        districts, driverState, driversName, fillAble, hasDriver, isFetching,
+        isInbound, orders, reusable, statusList, TotalCODValue, CODCount,
+        totalDeliveryFee, trip, TotalWeight} = this.props;
 
-    const {canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, isDeassigning, isEditing, scannedOrder, canDeassignFleet} = this.props;
+    const {canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, isDeassigning,
+        isEditing, scannedOrder, canDeassignFleet, userLogged} = this.props;
+
+    const hasPermission = {
+      add: checkPermission(userLogged, 'ADD_ORDER'),
+      completeTrip: checkPermission(userLogged, 'COMPLETE_TRIP'),
+    };
 
     const successfullScan = lodash.filter(this.props.orders, {'isSuccess': 'Yes'});
 
@@ -311,7 +321,7 @@ const DetailPage = React.createClass({
                         <ButtonWithLoading styles={{base: styles.greenBtn}} textBase={'Clear and Reuse Container'} textLoading={'Clearing Container'} isLoading={emptying.isInProcess} onClick={this.clearContainer} />
                       }
                       {
-                        (canMarkTripDelivered || canMarkContainer) &&
+                        (canMarkTripDelivered || canMarkContainer) && hasPermission.completeTrip &&
                         <ButtonWithLoading styles={{base: styles.greenBtn}} textBase={'Complete Trip'} textLoading={'Clearing Container'} isLoading={false} onClick={this.deliverTrip} />
                       }
                     </div>
@@ -376,7 +386,7 @@ const DetailPage = React.createClass({
                       <label className={styles.title}>ORDERS IN THIS TRIP</label>
                     </span>
                     {
-                      fillAble &&
+                      hasPermission.add && fillAble &&
                       <ButtonWithLoading textBase={'+ Add Order'} onClick={this.goToFillContainer} 
                         styles={{base: styles.normalBtn + ' ' + styles.addOrderBtn}} />
                     }
@@ -423,9 +433,6 @@ const mapStateToProps = (state, ownProps) => {
     return route;
   });
 
-  // const orders = _.map(containerOrders, (order) => {
-    // const order = route.UserOrder;
-
   var TotalWeight = 0;
   const orders = _.map(rawOrders, (order) => {
     const Recipient = order.RecipientName + '\n' + (order.DropoffAddress ? order.DropoffAddress.City + ' ' + order.DropoffAddress.ZipCode : '');
@@ -447,21 +454,15 @@ const mapStateToProps = (state, ownProps) => {
       isSuccess: order.Status === 'DELIVERED' ? 'Yes' : 'No',
       IsCOD: order.IsCOD ? 'Yes': 'No',
       CODStatus: (order.CODPaymentUserOrder && order.CODPaymentUserOrder.CODPayment) ?
-                  order.CODPaymentUserOrder.CODPayment.Status : 'No'
-    })
+                  order.CODPaymentUserOrder.CODPayment.Status : 'No',
+    });
   });
 
   const CODOrders = _.filter(orders, (order) => order.IsCOD === 'Yes');
 
-  // if (!trip.ContainerNumber) {
-  //   return {notFound: true, isFetching};
-  // }
-
   const routes = ownProps.routes;
   const paths = routes[2].path.split('/');
   const isInbound = paths[2] === 'inbound';
-
-  console.log('mark', CanMarkTripDelivered(trip, rawOrders), CanMarkContainer(trip, hubID));
 
   return {
     trip: TripParser(trip),
@@ -497,6 +498,7 @@ const mapStateToProps = (state, ownProps) => {
     scannedOrder,
     isSuccessEditing,
     isCentralHub,
+    userLogged,
   }
 }
 

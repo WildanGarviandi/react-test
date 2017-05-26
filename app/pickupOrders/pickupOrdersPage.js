@@ -29,8 +29,6 @@ const PickupOrdersPage = React.createClass({
     this.props.ResetFilterReady();
     this.props.GetList();
     this.props.GetListReady();
-    //this.props.CheckAutoGroup();
-    //this.checkAutoGroup();
     if (!this.props.userLogged.hubID) {
       window.location.href = config.defaultMainPageTMS;
     }
@@ -58,12 +56,20 @@ const PickupOrdersPage = React.createClass({
         </div>
         <div className={styles.mainTable}>
           { this.state.showReady &&
-            <FilterReady isFetchingReady={this.props.isFetchingReady} isAutoGroupActive={this.props.isAutoGroupActive}
-              isGroupActive={this.props.isGroupActive} />
+            <FilterReady
+              isFetchingReady={this.props.isFetchingReady}
+              isAutoGroupActive={this.props.isAutoGroupActive}
+              isGroupActive={this.props.isGroupActive}
+              userLogged={this.props.userLogged}
+            />
           }
           {
             this.state.showNotReady &&
-            <Filter isSetPickupActive={this.props.isSetPickupActive} isFetching={this.props.isFetching} />
+            <Filter
+              isSetPickupActive={this.props.isSetPickupActive}
+              isFetching={this.props.isFetching}
+              userLogged={this.props.userLogged}
+            />
           }
         </div>
         { this.state.showReady &&
@@ -121,8 +127,8 @@ function mapState(state) {
     userLogged,
     isAutoGroupActive,
     isGroupActive,
-    isSetPickupActive
-  }
+    isSetPickupActive,
+  };
 }
 
 function mapDispatch(dispatch) {
@@ -131,7 +137,7 @@ function mapDispatch(dispatch) {
       dispatch(PickupOrders.GroupOrders());
     },
     MarkPickup: () => {
-      dispatch(PickupOrders.MarkPickup());  
+      dispatch(PickupOrders.MarkPickup());
     },
     ResetFilter: () => {
       dispatch(PickupOrders.ResetFilter());

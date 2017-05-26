@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { Link } from 'react-router';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
+import PropTypes from 'prop-types';
 import moment from 'moment';
 
 import { Pagination } from '../views/base';
@@ -13,9 +14,10 @@ import ModalActions from '../modules/modals/actions';
 import styles from './styles.css';
 import { CanMarkContainer, TripParser, CanMarkTripDelivered } from '../modules/trips';
 import { OrderParser } from '../modules/orders';
-import { FilterTop, FilterText } from '../components/form';
+import { FilterTop, FilterText, FilterTopMultiple } from '../components/form';
 import * as config from '../config/configValues.json';
 import * as InboundTrips from './inboundTripsService';
+import { checkPermission } from '../helper/permission';
 
 const ColumnsOrder = ['tripID', 'driver', 'origin', 'childMerchant', 'pickup', 'pickupCity', 'zip', 'weight', 'status', 'verifiedOrders'];
 
@@ -354,8 +356,14 @@ function inputDispatchToProps(keyword, placeholder) {
 
     function OnKeyDown(e) {
       if (e.keyCode !== config.KEY_ACTION.ENTER) {
+        if (keyword === 'pickupZipCode' &&
+        ((e.keyCode >= config.KEY_ACTION.A && e.keyCode <= config.KEY_ACTION.Z)
+        || e.keyCode >= config.KEY_ACTION.SEMI_COLON)) {
+          e.preventDefault();
+        }
         return;
       }
+
       dispatch(InboundTrips.SetCurrentPage(1));
     }
 
@@ -372,21 +380,103 @@ const TripIDSearch = connect(
   inputDispatchToProps('tripID', 'Search "Trip ID" here....'),
 )(InputFilter);
 
-const ChildMerchantSearch = connect(
-  inputStateToProps('webstoreUserName'),
-  inputDispatchToProps('webstoreUserName', 'Search "Child Merchant Name"....'),
+const OriginSearch = connect(
+  inputStateToProps('origin'),
+  inputDispatchToProps('origin', 'Search "Origin" here....'),
 )(InputFilter);
+
+function dropdownStateToProps(keyword, title) {
+  return (store) => {
+    const { inboundTrips, hubs } = store.app;
+    const value = inboundTrips[keyword] ? inboundTrips[keyword].value : 'All';
+    let options = [];
+
+    if (keyword === 'tripProblem') {
+      const optionsTemplate = store.app.tripProblems.problems;
+      options = [{
+        key: 0, value: 'All',
+      }].concat(optionsTemplate
+        .map((option) => ({
+          key: option.TripProblemMasterID,
+          value: option.Problem,
+        })));
+    }
+
+    if (keyword === 'hubs') {
+      options = _.chain(hubs.list)
+        .map(hub => ({
+          key: hub.HubID,
+          value: `Hub ${hub.Name}`,
+          checked: false,
+        }))
+        .sortBy(arr => arr.key)
+        .value();
+
+      if (inboundTrips && inboundTrips.hubIDs &&
+        inboundTrips.hubIDs.length > 0) {
+        const ids = inboundTrips.hubIDs;
+        options = options.map((hub) => {
+          const data = Object.assign({}, hub, {
+            checked: _.some(ids, id => id === hub.key),
+          });
+          return data;
+        });
+      }
+    }
+
+    return { value, options, title };
+  };
+}
+
+function multiDropdownDispatchToProps() {
+  return (dispatch) => {
+    const action = {
+      handleSelect: (selectedOption) => {
+        dispatch(selectedOption.checked ? InboundTrips.addHubFilter(selectedOption) :
+          InboundTrips.deleteHubFilter(selectedOption));
+        dispatch(InboundTrips.FetchList());
+      },
+    };
+    return action;
+  };
+}
+
+const ZipCodeSearch = connect(
+  inputStateToProps('pickupZipCode'),
+  inputDispatchToProps('pickupZipCode', 'Search "Zip Code" here....'),
+)(InputFilter);
+
+const HubDropdown = connect(
+  dropdownStateToProps('hubs', 'Filter by Hubs (can be multiple)'),
+  multiDropdownDispatchToProps('hubIDs'),
+)(FilterTopMultiple);
 
 export class Filter extends Component {
   render() {
     return (
-      <div>
-        <TripIDSearch />
-        <ChildMerchantSearch />
+      <div className={styles['filter-container']}>
+        <div className={styles['filter-box']}>
+          {this.props.userLogged.roleName === config.role.SUPERHUB && <HubDropdown />}
+        </div>
+        <div className={styles['filter-box']}>
+          <TripIDSearch />
+          <OriginSearch />
+          <ZipCodeSearch />
+        </div>
       </div>
     );
   }
 }
+
+/* eslint-disable */
+Filter.propTypes = {
+  userLogged: PropTypes.object.isRequired,
+};
+/* eslint-enable */
+
+Filter.defaultProps = {
+  userLogged: {},
+};
 
 class TableStateful extends Component {
   constructor(props) {
@@ -429,6 +519,10 @@ class TableStateful extends Component {
     this.props.resetState();
   }
 
+  componentWillUnmount() {
+    this.props.resetState();
+  }
+
   render() {
     const {
       filters,
@@ -436,7 +530,8 @@ class TableStateful extends Component {
       paginationState,
       statusParams,
       tripDetails,
-      tripsIsFetching
+      tripsIsFetching,
+      userLogged,
     } = this.props;
 
     const paginationProps = _.assign({}, paginationAction, paginationState);
@@ -462,6 +557,8 @@ class TableStateful extends Component {
       isFetching: tripsIsFetching,
       showModals: this.props.showModals
     };
+
+    const hasPermission = checkPermission(userLogged, 'COMPLETE_ORDERS');
 
     return (
       <div>
@@ -510,7 +607,7 @@ class TableStateful extends Component {
                 <div className={styles.orderList}>
                   <VerifiedOrder routes={this.state.trip.UserOrderRoutes} />
                 </div>
-                {this.state.trip.UserOrderRoutes.length - this.state.trip.ScannedOrders !== 0 &&
+                {hasPermission && this.state.trip.UserOrderRoutes.length - this.state.trip.ScannedOrders !== 0 &&
                   <div className={styles.bottomNotes}>
                     <span className={styles.completeNotes}>
                       {`${this.state.trip.UserOrderRoutes.length - this.state.trip.ScannedOrders} `}
@@ -533,6 +630,14 @@ class TableStateful extends Component {
     );
   }
 }
+
+TableStateful.propTypes = {
+  resetFilter: PropTypes.func.isRequired,
+};
+
+TableStateful.propTypes = {
+  resetFilter: () => { },
+};
 
 function StateToProps(state) {
   const { inboundTrips, driversStore, userLogged } = state.app;
@@ -579,7 +684,8 @@ function StateToProps(state) {
     trip,
     canMarkTripDelivered: CanMarkTripDelivered(trip, rawOrders),
     canMarkContainer: CanMarkContainer(trip, hubID),
-    orders: rawOrders
+    orders: rawOrders,
+    userLogged,
   };
 }
 
