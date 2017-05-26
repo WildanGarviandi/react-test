@@ -154,6 +154,8 @@ class RightTable extends Component {
 
   showModals(item) {
     this.props.setCurrentTrip(item);
+    this.props.fetchDrivers();
+    this.props.fetchHubs();
     this.props.showReAssignModal();
   }
 
@@ -409,6 +411,8 @@ class TableStateful extends Component {
       parsedItems: trips,
       setCurrentTrip: this.props.setCurrentTrip,
       showReAssignModal: this.props.showReAssignModal,
+      fetchDrivers: this.props.fetchDrivers,
+      fetchHubs: this.props.fetchHubs,
     };
 
     return (
@@ -570,6 +574,12 @@ function DispatchToProps(dispatch, ownProps) {
     },
     showReAssignModal: () => {
       dispatch(InboundTrips.ShowReAssignModal());
+    },
+    fetchDrivers: () => {
+      dispatch(InboundTrips.FetchDrivers());
+    },
+    fetchHubs: () => {
+      dispatch(InboundTrips.FetchHubs());
     },
   };
 }
