@@ -322,6 +322,57 @@ function VerifiedOrder({ routes }) {
   );
 }
 
+function InputFilter({ value, onChange, onKeyDown, placeholder }) {
+  return (
+    <input
+      className={styles.inputSearch}
+      placeholder={placeholder}
+      type="text"
+      value={value}
+      onChange={onChange}
+      onKeyDown={onKeyDown}
+    />
+  );
+}
+
+function inputStateToProps(keyword) {
+  return (store) => {
+    const value = store.app.inboundTrips.filters[keyword];
+    const options = config[keyword];
+
+    return { value, options };
+  };
+}
+
+function inputDispatchToProps(keyword, placeholder) {
+  return (dispatch) => {
+    function OnChange(e) {
+      const value = e.target.value;
+
+      dispatch(InboundTrips.AddFilters({ [keyword]: value }));
+    }
+
+    function OnKeyDown(e) {
+      if (e.keyCode !== config.KEY_ACTION.ENTER) {
+        if (keyword === 'pickupZipCode' &&
+        ((e.keyCode >= config.KEY_ACTION.A && e.keyCode <= config.KEY_ACTION.Z)
+        || e.keyCode >= config.KEY_ACTION.SEMI_COLON)) {
+          e.preventDefault();
+        }
+        return;
+      }
+
+      dispatch(InboundTrips.SetCurrentPage(1));
+    }
+
+    return {
+      onChange: OnChange,
+      onKeyDown: OnKeyDown,
+      placeholder,
+    };
+  };
+}
+
 function dropdownStateToProps(keyword, title) {
   return (store) => {
     const value = store.app.inboundTrips[keyword].value || 'All';
@@ -339,31 +390,55 @@ function dropdownStateToProps(keyword, title) {
         })));
     }
 
-    return { value, options, title };
+    return { value, options };
   };
 }
 
-function dropdownDispatchToProps(keyword) {
+function inputDispatchToProps(keyword, placeholder) {
   return (dispatch) => {
+    function OnChange(e) {
+      const value = e.target.value;
+
+      dispatch(InboundTrips.AddFilters({ [keyword]: value }));
+    }
+
+    function OnKeyDown(e) {
+      if (e.keyCode !== config.KEY_ACTION.ENTER) {
+        if (keyword === 'pickupZipCode' &&
+        ((e.keyCode >= config.KEY_ACTION.A && e.keyCode <= config.KEY_ACTION.Z)
+        || e.keyCode >= config.KEY_ACTION.SEMI_COLON)) {
+          e.preventDefault();
+        }
+        return;
+      }
+
+      dispatch(InboundTrips.SetCurrentPage(1));
+    }
+
     return {
-      handleSelect: (option) => {
-        dispatch(InboundTrips.setDropdownFilter(keyword, option));
-        dispatch(InboundTrips.FetchList());
-      },
+      onChange: OnChange,
+      onKeyDown: OnKeyDown,
+      placeholder,
     };
   };
 }
 
-const TripProblemDropdown = connect(
-  dropdownStateToProps('tripProblem', 'Filter by Trip Problem'),
-  dropdownDispatchToProps('tripProblem'),
-)(FilterTop);
+const TripIDSearch = connect(
+  inputStateToProps('tripID'),
+  inputDispatchToProps('tripID', 'Search "Trip ID" here....'),
+)(InputFilter);
+
+const ZipCodeSearch = connect(
+  inputStateToProps('pickupZipCode'),
+  inputDispatchToProps('pickupZipCode', 'Search "Zip Code" here....'),
+)(InputFilter);
 
 export class Filter extends Component {
   render() {
     return (
       <div>
-        <TripProblemDropdown />
+        <TripIDSearch />
+        <ZipCodeSearch />
       </div>
     );
   }
@@ -404,6 +479,9 @@ class TableStateful extends Component {
         cancel: this.props.deliverTrip.bind(null, this.props.trip.TripID),
       });
     }
+  }
+  componentWillUnmount() {
+    this.props.resetState();
   }
 
   render() {
@@ -593,6 +671,9 @@ function DispatchToProps(dispatch, ownProps) {
     },
     reuse(tripID) {
       dispatch(InboundTrips.TripDeliver(tripID, true));
+    },
+    resetState() {
+      dispatch(InboundTrips.ResetState());
     },
   };
 }
