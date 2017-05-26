@@ -61,8 +61,9 @@ const AccordionMenu = React.createClass({
   }
 })
 
-const DashboardMenu = ({ activeMenuIdx, handleLogout, toggleCompact, hubID, loggedName,
-  counterOrder, count, countTMS, tmsMenu, switchMenu, isCentralHub }) => {
+const DashboardMenu = ({ activeMenuIdx, handleLogout, toggleCompact,
+  hubID, loggedName, counterOrder, count, countTMS, tmsMenu, switchMenu,
+  isCentralHub, totalInboundTripProblem }) => {
   return (
     <div className={styles.menuPanel}>
       <img src="/img/logo.png" className={styles.menuLogo} />
@@ -91,7 +92,7 @@ const DashboardMenu = ({ activeMenuIdx, handleLogout, toggleCompact, hubID, logg
                   {count && count.inboundTrip}
                 </div>
                 <div className={styles['problem-notif']}>
-                  <FontAwesome name="exclamation-circle" /> 0
+                  <FontAwesome name="exclamation-circle" /> {totalInboundTripProblem}
                 </div>
               </div>
             </MenuItem>
@@ -273,6 +274,7 @@ const DashboardContainer = React.createClass({
             tmsMenu={this.state.tmsMenu}
             switchMenu={this.switchMenu}
             isCentralHub={isCentralHub}
+            totalInboundTripProblem={this.props.totalInboundTripProblem}
           />
           <DashboardContent>{this.props.children}</DashboardContent>
         </div>
@@ -285,6 +287,8 @@ function StoreToDashboard(dashboardStore) {
   const userLogged = dashboardStore.app.userLogged;
   const { countOpen, countInProgress, countFinished } = dashboardStore.app.myOrders;
   const { count, countTMS } = dashboardStore.app.dashboard;
+  const { tripProblems } = dashboardStore.app;
+  const { totalInboundTripProblem } = tripProblems;
   let additionalTitle = userLogged.hubName || userLogged.fleetName;
   additionalTitle = additionalTitle
     .toLocaleLowerCase()
@@ -303,6 +307,7 @@ function StoreToDashboard(dashboardStore) {
     },
     count,
     countTMS,
+    totalInboundTripProblem,
   };
 }
 
@@ -314,6 +319,7 @@ function DispatchToProps(dispatch) {
       dispatch(CityService.FetchList());
       dispatch(StateService.FetchList());
       dispatch(TripProblemService.FetchList());
+      dispatch(TripProblemService.fetchTotalInboundTripProblem());
       dispatch(DashboardService.FetchCountTMS());
       dispatch(hubService.fetchList());
       if (hubID) {
