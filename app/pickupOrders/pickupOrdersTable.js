@@ -3,13 +3,16 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
+import Countdown from 'react-cntdwn';
+import classNaming from 'classnames';
+import { ModalContainer, ModalDialog } from 'react-modal-dialog';
+import moment from 'moment';
 
 import * as PickupOrders from './pickupOrdersService';
 import OrdersSelector from '../modules/orders/selector';
 import styles from './styles.css';
 import { ButtonWithLoading, ButtonStandard, Input, Pagination, DropdownWithState, ButtonBase } from '../views/base';
 import BodyRow, { CheckBoxCell, LinkCell, TextCell, OrderIDLinkCell, ButtonCell } from '../views/base/cells';
-import classNaming from 'classnames';
 import { FilterTop, FilterText, FilterTopMultiple } from '../components/form';
 import { Headers, Body } from '../views/base/table';
 import HeadersRow from '../views/base/headers';
@@ -17,10 +20,7 @@ import { CheckBox } from '../views/base/input';
 import { CheckboxHeader, CheckboxCell } from '../views/base/tableCell';
 import { formatDate } from '../helper/time';
 import stylesTable from '../views/base/table.css';
-import { ModalContainer, ModalDialog } from 'react-modal-dialog';
 import ModalActions from '../modules/modals/actions';
-import moment from 'moment';
-import Countdown from 'react-cntdwn';
 import config from '../config/configValues.json';
 import { checkPermission } from '../helper/permission';
 
