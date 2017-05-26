@@ -375,6 +375,16 @@ function inputDispatchToProps(keyword, placeholder) {
   };
 }
 
+const TripIDSearch = connect(
+  inputStateToProps('tripID'),
+  inputDispatchToProps('tripID', 'Search "Trip ID" here....'),
+)(InputFilter);
+
+const OriginSearch = connect(
+  inputStateToProps('origin'),
+  inputDispatchToProps('origin', 'Search "Origin" here....'),
+)(InputFilter);
+
 function dropdownStateToProps(keyword, title) {
   return (store) => {
     const { inboundTrips, hubs } = store.app;
@@ -431,11 +441,6 @@ function multiDropdownDispatchToProps() {
   };
 }
 
-const TripIDSearch = connect(
-  inputStateToProps('tripID'),
-  inputDispatchToProps('tripID', 'Search "Trip ID" here....'),
-)(InputFilter);
-
 const ZipCodeSearch = connect(
   inputStateToProps('pickupZipCode'),
   inputDispatchToProps('pickupZipCode', 'Search "Zip Code" here....'),
@@ -455,6 +460,7 @@ export class Filter extends Component {
         </div>
         <div className={styles['filter-box']}>
           <TripIDSearch />
+          <OriginSearch />
           <ZipCodeSearch />
         </div>
       </div>
@@ -489,10 +495,6 @@ class TableStateful extends Component {
     }
   }
 
-  componentWillUnmount() {
-    this.props.resetState();
-  }
-
   completeTrip(tripID) {
     if (this.props.canMarkTripDelivered) {
       if (this.props.trip.ScannedOrders < _.size(this.props.orders)) {
@@ -512,6 +514,7 @@ class TableStateful extends Component {
       });
     }
   }
+
   componentWillUnmount() {
     this.props.resetState();
   }
@@ -718,9 +721,6 @@ function DispatchToProps(dispatch, ownProps) {
     },
     resetState() {
       dispatch(InboundTrips.ResetState());
-    },
-    resetFilter() {
-      dispatch(InboundTrips.ResetFilter());
     },
   };
 }
