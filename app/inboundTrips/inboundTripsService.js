@@ -17,7 +17,6 @@ const Constants = {
   TRIPS_INBOUND_FILTERS_STATUS_SET: 'inbound/filtersStatus/set',
   TRIPS_INBOUND_LIMIT_SET: 'inbound/limit/set',
   TRIPS_INBOUND_SET: 'inbound/trips/set',
-  TRIPS_INBOUND_RESET_FILTER: 'inbound/trips/resetFilter',
   TRIPS_INBOUND_RESET_STATE: 'inbound/trips/resetState',
   TRIPS_INBOUND_SHOW_DETAILS: 'inbound/trips/showDetails',
   TRIPS_INBOUND_HIDE_DETAILS: 'inbound/trips/hideDetails',
@@ -72,18 +71,6 @@ export function Reducer(state = initialState, action) {
       return _.assign({}, state, {
         trips: action.trips,
         total: action.total,
-      });
-    }
-
-    case Constants.TRIPS_INBOUND_RESET_FILTER: {
-      return _.assign({}, state, {
-        filters: {
-          tripType: 0,
-        },
-        currentPage: 1,
-        filterStatus: 'SHOW ALL',
-        limit: 100,
-        hubIDs: [],
       });
     }
 
@@ -265,12 +252,6 @@ export function GoToContainer(containerNumber) {
       dispatch({ type: modalAction.BACKDROP_HIDE });
       dispatch(ModalActions.addMessage(message));
     });
-  };
-}
-
-export function ResetFilter() {
-  return (dispatch) => {
-    dispatch({ type: Constants.TRIPS_INBOUND_RESET_FILTER });
   };
 }
 

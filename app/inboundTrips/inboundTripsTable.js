@@ -490,7 +490,7 @@ class TableStateful extends Component {
   }
 
   componentWillUnmount() {
-    this.props.resetFilter();
+    this.props.resetState();
   }
 
   completeTrip(tripID) {
