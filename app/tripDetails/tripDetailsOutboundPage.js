@@ -5,6 +5,8 @@ import classNaming from 'classnames';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
+import DateTime from 'react-datetime';
+
 import { ContainerDetailsActions, StatusList } from '../modules';
 import districtsFetch from '../modules/districts/actions/districtsFetch';
 import { ButtonBase, ButtonWithLoading, Input, Modal, Page, Glyph, DropdownTypeAhead } from '../views/base';
@@ -24,7 +26,6 @@ import config from '../config/configValues.json';
 import ImagePreview from '../views/base/imagePreview';
 import ImageUploader from '../views/base/imageUploader';
 import { InputWithDefault } from '../views/base/input';
-import DateTime from 'react-datetime';
 import dateTimeStyles from '../views/container/datetime.css';
 import { checkPermission } from '../helper/permission';
 
