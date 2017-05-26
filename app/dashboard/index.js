@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import { push } from 'react-router-redux';
 import * as _ from 'lodash';
+import FontAwesome from 'react-fontawesome';
 
 import { LogoutAction } from '../modules';
 import checkAuth from '../modules/auth/actions/checkAuth';
@@ -85,7 +86,14 @@ const DashboardMenu = ({ activeMenuIdx, handleLogout, toggleCompact, hubID, logg
             <MenuItem active={activeMenuIdx === 2} to={'/trips/inbound'}>
               <img src="/img/icon-inbound-trip.png" className={styles.menuGlyph} />
               <span>Inbound Trip </span>
-              <span className={styles.counterNumber}>{count && count.inboundTrip}</span>
+              <div className={styles['counter-number-problem']}>
+                <div className={styles['number-notif']}>
+                  {count && count.inboundTrip}
+                </div>
+                <div className={styles['problem-notif']}>
+                  <FontAwesome name="exclamation-circle" /> 0
+                </div>
+              </div>
             </MenuItem>
             <MenuItem active={activeMenuIdx === 3} to={'/inbound'}>
               <img src="/img/icon-inbound.png" className={styles.menuGlyph} />
