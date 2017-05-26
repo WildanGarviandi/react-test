@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
+import PropTypes from 'prop-types';
 import Countdown from 'react-cntdwn';
 import classNaming from 'classnames';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
@@ -21,6 +22,7 @@ import { formatDate } from '../helper/time';
 import stylesTable from '../views/base/table.css';
 import ModalActions from '../modules/modals/actions';
 import config from '../config/configValues.json';
+import { checkPermission } from '../helper/permission';
 
 const conf = {
   Actions: { title: "Actions", cellType: "Actions" },
@@ -189,13 +191,29 @@ const CityFilter = connectFilterDropdown('city', 'City')(FilterTop);
 const ZipFilter = connectFilterText('zipCode', 'ZIP Code')(FilterText);
 const HubFilter = connectFilterMultiDropdown('hubs', 'hubIDs', 'Hubs (can be multiple)')(FilterTopMultiple);
 
-function ButtonPickup({ onClick, disabled }) {
-  return (
-    <button className={disabled ? styles.manualGroupButtonDisable : styles.manualGroupButton} disabled={disabled} onClick={onClick}>
-      Mark as Ready
+function ButtonPickup({ onClick, disabled, userLogged }) {
+  const hasPermission = checkPermission(userLogged, 'MARK_AS_READY');
+  if (hasPermission) {
+    return (
+      <button
+        className={disabled ? styles.manualGroupButtonDisable : styles.manualGroupButton}
+        disabled={disabled}
+        onClick={onClick}
+      >
+        Mark as Ready
     </button>
-  );
+    );
+  }
+  return null;
 }
+
+/* eslint-disable */
+ButtonPickup.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  disabled: PropTypes.bool.isRequired,
+  userLogged: PropTypes.object.isRequired
+};
+/* eslint-enable */
 
 /*
  * Dispatch for button manual group
@@ -209,7 +227,16 @@ function mapDispatchToSetPickupButtonGroup(dispatch, ownParams) {
   }
 }
 
-const SetPickupButton = connect(undefined, mapDispatchToSetPickupButtonGroup)(ButtonPickup);
+function stateToPickupButtonGroup(state) {
+  const { userLogged } = state.app;
+
+  return {
+    userLogged,
+  };
+}
+
+const SetPickupButton = connect(stateToPickupButtonGroup,
+  mapDispatchToSetPickupButtonGroup)(ButtonPickup);
 
 /*
  * Get store for checkbox header

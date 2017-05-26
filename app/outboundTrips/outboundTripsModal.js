@@ -16,6 +16,7 @@ import {Weight, DstHub, DstDistrict, HubSetter} from './outboundTripsHelper';
 import config from '../config/configValues.json';
 import * as UtilHelper from '../helper/utility';
 import {Pagination3} from '../components/pagination3';
+import { checkPermission } from '../helper/permission';
 
 const DetailRow = React.createClass({
   generateTypeContent () {
@@ -510,6 +511,10 @@ const AssignTripModalClass = React.createClass({
   render () {
     const trip = this.props.trip
 
+    const { userLogged } = this.props;
+
+    const hasPermission = checkPermission(userLogged, 'ASSIGN_TO_VENDOR');
+
     const fleetsProps = {
       trip: trip,
       items: this.props.nearbyFleets.fleets,
@@ -678,7 +683,7 @@ const AssignTripModalClass = React.createClass({
                       </div>
                     </div>
                   </Pane>
-                  <Pane label="Assign To Vendor">
+                  {hasPermission && <Pane label="Assign To Vendor">
                     <div>
                       { this.state.isFleetSet &&
                         <div>
@@ -725,7 +730,7 @@ const AssignTripModalClass = React.createClass({
                         }
                       </div>
                     </div>
-                  </Pane>
+                  </Pane>}
                   <Pane label="Long Haul">
                     <div>
                       <div className={styles.modalTabPanel}>
@@ -796,8 +801,9 @@ const AssignTripModalClass = React.createClass({
 })
 
 function ModalStateToProps (state) {
-  const {outboundTripsService} = state.app
-  const {trip, nearbyFleets, nearbyDrivers, isSuccessAssigning, isHubAssigning, currentPageDrivers, limitDrivers, totalDrivers} = outboundTripsService
+  const {outboundTripsService, userLogged} = state.app
+  const {trip, nearbyFleets, nearbyDrivers, isSuccessAssigning, isHubAssigning,
+    currentPageDrivers, limitDrivers, totalDrivers} = outboundTripsService
 
   return {
     trip,
@@ -805,6 +811,7 @@ function ModalStateToProps (state) {
     nearbyDrivers,
     isSuccessAssigning,
     isHubAssigning,
+    userLogged,
     paginationStateDrivers: {
       currentPage: currentPageDrivers, 
       limit: limitDrivers, 

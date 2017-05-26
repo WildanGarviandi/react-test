@@ -17,6 +17,7 @@ import { OrderParser } from '../modules/orders';
 import { FilterTop, FilterText, FilterTopMultiple } from '../components/form';
 import * as config from '../config/configValues.json';
 import * as InboundTrips from './inboundTripsService';
+import { checkPermission } from '../helper/permission';
 
 const ColumnsOrder = ['tripID', 'driver', 'origin', 'childMerchant', 'pickup', 'pickupCity', 'zip', 'weight', 'status', 'verifiedOrders'];
 
@@ -448,10 +449,14 @@ const HubDropdown = connect(
 export class Filter extends Component {
   render() {
     return (
-      <div>
-        <TripIDSearch />
-        <ZipCodeSearch />
-        {this.props.userLogged.roleName === config.role.SUPERHUB && <HubDropdown />}
+      <div className={styles['filter-container']}>
+        <div className={styles['filter-box']}>
+          {this.props.userLogged.roleName === config.role.SUPERHUB && <HubDropdown />}
+        </div>
+        <div className={styles['filter-box']}>
+          <TripIDSearch />
+          <ZipCodeSearch />
+        </div>
       </div>
     );
   }
@@ -518,7 +523,8 @@ class TableStateful extends Component {
       paginationState,
       statusParams,
       tripDetails,
-      tripsIsFetching
+      tripsIsFetching,
+      userLogged,
     } = this.props;
 
     const paginationProps = _.assign({}, paginationAction, paginationState);
@@ -544,6 +550,8 @@ class TableStateful extends Component {
       isFetching: tripsIsFetching,
       showModals: this.props.showModals
     };
+
+    const hasPermission = checkPermission(userLogged, 'COMPLETE_ORDERS');
 
     return (
       <div>
@@ -592,7 +600,7 @@ class TableStateful extends Component {
                 <div className={styles.orderList}>
                   <VerifiedOrder routes={this.state.trip.UserOrderRoutes} />
                 </div>
-                {this.state.trip.UserOrderRoutes.length - this.state.trip.ScannedOrders !== 0 &&
+                {hasPermission && this.state.trip.UserOrderRoutes.length - this.state.trip.ScannedOrders !== 0 &&
                   <div className={styles.bottomNotes}>
                     <span className={styles.completeNotes}>
                       {`${this.state.trip.UserOrderRoutes.length - this.state.trip.ScannedOrders} `}
@@ -669,7 +677,8 @@ function StateToProps(state) {
     trip,
     canMarkTripDelivered: CanMarkTripDelivered(trip, rawOrders),
     canMarkContainer: CanMarkContainer(trip, hubID),
-    orders: rawOrders
+    orders: rawOrders,
+    userLogged,
   };
 }
 

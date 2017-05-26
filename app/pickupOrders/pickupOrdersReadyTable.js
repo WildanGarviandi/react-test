@@ -3,6 +3,9 @@ import moment from 'moment';
 import React from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
+import { Link } from 'react-router';
+import Countdown from 'react-cntdwn';
+import PropTypes from 'prop-types';
 
 import * as PickupOrdersReady from './pickupOrdersReadyService';
 import * as NearbyFleets from '../nearbyFleets/nearbyFleetService';
@@ -23,9 +26,8 @@ import { CheckboxHeader, CheckboxCell } from '../views/base/tableCell';
 import { FilterTop, FilterText, FilterTopMultiple } from '../components/form';
 import * as TripDetails from '../modules/inboundTripDetails';
 import config from '../config/configValues.json';
-import Countdown from 'react-cntdwn';
 import PickupOrdersModal from './pickupOrdersModal';
-import { Link } from 'react-router';
+import { checkPermission } from '../helper/permission';
 
 const ColumnsOrder = ['checkbox', 'tripID', 'webstoreNames', 'weight', 'quantity', 'pickup', 'pickupCity', 'pickupZip', 'deadline', 'action'];
 
@@ -258,13 +260,29 @@ function mapDispatchToAutoButtonGroup(dispatch, ownParams) {
 
 const AutoGroupButton = connect(undefined, mapDispatchToAutoButtonGroup)(AutoButtonGroup);
 
-function ManualButtonGroup({ onClick, disabled }) {
-  return (
-    <button className={disabled ? styles.manualGroupButtonDisable : styles.manualGroupButton} disabled={disabled} onClick={onClick}>
-      Group Orders
+function ManualButtonGroup({ onClick, disabled, userLogged }) {
+  const hasPermission = checkPermission(userLogged, 'GROUP_ORDERS');
+  if (hasPermission) {
+    return (
+      <button
+        className={disabled ? styles.manualGroupButtonDisable : styles.manualGroupButton}
+        disabled={disabled}
+        onClick={onClick}
+      >
+        Group Orders
     </button>
-  );
+    );
+  }
+  return null;
 }
+
+/* eslint-disable */
+ManualButtonGroup.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  disabled: PropTypes.bool.isRequired,
+  userLogged: PropTypes.object.isRequired
+};
+/* eslint-enable */
 
 /*
  * Dispatch for button manual group
@@ -274,11 +292,20 @@ function mapDispatchToManualButtonGroup(dispatch, ownParams) {
   return {
     onClick: function () {
       dispatch(PickupOrdersReady.GroupOrders());
-    }
+    },
   }
 }
 
-const ManualGroupButton = connect(undefined, mapDispatchToManualButtonGroup)(ManualButtonGroup);
+function stateToManualButtonGroupProps(state) {
+  const { userLogged } = state.app;
+
+  return {
+    userLogged,
+  };
+}
+
+const ManualGroupButton = connect(stateToManualButtonGroupProps,
+  mapDispatchToManualButtonGroup)(ManualButtonGroup);
 
 function stateToCheckboxHeader(state) {
   const checkedAll = state.app.pickupOrdersReady.checkedAll;
@@ -330,7 +357,7 @@ export const FilterReady = React.createClass({
         <MerchantFilter />
         <CityFilter />
         <ZipFilter />
-        { this.props.userLogged.roleName === config.role.SUPERHUB && <HubFilter /> }
+        {this.props.userLogged.roleName === config.role.SUPERHUB && <HubFilter />}
         <ManualGroupButton disabled={!this.props.isGroupActive} />
       </div>
     );

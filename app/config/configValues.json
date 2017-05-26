@@ -101,5 +101,25 @@
     },
     "time": {
       "MINUTES": "minutes"
+    },
+    "rolePermission": {
+      "SUPERHUB": {
+        "GROUP_ORDERS": false,
+        "MARK_AS_READY": false,
+        "ADD_ORDER": false,
+        "REMOVE_ORDER": false,
+        "COMPLETE_TRIP": false,
+        "COMPLETE_ORDERS": false,
+        "ASSIGN_TO_VENDOR": false
+      },
+      "DEFAULT": {
+        "GROUP_ORDERS": true,
+        "MARK_AS_READY": true,
+        "ADD_ORDER": true,
+        "REMOVE_ORDER": true,
+        "COMPLETE_TRIP": true,
+        "COMPLETE_ORDERS": true,
+        "ASSIGN_TO_VENDOR": true
+      }
     }
 }
