@@ -514,6 +514,10 @@ class TableStateful extends Component {
       });
     }
   }
+  
+  componentWillUnmount() {
+    this.props.resetState();
+  }
 
   componentWillUnmount() {
     this.props.resetState();

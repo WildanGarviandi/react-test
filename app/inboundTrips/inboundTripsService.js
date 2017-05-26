@@ -111,6 +111,10 @@ export function Reducer(state = initialState, action) {
       return initialState;
     }
 
+    case Constants.TRIPS_INBOUND_RESET_STATE: {
+      return initialState;
+    }
+
     default: return state;
   }
 }
