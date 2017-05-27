@@ -29,6 +29,7 @@ const Constants = {
   TRIPS_INBOUND_SET_FILTER_HUB: 'inbound/trips/setFilterHub',
   TRIPS_INBOUND_SET_CURRENT_PAGE_DRIVER: 'inbound/trips/setCurrentPageDriver',
   TRIPS_INBOUND_SET_LIMIT_DRIVERS: 'inbound/trips/setLimitDrivers',
+  TRIPS_INBOUND_ERASE_FILTER: 'inbound/trips/eraseSFilter',
 };
 
 const initialState = {
@@ -142,6 +143,13 @@ export function Reducer(state = initialState, action) {
 
     case Constants.TRIPS_INBOUND_SET_LIMIT_DRIVERS: {
       return _.assign({}, state, action.payload);
+    }
+
+    case Constants.TRIPS_INBOUND_ERASE_FILTER: {
+      return _.assign({}, state, {
+        filterDrivers: {},
+        filterHubs: {},
+      });
     }
 
     default: return state;
@@ -373,6 +381,8 @@ export function TripDeliver(tripID, reuse) {
       dispatch(HideDetails());
       dispatch(FetchList());
       dispatch(DashboardService.FetchCount());
+
+      return undefined;
     }).catch((e) => {
       const message = (e && e.message) ? e.message : 'Failed to mark trip as delivered';
       dispatch({ type: modalAction.BACKDROP_HIDE });
@@ -457,24 +467,27 @@ export function FetchHubs() {
       }
 
       return response.json().then(({ data }) => {
+        let res = {};
         if (filterHubs.name) {
-          let filtered = [];
+          const filtered = [];
           _.filter(data.rows, (hub) => {
             if (_.includes(hub.Name.toLowerCase(), filterHubs.name.toLowerCase())) {
               filtered.push(hub);
             }
           });
-          data = {
+          res = {
             count: filtered.length,
             rows: filtered,
           };
+        } else {
+          res = data;
         }
 
         dispatch({
           type: Constants.TRIPS_INBOUND_SET_HUBS,
           payload: {
-            totalHubs: data.count,
-            hubs: data.rows,
+            totalHubs: res.count,
+            hubs: res.rows,
           },
         });
       });
@@ -513,6 +526,8 @@ export function AssignDriver(tripID, driverID) {
         dispatch({ type: modalAction.BACKDROP_HIDE });
         dispatch(HideReAssignModal());
       });
+
+      return undefined;
     }).catch((e) => {
       const message = (e && e.message) ? e.message : 'Failed to set driver';
       dispatch({ type: modalAction.BACKDROP_HIDE });
@@ -544,6 +559,8 @@ export function AssignHub(tripID, hubID) {
         dispatch({ type: modalAction.BACKDROP_HIDE });
         dispatch(HideReAssignModal());
       });
+
+      return undefined;
     }).catch((e) => {
       const message = (e && e.message) ? e.message : 'Failed to assign hub';
       dispatch({ type: modalAction.BACKDROP_HIDE });
@@ -553,7 +570,7 @@ export function AssignHub(tripID, hubID) {
 }
 
 export function SetCurrentPageDrivers(currentPageDrivers) {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch({
       type: Constants.TRIPS_INBOUND_SET_CURRENT_PAGE_DRIVER,
       payload: { currentPageDrivers },
@@ -569,5 +586,11 @@ export function setLimitDrivers(limitDrivers) {
       payload: { limitDrivers },
     });
     dispatch(SetCurrentPageDrivers(1));
+  };
+}
+
+export function eraseFilter() {
+  return (dispatch) => {
+    dispatch({ type: Constants.TRIPS_INBOUND_ERASE_FILTER });
   };
 }

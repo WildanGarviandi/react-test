@@ -213,18 +213,28 @@ class Driver extends Component {
             />
           </div>
           <table className={styles.driverMaskName}>
-            <tr>
-              <span className={styles.driverName}>{UtilHelper.trimString(`${driver.FirstName} ${driver.LastName}`, 25)}</span>
-            </tr>
+            <tbody>
+              <tr>
+                <td>
+                  <span className={styles.driverName}>
+                    {UtilHelper.trimString(`${driver.FirstName} ${driver.LastName}`, 25)}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
           </table>
           <table className={styles.driverLocation}>
-            <tr>
-              From Pickup Location
-            </tr>
-            <tr className={styles.driverMaskLoad}>
-              <img className={styles.vendorLoadImage} src="/img/icon-location.png" />
-              <span className={styles.vendorLoad}>{driver.DistanceToNearestPickup || 'N/A'} km</span>
-            </tr>
+            <tbody>
+              <tr>
+                <td>From Pickup Location</td>
+              </tr>
+              <tr className={styles.driverMaskLoad}>
+                <td>
+                  <img className={styles.vendorLoadImage} src="/img/icon-location.png" />
+                  <span className={styles.vendorLoad}>{driver.DistanceToNearestPickup || 'N/A'} km</span>
+                </td>
+              </tr>
+            </tbody>
           </table>
         </div>
       );
@@ -323,7 +333,7 @@ AssignDriver.propTypes = {
   assignDriver: PropTypes.func,
   trip: PropTypes.any,
   paginationState: PropTypes.any,
-  PaginationAction: PropTypes.func,
+  PaginationAction: PropTypes.object,
 };
 /* eslint-enable */
 
@@ -333,7 +343,7 @@ AssignDriver.defaultProps = {
   assignDriver: () => {},
   trip: {},
   paginationState: {},
-  PaginationAction: () => {},
+  PaginationAction: {},
 };
 
 function TripDetails({ trip }) {
@@ -583,6 +593,7 @@ function DispatchToProps(dispatch) {
     },
     HideModal() {
       dispatch(inboundTrips.HideReAssignModal());
+      dispatch(inboundTrips.eraseFilter());
     },
     FetchHubs() {
       dispatch(inboundTrips.FetchHubs());
@@ -601,10 +612,10 @@ InboundTripsModal.propTypes = {
   HideModal: PropTypes.func,
   AssignDriver: PropTypes.func,
   currentTrip: PropTypes.any,
-  AssignHub: PropTypes.function,
+  AssignHub: PropTypes.func,
   showReAssignModal: PropTypes.any,
-  paginationStateDrivers: PropTypes.func,
-  PaginationActionDrivers: PropTypes.func,
+  paginationStateDrivers: PropTypes.any,
+  PaginationActionDrivers: PropTypes.any,
   SetFilterDriver: PropTypes.func,
   ReFetchDrivers: PropTypes.func,
   SetFilterHub: PropTypes.func,
@@ -618,8 +629,8 @@ InboundTripsModal.defaultProps = {
   currentTrip: {},
   AssignHub: () => {},
   showReAssignModal: {},
-  paginationStateDrivers: () => {},
-  PaginationActionDrivers: () => {},
+  paginationStateDrivers: {},
+  PaginationActionDrivers: {},
   SetFilterDriver: () => {},
   ReFetchDrivers: () => {},
   SetFilterHub: () => {},
