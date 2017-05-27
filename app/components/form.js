@@ -1,9 +1,11 @@
-import React, {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
+import * as _ from 'lodash';
+import ReactDOM from 'react-dom';
 import styles from './form.css';
-import {Glyph} from '../views/base/glyph';
-import {ButtonBase} from './button';
+import { Glyph } from '../views/base/glyph';
+import { ButtonBase } from './button';
 import classNaming from 'classnames';
-import {DropdownWithState2 as Dropdown2} from '../views/base/dropdown';
+import { DropdownWithState2 as Dropdown2 } from '../views/base/dropdown';
 
 const Form = React.createClass({
   displayName: 'Form',
@@ -27,18 +29,18 @@ const Form = React.createClass({
 
 const CheckBox = React.createClass({
   getInitialState() {
-    return {checked: this.props.checked || false};
+    return { checked: this.props.checked || false };
   },
   componentWillReceiveProps(nextProps) {
-    if(nextProps.checked !== this.props.checked) {
-      this.setState({checked: nextProps.checked});
+    if (nextProps.checked !== this.props.checked) {
+      this.setState({ checked: nextProps.checked });
     }
   },
   handleClick(e) {
     let { onChange } = this.props;
-    if(!onChange) return;
+    if (!onChange) return;
     onChange(e.target.checked);
-    this.setState({checked: !this.state.checked});
+    this.setState({ checked: !this.state.checked });
   },
   render() {
     let { checked, label, name, styles = {} } = this.props;
@@ -66,11 +68,11 @@ const Input = React.createClass({
   handleChange(e) {
     let { onChange } = this.props;
 
-    if(!onChange) return;
+    if (!onChange) return;
     onChange(e.target.value);
   },
   handleEnterKey(e) {
-    if(e.keyCode === 13 && this.props.onEnterKeyPressed) {
+    if (e.keyCode === 13 && this.props.onEnterKeyPressed) {
       this.props.onEnterKeyPressed(e.target.value);
     }
   },
@@ -98,10 +100,10 @@ const Input = React.createClass({
 
 const InputWithState = React.createClass({
   getInitialState() {
-    return {currentText: ""};
+    return { currentText: "" };
   },
   setText(val) {
-    this.setState({currentText: val});
+    this.setState({ currentText: val });
   },
   handleSelect() {
     this.props.handleSelect(this.state.currentText);
@@ -113,16 +115,16 @@ const InputWithState = React.createClass({
 
 const InputWithDefault = React.createClass({
   getInitialState() {
-    return {currentText: this.props.currentText || ""};
+    return { currentText: this.props.currentText || "" };
   },
   componentWillReceiveProps(nextProps) {
-    if(this.props.currentText !== nextProps.currentText) {
-      this.setState({currentText: nextProps.currentText});
+    if (this.props.currentText !== nextProps.currentText) {
+      this.setState({ currentText: nextProps.currentText });
     }
   },
   setText(val) {
-    this.setState({currentText: val});
-    if(this.props.onChange) {
+    this.setState({ currentText: val });
+    if (this.props.onChange) {
       this.props.onChange(val);
     }
   },
@@ -130,7 +132,7 @@ const InputWithDefault = React.createClass({
     this.props.handleSelect(this.state.currentText);
   },
   render() {
-    return <Input {...this.props} base={{value: this.state.currentText, type: this.props.type}} onChange={this.setText} onEnterKeyPressed={this.handleSelect} />
+    return <Input {...this.props} base={{ value: this.state.currentText, type: this.props.type }} onChange={this.setText} onEnterKeyPressed={this.handleSelect} />
   }
 });
 
@@ -153,8 +155,8 @@ const Dropdown = React.createClass({
     window.removeEventListener('mousedown', this.pageClick, false);
   },
   pageClick(e) {
-    if(this.mouseIsDownOnDropdown) return;
-    if(this.props.opened) this.props.onClick();
+    if (this.mouseIsDownOnDropdown) return;
+    if (this.props.opened) this.props.onClick();
   },
   mouseDownHandler() {
     this.mouseIsDownOnDropdown = true;
@@ -163,7 +165,7 @@ const Dropdown = React.createClass({
     this.mouseIsDownOnDropdown = false;
   },
   render() {
-    let {className, onClick, opened, options, selectVal, val, width} = this.props;
+    let { className, onClick, opened, options, selectVal, val, width } = this.props;
     let optionsComp = _.map(options, (option) => {
       return <Options key={option} name={option} onClick={selectVal} />
     });
@@ -177,7 +179,7 @@ const Dropdown = React.createClass({
         {
           opened &&
           <div className={styles.optionsWrapper}>
-            { optionsComp }
+            {optionsComp}
           </div>
         }
       </span>
@@ -186,16 +188,48 @@ const Dropdown = React.createClass({
 });
 
 const Options2 = React.createClass({
+  getInitialState() {
+    return {
+      checked: false,
+    };
+  },
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      checked: nextProps.option.checked,
+    });
+  },
   handleClick() {
+    if (this.props && this.props.isMultiple) {
+      this.props.option.checked = !this.state.checked;
+      this.setState({ checked: !this.state.checked });
+    }
     this.props.selectVal(this.props.option);
   },
   handleEnter() {
     this.props.setHighlight(this.props.idx);
   },
   render() {
-    const optionsClass = classNaming(styles.option, {[styles.highlight]: this.props.highlight});
+    const optionsClass = classNaming(styles.option, { [styles.highlight]: this.props.highlight });
+    const { isMultiple } = this.props;
+
     return (
-      <span className={optionsClass} onClick={this.handleClick} onMouseEnter={this.handleEnter}>{this.props.name}</span>
+      <span
+        role="option"
+        aria-selected="false"
+        className={optionsClass}
+        onClick={this.handleClick}
+        onMouseEnter={this.handleEnter}
+      >
+        {this.props.name}
+        {isMultiple &&
+          <input
+            type="checkbox"
+            checked={this.state.checked}
+            onClick={this.handleClick}
+            className={styles['check-multi']}
+          />
+        }
+      </span>
     );
   }
 });
@@ -213,7 +247,17 @@ const DropdownTypeAhead = React.createClass({
     window.removeEventListener('mousedown', this.pageClick, false);
   },
   componentWillReceiveProps(nextProps) {
-    this.setState({txt: nextProps.val || ''});
+    let txt = '';
+    if (!nextProps.isMultiple) {
+      txt = nextProps.val || '';
+    } else {
+      txt = _.chain(nextProps.options)
+        .filter(option => option.checked)
+        .map(option => option.value)
+        .value()
+        .join();
+    }
+    this.setState({ txt });
   },
   ensureActiveItemVisible() {
     var itemComponent = this.refs.activeItem;
@@ -223,18 +267,18 @@ const DropdownTypeAhead = React.createClass({
     }
   },
   scrollElementIntoViewIfNeeded(domNode) {
-    if(!this.refs.optionsWrapper) return;
+    if (!this.refs.optionsWrapper) return;
     const top = this.refs.optionsWrapper.scrollTop;
     const position = domNode.offsetTop;
-    if(position < top) {
+    if (position < top) {
       this.refs.optionsWrapper.scrollTop = position;
-    } else if(top + 104 < position) {
+    } else if (top + 104 < position) {
       this.refs.optionsWrapper.scrollTop = position - 104;
     }
   },
-  pageClick(e) {
-    if(this.mouseIsDownOnDropdown) return;
-    if(this.state.opened) this.closeOption();
+  pageClick() {
+    if (this.mouseIsDownOnDropdown) return;
+    if (this.state.opened) this.closeOption();
   },
   mouseDownHandler() {
     this.mouseIsDownOnDropdown = true;
@@ -243,35 +287,40 @@ const DropdownTypeAhead = React.createClass({
     this.mouseIsDownOnDropdown = false;
   },
   handleTextChange(e) {
-    this.setState({temp: e.target.value, highlight: 0, opened: true }, () => {
-      if(this.refs.optionsWrapper) this.refs.optionsWrapper.scrollTop = 0;
+    this.setState({ temp: e.target.value, highlight: 0, opened: true }, () => {
+      if (this.refs.optionsWrapper) this.refs.optionsWrapper.scrollTop = 0;
     });
   },
   handleKeyDown(e) {
-    if(e.keyCode == 38) {
+    if (e.keyCode == 38) {
       this.highlightPrev();
-    } else if(e.keyCode == 40) {
+    } else if (e.keyCode == 40) {
       this.highlightNext();
-    } else if(e.keyCode == 13) {
+    } else if (e.keyCode == 13) {
       const filteredOption = this.getFilteredOption();
-      if(filteredOption.length > 0) {
+      if (filteredOption.length > 0) {
         this.handleSelect(filteredOption[this.state.highlight]);
       }
     }
   },
   getInitialState() {
-    const {val} = this.props;
-    return {opened: false, txt: (val ? val : ''), temp: '', highlight: 0};
+    const { val } = this.props;
+    return {
+      opened: false,
+      txt: val || '',
+      temp: '',
+      highlight: 0,
+    };
   },
   openOption() {
-    this.setState({opened: true, temp: ''});
+    this.setState({ opened: true, temp: '' });
     this.refs.textInput.focus();
   },
   closeOption() {
-    this.setState({opened: false});
+    this.setState({ opened: false });
   },
   toggleOption() {
-    if(this.state.opened) this.closeOption();
+    if (this.state.opened) this.closeOption();
     else this.openOption();
   },
   getFilteredOption() {
@@ -284,8 +333,8 @@ const DropdownTypeAhead = React.createClass({
   },
   setHighlight(x) {
     const filteredOption = this.getFilteredOption();
-    const position = Math.max(0, Math.min(x, filteredOption.length-1));
-    this.setState({highlight: position});
+    const position = Math.max(0, Math.min(x, filteredOption.length - 1));
+    this.setState({ highlight: position });
   },
   highlightNext() {
     this.setHighlight(this.state.highlight + 1);
@@ -294,50 +343,70 @@ const DropdownTypeAhead = React.createClass({
     this.setHighlight(this.state.highlight - 1);
   },
   handleSelect(val) {
+    let txt = '';
+    if (!this.props.isMultiple) {
+      this.closeOption();
+      txt = val;
+    } else {
+      txt = _.chain(this.props.options)
+        .filter(option => option.checked)
+        .map(option => option.value)
+        .value()
+        .join();
+    }
+    this.setState({ txt });
     this.props.selectVal(val);
-    this.closeOption();
-    this.setState({txt: val});
   },
   render() {
-    const {opened} = this.state;
+    const { opened } = this.state;
+    const { isMultiple } = this.props;
     const optionsComp = _.map(this.getFilteredOption(), (option, idx) => {
-      let optionProps = {
+      const optionProps = {
         key: option.key,
-        option: option,
+        option,
         name: option.value,
-        highlight: idx == this.state.highlight,
-        idx: idx,
+        highlight: idx === this.state.highlight,
+        idx,
         selectVal: this.handleSelect,
         setHighlight: this.setHighlight,
+        isMultiple,
       };
 
-      if(idx == this.state.highlight) {
+      if (idx === this.state.highlight) {
         optionProps.ref = 'activeItem';
       }
 
-      return <Options2 {...optionProps} />
+      return <Options2 {...optionProps} />;
     });
 
     const inputProps = {
       onFocus: this.openOption,
-      value: this.state.opened ? this.state.temp : this.state.txt,
-      className: styles.typeBox,
+      value: this.state.txt,
+      className: !this.props.isMultiple ? styles.typeBox : styles['typeBox-multi'],
       onChange: this.handleTextChange,
       onKeyDown: this.handleKeyDown,
       ref: 'textInput',
       type: 'text',
-    }
+    };
 
     return (
-      <div className={styles.container} onMouseUp={this.mouseUpHandler} onMouseDown={this.mouseDownHandler}>
+      <div
+        role="button"
+        className={this.props.isMultiple ? styles['container-multi'] : styles.container}
+        onMouseUp={this.mouseUpHandler}
+        onMouseDown={this.mouseDownHandler}
+      >
         <input {...inputProps} />
-        <span className={styles.caretContainer} onClick={this.toggleOption}>
-          <Glyph className={styles.caret} name={opened ? "chevron-up" : "chevron-down"} />
-        </span>
+        {
+          !this.props.isMultiple &&
+          <span className={styles.caretContainer} onClick={this.toggleOption}>
+            <Glyph className={styles.caret} name={opened ? 'chevron-up' : 'chevron-down'} />
+          </span>
+        }
         {
           opened && optionsComp.length > 0 &&
-          <div className={styles.optionsWrapper} ref="optionsWrapper">
-            { optionsComp }
+          <div className={styles.optionsWrapper} ref='optionsWrapper'>
+            {optionsComp}
           </div>
         }
       </div>
@@ -358,7 +427,7 @@ const DropdownTypeAhead2 = React.createClass({
     window.removeEventListener('mousedown', this.pageClick, false);
   },
   componentWillReceiveProps(nextProps) {
-    this.setState({txt: nextProps.val || ''});
+    this.setState({ txt: nextProps.val || '' });
   },
   ensureActiveItemVisible() {
     var itemComponent = this.refs.activeItem;
@@ -368,18 +437,18 @@ const DropdownTypeAhead2 = React.createClass({
     }
   },
   scrollElementIntoViewIfNeeded(domNode) {
-    if(!this.refs.optionsWrapper) return;
+    if (!this.refs.optionsWrapper) return;
     const top = this.refs.optionsWrapper.scrollTop;
     const position = domNode.offsetTop;
-    if(position < top) {
+    if (position < top) {
       this.refs.optionsWrapper.scrollTop = position;
-    } else if(top + 104 < position) {
+    } else if (top + 104 < position) {
       this.refs.optionsWrapper.scrollTop = position - 104;
     }
   },
   pageClick(e) {
-    if(this.mouseIsDownOnDropdown) return;
-    if(this.state.opened) this.closeOption();
+    if (this.mouseIsDownOnDropdown) return;
+    if (this.state.opened) this.closeOption();
   },
   mouseDownHandler() {
     this.mouseIsDownOnDropdown = true;
@@ -388,35 +457,35 @@ const DropdownTypeAhead2 = React.createClass({
     this.mouseIsDownOnDropdown = false;
   },
   handleTextChange(e) {
-    this.setState({temp: e.target.value, highlight: 0, opened: true }, () => {
-      if(this.refs.optionsWrapper) this.refs.optionsWrapper.scrollTop = 0;
+    this.setState({ temp: e.target.value, highlight: 0, opened: true }, () => {
+      if (this.refs.optionsWrapper) this.refs.optionsWrapper.scrollTop = 0;
     });
   },
   handleKeyDown(e) {
-    if(e.keyCode == 38) {
+    if (e.keyCode == 38) {
       this.highlightPrev();
-    } else if(e.keyCode == 40) {
+    } else if (e.keyCode == 40) {
       this.highlightNext();
-    } else if(e.keyCode == 13) {
+    } else if (e.keyCode == 13) {
       const filteredOption = this.getFilteredOption();
-      if(filteredOption.length > 0) {
+      if (filteredOption.length > 0) {
         this.handleSelect(filteredOption[this.state.highlight]);
       }
     }
   },
   getInitialState() {
-    const {val} = this.props;
-    return {opened: false, txt: (val ? val : ''), temp: '', highlight: 0};
+    const { val } = this.props;
+    return { opened: false, txt: (val ? val : ''), temp: '', highlight: 0 };
   },
   openOption() {
-    this.setState({opened: true, temp: ''});
+    this.setState({ opened: true, temp: '' });
     this.refs.textInput.focus();
   },
   closeOption() {
-    this.setState({opened: false});
+    this.setState({ opened: false });
   },
   toggleOption() {
-    if(this.state.opened) this.closeOption();
+    if (this.state.opened) this.closeOption();
     else this.openOption();
   },
   getFilteredOption() {
@@ -429,8 +498,8 @@ const DropdownTypeAhead2 = React.createClass({
   },
   setHighlight(x) {
     const filteredOption = this.getFilteredOption();
-    const position = Math.max(0, Math.min(x, filteredOption.length-1));
-    this.setState({highlight: position});
+    const position = Math.max(0, Math.min(x, filteredOption.length - 1));
+    this.setState({ highlight: position });
   },
   highlightNext() {
     this.setHighlight(this.state.highlight + 1);
@@ -441,10 +510,10 @@ const DropdownTypeAhead2 = React.createClass({
   handleSelect(val) {
     this.props.selectVal(val);
     this.closeOption();
-    this.setState({txt: val});
+    this.setState({ txt: val });
   },
   render() {
-    const {opened} = this.state;
+    const { opened } = this.state;
     const optionsComp = _.map(this.getFilteredOption(), (option, idx) => {
       let optionProps = {
         key: option.key,
@@ -456,7 +525,7 @@ const DropdownTypeAhead2 = React.createClass({
         setHighlight: this.setHighlight,
       };
 
-      if(idx == this.state.highlight) {
+      if (idx == this.state.highlight) {
         optionProps.ref = 'activeItem';
       }
 
@@ -482,7 +551,7 @@ const DropdownTypeAhead2 = React.createClass({
         {
           opened && optionsComp.length > 0 &&
           <div className={styles.optionsWrapper} ref="optionsWrapper">
-            { optionsComp }
+            {optionsComp}
           </div>
         }
       </div>
@@ -492,7 +561,7 @@ const DropdownTypeAhead2 = React.createClass({
 
 const DropdownWithState = React.createClass({
   getInitialState() {
-    return {currentVal: this.props.initialValue};
+    return { currentVal: this.props.initialValue };
   },
   handleSelect(val) {
     this.setState({
@@ -502,8 +571,8 @@ const DropdownWithState = React.createClass({
     });
   },
   render() {
-    const {options} = this.props;
-    const {currentVal} = this.state;
+    const { options } = this.props;
+    const { currentVal } = this.state;
 
     return (
       <DropdownTypeAhead options={options} selectVal={this.handleSelect} val={currentVal} />
@@ -516,17 +585,22 @@ const DropdownWithState2 = React.createClass({
     this.props.handleSelect(val);
   },
   render() {
-    const {options} = this.props;
+    const { options, isMultiple } = this.props;
 
     return (
-      <DropdownTypeAhead options={options} selectVal={this.handleSelect} val={this.props.val} />
+      <DropdownTypeAhead
+        options={options}
+        isMultiple={isMultiple}
+        selectVal={this.handleSelect}
+        val={this.props.val}
+      />
     );
-  }
+  },
 });
 
 const DropdownWithState3 = React.createClass({
   getInitialState() {
-    return {currentVal: this.props.initialValue};
+    return { currentVal: this.props.initialValue };
   },
   handleSelect(val) {
     this.setState({
@@ -536,8 +610,8 @@ const DropdownWithState3 = React.createClass({
     });
   },
   render() {
-    const {options} = this.props;
-    const {currentVal} = this.state;
+    const { options } = this.props;
+    const { currentVal } = this.state;
 
     return (
       <DropdownTypeAhead2 options={options} selectVal={this.handleSelect} val={currentVal} />
@@ -549,11 +623,11 @@ const Textarea = React.createClass({
   handleChange(e) {
     let { onChange } = this.props;
 
-    if(!onChange) return;
+    if (!onChange) return;
     onChange(e.target.value);
   },
   handleEnterKey(e) {
-    if(e.keyCode === 13 && this.props.onEnterKeyPressed) {
+    if (e.keyCode === 13 && this.props.onEnterKeyPressed) {
       this.props.onEnterKeyPressed(e.target.value);
     }
   },
@@ -571,16 +645,16 @@ const Textarea = React.createClass({
 
 const TextareaWithDefault = React.createClass({
   getInitialState() {
-    return {currentText: this.props.currentText || ""};
+    return { currentText: this.props.currentText || "" };
   },
   componentWillReceiveProps(nextProps) {
-    if(this.props.currentText !== nextProps.currentText) {
-      this.setState({currentText: nextProps.currentText});
+    if (this.props.currentText !== nextProps.currentText) {
+      this.setState({ currentText: nextProps.currentText });
     }
   },
   setText(val) {
-    this.setState({currentText: val});
-    if(this.props.onChange) {
+    this.setState({ currentText: val });
+    if (this.props.onChange) {
       this.props.onChange(val);
     }
   },
@@ -588,7 +662,7 @@ const TextareaWithDefault = React.createClass({
     this.props.handleSelect(this.state.currentText);
   },
   render() {
-    return <Textarea {...this.props} base={{value: this.state.currentText, type: this.props.type}} onChange={this.setText} onEnterKeyPressed={this.handleSelect} />
+    return <Textarea {...this.props} base={{ value: this.state.currentText, type: this.props.type }} onChange={this.setText} onEnterKeyPressed={this.handleSelect} />
   }
 });
 
@@ -598,14 +672,38 @@ const FilterTop = React.createClass({
       <div className={styles.filterTop}>
         <div className={styles.filterTitle}>{this.props.title}</div>
         <div>
-          <DropdownWithState2 val={this.props.value} options={this.props.options} handleSelect={this.props.handleSelect} />
+          <DropdownWithState2
+            val={this.props.value}
+            options={this.props.options}
+            handleSelect={this.props.handleSelect}
+          />
         </div>
       </div>
     );
-  }
+  },
 });
 
-function Filter({value, options, handleSelect}) {
+const FilterTopMultiple = React.createClass({
+  render() {
+    const isMultiple = true;
+
+    return (
+      <div className={styles.filterTop}>
+        <div className={styles.filterTitle}>{this.props.title}</div>
+        <div>
+          <DropdownWithState2
+            val={this.props.value}
+            options={this.props.options}
+            handleSelect={this.props.handleSelect}
+            isMultiple={isMultiple}
+          />
+        </div>
+      </div>
+    );
+  },
+});
+
+function Filter({ value, options, handleSelect }) {
   return (
     <div className={styles.custFilterTop}>
       <Dropdown2 val={value} options={options} handleSelect={handleSelect} custClass={styles.custDropdown} />
@@ -633,13 +731,13 @@ const Radio = React.createClass({
     radioGroup: React.PropTypes.object
   },
 
-  render: function() {
-    const {name, selectedValue, onChange} = this.context.radioGroup;
+  render: function () {
+    const { name, selectedValue, onChange } = this.context.radioGroup;
     const optional = {};
-    if(selectedValue !== undefined) {
+    if (selectedValue !== undefined) {
       optional.checked = (this.props.value === selectedValue);
     }
-    if(typeof onChange === 'function') {
+    if (typeof onChange === 'function') {
       optional.onChange = onChange.bind(null, this.props.value);
     }
 
@@ -666,7 +764,7 @@ const FilterText = React.createClass({
   }
 });
 
-function Filter({value, options, handleSelect}) {
+function Filter({ value, options, handleSelect }) {
   return (
     <div className={styles.custFilterTop}>
       <Dropdown2 val={value} options={options} handleSelect={handleSelect} custClass={styles.custDropdown} />
@@ -693,7 +791,7 @@ const RadioGroup = React.createClass({
     ])
   },
 
-  getDefaultProps: function() {
+  getDefaultProps: function () {
     return {
       Component: "div"
     };
@@ -703,8 +801,8 @@ const RadioGroup = React.createClass({
     radioGroup: React.PropTypes.object
   },
 
-  getChildContext: function() {
-    const {name, selectedValue, onChange} = this.props;
+  getChildContext: function () {
+    const { name, selectedValue, onChange } = this.props;
     return {
       radioGroup: {
         name, selectedValue, onChange
@@ -712,10 +810,10 @@ const RadioGroup = React.createClass({
     }
   },
 
-  render: function() {
-    const {Component, name, selectedValue, onChange, children} = this.props;
+  render: function () {
+    const { Component, name, selectedValue, onChange, children } = this.props;
     return <Component>{children}</Component>;
   }
 });
 
-export {Form, CheckBox, Filter, FilterTop, FilterTop2, FilterText, Input, InputWithDefault, InputWithState, Dropdown, DropdownTypeAhead, DropdownWithState, DropdownWithState2, DropdownWithState3, Textarea, TextareaWithDefault, RadioGroup, Radio };
+export { Form, CheckBox, Filter, FilterTop, FilterTop2, FilterTopMultiple, FilterText, Input, InputWithDefault, InputWithState, Dropdown, DropdownTypeAhead, DropdownWithState, DropdownWithState2, DropdownWithState3, Textarea, TextareaWithDefault, RadioGroup, Radio };

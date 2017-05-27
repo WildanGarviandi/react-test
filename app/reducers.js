@@ -6,21 +6,16 @@ import drivers from './modules/drivers/reducers';
 import modalsReducer from './modules/modals/reducers';
 import notifReducer from './modules/notification/reducers';
 import orders from './modules/orders/reducers';
-// import pickupOrders from './modules/orders/reducers/pickup';
 import {Reducer as inboundTripDetails} from './modules/inboundTripDetails';
 import {Reducer as tripDetails} from './tripDetails/tripDetailsService.js';
 import {Reducer as inboundTrips} from './inboundTrips/inboundTripsService';
-// import {Reducer as outboundTrips} from './modules/outboundTrips';
-// import {Reducer as pickupOrders} from './modules/pickupOrders';
 import {Reducer as outboundTripsService} from './outboundTrips/outboundTripsService';
-// import receivedOrders from './modules/orders/reducers/received';
 import {Reducer as receivedOrders} from './modules/receivedOrders';
 import {Reducer as grouping} from './grouping/groupingService';
 import {Reducer as inboundOrders} from './inbound/inboundOrdersService';
 import {Reducer as updateOrders} from './updateOrders/updateOrdersService';
 import orderDetails from './modules/orders/reducers/details';
-// import outboundTrips from './modules/trips/reducers/outbound';
-import hubs from './modules/hubs/reducers';
+import hubs from './modules/hubs';
 import myTrips from './trips/tripService';
 import myOngoingTrips from './ongoingTrips/tripService';
 import myOrders from './orders/orderService';
@@ -39,6 +34,7 @@ import nearbyFleets from './nearbyFleets/nearbyFleetService';
 import dashboard from './dashboard/dashboardService';
 import {Reducer as performance} from './performance/performanceService';
 import orderMonitoring from './orderMonitoring/orderMonitoringService';
+import tripProblems from './tripProblems/tripProblemsService';
 
 export default combineReducers({
   userLogged: authReducers,
@@ -78,5 +74,6 @@ export default combineReducers({
   nearbyFleets,
   dashboard,
   performance,
-  orderMonitoring
+  orderMonitoring,
+  tripProblems,
 });
