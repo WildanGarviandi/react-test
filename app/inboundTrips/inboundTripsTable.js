@@ -442,6 +442,17 @@ function dropdownStateToProps(keyword, title) {
   };
 }
 
+function dropdownDispatchToProps(keyword) {
+  return (dispatch) => {
+    return {
+      handleSelect: (option) => {
+        dispatch(InboundTrips.setDropdownFilter(keyword, option));
+        dispatch(InboundTrips.FetchList());
+      },
+    };
+  };
+}
+
 function multiDropdownDispatchToProps() {
   return (dispatch) => {
     const action = {
@@ -460,6 +471,12 @@ const ZipCodeSearch = connect(
   inputDispatchToProps('pickupZipCode', 'Search "Zip Code" here....'),
 )(InputFilter);
 
+const TripProblemDropdown = connect(
+  dropdownStateToProps('tripProblem', 'Filter by Trip Problem'),
+  dropdownDispatchToProps('tripProblem'),
+)(FilterTop);
+
+
 const HubDropdown = connect(
   dropdownStateToProps('hubs', 'Filter by Hubs (can be multiple)'),
   multiDropdownDispatchToProps('hubIDs'),
@@ -470,6 +487,7 @@ export class Filter extends Component {
     return (
       <div className={styles['filter-container']}>
         <div className={styles['filter-box']}>
+          <TripProblemDropdown />
           {this.props.userLogged.roleName === config.role.SUPERHUB && <HubDropdown />}
         </div>
         <div className={styles['filter-box']}>
