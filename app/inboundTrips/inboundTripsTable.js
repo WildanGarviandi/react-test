@@ -6,6 +6,7 @@ import { Link } from 'react-router';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import ReactTooltip from 'react-tooltip';
 
 import { Pagination } from '../views/base';
 import tableStyles from '../views/base/table.css';
@@ -49,6 +50,23 @@ const ColumnsTitle = {
 let fleetList = {};
 
 const Table = React.createClass({
+  getProblemIcon(tripProblemMaster) {
+    if (!tripProblemMaster) {
+      return null;
+    }
+
+    const icon = _.get(config.problemIcon, tripProblemMaster.Problem);
+    return (
+      <span>
+        <ReactTooltip />
+        <img
+          data-tip={icon.TOOLTIP}
+          src={icon.URL}
+        />
+      </span>
+    );
+  },
+
   render() {
     const Headers = _.map(ColumnsOrder, (columnKey) => {
       return <th key={columnKey}>{ColumnsTitle[columnKey]}</th>;
@@ -60,6 +78,7 @@ const Table = React.createClass({
           return (
             <td className={`${tableStyles.td} ${styles.tripIDColumn}`} key={columnKey}>
               {item.isNew && <img src={'/img/label-new.png'} />}
+              {this.getProblemIcon(item.tripProblemMaster)}
               <Link to={`/trips/${item.key}`} className={styles.link}>{item[columnKey]}</Link>
             </td>
           );
@@ -290,6 +309,7 @@ function ProcessTrip(trip) {
     isNew: isNew(trip),
     zip: trip.PickupAddress.ZipCode,
     childMerchant: parsedTrip.WebstoreUser,
+    tripProblemMaster: trip.TripProblemMaster,
   };
 }
 
@@ -371,8 +391,8 @@ function inputDispatchToProps(keyword, placeholder) {
     function OnKeyDown(e) {
       if (e.keyCode !== config.KEY_ACTION.ENTER) {
         if (keyword === 'pickupZipCode' &&
-        ((e.keyCode >= config.KEY_ACTION.A && e.keyCode <= config.KEY_ACTION.Z)
-        || e.keyCode >= config.KEY_ACTION.SEMI_COLON)) {
+          ((e.keyCode >= config.KEY_ACTION.A && e.keyCode <= config.KEY_ACTION.Z)
+            || e.keyCode >= config.KEY_ACTION.SEMI_COLON)) {
           e.preventDefault();
         }
         return;
@@ -402,15 +422,26 @@ const OriginSearch = connect(
 function dropdownStateToProps(keyword, title) {
   return (store) => {
     const { inboundTrips, hubs } = store.app;
-    const value = inboundTrips[keyword] ? inboundTrips[keyword].value : 'All';
+    const value = inboundTrips[keyword].value ? inboundTrips[keyword].value : 'All';
     let options = [];
+
+    if (keyword === 'pickupCity') {
+      const optionsTemplate = store.app.cityList.cities;
+      options = [{
+        key: 0, value: 'All',
+      }].concat(optionsTemplate
+        .map(option => ({
+          key: option.CityID,
+          value: option.Name,
+        })));
+    }
 
     if (keyword === 'tripProblem') {
       const optionsTemplate = store.app.tripProblems.problems;
       options = [{
         key: 0, value: 'All',
       }].concat(optionsTemplate
-        .map((option) => ({
+        .map(option => ({
           key: option.TripProblemMasterID,
           value: option.Problem,
         })));
@@ -444,12 +475,13 @@ function dropdownStateToProps(keyword, title) {
 
 function dropdownDispatchToProps(keyword) {
   return (dispatch) => {
-    return {
+    const action = {
       handleSelect: (option) => {
         dispatch(InboundTrips.setDropdownFilter(keyword, option));
         dispatch(InboundTrips.FetchList());
       },
     };
+    return action;
   };
 }
 
@@ -476,6 +508,11 @@ const TripProblemDropdown = connect(
   dropdownDispatchToProps('tripProblem'),
 )(FilterTop);
 
+const CityDropdown = connect(
+  dropdownStateToProps('pickupCity', 'Filter by City'),
+  dropdownDispatchToProps('pickupCity'),
+)(FilterTop);
+
 const ChildMerchantSearch = connect(
   inputStateToProps('webstoreUserName'),
   inputDispatchToProps('webstoreUserName', 'Search "Child Merchant Name"....'),
@@ -492,6 +529,7 @@ export class Filter extends Component {
       <div className={styles['filter-container']}>
         <div className={styles['filter-box']}>
           <TripProblemDropdown />
+          <CityDropdown />
           {this.props.userLogged.roleName === config.role.SUPERHUB && <HubDropdown />}
         </div>
         <div className={styles['filter-box']}>
@@ -551,7 +589,7 @@ class TableStateful extends Component {
       });
     }
   }
-  
+
   componentWillUnmount() {
     this.props.resetState();
   }

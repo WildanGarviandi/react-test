@@ -115,5 +115,19 @@
         "COMPLETE_ORDERS": true,
         "ASSIGN_TO_VENDOR": true
       }
+    },
+    "problemIcon": {
+      "NOT_CONFIRMED": {
+        "URL": "/img/icon-not-confirmed.png",
+        "TOOLTIP": "Not Confirmed"
+      },
+      "NOT_ARRIVED": {
+        "URL": "/img/icon-not-arrived.png",
+        "TOOLTIP": "Not Arrived"
+      },
+      "NOT_FINISHED": {
+        "URL": "/img/icon-not-finished.png",
+        "TOOLTIP": "Not Finished"
+      }
     }
 }
