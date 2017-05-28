@@ -552,14 +552,12 @@ export function AssignDriver(tripID, driverID) {
         });
       }
 
-      response.json().then(() => {
+      return response.json().then(() => {
         dispatch(ModalActions.addMessage('Assign driver success'));
         dispatch(FetchList());
         dispatch({ type: modalAction.BACKDROP_HIDE });
         dispatch(HideReAssignModal());
       });
-
-      return undefined;
     }).catch((e) => {
       const message = (e && e.message) ? e.message : 'Failed to set driver';
       dispatch({ type: modalAction.BACKDROP_HIDE });
@@ -585,14 +583,12 @@ export function AssignHub(tripID, hubID) {
         });
       }
 
-      response.json().then(() => {
+      return response.json().then(() => {
         dispatch(ModalActions.addMessage('Assign hub success'));
         dispatch(FetchList());
         dispatch({ type: modalAction.BACKDROP_HIDE });
         dispatch(HideReAssignModal());
       });
-
-      return undefined;
     }).catch((e) => {
       const message = (e && e.message) ? e.message : 'Failed to assign hub';
       dispatch({ type: modalAction.BACKDROP_HIDE });
