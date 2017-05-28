@@ -503,6 +503,11 @@ const ZipCodeSearch = connect(
   inputDispatchToProps('pickupZipCode', 'Search "Zip Code" here....'),
 )(InputFilter);
 
+const TripProblemDropdown = connect(
+  dropdownStateToProps('tripProblem', 'Filter by Trip Problem'),
+  dropdownDispatchToProps('tripProblem'),
+)(FilterTop);
+
 const CityDropdown = connect(
   dropdownStateToProps('pickupCity', 'Filter by City'),
   dropdownDispatchToProps('pickupCity'),
@@ -523,6 +528,7 @@ export class Filter extends Component {
     return (
       <div className={styles['filter-container']}>
         <div className={styles['filter-box']}>
+          <TripProblemDropdown />
           <CityDropdown />
           {this.props.userLogged.roleName === config.role.SUPERHUB && <HubDropdown />}
         </div>
