@@ -60,6 +60,7 @@ const initialState = {
   filterHubs: {},
   hubIDs: [],
   tripProblem: {},
+  pickupCity: {},
 };
 
 export function Reducer(state = initialState, action) {
@@ -195,7 +196,7 @@ export function FetchList() {
   return (dispatch, getState) => {
     const { inboundTrips, userLogged } = getState().app;
     const { token } = userLogged;
-    const { currentPage, filters, limit, tripProblem, hubIDs } = inboundTrips;
+    const { currentPage, filters, limit, tripProblem, hubIDs, pickupCity } = inboundTrips;
 
     const query = _.assign({}, filters, {
       limit,
@@ -204,6 +205,8 @@ export function FetchList() {
       tripProblemMasterID: (tripProblem.key || '') &&
       (tripProblem.key === 0 ? '' : tripProblem.key),
       hubIDs: hubIDs.join(),
+      pickupCity: (pickupCity.value || '') &&
+      (pickupCity.value === 'All' ? '' : pickupCity.value),
     });
 
     dispatch({
