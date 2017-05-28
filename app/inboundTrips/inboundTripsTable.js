@@ -487,6 +487,11 @@ const CityDropdown = connect(
   dropdownDispatchToProps('pickupCity'),
 )(FilterTop);
 
+const ChildMerchantSearch = connect(
+  inputStateToProps('webstoreUserName'),
+  inputDispatchToProps('webstoreUserName', 'Search "Child Merchant Name"....'),
+)(InputFilter);
+
 const HubDropdown = connect(
   dropdownStateToProps('hubs', 'Filter by Hubs (can be multiple)'),
   multiDropdownDispatchToProps('hubIDs'),
@@ -503,6 +508,7 @@ export class Filter extends Component {
         <div className={styles['filter-box']}>
           <TripIDSearch />
           <OriginSearch />
+          <ChildMerchantSearch />
           <ZipCodeSearch />
         </div>
       </div>
