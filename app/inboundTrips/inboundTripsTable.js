@@ -422,15 +422,26 @@ const OriginSearch = connect(
 function dropdownStateToProps(keyword, title) {
   return (store) => {
     const { inboundTrips, hubs } = store.app;
-    const value = inboundTrips[keyword] ? inboundTrips[keyword].value : 'All';
+    const value = inboundTrips[keyword].value ? inboundTrips[keyword].value : 'All';
     let options = [];
+
+    if (keyword === 'pickupCity') {
+      const optionsTemplate = store.app.cityList.cities;
+      options = [{
+        key: 0, value: 'All',
+      }].concat(optionsTemplate
+        .map(option => ({
+          key: option.CityID,
+          value: option.Name,
+        })));
+    }
 
     if (keyword === 'tripProblem') {
       const optionsTemplate = store.app.tripProblems.problems;
       options = [{
         key: 0, value: 'All',
       }].concat(optionsTemplate
-        .map((option) => ({
+        .map(option => ({
           key: option.TripProblemMasterID,
           value: option.Problem,
         })));
@@ -462,6 +473,18 @@ function dropdownStateToProps(keyword, title) {
   };
 }
 
+function dropdownDispatchToProps(keyword) {
+  return (dispatch) => {
+    const action = {
+      handleSelect: (option) => {
+        dispatch(InboundTrips.setDropdownFilter(keyword, option));
+        dispatch(InboundTrips.FetchList());
+      },
+    };
+    return action;
+  };
+}
+
 function multiDropdownDispatchToProps() {
   return (dispatch) => {
     const action = {
@@ -480,6 +503,11 @@ const ZipCodeSearch = connect(
   inputDispatchToProps('pickupZipCode', 'Search "Zip Code" here....'),
 )(InputFilter);
 
+const CityDropdown = connect(
+  dropdownStateToProps('pickupCity', 'Filter by City'),
+  dropdownDispatchToProps('pickupCity'),
+)(FilterTop);
+
 const ChildMerchantSearch = connect(
   inputStateToProps('webstoreUserName'),
   inputDispatchToProps('webstoreUserName', 'Search "Child Merchant Name"....'),
@@ -495,6 +523,7 @@ export class Filter extends Component {
     return (
       <div className={styles['filter-container']}>
         <div className={styles['filter-box']}>
+          <CityDropdown />
           {this.props.userLogged.roleName === config.role.SUPERHUB && <HubDropdown />}
         </div>
         <div className={styles['filter-box']}>
