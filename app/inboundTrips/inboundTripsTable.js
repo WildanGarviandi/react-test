@@ -460,12 +460,10 @@ const ZipCodeSearch = connect(
   inputDispatchToProps('pickupZipCode', 'Search "Zip Code" here....'),
 )(InputFilter);
 
-
 const ChildMerchantSearch = connect(
   inputStateToProps('webstoreUserName'),
   inputDispatchToProps('webstoreUserName', 'Search "Child Merchant Name"....'),
 )(InputFilter);
-
 
 const HubDropdown = connect(
   dropdownStateToProps('hubs', 'Filter by Hubs (can be multiple)'),
