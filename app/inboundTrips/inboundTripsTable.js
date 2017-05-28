@@ -455,12 +455,13 @@ function dropdownStateToProps(keyword, title) {
 
 function dropdownDispatchToProps(keyword) {
   return (dispatch) => {
-    return {
+    const action = {
       handleSelect: (option) => {
         dispatch(InboundTrips.setDropdownFilter(keyword, option));
         dispatch(InboundTrips.FetchList());
       },
     };
+    return action;
   };
 }
 
