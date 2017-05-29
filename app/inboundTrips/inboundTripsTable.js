@@ -7,6 +7,7 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
+import { DropdownWithState2 } from '../views/base/dropdown';
 import { Pagination } from '../views/base';
 import tableStyles from '../views/base/table.css';
 import { formatDate } from '../helper/time';
@@ -14,7 +15,7 @@ import ModalActions from '../modules/modals/actions';
 import styles from './styles.css';
 import { CanMarkContainer, TripParser, CanMarkTripDelivered } from '../modules/trips';
 import { OrderParser } from '../modules/orders';
-import { FilterTop, FilterText, FilterTopMultiple } from '../components/form';
+import { FilterText, FilterTopMultiple } from '../components/form';
 import * as config from '../config/configValues.json';
 import * as InboundTrips from './inboundTripsService';
 import { checkPermission } from '../helper/permission';
@@ -398,6 +399,36 @@ const OriginSearch = connect(
   inputStateToProps('origin'),
   inputDispatchToProps('origin', 'Search "Origin" here....'),
 )(InputFilter);
+
+function FilterTop({ title, options, value, handleSelect }) {
+  return (
+    <div className={styles['filter-wrapper']}>
+      <div className={styles['filter-title']}>
+        {title}
+      </div>
+      <DropdownWithState2
+        val={value}
+        options={options}
+        value={value}
+        handleSelect={handleSelect}
+      />
+    </div>
+  );
+}
+
+/* eslint-disable */
+FilterTop.propTypes = {
+  title: PropTypes.any,
+  options: PropTypes.array.isRequired,
+  value: PropTypes.any,
+  handleSelect: PropTypes.func.isRequired,
+};
+/* eslint-enable */
+
+FilterTop.defaultProps = {
+  title: {},
+  value: {},
+};
 
 function dropdownStateToProps(keyword, title) {
   return (store) => {
