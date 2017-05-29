@@ -996,3 +996,25 @@ td.webstoreNames {
   align-self: flex-start;
   margin-bottom: 10px;
 }
+
+.filter-wrapper {
+  width: 20%;
+  float: left;
+  margin-right: 1%;
+}
+
+.filter-wrapper input {
+  height: 48px !important;
+}
+
+.filter-title {
+  opacity: 0.5;
+  font-family: Helvetica;
+  font-size: 12px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  text-align: left;
+  color: #000;
+  margin-bottom: 9px;
+}
