@@ -183,4 +183,17 @@ input {
 
 .check-multi {
   float: right;
+  margin-left: 5px;
+}
+
+.option-content {
+  display: flex;
+}
+
+.option-text {
+  width: 225px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  align-self: flex-start;
 }
