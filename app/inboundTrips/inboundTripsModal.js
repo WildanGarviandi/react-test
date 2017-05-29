@@ -164,17 +164,14 @@ class AssignHub extends Component {
 
 /* eslint-disable */
 AssignHub.propTypes = {
-  fetchHubs: PropTypes.func,
-  setFilterHub: PropTypes.func,
-  assignHub: PropTypes.func,
+  fetchHubs: PropTypes.func.isRequired,
+  setFilterHub: PropTypes.func.isRequired,
+  assignHub: PropTypes.func.isRequired,
   hubs: PropTypes.array,
 };
 /* eslint-enable */
 
 AssignHub.defaultProps = {
-  fetchHubs: () => {},
-  setFilterHub: () => {},
-  assignHub: () => {},
   hubs: [],
 };
 
