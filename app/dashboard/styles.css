@@ -313,11 +313,13 @@
 }
 
 .problem-notif {
+  border-radius: 24px;
   line-height: 1.5em;
   text-indent: 5px;
   padding-right: 10px;
   padding-left: 5px;
-  color: #f00;
+  background-color: #f00;
+  color: #fff;
   margin-top: 5px;
 }
 

@@ -92,7 +92,7 @@ const DashboardMenu = ({ activeMenuIdx, handleLogout, toggleCompact,
                   {count && count.inboundTrip}
                 </div>
                 <div className={styles['problem-notif']}>
-                  <FontAwesome name="exclamation-circle" /> {totalInboundTripProblem}
+                  <FontAwesome name="exclamation-triangle" /> {totalInboundTripProblem}
                 </div>
               </div>
             </MenuItem>
