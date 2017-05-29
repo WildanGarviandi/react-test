@@ -103,11 +103,13 @@ class AssignHub extends Component {
   }
 
   assignHub() {
-    this.props.setFilterHub();
+    this.props.assignHub();
     this.chooseHub(null);
   }
 
   render() {
+    const { trip } = this.props;
+    
     return (
       <div>
         <div className={styles.panelDriverSearch}>
@@ -149,7 +151,7 @@ class AssignHub extends Component {
             <button
               disabled={!this.state.selectedHub}
               className={styles.buttonAssign}
-              onClick={() => this.assignHub()}
+              onClick={() => this.assignHub(trip.TripID)}
             >
               Assign to Hub
             </button>
@@ -162,15 +164,14 @@ class AssignHub extends Component {
 
 /* eslint-disable */
 AssignHub.propTypes = {
-  fetchHubs: PropTypes.func,
-  setFilterHub: PropTypes.func,
+  fetchHubs: PropTypes.func.isRequired,
+  setFilterHub: PropTypes.func.isRequired,
+  assignHub: PropTypes.func.isRequired,
   hubs: PropTypes.array,
 };
 /* eslint-enable */
 
 AssignHub.defaultProps = {
-  fetchHubs: () => {},
-  setFilterHub: () => {},
   hubs: [],
 };
 
