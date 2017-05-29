@@ -188,20 +188,9 @@ const Dropdown = React.createClass({
 });
 
 const Options2 = React.createClass({
-  getInitialState() {
-    return {
-      checked: false,
-    };
-  },
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      checked: nextProps.option.checked,
-    });
-  },
   handleClick() {
     if (this.props && this.props.isMultiple) {
-      this.props.option.checked = !this.state.checked;
-      this.setState({ checked: !this.state.checked });
+      this.props.option.checked = !this.props.option.checked;
     }
     this.props.selectVal(this.props.option);
   },
@@ -210,7 +199,7 @@ const Options2 = React.createClass({
   },
   render() {
     const optionsClass = classNaming(styles.option, { [styles.highlight]: this.props.highlight });
-    const { isMultiple } = this.props;
+    const { isMultiple, option } = this.props;
 
     return (
       <span
@@ -220,18 +209,26 @@ const Options2 = React.createClass({
         onClick={this.handleClick}
         onMouseEnter={this.handleEnter}
       >
-        {this.props.name}
-        {isMultiple &&
-          <input
-            type="checkbox"
-            checked={this.state.checked}
-            onClick={this.handleClick}
-            className={styles['check-multi']}
-          />
-        }
+        <div
+          className={styles['option-content']}
+        >
+          <div
+            className={styles['option-text']}
+          >
+            {this.props.name}
+          </div>
+          {isMultiple &&
+            <input
+              type="checkbox"
+              checked={option.checked}
+              onClick={this.handleClick}
+              className={styles['check-multi']}
+            />
+          }
+        </div>
       </span>
     );
-  }
+  },
 });
 
 const DropdownTypeAhead = React.createClass({

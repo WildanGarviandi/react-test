@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import { push } from 'react-router-redux';
 import * as _ from 'lodash';
+import FontAwesome from 'react-fontawesome';
 
 import { LogoutAction } from '../modules';
 import checkAuth from '../modules/auth/actions/checkAuth';
@@ -60,8 +61,9 @@ const AccordionMenu = React.createClass({
   }
 })
 
-const DashboardMenu = ({ activeMenuIdx, handleLogout, toggleCompact, hubID, loggedName,
-  counterOrder, count, countTMS, tmsMenu, switchMenu, isCentralHub }) => {
+const DashboardMenu = ({ activeMenuIdx, handleLogout, toggleCompact,
+  hubID, loggedName, counterOrder, count, countTMS, tmsMenu, switchMenu,
+  isCentralHub, totalInboundTripProblem }) => {
   return (
     <div className={styles.menuPanel}>
       <img src="/img/logo.png" className={styles.menuLogo} />
@@ -85,7 +87,14 @@ const DashboardMenu = ({ activeMenuIdx, handleLogout, toggleCompact, hubID, logg
             <MenuItem active={activeMenuIdx === 2} to={'/trips/inbound'}>
               <img src="/img/icon-inbound-trip.png" className={styles.menuGlyph} />
               <span>Inbound Trip </span>
-              <span className={styles.counterNumber}>{count && count.inboundTrip}</span>
+              <div className={styles['counter-number-problem']}>
+                <div className={styles['number-notif']}>
+                  {count && count.inboundTrip}
+                </div>
+                <div className={styles['problem-notif']}>
+                  <FontAwesome name="exclamation-triangle" /> {totalInboundTripProblem}
+                </div>
+              </div>
             </MenuItem>
             <MenuItem active={activeMenuIdx === 3} to={'/inbound'}>
               <img src="/img/icon-inbound.png" className={styles.menuGlyph} />
@@ -265,6 +274,7 @@ const DashboardContainer = React.createClass({
             tmsMenu={this.state.tmsMenu}
             switchMenu={this.switchMenu}
             isCentralHub={isCentralHub}
+            totalInboundTripProblem={this.props.totalInboundTripProblem}
           />
           <DashboardContent>{this.props.children}</DashboardContent>
         </div>
@@ -277,6 +287,8 @@ function StoreToDashboard(dashboardStore) {
   const userLogged = dashboardStore.app.userLogged;
   const { countOpen, countInProgress, countFinished } = dashboardStore.app.myOrders;
   const { count, countTMS } = dashboardStore.app.dashboard;
+  const { tripProblems } = dashboardStore.app;
+  const { totalInboundTripProblem } = tripProblems;
   let additionalTitle = userLogged.hubName || userLogged.fleetName;
   additionalTitle = additionalTitle
     .toLocaleLowerCase()
@@ -295,6 +307,7 @@ function StoreToDashboard(dashboardStore) {
     },
     count,
     countTMS,
+    totalInboundTripProblem,
   };
 }
 
@@ -306,6 +319,7 @@ function DispatchToProps(dispatch) {
       dispatch(CityService.FetchList());
       dispatch(StateService.FetchList());
       dispatch(TripProblemService.FetchList());
+      dispatch(TripProblemService.fetchTotalInboundTripProblem());
       dispatch(DashboardService.FetchCountTMS());
       dispatch(hubService.fetchList());
       if (hubID) {

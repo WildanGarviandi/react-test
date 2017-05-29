@@ -20,6 +20,16 @@ const Constants = {
   TRIPS_INBOUND_RESET_STATE: 'inbound/trips/resetState',
   TRIPS_INBOUND_SHOW_DETAILS: 'inbound/trips/showDetails',
   TRIPS_INBOUND_HIDE_DETAILS: 'inbound/trips/hideDetails',
+  TRIPS_INBOUND_SET_CURRENT_TRIP: 'inbound/trips/setCurrentTrip',
+  TRIPS_INBOUND_SHOW_RE_ASSIGN_MODAL: 'inbound/trips/showReAssignModal',
+  TRIPS_INBOUND_HIDE_RE_ASSIGN_MODAL: 'inbound/trips/hideReAssignModal',
+  TRIPS_INBOUND_SET_DRIVERS: 'inbound/trips/setDrivers',
+  TRIPS_INBOUND_SET_HUBS: 'inbound/trips/setHubs',
+  TRIPS_INBOUND_SET_FILTER_DRIVER: 'inbound/trips/setFilterDriver',
+  TRIPS_INBOUND_SET_FILTER_HUB: 'inbound/trips/setFilterHub',
+  TRIPS_INBOUND_SET_CURRENT_PAGE_DRIVER: 'inbound/trips/setCurrentPageDriver',
+  TRIPS_INBOUND_SET_LIMIT_DRIVERS: 'inbound/trips/setLimitDrivers',
+  TRIPS_INBOUND_ERASE_FILTER: 'inbound/trips/eraseSFilter',
   TRIPS_INBOUND_SET_DROPDOWN_FILTER: 'inbound/trips/setDropdownFilter',
   TRIPS_INBOUND_ADD_HUB: 'inbound/trips/hub/add',
   TRIPS_INBOUND_DELETE_HUB: 'inbound/trips/hub/delete',
@@ -37,8 +47,20 @@ const initialState = {
   trips: [],
   showDetails: false,
   tripActive: {},
+  showModal: false,
+  showReAssignModal: false,
+  currentTrip: {},
+  drivers: [],
+  totalDrivers: 0,
+  currentPageDrivers: 1,
+  limitDrivers: 25,
+  filterDrivers: {},
+  hubs: [],
+  totalHubs: 0,
+  filterHubs: {},
   hubIDs: [],
   tripProblem: {},
+  pickupCity: {},
 };
 
 export function Reducer(state = initialState, action) {
@@ -82,14 +104,46 @@ export function Reducer(state = initialState, action) {
       return _.assign({}, state, { showDetails: false, tripActive: {} });
     }
 
+    case Constants.TRIPS_INBOUND_SET_CURRENT_TRIP: {
+      return _.assign({}, state, action.payload);
+    }
+
+    case Constants.TRIPS_INBOUND_SHOW_RE_ASSIGN_MODAL: {
+      return _.assign({}, state, { showReAssignModal: true });
+    }
+
+    case Constants.TRIPS_INBOUND_HIDE_RE_ASSIGN_MODAL: {
+      return _.assign({}, state, { showReAssignModal: false });
+    }
+
+    case Constants.TRIPS_INBOUND_SET_DRIVERS: {
+      return _.assign({}, state, action.payload);
+    }
+
+    case Constants.TRIPS_INBOUND_SET_HUBS: {
+      return _.assign({}, state, action.payload);
+    }
+
+    case Constants.TRIPS_INBOUND_SET_FILTER_DRIVER: {
+      return _.assign({}, state, { filterDrivers: action.payload });
+    }
+
+    case Constants.TRIPS_INBOUND_SET_FILTER_HUB: {
+      return _.assign({}, state, { filterHubs: action.payload });
+    }
+
+    case Constants.TRIPS_INBOUND_SET_CURRENT_PAGE_DRIVER: {
+      return _.assign({}, state, action.payload);
+    }
+
+    case Constants.TRIPS_INBOUND_SET_LIMIT_DRIVERS: {
+      return _.assign({}, state, action.payload);
+    }
+
     case Constants.TRIPS_INBOUND_SET_DROPDOWN_FILTER: {
       const { keyword, option } = action.payload;
 
       return _.assign({}, state, { [keyword]: option });
-    }
-
-    case Constants.TRIPS_INBOUND_RESET_STATE: {
-      return initialState;
     }
 
     case Constants.TRIPS_INBOUND_ADD_HUB: {
@@ -109,6 +163,13 @@ export function Reducer(state = initialState, action) {
 
     case Constants.TRIPS_INBOUND_RESET_STATE: {
       return initialState;
+    }
+
+    case Constants.TRIPS_INBOUND_ERASE_FILTER: {
+      return _.assign({}, state, {
+        filterDrivers: {},
+        filterHubs: {},
+      });
     }
 
     default: return state;
@@ -135,7 +196,7 @@ export function FetchList() {
   return (dispatch, getState) => {
     const { inboundTrips, userLogged } = getState().app;
     const { token } = userLogged;
-    const { currentPage, filters, limit, tripProblem, hubIDs } = inboundTrips;
+    const { currentPage, filters, limit, tripProblem, hubIDs, pickupCity } = inboundTrips;
 
     const query = _.assign({}, filters, {
       limit,
@@ -144,6 +205,8 @@ export function FetchList() {
       tripProblemMasterID: (tripProblem.key || '') &&
       (tripProblem.key === 0 ? '' : tripProblem.key),
       hubIDs: hubIDs.join(),
+      pickupCity: (pickupCity.value || '') &&
+      (pickupCity.value === 'All' ? '' : pickupCity.value),
     });
 
     dispatch({
@@ -353,11 +416,213 @@ export function TripDeliver(tripID, reuse) {
       dispatch(HideDetails());
       dispatch(FetchList());
       dispatch(DashboardService.FetchCount());
+
+      return undefined;
     }).catch((e) => {
       const message = (e && e.message) ? e.message : 'Failed to mark trip as delivered';
       dispatch({ type: modalAction.BACKDROP_HIDE });
       dispatch(ModalActions.addMessage(message));
     });
+  };
+}
+
+export function FetchDrivers() {
+  return (dispatch, getState) => {
+    const { inboundTrips, userLogged } = getState().app;
+    const { token } = userLogged;
+    const { currentPageDrivers, filterDrivers, limitDrivers } = inboundTrips;
+
+    const query = _.assign({}, filterDrivers, {
+      limit: limitDrivers,
+      offset: (currentPageDrivers - 1) * limitDrivers,
+    });
+
+    FetchGet('/driver', token, query).then((response) => {
+      if (!response.ok) {
+        return response.json().then(({ error }) => {
+          throw error;
+        });
+      }
+
+      return response.json().then(({ data }) => {
+        dispatch({
+          type: Constants.TRIPS_INBOUND_SET_DRIVERS,
+          payload: {
+            drivers: data.rows,
+            totalDrivers: data.count,
+          },
+        });
+      });
+    }).catch((e) => {
+      dispatch(ModalActions.addMessage(e.message));
+    });
+  };
+}
+
+export function SetCurrentTrip(trip) {
+  return (dispatch) => {
+    dispatch({
+      type: Constants.TRIPS_INBOUND_SET_CURRENT_TRIP,
+      payload: {
+        currentTrip: trip,
+      },
+    });
+  };
+}
+
+export function ShowReAssignModal() {
+  return (dispatch) => {
+    dispatch({ type: Constants.TRIPS_INBOUND_SHOW_RE_ASSIGN_MODAL });
+  };
+}
+
+export function HideReAssignModal() {
+  return (dispatch) => {
+    dispatch({ type: Constants.TRIPS_INBOUND_HIDE_RE_ASSIGN_MODAL });
+  };
+}
+
+export function SetFilterHub(payload) {
+  return (dispatch) => {
+    dispatch({ type: Constants.TRIPS_INBOUND_SET_FILTER_HUB, payload });
+  };
+}
+
+export function FetchHubs() {
+  return (dispatch, getState) => {
+    const { userLogged, inboundTrips } = getState().app;
+    const { filterHubs } = inboundTrips;
+    const { token } = userLogged;
+
+    FetchGet('/local', token, {}, true).then((response) => {
+      if (!response.ok) {
+        return response.json().then(({ error }) => {
+          throw error;
+        });
+      }
+
+      return response.json().then(({ data }) => {
+        let res = {};
+        if (filterHubs.name) {
+          const filtered = [];
+          _.filter(data.rows, (hub) => {
+            if (_.includes(hub.Name.toLowerCase(), filterHubs.name.toLowerCase())) {
+              filtered.push(hub);
+            }
+          });
+          res = {
+            count: filtered.length,
+            rows: filtered,
+          };
+        } else {
+          res = data;
+        }
+
+        dispatch({
+          type: Constants.TRIPS_INBOUND_SET_HUBS,
+          payload: {
+            totalHubs: res.count,
+            hubs: res.rows,
+          },
+        });
+      });
+    }).catch((e) => {
+      dispatch(ModalActions.addMessage(e.message));
+    });
+  };
+}
+
+export function SetFilterDriver(payload) {
+  return (dispatch) => {
+    dispatch({ type: Constants.TRIPS_INBOUND_SET_FILTER_DRIVER, payload });
+  };
+}
+
+export function AssignDriver(tripID, driverID) {
+  return (dispatch, getState) => {
+    const { userLogged } = getState().app;
+    const { token } = userLogged;
+
+    const body = {
+      DriverID: driverID,
+    };
+
+    dispatch({ type: modalAction.BACKDROP_SHOW });
+    FetchPost(`/trip/${tripID}/driver`, token, body).then((response) => {
+      if (!response.ok) {
+        return response.json().then(({ error }) => {
+          throw error;
+        });
+      }
+
+      return response.json().then(() => {
+        dispatch(ModalActions.addMessage('Assign driver success'));
+        dispatch(FetchList());
+        dispatch({ type: modalAction.BACKDROP_HIDE });
+        dispatch(HideReAssignModal());
+      });
+    }).catch((e) => {
+      const message = (e && e.message) ? e.message : 'Failed to set driver';
+      dispatch({ type: modalAction.BACKDROP_HIDE });
+      dispatch(ModalActions.addMessage(message));
+    });
+  };
+}
+
+export function AssignHub(tripID, hubID) {
+  return (dispatch, getState) => {
+    const { userLogged } = getState().app;
+    const { token } = userLogged;
+
+    const body = {
+      hubID,
+    };
+
+    dispatch({ type: modalAction.BACKDROP_SHOW });
+    FetchPost(`/trip/${tripID}/transfer`, token, body, true).then((response) => {
+      if (!response.ok) {
+        return response.json().then(({ error }) => {
+          throw error;
+        });
+      }
+
+      return response.json().then(() => {
+        dispatch(ModalActions.addMessage('Assign hub success'));
+        dispatch(FetchList());
+        dispatch({ type: modalAction.BACKDROP_HIDE });
+        dispatch(HideReAssignModal());
+      });
+    }).catch((e) => {
+      const message = (e && e.message) ? e.message : 'Failed to assign hub';
+      dispatch({ type: modalAction.BACKDROP_HIDE });
+      dispatch(ModalActions.addMessage(message));
+    });
+  };
+}
+
+export function SetCurrentPageDrivers(currentPageDrivers) {
+  return (dispatch) => {
+    dispatch({
+      type: Constants.TRIPS_INBOUND_SET_CURRENT_PAGE_DRIVER,
+      payload: { currentPageDrivers },
+    });
+    dispatch(FetchDrivers());
+  };
+}
+
+export function setLimitDrivers(limitDrivers) {
+  return (dispatch) => {
+    dispatch({
+      type: Constants.TRIPS_INBOUND_SET_LIMIT_DRIVERS,
+      payload: { limitDrivers },
+    });
+    dispatch(SetCurrentPageDrivers(1));
+  };
+}
+
+export function eraseFilter() {
+  return (dispatch) => {
+    dispatch({ type: Constants.TRIPS_INBOUND_ERASE_FILTER });
   };
 }
 
