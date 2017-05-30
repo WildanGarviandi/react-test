@@ -481,7 +481,12 @@ function dropdownStateToProps(keyword, title) {
     }
 
     if (keyword === 'hubs') {
-      options = _.chain(hubs.list)
+      options = [{
+        key: 0,
+        value: 'All',
+        checked: false,
+      }];
+      const hubList = _.chain(hubs.list)
         .map(hub => ({
           key: hub.HubID,
           value: `Hub ${hub.Name}`,
@@ -489,6 +494,7 @@ function dropdownStateToProps(keyword, title) {
         }))
         .sortBy(arr => arr.key)
         .value();
+      options = [...options, ...hubList];
 
       if (inboundTrips && inboundTrips.hubIDs &&
         inboundTrips.hubIDs.length > 0) {
@@ -522,8 +528,14 @@ function multiDropdownDispatchToProps() {
   return (dispatch) => {
     const action = {
       handleSelect: (selectedOption) => {
-        dispatch(selectedOption.checked ? InboundTrips.addHubFilter(selectedOption) :
-          InboundTrips.deleteHubFilter(selectedOption));
+        if (selectedOption) {
+          dispatch(selectedOption.checked ? InboundTrips.addHubFilter(selectedOption) :
+            InboundTrips.deleteHubFilter(selectedOption));
+        }
+        dispatch(InboundTrips.FetchList());
+      },
+      handleSelectAll: (options) => {
+        dispatch(InboundTrips.setAllHubFilter(options));
         dispatch(InboundTrips.FetchList());
       },
     };

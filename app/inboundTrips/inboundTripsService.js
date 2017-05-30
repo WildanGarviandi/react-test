@@ -33,6 +33,7 @@ const Constants = {
   TRIPS_INBOUND_SET_DROPDOWN_FILTER: 'inbound/trips/setDropdownFilter',
   TRIPS_INBOUND_ADD_HUB: 'inbound/trips/hub/add',
   TRIPS_INBOUND_DELETE_HUB: 'inbound/trips/hub/delete',
+  TRIPS_INBOUND_ALL_HUB: 'inbound/trips/hub/all',
 };
 
 const initialState = {
@@ -161,6 +162,13 @@ export function Reducer(state = initialState, action) {
       });
     }
 
+    case Constants.TRIPS_INBOUND_ALL_HUB: {
+      const hubIDs = _.map(action.payload.hubs, hub => hub.key);
+      return Object.assign({}, state, {
+        hubIDs,
+      });
+    }
+
     case Constants.TRIPS_INBOUND_RESET_STATE: {
       return initialState;
     }
@@ -204,7 +212,7 @@ export function FetchList() {
       offset: (currentPage - 1) * limit,
       tripProblemMasterID: (tripProblem.key || '') &&
       (tripProblem.key === 0 ? '' : tripProblem.key),
-      hubIDs: hubIDs.join(),
+      hubIDs: _.filter(hubIDs, hubID => hubID > 0).join(),
       pickupCity: (pickupCity.value || '') &&
       (pickupCity.value === 'All' ? '' : pickupCity.value),
     });
@@ -640,6 +648,16 @@ export function deleteHubFilter(hub) {
     type: Constants.TRIPS_INBOUND_DELETE_HUB,
     payload: {
       hub,
+    },
+  };
+}
+
+export function setAllHubFilter(hubOptions) {
+  const hubs = _.filter(hubOptions, ['checked', true]);
+  return {
+    type: Constants.TRIPS_INBOUND_ALL_HUB,
+    payload: {
+      hubs,
     },
   };
 }

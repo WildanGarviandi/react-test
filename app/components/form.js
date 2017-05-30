@@ -681,6 +681,19 @@ const FilterTop = React.createClass({
 });
 
 const FilterTopMultiple = React.createClass({
+  handleSelect(selectedOption) {
+    if (selectedOption.value === 'All') {
+      const options = this.props.options.map((option) => {
+        const data = Object.assign({}, option, {
+          checked: selectedOption.checked,
+        });
+        return data;
+      });
+      this.props.handleSelectAll(options);
+      return;
+    }
+    this.props.handleSelect(selectedOption);
+  },
   render() {
     const isMultiple = true;
 
@@ -691,7 +704,7 @@ const FilterTopMultiple = React.createClass({
           <DropdownWithState2
             val={this.props.value}
             options={this.props.options}
-            handleSelect={this.props.handleSelect}
+            handleSelect={this.handleSelect}
             isMultiple={isMultiple}
           />
         </div>
