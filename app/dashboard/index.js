@@ -15,7 +15,7 @@ import * as CityService from '../cities/cityService';
 import * as DashboardService from './dashboardService';
 import * as FleetService from '../nearbyFleets/nearbyFleetService';
 import * as TripProblemService from '../tripProblems/tripProblemsService';
-import {Glyph} from '../views/base';
+import { Glyph } from '../views/base';
 import Accordion from '../views/base/accordion';
 import styles from './styles.css';
 import config from '../../config.json';
@@ -225,12 +225,15 @@ function GetActiveMenuIdx(path) {
 
 const DashboardContainer = React.createClass({
   contextTypes: {
-    router: React.PropTypes.object.isRequired
+    router: React.PropTypes.object.isRequired,
   },
   getInitialState() {
     return { isCompact: false, tmsMenu: this.props.hubID };
   },
   componentWillMount() {
+    if (this.props.userLogged.roleName === configValues.role.SUPERHUB) {
+      this.props.getHubs();
+    }
     this.props.initialLoad(this.props.userLogged.hubID);
     if (menuPathsTMS.indexOf(this.props.location.pathname) > -1) {
       this.setState({ tmsMenu: true });
@@ -318,36 +321,38 @@ function DispatchToProps(dispatch) {
       dispatch(ContactService.FetchList());
       dispatch(CityService.FetchList());
       dispatch(StateService.FetchList());
-      dispatch(TripProblemService.FetchList());
-      dispatch(TripProblemService.fetchTotalInboundTripProblem());
       dispatch(DashboardService.FetchCountTMS());
-      dispatch(hubService.fetchList());
       if (hubID) {
         dispatch(DashboardService.FetchCount());
         dispatch(FleetService.FetchList());
+        dispatch(TripProblemService.FetchList());
+        dispatch(TripProblemService.fetchTotalInboundTripProblem());
       }
     },
-    logout: function () {
+    logout: () => {
       clearInterval(interval);
       dispatch(LogoutAction.logout());
     },
-    checkAuth: function () {
-      checkAuth(store).then(function (result) {
+    checkAuth: () => {
+      checkAuth(store).then((result) => {
         if (!result.ok) {
           dispatch(ModalActions.addMessage('Your session has been expired. Please login again.'));
           clearInterval(interval);
           dispatch(push('/login'));
         }
-      })
+      });
     },
-    switchMenu: function (tmsMenu) {
+    switchMenu: (tmsMenu) => {
       if (tmsMenu) {
         dispatch(push(configValues.defaultMainPageTMS));
       } else {
         dispatch(push(configValues.defaultMainPage));
       }
-    }
-  }
+    },
+    getHubs: () => {
+      dispatch(hubService.fetchList());
+    },
+  };
 }
 
 export default connect(StoreToDashboard, DispatchToProps)(DashboardContainer);
