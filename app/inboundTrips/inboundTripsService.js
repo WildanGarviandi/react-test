@@ -148,7 +148,8 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.TRIPS_INBOUND_ADD_HUB: {
-      const hubIDs = state.hubIDs.concat([action.payload.hub.key]);
+      const hubIDs = _.cloneDeep(state.hubIDs);
+      hubIDs.push(action.payload.hub.key);
       return Object.assign({}, state, {
         hubIDs,
       });
@@ -301,7 +302,7 @@ export function SetLimit(limit) {
 export function GoToContainer(containerNumber) {
   return (dispatch, getState) => {
     const { userLogged } = getState().app;
-    const { hubID, token } = userLogged;
+    const { token } = userLogged;
 
     const query = {
       containerNumber,
@@ -338,7 +339,7 @@ export function ResetState() {
 export function GoToTrip(tripID) {
   return (dispatch, getState) => {
     const { userLogged } = getState().app;
-    const { hubID, token } = userLogged;
+    const { token } = userLogged;
 
     const query = {
       tripID: tripID.split('-')[1],

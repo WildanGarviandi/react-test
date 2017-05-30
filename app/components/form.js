@@ -188,7 +188,7 @@ const Dropdown = React.createClass({
 });
 
 const Options2 = React.createClass({
-  handleClick() {
+  handleChange() {
     if (this.props && this.props.isMultiple) {
       this.props.option.checked = !this.props.option.checked;
     }
@@ -206,7 +206,7 @@ const Options2 = React.createClass({
         role="option"
         aria-selected="false"
         className={optionsClass}
-        onClick={this.handleClick}
+        onClick={this.handleChange}
         onMouseEnter={this.handleEnter}
       >
         <div
@@ -221,7 +221,7 @@ const Options2 = React.createClass({
             <input
               type="checkbox"
               checked={option.checked}
-              onClick={this.handleClick}
+              onChange={this.handleChange}
               className={styles['check-multi']}
             />
           }

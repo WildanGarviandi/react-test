@@ -136,17 +136,18 @@ function getStoreFilterDropdown(name, title) {
         .sortBy(arr => arr.key)
         .value();
 
+      hubOptions = [...hubOptions, ...options];
+
       if (pickupOrdersReady && pickupOrdersReady.hubIDs &&
         pickupOrdersReady.hubIDs.length > 0) {
         const ids = pickupOrdersReady.hubIDs;
-        options = options.map((hub) => {
+        hubOptions = hubOptions.map((hub) => {
           const data = Object.assign({}, hub, {
             checked: _.some(ids, id => id === hub.key),
           });
           return data;
         });
       }
-      hubOptions = [...hubOptions, ...options];
     }
 
     const options = {
@@ -187,6 +188,11 @@ function dispatchFilterMultiDropdown(filterKeyword) {
           PickupOrdersReady.deleteHubFilter(selectedOption));
         const SetFn = PickupOrdersReady.SetDropDownFilter(filterKeyword);
         dispatch(SetFn(selectedOption));
+      },
+      handleSelectAll: (options) => {
+        dispatch(PickupOrdersReady.setAllHubFilter(options));
+        const SetFn = PickupOrdersReady.SetDropDownFilter(filterKeyword);
+        dispatch(SetFn());
       },
     };
     return action;
