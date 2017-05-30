@@ -225,7 +225,7 @@ function GetActiveMenuIdx(path) {
 
 const DashboardContainer = React.createClass({
   contextTypes: {
-    router: React.PropTypes.object.isRequired
+    router: React.PropTypes.object.isRequired,
   },
   getInitialState() {
     return { isCompact: false, tmsMenu: this.props.hubID };
