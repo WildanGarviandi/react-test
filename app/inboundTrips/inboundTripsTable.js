@@ -361,14 +361,16 @@ function VerifiedOrder({ routes }) {
 
 function InputFilter({ value, onChange, onKeyDown, placeholder }) {
   return (
-    <input
-      className={styles.inputSearch}
-      placeholder={placeholder}
-      type="text"
-      value={value}
-      onChange={onChange}
-      onKeyDown={onKeyDown}
-    />
+    <div className={styles['table-cell']}>
+      <input
+        className={styles.inputSearch}
+        placeholder={placeholder}
+        type="text"
+        value={value}
+        onChange={onChange}
+        onKeyDown={onKeyDown}
+      />
+    </div>
   );
 }
 
@@ -549,6 +551,11 @@ const ChildMerchantSearch = connect(
   inputDispatchToProps('webstoreUserName', 'Search "Child Merchant Name"....'),
 )(InputFilter);
 
+const DriverSearch = connect(
+  inputStateToProps('driverName'),
+  inputDispatchToProps('driverName', 'Search "Driver name"....'),
+)(InputFilter);
+
 const HubDropdown = connect(
   dropdownStateToProps('hubs', 'Filter by Hubs (can be multiple)'),
   multiDropdownDispatchToProps('hubIDs'),
@@ -567,6 +574,7 @@ export class Filter extends Component {
           <TripIDSearch />
           {/* Next Release */}
           {/* <OriginSearch /> */}
+          <DriverSearch />
           <ChildMerchantSearch />
           <ZipCodeSearch />
         </div>
@@ -746,14 +754,6 @@ class TableStateful extends Component {
     );
   }
 }
-
-TableStateful.propTypes = {
-  resetFilter: PropTypes.func.isRequired,
-};
-
-TableStateful.propTypes = {
-  resetFilter: () => { },
-};
 
 function StateToProps(state) {
   const { inboundTrips, driversStore, userLogged } = state.app;
