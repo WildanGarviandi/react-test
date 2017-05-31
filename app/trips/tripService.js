@@ -414,7 +414,7 @@ export function ExportTrip() {
     }
 
     var output ='<p style="text-align: center">'+
-                '<img src="../img/loading.gif" style="width:100px; height:100px;" />'+
+                '<img src="../../img/loading.gif" style="width:100px; height:100px;" />'+
                 '<br />'+
                 'You can do other things, while exporting in progress'+
                 '</p>';

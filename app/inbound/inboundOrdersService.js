@@ -312,7 +312,6 @@ export function BulkMarkReceived (scannedIDs) {
       }
 
       response.json().then(({data}) => {
-        console.log(data)
 
         let failedIds = [];
         if (data.failedIds.length > 0) {

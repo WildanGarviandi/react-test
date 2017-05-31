@@ -322,6 +322,69 @@ export default function Reducer(store = initialStore, action) {
       });
     }
 
+    case Constants.HIDE_ATTEMPT_MODAL: {
+      return Object.assign({}, store, {
+        modal: {addAttempt: false}
+      });
+    }
+
+    case Constants.SET_CURRENT_PAGE: {
+      const newCurrPage = {
+        currentPage: {}
+      };
+      newCurrPage.currentPage[action.tab] = action.currentPage;
+
+      return _.merge({}, store, newCurrPage);
+    }
+
+    case Constants.SET_LIMIT: {
+      const newLimit = {
+        limit: {}
+      };
+      newLimit.limit[action.tab] = action.limit;
+
+      return _.merge({}, store, newLimit);
+    }
+
+    case Constants.SET_DROPDOWN_FILTER: {
+      const {keyword, tab, option} = action;
+      let newValue = {
+        [keyword]: Object.assign({}, store[keyword]),
+        filters: store.filters
+      };
+      let newFilters = newValue.filters;
+      newValue[keyword][tab] = option.value;
+
+      if (keyword === "sortOptions") {
+        const sortOptions = [{
+            sortBy: "Driver.FirstName", sortCriteria: 'ASC'
+          }, {
+            sortBy: "Driver.FirstName", sortCriteria: 'DESC'
+          }, {
+            sortBy: "DropoffAddress.City", sortCriteria: 'ASC'
+          }, {
+            sortBy: "DropoffAddress.City", sortCriteria: 'DESC'
+          }];
+        newFilters[tab] = sortOptions[option.key];
+      } else if (keyword === "statusOptions") {
+        newFilters[tab].statuses = `[${option.key}]`;
+        (option.key < 0) && delete newFilters[tab].statuses;
+      } else {
+        newFilters[tab].isTrunkeyOrder = option.key;
+        isNaN(option.key) && delete newFilters[tab].isTrunkeyOrder;
+      }
+
+      return Object.assign({}, store, newValue);
+    }
+
+    case Constants.SET_FILTER: {
+      return _.merge({}, store, action.newFilter);
+    }
+
+    case Constants.SET_DATE: {
+      return _.merge({}, store, action.newDate);
+    }
+    
     case Constants.SHOW_UPDATE_COD: {
       return Object.assign({}, store, {
         showUpdateCOD: true
@@ -353,6 +416,12 @@ export default function Reducer(store = initialStore, action) {
           successReport: 0,
           errorReport: 0
         }
+      });
+    }
+
+    case Constants.SET_SUCCEED_ATTEMPT: {
+      return _.merge({}, store, {
+        succeedAttempt: action.value
       });
     }
 
