@@ -1,6 +1,6 @@
 {
   "name": "etobee-hub",
-  "version": "0.24.6",
+  "version": "2.5",
   "description": "Etobee Hub Management",
   "scripts": {
     "dev": "node server-dev.js",
