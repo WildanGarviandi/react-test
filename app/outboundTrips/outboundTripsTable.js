@@ -7,7 +7,7 @@ import * as OutboundTrips from './outboundTripsService';
 import {Input, Pagination} from '../views/base';
 import {DropdownWithState2} from '../views/base/dropdown';
 import tableStyles from '../views/base/table.css';
-import styles from './styles.css';
+import styles from './styles.scss';
 import {Glyph} from '../views/base/glyph';
 import StatusDropdown from '../views/base/statusDropdown';
 import {Interval} from './outboundTripsModal';

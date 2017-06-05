@@ -6,7 +6,7 @@ import {ButtonWithLoading} from '../components/button';
 import * as Form from '../components/form';
 import * as OrderService from './orderService';
 import * as ContactService from '../contacts/contactService';
-import styles from './styles.css';
+import styles from './styles.scss';
 import configValues from '../config/configValues.json';
 import DateTime from 'react-datetime';
 import moment from 'moment';

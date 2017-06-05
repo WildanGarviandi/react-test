@@ -4,7 +4,7 @@ import DateTime from 'react-datetime';
 import {connect} from 'react-redux';
 import moment from 'moment';
 import * as Table from '../components/table';
-import styles from './table.css';
+import styles from './table.scss';
 import * as OrderService from './orderService';
 import OrderStatusSelector from '../modules/orderStatus/selector';
 import {Glyph} from '../views/base';

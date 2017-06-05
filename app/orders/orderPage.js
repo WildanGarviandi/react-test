@@ -8,7 +8,7 @@ import * as Form from '../components/form';
 import Table, {Filter, Deadline} from './orderTable';
 import * as OrderService from './orderService';
 import driversFetch from '../modules/drivers/actions/driversFetch';
-import styles from './styles.css';
+import styles from './styles.scss';
 import stylesButton from '../components/button.scss';
 import * as UtilHelper from '../helper/utility';
 import NumberFormat from 'react-number-format';
