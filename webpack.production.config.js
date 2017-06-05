@@ -29,6 +29,20 @@ module.exports = {
         })
       },
       {
+        test: /\.scss$/,
+        use: ExtractTextPlugin.extract({
+          use: [{
+            loader: 'css-loader',
+            query: {
+              modules: true
+            }
+          }, {
+            loader: 'sass-loader',
+          }],
+          fallback: 'style-loader',
+        })
+      },
+      {
         test: /\.(jpe?g|png|gif|svg)$/i,
         use: [
           'file-loader?hash=sha512&digest=hex&name=[hash].[ext]',

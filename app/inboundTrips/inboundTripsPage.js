@@ -6,7 +6,7 @@ import { Input, Page } from '../views/base';
 import * as InboundTrips from './inboundTripsService';
 import InboundTable, { Filter } from './inboundTripsTable';
 import FleetsFetch from '../modules/drivers/actions/fleetsFetch';
-import styles from './styles.css';
+import styles from './styles.scss';
 import formStyles from '../components/form.css';
 import InboundTripsModal from './inboundTripsModal';
 

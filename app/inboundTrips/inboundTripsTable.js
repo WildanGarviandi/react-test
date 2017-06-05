@@ -13,7 +13,7 @@ import { Pagination } from '../views/base';
 import tableStyles from '../views/base/table.css';
 import { formatDate } from '../helper/time';
 import ModalActions from '../modules/modals/actions';
-import styles from './styles.css';
+import styles from './styles.scss';
 import { CanMarkContainer, TripParser, CanMarkTripDelivered } from '../modules/trips';
 import { OrderParser } from '../modules/orders';
 import { FilterText, FilterTopMultiple } from '../components/form';

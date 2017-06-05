@@ -20,7 +20,7 @@ import { OrderParser } from '../modules/orders';
 import { formatDate } from '../helper/time';
 import { modalAction } from '../modules/modals/constants';
 import stylesModal from '../views/base/modal.css';
-import styles from '../inboundTrips/styles.css';
+import styles from '../inboundTrips/styles.scss';
 import BodyRow, { CheckBoxCell, LinkCell, TextCell, OrderIDLinkCell, ButtonCell, IDCell } from '../views/base/cells';
 import { CheckboxHeader, CheckboxCell } from '../views/base/tableCell';
 import { FilterTop, FilterText } from '../components/form';

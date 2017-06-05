@@ -37,6 +37,22 @@ module.exports = {
           }])
       },
       {
+        test: /\.scss$/,
+        use: [
+          {
+            loader: 'style-loader',
+          }, {
+            loader: 'css-loader',
+            query: {
+              modules: true,
+              localIdentName: '[name]__[local]--[hash:base64:5]',
+            }
+          }, {
+            loader: 'sass-loader',
+          }
+        ]
+      },
+      {
         test: /\.jpg$/,
         loader: "file-loader"
       },
