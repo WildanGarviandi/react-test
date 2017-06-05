@@ -2,11 +2,33 @@ import React from 'react';  // eslint-disable-line
 import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
 
 import { LoginAction } from '../../modules/';
 import store from '../../store';
 import config from '../../config/configValues.json';
 import Login from './Login';
+
+const mapStateToProps = (state) => {
+  const { isFetching, isValid, message, token } = state.app.userLogged;
+
+  return {
+    loginState: {
+      isFetching,
+      isError: (!isFetching && !isValid),
+      message,
+    },
+    token,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  const dispatchData = {
+    login: bindActionCreators(LoginAction.login, dispatch),
+  };
+
+  return dispatchData;
+};
 
 class LoginPage extends React.Component {
   constructor(props) {
@@ -65,29 +87,6 @@ LoginPage.defaultProps = {
   hubID: null,
   login: null,
   loginState: null,
-};
-
-const mapStateToProps = (state) => {
-  const { isFetching, isValid, message, token } = state.app.userLogged;
-
-  return {
-    loginState: {
-      isFetching,
-      isError: (!isFetching && !isValid),
-      message,
-    },
-    token,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  const dispatchData = {
-    login: (email, pass) => {
-      dispatch(LoginAction.login(email, pass));
-    },
-  };
-
-  return dispatchData;
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);
