@@ -5,7 +5,7 @@ import {Page} from '../components/page';
 import {ButtonWithLoading} from '../components/button';
 import * as Form from '../components/form';
 import * as ContactService from './contactService';
-import styles from './styles.css';
+import styles from './styles.scss';
 import configValues from '../config/configValues.json';
 import configEnv from '../../config.json';
 import DateTime from 'react-datetime';

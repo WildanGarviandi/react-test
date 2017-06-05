@@ -7,7 +7,7 @@ import {Pagination} from '../components/pagination';
 import {ButtonWithLoading} from '../components/button';
 import Table from './contactTable';
 import * as ContactService from './contactService';
-import styles from './styles.css';
+import styles from './styles.scss';
 import stylesButton from '../components/button.scss';
 
 const ContactPage = React.createClass({
