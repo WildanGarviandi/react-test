@@ -9,7 +9,7 @@ import * as InboundOrders from './inboundOrdersService';
 import {formatDate, formatDateHourOnly} from '../helper/time';
 import {CheckboxCell} from '../views/base/tableCell';
 import styles from '../views/base/table.css';
-import inboundStyles from './styles.css';
+import inboundStyles from './styles.scss';
 import ReactInterval from 'react-interval';
 import moment from 'moment';
 import config from '../config/configValues.json';
