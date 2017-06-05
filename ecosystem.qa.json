@@ -1,0 +1,23 @@
+{
+  "apps" : [
+    {
+      "name"      : "Hub QA",
+      "script"    : "server.js",
+      "env_production" : {
+        "NODE_ENV": "production"
+      },
+      "max_memory_restart" : "300M"
+    }
+  ],
+
+  "deploy" : {
+    "qa" : {
+      "user" : "ubuntu",
+      "host": "qa.hub.etobee.com",
+      "ref"  : "origin/qa",
+      "repo" : "git@gitlab.com:etobee-techgroup/etobee-hub.git",
+      "path" : "/home/ubuntu/hub-qa",
+      "post-deploy" : "yarn; npm run build; pm2 startOrRestart ecosystem.qa.json --env production"
+    }
+  }
+}
