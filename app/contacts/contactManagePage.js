@@ -12,7 +12,7 @@ import DateTime from 'react-datetime';
 import moment from 'moment';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import {Link} from 'react-router';
-import stylesButton from '../components/button.css';
+import stylesButton from '../components/button.scss';
 
 const InputRow = React.createClass({
   render() {

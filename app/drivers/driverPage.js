@@ -8,7 +8,7 @@ import {Pagination3} from '../components/pagination3';
 import {ButtonWithLoading} from '../components/button';
 import * as DriverService from './driverService';
 import styles from './styles.css';
-import stylesButton from '../components/button.css';
+import stylesButton from '../components/button.scss';
 import config from '../config/configValues.json';
 import Countdown from 'react-cntdwn';
 import NumberFormat from 'react-number-format';

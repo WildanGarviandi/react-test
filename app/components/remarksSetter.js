@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import {ButtonBase, ButtonWithLoading} from '../views/base';
 import { TextareaWithDefault } from './form';
 
-import styles from './remarksSetter.css';
+import styles from './remarksSetter.scss';
 import * as TripDetails from '../tripDetails/tripDetailsService';
 
 const RemarksSetter = React.createClass({

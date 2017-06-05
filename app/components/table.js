@@ -1,7 +1,7 @@
 import lodash from 'lodash';
 import React from 'react';
 import DateTime from 'react-datetime';
-import styles from './table.css';
+import styles from './table.scss';
 import {Glyph, CheckBox} from '../views/base';
 import {DropdownWithState2} from '../views/base/dropdown';
 import StatusDropdown from '../views/base/statusDropdown';

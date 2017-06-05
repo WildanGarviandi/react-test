@@ -13,7 +13,7 @@ import {ButtonBase} from '../views/base';
 import {CheckboxHeader2 as CheckboxHeaderBase, CheckboxCell} from '../views/base/tableCell';
 import {FilterTop, FilterTop2, FilterText} from '../components/form';
 import NumberFormat from 'react-number-format';
-import stylesButton from '../components/button.css';
+import stylesButton from '../components/button.scss';
 import {ButtonWithLoading} from '../components/button';
 import config from '../config/configValues.json';
 import Countdown from 'react-cntdwn';

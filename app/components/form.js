@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import * as _ from 'lodash';
 import ReactDOM from 'react-dom';
-import styles from './form.css';
+import styles from './form.scss';
 import { Glyph } from '../views/base/glyph';
 import { ButtonBase } from './button';
 import classNaming from 'classnames';

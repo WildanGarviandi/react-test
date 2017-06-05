@@ -7,7 +7,7 @@ import * as InboundTrips from '../inboundTrips/inboundTripsService';
 import PerformanceTable from './performanceTable';
 import FleetsFetch from '../modules/drivers/actions/fleetsFetch';
 import styles from './styles.css';
-import formStyles from '../components/form.css';
+import formStyles from '../components/form.scss';
 import {push} from 'react-router-redux';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import moment from 'moment';
