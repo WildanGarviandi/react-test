@@ -7,7 +7,7 @@ import {Page} from '../components/page';
 import {Pagination3} from '../components/pagination3';
 import {ButtonWithLoading} from '../components/button';
 import * as DriverService from './driverService';
-import styles from './styles.css';
+import styles from './styles.scss';
 import stylesButton from '../components/button.scss';
 import config from '../config/configValues.json';
 import Countdown from 'react-cntdwn';
