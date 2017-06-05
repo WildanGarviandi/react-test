@@ -114,7 +114,11 @@ function getStoreFilterDropdown(name, title) {
       key: 2, value: 'Order',
     }];
 
-    let hubOptions = [];
+    let hubOptions = [{
+      key: 0,
+      value: 'All',
+      checked: false,
+    }];
 
     cityOptions = cityOptions.concat(_.chain(cityList)
       .map((key, val) => ({ key, value: val }))
@@ -122,7 +126,8 @@ function getStoreFilterDropdown(name, title) {
       .value());
 
     if (hubs && hubs.list) {
-      hubOptions = _.chain(hubs.list)
+      let options = [];
+      options = _.chain(hubs.list)
         .map(hub => ({
           key: hub.HubID,
           value: `Hub ${hub.Name}`,
@@ -130,6 +135,8 @@ function getStoreFilterDropdown(name, title) {
         }))
         .sortBy(arr => arr.key)
         .value();
+
+      hubOptions = [...hubOptions, ...options];
 
       if (pickupOrdersReady && pickupOrdersReady.hubIDs &&
         pickupOrdersReady.hubIDs.length > 0) {
@@ -181,6 +188,11 @@ function dispatchFilterMultiDropdown(filterKeyword) {
           PickupOrdersReady.deleteHubFilter(selectedOption));
         const SetFn = PickupOrdersReady.SetDropDownFilter(filterKeyword);
         dispatch(SetFn(selectedOption));
+      },
+      handleSelectAll: (options) => {
+        dispatch(PickupOrdersReady.setAllHubFilter(options));
+        const SetFn = PickupOrdersReady.SetDropDownFilter(filterKeyword);
+        dispatch(SetFn());
       },
     };
     return action;
