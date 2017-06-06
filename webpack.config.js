@@ -23,20 +23,6 @@ module.exports = {
         loader: 'babel-loader'
       },
       {
-        test: /\.css$/,
-        exclude: /node_modules/,
-        loader: combineLoaders([
-          {
-            loader: 'style-loader'
-          }, {
-            loader: 'css-loader',
-            query: {
-              modules: true,
-              localIdentName: '[name]__[local]--[hash:base64:5]',
-            }
-          }])
-      },
-      {
         test: /\.scss$/,
         use: [
           {
