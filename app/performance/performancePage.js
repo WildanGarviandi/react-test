@@ -6,7 +6,7 @@ import * as Performance from './performanceService';
 import * as InboundTrips from '../inboundTrips/inboundTripsService';
 import PerformanceTable from './performanceTable';
 import FleetsFetch from '../modules/drivers/actions/fleetsFetch';
-import styles from './styles.css';
+import styles from './styles.scss';
 import formStyles from '../components/form.scss';
 import {push} from 'react-router-redux';
 import DateRangePicker from 'react-bootstrap-daterangepicker';

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { ButtonBase, DropdownTypeAhead, Input, Rows } from '../views/base';
 import { orderRemove, orderToggleAll, orderToggle } from './tripDetailsAction';
 import tableStyles from '../views/base/table.css';
-import styles from './styles.css';
+import styles from './styles.scss';
 import classNaming from 'classnames';
 import * as TripDetails from './tripDetailsService';
 import { FormattedNumber } from 'react-intl';
