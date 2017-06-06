@@ -137,5 +137,6 @@
       "RADIO_OFF": "/img/icon-radio-off.png",
       "MOTORCYCLE": "/img/icon-vehicle-motorcycle.png",
       "VAN": "/img/icon-vehicle-van.png"
-    }
+    },
+    "assignCentralHub": false
 }

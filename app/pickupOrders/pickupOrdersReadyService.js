@@ -9,6 +9,7 @@ import { modalAction } from '../modules/modals/constants';
 import { TripParser } from '../modules/trips';
 import * as NearbyFleets from '../nearbyFleets/nearbyFleetService';
 import * as DashboardService from '../dashboard/dashboardService';
+import * as config from '../config/configValues.json';
 
 const Constants = {
   BASE_ORDERS_PICKUP_READY: 'pickupReady/defaultSet/',
@@ -523,41 +524,43 @@ export function fetchHubs() {
     const { filterHubs } = pickupOrdersReady;
     const { token } = userLogged;
 
-    FetchGet('/local', token, {}, true).then((response) => {
-      if (!response.ok) {
-        return response.json().then(({ error }) => {
-          throw error;
-        });
-      }
-
-      return response.json().then(({ data }) => {
-        let res = {};
-        if (filterHubs.name) {
-          const filtered = [];
-          _.filter(data.rows, (hub) => {
-            if (_.includes(hub.Name.toLowerCase(), filterHubs.name.toLowerCase())) {
-              filtered.push(hub);
-            }
+    if (config.assignCentralHub || !userLogged.isCentralHub) {
+      FetchGet('/local', token, {}, true).then((response) => {
+        if (!response.ok) {
+          return response.json().then(({ error }) => {
+            throw error;
           });
-          res = {
-            count: filtered.length,
-            rows: filtered,
-          };
-        } else {
-          res = data;
         }
 
-        dispatch({
-          type: Constants.ORDERS_PICKUP_READY_SET_HUB,
-          payload: {
-            totalHubs: res.count,
-            hubs: res.rows,
-          },
+        return response.json().then(({ data }) => {
+          let res = {};
+          if (filterHubs.name) {
+            const filtered = [];
+            _.filter(data.rows, (hub) => {
+              if (_.includes(hub.Name.toLowerCase(), filterHubs.name.toLowerCase())) {
+                filtered.push(hub);
+              }
+            });
+            res = {
+              count: filtered.length,
+              rows: filtered,
+            };
+          } else {
+            res = data;
+          }
+
+          dispatch({
+            type: Constants.ORDERS_PICKUP_READY_SET_HUB,
+            payload: {
+              totalHubs: res.count,
+              hubs: res.rows,
+            },
+          });
         });
+      }).catch((e) => {
+        dispatch(ModalActions.addMessage(e.message));
       });
-    }).catch((e) => {
-      dispatch(ModalActions.addMessage(e.message));
-    });
+    }
   };
 }
 
