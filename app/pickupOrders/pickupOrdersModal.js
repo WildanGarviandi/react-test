@@ -94,7 +94,7 @@ const Fleet = React.createClass({
         <div key={idx} onClick={this.props.chooseFleet.bind(null, fleet.FleetManagerID)} 
           className={rowStyle}>
           <div className={styles.maskInput}>
-            <img src={fleet.FleetManagerID === this.props.selectedFleet ? config.IMAGES['RADIO-ON'] : config.IMAGES['RADIO-OFF']} />
+            <img src={fleet.FleetManagerID === this.props.selectedFleet ? config.IMAGES.RADIO_ON : config.IMAGES.RADIO_OFF} />
           </div>
           <div className={styles.maskName}>
             <span className={styles.vendorName}>
@@ -214,7 +214,7 @@ function Hub({ selectedHubID, chooseHub }) {
         className={rowStyle}
       >
         <div className={styles.maskInput}>
-          <img src={hub.HubID === selectedHubID ? config.IMAGES['RADIO-ON'] : config.IMAGES['RADIO-OFF']} />
+          <img src={hub.HubID === selectedHubID ? config.IMAGES.RADIO_ON : config.IMAGES.RADIO_OFF} />
         </div>
         <div className={styles.maskName}>
           <span className={styles.vendorName}>
@@ -403,7 +403,7 @@ const Driver = React.createClass({
           className={rowStyle}
         >
           <div className={styles.driverInput}>
-            <img src={driver.UserID === this.props.selectedDriver ? config.IMAGES['RADIO-ON'] : config.IMAGES['RADIO-OFF']} />
+            <img src={driver.UserID === this.props.selectedDriver ? config.IMAGES.RADIO_ON : config.IMAGES.RADIO_OFF} />
           </div>
           <div className={styles.driverPicture}>
             <img
@@ -607,7 +607,7 @@ const DriverVendor = React.createClass({
           className={rowStyle}
         >
           <div className={styles.driverInput}>
-            <img src={driver.UserID === this.props.selectedDriver ? config.IMAGES['RADIO-ON'] : config.IMAGES['RADIO-OFF']} />
+            <img src={driver.UserID === this.props.selectedDriver ? config.IMAGES.RADIO_ON : config.IMAGES.RADIO_OFF} />
           </div>
           <div className={styles.driverPicture}>
             <img

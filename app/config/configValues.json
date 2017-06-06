@@ -133,8 +133,8 @@
       }
     },
     "IMAGES": {
-      "RADIO-ON": "/img/icon-radio-on.png",
-      "RADIO-OFF": "/img/icon-radio-off.png",
+      "RADIO_ON": "/img/icon-radio-on.png",
+      "RADIO_OFF": "/img/icon-radio-off.png",
       "MOTORCYCLE": "/img/icon-vehicle-motorcycle.png",
       "VAN": "/img/icon-vehicle-van.png"
     }
