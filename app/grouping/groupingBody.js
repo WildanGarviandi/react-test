@@ -8,7 +8,7 @@ import BodyRow, {CheckBoxCell, LinkCell, TextCell, OrderIDLinkCell} from '../vie
 import * as Grouping from './groupingService';
 import {formatDate, formatDateHourOnly} from '../helper/time';
 import {CheckboxCell} from '../views/base/tableCell';
-import styles from '../views/base/table.css';
+import styles from '../views/base/table.scss';
 import groupingStyle from './styles.scss';
 import moment from 'moment';
 

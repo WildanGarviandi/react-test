@@ -19,7 +19,7 @@ import HeadersRow from '../views/base/headers';
 import { CheckBox } from '../views/base/input';
 import { CheckboxHeader, CheckboxCell } from '../views/base/tableCell';
 import { formatDate } from '../helper/time';
-import stylesTable from '../views/base/table.css';
+import stylesTable from '../views/base/table.scss';
 import ModalActions from '../modules/modals/actions';
 import config from '../config/configValues.json';
 import { checkPermission } from '../helper/permission';

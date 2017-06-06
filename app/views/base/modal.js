@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './modal.css';
+import styles from './modal.scss';
 
 var classnaming = require('classnames/bind').bind(styles);
 

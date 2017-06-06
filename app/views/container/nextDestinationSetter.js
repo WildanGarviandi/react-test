@@ -1,6 +1,6 @@
 import classNaming from 'classnames';
 import React from 'react';
-import styles from './setterStyles.css';
+import styles from './setterStyles.scss';
 import DistrictSetter from './districtSetter';
 import HubSetter from './hubSetter';
 

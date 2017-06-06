@@ -28,7 +28,7 @@ const headers = [{
   CODValue: 'COD Value',
 }];
 
-import styles from './styles.css';
+import styles from './styles.scss';
 
 const PrepareOrder = (order) => {
   return {

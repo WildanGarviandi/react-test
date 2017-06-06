@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import ordersPrepareIDs from '../../modules/containers/actions/ordersPrepareIDs';
 import {ButtonBase, Glyph} from '../base';
-import styles from './accordion.css';
+import styles from './accordion.scss';
 
 const Filter = React.createClass({
   getInitialState() {

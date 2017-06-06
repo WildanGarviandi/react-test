@@ -10,7 +10,7 @@ import ReactTooltip from 'react-tooltip';
 
 import { DropdownWithState2 } from '../views/base/dropdown';
 import { Pagination } from '../views/base';
-import tableStyles from '../views/base/table.css';
+import tableStyles from '../views/base/table.scss';
 import { formatDate } from '../helper/time';
 import ModalActions from '../modules/modals/actions';
 import styles from './styles.scss';

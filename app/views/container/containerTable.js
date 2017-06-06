@@ -8,7 +8,7 @@ import ActiveCell from './activeCell';
 import PickRow from './pickContainerRow';
 import SetStatusCell from './setStatusCell';
 
-import styles from './table.css';
+import styles from './table.scss';
 
 function camelize(str) {
   return str.replace(/\w\S*/g, (txt) => {

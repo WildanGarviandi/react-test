@@ -11,7 +11,7 @@ import * as PickupOrdersReady from './pickupOrdersReadyService';
 import * as NearbyFleets from '../nearbyFleets/nearbyFleetService';
 import { DropdownTypeAhead, Input, Pagination, ButtonStandard } from '../views/base';
 import DateRangePicker from '../views/base/dateRangePicker';
-import tableStyles from '../views/base/table.css';
+import tableStyles from '../views/base/table.scss';
 import StatusDropdown from '../views/base/statusDropdown';
 import { TripParser } from '../modules/trips';
 import { OrderParser } from '../modules/orders';

@@ -1,6 +1,6 @@
 import React from 'react';
-import styles from './table.css';
-import styles2 from './styles.css';
+import styles from './table.scss';
+import styles2 from './styles.scss';
 import {ButtonWithLoading, ButtonStandard, Input, Pagination, DropdownWithState} from '../base';
 import classNaming from 'classnames';
 

@@ -8,7 +8,7 @@ import BodyRow, {CheckBoxCell, LinkCell, TextCell, OrderIDLinkCell} from '../vie
 import * as InboundOrders from './inboundOrdersService';
 import {formatDate, formatDateHourOnly} from '../helper/time';
 import {CheckboxCell} from '../views/base/tableCell';
-import styles from '../views/base/table.css';
+import styles from '../views/base/table.scss';
 import inboundStyles from './styles.scss';
 import ReactInterval from 'react-interval';
 import moment from 'moment';

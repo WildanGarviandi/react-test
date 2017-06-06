@@ -3,7 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
 import ReceivedOrdersTable from './receivedOrdersTable';
-import styles from './styles.css';
+import styles from './styles.scss';
 import {ButtonWithLoading, Input, Page} from '../base';
 import Accordion from './receivedOrdersAccordion';
 import * as OrdersReceived from '../../modules/orders/actions/received';
