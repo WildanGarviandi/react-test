@@ -159,7 +159,7 @@ export const AssignVendor = React.createClass({
             <div className={styles.modalDesc4}>
               <div className={styles.secondLabel}>
                 Please choose a vendor that you want to assign with this trip.
-              </div>               
+              </div>
             </div>
           </div>
           <div style={{ clear: 'both' }} />
@@ -264,6 +264,43 @@ class AssignHub extends Component {
 
     return (
       <div>
+        <div className={styles.mainAssignBox}>
+          <div>
+            <div className={styles.modalDesc}>
+              <div className={styles.mainLabelWebstore}>
+                {this.props.trip.ListWebstoreMores}
+              </div>
+              <div className={styles.secondLabel}>
+                {this.props.trip.PickupAddress && this.props.trip.PickupAddress.City}
+              </div>
+            </div>
+            <div className={styles.borderDesc} />
+            <div className={styles.modalDesc2}>
+              <div className={styles.secondLabel}>
+                Total Weight
+              </div>
+              <div className={styles.mainLabel}>
+                {this.props.trip.Weight} kg
+              </div>                    
+            </div>
+            <div className={styles.borderDesc} />
+            <div className={styles.modalDesc3}>
+              <div className={styles.secondLabel}>
+                Quantity
+              </div>
+              <div className={styles.mainLabel}>
+                {this.props.trip.UserOrderRoutes && this.props.trip.UserOrderRoutes.length}
+              </div>
+            </div>
+            <div className={styles.borderDesc} />
+            <div className={styles.modalDesc4}>
+              <div className={styles.secondLabel}>
+                Please choose a vendor that you want to assign with this trip.
+              </div>
+            </div>
+          </div>
+          <div style={{ clear: 'both' }} />
+        </div>
         <div className={styles.panelDriverSearch}>
           <input
             className={styles.inputDriverSearch}
@@ -684,6 +721,7 @@ const PickupOrdersModal = React.createClass({
   closeModal() {
     this.props.CloseModal();
     this.activateDriver();
+    this.props.SetFilterHub({});
   },
   assignDriver() {
     if (!selectedDriver) {
@@ -741,7 +779,7 @@ const PickupOrdersModal = React.createClass({
   },
   render() {
     const trips = _.map(this.props.trips, ProcessTrip);
-    console.log(this.props, 'props');
+
     return (
       <div>
         {
@@ -753,9 +791,9 @@ const PickupOrdersModal = React.createClass({
                   <div className={styles.modalTitle}>
                     Assign Trip
                   </div>
-                  <div onClick={this.closeModal} className={styles.modalClose}>
+                  <div role="button" onClick={this.closeModal} className={styles.modalClose}>
                     &times;
-                  </div> 
+                  </div>
                   <div className={styles.toggleAssignMain}>
                     <div
                       role="button"

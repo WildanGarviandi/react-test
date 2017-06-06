@@ -411,7 +411,7 @@ export function ShowAssignModal(tripID) {
       suggestLastMileFleet: 0,
     };
 
-    FetchGet(`/trip/ ${tripID}`, token, params).then((response) => {
+    FetchGet(`/trip/${tripID}`, token, params).then((response) => {
       response.json().then(({ data }) => {
         dispatch({
           type: Constants.ORDERS_PICKUP_READY_SHOW_MODAL,
