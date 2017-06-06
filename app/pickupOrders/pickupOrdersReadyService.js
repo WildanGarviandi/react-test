@@ -517,7 +517,7 @@ export function FetchDrivers() {
   };
 }
 
-export function FetchHubs() {
+export function fetchHubs() {
   return (dispatch, getState) => {
     const { userLogged, pickupOrdersReady } = getState().app;
     const { filterHubs } = pickupOrdersReady;
@@ -655,7 +655,7 @@ export function AssignDriver(tripID, driverID) {
   };
 }
 
-export function AssignHub(tripID, hubID) {
+export function assignHub(tripID, hubID) {
   return (dispatch, getState) => {
     const { userLogged } = getState().app;
     const { token } = userLogged;

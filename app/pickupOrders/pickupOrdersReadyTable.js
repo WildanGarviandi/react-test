@@ -243,7 +243,7 @@ function mapDispatchToButton(dispatch, ownParams) {
       dispatch(PickupOrdersReady.ShowAssignModal(parseInt(ownParams.item.tripID)));
       dispatch(NearbyFleets.FetchList());
       dispatch(PickupOrdersReady.FetchDrivers(parseInt(ownParams.item.tripID)));
-      dispatch(PickupOrdersReady.FetchHubs());
+      dispatch(PickupOrdersReady.fetchHubs());
     }
   }
 }

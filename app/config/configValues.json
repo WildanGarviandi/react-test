@@ -131,5 +131,11 @@
         "URL": "/img/icon-not-finished.png",
         "TOOLTIP": "Not Finished"
       }
+    },
+    "IMAGES": {
+      "RADIO-ON": "/img/icon-radio-on.png",
+      "RADIO-OFF": "/img/icon-radio-off.png",
+      "MOTORCYCLE": "/img/icon-vehicle-motorcycle.png",
+      "VAN": "/img/icon-vehicle-van.png"
     }
 }

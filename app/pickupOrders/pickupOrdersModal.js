@@ -94,7 +94,7 @@ const Fleet = React.createClass({
         <div key={idx} onClick={this.props.chooseFleet.bind(null, fleet.FleetManagerID)} 
           className={rowStyle}>
           <div className={styles.maskInput}>
-            <img src={fleet.FleetManagerID === this.props.selectedFleet ? '/img/icon-radio-on.png' : '/img/icon-radio-off.png'} />
+            <img src={fleet.FleetManagerID === this.props.selectedFleet ? config.IMAGES['RADIO-ON'] : config.IMAGES['RADIO-OFF']} />
           </div>
           <div className={styles.maskName}>
             <span className={styles.vendorName}>
@@ -162,7 +162,7 @@ export const AssignVendor = React.createClass({
               </div>
             </div>
           </div>
-          <div style={{ clear: 'both' }} />
+          <div className={styles['clear-both']} />
         </div>
         <div className={styles.vendorList}>
           { fleetList.length > 0 &&
@@ -200,34 +200,43 @@ export const AssignVendor = React.createClass({
   }
 });
 
-class Hub extends Component {
-  render() {
-    const hubComponents = hubList.map((hub, idx) => {
-      let rowStyle = styles.vendorInformation;
+function Hub({ selectedHubID, chooseHub }) {
+  const hubComponents = hubList.map((hub, idx) => {
+    let rowStyle = styles.vendorInformation;
 
-      if (hub.HubID === this.props.selectedHub) {
-        rowStyle = styles.vendorInformationSelected;
-      }
-      return (
-        <div
-          key={idx}
-          onClick={() => this.props.chooseHub(hub.HubID)}
-          className={rowStyle}
-        >
-          <div className={styles.maskInput}>
-            <img src={hub.HubID === this.props.selectedHub ? '/img/icon-radio-on.png' : '/img/icon-radio-off.png'} />
-          </div>
-          <div className={styles.maskName}>
-            <span className={styles.vendorName}>
-              {hub.Name}
-            </span>
-          </div>
+    if (hub.HubID === selectedHubID) {
+      rowStyle = styles.vendorInformationSelected;
+    }
+    return (
+      <div
+        key={idx}
+        onClick={() => chooseHub(hub.HubID)}
+        className={rowStyle}
+      >
+        <div className={styles.maskInput}>
+          <img src={hub.HubID === selectedHubID ? config.IMAGES['RADIO-ON'] : config.IMAGES['RADIO-OFF']} />
         </div>
-      );
-    });
-    return <div>{hubComponents}</div>;
-  }
+        <div className={styles.maskName}>
+          <span className={styles.vendorName}>
+            {hub.Name}
+          </span>
+        </div>
+      </div>
+    );
+  });
+  return <div>{hubComponents}</div>;
 }
+
+/* eslint-disable */
+Hub.propTypes = {
+  selectedHubID: PropTypes.any,
+  chooseHub: PropTypes.func.isRequired,
+};
+/* eslint-enable */
+
+Hub.defaultProps = {
+  selectedHubID: null,
+};
 
 class AssignHub extends Component {
   constructor(props) {
@@ -243,9 +252,9 @@ class AssignHub extends Component {
   }
 
   searchHub(e) {
-    if (e.key === 'Enter') {
+    if ((e.keyCode || e.which) === config.KEY_ACTION.ENTER) {
       this.props.fetchHubs();
-      this.chooseHub(null);
+      this.chooseHub();
     }
   }
 
@@ -299,7 +308,7 @@ class AssignHub extends Component {
               </div>
             </div>
           </div>
-          <div style={{ clear: 'both' }} />
+          <div className={styles['clear-both']} />
         </div>
         <div className={styles.panelDriverSearch}>
           <input
@@ -314,8 +323,9 @@ class AssignHub extends Component {
             <div className={styles['hub-container']}>
               <Hub
                 chooseHub={id => this.chooseHub(id)}
-                selectedHub={this.state.selectedHub}
+                selectedHubID={this.state.selectedHub}
                 hubs={this.props.hubs}
+                hubList={this.hubList}
               />
             </div>
           }
@@ -393,12 +403,12 @@ const Driver = React.createClass({
           className={rowStyle}
         >
           <div className={styles.driverInput}>
-            <img src={driver.UserID === this.props.selectedDriver ? '/img/icon-radio-on.png' : '/img/icon-radio-off.png'} />
+            <img src={driver.UserID === this.props.selectedDriver ? config.IMAGES['RADIO-ON'] : config.IMAGES['RADIO-OFF']} />
           </div>
           <div className={styles.driverPicture}>
             <img
               src={driver.Vehicle && driver.Vehicle.VehicleID === config.vehicleType.Motorcycle ?
-                '/img/icon-vehicle-motorcycle.png' : '/img/icon-vehicle-van.png'}
+                config.IMAGES.MOTORCYCLE : config.IMAGES.VAN}
             />
           </div>
           <table className={styles.driverMaskName}>
@@ -499,12 +509,12 @@ export const AssignDriver = React.createClass({
               </div>
             </div>
           </div>
-          <div style={{ clear: 'both' }} />
+          <div className={styles['clear-both']} />
           { this.props.trip.Weight > config.motorcycleMaxWeight && this.state.selectedVehicle === 'Motorcycle' 
             && !this.state.allowNoSeparate &&
               <div className={styles.modalDescBottom}>
                 This trip is too big. Take {config.motorcycleMaxWeight} kg only and separate the rest?
-                <div style={{ clear: 'both' }} />
+                <div className={styles['clear-both']} />
                 <button className={styles.buttonSplitNo} onClick={this.noSeparate}>No</button>
                 <button className={styles.buttonSplitYes} onClick={this.props.splitTrip}>Yes</button>
               </div>
@@ -513,7 +523,7 @@ export const AssignDriver = React.createClass({
             && !this.state.allowNoSeparate &&
               <div className={styles.modalDescBottom}>
                 This trip is too big. Take {config.vanMaxWeight} kg only and separate the rest?
-                <div style={{ clear: 'both' }} />
+                <div className={styles['clear-both']} />
                 <button className={styles.buttonSplitNo} onClick={this.noSeparate}>
                   No
                 </button>
@@ -522,7 +532,7 @@ export const AssignDriver = React.createClass({
                 </button>
               </div>
           }
-          <div style={{ clear: 'both' }} />
+          <div className={styles['clear-both']} />
         </div>
         <div className={styles.panelDriverSearch}>
           <input className={styles.inputDriverSearch} onChange={this.enterDriverSearch} onKeyPress={this.searchDriver} placeholder={'Search Driver...'} />
@@ -597,12 +607,12 @@ const DriverVendor = React.createClass({
           className={rowStyle}
         >
           <div className={styles.driverInput}>
-            <img src={driver.UserID === this.props.selectedDriver ? '/img/icon-radio-on.png' : '/img/icon-radio-off.png'} />
+            <img src={driver.UserID === this.props.selectedDriver ? config.IMAGES['RADIO-ON'] : config.IMAGES['RADIO-OFF']} />
           </div>
           <div className={styles.driverPicture}>
             <img
               src={driver.Vehicle && driver.Vehicle.VehicleID === config.vehicleType.Motorcycle ?
-              '/img/icon-vehicle-motorcycle.png' : '/img/icon-vehicle-van.png'}
+              config.IMAGES.MOTORCYCLE : config.IMAGES.VAN}
             />
           </div>
           <table className={styles.driverMaskName}>
@@ -665,7 +675,7 @@ export const AssignDriverVendor = React.createClass({
               </div>            
             </div>
           </div>
-          <div style={{ clear: 'both' }} />
+          <div className={styles['clear-both']} />
         </div>
         <div className={styles.driverList}>
           <DriverVendor chooseDriver={this.chooseDriver} selectedDriver={this.state.selectedDriverVendor} />
@@ -761,12 +771,10 @@ const PickupOrdersModal = React.createClass({
       alert('Please select hub first');
       return;
     }
-    if (isFleetExceed) {
-      if (confirm('Are you sure you want to assign ?')) {
-        this.props.AssignHub(this.props.trip.TripID, selectedHub);
-      }
+    if (isFleetExceed && confirm('Are you sure you want to assign ?')) {
+      this.props.assignHub(this.props.trip.TripID, selectedHub);
     } else {
-      this.props.AssignHub(this.props.trip.TripID, selectedHub);
+      this.props.assignHub(this.props.trip.TripID, selectedHub);
     }
   },
   splitTrip() {
@@ -852,7 +860,7 @@ const PickupOrdersModal = React.createClass({
                       assignHub={this.assignHub}
                       hubs={hubList}
                       setFilterHub={this.props.SetFilterHub}
-                      fetchHubs={this.props.FetchHubs}
+                      fetchHubs={this.props.fetchHubs}
                     />
                   }
                 </div>
@@ -931,8 +939,8 @@ function DispatchToProps(dispatch, ownProps) {
     FetchDrivers() {
       dispatch(PickupOrdersReady.FetchDrivers());
     },
-    FetchHubs() {
-      dispatch(PickupOrdersReady.FetchHubs());
+    fetchHubs() {
+      dispatch(PickupOrdersReady.fetchHubs());
     },
     SetFilterHub(newFilter) {
       dispatch(PickupOrdersReady.SetFilterHub(newFilter));
@@ -943,8 +951,8 @@ function DispatchToProps(dispatch, ownProps) {
     UpdateAndFetchDrivers(filters) {
       dispatch(PickupOrdersReady.UpdateAndFetchDrivers(filters));
     },
-    AssignHub(tripID, hubID) {
-      dispatch(PickupOrdersReady.AssignHub(tripID, hubID));
+    assignHub(tripID, hubID) {
+      dispatch(PickupOrdersReady.assignHub(tripID, hubID));
     },
   };
 }
