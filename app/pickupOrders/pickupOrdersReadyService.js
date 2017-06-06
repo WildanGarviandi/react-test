@@ -37,6 +37,8 @@ const Constants = {
   ORDERS_PICKUP_READY_ADD_HUB: 'pickupReady/hub/add',
   ORDERS_PICKUP_READY_DELETE_HUB: 'pickupReady/hub/delete',
   ORDERS_PICKUP_READY_ALL_HUB: 'pickupReady/hub/all',
+  ORDERS_PICKUP_READY_SET_HUB: 'pickupReady/hub/fetch',
+  ORDERS_PICKUP_READY_SET_FILTER_HUB: 'pickupReady/hub/setFilter',
 };
 
 const initialState = {
@@ -61,6 +63,9 @@ const initialState = {
   isAutoGroupActive: false,
   showDetails: false,
   hubIDs: [],
+  hubs: [],
+  totalHubs: 0,
+  filterHubs: {},
 };
 
 export function Reducer(state = initialState, action) {
@@ -239,6 +244,14 @@ export function Reducer(state = initialState, action) {
       });
     }
 
+    case Constants.ORDERS_PICKUP_READY_SET_HUB: {
+      return Object.assign({}, state, action.payload);
+    }
+
+    case Constants.ORDERS_PICKUP_READY_SET_FILTER_HUB: {
+      return Object.assign({}, state, { filterHubs: action.payload });
+    }
+
     default:
       return state;
   }
@@ -364,7 +377,7 @@ export function SetLimit(limit) {
     });
 
     dispatch(SetCurrentPage(1));
-  }
+  };
 }
 
 export function ToggleSelectAll() {
@@ -372,16 +385,16 @@ export function ToggleSelectAll() {
     dispatch({
       type: Constants.ORDERS_PICKUP_READY_SELECT_TOGGLE_ALL,
     });
-  }
+  };
 }
 
 export function ToggleSelectOne(orderID) {
   return (dispatch) => {
     dispatch({
       type: Constants.ORDERS_PICKUP_READY_SELECT_TOGGLE_ONE,
-      orderID: orderID,
+      orderID,
     });
-  }
+  };
 }
 
 export function ResetFilter() {
@@ -392,29 +405,28 @@ export function ResetFilter() {
 
 export function ShowAssignModal(tripID) {
   return (dispatch, getState) => {
-    const { pickupOrdersReady, userLogged } = getState().app;
+    const { userLogged } = getState().app;
     const { token } = userLogged;
-    let params = {
-      suggestLastMileFleet: 0
+    const params = {
+      suggestLastMileFleet: 0,
     };
 
-    FetchGet('/trip/' + tripID, token, params).then((response) => {
-      response.json().then(function ({ data }) {
+    FetchGet(`/trip/${tripID}`, token, params).then((response) => {
+      response.json().then(({ data }) => {
         dispatch({
           type: Constants.ORDERS_PICKUP_READY_SHOW_MODAL,
           trip: TripParser(data),
         });
       });
-    })
-
-  }
+    });
+  };
 }
 
 export function HideAssignModal() {
   return (dispatch) => {
     dispatch({ type: Constants.ORDERS_PICKUP_READY_HIDE_MODAL });
     dispatch({ type: Constants.ORDERS_PICKUP_RESET_DRIVERS });
-  }
+  };
 }
 
 export function ShowDetails(tripID) {
@@ -426,13 +438,13 @@ export function ShowDetails(tripID) {
       type: Constants.ORDERS_PICKUP_READY_SHOW_MODAL_DETAILS,
       trip: TripParser(_.find(trips, { TripID: tripID })),
     });
-  }
+  };
 }
 
 export function HideDetails() {
   return (dispatch) => {
     dispatch({ type: Constants.ORDERS_PICKUP_READY_HIDE_MODAL_DETAILS });
-  }
+  };
 }
 
 export function SplitTrip(id, vehicleID) {
@@ -441,11 +453,11 @@ export function SplitTrip(id, vehicleID) {
     const { token } = userLogged;
 
     const query = {
-      vehicleID: vehicleID
-    }
+      vehicleID,
+    };
 
     dispatch({ type: modalAction.BACKDROP_SHOW });
-    FetchPost('/trip/split/' + id, token, query, true).then((response) => {
+    FetchPost(`/trip/split/ ${id}`, token, query, true).then((response) => {
       if (!response.ok) {
         throw new Error();
       }
@@ -464,52 +476,14 @@ export function SplitTrip(id, vehicleID) {
       dispatch(ModalActions.addMessage('Failed in splitting trip'));
       dispatch({ type: modalAction.BACKDROP_HIDE });
     });
-  }
+  };
 }
 
 export function SetFiltersDrivers(filters) {
   return StoreSetter('filtersDrivers', filters);
 }
 
-export function UpdateFiltersDrivers(filters) {
-  return (dispatch, getState) => {
-    const prevFilters = getState().app.pickupOrdersReady.filtersDrivers;
-    const nextFilter = Object.assign({}, prevFilters, filters);
-    dispatch(SetFiltersDrivers(nextFilter));
-  }
-}
-
-export function UpdateAndFetchDrivers(filters) {
-  return (dispatch) => {
-    dispatch(StoreSetter('currentPageDrivers', 1));
-    dispatch(UpdateFiltersDrivers(filters));
-    dispatch(FetchDrivers());
-  }
-}
-
-export function SetCurrentPageDrivers(currentPage) {
-  return (dispatch) => {
-    dispatch({
-      type: Constants.ORDERS_PICKUP_DRIVER_CURRENT_PAGE_SET,
-      currentPage: currentPage,
-    });
-
-    dispatch(FetchDrivers());
-  }
-}
-
-export function SetLimitDrivers(limit) {
-  return (dispatch) => {
-    dispatch({
-      type: Constants.ORDERS_PICKUP_DRIVER_LIMIT_SET,
-      limit: limit,
-    });
-
-    dispatch(SetCurrentPageDrivers(1));
-  }
-}
-
-export function FetchDrivers(tripID) {
+export function FetchDrivers() {
   return (dispatch, getState) => {
     const { pickupOrdersReady, userLogged } = getState().app;
     const { token } = userLogged;
@@ -525,7 +499,7 @@ export function FetchDrivers(tripID) {
       if (!response.ok) {
         return response.json().then(({ error }) => {
           throw error;
-        })
+        });
       }
 
       return response.json().then(({ data }) => {
@@ -533,14 +507,58 @@ export function FetchDrivers(tripID) {
         dispatch({
           type: Constants.ORDERS_PICKUP_SET_DRIVERS,
           drivers: data.rows,
-          totalDrivers: data.count
-        })
+          totalDrivers: data.count,
+        });
       });
     }).catch((e) => {
       dispatch({ type: Constants.ORDERS_PICKUP_DRIVER_FETCH_END });
       dispatch(ModalActions.addMessage(e.message));
     });
-  }
+  };
+}
+
+export function fetchHubs() {
+  return (dispatch, getState) => {
+    const { userLogged, pickupOrdersReady } = getState().app;
+    const { filterHubs } = pickupOrdersReady;
+    const { token } = userLogged;
+
+    FetchGet('/local', token, {}, true).then((response) => {
+      if (!response.ok) {
+        return response.json().then(({ error }) => {
+          throw error;
+        });
+      }
+
+      return response.json().then(({ data }) => {
+        let res = {};
+        if (filterHubs.name) {
+          const filtered = [];
+          _.filter(data.rows, (hub) => {
+            if (_.includes(hub.Name.toLowerCase(), filterHubs.name.toLowerCase())) {
+              filtered.push(hub);
+            }
+          });
+          res = {
+            count: filtered.length,
+            rows: filtered,
+          };
+        } else {
+          res = data;
+        }
+
+        dispatch({
+          type: Constants.ORDERS_PICKUP_READY_SET_HUB,
+          payload: {
+            totalHubs: res.count,
+            hubs: res.rows,
+          },
+        });
+      });
+    }).catch((e) => {
+      dispatch(ModalActions.addMessage(e.message));
+    });
+  };
 }
 
 export function AssignFleet(tripID, fleetManagerID) {
@@ -571,7 +589,7 @@ export function AssignFleet(tripID, fleetManagerID) {
           });
         }
 
-        response.json().then(({ data }) => {
+        return response.json().then(() => {
           dispatch({ type: modalAction.BACKDROP_HIDE });
           dispatch(NearbyFleets.FetchDriverFleet(fleetManagerID));
           dispatch(DashboardService.FetchCount());
@@ -590,7 +608,7 @@ export function AssignFleet(tripID, fleetManagerID) {
           });
         }
 
-        response.json().then(({ data }) => {
+        return response.json().then(() => {
           dispatch({ type: modalAction.BACKDROP_HIDE });
           dispatch(NearbyFleets.FetchDriverFleet(fleetManagerID));
           dispatch(DashboardService.FetchCount());
@@ -602,7 +620,7 @@ export function AssignFleet(tripID, fleetManagerID) {
         dispatch(ModalActions.addMessage(message));
       });
     }
-  }
+  };
 }
 
 export function AssignDriver(tripID, driverID) {
@@ -622,7 +640,7 @@ export function AssignDriver(tripID, driverID) {
         });
       }
 
-      response.json().then(({ data }) => {
+      return response.json().then(() => {
         dispatch(ModalActions.addMessage('Assign driver success'));
         dispatch(FetchList());
         dispatch({ type: modalAction.BACKDROP_HIDE });
@@ -634,7 +652,76 @@ export function AssignDriver(tripID, driverID) {
       dispatch({ type: modalAction.BACKDROP_HIDE });
       dispatch(ModalActions.addMessage(message));
     });
-  }
+  };
+}
+
+export function assignHub(tripID, hubID) {
+  return (dispatch, getState) => {
+    const { userLogged } = getState().app;
+    const { token } = userLogged;
+
+    const body = {
+      hubID,
+    };
+
+    dispatch({ type: modalAction.BACKDROP_SHOW });
+    FetchPost(`/trip/${tripID}/transfer`, token, body, true).then((response) => {
+      if (!response.ok) {
+        return response.json().then(({ error }) => {
+          throw error;
+        });
+      }
+
+      return response.json().then(() => {
+        dispatch(ModalActions.addMessage('Assign hub success'));
+        dispatch(FetchList());
+        dispatch({ type: modalAction.BACKDROP_HIDE });
+        dispatch(HideAssignModal());
+      });
+    }).catch((e) => {
+      const message = (e && e.message) ? e.message : 'Failed to assign hub';
+      dispatch({ type: modalAction.BACKDROP_HIDE });
+      dispatch(ModalActions.addMessage(message));
+    });
+  };
+}
+
+export function UpdateFiltersDrivers(filters) {
+  return (dispatch, getState) => {
+    const prevFilters = getState().app.pickupOrdersReady.filtersDrivers;
+    const nextFilter = Object.assign({}, prevFilters, filters);
+    dispatch(SetFiltersDrivers(nextFilter));
+  };
+}
+
+export function UpdateAndFetchDrivers(filters) {
+  return (dispatch) => {
+    dispatch(StoreSetter('currentPageDrivers', 1));
+    dispatch(UpdateFiltersDrivers(filters));
+    dispatch(FetchDrivers());
+  };
+}
+
+export function SetCurrentPageDrivers(currentPage) {
+  return (dispatch) => {
+    dispatch({
+      type: Constants.ORDERS_PICKUP_DRIVER_CURRENT_PAGE_SET,
+      currentPage,
+    });
+
+    dispatch(FetchDrivers());
+  };
+}
+
+export function SetLimitDrivers(limit) {
+  return (dispatch) => {
+    dispatch({
+      type: Constants.ORDERS_PICKUP_DRIVER_LIMIT_SET,
+      limit,
+    });
+
+    dispatch(SetCurrentPageDrivers(1));
+  };
 }
 
 export function CheckAutoGroup() {
@@ -655,7 +742,7 @@ export function CheckAutoGroup() {
         }
       });
     });
-  }
+  };
 }
 
 export function AutoGroup() {
@@ -668,7 +755,7 @@ export function AutoGroup() {
         throw new Error();
       }
 
-      response.json().then(({ data }) => {
+      response.json().then(() => {
         dispatch(ModalActions.addMessage('Auto Group in Progress'));
         dispatch({ type: Constants.ORDERS_PICKUP_AUTO_GROUP_DISABLE });
       });
@@ -676,7 +763,7 @@ export function AutoGroup() {
       const message = (e && e.message) ? e.message : 'Failed in auto grouping';
       dispatch(ModalActions.addMessage(message));
     });
-  }
+  };
 }
 
 export function GroupOrders() {
@@ -689,7 +776,7 @@ export function GroupOrders() {
       .filter((order) => {
         return order.IsChecked;
       })
-      .map((order) => (order.UserOrderID))
+      .map(order => (order.UserOrderID))
       .value();
 
     if (checkedOrdersIDs.length === 0) {
@@ -699,7 +786,7 @@ export function GroupOrders() {
 
     const body = {
       ordersID: checkedOrdersIDs,
-    }
+    };
 
     dispatch({ type: modalAction.BACKDROP_SHOW });
 
@@ -709,12 +796,12 @@ export function GroupOrders() {
         dispatch(DashboardService.FetchCount());
 
         response.json().then(({ data }) => {
-          dispatch(push('/trips/' + data.TripID));
+          dispatch(push(`/trips/ ${data.TripID}`));
         });
       } else {
         response.json().then(({ error }) => {
           dispatch({ type: modalAction.BACKDROP_HIDE });
-          dispatch(ModalActions.addMessage('Failed to group orders. ' + error.message[0].reason));
+          dispatch(ModalActions.addMessage(`Failed to group orders. ${error.message[0].reason}`));
         });
       }
     });
@@ -746,5 +833,11 @@ export function setAllHubFilter(hubOptions) {
     payload: {
       hubs,
     },
+  };
+}
+
+export function SetFilterHub(payload) {
+  return (dispatch) => {
+    dispatch({ type: Constants.ORDERS_PICKUP_READY_SET_FILTER_HUB, payload });
   };
 }
