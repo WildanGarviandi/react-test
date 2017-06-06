@@ -258,7 +258,7 @@
   font-stretch: normal;
   color: #000000;
   cursor: pointer;
-  width: calc(50% - 2px);
+  width: calc(33% - 2px);
   float: left;
   text-align: center;
 }
@@ -272,7 +272,7 @@
   color: #000000;
   border-bottom: 6px solid #2196f3;
   cursor: pointer;
-  width: calc(50% - 2px);
+  width: calc(33% - 2px);
   float: left;
   text-align: center;
   padding-bottom: 16px;

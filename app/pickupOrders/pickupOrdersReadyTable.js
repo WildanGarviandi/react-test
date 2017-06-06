@@ -243,6 +243,7 @@ function mapDispatchToButton(dispatch, ownParams) {
       dispatch(PickupOrdersReady.ShowAssignModal(parseInt(ownParams.item.tripID)));
       dispatch(NearbyFleets.FetchList());
       dispatch(PickupOrdersReady.FetchDrivers(parseInt(ownParams.item.tripID)));
+      dispatch(PickupOrdersReady.FetchHubs());
     }
   }
 }
@@ -407,14 +408,14 @@ const Table = React.createClass({
         }
         if (columnKey === 'action') {
           if (item.isTrip) {
-            return <td key={columnKey} className={tableStyles.td}><PickupOrdersButton item={item} value={'Assign'} /></td>
+            return <td key={columnKey} className={tableStyles.td}><PickupOrdersButton item={item} value={'Assign'} /></td>;
           } else {
             const buttonAction = {
               textBase: 'Assign',
               styles: {
-                base: styles.cellButtonDisabled
+                base: styles.cellButtonDisabled,
               },
-              disabled: true
+              disabled: false,
             }
             return <td key={columnKey} className={tableStyles.td}><ButtonStandard {...buttonAction} /></td>;
           }
