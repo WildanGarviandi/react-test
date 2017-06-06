@@ -223,7 +223,6 @@ const Options2 = React.createClass({
             <input
               type="checkbox"
               checked={option.checked}
-              onChange={this.handleChange}
               className={styles['check-multi']}
             />
           }
