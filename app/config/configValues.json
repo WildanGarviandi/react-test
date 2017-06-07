@@ -80,6 +80,8 @@
     "deliverableOrderStatus": [2, 3, 4],
     "updatableCOD": [4, 5],
     "KEY_ACTION": {
+      "UP_ARROW": 38,
+      "DOWN_ARROW": 40,
       "ENTER": 13,
       "SEMI_COLON": 186,
       "A": 65,
@@ -129,5 +131,12 @@
         "URL": "/img/icon-not-finished.png",
         "TOOLTIP": "Not Finished"
       }
-    }
+    },
+    "IMAGES": {
+      "RADIO_ON": "/img/icon-radio-on.png",
+      "RADIO_OFF": "/img/icon-radio-off.png",
+      "MOTORCYCLE": "/img/icon-vehicle-motorcycle.png",
+      "VAN": "/img/icon-vehicle-van.png"
+    },
+    "assignCentralHub": true
 }

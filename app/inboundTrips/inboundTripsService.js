@@ -33,6 +33,7 @@ const Constants = {
   TRIPS_INBOUND_SET_DROPDOWN_FILTER: 'inbound/trips/setDropdownFilter',
   TRIPS_INBOUND_ADD_HUB: 'inbound/trips/hub/add',
   TRIPS_INBOUND_DELETE_HUB: 'inbound/trips/hub/delete',
+  TRIPS_INBOUND_ALL_HUB: 'inbound/trips/hub/all',
 };
 
 const initialState = {
@@ -147,7 +148,8 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.TRIPS_INBOUND_ADD_HUB: {
-      const hubIDs = state.hubIDs.concat([action.payload.hub.key]);
+      const hubIDs = _.cloneDeep(state.hubIDs);
+      hubIDs.push(action.payload.hub.key);
       return Object.assign({}, state, {
         hubIDs,
       });
@@ -156,6 +158,13 @@ export function Reducer(state = initialState, action) {
     case Constants.TRIPS_INBOUND_DELETE_HUB: {
       const hubIDs = _.filter(state.hubIDs, hubID =>
         hubID !== action.payload.hub.key);
+      return Object.assign({}, state, {
+        hubIDs,
+      });
+    }
+
+    case Constants.TRIPS_INBOUND_ALL_HUB: {
+      const hubIDs = _.map(action.payload.hubs, hub => hub.key);
       return Object.assign({}, state, {
         hubIDs,
       });
@@ -204,7 +213,7 @@ export function FetchList() {
       offset: (currentPage - 1) * limit,
       tripProblemMasterID: (tripProblem.key || '') &&
       (tripProblem.key === 0 ? '' : tripProblem.key),
-      hubIDs: hubIDs.join(),
+      hubIDs: _.filter(hubIDs, hubID => hubID > 0).join(),
       pickupCity: (pickupCity.value || '') &&
       (pickupCity.value === 'All' ? '' : pickupCity.value),
     });
@@ -293,7 +302,7 @@ export function SetLimit(limit) {
 export function GoToContainer(containerNumber) {
   return (dispatch, getState) => {
     const { userLogged } = getState().app;
-    const { hubID, token } = userLogged;
+    const { token } = userLogged;
 
     const query = {
       containerNumber,
@@ -330,7 +339,7 @@ export function ResetState() {
 export function GoToTrip(tripID) {
   return (dispatch, getState) => {
     const { userLogged } = getState().app;
-    const { hubID, token } = userLogged;
+    const { token } = userLogged;
 
     const query = {
       tripID: tripID.split('-')[1],
@@ -640,6 +649,16 @@ export function deleteHubFilter(hub) {
     type: Constants.TRIPS_INBOUND_DELETE_HUB,
     payload: {
       hub,
+    },
+  };
+}
+
+export function setAllHubFilter(hubOptions) {
+  const hubs = _.filter(hubOptions, ['checked', true]);
+  return {
+    type: Constants.TRIPS_INBOUND_ALL_HUB,
+    payload: {
+      hubs,
     },
   };
 }
