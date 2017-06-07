@@ -4,7 +4,7 @@ import Dropzone from 'react-dropzone';
 
 import ImagePreview from '../views/base/imagePreview';
 import FetchPost from '../modules/fetch/post';
-import styles from './dragDropImageUploader.css';
+import styles from './dragDropImageUploader.scss';
 
 class DragDropImageUploader extends Component {
   constructor(props) {

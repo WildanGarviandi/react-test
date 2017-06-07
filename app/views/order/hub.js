@@ -5,7 +5,7 @@ import {containersFetch, districtsFetch, fillContainer, pagedOrdersFetch, pagedO
 
 import {ButtonAtRightTop, ButtonBase, Dropdown, InputText, Modal, PageTitle, Pagination} from '../base';
 import {CellForContainer, CellWithCheckbox, CellWithLink, CellWithNums, CellWithStatus, Tables, TableWithoutSearch} from './tables';
-import styles from './styles.css';
+import styles from './styles.scss';
 
 const classnaming = require('classnames/bind').bind(styles);
 

@@ -6,7 +6,7 @@ import {setReceived} from '../../modules/containers/actions/containersFetch';
 import {ButtonBase, ButtonWithLoading, Modal, Page} from '../base';
 import ContainerTable from './containerTable';
 import ContainerInfo from './containerInfographic';
-import styles from './styles.css';
+import styles from './styles.scss';
 
 const MessageModal = React.createClass({
   propTypes: {

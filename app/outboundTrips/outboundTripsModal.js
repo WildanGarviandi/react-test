@@ -4,7 +4,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import * as OutboundTrips from './outboundTripsService';
 import {Input, EmptySpace, ButtonBase} from '../views/base';
-import styles from './styles.css';
+import styles from './styles.scss';
 import {ModalDialog} from 'react-modal-dialog';
 
 import DateTime from 'react-datetime';

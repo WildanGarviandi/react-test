@@ -23,18 +23,20 @@ module.exports = {
         loader: 'babel-loader'
       },
       {
-        test: /\.css$/,
-        exclude: /node_modules/,
-        loader: combineLoaders([
+        test: /\.scss$/,
+        use: [
           {
-            loader: 'style-loader'
+            loader: 'style-loader',
           }, {
             loader: 'css-loader',
             query: {
               modules: true,
               localIdentName: '[name]__[local]--[hash:base64:5]',
             }
-          }])
+          }, {
+            loader: 'sass-loader',
+          }
+        ]
       },
       {
         test: /\.jpg$/,

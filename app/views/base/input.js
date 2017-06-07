@@ -1,6 +1,6 @@
 import React from 'react';
 import classNaming from 'classnames';
-import styles from '../../components/form.css';
+import styles from '../../components/form.scss';
 import NumberFormat from 'react-number-format';
 
 const CheckBox = React.createClass({

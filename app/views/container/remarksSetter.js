@@ -6,7 +6,7 @@ import * as TripDetails from '../../modules/inboundTripDetails';
 import {ButtonBase, ButtonWithLoading} from '../base';
 import { TextareaWithDefault } from '../../components/form';
 
-import styles from './styles.css';
+import styles from './styles.scss';
 
 const RemarksSetter = React.createClass({
   getInitialState() {
