@@ -13,7 +13,7 @@
   "deploy" : {
     "staging" : {
       "user" : "ubuntu",
-      "host": "hub.etobee.com",
+      "host": ["staging.hub.etobee.com", "staging2.hub.etobee.com"],
       "ref"  : "origin/staging",
       "repo" : "git@gitlab.com:etobee-techgroup/etobee-hub.git",
       "path" : "/home/ubuntu/hub-staging",
