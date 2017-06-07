@@ -574,8 +574,7 @@ export class Filter extends Component {
           <TripIDSearch />
           {/* Next Release */}
           {/* <OriginSearch /> */}
-          {/* Next Release */}
-          {/* <DriverSearch /> */}
+          <DriverSearch />
           <ChildMerchantSearch />
           <ZipCodeSearch />
         </div>
