@@ -23,9 +23,9 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-  const dispatchData = {
-    login: bindActionCreators(LoginAction.login, dispatch),
-  };
+  const dispatchData = bindActionCreators({
+    login: LoginAction.login,
+  }, dispatch);
 
   return dispatchData;
 };
