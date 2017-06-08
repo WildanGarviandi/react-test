@@ -50,30 +50,30 @@ const initialState = {
 export function Reducer(state = initialState, action) {
   switch (action.type) {
     case Constants.ORDERS_INBOUND_CURRENT_PAGE_SET: {
-      return _.assign({}, state, { currentPage: action.currentPage });
+      return Object.assign({}, state, { currentPage: action.currentPage });
     }
 
     case Constants.ORDERS_INBOUND_FETCH_END: {
-      return _.assign({}, state, { isFetching: false });
+      return Object.assign({}, state, { isFetching: false });
     }
 
     case Constants.ORDERS_INBOUND_FETCH_START: {
-      return _.assign({}, state, { isFetching: true });
+      return Object.assign({}, state, { isFetching: true });
     }
 
     case Constants.ORDERS_INBOUND_LIMIT_SET: {
-      return _.assign({}, state, { limit: action.limit });
+      return Object.assign({}, state, { limit: action.limit });
     }
 
     case Constants.ORDERS_INBOUND_SET: {
-      return _.assign({}, state, {
+      return Object.assign({}, state, {
         orders: action.orders,
         total: action.total,
       });
     }
 
     case Constants.ORDERS_INBOUND_MARK_RECEIVED_START: {
-      return _.assign({}, state, {
+      return Object.assign({}, state, {
         isMarking: true,
         isDuplicate: false,
         duplicateOrders: [],
@@ -81,7 +81,7 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.ORDERS_INBOUND_MARK_RECEIVED_END: {
-      return _.assign({}, state, {
+      return Object.assign({}, state, {
         isMarking: false,
         suggestion: action.payload.nextDestination,
         lastDestination: action.payload.lastDestination,
@@ -98,7 +98,7 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.ORDERS_INBOUND_MARK_RECEIVED_END_ERROR: {
-      return _.assign({}, state, {
+      return Object.assign({}, state, {
         isMarking: false,
         suggestion: action.nextDestination,
         lastDestination: action.lastDestination,
@@ -111,14 +111,14 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.ORDERS_INBOUND_MARK_RECEIVED_SET: {
-      return _.assign({}, state, {
+      return Object.assign({}, state, {
         isDuplicate: action.isDuplicate || false,
         duplicateOrders: action.duplicateOrders || [],
       });
     }
 
     case Constants.ORDERS_INBOUND_RESET_SUGGESTION: {
-      return _.assign({}, state, {
+      return Object.assign({}, state, {
         suggestion: {},
         lastDestination: {},
         successScanned: 0,
@@ -157,7 +157,7 @@ function ReFetchList() {
     const { token, hubID } = userLogged;
     const { currentPage, filters, limit } = inboundOrders;
 
-    const query = _.assign({}, filters, {
+    const query = Object.assign({}, filters, {
       limit: limit,
       offset: (currentPage - 1) * limit,
     });

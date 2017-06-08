@@ -83,9 +83,13 @@ const PanelSuggestion = React.createClass({
               >
                 X
               </div>
-              <div className={styles.successScanned}>
-                Success: {successScanned}
-              </div>
+              {
+                !hideDestination && (
+                  <div className={styles.successScanned}>
+                    Success: {successScanned}
+                  </div>
+                )
+              }
             </div>
             <div className={styles.scannedOrder}>
               {scannedOrder}
