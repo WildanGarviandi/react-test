@@ -770,7 +770,7 @@ class TableStateful extends Component {
 
 function StateToProps(state) {
   const { inboundTrips, driversStore, userLogged } = state.app;
-  const { hubID, isCentralHub } = userLogged;
+  const { hubID } = userLogged;
   const {
     isFetching,
     limit,
