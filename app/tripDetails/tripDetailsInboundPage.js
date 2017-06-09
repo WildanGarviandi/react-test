@@ -1,4 +1,4 @@
-import lodash from 'lodash'; //eslint-disable-line
+import * as _ from 'lodash'; //eslint-disable-line
 import React from 'react';
 import { connect } from 'react-redux';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
@@ -31,7 +31,7 @@ const headers = [{
 const InputRow = React.createClass({
   getInitialState() {
     return {
-      hover: false
+      hover: false,
     };
   },
   onMouseEnterHandler: () => {
@@ -84,7 +84,7 @@ const DetailPage = React.createClass({
   getInitialState() {
     return {
       showModalExternalTrip: false,
-      isMenuOpen: false
+      isMenuOpen: false,
     };
   },
   toggle() {
@@ -124,7 +124,7 @@ const DetailPage = React.createClass({
   },
   deliverTrip() {
     if (this.props.canMarkTripDelivered) {
-      const scanned = lodash.reduce(this.props.orders, (sum, order) => {
+      const scanned = _.reduce(this.props.orders, (sum, order) => {
         if (order.routeStatus === 'DELIVERED') {
           return sum + 1;
         } else {
@@ -132,8 +132,8 @@ const DetailPage = React.createClass({
         }
       }, 0);
 
-      if (scanned < lodash.size(this.props.orders)) {
-        let mark = confirm('You have scanned only ' + scanned + ' from ' + lodash.size(this.props.orders) +
+      if (scanned < _.size(this.props.orders)) {
+        let mark = confirm('You have scanned only ' + scanned + ' from ' + _.size(this.props.orders) +
           ' orders. Continue to mark this trip as delivered?');
         if (mark) {
           this.props.deliverTrip(this.props.trip.TripID);
@@ -157,7 +157,7 @@ const DetailPage = React.createClass({
   onChange(key) {
     return (val) => {
       this.props.update({ [key]: val });
-    }
+    };
   },
   render() {
     const { activeDistrict, backToContainer, canDeassignDriver, container,
@@ -180,7 +180,7 @@ const DetailPage = React.createClass({
       };
     }
 
-    const successfullScan = lodash.filter(this.props.orders, { 'isSuccess': 'Yes' });
+    const successfullScan = _.filter(this.props.orders, { 'isSuccess': 'Yes' });
 
     const tripType = trip.OriginHub ? 'INTERHUB' : 'FIRST LEG';
     const tripOrigin = trip.OriginHub ? `Hub ${trip.OriginHub.Name}` : TripParser(trip).WebstoreNames;
@@ -198,6 +198,8 @@ const DetailPage = React.createClass({
 
     const driverName = trip.Driver ?
       `${trip.Driver.FirstName} ${trip.Driver.LastName} | ${trip.Driver.CountryCode} ${trip.Driver.PhoneNumber}` : 'No Driver Yet';
+
+    const isInboundVal = true;
 
     return (
       <div>
@@ -434,7 +436,13 @@ const DetailPage = React.createClass({
               {
                 orders.length > 0 &&
                 <div style={{ position: 'relative' }}>
-                  <OrderTable isInbound={true} columns={fillAble ? columns : nonFillColumn} headers={headers} items={orders} statusList={statusList} />
+                  <OrderTable
+                    isInbound={isInboundVal}
+                    columns={fillAble ? columns : nonFillColumn}
+                    headers={headers}
+                    items={orders}
+                    statusList={statusList}
+                  />
                 </div>
               }
             </div>
@@ -442,7 +450,7 @@ const DetailPage = React.createClass({
         }
       </div>
     );
-  }
+  },
 });
 
 const mapStateToProps = (state, ownProps) => {
@@ -467,7 +475,7 @@ const mapStateToProps = (state, ownProps) => {
   const reusable = false;
   const fillAble = trip.OrderStatus && (trip.OrderStatus.OrderStatusID === 1 || trip.OrderStatus.OrderStatusID === 9);
 
-  const containerOrders = lodash.map(trip.UserOrderRoutes, (route) => {
+  const containerOrders = _.map(trip.UserOrderRoutes, (route) => {
     return route;
   });
 
@@ -476,7 +484,7 @@ const mapStateToProps = (state, ownProps) => {
     const Recipient = order.RecipientName + '\n' + (order.DropoffAddress ? order.DropoffAddress.City + ' ' + order.DropoffAddress.ZipCode : '');
     TotalWeight += order.PackageWeight;
 
-    return lodash.assign({}, order, {
+    return Object.assign({}, order, {
       id: `${order.UserOrderNumber} (${order.WebOrderID})`,
       id2: order.User.FirstName + ' ' + order.User.LastName,
       pickup: order.PickupAddress && order.PickupAddress.Address1,
@@ -504,11 +512,11 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     trip: TripParser(trip),
-    orders: orders,
-    container: container,
-    isFetching: isFetching,
-    fillAble: fillAble,
-    reusable: reusable,
+    orders,
+    container,
+    isFetching,
+    fillAble,
+    reusable,
     emptying: emptying || {},
     canDeassignDriver: (trip.Driver && trip.OrderStatus.OrderStatusID == 2) || false,
     canDeassignFleet: (trip.FleetManager) || false,
@@ -537,8 +545,8 @@ const mapStateToProps = (state, ownProps) => {
     isSuccessEditing,
     isCentralHub,
     userLogged,
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   const route = ownProps.routes[ownProps.routes.length - 1];
