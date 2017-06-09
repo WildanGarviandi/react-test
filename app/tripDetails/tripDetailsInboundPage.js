@@ -1,26 +1,19 @@
-import lodash from 'lodash';
+import * as _ from 'lodash'; //eslint-disable-line
 import React from 'react';
-import ReactDOM from 'react-dom';
-import classNaming from 'classnames';
-import moment from 'moment';
-import {connect} from 'react-redux';
-import {push} from 'react-router-redux';
-import {ContainerDetailsActions, StatusList} from '../modules';
-import districtsFetch from '../modules/districts/actions/districtsFetch';
-import {ButtonBase, ButtonWithLoading, Input, InputWithDefault, Modal, Page, Glyph, DropdownTypeAhead} from '../views/base';
-import {OrderTable} from './tripDetailsTable';
+import { connect } from 'react-redux';
+import { ModalContainer, ModalDialog } from 'react-modal-dialog';
+import { push } from 'react-router-redux';
+
+import { ContainerDetailsActions, StatusList } from '../modules';
+import { ButtonWithLoading, InputWithDefault, Page, Glyph } from '../views/base';
+import { OrderTable } from './tripDetailsTable';
 import * as TripDetails from './tripDetailsService';
 import ModalActions from '../modules/modals/actions';
-import Accordion from '../views/base/accordion';
 import RemarksSetter from '../components/remarksSetter';
 import styles from './styles.css';
-import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered, TripParser} from '../modules/trips';
-import {formatDate} from '../helper/time';
-import {ModalContainer, ModalDialog} from 'react-modal-dialog';
-import config from '../config/configValues.json';
-import DateTime from 'react-datetime';
+import { CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered, TripParser } from '../modules/trips';
+import { formatDate } from '../helper/time';
 import ImagePreview from '../views/base/imagePreview';
-import dateTimeStyles from '../views/container/datetime.css';
 import PickupOrdersModal from '../pickupOrders/pickupOrdersModal';
 import * as PickupOrdersReady from '../pickupOrders//pickupOrdersReadyService';
 import * as NearbyFleets from '../nearbyFleets/nearbyFleetService';
@@ -31,55 +24,56 @@ const nonFillColumn = columns.slice(0, columns.length - 1);
 const headers = [{
   id: 'EDS / WebOrderID', id2: 'Webstore',
   pickup: 'Pickup Address', dropoff: 'Recipient',
-  time: 'Pickup Time', orderStatus: 'Order Status',routeStatus: 'Route Status', action: 'Action',
+  time: 'Pickup Time', orderStatus: 'Order Status', routeStatus: 'Route Status', action: 'Action',
   CODValue: 'Value', isSuccess: 'Scanned', CODStatus: 'COD', IsCOD: 'COD Status'
 }];
 
 const InputRow = React.createClass({
   getInitialState() {
     return {
-      hover: false
+      hover: false,
     };
   },
-  onMouseEnterHandler: function() {
-    this.setState({
-      hover: true
-    });
+  onMouseEnterHandler: () => {
+    this.setState({ hover: true });
   },
-  onMouseLeaveHandler: function() {
-    this.setState({
-      hover: false
-    });
+  onMouseLeaveHandler: () => {
+    this.setState({ hover: false });
   },
   render() {
-    const {isEditing, label, value, onChange, type, icon, id} = this.props;
-    let stylesLabel = styles.itemLabelHover;
-    let stylesValue = styles.itemValueHover;
+    const { label, value, type, icon, id } = this.props;
+    const stylesLabel = styles.itemLabelHover;
+    const stylesValue = styles.itemValueHover;
 
     return (
-      <div style={{clear: 'both'}} 
-        className={styles.bgInput}>
-        <img className={styles.iconInput} src={"/img/" + icon + ".png"} />
+      <div className={styles['clear-both']}>
+        <img className={styles.iconInput} src={`/img/${icon}.png`} />
         <span className={stylesLabel}>{label}</span>
-        <InputWithDefault id={id} className={stylesValue} currentText={value} type={type} onChange={this.props.onChange} />
+        <InputWithDefault
+          id={id}
+          className={stylesValue}
+          currentText={value}
+          type={type}
+          onChange={this.props.onChange}
+        />
       </div>
     );
-  }
+  },
 });
 
 const DetailRow = React.createClass({
   render() {
-    const {isEditing, label, type, value, className, placeholder} = this.props;
+    const { isEditing, label, type, value, className, placeholder } = this.props;
     return (
-      <div style={{clear: 'both'}}>
+      <div className={styles['clear-both']}>
         <span className={styles.itemLabel}>{label}</span>
-        <span className={styles.itemValue}> 
-        {
-          type === "image" ?
-          <ImagePreview imageUrl={value} />
-          :
-          value
-        }
+        <span className={styles.itemValue}>
+          {
+            type === 'image' ?
+              <ImagePreview imageUrl={value} />
+              :
+              value
+          }
         </span>
       </div>
     );
@@ -90,21 +84,21 @@ const DetailPage = React.createClass({
   getInitialState() {
     return {
       showModalExternalTrip: false,
-      isMenuOpen: false
+      isMenuOpen: false,
     };
   },
   toggle() {
     this.setState({ isMenuOpen: !this.state.isMenuOpen });
   },
   openExternalTrip() {
-    this.setState({showModalExternalTrip: true});
+    this.setState({ showModalExternalTrip: true });
   },
   closeExternalTrip() {
-    this.setState({showModalExternalTrip: false});
+    this.setState({ showModalExternalTrip: false });
   },
   clearContainer() {
-    if(confirm('Are you sure you want to empty and reuse this container?')) {
-      this.setState({showModal: true});
+    if (confirm('Are you sure you want to empty and reuse this container?')) {
+      this.setState({ showModal: true });
       this.props.clearContainer(this.props.container.ContainerID);
     }
   },
@@ -112,12 +106,12 @@ const DetailPage = React.createClass({
     this.props.fetchStatusList();
   },
   deassignDriver() {
-    if(confirm('Are you sure you want to cancel assignment on this trip?')) {
+    if (confirm('Are you sure you want to cancel assignment on this trip?')) {
       this.props.driverDeassign();
     }
   },
   deassignFleet() {
-    if(confirm('Are you sure you want to cancel assignment on this trip?')) {
+    if (confirm('Are you sure you want to cancel assignment on this trip?')) {
       this.props.fleetDeassign();
     }
   },
@@ -125,12 +119,12 @@ const DetailPage = React.createClass({
     this.props.exportManifest();
   },
   goToFillContainer() {
-    const {trip} = this.props;
+    const { trip } = this.props;
     this.props.goToFillContainer(trip.TripID);
   },
   deliverTrip() {
-    if(this.props.canMarkTripDelivered) {
-      let scanned = lodash.reduce(this.props.orders, function (sum, order) {
+    if (this.props.canMarkTripDelivered) {
+      const scanned = _.reduce(this.props.orders, (sum, order) => {
         if (order.routeStatus === 'DELIVERED') {
           return sum + 1;
         } else {
@@ -138,9 +132,9 @@ const DetailPage = React.createClass({
         }
       }, 0);
 
-      if (scanned < lodash.size(this.props.orders)) {
-        let mark = confirm('You have scanned only ' + scanned + ' from ' + lodash.size(this.props.orders) +
-            ' orders. Continue to mark this trip as delivered?');
+      if (scanned < _.size(this.props.orders)) {
+        let mark = confirm('You have scanned only ' + scanned + ' from ' + _.size(this.props.orders) +
+          ' orders. Continue to mark this trip as delivered?');
         if (mark) {
           this.props.deliverTrip(this.props.trip.TripID);
         }
@@ -149,7 +143,7 @@ const DetailPage = React.createClass({
       }
     } else {
       this.props.askReuse({
-        message: "Do you want to reuse the container?",
+        message: 'Do you want to reuse the container?',
         action: this.props.reuse.bind(null, this.props.trip.TripID),
         cancel: this.props.deliverTrip.bind(null, this.props.trip.TripID),
       });
@@ -157,29 +151,36 @@ const DetailPage = React.createClass({
   },
   stateChange(key) {
     return (value) => {
-      this.setState({[key]: value});
+      this.setState({ [key]: value });
     };
   },
   onChange(key) {
     return (val) => {
-      this.props.update({[key]: val});
-    }
+      this.props.update({ [key]: val });
+    };
   },
   render() {
-    const {activeDistrict, backToContainer, canDeassignDriver, container,
-        districts, driverState, driversName, fillAble, hasDriver, isFetching,
-        isInbound, orders, reusable, statusList, TotalCODValue, CODCount,
-        totalDeliveryFee, trip, TotalWeight} = this.props;
+    const { activeDistrict, backToContainer, canDeassignDriver, container,
+      districts, driverState, driversName, fillAble, hasDriver, isFetching,
+      isInbound, orders, reusable, statusList, TotalCODValue, CODCount,
+      totalDeliveryFee, trip, TotalWeight } = this.props;
 
-    const {canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, isDeassigning,
-        isEditing, scannedOrder, canDeassignFleet, userLogged} = this.props;
+    const { canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, isDeassigning,
+      isEditing, scannedOrder, canDeassignFleet, userLogged } = this.props;
 
-    const hasPermission = {
-      add: checkPermission(userLogged, 'ADD_ORDER'),
-      completeTrip: checkPermission(userLogged, 'COMPLETE_TRIP'),
+    let hasPermission = {
+      add: true,
+      completeTrip: true,
     };
 
-    const successfullScan = lodash.filter(this.props.orders, {'isSuccess': 'Yes'});
+    if (userLogged) {
+      hasPermission = {
+        add: checkPermission(userLogged, 'ADD_ORDER'),
+        completeTrip: checkPermission(userLogged, 'COMPLETE_TRIP'),
+      };
+    }
+
+    const successfullScan = _.filter(this.props.orders, { 'isSuccess': 'Yes' });
 
     const tripType = trip.OriginHub ? 'INTERHUB' : 'FIRST LEG';
     const tripOrigin = trip.OriginHub ? `Hub ${trip.OriginHub.Name}` : TripParser(trip).WebstoreNames;
@@ -195,10 +196,10 @@ const DetailPage = React.createClass({
     const canSet = trip.DestinationHub || trip.District;
     const haveSet = trip.Driver || trip.FleetManager || trip.ExternalTrip;
 
-    const driverName = trip.Driver ? 
-      trip.Driver.FirstName + ' ' + trip.Driver.LastName + ' | ' + trip.Driver.CountryCode + ' ' +trip.Driver.PhoneNumber : 'No Driver Yet';
-    const companyName = trip.Driver && trip.Driver.Driver && trip.Driver.Driver.FleetManager && trip.Driver.Driver.FleetManager.CompanyDetail ? 
-      trip.Driver.Driver.FleetManager.CompanyDetail.CompanyName : '';
+    const driverName = trip.Driver ?
+      `${trip.Driver.FirstName} ${trip.Driver.LastName} | ${trip.Driver.CountryCode} ${trip.Driver.PhoneNumber}` : 'No Driver Yet';
+
+    const isInboundVal = true;
 
     return (
       <div>
@@ -217,25 +218,25 @@ const DetailPage = React.createClass({
                   </div>
                   <div onClick={this.closeExternalTrip} className={styles.modalClose}>
                     X
-                  </div> 
+                  </div>
                   <div>
                     <div className={styles.modalTabPanel3pL}>
                       <div className="row">
-                        <DetailRow label="3PL NAME" className={styles.colMd12 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.Sender} type="text" />
-                        <DetailRow label="TRANSPORTATION" className={styles.colMd12 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.Transportation} type="text" />
-                        <DetailRow label="DEPARTURE TIME" className={styles.colMd6 + ' ' + styles.detailRow} value={trip.ExternalTrip&& trip.ExternalTrip.DepartureTime && formatDate(trip.ExternalTrip.DepartureTime)} type="datetime" />
-                        <DetailRow label="ETA" className={styles.colMd6 + ' ' + styles.detailRow + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.ArrivalTime && formatDate(trip.ExternalTrip.ArrivalTime)} type="datetime" />
-                        <DetailRow label="FEE" className={styles.colMd6 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.Fee} type="number" />
-                        <DetailRow label="AWB NUMBER" className={styles.colMd6 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.AwbNumber} type="text" />
-                        <DetailRow label="IMAGE" className={styles.colMd6 + ' ' + styles.detailRow + ' ' + styles.uploadButton} value={trip.ExternalTrip && trip.ExternalTrip.PictureUrl} type="image" />
+                        <DetailRow label="3PL NAME" className={styles.colMd12 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.Sender} type='text' />
+                        <DetailRow label="TRANSPORTATION" className={styles.colMd12 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.Transportation} type='text' />
+                        <DetailRow label="DEPARTURE TIME" className={styles.colMd6 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.DepartureTime && formatDate(trip.ExternalTrip.DepartureTime)} type='datetime' />
+                        <DetailRow label="ETA" className={styles.colMd6 + ' ' + styles.detailRow + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.ArrivalTime && formatDate(trip.ExternalTrip.ArrivalTime)} type='datetime' />
+                        <DetailRow label="FEE" className={styles.colMd6 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.Fee} type='number' />
+                        <DetailRow label="AWB NUMBER" className={styles.colMd6 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.AwbNumber} type='text' />
+                        <DetailRow label="IMAGE" className={styles.colMd6 + ' ' + styles.detailRow + ' ' + styles.uploadButton} value={trip.ExternalTrip && trip.ExternalTrip.PictureUrl} type='image' />
                       </div>
                     </div>
                   </div>
-                </div> 
+                </div>
               </div>
             </ModalDialog>
           </ModalContainer>
-        }        
+        }
         <PickupOrdersModal />
         {
           this.props.notFound && !isFetching &&
@@ -243,11 +244,11 @@ const DetailPage = React.createClass({
         }
         {
           !this.props.notFound && !isFetching &&
-          <Page title={'Trip Details'} backButton="true">
+          <Page title={'Trip Details'} backButton='true'>
             <div className={styles.mainDetails}>
-              <div className="nb">
-                <span className={styles.tripID}>#{'TRIP-'+ trip.TripID} 
-                <span className={styles.orderStatus}>{trip.OrderStatus ? trip.OrderStatus.OrderStatus : ''}</span></span>
+              <div className='nb'>
+                <span className={styles.tripID}>#{'TRIP-' + trip.TripID}
+                  <span className={styles.orderStatus}>{trip.OrderStatus ? trip.OrderStatus.OrderStatus : ''}</span></span>
               </div>
               <div className={styles.mB30 + ' ' + styles.displayFlex + ' nb'}>
                 <div className={styles.colMd6 + ' ' + styles.noPadding + ' ' + styles.margin20}>
@@ -264,8 +265,8 @@ const DetailPage = React.createClass({
                   }
                 </div>
               </div>
-              <div style={{clear: 'both'}} />
-              <div className={styles.mB30 + " nb"}>
+              <div className={styles['clear-both']} />
+              <div className={styles.mB30 + ' nb'}>
                 <div className="row">
                   <div className={styles.colMd6 + ' ' + styles.noPadding}>
                     <div className={styles.colMd6}>
@@ -275,39 +276,56 @@ const DetailPage = React.createClass({
                     <div className={styles.colMd6}>
                       {
                         haveSet ?
-                        <div>
-                          {
-                            trip.FleetManager &&
-                            <div>
-                              <p className={styles.title}>Fleet : {trip.FleetManager.CompanyDetail && trip.FleetManager.CompanyDetail.CompanyName}</p>
-                              {
-                                trip.Driver &&
-                                <p>{driverName}</p>
-                              }
-                            </div>
-                          }
-                          {
-                            trip.ExternalTrip &&
-                            <div>
-                              <p className={styles.title}>3PL : {trip.ExternalTrip.Transportation}</p>
-                              <button className={styles.greenBtn} onClick={this.openExternalTrip}>Show Details</button>
-                            </div>
-                          }
-                        </div>
-                        :
-                        <div>
-                          <p className={styles.title}>3PL / Fleet :</p>
-                          <p>Not assigned yet</p>
-                          <button className={styles.greenBtn} onClick={this.props.showAssignModal}>Assign Trip</button>
-                        </div>
+                          <div>
+                            {
+                              trip.FleetManager &&
+                              <div>
+                                <p className={styles.title}>
+                                  Fleet : {trip.FleetManager.CompanyDetail &&
+                                    trip.FleetManager.CompanyDetail.CompanyName}
+                                </p>
+                                {
+                                  trip.Driver &&
+                                  <p>{driverName}</p>
+                                }
+                              </div>
+                            }
+                            {
+                              trip.ExternalTrip &&
+                              <div>
+                                <p className={styles.title}>
+                                  3PL : {trip.ExternalTrip.Transportation}
+                                </p>
+                                <button
+                                  className={styles.greenBtn}
+                                  onClick={this.openExternalTrip}
+                                >
+                                  Show Details
+                                </button>
+                              </div>
+                            }
+                          </div>
+                          :
+                          <div>
+                            <p className={styles.title}>
+                            3PL / Fleet :
+                            </p>
+                            <p>Not assigned yet</p>
+                            <button
+                              className={styles.greenBtn}
+                              onClick={this.props.showAssignModal}
+                            >
+                              Assign Trip
+                            </button>
+                          </div>
                       }
                       {
-                        (canDeassignDriver || canDeassignFleet) &&                        
-                        <ButtonWithLoading 
-                          styles={{base: styles.greenBtn}} 
-                          textBase="Cancel Assignment" 
-                          textLoading="Deassigning" 
-                          onClick={canDeassignDriver ? this.deassignDriver : this.deassignFleet} 
+                        (canDeassignDriver || canDeassignFleet) &&
+                        <ButtonWithLoading
+                          styles={{ base: styles.greenBtn }}
+                          textBase="Cancel Assignment"
+                          textLoading="Deassigning"
+                          onClick={canDeassignDriver ? this.deassignDriver : this.deassignFleet}
                           isLoading={isDeassigning} />
                       }
                     </div>
@@ -315,31 +333,53 @@ const DetailPage = React.createClass({
                   <div className={styles.colMd6 + ' ' + styles.noPadding}>
                     <div className={styles.colMd4}>
                     </div>
-                    <div className={styles.colMd4 + ' '+ styles.actionButtoninside}>
+                    <div className={styles.colMd4 + ' ' + styles.actionButtoninside}>
                       {
                         reusable &&
-                        <ButtonWithLoading styles={{base: styles.greenBtn}} textBase={'Clear and Reuse Container'} textLoading={'Clearing Container'} isLoading={emptying.isInProcess} onClick={this.clearContainer} />
+                        <ButtonWithLoading styles={{ base: styles.greenBtn }} textBase={'Clear and Reuse Container'} textLoading={'Clearing Container'} isLoading={emptying.isInProcess} onClick={this.clearContainer} />
                       }
                       {
                         (canMarkTripDelivered || canMarkContainer) && hasPermission.completeTrip &&
-                        <ButtonWithLoading styles={{base: styles.greenBtn}} textBase={'Complete Trip'} textLoading={'Clearing Container'} isLoading={false} onClick={this.deliverTrip} />
+                        <ButtonWithLoading styles={{ base: styles.greenBtn }} textBase={'Complete Trip'} textLoading={'Clearing Container'} isLoading={false} onClick={this.deliverTrip} />
                       }
                     </div>
                     <div className={styles.colMd4}>
-                      <button type="button" className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} onClick={this.toggle}>
+                      <button type='button' className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} onClick={this.toggle}>
                         <div className={styles.manifestSpan}>Print Manifest</div>
                         <div className={this.state.isMenuOpen ? styles.arrowUp : styles.arrowDown} />
                       </button>
-                      { this.state.isMenuOpen &&
+                      {this.state.isMenuOpen &&
                         <ul>
                           <li>
-                            <a href={'/trips/' + trip.TripID + '/manifest#'} className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} target="_blank">Detailed</a>
+                            <a
+                              href={`/trips/${trip.TripID}/manifest#`}
+                              className={`${styles.colMd12} ${styles.manifestLink} btn btn-md btn-default`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              Detailed
+                            </a>
                           </li>
                           <li>
-                            <a href={'/trips/' + trip.TripID + '/coverManifest#'} className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} target="_blank">Cover</a>
+                            <a
+                              href={`/trips/${trip.TripID}/coverManifest#`}
+                              className={`${styles.colMd12} ${styles.manifestLink} btn btn-md btn-default`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              Cover
+                            </a>
                           </li>
                           <li>
-                            <a onClick={this.exportManifest} className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} target="_blank">Excel</a>
+                            <a
+                              role="button"
+                              onClick={this.exportManifest}
+                              className={`${styles.colMd12}${styles.manifestLink} btn btn-md btn-default`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              Excel
+                            </a>
                           </li>
                         </ul>
                       }
@@ -347,56 +387,62 @@ const DetailPage = React.createClass({
                   </div>
                 </div>
               </div>
-              <div style={{clear: 'both'}} />              
-                <div className={styles.infoArea + ' ' + styles.mB30 + " nb"}>
-                  <div className={styles.colMd6 + ' ' + styles.noPadding + ' ' + styles.stats}>
-                    <p className={styles.title}>STATS</p>
-                    <div className={styles.colMd4 + ' ' + styles.noPadding}>
-                      <h3>{TotalWeight}<small> Kg</small></h3>
-                      <p>Weight</p>
-                    </div>
-                    <div className={styles.colMd4 + ' ' + styles.noPadding}>
-                      <h3><small>#</small>{orders.length}</h3>
-                      <p>Orders</p>
-                    </div>
-                    <div className={styles.colMd4 + ' ' + styles.noPadding}>
-                      <h3><small>Rp </small>{totalDeliveryFee || 0}</h3>
-                      <p>Delivery Fee</p>
-                    </div>
+              <div className={styles['clear-both']} />
+              <div className={styles.infoArea + ' ' + styles.mB30 + ' nb'}>
+                <div className={styles.colMd6 + ' ' + styles.noPadding + ' ' + styles.stats}>
+                  <p className={styles.title}>STATS</p>
+                  <div className={styles.colMd4 + ' ' + styles.noPadding}>
+                    <h3>{TotalWeight}<small> Kg</small></h3>
+                    <p>Weight</p>
                   </div>
-                  <div className={styles.colMd1}>
+                  <div className={styles.colMd4 + ' ' + styles.noPadding}>
+                    <h3><small>#</small>{orders.length}</h3>
+                    <p>Orders</p>
                   </div>
-                  <div className={styles.colMd5 + ' ' + styles.noPadding + ' ' + styles.cod}>
-                    <p className={styles.title}>COD</p>
-                    <div className={styles.colMd6 + ' ' + styles.noPadding}>
-                      <h3><small>#</small>{CODCount}</h3>
-                      <p>COD Orders</p>
-                    </div>
-                    <div className={styles.colMd6 + ' ' + styles.noPadding}>
-                      <h3><small>Rp </small>{TotalCODValue}</h3>
-                      <p>COD Value</p>
-                    </div>
+                  <div className={styles.colMd4 + ' ' + styles.noPadding}>
+                    <h3><small>Rp </small>{totalDeliveryFee || 0}</h3>
+                    <p>Delivery Fee</p>
                   </div>
                 </div>
-              
+                <div className={styles.colMd1}>
+                </div>
+                <div className={styles.colMd5 + ' ' + styles.noPadding + ' ' + styles.cod}>
+                  <p className={styles.title}>COD</p>
+                  <div className={styles.colMd6 + ' ' + styles.noPadding}>
+                    <h3><small>#</small>{CODCount}</h3>
+                    <p>COD Orders</p>
+                  </div>
+                  <div className={styles.colMd6 + ' ' + styles.noPadding}>
+                    <h3><small>Rp </small>{TotalCODValue}</h3>
+                    <p>COD Value</p>
+                  </div>
+                </div>
+              </div>
+
               <div className={styles.displayFlex + ' nb'}>
                 <div className={styles.colMd6 + ' ' + styles.noPadding}>
-                  <span style={{display: 'block', marginTop: 0, marginBottom: 20}}>
-                    <span style={{display: 'inline-block', verticalAlign: 'middle'}}>
+                  <span style={{ display: 'block', marginTop: 0, marginBottom: 20 }}>
+                    <span style={{ display: 'inline-block', verticalAlign: 'middle' }}>
                       <label className={styles.title}>ORDERS IN THIS TRIP</label>
                     </span>
                     {
                       hasPermission.add && fillAble &&
-                      <ButtonWithLoading textBase={'+ Add Order'} onClick={this.goToFillContainer} 
-                        styles={{base: styles.normalBtn + ' ' + styles.addOrderBtn}} />
+                      <ButtonWithLoading textBase={'+ Add Order'} onClick={this.goToFillContainer}
+                        styles={{ base: styles.normalBtn + ' ' + styles.addOrderBtn }} />
                     }
                   </span>
                 </div>
               </div>
               {
                 orders.length > 0 &&
-                <div style={{position: 'relative'}}>
-                  <OrderTable isInbound={true} columns={fillAble ? columns : nonFillColumn} headers={headers} items={orders} statusList={statusList} />
+                <div style={{ position: 'relative' }}>
+                  <OrderTable
+                    isInbound={isInboundVal}
+                    columns={fillAble ? columns : nonFillColumn}
+                    headers={headers}
+                    items={orders}
+                    statusList={statusList}
+                  />
                 </div>
               }
             </div>
@@ -404,32 +450,32 @@ const DetailPage = React.createClass({
         }
       </div>
     );
-  }
+  },
 });
 
 const mapStateToProps = (state, ownProps) => {
-  const {tripDetails, userLogged, orderDetails} = state.app;
-  const {hubID, isCentralHub} = userLogged;
-  const {isDeassigning, isFetching, orders: rawOrders, isEditing, scannedOrder} = tripDetails;
+  const { tripDetails, userLogged, orderDetails } = state.app;
+  const { hubID, isCentralHub } = userLogged;
+  const { isDeassigning, isFetching, orders: rawOrders, isEditing, scannedOrder } = tripDetails;
   const trip = ownProps.trip;
   const isSuccessEditing = orderDetails.isSuccessEditing;
   const containerID = ownProps.params.id;
-  const {containers, statusList} = state.app.containers;
+  const { containers, statusList } = state.app.containers;
   const container = containers[containerID];
 
-  if(isFetching) {
-    return {isFetching: true};
+  if (isFetching) {
+    return { isFetching: true };
   }
 
-  if(!trip) {
-    return {notFound: true};
+  if (!trip) {
+    return { notFound: true };
   }
 
   const emptying = false;
   const reusable = false;
   const fillAble = trip.OrderStatus && (trip.OrderStatus.OrderStatusID === 1 || trip.OrderStatus.OrderStatusID === 9);
 
-  const containerOrders = lodash.map(trip.UserOrderRoutes, (route) => {
+  const containerOrders = _.map(trip.UserOrderRoutes, (route) => {
     return route;
   });
 
@@ -438,7 +484,7 @@ const mapStateToProps = (state, ownProps) => {
     const Recipient = order.RecipientName + '\n' + (order.DropoffAddress ? order.DropoffAddress.City + ' ' + order.DropoffAddress.ZipCode : '');
     TotalWeight += order.PackageWeight;
 
-    return lodash.assign({}, order, {
+    return Object.assign({}, order, {
       id: `${order.UserOrderNumber} (${order.WebOrderID})`,
       id2: order.User.FirstName + ' ' + order.User.LastName,
       pickup: order.PickupAddress && order.PickupAddress.Address1,
@@ -452,9 +498,9 @@ const mapStateToProps = (state, ownProps) => {
       DeliveryFee: order.DeliveryFee,
       tripID: trip.TripID,
       isSuccess: order.Status === 'DELIVERED' ? 'Yes' : 'No',
-      IsCOD: order.IsCOD ? 'Yes': 'No',
+      IsCOD: order.IsCOD ? 'Yes' : 'No',
       CODStatus: (order.CODPaymentUserOrder && order.CODPaymentUserOrder.CODPayment) ?
-                  order.CODPaymentUserOrder.CODPayment.Status : 'No',
+        order.CODPaymentUserOrder.CODPayment.Status : 'No',
     });
   });
 
@@ -466,11 +512,11 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     trip: TripParser(trip),
-    orders: orders,
-    container: container,
-    isFetching: isFetching,
-    fillAble: fillAble,
-    reusable: reusable,
+    orders,
+    container,
+    isFetching,
+    fillAble,
+    reusable,
     emptying: emptying || {},
     canDeassignDriver: (trip.Driver && trip.OrderStatus.OrderStatusID == 2) || false,
     canDeassignFleet: (trip.FleetManager) || false,
@@ -479,7 +525,7 @@ const mapStateToProps = (state, ownProps) => {
       isPicking: state.app.driversStore.driverList.isLoading,
     },
     statusList: _.chain(statusList)
-      .map((key, val) => ({key: key, value: val}))
+      .map((key, val) => ({ key: key, value: val }))
       .sortBy((arr) => (arr.key))
       .value(),
     totalDeliveryFee: _.reduce(orders, (total, order) => {
@@ -499,67 +545,67 @@ const mapStateToProps = (state, ownProps) => {
     isSuccessEditing,
     isCentralHub,
     userLogged,
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const route = ownProps.routes[ownProps.routes.length-1];
+  const route = ownProps.routes[ownProps.routes.length - 1];
   const path = route.path;
 
   return {
-    backToContainer: function() {
+    backToContainer: () => {
       dispatch(push('/container'));
     },
-    clearContainer: function(id) {
+    clearContainer: (id) => {
       dispatch(ContainerDetailsActions.clearContainer(id));
     },
-    containerDetailsFetch: function(id) {
+    containerDetailsFetch: (id) => {
       dispatch(TripDetails.FetchDetails(id));
     },
-    driverDeassign: function() {
+    driverDeassign: () => {
       dispatch(TripDetails.Deassign(ownProps.params.id));
     },
-    fleetDeassign: function() {
+    fleetDeassign: () => {
       dispatch(TripDetails.DeassignFleet(ownProps.params.id));
     },
-    goToFillContainer: function(id) {
-      dispatch(push('/trips/' + id + '/fillPickup'));
+    goToFillContainer: (id) => {
+      dispatch(push(`/trips/${id}/fillPickup`));
     },
-    fetchStatusList: function() {
+    fetchStatusList: () => {
       dispatch(StatusList.fetch());
     },
-    markReceived: function(scannedID, backElementFocusID, scanUpdateToggle) {
+    markReceived: (scannedID, backElementFocusID, scanUpdateToggle) => {
       dispatch(TripDetails.OrderReceived(scannedID, backElementFocusID, scanUpdateToggle));
     },
-    deliverTrip: function(tripID, orders) {
+    deliverTrip: (tripID) => {
       dispatch(TripDetails.TripDeliver(tripID));
     },
-    askReuse: function(modal) {
+    askReuse: (modal) => {
       dispatch(ModalActions.addConfirmation(modal));
     },
-    reuse: function(tripID) {
+    reuse: (tripID) => {
       dispatch(TripDetails.TripDeliver(tripID, true));
     },
-    exportManifest: function() {
+    exportManifest: () => {
       dispatch(TripDetails.ExportManifest(ownProps.params.id));
     },
-    UpdateOrder: function(id, order){
+    UpdateOrder: (id, order) => {
       dispatch(TripDetails.editOrder(id, order, true));
     },
-    StopEditOrder: function() {
+    StopEditOrder: () => {
       dispatch(TripDetails.StopEditOrder());
     },
-    revertSuccessEditing: function(){
+    revertSuccessEditing: () => {
       dispatch(TripDetails.revertSuccessEditing());
     },
-    showAssignModal: function() {
-      dispatch(PickupOrdersReady.ShowAssignModal(parseInt(ownProps.params.id)));
+    showAssignModal: () => {
+      dispatch(PickupOrdersReady.ShowAssignModal(parseInt(ownProps.params.id, 10)));
       dispatch(NearbyFleets.FetchList());
-      dispatch(PickupOrdersReady.FetchDrivers(parseInt(ownProps.params.id)));
+      dispatch(PickupOrdersReady.FetchDrivers(parseInt(ownProps.params.id, 10)));
     },
     update: (trip) => {
       dispatch(TripDetails.UpdateExternalTrip(trip));
-    }
+    },
   };
 };
 
