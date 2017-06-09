@@ -1,26 +1,19 @@
-import lodash from 'lodash';
+import lodash from 'lodash'; //eslint-disable-line
 import React from 'react';
-import ReactDOM from 'react-dom';
-import classNaming from 'classnames';
-import moment from 'moment';
 import { connect } from 'react-redux';
+import { ModalContainer, ModalDialog } from 'react-modal-dialog';
 import { push } from 'react-router-redux';
+
 import { ContainerDetailsActions, StatusList } from '../modules';
-import districtsFetch from '../modules/districts/actions/districtsFetch';
-import { ButtonBase, ButtonWithLoading, Input, InputWithDefault, Modal, Page, Glyph, DropdownTypeAhead } from '../views/base';
+import { ButtonWithLoading, InputWithDefault, Page, Glyph } from '../views/base';
 import { OrderTable } from './tripDetailsTable';
 import * as TripDetails from './tripDetailsService';
 import ModalActions from '../modules/modals/actions';
-import Accordion from '../views/base/accordion';
 import RemarksSetter from '../components/remarksSetter';
 import styles from './styles.css';
 import { CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered, TripParser } from '../modules/trips';
 import { formatDate } from '../helper/time';
-import { ModalContainer, ModalDialog } from 'react-modal-dialog';
-import config from '../config/configValues.json';
-import DateTime from 'react-datetime';
 import ImagePreview from '../views/base/imagePreview';
-import dateTimeStyles from '../views/container/datetime.css';
 import PickupOrdersModal from '../pickupOrders/pickupOrdersModal';
 import * as PickupOrdersReady from '../pickupOrders//pickupOrdersReadyService';
 import * as NearbyFleets from '../nearbyFleets/nearbyFleetService';
@@ -41,41 +34,42 @@ const InputRow = React.createClass({
       hover: false
     };
   },
-  onMouseEnterHandler: function () {
-    this.setState({
-      hover: true
-    });
+  onMouseEnterHandler: () => {
+    this.setState({ hover: true });
   },
-  onMouseLeaveHandler: function () {
-    this.setState({
-      hover: false
-    });
+  onMouseLeaveHandler: () => {
+    this.setState({ hover: false });
   },
   render() {
-    const { isEditing, label, value, onChange, type, icon, id } = this.props;
-    let stylesLabel = styles.itemLabelHover;
-    let stylesValue = styles.itemValueHover;
+    const { label, value, type, icon, id } = this.props;
+    const stylesLabel = styles.itemLabelHover;
+    const stylesValue = styles.itemValueHover;
 
     return (
-      <div style={{ clear: 'both' }}
-        className={styles.bgInput}>
-        <img className={styles.iconInput} src={"/img/" + icon + ".png"} />
+      <div className={styles['clear-both']}>
+        <img className={styles.iconInput} src={`/img/${icon}.png`} />
         <span className={stylesLabel}>{label}</span>
-        <InputWithDefault id={id} className={stylesValue} currentText={value} type={type} onChange={this.props.onChange} />
+        <InputWithDefault
+          id={id}
+          className={stylesValue}
+          currentText={value}
+          type={type}
+          onChange={this.props.onChange}
+        />
       </div>
     );
-  }
+  },
 });
 
 const DetailRow = React.createClass({
   render() {
     const { isEditing, label, type, value, className, placeholder } = this.props;
     return (
-      <div style={{ clear: 'both' }}>
+      <div className={styles['clear-both']}>
         <span className={styles.itemLabel}>{label}</span>
         <span className={styles.itemValue}>
           {
-            type === "image" ?
+            type === 'image' ?
               <ImagePreview imageUrl={value} />
               :
               value
@@ -130,7 +124,7 @@ const DetailPage = React.createClass({
   },
   deliverTrip() {
     if (this.props.canMarkTripDelivered) {
-      let scanned = lodash.reduce(this.props.orders, function (sum, order) {
+      const scanned = lodash.reduce(this.props.orders, (sum, order) => {
         if (order.routeStatus === 'DELIVERED') {
           return sum + 1;
         } else {
@@ -149,7 +143,7 @@ const DetailPage = React.createClass({
       }
     } else {
       this.props.askReuse({
-        message: "Do you want to reuse the container?",
+        message: 'Do you want to reuse the container?',
         action: this.props.reuse.bind(null, this.props.trip.TripID),
         cancel: this.props.deliverTrip.bind(null, this.props.trip.TripID),
       });
@@ -203,9 +197,7 @@ const DetailPage = React.createClass({
     const haveSet = trip.Driver || trip.FleetManager || trip.ExternalTrip;
 
     const driverName = trip.Driver ?
-      trip.Driver.FirstName + ' ' + trip.Driver.LastName + ' | ' + trip.Driver.CountryCode + ' ' + trip.Driver.PhoneNumber : 'No Driver Yet';
-    const companyName = trip.Driver && trip.Driver.Driver && trip.Driver.Driver.FleetManager && trip.Driver.Driver.FleetManager.CompanyDetail ?
-      trip.Driver.Driver.FleetManager.CompanyDetail.CompanyName : '';
+      `${trip.Driver.FirstName} ${trip.Driver.LastName} | ${trip.Driver.CountryCode} ${trip.Driver.PhoneNumber}` : 'No Driver Yet';
 
     return (
       <div>
@@ -228,13 +220,13 @@ const DetailPage = React.createClass({
                   <div>
                     <div className={styles.modalTabPanel3pL}>
                       <div className="row">
-                        <DetailRow label="3PL NAME" className={styles.colMd12 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.Sender} type="text" />
-                        <DetailRow label="TRANSPORTATION" className={styles.colMd12 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.Transportation} type="text" />
-                        <DetailRow label="DEPARTURE TIME" className={styles.colMd6 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.DepartureTime && formatDate(trip.ExternalTrip.DepartureTime)} type="datetime" />
-                        <DetailRow label="ETA" className={styles.colMd6 + ' ' + styles.detailRow + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.ArrivalTime && formatDate(trip.ExternalTrip.ArrivalTime)} type="datetime" />
-                        <DetailRow label="FEE" className={styles.colMd6 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.Fee} type="number" />
-                        <DetailRow label="AWB NUMBER" className={styles.colMd6 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.AwbNumber} type="text" />
-                        <DetailRow label="IMAGE" className={styles.colMd6 + ' ' + styles.detailRow + ' ' + styles.uploadButton} value={trip.ExternalTrip && trip.ExternalTrip.PictureUrl} type="image" />
+                        <DetailRow label="3PL NAME" className={styles.colMd12 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.Sender} type='text' />
+                        <DetailRow label="TRANSPORTATION" className={styles.colMd12 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.Transportation} type='text' />
+                        <DetailRow label="DEPARTURE TIME" className={styles.colMd6 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.DepartureTime && formatDate(trip.ExternalTrip.DepartureTime)} type='datetime' />
+                        <DetailRow label="ETA" className={styles.colMd6 + ' ' + styles.detailRow + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.ArrivalTime && formatDate(trip.ExternalTrip.ArrivalTime)} type='datetime' />
+                        <DetailRow label="FEE" className={styles.colMd6 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.Fee} type='number' />
+                        <DetailRow label="AWB NUMBER" className={styles.colMd6 + ' ' + styles.detailRow} value={trip.ExternalTrip && trip.ExternalTrip.AwbNumber} type='text' />
+                        <DetailRow label="IMAGE" className={styles.colMd6 + ' ' + styles.detailRow + ' ' + styles.uploadButton} value={trip.ExternalTrip && trip.ExternalTrip.PictureUrl} type='image' />
                       </div>
                     </div>
                   </div>
@@ -250,9 +242,9 @@ const DetailPage = React.createClass({
         }
         {
           !this.props.notFound && !isFetching &&
-          <Page title={'Trip Details'} backButton="true">
+          <Page title={'Trip Details'} backButton='true'>
             <div className={styles.mainDetails}>
-              <div className="nb">
+              <div className='nb'>
                 <span className={styles.tripID}>#{'TRIP-' + trip.TripID}
                   <span className={styles.orderStatus}>{trip.OrderStatus ? trip.OrderStatus.OrderStatus : ''}</span></span>
               </div>
@@ -271,8 +263,8 @@ const DetailPage = React.createClass({
                   }
                 </div>
               </div>
-              <div style={{ clear: 'both' }} />
-              <div className={styles.mB30 + " nb"}>
+              <div className={styles['clear-both']} />
+              <div className={styles.mB30 + ' nb'}>
                 <div className="row">
                   <div className={styles.colMd6 + ' ' + styles.noPadding}>
                     <div className={styles.colMd6}>
@@ -286,7 +278,10 @@ const DetailPage = React.createClass({
                             {
                               trip.FleetManager &&
                               <div>
-                                <p className={styles.title}>Fleet : {trip.FleetManager.CompanyDetail && trip.FleetManager.CompanyDetail.CompanyName}</p>
+                                <p className={styles.title}>
+                                  Fleet : {trip.FleetManager.CompanyDetail &&
+                                    trip.FleetManager.CompanyDetail.CompanyName}
+                                </p>
                                 {
                                   trip.Driver &&
                                   <p>{driverName}</p>
@@ -296,16 +291,30 @@ const DetailPage = React.createClass({
                             {
                               trip.ExternalTrip &&
                               <div>
-                                <p className={styles.title}>3PL : {trip.ExternalTrip.Transportation}</p>
-                                <button className={styles.greenBtn} onClick={this.openExternalTrip}>Show Details</button>
+                                <p className={styles.title}>
+                                  3PL : {trip.ExternalTrip.Transportation}
+                                </p>
+                                <button
+                                  className={styles.greenBtn}
+                                  onClick={this.openExternalTrip}
+                                >
+                                  Show Details
+                                </button>
                               </div>
                             }
                           </div>
                           :
                           <div>
-                            <p className={styles.title}>3PL / Fleet :</p>
+                            <p className={styles.title}>
+                            3PL / Fleet :
+                            </p>
                             <p>Not assigned yet</p>
-                            <button className={styles.greenBtn} onClick={this.props.showAssignModal}>Assign Trip</button>
+                            <button
+                              className={styles.greenBtn}
+                              onClick={this.props.showAssignModal}
+                            >
+                              Assign Trip
+                            </button>
                           </div>
                       }
                       {
@@ -333,20 +342,42 @@ const DetailPage = React.createClass({
                       }
                     </div>
                     <div className={styles.colMd4}>
-                      <button type="button" className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} onClick={this.toggle}>
+                      <button type='button' className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} onClick={this.toggle}>
                         <div className={styles.manifestSpan}>Print Manifest</div>
                         <div className={this.state.isMenuOpen ? styles.arrowUp : styles.arrowDown} />
                       </button>
                       {this.state.isMenuOpen &&
                         <ul>
                           <li>
-                            <a href={'/trips/' + trip.TripID + '/manifest#'} className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} target="_blank">Detailed</a>
+                            <a
+                              href={`/trips/${trip.TripID}/manifest#`}
+                              className={`${styles.colMd12} ${styles.manifestLink} btn btn-md btn-default`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              Detailed
+                            </a>
                           </li>
                           <li>
-                            <a href={'/trips/' + trip.TripID + '/coverManifest#'} className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} target="_blank">Cover</a>
+                            <a
+                              href={`/trips/${trip.TripID}/coverManifest#`}
+                              className={`${styles.colMd12} ${styles.manifestLink} btn btn-md btn-default`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              Cover
+                            </a>
                           </li>
                           <li>
-                            <a onClick={this.exportManifest} className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} target="_blank">Excel</a>
+                            <a
+                              role="button"
+                              onClick={this.exportManifest}
+                              className={`${styles.colMd12}${styles.manifestLink} btn btn-md btn-default`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              Excel
+                            </a>
                           </li>
                         </ul>
                       }
@@ -354,8 +385,8 @@ const DetailPage = React.createClass({
                   </div>
                 </div>
               </div>
-              <div style={{ clear: 'both' }} />
-              <div className={styles.infoArea + ' ' + styles.mB30 + " nb"}>
+              <div className={styles['clear-both']} />
+              <div className={styles.infoArea + ' ' + styles.mB30 + ' nb'}>
                 <div className={styles.colMd6 + ' ' + styles.noPadding + ' ' + styles.stats}>
                   <p className={styles.title}>STATS</p>
                   <div className={styles.colMd4 + ' ' + styles.noPadding}>
@@ -514,59 +545,59 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   const path = route.path;
 
   return {
-    backToContainer: function () {
+    backToContainer: () => {
       dispatch(push('/container'));
     },
-    clearContainer: function (id) {
+    clearContainer: (id) => {
       dispatch(ContainerDetailsActions.clearContainer(id));
     },
-    containerDetailsFetch: function (id) {
+    containerDetailsFetch: (id) => {
       dispatch(TripDetails.FetchDetails(id));
     },
-    driverDeassign: function () {
+    driverDeassign: () => {
       dispatch(TripDetails.Deassign(ownProps.params.id));
     },
-    fleetDeassign: function () {
+    fleetDeassign: () => {
       dispatch(TripDetails.DeassignFleet(ownProps.params.id));
     },
-    goToFillContainer: function (id) {
-      dispatch(push('/trips/' + id + '/fillPickup'));
+    goToFillContainer: (id) => {
+      dispatch(push(`/trips/${id}/fillPickup`));
     },
-    fetchStatusList: function () {
+    fetchStatusList: () => {
       dispatch(StatusList.fetch());
     },
-    markReceived: function (scannedID, backElementFocusID, scanUpdateToggle) {
+    markReceived: (scannedID, backElementFocusID, scanUpdateToggle) => {
       dispatch(TripDetails.OrderReceived(scannedID, backElementFocusID, scanUpdateToggle));
     },
-    deliverTrip: function (tripID, orders) {
+    deliverTrip: (tripID) => {
       dispatch(TripDetails.TripDeliver(tripID));
     },
-    askReuse: function (modal) {
+    askReuse: (modal) => {
       dispatch(ModalActions.addConfirmation(modal));
     },
-    reuse: function (tripID) {
+    reuse: (tripID) => {
       dispatch(TripDetails.TripDeliver(tripID, true));
     },
-    exportManifest: function () {
+    exportManifest: () => {
       dispatch(TripDetails.ExportManifest(ownProps.params.id));
     },
-    UpdateOrder: function (id, order) {
+    UpdateOrder: (id, order) => {
       dispatch(TripDetails.editOrder(id, order, true));
     },
-    StopEditOrder: function () {
+    StopEditOrder: () => {
       dispatch(TripDetails.StopEditOrder());
     },
-    revertSuccessEditing: function () {
+    revertSuccessEditing: () => {
       dispatch(TripDetails.revertSuccessEditing());
     },
-    showAssignModal: function () {
-      dispatch(PickupOrdersReady.ShowAssignModal(parseInt(ownProps.params.id)));
+    showAssignModal: () => {
+      dispatch(PickupOrdersReady.ShowAssignModal(parseInt(ownProps.params.id, 10)));
       dispatch(NearbyFleets.FetchList());
-      dispatch(PickupOrdersReady.FetchDrivers(parseInt(ownProps.params.id)));
+      dispatch(PickupOrdersReady.FetchDrivers(parseInt(ownProps.params.id, 10)));
     },
     update: (trip) => {
       dispatch(TripDetails.UpdateExternalTrip(trip));
-    }
+    },
   };
 };
 
