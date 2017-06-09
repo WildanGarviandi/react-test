@@ -9,11 +9,11 @@ import * as OutboundTrips from '../../modules/outboundTrips';
 import {DropdownTypeAhead, Input, Pagination} from '../base';
 import {DropdownWithState2} from '../base/dropdown';
 import DateRangePicker from '../base/dateRangePicker';
-import tableStyles from '../base/table.css';
+import tableStyles from '../base/table.scss';
 import StatusDropdown from '../base/statusDropdown';
 import {TripParser} from '../../modules/trips';
 import {modalAction} from '../../modules/modals/constants';
-import stylesModal from '../base/modal.css';
+import stylesModal from '../base/modal.scss';
 import classnaming from 'classnames';
 
 const ColumnsOrder = ['driver', 'webstoreNames', 'tripType', 

@@ -3,7 +3,7 @@ import lodash from 'lodash';
 import React from 'react';
 import {Link} from 'react-router';
 import {CheckBox} from './input';
-import styles from './table.css';
+import styles from './table.scss';
 import {ButtonStandard} from './index';
 import ReactTooltip from 'react-tooltip'
 

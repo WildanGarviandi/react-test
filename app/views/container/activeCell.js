@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import classNaming from 'classnames';
 import {ContainersAction} from '../../modules';
-import styles from './table.css';
+import styles from './table.scss';
 
 const ActiveCell = React.createClass({
   handleToggle(e) {

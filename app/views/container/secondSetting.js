@@ -1,7 +1,7 @@
 import classNaming from 'classnames';
 import React from 'react';
 import {connect} from 'react-redux';
-import styles from './setterStyles.css';
+import styles from './setterStyles.scss';
 import DriverSetter from './driverSetter';
 import ThirdPartySetter from './thirdPartySetter';
 import * as UtilHelper from '../../helper/utility';

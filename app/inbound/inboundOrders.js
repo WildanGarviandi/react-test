@@ -3,7 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
 import InboundOrdersTable from './inboundOrdersTable';
-import styles from './styles.css';
+import styles from './styles.scss';
 import {ButtonWithLoading, Input, Page} from '../views/base';
 import * as InboundOrders from './inboundOrdersService';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';

@@ -17,15 +17,17 @@ module.exports = {
         use: 'babel-loader'
       },
       {
-        test: /\.css$/,
+        test: /\.scss$/,
         use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: {
+          use: [{
             loader: 'css-loader',
             query: {
               modules: true
             }
-          },
+          }, {
+            loader: 'sass-loader',
+          }],
+          fallback: 'style-loader',
         })
       },
       {
