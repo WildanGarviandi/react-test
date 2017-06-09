@@ -13,10 +13,10 @@
   "deploy" : {
     "staging" : {
       "user" : "ubuntu",
-      "host": "hub.etobee.com",
+      "host": "staging2.hub.etobee.com",
       "ref"  : "origin/staging",
       "repo" : "git@gitlab.com:etobee-techgroup/etobee-hub.git",
-      "path" : "/home/ubuntu/hub-staging",
+      "path" : "/home/ubuntu/staging2.hub.etobee.com",
       "post-deploy" : "yarn; npm run build; pm2 startOrRestart ecosystem.staging.json --env production"
     }
   }
