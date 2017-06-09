@@ -5,25 +5,27 @@ import PropTypes from 'prop-types';
 
 import FetchPost from '../modules/fetch/post';
 import styles from './dragDropImageUploader.css';
+import config from '../config/configValues.json';
+import ModalActions from '../modules/modals/actions';
+import { modalAction } from '../modules/modals/constants';
 
 class DragDropImageUploader extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isUploading: false,
-    };
-  }
 
   uploadImage(acc) {
     if (acc) {
-      let formData = new FormData();
+      const formData = new FormData();
       formData.append('file', acc[0]);
-      this.setState({ isUploading: true });
+      this.props.showBackdrop();
       FetchPost('/upload/picture', this.props.token, formData, false, true)
-        .then(res => res.status === 200 && res.json())
+        .then(res => res.status === config.HTTP_STATUS.OK && res.json())
         .then((data) => {
           this.props.updateImageUrl(data.data.Location);
-          this.setState({ isUploading: false });
+          this.props.hideBackdrop();
+        })
+        .catch((e) => {
+          const message = (e && e.message) || 'Failed to upload image';
+          this.props.showModal(message);
+          this.props.hideBackdrop();
         });
     }
   }
@@ -68,6 +70,9 @@ DragDropImageUploader.propTypes = {
   token: PropTypes.any,
   updateImageUrl: PropTypes.func.isRequired,
   currentImageUrl: PropTypes.any,
+  showBackdrop: PropTypes.func.isRequired,
+  hideBackdrop: PropTypes.func.isRequired,
+  showModal: PropTypes.func.isRequired,
 };
 /* eslint-enable */
 
@@ -76,7 +81,7 @@ DragDropImageUploader.defaultProps = {
   currentImageUrl: null,
 };
 
-function getToken(store) {
+function mapStateToProps(store) {
   const { userLogged } = store.app;
   const { token } = userLogged;
 
@@ -85,4 +90,18 @@ function getToken(store) {
   };
 }
 
-export default connect(getToken)(DragDropImageUploader);
+function mapDispatchToProps(dispatch) {
+  return {
+    showBackdrop: () => {
+      dispatch({ type: modalAction.BACKDROP_SHOW });
+    },
+    hideBackdrop: () => {
+      dispatch({ type: modalAction.BACKDROP_HIDE });
+    },
+    showModal: (text) => {
+      dispatch(ModalActions(text));
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DragDropImageUploader);
