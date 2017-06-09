@@ -9,6 +9,29 @@ import config from '../config/configValues.json';
 import ModalActions from '../modules/modals/actions';
 import { modalAction } from '../modules/modals/constants';
 
+const mapStateToProps = (store) => {
+  const { userLogged } = store.app;
+  const { token } = userLogged;
+
+  return {
+    token,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    showBackdrop: () => {
+      dispatch({ type: modalAction.BACKDROP_SHOW });
+    },
+    hideBackdrop: () => {
+      dispatch({ type: modalAction.BACKDROP_HIDE });
+    },
+    showModal: (text) => {
+      dispatch(ModalActions(text));
+    },
+  };
+};
+
 class DragDropImageUploader extends Component {
 
   uploadImage(acc) {
@@ -80,28 +103,5 @@ DragDropImageUploader.defaultProps = {
   token: null,
   currentImageUrl: null,
 };
-
-function mapStateToProps(store) {
-  const { userLogged } = store.app;
-  const { token } = userLogged;
-
-  return {
-    token,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    showBackdrop: () => {
-      dispatch({ type: modalAction.BACKDROP_SHOW });
-    },
-    hideBackdrop: () => {
-      dispatch({ type: modalAction.BACKDROP_HIDE });
-    },
-    showModal: (text) => {
-      dispatch(ModalActions(text));
-    },
-  };
-}
 
 export default connect(mapStateToProps, mapDispatchToProps)(DragDropImageUploader);
