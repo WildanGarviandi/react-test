@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import { push } from 'react-router-redux';
 import * as _ from 'lodash';
+import FontAwesome from 'react-fontawesome';
 
 import { LogoutAction } from '../modules';
 import checkAuth from '../modules/auth/actions/checkAuth';
@@ -14,7 +15,7 @@ import * as CityService from '../cities/cityService';
 import * as DashboardService from './dashboardService';
 import * as FleetService from '../nearbyFleets/nearbyFleetService';
 import * as TripProblemService from '../tripProblems/tripProblemsService';
-import {Glyph} from '../views/base';
+import { Glyph } from '../views/base';
 import Accordion from '../views/base/accordion';
 import styles from './styles.css';
 import config from '../../config.json';
@@ -60,8 +61,9 @@ const AccordionMenu = React.createClass({
   }
 })
 
-const DashboardMenu = ({ activeMenuIdx, handleLogout, toggleCompact, hubID, loggedName,
-  counterOrder, count, countTMS, tmsMenu, switchMenu, isCentralHub }) => {
+const DashboardMenu = ({ activeMenuIdx, handleLogout, toggleCompact,
+  hubID, loggedName, counterOrder, count, countTMS, tmsMenu, switchMenu,
+  isCentralHub, totalInboundTripProblem }) => {
   return (
     <div className={styles.menuPanel}>
       <img src="/img/logo.png" className={styles.menuLogo} />
@@ -85,7 +87,14 @@ const DashboardMenu = ({ activeMenuIdx, handleLogout, toggleCompact, hubID, logg
             <MenuItem active={activeMenuIdx === 2} to={'/trips/inbound'}>
               <img src="/img/icon-inbound-trip.png" className={styles.menuGlyph} />
               <span>Inbound Trip </span>
-              <span className={styles.counterNumber}>{count && count.inboundTrip}</span>
+              <div className={styles['counter-number-problem']}>
+                <div className={styles['number-notif']}>
+                  {count && count.inboundTrip}
+                </div>
+                <div className={styles['problem-notif']}>
+                  <FontAwesome name="exclamation-triangle" /> {totalInboundTripProblem}
+                </div>
+              </div>
             </MenuItem>
             <MenuItem active={activeMenuIdx === 3} to={'/inbound'}>
               <img src="/img/icon-inbound.png" className={styles.menuGlyph} />
@@ -216,12 +225,15 @@ function GetActiveMenuIdx(path) {
 
 const DashboardContainer = React.createClass({
   contextTypes: {
-    router: React.PropTypes.object.isRequired
+    router: React.PropTypes.object.isRequired,
   },
   getInitialState() {
     return { isCompact: false, tmsMenu: this.props.hubID };
   },
   componentWillMount() {
+    if (this.props.userLogged.roleName === configValues.role.SUPERHUB) {
+      this.props.getHubs();
+    }
     this.props.initialLoad(this.props.userLogged.hubID);
     if (menuPathsTMS.indexOf(this.props.location.pathname) > -1) {
       this.setState({ tmsMenu: true });
@@ -265,6 +277,7 @@ const DashboardContainer = React.createClass({
             tmsMenu={this.state.tmsMenu}
             switchMenu={this.switchMenu}
             isCentralHub={isCentralHub}
+            totalInboundTripProblem={this.props.totalInboundTripProblem}
           />
           <DashboardContent>{this.props.children}</DashboardContent>
         </div>
@@ -277,6 +290,8 @@ function StoreToDashboard(dashboardStore) {
   const userLogged = dashboardStore.app.userLogged;
   const { countOpen, countInProgress, countFinished } = dashboardStore.app.myOrders;
   const { count, countTMS } = dashboardStore.app.dashboard;
+  const { tripProblems } = dashboardStore.app;
+  const { totalInboundTripProblem } = tripProblems;
   let additionalTitle = userLogged.hubName || userLogged.fleetName;
   additionalTitle = additionalTitle
     .toLocaleLowerCase()
@@ -295,6 +310,7 @@ function StoreToDashboard(dashboardStore) {
     },
     count,
     countTMS,
+    totalInboundTripProblem,
   };
 }
 
@@ -305,35 +321,38 @@ function DispatchToProps(dispatch) {
       dispatch(ContactService.FetchList());
       dispatch(CityService.FetchList());
       dispatch(StateService.FetchList());
-      dispatch(TripProblemService.FetchList());
       dispatch(DashboardService.FetchCountTMS());
-      dispatch(hubService.fetchList());
       if (hubID) {
         dispatch(DashboardService.FetchCount());
         dispatch(FleetService.FetchList());
+        dispatch(TripProblemService.FetchList());
+        dispatch(TripProblemService.fetchTotalInboundTripProblem());
       }
     },
-    logout: function () {
+    logout: () => {
       clearInterval(interval);
       dispatch(LogoutAction.logout());
     },
-    checkAuth: function () {
-      checkAuth(store).then(function (result) {
+    checkAuth: () => {
+      checkAuth(store).then((result) => {
         if (!result.ok) {
           dispatch(ModalActions.addMessage('Your session has been expired. Please login again.'));
           clearInterval(interval);
           dispatch(push('/login'));
         }
-      })
+      });
     },
-    switchMenu: function (tmsMenu) {
+    switchMenu: (tmsMenu) => {
       if (tmsMenu) {
         dispatch(push(configValues.defaultMainPageTMS));
       } else {
         dispatch(push(configValues.defaultMainPage));
       }
-    }
-  }
+    },
+    getHubs: () => {
+      dispatch(hubService.fetchList());
+    },
+  };
 }
 
 export default connect(StoreToDashboard, DispatchToProps)(DashboardContainer);

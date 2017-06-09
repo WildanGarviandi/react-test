@@ -1,10 +1,12 @@
 import React, { PropTypes } from 'react';
 import * as _ from 'lodash';
 import ReactDOM from 'react-dom';
+import classNaming from 'classnames';
+
 import styles from './form.css';
 import { Glyph } from '../views/base/glyph';
 import { ButtonBase } from './button';
-import classNaming from 'classnames';
+import config from '../config/configValues.json';
 import { DropdownWithState2 as Dropdown2 } from '../views/base/dropdown';
 
 const Form = React.createClass({
@@ -188,20 +190,9 @@ const Dropdown = React.createClass({
 });
 
 const Options2 = React.createClass({
-  getInitialState() {
-    return {
-      checked: false,
-    };
-  },
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      checked: nextProps.option.checked,
-    });
-  },
-  handleClick() {
+  handleChange() {
     if (this.props && this.props.isMultiple) {
-      this.props.option.checked = !this.state.checked;
-      this.setState({ checked: !this.state.checked });
+      this.props.option.checked = !this.props.option.checked;
     }
     this.props.selectVal(this.props.option);
   },
@@ -210,28 +201,35 @@ const Options2 = React.createClass({
   },
   render() {
     const optionsClass = classNaming(styles.option, { [styles.highlight]: this.props.highlight });
-    const { isMultiple } = this.props;
+    const { isMultiple, option } = this.props;
 
     return (
       <span
         role="option"
         aria-selected="false"
         className={optionsClass}
-        onClick={this.handleClick}
+        onClick={this.handleChange}
         onMouseEnter={this.handleEnter}
       >
-        {this.props.name}
-        {isMultiple &&
-          <input
-            type="checkbox"
-            checked={this.state.checked}
-            onClick={this.handleClick}
-            className={styles['check-multi']}
-          />
-        }
+        <div
+          className={styles['option-content']}
+        >
+          <div
+            className={styles['option-text']}
+          >
+            {this.props.name}
+          </div>
+          {isMultiple &&
+            <input
+              type="checkbox"
+              checked={option.checked}
+              className={styles['check-multi']}
+            />
+          }
+        </div>
       </span>
     );
-  }
+  },
 });
 
 const DropdownTypeAhead = React.createClass({
@@ -292,11 +290,11 @@ const DropdownTypeAhead = React.createClass({
     });
   },
   handleKeyDown(e) {
-    if (e.keyCode == 38) {
+    if (e.keyCode === config.KEY_ACTION.UP_ARROW) {
       this.highlightPrev();
-    } else if (e.keyCode == 40) {
+    } else if (e.keyCode === config.KEY_ACTION.DOWN_ARROW) {
       this.highlightNext();
-    } else if (e.keyCode == 13) {
+    } else if (e.keyCode === config.KEY_ACTION.ENTER && !this.props.isMultiple) {
       const filteredOption = this.getFilteredOption();
       if (filteredOption.length > 0) {
         this.handleSelect(filteredOption[this.state.highlight]);
@@ -379,9 +377,17 @@ const DropdownTypeAhead = React.createClass({
       return <Options2 {...optionProps} />;
     });
 
+    let value = '';
+
+    if (this.props.isMultiple) {
+      value = this.state.txt;
+    } else {
+      value = this.state.opened ? this.state.temp : this.state.txt;
+    }
+
     const inputProps = {
       onFocus: this.openOption,
-      value: this.state.txt,
+      value,
       className: !this.props.isMultiple ? styles.typeBox : styles['typeBox-multi'],
       onChange: this.handleTextChange,
       onKeyDown: this.handleKeyDown,
@@ -684,6 +690,19 @@ const FilterTop = React.createClass({
 });
 
 const FilterTopMultiple = React.createClass({
+  handleSelect(selectedOption) {
+    if (selectedOption.value === 'All') {
+      const options = this.props.options.map((option) => {
+        const data = Object.assign({}, option, {
+          checked: selectedOption.checked,
+        });
+        return data;
+      });
+      this.props.handleSelectAll(options);
+      return;
+    }
+    this.props.handleSelect(selectedOption);
+  },
   render() {
     const isMultiple = true;
 
@@ -694,7 +713,7 @@ const FilterTopMultiple = React.createClass({
           <DropdownWithState2
             val={this.props.value}
             options={this.props.options}
-            handleSelect={this.props.handleSelect}
+            handleSelect={this.handleSelect}
             isMultiple={isMultiple}
           />
         </div>

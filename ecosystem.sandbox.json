@@ -1,0 +1,23 @@
+{
+  "apps" : [
+    {
+      "name"      : "sandbox.hub.etobee.com",
+      "script"    : "server.js",
+      "env_production" : {
+        "NODE_ENV": "production"
+      },
+      "max_memory_restart" : "300M"
+    }
+  ],
+
+  "deploy" : {
+    "sandbox" : {
+      "user" : "ubuntu",
+      "host": "sandbox.hub.etobee.com",
+      "ref"  : "origin/master",
+      "repo" : "git@gitlab.com:etobee-techgroup/etobee-hub.git",
+      "path" : "/home/ubuntu/sandbox.hub.etobee.com",
+      "post-deploy" : "yarn; npm run build; pm2 startOrRestart ecosystem.sandbox.json --env production"
+    }
+  }
+}

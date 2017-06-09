@@ -154,6 +154,7 @@ export function fetchList() {
 
     if (hubs.list.length > 0) return;
 
+    dispatch({ type: modalAction.BACKDROP_SHOW });
     dispatch({ type: HUB_FETCH_START });
     fetchGet('/hub', token).then((response) => {
       if (response.ok) {
@@ -163,14 +164,17 @@ export function fetchList() {
             list: data.Hubs.rows,
           });
           dispatch({ type: HUB_FETCH_END });
+          dispatch({ type: modalAction.BACKDROP_HIDE });
         });
       } else {
         dispatch({ type: HUB_FETCH_END });
         dispatch(ModalActions.addMessage('Failed to set hub'));
+        dispatch({ type: modalAction.BACKDROP_HIDE });
       }
     }).catch(() => {
       dispatch({ type: HUB_FETCH_END });
-      dispatch(ModalActions.addMessage('Network error while setting hub'));
+      dispatch(ModalActions.addMessage('Network error while fetch hubs'));
+      dispatch({ type: modalAction.BACKDROP_HIDE });
     });
   };
 }

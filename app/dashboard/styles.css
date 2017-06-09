@@ -12,8 +12,8 @@
   padding-left: 260px;
   background-color: #f1f1f1;
   width: 100vw;
-  float: left;
   box-sizing: border-box;
+  float: left;
 }
 
 .compact .content {
@@ -27,7 +27,7 @@
   position: fixed;
   top: 0;
   color: #000;
-  z-index: 0;
+  z-index: 1;
   overflow-y: auto;
   -webkit-transition: border 0.5s ease-out;
   -o-transition: border 0.5s ease-out;
@@ -290,6 +290,37 @@
   text-indent: 5px;
   padding-right: 10px;
   padding-left: 5px;
+}
+
+.counter-number-problem {
+  font-family: Helvetica;
+  font-size: 16px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  text-align: right;
+  float: right;
+}
+
+.number-notif {
+  color: #fff;
+  border-radius: 24px;
+  background-color: #2196f3;
+  line-height: 1.5em;
+  text-indent: 5px;
+  padding-right: 10px;
+  padding-left: 5px;
+}
+
+.problem-notif {
+  border-radius: 24px;
+  line-height: 1.5em;
+  text-indent: 5px;
+  padding-right: 10px;
+  padding-left: 5px;
+  background-color: #f00;
+  color: #fff;
+  margin-top: 5px;
 }
 
 .titleMenu {

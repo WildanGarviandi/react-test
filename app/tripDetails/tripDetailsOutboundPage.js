@@ -162,9 +162,13 @@ const DetailPage = React.createClass({
     const { canMarkContainer, canMarkOrderReceived, canMarkTripDelivered,
       isDeassigning, isChangingRemarks, isTripEditing, userLogged } = this.props;
 
-    const hasPermission = checkPermission(userLogged, 'ADD_ORDER');
+    let hasPermission = true;
+    let tripType;
+    let tripDestination;
 
-    let tripType, tripDestination;
+    if (userLogged) {
+      hasPermission = checkPermission(userLogged, 'ADD_ORDER');
+    }
 
     if (trip.DestinationHub) {
       tripType = 'Interhub';

@@ -114,7 +114,11 @@ function getStoreFilterDropdown(name, title) {
       key: 2, value: 'Order',
     }];
 
-    let hubOptions = [];
+    let hubOptions = [{
+      key: 0,
+      value: 'All',
+      checked: false,
+    }];
 
     cityOptions = cityOptions.concat(_.chain(cityList)
       .map((key, val) => ({ key, value: val }))
@@ -122,7 +126,8 @@ function getStoreFilterDropdown(name, title) {
       .value());
 
     if (hubs && hubs.list) {
-      hubOptions = _.chain(hubs.list)
+      let options = [];
+      options = _.chain(hubs.list)
         .map(hub => ({
           key: hub.HubID,
           value: `Hub ${hub.Name}`,
@@ -130,6 +135,8 @@ function getStoreFilterDropdown(name, title) {
         }))
         .sortBy(arr => arr.key)
         .value();
+
+      hubOptions = [...hubOptions, ...options];
 
       if (pickupOrdersReady && pickupOrdersReady.hubIDs &&
         pickupOrdersReady.hubIDs.length > 0) {
@@ -182,6 +189,11 @@ function dispatchFilterMultiDropdown(filterKeyword) {
         const SetFn = PickupOrdersReady.SetDropDownFilter(filterKeyword);
         dispatch(SetFn(selectedOption));
       },
+      handleSelectAll: (options) => {
+        dispatch(PickupOrdersReady.setAllHubFilter(options));
+        const SetFn = PickupOrdersReady.SetDropDownFilter(filterKeyword);
+        dispatch(SetFn());
+      },
     };
     return action;
   };
@@ -231,6 +243,7 @@ function mapDispatchToButton(dispatch, ownParams) {
       dispatch(PickupOrdersReady.ShowAssignModal(parseInt(ownParams.item.tripID)));
       dispatch(NearbyFleets.FetchList());
       dispatch(PickupOrdersReady.FetchDrivers(parseInt(ownParams.item.tripID)));
+      dispatch(PickupOrdersReady.fetchHubs());
     }
   }
 }
@@ -395,14 +408,14 @@ const Table = React.createClass({
         }
         if (columnKey === 'action') {
           if (item.isTrip) {
-            return <td key={columnKey} className={tableStyles.td}><PickupOrdersButton item={item} value={'Assign'} /></td>
+            return <td key={columnKey} className={tableStyles.td}><PickupOrdersButton item={item} value={'Assign'} /></td>;
           } else {
             const buttonAction = {
               textBase: 'Assign',
               styles: {
-                base: styles.cellButtonDisabled
+                base: styles.cellButtonDisabled,
               },
-              disabled: true
+              disabled: false,
             }
             return <td key={columnKey} className={tableStyles.td}><ButtonStandard {...buttonAction} /></td>;
           }

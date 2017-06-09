@@ -6,7 +6,9 @@ import { Link } from 'react-router';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import ReactTooltip from 'react-tooltip';
 
+import { DropdownWithState2 } from '../views/base/dropdown';
 import { Pagination } from '../views/base';
 import tableStyles from '../views/base/table.css';
 import { formatDate } from '../helper/time';
@@ -14,7 +16,7 @@ import ModalActions from '../modules/modals/actions';
 import styles from './styles.css';
 import { CanMarkContainer, TripParser, CanMarkTripDelivered } from '../modules/trips';
 import { OrderParser } from '../modules/orders';
-import { FilterTop, FilterText, FilterTopMultiple } from '../components/form';
+import { FilterText, FilterTopMultiple } from '../components/form';
 import * as config from '../config/configValues.json';
 import * as InboundTrips from './inboundTripsService';
 import { checkPermission } from '../helper/permission';
@@ -49,6 +51,23 @@ const ColumnsTitle = {
 let fleetList = {};
 
 const Table = React.createClass({
+  getProblemIcon(tripProblemMaster) {
+    if (!tripProblemMaster) {
+      return null;
+    }
+
+    const icon = _.get(config.problemIcon, tripProblemMaster.Problem);
+    return (
+      <span>
+        <ReactTooltip />
+        <img
+          data-tip={icon.TOOLTIP}
+          src={icon.URL}
+        />
+      </span>
+    );
+  },
+
   render() {
     const Headers = _.map(ColumnsOrder, (columnKey) => {
       return <th key={columnKey}>{ColumnsTitle[columnKey]}</th>;
@@ -60,6 +79,7 @@ const Table = React.createClass({
           return (
             <td className={`${tableStyles.td} ${styles.tripIDColumn}`} key={columnKey}>
               {item.isNew && <img src={'/img/label-new.png'} />}
+              {this.getProblemIcon(item.tripProblemMaster)}
               <Link to={`/trips/${item.key}`} className={styles.link}>{item[columnKey]}</Link>
             </td>
           );
@@ -154,16 +174,30 @@ const Table = React.createClass({
 });
 
 class RightTable extends Component {
+
+  showModals(item) {
+    this.props.setCurrentTrip(item);
+    this.props.fetchDrivers();
+    this.props.fetchHubs();
+    this.props.showReAssignModal();
+  }
+
   render() {
-    const { items } = this.props;
+    const { parsedItems, items } = this.props;
+
     return (
       <table className={tableStyles.table}>
         <thead><tr><th>Action</th></tr></thead>
         <tbody>
-          {_.map(items, (item, key) => (
+          {_.map(parsedItems, (item, key) => (
             <tr key={key}>
               <td className={tableStyles.td}>
-                <button className={styles.reassignButton}>Re-Assign</button>
+                <button
+                  className={styles.reassignButton}
+                  onClick={() => this.showModals(items[key])}
+                >
+                  Re-Assign
+                </button>
               </td>
               <td className={`${tableStyles.td} ${styles.driverColumn}`}>
                 <span className={styles.inlineVehicle}>
@@ -276,6 +310,7 @@ function ProcessTrip(trip) {
     isNew: isNew(trip),
     zip: trip.PickupAddress.ZipCode,
     childMerchant: parsedTrip.WebstoreUser,
+    tripProblemMaster: trip.TripProblemMaster,
   };
 }
 
@@ -326,14 +361,16 @@ function VerifiedOrder({ routes }) {
 
 function InputFilter({ value, onChange, onKeyDown, placeholder }) {
   return (
-    <input
-      className={styles.inputSearch}
-      placeholder={placeholder}
-      type="text"
-      value={value}
-      onChange={onChange}
-      onKeyDown={onKeyDown}
-    />
+    <div className={styles['table-cell']}>
+      <input
+        className={styles.inputSearch}
+        placeholder={placeholder}
+        type="text"
+        value={value}
+        onChange={onChange}
+        onKeyDown={onKeyDown}
+      />
+    </div>
   );
 }
 
@@ -357,8 +394,8 @@ function inputDispatchToProps(keyword, placeholder) {
     function OnKeyDown(e) {
       if (e.keyCode !== config.KEY_ACTION.ENTER) {
         if (keyword === 'pickupZipCode' &&
-        ((e.keyCode >= config.KEY_ACTION.A && e.keyCode <= config.KEY_ACTION.Z)
-        || e.keyCode >= config.KEY_ACTION.SEMI_COLON)) {
+          ((e.keyCode >= config.KEY_ACTION.A && e.keyCode <= config.KEY_ACTION.Z)
+            || e.keyCode >= config.KEY_ACTION.SEMI_COLON)) {
           e.preventDefault();
         }
         return;
@@ -385,25 +422,71 @@ const OriginSearch = connect(
   inputDispatchToProps('origin', 'Search "Origin" here....'),
 )(InputFilter);
 
+function FilterTop({ title, options, value, handleSelect }) {
+  return (
+    <div className={styles['filter-wrapper']}>
+      <div className={styles['filter-title']}>
+        {title}
+      </div>
+      <DropdownWithState2
+        val={value}
+        options={options}
+        value={value}
+        handleSelect={handleSelect}
+      />
+    </div>
+  );
+}
+
+/* eslint-disable */
+FilterTop.propTypes = {
+  title: PropTypes.any,
+  options: PropTypes.array.isRequired,
+  value: PropTypes.any,
+  handleSelect: PropTypes.func.isRequired,
+};
+/* eslint-enable */
+
+FilterTop.defaultProps = {
+  title: {},
+  value: {},
+};
+
 function dropdownStateToProps(keyword, title) {
   return (store) => {
     const { inboundTrips, hubs } = store.app;
-    const value = inboundTrips[keyword] ? inboundTrips[keyword].value : 'All';
+    const value = inboundTrips[keyword].value ? inboundTrips[keyword].value : 'All';
     let options = [];
+
+    if (keyword === 'pickupCity') {
+      const optionsTemplate = store.app.cityList.cities;
+      options = [{
+        key: 0, value: 'All',
+      }].concat(optionsTemplate
+        .map(option => ({
+          key: option.CityID,
+          value: option.Name,
+        })));
+    }
 
     if (keyword === 'tripProblem') {
       const optionsTemplate = store.app.tripProblems.problems;
       options = [{
         key: 0, value: 'All',
       }].concat(optionsTemplate
-        .map((option) => ({
+        .map(option => ({
           key: option.TripProblemMasterID,
           value: option.Problem,
         })));
     }
 
     if (keyword === 'hubs') {
-      options = _.chain(hubs.list)
+      options = [{
+        key: 0,
+        value: 'All',
+        checked: false,
+      }];
+      const hubList = _.chain(hubs.list)
         .map(hub => ({
           key: hub.HubID,
           value: `Hub ${hub.Name}`,
@@ -411,6 +494,7 @@ function dropdownStateToProps(keyword, title) {
         }))
         .sortBy(arr => arr.key)
         .value();
+      options = [...options, ...hubList];
 
       if (inboundTrips && inboundTrips.hubIDs &&
         inboundTrips.hubIDs.length > 0) {
@@ -428,12 +512,30 @@ function dropdownStateToProps(keyword, title) {
   };
 }
 
+function dropdownDispatchToProps(keyword) {
+  return (dispatch) => {
+    const action = {
+      handleSelect: (option) => {
+        dispatch(InboundTrips.setDropdownFilter(keyword, option));
+        dispatch(InboundTrips.FetchList());
+      },
+    };
+    return action;
+  };
+}
+
 function multiDropdownDispatchToProps() {
   return (dispatch) => {
     const action = {
       handleSelect: (selectedOption) => {
-        dispatch(selectedOption.checked ? InboundTrips.addHubFilter(selectedOption) :
-          InboundTrips.deleteHubFilter(selectedOption));
+        if (selectedOption) {
+          dispatch(selectedOption.checked ? InboundTrips.addHubFilter(selectedOption) :
+            InboundTrips.deleteHubFilter(selectedOption));
+        }
+        dispatch(InboundTrips.FetchList());
+      },
+      handleSelectAll: (options) => {
+        dispatch(InboundTrips.setAllHubFilter(options));
         dispatch(InboundTrips.FetchList());
       },
     };
@@ -446,6 +548,26 @@ const ZipCodeSearch = connect(
   inputDispatchToProps('pickupZipCode', 'Search "Zip Code" here....'),
 )(InputFilter);
 
+const TripProblemDropdown = connect(
+  dropdownStateToProps('tripProblem', 'Filter by Trip Problem'),
+  dropdownDispatchToProps('tripProblem'),
+)(FilterTop);
+
+const CityDropdown = connect(
+  dropdownStateToProps('pickupCity', 'Filter by City'),
+  dropdownDispatchToProps('pickupCity'),
+)(FilterTop);
+
+const ChildMerchantSearch = connect(
+  inputStateToProps('webstoreUserName'),
+  inputDispatchToProps('webstoreUserName', 'Search "Child Merchant Name"....'),
+)(InputFilter);
+
+const DriverSearch = connect(
+  inputStateToProps('driverName'),
+  inputDispatchToProps('driverName', 'Search "Driver name"....'),
+)(InputFilter);
+
 const HubDropdown = connect(
   dropdownStateToProps('hubs', 'Filter by Hubs (can be multiple)'),
   multiDropdownDispatchToProps('hubIDs'),
@@ -456,11 +578,15 @@ export class Filter extends Component {
     return (
       <div className={styles['filter-container']}>
         <div className={styles['filter-box']}>
+          <TripProblemDropdown />
+          <CityDropdown />
           {this.props.userLogged.roleName === config.role.SUPERHUB && <HubDropdown />}
         </div>
         <div className={styles['filter-box']}>
           <TripIDSearch />
           <OriginSearch />
+          <DriverSearch />
+          <ChildMerchantSearch />
           <ZipCodeSearch />
         </div>
       </div>
@@ -519,6 +645,10 @@ class TableStateful extends Component {
     this.props.resetState();
   }
 
+  componentWillUnmount() {
+    this.props.resetState();
+  }
+
   render() {
     const {
       filters,
@@ -551,7 +681,16 @@ class TableStateful extends Component {
       filteringAction, statusProps,
       filters: this.state,
       isFetching: tripsIsFetching,
-      showModals: this.props.showModals
+      showModals: this.props.showModals,
+    };
+
+    const rightTableProps = {
+      items: this.props.trips,
+      parsedItems: trips,
+      setCurrentTrip: this.props.setCurrentTrip,
+      showReAssignModal: this.props.showReAssignModal,
+      fetchDrivers: this.props.fetchDrivers,
+      fetchHubs: this.props.fetchHubs,
     };
 
     const hasPermission = checkPermission(userLogged, 'COMPLETE_ORDERS');
@@ -564,7 +703,7 @@ class TableStateful extends Component {
           </div>
           {!tableProps.isFetching && tableProps.items.length !== 0 &&
             <div className={styles.tableRight}>
-              <RightTable items={tableProps.items} />
+              <RightTable {...rightTableProps} />
             </div>
           }
           <Pagination {...paginationProps} />
@@ -626,14 +765,6 @@ class TableStateful extends Component {
     );
   }
 }
-
-TableStateful.propTypes = {
-  resetFilter: PropTypes.func.isRequired,
-};
-
-TableStateful.propTypes = {
-  resetFilter: () => { },
-};
 
 function StateToProps(state) {
   const { inboundTrips, driversStore, userLogged } = state.app;
@@ -718,6 +849,18 @@ function DispatchToProps(dispatch, ownProps) {
     },
     reuse(tripID) {
       dispatch(InboundTrips.TripDeliver(tripID, true));
+    },
+    setCurrentTrip(trip) {
+      dispatch(InboundTrips.SetCurrentTrip(trip));
+    },
+    showReAssignModal: () => {
+      dispatch(InboundTrips.ShowReAssignModal());
+    },
+    fetchDrivers: () => {
+      dispatch(InboundTrips.FetchDrivers());
+    },
+    fetchHubs: () => {
+      dispatch(InboundTrips.FetchHubs());
     },
     resetState() {
       dispatch(InboundTrips.ResetState());

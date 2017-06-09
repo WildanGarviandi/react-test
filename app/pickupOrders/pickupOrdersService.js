@@ -23,6 +23,7 @@ const Constants = {
   ORDERS_PICKUP_HIDE_MODAL: 'pickup/hideModal',
   ORDERS_PICKUP_ADD_HUB: 'pickup/hub/add',
   ORDERS_PICKUP_DELETE_HUB: 'pickup/hub/delete',
+  ORDERS_PICKUP_ALL_HUB: 'pickupReady/hub/all',
 };
 
 //
@@ -138,7 +139,8 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.ORDERS_PICKUP_ADD_HUB: {
-      const hubIDs = state.hubIDs.concat([action.payload.hub.key]);
+      const hubIDs = _.cloneDeep(state.hubIDs);
+      hubIDs.push(action.payload.hub.key);
       return Object.assign({}, state, {
         hubIDs,
       });
@@ -147,6 +149,13 @@ export function Reducer(state = initialState, action) {
     case Constants.ORDERS_PICKUP_DELETE_HUB: {
       const hubIDs = _.filter(state.hubIDs, hubID =>
         hubID !== action.payload.hub.key);
+      return Object.assign({}, state, {
+        hubIDs,
+      });
+    }
+
+    case Constants.ORDERS_PICKUP_ALL_HUB: {
+      const hubIDs = _.map(action.payload.hubs, hub => hub.key);
       return Object.assign({}, state, {
         hubIDs,
       });
@@ -172,7 +181,7 @@ export function FetchList() {
     }
 
     if (filters.hubIDs && filters.hubIDs.length > 0) {
-      filters.hubIDs = filters.hubIDs.toString();
+      filters.hubIDs = _.filter(filters.hubIDs, hubID => hubID > 0).join();
     }
 
     const query = Object.assign({}, filters, {
@@ -244,7 +253,7 @@ export function UpdateFilters(filters) {
     const prevFilters = getState().app.pickupOrders.filters;
     const nextFilter = Object.assign({}, prevFilters, filters);
     dispatch(SetFilters(nextFilter));
-  }
+  };
 }
 
 export function SetDropDownFilter(keyword) {
@@ -394,6 +403,16 @@ export function deleteHubFilter(hub) {
     type: Constants.ORDERS_PICKUP_DELETE_HUB,
     payload: {
       hub,
+    },
+  };
+}
+
+export function setAllHubFilter(hubOptions) {
+  const hubs = _.filter(hubOptions, ['checked', true]);
+  return {
+    type: Constants.ORDERS_PICKUP_ALL_HUB,
+    payload: {
+      hubs,
     },
   };
 }
