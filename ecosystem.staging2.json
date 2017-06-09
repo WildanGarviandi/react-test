@@ -1,7 +1,7 @@
 {
   "apps" : [
     {
-      "name"      : "staging.hub.etobee.com",
+      "name"      : "staging2.hub.etobee.com",
       "script"    : "server.js",
       "env_production" : {
         "NODE_ENV": "production"
@@ -13,11 +13,11 @@
   "deploy" : {
     "staging" : {
       "user" : "ubuntu",
-      "host": "staging.hub.etobee.com",
+      "host": "staging2.hub.etobee.com",
       "ref"  : "origin/staging",
       "repo" : "git@gitlab.com:etobee-techgroup/etobee-hub.git",
-      "path" : "/home/ubuntu/staging.hub.etobee.com",
-      "post-deploy" : "yarn; npm run build; pm2 startOrRestart ecosystem.staging.json --env production"
+      "path" : "/home/ubuntu/staging2.hub.etobee.com",
+      "post-deploy" : "yarn; npm run build; pm2 startOrRestart ecosystem.staging2.json --env production"
     }
   }
 }
