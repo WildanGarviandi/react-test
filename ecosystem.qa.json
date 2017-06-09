@@ -16,7 +16,7 @@
       "host": "qa.hub.etobee.com",
       "ref"  : "origin/qa",
       "repo" : "git@gitlab.com:etobee-techgroup/etobee-hub.git",
-      "path" : "/home/ubuntu/qa.hub.etobee.com/",
+      "path" : "/home/ubuntu/qa.hub.etobee.com",
       "post-deploy" : "yarn; npm run build; pm2 startOrRestart ecosystem.qa.json --env production"
     }
   }
