@@ -1,7 +1,7 @@
 {
   "apps" : [
     {
-      "name"      : "Hub QA",
+      "name"      : "qa.hub.etobee.com",
       "script"    : "server.js",
       "env_production" : {
         "NODE_ENV": "production"
@@ -16,7 +16,7 @@
       "host": "qa.hub.etobee.com",
       "ref"  : "origin/qa",
       "repo" : "git@gitlab.com:etobee-techgroup/etobee-hub.git",
-      "path" : "/home/ubuntu/hub-qa",
+      "path" : "/home/ubuntu/qa.hub.etobee.com/",
       "post-deploy" : "yarn; npm run build; pm2 startOrRestart ecosystem.qa.json --env production"
     }
   }

@@ -1,7 +1,7 @@
 {
   "apps" : [
     {
-      "name"      : "Hub Sandbox",
+      "name"      : "sandbox.hub.etobee.com",
       "script"    : "server.js",
       "env_production" : {
         "NODE_ENV": "production"
@@ -16,7 +16,7 @@
       "host": "sandbox.hub.etobee.com",
       "ref"  : "origin/master",
       "repo" : "git@gitlab.com:etobee-techgroup/etobee-hub.git",
-      "path" : "/home/ubuntu/hub-sandbox",
+      "path" : "/home/ubuntu/sandbox.hub.etobee.com/",
       "post-deploy" : "yarn; npm run build; pm2 startOrRestart ecosystem.sandbox.json --env production"
     }
   }
