@@ -2,8 +2,8 @@ import React from 'react'; // eslint-disable-line
 import classNaming from 'classnames';
 import PropTypes from 'prop-types';
 
-import styles from './styles.css';
-import { Input } from '../base';
+import styles from '../styles.css';
+import { Input } from '../../base';
 
 export default class LoginInput extends React.Component {
 

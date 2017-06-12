@@ -1,19 +1,22 @@
-import { createSelector } from 'reselect';
+import { createSelector } from 'reselect'; //eslint-disable-line
 
-const getState = (state) => state.app.userLogged;
+const getState = (state) => {
+  const data = state.app.userLogged;
+  return data;
+};
 
-export const getLoginState = createSelector(
-    [getState],
-    (userLogged) => {
-        const { isFetching, isValid, message, token } = userLogged;
+export default createSelector(
+  [getState],
+  (userLogged) => {
+    const { isFetching, isValid, message, token } = userLogged;
 
-        return {
-            loginState: {
-                isFetching,
-                isError: (!isFetching && !isValid),
-                message,
-            },
-            token,
-        };
-    }
+    return {
+      loginState: {
+        isFetching,
+        isError: (!isFetching && !isValid),
+        message,
+      },
+      token,
+    };
+  },
 );

@@ -1,10 +1,10 @@
 import React from 'react'; // eslint-disable-line
 import PropTypes from 'prop-types';
 
-import styles from './styles.css';
+import styles from '../styles.css';
 import LoginInput from './LoginInput';
 import LoginCheckBox from './LoginCheckBox';
-import { ButtonWithLoading } from '../base';
+import { ButtonWithLoading } from '../../base';
 
 export default class Login extends React.Component {
 

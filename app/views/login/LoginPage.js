@@ -7,11 +7,12 @@ import { bindActionCreators } from 'redux';
 import { LoginAction } from '../../modules/';
 import store from '../../store';
 import config from '../../config/configValues.json';
-import Login from './Login';
-import { getLoginState } from './Selector';
+import Login from './components/Login';
+import getLoginState from './Selector';
 
 const mapStateToProps = (state) => {
-  return getLoginState(state);
+  const stateProps = getLoginState(state);
+  return stateProps;
 };
 
 const mapDispatchToProps = (dispatch) => {
