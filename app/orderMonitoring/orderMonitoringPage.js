@@ -8,7 +8,7 @@ import styles from './styles.css';
 import { Page } from '../views/base';
 import OrderTable, {Filter, Deadline} from './orderTable';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
-import DragDropImageUploader from '../components/dragDropImageUploader';
+import DragDropImageUploader from '../components/DragDropImageUploader';
 import { reasonReturn } from '../config/attempt.json';
 import { statusOptions } from '../config/configValues.json';
 import * as orderService from './orderMonitoringService';
