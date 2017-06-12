@@ -8,18 +8,10 @@ import { LoginAction } from '../../modules/';
 import store from '../../store';
 import config from '../../config/configValues.json';
 import Login from './Login';
+import { getLoginState } from './Selector';
 
 const mapStateToProps = (state) => {
-  const { isFetching, isValid, message, token } = state.app.userLogged;
-
-  return {
-    loginState: {
-      isFetching,
-      isError: (!isFetching && !isValid),
-      message,
-    },
-    token,
-  };
+  return getLoginState(state);
 };
 
 const mapDispatchToProps = (dispatch) => {
