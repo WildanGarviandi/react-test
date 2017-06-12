@@ -799,7 +799,7 @@ export function GroupOrders() {
         dispatch(DashboardService.FetchCount());
 
         response.json().then(({ data }) => {
-          dispatch(push(`/trips/ ${data.TripID}`));
+          dispatch(push(`/trips/${data.TripID}`));
         });
       } else {
         response.json().then(({ error }) => {

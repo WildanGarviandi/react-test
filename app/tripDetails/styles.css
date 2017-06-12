@@ -997,3 +997,7 @@ p.title {
 .manifestSpan {
   float: left;
 }
+
+.clear-both {
+  clear: 'both';
+}

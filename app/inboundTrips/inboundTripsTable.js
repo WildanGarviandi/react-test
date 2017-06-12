@@ -584,10 +584,8 @@ export class Filter extends Component {
         </div>
         <div className={styles['filter-box']}>
           <TripIDSearch />
-          {/* Next Release */}
-          {/* <OriginSearch /> */}
-          {/* Next Release */}
-          {/* <DriverSearch /> */}
+          <OriginSearch />
+          <DriverSearch />
           <ChildMerchantSearch />
           <ZipCodeSearch />
         </div>

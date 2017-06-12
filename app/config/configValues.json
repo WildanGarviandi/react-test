@@ -138,5 +138,8 @@
       "MOTORCYCLE": "/img/icon-vehicle-motorcycle.png",
       "VAN": "/img/icon-vehicle-van.png"
     },
-    "assignCentralHub": true
+    "assignCentralHub": true,
+    "HTTP_STATUS": {
+      "OK": 200
+    }
 }
