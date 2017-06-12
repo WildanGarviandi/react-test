@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import styles from '../styles.css';
 import LoginInput from './LoginInput';
 import LoginCheckBox from './LoginCheckBox';
-import { ButtonWithLoading } from '../../base';
+import { ButtonWithLoading } from '../../views/base';
 
 export default class Login extends React.Component {
 

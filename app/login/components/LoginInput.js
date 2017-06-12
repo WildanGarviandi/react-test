@@ -3,7 +3,7 @@ import classNaming from 'classnames';
 import PropTypes from 'prop-types';
 
 import styles from '../styles.css';
-import { Input } from '../../base';
+import { Input } from '../../views/base';
 
 export default class LoginInput extends React.Component {
 

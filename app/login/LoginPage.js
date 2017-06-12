@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 
-import { LoginAction } from '../../modules/';
-import store from '../../store';
-import config from '../../config/configValues.json';
+import { LoginAction } from '../modules/';
+import store from '../store';
+import config from '../config/configValues.json';
 import Login from './components/Login';
 import getLoginState from './Selector';
 
