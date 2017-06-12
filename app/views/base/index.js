@@ -11,7 +11,7 @@ import { Rows, Tables } from './table';
 import Modal from './modal';
 import NotificationContainer from './notification';
 import classNaming from 'classnames';
-import baseStyle from './index.css';
+import baseStyle from './index.scss';
 
 const ButtonBase = React.createClass({
   render() {

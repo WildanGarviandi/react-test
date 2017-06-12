@@ -8,12 +8,12 @@ import {push} from 'react-router-redux';
 import * as Performance from './performanceService';
 import {DropdownTypeAhead, Input, Pagination} from '../views/base';
 import DateRangePicker from '../views/base/dateRangePicker';
-import tableStyles from './table.css';
+import tableStyles from './table.scss';
 import {formatDate} from '../helper/time';
 import {modalAction} from '../modules/modals/constants';
 import ModalActions from '../modules/modals/actions';
 import classnaming from 'classnames';
-import styles from './styles.css';
+import styles from './styles.scss';
 import {TripParser} from '../modules/trips';
 
 const ColumnsOrder = ['date', 'process', 'processingTime', 'totalOrders'];

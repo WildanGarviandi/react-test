@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import * as _ from 'lodash';
 import {ButtonBase} from './';
 import {Glyph} from './glyph';
-import styles from './dropdown.css';
+import styles from './dropdown.scss';
 
 const Options = React.createClass({
   handleClick() {

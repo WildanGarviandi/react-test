@@ -4,7 +4,7 @@ import {ButtonBase, DropdownTypeAhead, Input, Rows} from '../base';
 import orderRemove from '../../modules/containers/actions/orderRemove';
 import orderToggleAll from '../../modules/containers/actions/orderToggleAll';
 import orderToggle from '../../modules/containers/actions/orderToggle';
-import styles from './table.css';
+import styles from './table.scss';
 import classNaming from 'classnames';
 import * as TripDetails from '../../modules/inboundTripDetails';
 import { FormattedNumber } from 'react-intl';

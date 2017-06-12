@@ -10,7 +10,7 @@ import moment from 'moment';
 
 import * as PickupOrders from './pickupOrdersService';
 import OrdersSelector from '../modules/orders/selector';
-import styles from './styles.css';
+import styles from './styles.scss';
 import { ButtonWithLoading, ButtonStandard, Input, Pagination, DropdownWithState, ButtonBase } from '../views/base';
 import BodyRow, { CheckBoxCell, LinkCell, TextCell, OrderIDLinkCell, ButtonCell } from '../views/base/cells';
 import { FilterTop, FilterText, FilterTopMultiple } from '../components/form';
@@ -19,7 +19,7 @@ import HeadersRow from '../views/base/headers';
 import { CheckBox } from '../views/base/input';
 import { CheckboxHeader, CheckboxCell } from '../views/base/tableCell';
 import { formatDate } from '../helper/time';
-import stylesTable from '../views/base/table.css';
+import stylesTable from '../views/base/table.scss';
 import ModalActions from '../modules/modals/actions';
 import config from '../config/configValues.json';
 import { checkPermission } from '../helper/permission';
@@ -102,7 +102,11 @@ function getStoreFilterDropdown(name, title) {
       key: 0, value: 'All',
     }];
 
-    let hubOptions = [];
+    let hubOptions = [{
+      key: 0,
+      value: 'All',
+      checked: false,
+    }];
 
     cityOptions = cityOptions.concat(_.chain(cityList)
       .map((key, val) => ({ key, value: val }))
@@ -110,7 +114,8 @@ function getStoreFilterDropdown(name, title) {
       .value());
 
     if (hubs && hubs.list) {
-      hubOptions = _.chain(hubs.list)
+      let options = [];
+      options = _.chain(hubs.list)
         .map(hub => ({
           key: hub.HubID,
           value: `Hub ${hub.Name}`,
@@ -118,6 +123,8 @@ function getStoreFilterDropdown(name, title) {
         }))
         .sortBy(arr => arr.key)
         .value();
+
+      hubOptions = [...hubOptions, ...options];
 
       if (pickupOrders && pickupOrders.hubIDs &&
         pickupOrders.hubIDs.length > 0) {
@@ -168,6 +175,11 @@ function dispatchFilterMultiDropdown(filterKeyword) {
           PickupOrders.deleteHubFilter(selectedOption));
         const SetFn = PickupOrders.SetDropDownFilter(filterKeyword);
         dispatch(SetFn(selectedOption));
+      },
+      handleSelectAll: (options) => {
+        dispatch(PickupOrders.setAllHubFilter(options));
+        const SetFn = PickupOrders.SetDropDownFilter(filterKeyword);
+        dispatch(SetFn());
       },
     };
     return action;

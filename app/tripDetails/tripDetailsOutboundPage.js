@@ -18,7 +18,7 @@ import AssignTripModal from '../outboundTrips/outboundTripsModal';
 import ModalActions from '../modules/modals/actions';
 import Accordion from '../views/base/accordion';
 import RemarksSetter from '../components/remarksSetter';
-import styles from './styles.css';
+import styles from './styles.scss';
 import { CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered, TripParser } from '../modules/trips';
 import { formatDate } from '../helper/time';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
@@ -26,7 +26,6 @@ import config from '../config/configValues.json';
 import ImagePreview from '../views/base/imagePreview';
 import ImageUploader from '../views/base/imageUploader';
 import { InputWithDefault } from '../views/base/input';
-import dateTimeStyles from '../views/container/datetime.css';
 import { checkPermission } from '../helper/permission';
 
 const columns = ['id', 'id2', 'dropoff', 'time', 'CODValue', 'IsCOD', 'orderStatus', 'routeStatus', 'action'];
@@ -162,9 +161,13 @@ const DetailPage = React.createClass({
     const { canMarkContainer, canMarkOrderReceived, canMarkTripDelivered,
       isDeassigning, isChangingRemarks, isTripEditing, userLogged } = this.props;
 
-    const hasPermission = checkPermission(userLogged, 'ADD_ORDER');
+    let hasPermission = true;
+    let tripType;
+    let tripDestination;
 
-    let tripType, tripDestination;
+    if (userLogged) {
+      hasPermission = checkPermission(userLogged, 'ADD_ORDER');
+    }
 
     if (trip.DestinationHub) {
       tripType = 'Interhub';

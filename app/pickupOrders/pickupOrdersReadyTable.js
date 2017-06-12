@@ -11,16 +11,15 @@ import * as PickupOrdersReady from './pickupOrdersReadyService';
 import * as NearbyFleets from '../nearbyFleets/nearbyFleetService';
 import { DropdownTypeAhead, Input, Pagination, ButtonStandard } from '../views/base';
 import DateRangePicker from '../views/base/dateRangePicker';
-import tableStyles from '../views/base/table.css';
+import tableStyles from '../views/base/table.scss';
 import StatusDropdown from '../views/base/statusDropdown';
 import { TripParser } from '../modules/trips';
 import { OrderParser } from '../modules/orders';
 import { formatDate } from '../helper/time';
 import { modalAction } from '../modules/modals/constants';
-import stylesModal from '../views/base/modal.css';
 import classnaming from 'classnames';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
-import styles from './styles.css';
+import styles from './styles.scss';
 import BodyRow, { CheckBoxCell, LinkCell, TextCell, OrderIDLinkCell, ButtonCell, IDCell } from '../views/base/cells';
 import { CheckboxHeader, CheckboxCell } from '../views/base/tableCell';
 import { FilterTop, FilterText, FilterTopMultiple } from '../components/form';
@@ -114,7 +113,11 @@ function getStoreFilterDropdown(name, title) {
       key: 2, value: 'Order',
     }];
 
-    let hubOptions = [];
+    let hubOptions = [{
+      key: 0,
+      value: 'All',
+      checked: false,
+    }];
 
     cityOptions = cityOptions.concat(_.chain(cityList)
       .map((key, val) => ({ key, value: val }))
@@ -122,7 +125,8 @@ function getStoreFilterDropdown(name, title) {
       .value());
 
     if (hubs && hubs.list) {
-      hubOptions = _.chain(hubs.list)
+      let options = [];
+      options = _.chain(hubs.list)
         .map(hub => ({
           key: hub.HubID,
           value: `Hub ${hub.Name}`,
@@ -130,6 +134,8 @@ function getStoreFilterDropdown(name, title) {
         }))
         .sortBy(arr => arr.key)
         .value();
+
+      hubOptions = [...hubOptions, ...options];
 
       if (pickupOrdersReady && pickupOrdersReady.hubIDs &&
         pickupOrdersReady.hubIDs.length > 0) {
@@ -182,6 +188,11 @@ function dispatchFilterMultiDropdown(filterKeyword) {
         const SetFn = PickupOrdersReady.SetDropDownFilter(filterKeyword);
         dispatch(SetFn(selectedOption));
       },
+      handleSelectAll: (options) => {
+        dispatch(PickupOrdersReady.setAllHubFilter(options));
+        const SetFn = PickupOrdersReady.SetDropDownFilter(filterKeyword);
+        dispatch(SetFn());
+      },
     };
     return action;
   };
@@ -231,6 +242,7 @@ function mapDispatchToButton(dispatch, ownParams) {
       dispatch(PickupOrdersReady.ShowAssignModal(parseInt(ownParams.item.tripID)));
       dispatch(NearbyFleets.FetchList());
       dispatch(PickupOrdersReady.FetchDrivers(parseInt(ownParams.item.tripID)));
+      dispatch(PickupOrdersReady.fetchHubs());
     }
   }
 }
@@ -395,14 +407,14 @@ const Table = React.createClass({
         }
         if (columnKey === 'action') {
           if (item.isTrip) {
-            return <td key={columnKey} className={tableStyles.td}><PickupOrdersButton item={item} value={'Assign'} /></td>
+            return <td key={columnKey} className={tableStyles.td}><PickupOrdersButton item={item} value={'Assign'} /></td>;
           } else {
             const buttonAction = {
               textBase: 'Assign',
               styles: {
-                base: styles.cellButtonDisabled
+                base: styles.cellButtonDisabled,
               },
-              disabled: true
+              disabled: false,
             }
             return <td key={columnKey} className={tableStyles.td}><ButtonStandard {...buttonAction} /></td>;
           }

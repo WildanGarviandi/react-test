@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import * as utils from './utils';
 import {InputText} from './input';
 
-import styles from './table.css';
+import styles from './table.scss';
 
 const classnaming = require('classnames/bind').bind(styles);
 

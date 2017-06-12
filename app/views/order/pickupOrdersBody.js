@@ -9,7 +9,7 @@ import * as OrdersPickup from '../../modules/orders/actions/pickup';
 import * as PickupOrders from '../../modules/pickupOrders';
 import {formatDate} from '../../helper/time';
 import {CheckboxCell} from '../base/tableCell';
-import styles from '../base/table.css';
+import styles from '../base/table.scss';
 
 function mapDispatchToCheckBox(dispatch, ownProps) {
   return {

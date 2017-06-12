@@ -1,7 +1,7 @@
 import React from 'react';
 import {ButtonAtRightTop, ButtonBase, Modal, PageTitle, Pagination} from '../base';
 import {CellWithCheckbox, CellWithNums, CellWithSelected, Tables} from './tables';
-import styles from './styles.css';
+import styles from './styles.scss';
 
 let orders = [
   {

@@ -1,7 +1,7 @@
 import React from 'react'; // eslint-disable-line
 import PropTypes from 'prop-types';
 
-import styles from '../styles.css';
+import styles from '../styles.scss';
 import LoginInput from './LoginInput';
 import LoginCheckBox from './LoginCheckBox';
 import { ButtonWithLoading } from '../../views/base';
