@@ -1,12 +1,50 @@
-import lodash from 'lodash';
+import lodash from 'lodash'; //eslint-disable-line
 import React from 'react';
 import { connect } from 'react-redux';
+
 import styles from './styles.css';
 import InboundOrdersBody from './inboundOrdersBody';
 import InboundOrdersHeaders from './inboundOrdersHeaders';
 import * as InboundOrders from './inboundOrdersService';
-import { ButtonWithLoading, Input, Pagination } from '../views/base';
+import { Pagination } from '../views/base';
 import { inboundOrdersColumns } from './inboundOrdersColumns';
+import config from '../config/configValues.json';
+
+const mapStateToInboundOrders = (state) => {
+  const { inboundOrders } = state.app;
+  const { currentPage, isFetching, limit, orders, total } = inboundOrders;
+
+  return {
+    Headers: InboundOrdersHeaders,
+    Body: InboundOrdersBody,
+    isFetching,
+    items: orders,
+    pagination: {
+      currentPage, limit, total,
+    },
+  };
+};
+
+const mapDispatchToInboundOrders = (dispatch, ownProps) => {
+  const dispatchData = {
+    GetList: () => {
+      if (ownProps.isFill) {
+        dispatch(InboundOrders.FetchNotAssignedList());
+      } else {
+        dispatch(InboundOrders.FetchList());
+      }
+    },
+    PaginationActions: {
+      setCurrentPage: (currentPage) => {
+        dispatch(InboundOrders.SetCurrentPage(currentPage));
+      },
+      setLimit: (limit) => {
+        dispatch(InboundOrders.SetLimit(limit));
+      },
+    },
+  };
+  return dispatchData;
+};
 
 const Table = React.createClass({
   getInitialState() {
@@ -16,7 +54,7 @@ const Table = React.createClass({
     this.props.GetList();
   },
   render() {
-    const { Headers, Filters, Body, PaginationActions, isFetching, items, pagination } = this.props;
+    const { Headers, Body, PaginationActions, isFetching, items, pagination } = this.props;
 
     let bodyComponents = (
       <tbody>
@@ -24,7 +62,7 @@ const Table = React.createClass({
           <td colSpan={inboundOrdersColumns.length}>
             <div className={styles.fetchingText}>
               Fetching data...
-        </div>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -37,14 +75,17 @@ const Table = React.createClass({
               <td colSpan={inboundOrdersColumns.length}>
                 <div className={styles.emptyTableContainer}>
                   <span>
-                    <img src="/img/image-inbound-trip-done.png" className={styles.emptyTableImage} />
+                    <img
+                      src={config.IMAGES.INBOUND_TRIP_DONE}
+                      className={styles.emptyTableImage}
+                    />
                     <div className={styles.bigText}>
                       Awesome work guys!
-                  </div>
+                    </div>
                     <div className={styles.emptyTableSmallText}>
                       All trip orders are verified, you have scanned and
                     verified all the inbound orders.
-                </div>
+                    </div>
                   </span>
                 </div>
               </td>
@@ -67,42 +108,7 @@ const Table = React.createClass({
         <Pagination {...pagination} {...PaginationActions} />
       </div>
     );
-  }
+  },
 });
-
-function mapStateToInboundOrders(state, ownProps) {
-  const { inboundOrders } = state.app;
-  const { currentPage, isFetching, limit, orders, selected, total } = inboundOrders;
-
-  return {
-    Headers: InboundOrdersHeaders,
-    Body: InboundOrdersBody,
-    isFetching: isFetching,
-    items: orders,
-    pagination: {
-      currentPage, limit, total,
-    }
-  }
-}
-
-function mapDispatchToInboundOrders(dispatch, ownProps) {
-  return {
-    GetList: () => {
-      if (ownProps.isFill) {
-        dispatch(InboundOrders.FetchNotAssignedList());
-      } else {
-        dispatch(InboundOrders.FetchList());
-      }
-    },
-    PaginationActions: {
-      setCurrentPage: (currentPage) => {
-        dispatch(InboundOrders.SetCurrentPage(currentPage));
-      },
-      setLimit: (limit) => {
-        dispatch(InboundOrders.SetLimit(limit));
-      },
-    }
-  }
-}
 
 export default connect(mapStateToInboundOrders, mapDispatchToInboundOrders)(Table);

@@ -21,10 +21,6 @@ const Constants = {
   ORDERS_INBOUND_RESET_SUGGESTION: 'inbound/resetSuggestion',
 };
 
-//
-// Reducers
-//
-
 const initialState = {
   currentPage: 1,
   isFetching: false,
@@ -137,32 +133,18 @@ export function Reducer(state = initialState, action) {
   }
 }
 
-//
-// Actions
-//
-
-export function FetchList() {
-  return (dispatch, getState) => {
-    dispatch({
-      type: Constants.ORDERS_INBOUND_FETCH_START,
-    });
-
-    dispatch(ReFetchList());
-  }
-}
-
-function ReFetchList() {
-  return (dispatch, getState) => {
+const reFetchList = () => {
+  const fetchListData = (dispatch, getState) => {
     const { inboundOrders, userLogged } = getState().app;
     const { token, hubID } = userLogged;
     const { currentPage, filters, limit } = inboundOrders;
 
     const query = Object.assign({}, filters, {
-      limit: limit,
+      limit,
       offset: (currentPage - 1) * limit,
     });
 
-    FetchGet('/order/orderInbound/' + hubID, token, query, true).then((response) => {
+    FetchGet(`/order/orderInbound/${hubID}`, token, query, true).then((response) => {
       if (!response.ok) {
         throw new Error();
       }
@@ -186,8 +168,19 @@ function ReFetchList() {
       dispatch(ModalActions.addMessage('Failed to fetch inbound orders'));
     });
   };
-}
 
+  return fetchListData;
+};
+
+export function FetchList() {
+  return (dispatch) => {
+    dispatch({
+      type: Constants.ORDERS_INBOUND_FETCH_START,
+    });
+
+    dispatch(reFetchList());
+  };
+}
 
 export function SetCurrentPage(currentPage) {
   return (dispatch) => {
@@ -289,7 +282,7 @@ export function markReceived(id) {
             totalOrderByTrip: data.Trip.UserOrderRoutes.length,
           },
         });
-        dispatch(ReFetchList());
+        dispatch(reFetchList());
         dispatch(DashboardService.FetchCount());
       });
     }).catch((e) => {
@@ -315,28 +308,27 @@ export function BulkMarkReceived(scannedIDs) {
     const { token } = userLogged;
 
     const query = {
-      ids: scannedIDs
-    }
+      ids: scannedIDs,
+    };
 
     dispatch({ type: modalAction.BACKDROP_SHOW });
     dispatch({
       type: Constants.ORDERS_INBOUND_MARK_RECEIVED_START,
     });
 
-    FetchPost(`/order/bulk-mark-deliver`, token, query).then((response) => {
+    FetchPost('/order/bulk-mark-deliver', token, query).then((response) => {
       if (!response.ok) {
         return response.json().then(({ error }) => {
           throw error;
         });
       }
 
-      response.json().then(({ data }) => {
-
-        let failedIds = [];
+      return response.json().then(({ data }) => {
+        const failedIds = [];
         if (data.failedIds.length > 0) {
-          data.failedIds.forEach(function (failed) {
+          data.failedIds.forEach((failed) => {
             failedIds.push(failed.id);
-          })
+          });
         }
 
         dispatch({
@@ -357,7 +349,7 @@ export function BulkMarkReceived(scannedIDs) {
         });
 
         dispatch({ type: modalAction.BACKDROP_HIDE });
-        dispatch(ReFetchList());
+        dispatch(reFetchList());
         dispatch(DashboardService.FetchCount());
       });
     }).catch((e) => {
@@ -380,5 +372,5 @@ export function BulkMarkReceived(scannedIDs) {
 export function resetSuggestion() {
   return (dispatch) => {
     dispatch({ type: Constants.ORDERS_INBOUND_RESET_SUGGESTION });
-  }
+  };
 }

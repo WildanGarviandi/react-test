@@ -1,18 +1,19 @@
-import lodash from 'lodash';
+import lodash from 'lodash'; //eslint-disable-line
 import React from 'react';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import { ModalContainer, ModalDialog } from 'react-modal-dialog';
+
 import InboundOrdersTable from './inboundOrdersTable';
 import styles from './styles.css';
-import { ButtonWithLoading, Input, Page } from '../views/base';
+import { Input, Page, Glyph } from '../views/base';
 import * as InboundOrders from './inboundOrdersService';
-import { ModalContainer, ModalDialog } from 'react-modal-dialog';
-import { Glyph } from '../views/base';
 import { ButtonBase } from '../components/button';
 
 const DuplicateModal = React.createClass({
   componentWillUnmount() {
-    document.getElementById('markReceivedInput') && document.getElementById('markReceivedInput').focus();
+    if (document.getElementById('markReceivedInput')) {
+      document.getElementById('markReceivedInput').focus();
+    }
   },
   closeModal() {
     this.props.closeModal();
