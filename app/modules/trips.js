@@ -34,14 +34,14 @@ export function CanMarkOrderReceived(trip, orders) {
   return ['BOOKED', 'ACCEPTED', 'PICKUP', 'IN-TRANSIT'].indexOf(trip.OrderStatus.OrderStatus) > -1;
 }
 
-export function CanMarkTripDelivered(trip, orders) {
+export function CanMarkTripDelivered(trip) {
   if (!trip || !trip.OrderStatus || trip.OriginHub) return false;
 
   return ['BOOKED', 'ACCEPTED', 'PICKUP', 'IN-TRANSIT'].indexOf(trip.OrderStatus.OrderStatus) > -1;
 }
 
 export function GetTripType(trip, hubID, roleName) {
-  if (!trip) return "FETCH";
+  if (!trip) return 'FETCH';
 
   if (!trip.OriginHub && trip.DestinationHub) {
     if ((config.role.DEFAULT === roleName && trip.DestinationHub.HubID === hubID) || config.role.SUPERHUB) {
