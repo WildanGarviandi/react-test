@@ -564,7 +564,7 @@ export function fetchHubs() {
   };
 }
 
-export function AssignFleet(tripID, fleetManagerID) {
+export function AssignFleet(tripID, fleetManagerID, noAlert) {
   return (dispatch, getState) => {
     const { pickupOrdersReady, userLogged } = getState().app;
     const { token } = userLogged;
@@ -596,6 +596,10 @@ export function AssignFleet(tripID, fleetManagerID) {
           dispatch({ type: modalAction.BACKDROP_HIDE });
           dispatch(NearbyFleets.FetchDriverFleet(fleetManagerID));
           dispatch(DashboardService.FetchCount());
+          dispatch(HideAssignModal());
+          if (!noAlert) {
+            dispatch(ModalActions.addMessage('Trip assigned to hub'));
+          }
         });
       }).catch((e) => {
         const message = (e && e.message) ? e.message : 'Failed to assign fleet';
@@ -615,6 +619,10 @@ export function AssignFleet(tripID, fleetManagerID) {
           dispatch({ type: modalAction.BACKDROP_HIDE });
           dispatch(NearbyFleets.FetchDriverFleet(fleetManagerID));
           dispatch(DashboardService.FetchCount());
+          dispatch(HideAssignModal());
+          if (!noAlert) {
+            dispatch(ModalActions.addMessage('Trip assigned to hub'));
+          }
         });
       }).catch((e) => {
         const message = (e && e.message) ? e.message : 'Failed to assign fleet';
@@ -842,5 +850,12 @@ export function setAllHubFilter(hubOptions) {
 export function SetFilterHub(payload) {
   return (dispatch) => {
     dispatch({ type: Constants.ORDERS_PICKUP_READY_SET_FILTER_HUB, payload });
+  };
+}
+
+export function setDriverVendor(tripID, fleetID, driverID) {
+  return (dispatch) => {
+    dispatch(AssignFleet(tripID, fleetID, true));
+    dispatch(AssignDriver(tripID, driverID));
   };
 }
