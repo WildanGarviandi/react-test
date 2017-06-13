@@ -3,6 +3,7 @@ import { push } from 'react-router-redux';
 
 import FetchGet from '../modules/fetch/get';
 import FetchPost from '../modules/fetch/post';
+import fetchDelete from '../modules/fetch/delete';
 import ModalActions from '../modules/modals/actions';
 import { TripParser } from '../modules/trips';
 import OrderStatusSelector from '../modules/orderStatus/selector';
@@ -544,6 +545,44 @@ export function FetchHubs() {
 export function SetFilterDriver(payload) {
   return (dispatch) => {
     dispatch({ type: Constants.TRIPS_INBOUND_SET_FILTER_DRIVER, payload });
+  };
+}
+
+const cancelAssignment = (dispatch, cancelPromise) => {
+  dispatch({ type: modalAction.BACKDROP_SHOW });
+  return cancelPromise.then((response) => {
+    if (!response.ok) {
+      return response.json().then(({ error }) => {
+        throw error;
+      });
+    }
+
+    return response.json().then(() => {
+      dispatch({ type: modalAction.BACKDROP_HIDE });
+    });
+  }).catch((e) => {
+    const message = (e && e.message) ? e.message : 'Failed to cancel assignment';
+    dispatch({ type: modalAction.BACKDROP_HIDE });
+    dispatch(ModalActions.addMessage(message));
+  });
+};
+
+export function cancelDriver(tripID) {
+  return (dispatch, getState) => {
+    const { userLogged } = getState().app;
+    const { token } = userLogged;
+
+    return cancelAssignment(dispatch, fetchDelete(`/${tripID}/driver`, token, {}));
+  };
+}
+
+export function cancelFleet(tripID) {
+  return (dispatch, getState) => {
+    const { userLogged } = getState().app;
+    const { token } = userLogged;
+
+    return cancelAssignment(dispatch, fetchDelete(`/${tripID}/fleetmanager`,
+      token, {}, true));
   };
 }
 

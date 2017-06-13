@@ -605,6 +605,12 @@ function DispatchToProps(dispatch) {
     AssignHub(tripID, hubID) {
       dispatch(inboundTrips.AssignHub(tripID, hubID));
     },
+    cancelDriver(tripID) {
+      dispatch(inboundTrips.cancelDriver(tripID));
+    },
+    cancelFleet(tripID) {
+      dispatch(inboundTrips.cancelFleet(tripID));
+    },
   };
 }
 
