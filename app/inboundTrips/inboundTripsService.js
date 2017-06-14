@@ -587,7 +587,7 @@ const handleErrMsgArr = (arr) => {
   return message;
 };
 
-export function AssignDriver(tripID, driverID) {
+export function assignDriver(tripID, driverID) {
   return async (dispatch, getState) => {
     const { userLogged, inboundTrips } = getState().app;
     const { currentTrip } = inboundTrips;
@@ -638,7 +638,7 @@ export function AssignDriver(tripID, driverID) {
   };
 }
 
-export function AssignHub(tripID, hubID) {
+export function assignHub(tripID, hubID) {
   return async (dispatch, getState) => {
     const { userLogged, inboundTrips } = getState().app;
     const { currentTrip } = inboundTrips;

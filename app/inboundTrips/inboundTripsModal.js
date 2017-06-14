@@ -442,10 +442,10 @@ class InboundTripsModal extends Component {
     }
     if (isDriverExceed) {
       if (confirm(`Are you sure you want to assign to ${selectedDriverName} ?`)) {
-        this.props.AssignDriver(this.props.currentTrip.TripID, selectedDriver);
+        this.props.assignDriver(this.props.currentTrip.TripID, selectedDriver);
       }
     } else {
-      this.props.AssignDriver(this.props.currentTrip.TripID, selectedDriver);
+      this.props.assignDriver(this.props.currentTrip.TripID, selectedDriver);
     }
   }
 
@@ -456,10 +456,10 @@ class InboundTripsModal extends Component {
     }
     if (isFleetExceed) {
       if (confirm('Are you sure you want to assign ?')) {
-        this.props.AssignHub(this.props.currentTrip.TripID, selectedHub);
+        this.props.assignHub(this.props.currentTrip.TripID, selectedHub);
       }
     } else {
-      this.props.AssignHub(this.props.currentTrip.TripID, selectedHub);
+      this.props.assignHub(this.props.currentTrip.TripID, selectedHub);
     }
   }
 
@@ -573,8 +573,8 @@ function DispatchToProps(dispatch) {
       dispatch(inboundTrips.HideDetails());
       dispatch(NearbyFleets.ResetVendorList());
     },
-    AssignDriver(tripID, driverID) {
-      dispatch(inboundTrips.AssignDriver(tripID, driverID));
+    assignDriver(tripID, driverID) {
+      dispatch(inboundTrips.assignDriver(tripID, driverID));
     },
     FleetSet(tripID, fleetID) {
       dispatch(inboundTrips.AssignFleet(tripID, fleetID));
@@ -603,8 +603,8 @@ function DispatchToProps(dispatch) {
     SetFilterHub(filters) {
       dispatch(inboundTrips.SetFilterHub(filters));
     },
-    AssignHub(tripID, hubID) {
-      dispatch(inboundTrips.AssignHub(tripID, hubID));
+    assignHub(tripID, hubID) {
+      dispatch(inboundTrips.assignHub(tripID, hubID));
     },
   };
 }
@@ -612,9 +612,9 @@ function DispatchToProps(dispatch) {
 /* eslint-disable */
 InboundTripsModal.propTypes = {
   HideModal: PropTypes.func,
-  AssignDriver: PropTypes.func,
+  assignDriver: PropTypes.func,
   currentTrip: PropTypes.any,
-  AssignHub: PropTypes.func,
+  assignHub: PropTypes.func,
   showReAssignModal: PropTypes.any,
   paginationStateDrivers: PropTypes.any,
   PaginationActionDrivers: PropTypes.any,
@@ -627,9 +627,9 @@ InboundTripsModal.propTypes = {
 
 InboundTripsModal.defaultProps = {
   HideModal: () => { },
-  AssignDriver: () => { },
+  assignDriver: () => { },
   currentTrip: {},
-  AssignHub: () => { },
+  assignHub: () => { },
   showReAssignModal: {},
   paginationStateDrivers: {},
   PaginationActionDrivers: {},
