@@ -665,7 +665,6 @@ export function AssignHub(tripID, hubID) {
 
       dispatch(ModalActions.addMessage('Assign hub success'));
     } catch (e) {
-      console.log(e);
       const message = (e && e.message) ? e.message : 'Failed to assign hub';
       dispatch({ type: modalAction.BACKDROP_HIDE });
       dispatch(ModalActions.addMessage(message));
