@@ -549,7 +549,7 @@ export function SetFilterDriver(payload) {
   };
 }
 
-const handleErrorResponse = (response) => {
+const handleErrorResponse = async (response) => {
   const errorValue = response.json().then(({ error }) => {
     throw error;
   });
@@ -578,6 +578,15 @@ const getMockPromise = async () => {
   return promise;
 };
 
+const handleErrMsgArr = (arr) => {
+  let message = '';
+  arr.forEach((data, index) => {
+    message += `${index + 1}. ${data.order} - ${data.reason}
+    ${index < arr.length - 1 ? '\n' : ''}`;
+  });
+  return message;
+};
+
 export function AssignDriver(tripID, driverID) {
   return async (dispatch, getState) => {
     const { userLogged, inboundTrips } = getState().app;
@@ -596,7 +605,7 @@ export function AssignDriver(tripID, driverID) {
         await getMockPromise();
 
       if (!(response.ok || response.skip)) {
-        handleErrorResponse(response);
+        await handleErrorResponse(response);
       }
 
       response = currentTrip.FleetManager ?
@@ -604,20 +613,21 @@ export function AssignDriver(tripID, driverID) {
         await getMockPromise();
 
       if (!(response.ok || response.skip)) {
-        handleErrorResponse(response);
+        await handleErrorResponse(response);
       }
 
       response = await FetchPost(`/trip/${tripID}/driver`, token, body);
 
       if (!(response.ok || response.skip)) {
-        handleErrorResponse(response);
+        await handleErrorResponse(response);
       }
 
       response = await response.json();
 
       dispatch(ModalActions.addMessage('Assign driver success'));
     } catch (e) {
-      const message = (e && e.message) ? e.message : 'Failed to set driver';
+      let message = (e && e.message) ? e.message : 'Failed to set driver';
+      message = Array.isArray(message) ? handleErrMsgArr(message) : message;
       dispatch({ type: modalAction.BACKDROP_HIDE });
       dispatch(ModalActions.addMessage(message));
     } finally {
@@ -646,7 +656,7 @@ export function AssignHub(tripID, hubID) {
         await getMockPromise();
 
       if (!(response.ok || response.skip)) {
-        handleErrorResponse(response);
+        await handleErrorResponse(response);
       }
 
       response = currentTrip.FleetManager ?
@@ -654,20 +664,21 @@ export function AssignHub(tripID, hubID) {
         await getMockPromise();
 
       if (!(response.ok || response.skip)) {
-        handleErrorResponse(response);
+        await handleErrorResponse(response);
       }
 
       response = await FetchPost(`/trip/${tripID}/transfer`, token, body, true);
 
       if (!(response.ok || response.skip)) {
-        handleErrorResponse(response);
+        await handleErrorResponse(response);
       }
 
       response = await response.json();
 
       dispatch(ModalActions.addMessage('Assign hub success'));
     } catch (e) {
-      const message = (e && e.message) ? e.message : 'Failed to assign hub';
+      let message = (e && e.message) ? e.message : 'Failed to assign hub';
+      message = Array.isArray(message) ? handleErrMsgArr(message) : message;
       dispatch({ type: modalAction.BACKDROP_HIDE });
       dispatch(ModalActions.addMessage(message));
     } finally {
