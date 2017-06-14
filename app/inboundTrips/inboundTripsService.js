@@ -556,16 +556,18 @@ const handleErrorResponse = (response) => {
   return errorValue;
 };
 
-async function getCancelDriverPromise(tripID, token) {
-  return fetchDelete(`/trip/${tripID}/driver`, token, {});
-}
+const getCancelDriverPromise = async (tripID, token) => {
+  const promise = fetchDelete(`/trip/${tripID}/driver`, token, {});
+  return promise;
+};
 
-async function getCancelHubPromise(tripID, token) {
-  return fetchDelete(`/trip/${tripID}/fleetmanager`,
+const getCancelHubPromise = async (tripID, token) => {
+  const promise = fetchDelete(`/trip/${tripID}/fleetmanager`,
     token, {}, true);
-}
+  return promise;
+};
 
-async function getMockPromise() {
+const getMockPromise = async () => {
   const promise = new Promise((resolve) => {
     const resolvedData = resolve({
       skip: true,
@@ -574,7 +576,7 @@ async function getMockPromise() {
     return resolvedData;
   });
   return promise;
-}
+};
 
 export function AssignDriver(tripID, driverID) {
   return async (dispatch, getState) => {
