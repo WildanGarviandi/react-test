@@ -264,8 +264,9 @@ export function SetFiltersStatus(keyword) {
   return (dispatch, getState) => {
     const options = OrderStatusSelector.GetList(getState());
     const orderStatus = _.reduce(options, (results, status) => {
-      results[status.value] = status.key;
-      return results;
+      const data = _.cloneDeep(results);
+      data[status.value] = status.key;
+      return data;
     }, {});
 
     const { inboundTrips } = getState().app;
@@ -548,47 +549,37 @@ export function SetFilterDriver(payload) {
   };
 }
 
-const cancelAssignment = (dispatch, cancelPromise) => {
-  dispatch({ type: modalAction.BACKDROP_SHOW });
-  return cancelPromise.then((response) => {
-    if (!response.ok) {
-      return response.json().then(({ error }) => {
-        throw error;
-      });
-    }
-
-    return response.json().then(() => {
-      dispatch({ type: modalAction.BACKDROP_HIDE });
-    });
-  }).catch((e) => {
-    const message = (e && e.message) ? e.message : 'Failed to cancel assignment';
-    dispatch({ type: modalAction.BACKDROP_HIDE });
-    dispatch(ModalActions.addMessage(message));
+const handleErrorResponse = (response) => {
+  const errorValue = response.json().then(({ error }) => {
+    throw error;
   });
+  return errorValue;
 };
 
-export function cancelDriver(tripID) {
-  return (dispatch, getState) => {
-    const { userLogged } = getState().app;
-    const { token } = userLogged;
-
-    return cancelAssignment(dispatch, fetchDelete(`/${tripID}/driver`, token, {}));
-  };
+async function getCancelDriverPromise(tripID, token) {
+  return fetchDelete(`/trip/${tripID}/driver`, token, {});
 }
 
-export function cancelFleet(tripID) {
-  return (dispatch, getState) => {
-    const { userLogged } = getState().app;
-    const { token } = userLogged;
+async function getCancelHubPromise(tripID, token) {
+  return fetchDelete(`/trip/${tripID}/fleetmanager`,
+    token, {}, true);
+}
 
-    return cancelAssignment(dispatch, fetchDelete(`/${tripID}/fleetmanager`,
-      token, {}, true));
-  };
+async function getMockPromise() {
+  const promise = new Promise((resolve) => {
+    const resolvedData = resolve({
+      skip: true,
+    });
+
+    return resolvedData;
+  });
+  return promise;
 }
 
 export function AssignDriver(tripID, driverID) {
-  return (dispatch, getState) => {
-    const { userLogged } = getState().app;
+  return async (dispatch, getState) => {
+    const { userLogged, inboundTrips } = getState().app;
+    const { currentTrip } = inboundTrips;
     const { token } = userLogged;
 
     const body = {
@@ -596,30 +587,49 @@ export function AssignDriver(tripID, driverID) {
     };
 
     dispatch({ type: modalAction.BACKDROP_SHOW });
-    FetchPost(`/trip/${tripID}/driver`, token, body).then((response) => {
-      if (!response.ok) {
-        return response.json().then(({ error }) => {
-          throw error;
-        });
+
+    try {
+      let response = currentTrip.Driver ?
+        await getCancelDriverPromise(tripID, token) :
+        await getMockPromise();
+
+      if (!(response.ok || response.skip)) {
+        handleErrorResponse(response);
       }
 
-      return response.json().then(() => {
-        dispatch(ModalActions.addMessage('Assign driver success'));
-        dispatch(FetchList());
-        dispatch({ type: modalAction.BACKDROP_HIDE });
-        dispatch(HideReAssignModal());
-      });
-    }).catch((e) => {
+      response = currentTrip.FleetManager ?
+        await getCancelHubPromise(tripID, token) :
+        await getMockPromise();
+
+      if (!(response.ok || response.skip)) {
+        handleErrorResponse(response);
+      }
+
+      response = await FetchPost(`/trip/${tripID}/driver`, token, body);
+
+      if (!(response.ok || response.skip)) {
+        handleErrorResponse(response);
+      }
+
+      response = await response.json();
+
+      dispatch(ModalActions.addMessage('Assign driver success'));
+    } catch (e) {
       const message = (e && e.message) ? e.message : 'Failed to set driver';
       dispatch({ type: modalAction.BACKDROP_HIDE });
       dispatch(ModalActions.addMessage(message));
-    });
+    } finally {
+      dispatch(FetchList());
+      dispatch({ type: modalAction.BACKDROP_HIDE });
+      dispatch(HideReAssignModal());
+    }
   };
 }
 
 export function AssignHub(tripID, hubID) {
-  return (dispatch, getState) => {
-    const { userLogged } = getState().app;
+  return async (dispatch, getState) => {
+    const { userLogged, inboundTrips } = getState().app;
+    const { currentTrip } = inboundTrips;
     const { token } = userLogged;
 
     const body = {
@@ -627,24 +637,43 @@ export function AssignHub(tripID, hubID) {
     };
 
     dispatch({ type: modalAction.BACKDROP_SHOW });
-    FetchPost(`/trip/${tripID}/transfer`, token, body, true).then((response) => {
-      if (!response.ok) {
-        return response.json().then(({ error }) => {
-          throw error;
-        });
+
+    try {
+      let response = currentTrip.Driver ?
+        await getCancelDriverPromise(tripID, token) :
+        await getMockPromise();
+
+      if (!(response.ok || response.skip)) {
+        handleErrorResponse(response);
       }
 
-      return response.json().then(() => {
-        dispatch(ModalActions.addMessage('Assign hub success'));
-        dispatch(FetchList());
-        dispatch({ type: modalAction.BACKDROP_HIDE });
-        dispatch(HideReAssignModal());
-      });
-    }).catch((e) => {
+      response = currentTrip.FleetManager ?
+        await getCancelHubPromise(tripID, token) :
+        await getMockPromise();
+
+      if (!(response.ok || response.skip)) {
+        handleErrorResponse(response);
+      }
+
+      response = await FetchPost(`/trip/${tripID}/transfer`, token, body, true);
+
+      if (!(response.ok || response.skip)) {
+        handleErrorResponse(response);
+      }
+
+      response = await response.json();
+
+      dispatch(ModalActions.addMessage('Assign hub success'));
+    } catch (e) {
+      console.log(e);
       const message = (e && e.message) ? e.message : 'Failed to assign hub';
       dispatch({ type: modalAction.BACKDROP_HIDE });
       dispatch(ModalActions.addMessage(message));
-    });
+    } finally {
+      dispatch(FetchList());
+      dispatch({ type: modalAction.BACKDROP_HIDE });
+      dispatch(HideReAssignModal());
+    }
   };
 }
 

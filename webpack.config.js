@@ -5,6 +5,7 @@ module.exports = {
   entry: [
       './app/main.js',
       'webpack/hot/dev-server',
+      'babel-polyfill',
       'webpack-dev-server/client?http://localhost:8081'
   ],
 
