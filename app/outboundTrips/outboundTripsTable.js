@@ -274,7 +274,7 @@ const Table = React.createClass({
       switch (columnKey) {
         case 'tripID': {
           return (
-            <div key={columnKey} className={`${styles.colMd3} ${styles.filterDropDown}`}>
+            <div key={columnKey} className={`${styles['table-cell']} ${styles.filterDropDown}`}>
               <span className={styles.title}>{ColumnsTitle[columnKey]}</span>
               <SearchCell
                 key={columnKey}
@@ -289,7 +289,7 @@ const Table = React.createClass({
 
         case 'nextDestination': {
           return (
-            <div key={columnKey} className={`${styles.colMd3} ${styles.filterDropDown}`}>
+            <div key={columnKey} className={`${styles['table-cell']} ${styles.filterDropDown}`}>
               <span className={styles.title}>{ColumnsTitle[columnKey]}</span>
               <SearchCell
                 key={columnKey}
@@ -304,7 +304,7 @@ const Table = React.createClass({
 
         case 'tripType': {
           return (
-            <div key={columnKey} className={`${styles.colMd3} ${styles.filterDropDown}`}>
+            <div key={columnKey} className={`${styles['table-cell']} ${styles.filterDropDown}`}>
               <span>{ColumnsTitle[columnKey]}</span>
               <TripTypeDropDownWithState />
             </div>
@@ -313,7 +313,7 @@ const Table = React.createClass({
 
         case 'status': {
           return (
-            <div key={columnKey} className={`${styles.colMd3} ${styles.filterDropDown}`}>
+            <div key={columnKey} className={`${styles['table-cell']} ${styles.filterDropDown}`}>
               <span>{ColumnsTitle[columnKey]}</span>
               <TripStatusSelect {...this.props.statusProps} />
             </div>
@@ -326,7 +326,7 @@ const Table = React.createClass({
     });
 
     const Search = (
-      <div className="row">
+      <div className={styles['display-table']}>
         {Filters}
       </div>
     );
