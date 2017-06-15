@@ -1,17 +1,17 @@
 import lodash from 'lodash';
 import moment from 'moment';
 import React from 'react';
-import {connect} from 'react-redux';
-import {push} from 'react-router-redux';
+import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
 import * as OutboundTrips from './outboundTripsService';
-import {Input, Pagination} from '../views/base';
-import {DropdownWithState2} from '../views/base/dropdown';
+import { Input, Pagination } from '../views/base';
+import { DropdownWithState2 } from '../views/base/dropdown';
 import tableStyles from '../views/base/table.css';
 import styles from './styles.css';
-import {Glyph} from '../views/base/glyph';
+import { Glyph } from '../views/base/glyph';
 import StatusDropdown from '../views/base/statusDropdown';
-import {Interval} from './outboundTripsModal';
-import {ProcessTrip} from './outboundTripsHelper';
+import { Interval } from './outboundTripsModal';
+import { ProcessTrip } from './outboundTripsHelper';
 import config from '../config/configValues.json';
 
 let vehicles = {}
@@ -19,7 +19,7 @@ lodash.each(config.vehicle, (vehicle) => {
   vehicles[vehicle.value.toUpperCase()] = vehicle.key;
 })
 
-const ColumnsOrder = ['tripID', 'nextDestination', 'tripType', 'fleet', 
+const ColumnsOrder = ['tripID', 'nextDestination', 'tripType', 'fleet',
   'status', 'nextSuggestion', 'numberPackages', 'weight', 'remarks', 'deadline', 'actions'];
 
 const ColumnsTitle = {
@@ -40,12 +40,12 @@ const ColumnsTitle = {
   nextSuggestion: "Suggested Destination",
   weight: "Weight",
   remarks: "Remarks",
-  deadline: "Deadline", 
+  deadline: "Deadline",
   actions: "Action"
 }
 
 function FindFilter(filters, attr) {
-  switch(attr) {
+  switch (attr) {
     case 'fleetName':
       return filters['fleet'];
 
@@ -60,7 +60,7 @@ function FindFilter(filters, attr) {
 const SearchCell = React.createClass({
   render() {
     return (
-      <Input styles={{input: tableStyles.searchInput}} base={{type:"text"}} onChange={this.props.onChange} onEnterKeyPressed={this.props.onEnterKeyPressed} base={{value:this.props.filter}} />
+      <Input styles={{ input: tableStyles.searchInput }} base={{ type: "text" }} onChange={this.props.onChange} onEnterKeyPressed={this.props.onEnterKeyPressed} base={{ value: this.props.filter }} />
     );
   }
 });
@@ -88,10 +88,10 @@ const TripTypeDropDown = React.createClass({
   },
   render() {
     const options = [
-      { key: 0, value: "All"},
-      { key: 1, value: "Last Mile"},
-      { key: 2, value: "Hub"},
-      { key: 3, value: "No Destination Yet"},
+      { key: 0, value: "All" },
+      { key: 1, value: "Last Mile" },
+      { key: 2, value: "Hub" },
+      { key: 3, value: "No Destination Yet" },
     ];
     const val = options[this.props.val].value;
 
@@ -104,7 +104,7 @@ const TripTypeDropDown = React.createClass({
 function TripTypeDropDownDispatch(dispatch) {
   return {
     setType: (type) => {
-      dispatch(OutboundTrips.AddFilters({'tripType': type}));
+      dispatch(OutboundTrips.AddFilters({ 'tripType': type }));
     }
   }
 }
@@ -171,7 +171,7 @@ const Table = React.createClass({
             )
             const itemNot3PL = (
               <span className={styles.tripWithDriverCell}>
-                { item.driver &&
+                {item.driver &&
                   <img src={vehicleLogoSrc} className={styles.vehicleLogoOnTable} />
                 }
                 <p>
@@ -210,7 +210,11 @@ const Table = React.createClass({
             );
             const btnAssign = (
               <div className={styles.btnAssignOnTable}>
-                <button className={styles.btnAssign + " btn btn-sm btn-success"} disabled={item.isActionDisabled} onClick={this.props.openModal.bind(null, item)}>
+                <button
+                  className={`${styles.btnAssign} btn btn-sm btn-success`}
+                  disabled={item.isActionDisabled}
+                  onClick={this.props.openModal.bind(null, item)}
+                >
                   Assign
                 </button>
               </div>
@@ -221,17 +225,17 @@ const Table = React.createClass({
 
           case 'deadline': {
             const deadlineDiff = item.deadline.diff(moment());
-            const itemComponent = (deadlineDiff > 0) ? <Interval startTime={deadlineDiff} down={true} />: <span>{item.deadline.fromNow()}</span>;
-            
+            const itemComponent = (deadlineDiff > 0) ? <Interval startTime={deadlineDiff} down={true} /> : <span>{item.deadline.fromNow()}</span>;
+
             return (
               <td className={tableStyles.td + ((deadlineDiff > 0) ? '' : ' ' + styles.redColumn)} key={columnKey}>{itemComponent}</td>
             )
           }
 
           case 'nextSuggestion': {
-            const suggestionComponents = item.nextSuggestion.map(function(suggestion, idx) {
+            const suggestionComponents = item.nextSuggestion.map(function (suggestion, idx) {
               return (
-                <li key={ idx }>{suggestion}</li>
+                <li key={idx}>{suggestion}</li>
               )
             })
 
@@ -256,7 +260,7 @@ const Table = React.createClass({
       switch (columnKey) {
         case "nextDestination": {
           return (
-            <div key={columnKey} className={styles.colMd3 + ' ' +styles.filterDropDown}>
+            <div key={columnKey} className={styles.colMd3 + ' ' + styles.filterDropDown}>
               <span className={styles.title}>{ColumnsTitle[columnKey]}</span>
               <SearchCell key={columnKey} attr={columnKey} onChange={changeFilter.bind(null, columnKey)} onEnterKeyPressed={this.props.filteringAction.fetchTrips} filter={FindFilter(this.props.filters, columnKey)} />
             </div>
@@ -265,7 +269,7 @@ const Table = React.createClass({
 
         case "tripType": {
           return (
-            <div key={columnKey} className={styles.colMd3 + ' ' +styles.filterDropDown}>
+            <div key={columnKey} className={styles.colMd3 + ' ' + styles.filterDropDown}>
               <span>{ColumnsTitle[columnKey]}</span>
               <TripTypeDropDownWithState />
             </div>
@@ -274,7 +278,7 @@ const Table = React.createClass({
 
         case "status": {
           return (
-            <div key={columnKey} className={styles.colMd3 + ' ' +styles.filterDropDown}>
+            <div key={columnKey} className={styles.colMd3 + ' ' + styles.filterDropDown}>
               <span>{ColumnsTitle[columnKey]}</span>
               <TripStatusSelect {...this.props.statusProps} />
             </div>
@@ -294,34 +298,38 @@ const Table = React.createClass({
         {Search}
         <table className={tableStyles.table}>
           <thead><tr>{Headers}</tr></thead>
-          { this.props.isFetching &&
+          {this.props.isFetching &&
             <tbody>
-              <td colSpan={ColumnsOrder.length}>
-                <div className={styles.fetchingText}>
-                  Fetching data....
-                </div>
-              </td>
+              <tr>
+                <td colSpan={ColumnsOrder.length}>
+                  <div className={styles.fetchingText}>
+                    Fetching data....
+                  </div>
+                </td>
+              </tr>
             </tbody>
           }
-          { !this.props.isFetching && this.props.items.length > 0 &&
+          {!this.props.isFetching && this.props.items.length > 0 &&
             <tbody>{Body}</tbody>
           }
-          { !this.props.isFetching && this.props.items.length === 0 &&
+          {!this.props.isFetching && this.props.items.length === 0 &&
             <tbody>
-              <td colSpan={ColumnsOrder.length}>
-                <div className={styles.emptyTableContainer}>
-                  <img src="/img/image-all-assigned.png" className={styles.emptyTableImage}/>
-                  <div className={styles.bigText}>
-                    There are no active outbound trips
+              <tr>
+                <td colSpan={ColumnsOrder.length}>
+                  <div className={styles.emptyTableContainer}>
+                    <img src="/img/image-all-assigned.png" className={styles.emptyTableImage} />
+                    <div className={styles.bigText}>
+                      There are no active outbound trips
+                    </div>
                   </div>
-                </div>
-              </td>
+                </td>
+              </tr>
             </tbody>
           }
         </table>
       </div>
     );
-  }
+  },
 });
 
 const TableStateful = React.createClass({
@@ -335,13 +343,13 @@ const TableStateful = React.createClass({
     this.props.changeFilter(this.state);
   },
   pickStatus(val) {
-    this.setState({statusName: val, status: this.props.nameToID[val]}, () => {
+    this.setState({ statusName: val, status: this.props.nameToID[val] }, () => {
       this.fetchTrips();
     });
   },
   changeFilter(attr, val) {
     let attrName;
-    switch(attr) {
+    switch (attr) {
       case 'fleetName':
         attrName = 'fleet';
         break;
@@ -354,7 +362,7 @@ const TableStateful = React.createClass({
         attrName = attr;
     }
 
-    this.setState({[attrName]: val});
+    this.setState({ [attrName]: val });
   },
   changeFilterAndFetch(filters) {
     this.setState(filters, () => {
@@ -365,59 +373,60 @@ const TableStateful = React.createClass({
     this.props.fetchListOnModal(item.key);
   },
   render() {
-    const {filters, paginationAction, paginationState, statusParams, tripDetails, tripsIsFetching} = this.props;
+    const { paginationAction, paginationState, tripDetails, tripsIsFetching } = this.props;
 
     const paginationProps = lodash.assign({}, paginationAction, paginationState);
 
     const statusProps = {
       pickStatus: this.pickStatus,
       statusList: this.props.statusList,
-      statusName: this.state.statusName
-    }
+      statusName: this.state.statusName,
+    };
 
     const filteringAction = {
       changeFilter: this.changeFilter,
       changeFilterAndFetch: this.changeFilterAndFetch,
-      fetchTrips: this.fetchTrips
-    }
+      fetchTrips: this.fetchTrips,
+    };
 
     const trips = lodash.map(this.props.trips, ProcessTrip);
 
     const tableProps = {
       items: trips,
       toDetails: tripDetails,
-      filteringAction, statusProps,
+      filteringAction,
+      statusProps,
       filters: this.state,
       isFetching: tripsIsFetching,
-      openModal: this.openModal
-    }
-    
+      openModal: this.openModal,
+    };
+
     return (
       <div>
-        <div style={{opacity: tripsIsFetching ? 0.5 : 1}}>
+        <div style={{ opacity: tripsIsFetching ? 0.5 : 1 }}>
           <Table {...tableProps} />
           <Pagination {...paginationProps} />
         </div>
       </div>
     );
-  }
+  },
 });
 
 function StateToProps(state) {
-  const {outboundTripsService} = state.app;
-  const {isFetching, limit, total, currentPage, trips, filters} = outboundTripsService;
+  const { outboundTripsService } = state.app;
+  const { isFetching, limit, total, currentPage, trips, filters } = outboundTripsService;
 
   const paginationState = {
-    currentPage: currentPage,
-    limit: limit,
-    total: total
-  }
+    currentPage,
+    limit,
+    total,
+  };
 
   const statusList = state.app.containers.statusList;
 
   return {
-    paginationState, 
-    trips, 
+    paginationState,
+    trips,
     tripsIsFetching: isFetching,
     statusList: lodash.chain(statusList).map((key, val) => [val, key]).sortBy((arr) => (arr[1])).map((arr) => (arr[0])).value(),
     nameToID: lodash.reduce(statusList, (memo, key, val) => {
