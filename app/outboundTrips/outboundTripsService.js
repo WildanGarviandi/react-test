@@ -996,3 +996,25 @@ export function setHub(tripID, hubID) {
     });
   }
 }
+
+export function cancelExternalTrip(externalTripID) {
+  return (dispatch, getState) => {
+    const {token} = getState().app.userLogged;
+
+    dispatch({type: modalAction.BACKDROP_SHOW});
+    FetchDelete(`/external-trip/${externalTripID}`, token).then(function(response) {
+      if(response.ok) {
+        response.json().then(({data}) => {
+          dispatch(ModalActions.addMessage('Trip cancelled'));
+          window.location.reload();
+        });
+      } else {
+        dispatch(ModalsActions.addError('Failed to remove order'));
+      }
+      dispatch({type: modalAction.BACKDROP_HIDE});
+    }).catch(() => {
+      dispatch({type: modalAction.BACKDROP_HIDE});
+      dispatch(ModalsActions.addError('Network error while removing trip'));
+    });
+  }
+}

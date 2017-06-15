@@ -147,6 +147,9 @@ const DetailPage = React.createClass({
   closeExternalTrip() {
     this.setState({ showModalExternalTrip: false });
   },
+  cancelExternalTrip() {
+    this.props.cancelExternalTrip(this.props.trip.ExternalTrip.ExternalTripID);
+  },
   onChange(key) {
     return (val) => {
       this.props.update({ [key]: val });
@@ -405,6 +408,7 @@ const DetailPage = React.createClass({
                                   3PL : {`${trip.ExternalTrip.Sender} - ${trip.ExternalTrip.Transportation} (${trip.ExternalTrip.AwbNumber})`}
                                 </p>
                                 <button className={`${styles.greenBtn} ${styles.cancelButton}`} onClick={this.openExternalTrip}>Edit 3PL</button>
+                                <button className={`${styles.redBtn} ${styles.cancelButton}`} onClick={this.cancelExternalTrip}>Cancel 3PL</button>
                               </div>
                             }
                           </div>
@@ -703,6 +707,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     update: (externalTrip) => {
       dispatch(TripDetails.UpdateExternalTrip(externalTrip));
+    },
+    cancelExternalTrip: (externalTripID) => {
+      dispatch(OutboundTrips.cancelExternalTrip(externalTripID));
     },
   };
 };
