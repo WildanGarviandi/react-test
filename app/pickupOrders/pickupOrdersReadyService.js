@@ -564,7 +564,7 @@ export function fetchHubs() {
   };
 }
 
-export function AssignFleet(tripID, fleetManagerID, noAlert) {
+export function assignFleet(tripID, fleetManagerID, noAlert) {
   return (dispatch, getState) => {
     const { pickupOrdersReady, userLogged } = getState().app;
     const { token } = userLogged;
@@ -855,7 +855,7 @@ export function SetFilterHub(payload) {
 
 export function setDriverVendor(tripID, fleetID, driverID) {
   return (dispatch) => {
-    dispatch(AssignFleet(tripID, fleetID, true));
+    dispatch(assignFleet(tripID, fleetID, true));
     dispatch(AssignDriver(tripID, driverID));
   };
 }

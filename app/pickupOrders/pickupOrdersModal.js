@@ -70,57 +70,68 @@ function ProcessTrip(trip) {
   };
 }
 
-const Fleet = React.createClass({
-  render: function() {
-    const fleetComponents = fleetList.map(function(fleet, idx) {
-      let vendorLoad = styles.vendorLoad;
-      let availableLoad = fleet.CurrentLoad;
-      let rowStyle = styles.vendorInformation;
-      const capacity = fleet.FleetManager && fleet.FleetManager.CompanyDetail.OrderVolumeLimit;
-      if (fleet.FleetManagerID === this.props.selectedFleet) {
-        vendorLoad = styles.vendorLoadSelected;
-        availableLoad = parseInt(availableLoad) + parseInt(this.props.sumOrders);
-        rowStyle = styles.vendorInformationSelected;
-        selectedFleetName = fleet.FleetManager && fleet.FleetManager.CompanyDetail && fleet.FleetManager.CompanyDetail.CompanyName;
-        if (availableLoad > capacity) {
-          vendorLoad = styles.vendorLoadSelectedExceed;
-          rowStyle = styles.vendorInformationSelectedExceed;
-          isFleetExceed = true;
-        } else {
-          isFleetExceed = false;
-        }
+function Fleet({ selectedFleetProps, chooseFleet }) {
+  const fleetComponents = fleetList.map((fleet, idx) => {
+    let vendorLoad = styles.vendorLoad;
+    let availableLoad = fleet.CurrentLoad;
+    let rowStyle = styles.vendorInformation;
+    const capacity = fleet.FleetManager && fleet.FleetManager.CompanyDetail.OrderVolumeLimit;
+    if (fleet.FleetManagerID === selectedFleetProps) {
+      vendorLoad = styles.vendorLoadSelected;
+      availableLoad = parseInt(availableLoad, 10) + parseInt(this.props.sumOrders, 10);
+      rowStyle = styles.vendorInformationSelected;
+      selectedFleetName = fleet.FleetManager && fleet.FleetManager.CompanyDetail && fleet.FleetManager.CompanyDetail.CompanyName;
+      if (availableLoad > capacity) {
+        vendorLoad = styles.vendorLoadSelectedExceed;
+        rowStyle = styles.vendorInformationSelectedExceed;
+        isFleetExceed = true;
+      } else {
+        isFleetExceed = false;
       }
-      return (
-        <div
-          key={idx}
-          onClick={this.props.chooseFleet.bind(null, fleet.FleetManagerID)}
-          className={rowStyle}
-        >
-          <div className={styles.maskInput}>
-            <img
-              src={fleet.FleetManagerID === this.props.selectedFleet ?
-              config.IMAGES.RADIO_ON : config.IMAGES.RADIO_OFF}
-            />
-          </div>
-          <div className={styles.maskName}>
-            <span className={styles.vendorName}>
-              {fleet.FleetManager &&
-                fleet.FleetManager.CompanyDetail &&
-                fleet.FleetManager.CompanyDetail.CompanyName}
-            </span>
-          </div>
-          <div className={styles.maskLoad}>
-            <img className={styles.vendorLoadImage} src="/img/icon-grouping.png" />
-            <span className={vendorLoad}>
-              {availableLoad} / {capacity}
-            </span>
-          </div>
+    }
+    return (
+      <div
+        role="button"
+        key={fleet.FleetManagerID}
+        onClick={() => chooseFleet(fleet.FleetManagerID)}
+        className={rowStyle}
+      >
+        <div className={styles.maskInput}>
+          <img
+            src={fleet.FleetManagerID === selectedFleetProps ?
+            config.IMAGES.RADIO_ON : config.IMAGES.RADIO_OFF}
+          />
         </div>
-      );
-    }.bind(this));
-    return <div>{fleetComponents}</div>;
-  },
-});
+        <div className={styles.maskName}>
+          <span className={styles.vendorName}>
+            {fleet.FleetManager &&
+              fleet.FleetManager.CompanyDetail &&
+              fleet.FleetManager.CompanyDetail.CompanyName}
+          </span>
+        </div>
+        <div className={styles.maskLoad}>
+          <img className={styles.vendorLoadImage} src="/img/icon-grouping.png" />
+          <span className={vendorLoad}>
+            {availableLoad} / {capacity}
+          </span>
+        </div>
+      </div>
+    );
+  });
+
+  return <div>{fleetComponents}</div>;
+}
+
+/* eslint-disable */
+Fleet.propTypes = {
+  selectedFleetProps: PropTypes.any,
+  chooseFleet: PropTypes.func.isRequired,
+};
+/* eslint-enable */
+
+Fleet.defaultProps = {
+  selectedFleetProps: {},
+};
 
 export const AssignVendor = React.createClass({
   getInitialState() {
@@ -211,7 +222,7 @@ function Hub({ selectedHubID, chooseHub }) {
     return (
       <div
         role="button"
-        key={idx}
+        key={hub.HubID}
         onClick={() => chooseHub(hub.HubID)}
         className={rowStyle}
       >
@@ -783,10 +794,10 @@ const PickupOrdersModal = React.createClass({
     }
     if (isFleetExceed) {
       if (confirm('Are you sure you want to assign ' + this.props.trip.Weight + ' kg to ' + selectedFleetName + '?')) {
-        this.props.FleetSet(this.props.trip.TripID, selectedFleet);
+        this.props.fleetSet(this.props.trip.TripID, selectedFleet);
       }
     } else {
-      this.props.FleetSet(this.props.trip.TripID, selectedFleet);
+      this.props.fleetSet(this.props.trip.TripID, selectedFleet);
     }
   },
   assignDriverVendor() {
@@ -944,8 +955,8 @@ function DispatchToProps(dispatch, ownProps) {
     DriverSet(tripID, driverID) {
       dispatch(PickupOrdersReady.AssignDriver(tripID, driverID));
     },
-    FleetSet(tripID, fleetID) {
-      dispatch(PickupOrdersReady.AssignFleet(tripID, fleetID));
+    fleetSet(tripID, fleetID) {
+      dispatch(PickupOrdersReady.assignFleet(tripID, fleetID));
     },
     SplitTrip(id, vehicleID) {
       dispatch(PickupOrdersReady.SplitTrip(id, vehicleID));
