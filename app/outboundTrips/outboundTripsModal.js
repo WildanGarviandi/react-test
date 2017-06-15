@@ -621,15 +621,13 @@ const AssignTripModalClass = React.createClass({
               <div>
                 <div className={styles.modalBody}>
                   <div className={styles.isLastMile}>
-                    <p>Is this a last mile trip?</p>
+                    <p>Assign trip as</p>
                     <div className={styles.buttonContainer}>
                       <div className={styles.modalNo} onClick={this.isNotLastMile}>
-                        <img src="/img/icon-no.png" className={styles.isLastMileImage} />
-                        <div>NO</div>
+                        <div>INTERHUB</div>
                       </div>
                       <div className={styles.modalYes} onClick={this.isLastMile}>
-                        <img src="/img/icon-ok.png" className={styles.isLastMileImage} />
-                        <div>YES</div>
+                        <div>LAST MILE</div>
                       </div>
                     </div>
                   </div>
