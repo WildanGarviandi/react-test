@@ -1,4 +1,4 @@
-import lodash from 'lodash';
+import * as _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import classNaming from 'classnames';
@@ -47,24 +47,37 @@ const DetailRow = React.createClass({
         return (
           <span className={styles.inputForm}>
             <span className={styles.datetimeWrapper}>
-              <DateTime onChange={this.props.onChange} className={styles.inputForm} defaultValue={value}
-                dateFormat='DD MMM YYYY' timeFormat='HH:mm:ss' viewMode='days' />
+              <DateTime
+                onChange={this.props.onChange}
+                className={styles.inputForm}
+                defaultValue={value}
+                dateFormat="DD MMM YYYY"
+                timeFormat="HH:mm:ss"
+                viewMode="days"
+              />
             </span>
           </span>
-        )
+        );
       case 'image':
         return (
           <div className={styles.imageUploaderWrapper}>
-            <ImageUploader currentImageUrl={value} updateImageUrl={(data) => this.props.onChange(data)} />
+            <ImageUploader
+              currentImageUrl={value}
+              updateImageUrl={data => this.props.onChange(data)}
+            />
           </div>
-        )
+        );
       default:
         return (
           <div className={styles.inputForm}>
-            <Input className={'form-control'} base={{ placeholder: placeholder, defaultValue: value }}
-              onChange={(data) => this.props.onChange(data)} type={type} />
+            <Input
+              className={'form-control'}
+              base={{ placeholder, defaultValue: value }}
+              onChange={data => this.props.onChange(data)}
+              type={type}
+            />
           </div>
-        )
+        );
     }
   },
   render() {
@@ -87,8 +100,8 @@ const DetailRow = React.createClass({
           this.generateTypeContent()
         }
       </div>
-    )
-  }
+    );
+  },
 });
 
 const DetailPage = React.createClass({
@@ -100,7 +113,7 @@ const DetailPage = React.createClass({
       district: {
         isChanging: false,
       },
-      orderMarked: ""
+      orderMarked: '',
     };
   },
   toggle() {
@@ -134,10 +147,13 @@ const DetailPage = React.createClass({
   closeExternalTrip() {
     this.setState({ showModalExternalTrip: false });
   },
+  cancelExternalTrip() {
+    this.props.cancelExternalTrip(this.props.trip.ExternalTrip.ExternalTripID);
+  },
   onChange(key) {
     return (val) => {
       this.props.update({ [key]: val });
-    }
+    };
   },
   saveEditThirdPartyLogistic() {
     this.props.saveEditThirdPartyLogistic();
@@ -200,8 +216,8 @@ const DetailPage = React.createClass({
           fleetID: val.UserID,
           companyName: val.CompanyDetail.CompanyName,
           capacity: val.OrderCapacity,
-          ovl: val.CompanyDetail.OrderVolumeLimit
-        }
+          ovl: val.CompanyDetail.OrderVolumeLimit,
+        };
       });
     }
 
@@ -238,42 +254,97 @@ const DetailPage = React.createClass({
                   <div className={styles.modalTitle}>
                     Edit 3PL
                   </div>
-                  <div onClick={this.closeExternalTrip} className={styles.modalClose}>
-                    X
+                  <div
+                    role="button"
+                    onClick={this.closeExternalTrip}
+                    className={styles.modalClose}
+                  >
+                    &times;
                   </div>
                   <div>
-                    <div className={'nb ' + styles.modalTabPanel}>
+                    <div className={`nb ${styles.modalTabPanel}`}>
                       <div className="row">
-                        <DetailRow label="3PL NAME" className={styles.colMd12 + ' ' + styles.detailRow}
-                          placeholder="Write the 3PL name here..." value={trip.ExternalTrip && trip.ExternalTrip.Sender}
-                          isEditing={true} type="text" onChange={this.onChange('Sender')} />
-                        <DetailRow label="TRANSPORTATION" className={styles.colMd12 + ' ' + styles.detailRow}
-                          placeholder="Write the transportation here..." value={trip.ExternalTrip && trip.ExternalTrip.Transportation}
-                          isEditing={true} type="text" onChange={this.onChange('Transportation')} />
-                        <DetailRow label="DEPARTURE TIME" className={styles.colMd6 + ' ' + styles.detailRow}
-                          value={trip.ExternalTrip && trip.ExternalTrip.DepartureTime && formatDate(trip.ExternalTrip.DepartureTime)} isEditing={true} type="datetime" onChange={this.onChange('DepartureTime')} />
-                        <DetailRow label="ETA" className={styles.colMd6 + ' ' + styles.detailRow}
-                          value={trip.ExternalTrip && trip.ExternalTrip.ArrivalTime && formatDate(trip.ExternalTrip.ArrivalTime)} isEditing={true} type="datetime" onChange={this.onChange('ArrivalTime')} />
-                        <DetailRow label="FEE" className={styles.colMd6 + ' ' + styles.detailRow}
-                          value={trip.ExternalTrip && trip.ExternalTrip.Fee} isEditing={true} type="number" onChange={this.onChange('Fee')} />
-                        <DetailRow label="AWB NUMBER" className={styles.colMd6 + ' ' + styles.detailRow}
-                          value={trip.ExternalTrip && trip.ExternalTrip.AwbNumber} isEditing={true} type="text"
-                          onChange={this.onChange('AwbNumber')} />
-                        <div className={styles.colMd12 + ' ' + styles.centerItems}>
-                          <div className={styles.uploadButtonText + ' ' + styles.colMd2 + ' ' + styles.noPadding}>
+                        <DetailRow
+                          label="3PL NAME"
+                          className={`${styles.colMd12} ${styles.detailRow}`}
+                          placeholder="Write the 3PL name here..."
+                          value={trip.ExternalTrip && trip.ExternalTrip.Sender}
+                          isEditing
+                          type="text"
+                          onChange={this.onChange('Sender')}
+                        />
+                        <DetailRow
+                          label="TRANSPORTATION"
+                          className={`${styles.colMd12} ${styles.detailRow}`}
+                          placeholder="Write the transportation here..."
+                          value={trip.ExternalTrip && trip.ExternalTrip.Transportation}
+                          isEditing
+                          type="text"
+                          onChange={this.onChange('Transportation')}
+                        />
+                        <DetailRow
+                          label="DEPARTURE TIME"
+                          className={`${styles.colMd6} ${styles.detailRow}`}
+                          value={trip.ExternalTrip && trip.ExternalTrip.DepartureTime && formatDate(trip.ExternalTrip.DepartureTime)}
+                          isEditing
+                          type="datetime"
+                          onChange={this.onChange('DepartureTime')}
+                        />
+                        <DetailRow
+                          label="ETA"
+                          className={`${styles.colMd6} ${styles.detailRow}`}
+                          value={trip.ExternalTrip && trip.ExternalTrip.ArrivalTime && formatDate(trip.ExternalTrip.ArrivalTime)}
+                          isEditing
+                          type="datetime"
+                          onChange={this.onChange('ArrivalTime')}
+                        />
+                        <DetailRow
+                          label="FEE"
+                          className={`${styles.colMd6} ${styles.detailRow}`}
+                          value={trip.ExternalTrip && trip.ExternalTrip.Fee}
+                          isEditing
+                          type="number"
+                          onChange={this.onChange('Fee')}
+                        />
+                        <DetailRow
+                          label="AWB NUMBER"
+                          className={`${styles.colMd6} ${styles.detailRow}`}
+                          value={trip.ExternalTrip && trip.ExternalTrip.AwbNumber}
+                          isEditing
+                          type="text"
+                          onChange={this.onChange('AwbNumber')}
+                        />
+                        <div className={`${styles.colMd12} ${styles.centerItems}`}>
+                          <div className={`${styles.uploadButtonText} ${styles.colMd2} ${styles.noPadding}`}>
                             {!trip.ExternalTrip && trip.ExternalTrip.PictureUrl &&
                               <p>Upload your receipt here</p>
                             }
                             {trip.ExternalTrip && trip.ExternalTrip.PictureUrl &&
-                              <a href={trip.ExternalTrip && trip.ExternalTrip.PictureUrl} target="_blank">Uploaded</a>
+                              <a
+                                href={trip.ExternalTrip && trip.ExternalTrip.PictureUrl}
+                                rel="noopener noreferrer"
+                                target="_blank"
+                              >
+                                Uploaded
+                              </a>
                             }
                           </div>
-                          <DetailRow className={styles.colMd10 + ' ' + styles.detailRow + ' ' + styles.uploadButton}
-                            value={trip.ExternalTrip && trip.ExternalTrip.PictureUrl} isEditing={true} type="image" onChange={this.onChange('PictureUrl')} />
+                          <DetailRow
+                            className={`${styles.colMd10} ${styles.detailRow} ${styles.uploadButton}`}
+                            value={trip.ExternalTrip && trip.ExternalTrip.PictureUrl}
+                            isEditing
+                            type="image"
+                            onChange={this.onChange('PictureUrl')}
+                          />
                         </div>
                       </div>
-                      <div className={styles.mT30 + " pull-right"}>
-                        <button className="btn btn-md btn-success" onClick={this.saveEditThirdPartyLogistic}>Save Changes</button>
+                      <div className={`${styles.mT30} pull-right`}>
+                        <button
+                          className="btn btn-md btn-success"
+                          onClick={this.saveEditThirdPartyLogistic}
+                        >
+                          Save Changes
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -287,10 +358,10 @@ const DetailPage = React.createClass({
           <Page title={'Trip Details'} backButton="true">
             <div className={styles.mainDetails}>
               <div className="nb">
-                <h3>#{'Trip-' + trip.TripID} <span className={styles.orderStatus}>{trip.OrderStatus ? trip.OrderStatus.OrderStatus : ''}</span></h3>
+                <h3>#{`Trip-${trip.TripID}`} <span className={styles.orderStatus}>{trip.OrderStatus ? trip.OrderStatus.OrderStatus : ''}</span></h3>
               </div>
-              <div className={styles.mB30 + ' ' + styles.displayFlex + ' nb'}>
-                <div className={styles.colMd6 + ' ' + styles.noPadding}>
+              <div className={`${styles.mB30} ${styles.displayFlex} nb`}>
+                <div className={`${styles.colMd6} ${styles.noPadding}`}>
                   <RemarksSetter trip={trip} />
                 </div>
                 <div className={styles.colMd6}>
@@ -305,9 +376,9 @@ const DetailPage = React.createClass({
                 </div>
               </div>
               <div style={{ clear: 'both' }} />
-              <div className={styles.mB30 + " nb"}>
+              <div className={`${styles.mB30} nb`}>
                 <div className="row">
-                  <div className={styles.colMd6 + ' ' + styles.noPadding}>
+                  <div className={`${styles.colMd6} ${styles.noPadding}`}>
                     <div className={styles.colMd6}>
                       <p className={styles.title}>{tripType}</p>
                       <p><Glyph name={'arrow-right'} className={styles.glyph} /> Outbound, {tripDestination}</p>
@@ -319,7 +390,11 @@ const DetailPage = React.createClass({
                             {
                               trip.FleetManager &&
                               <div>
-                                <p className={styles.title}>Fleet : {trip.FleetManager.CompanyDetail && trip.FleetManager.CompanyDetail.CompanyName}</p>
+                                <p className={styles.title}>
+                                  Fleet : {trip.FleetManager.CompanyDetail &&
+                                   trip.FleetManager.CompanyDetail.CompanyName
+                                  }
+                                </p>
                                 {
                                   trip.Driver &&
                                   <p>{driverName}</p>
@@ -329,8 +404,11 @@ const DetailPage = React.createClass({
                             {
                               trip.ExternalTrip &&
                               <div>
-                                <p className={styles.title}>3PL : {trip.ExternalTrip.Sender + ' - ' + trip.ExternalTrip.Transportation + ' (' + trip.ExternalTrip.AwbNumber + ')'}</p>
-                                <button className={styles.greenBtn + ' ' + styles.cancelButton} onClick={this.openExternalTrip}>Edit 3PL</button>
+                                <p className={styles.title}>
+                                  3PL : {`${trip.ExternalTrip.Sender} - ${trip.ExternalTrip.Transportation} (${trip.ExternalTrip.AwbNumber})`}
+                                </p>
+                                <button className={`${styles.greenBtn} ${styles.cancelButton}`} onClick={this.openExternalTrip}>Edit 3PL</button>
+                                <button className={`${styles.redBtn} ${styles.cancelButton}`} onClick={this.cancelExternalTrip}>Cancel 3PL</button>
                               </div>
                             }
                           </div>
@@ -338,44 +416,71 @@ const DetailPage = React.createClass({
                           <div>
                             <p className={styles.title}>3PL / Fleet :</p>
                             <p>Not assigned yet</p>
-                            <button className={styles.greenBtn + ' ' + styles.cancelButton} onClick={this.showAssignModal}>Assign Trip</button>
+                            <button className={`${styles.greenBtn} ${styles.cancelButton}`} onClick={this.showAssignModal}>Assign Trip</button>
                           </div>
                       }
                       {
                         (canDeassignDriver || canDeassignFleet) &&
                         <ButtonWithLoading
-                          styles={{ base: styles.greenBtn + ' ' + styles.cancelButton }}
+                          styles={{ base: `${styles.greenBtn} ${styles.cancelButton}` }}
                           textBase="Cancel Assignment"
                           textLoading="Deassigning"
                           onClick={canDeassignDriver ? this.deassignDriver : this.deassignFleet}
-                          isLoading={isDeassigning} />
+                          isLoading={isDeassigning}
+                        />
                       }
                     </div>
                   </div>
-                  <div className={styles.colMd6 + ' ' + styles.noPadding}>
-                    <div className={styles.colMd4}>
-                    </div>
-                    <div className={styles.colMd4 + ' ' + styles.actionButtoninside}>
+                  <div className={`${styles.colMd6} ${styles.noPadding}`}>
+                    <div className={styles.colMd4} />
+                    <div className={`${styles.colMd4} ${styles.actionButtoninside}`}>
                       {
                         reusable &&
-                        <ButtonWithLoading styles={{ base: styles.greenBtn }} textBase={'Clear and Reuse Container'} textLoading={'Clearing Container'} isLoading={emptying.isInProcess} onClick={this.clearContainer} />
+                        <ButtonWithLoading
+                          styles={{ base: styles.greenBtn }}
+                          textBase={'Clear and Reuse Container'}
+                          textLoading={'Clearing Container'}
+                          isLoading={emptying.isInProcess}
+                          onClick={this.clearContainer}
+                        />
                       }
                     </div>
                     <div className={styles.colMd4}>
-                      <button type="button" className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} onClick={this.toggle}>
+                      <button type="button" className={`${styles.colMd12} ${styles.manifestLink} btn btn-md btn-default`} onClick={this.toggle}>
                         <div className={styles.manifestSpan}>Print Manifest</div>
                         <div className={this.state.isMenuOpen ? styles.arrowUp : styles.arrowDown} />
                       </button>
                       {this.state.isMenuOpen &&
                         <ul>
                           <li>
-                            <a href={'/trips/' + trip.TripID + '/manifest#'} className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} target="_blank">Detailed</a>
+                            <a
+                              href={`/trips/${trip.TripID}/manifest#`}
+                              className={`${styles.colMd12} ${styles.manifestLink} btn btn-md btn-default`}
+                              rel="noopener noreferrer"
+                              target="_blank"
+                            >
+                              Detailed
+                            </a>
                           </li>
                           <li>
-                            <a href={'/trips/' + trip.TripID + '/coverManifest#'} className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} target="_blank">Cover</a>
+                            <a
+                              href={`/trips/${trip.TripID}/coverManifest#`}
+                              className={`${styles.colMd12} ${styles.manifestLink} btn btn-md btn-default`}
+                              rel="noopener noreferrer"
+                              target="_blank"
+                            >
+                              Cover
+                            </a>
                           </li>
                           <li>
-                            <a onClick={this.exportManifest} className={styles.colMd12 + ' ' + styles.manifestLink + ' btn btn-md btn-default'} target="_blank">Excel</a>
+                            <a
+                              onClick={this.exportManifest}
+                              className={`${styles.colMd12} ${styles.manifestLink} btn btn-md btn-default`}
+                              rel="noopener noreferrer"
+                              target="_blank"
+                            >
+                              Excel
+                            </a>
                           </li>
                         </ul>
                       }
@@ -383,31 +488,30 @@ const DetailPage = React.createClass({
                   </div>
                 </div>
               </div>
-              <div className={styles.infoArea + ' ' + styles.mB30 + " nb"}>
-                <div className={styles.colMd6 + ' ' + styles.noPadding + ' ' + styles.stats}>
+              <div className={`${styles.infoArea} ${styles.mB30} nb`}>
+                <div className={`${styles.colMd6} ${styles.noPadding} ${styles.stats}`}>
                   <p className={styles.title}>STATS</p>
-                  <div className={styles.colMd4 + ' ' + styles.noPadding}>
+                  <div className={`${styles.colMd4} ${styles.noPadding}`}>
                     <h3>{TotalWeight}<small> Kg</small></h3>
                     <p>Weight</p>
                   </div>
-                  <div className={styles.colMd4 + ' ' + styles.noPadding}>
+                  <div className={`${styles.colMd4} ${styles.noPadding}`}>
                     <h3><small>#</small>{orders.length}</h3>
                     <p>Orders</p>
                   </div>
-                  <div className={styles.colMd4 + ' ' + styles.noPadding}>
+                  <div className={`${styles.colMd4} ${styles.noPadding}`}>
                     <h3><small>Rp </small>{totalDeliveryFee || 0}</h3>
                     <p>Delivery Fee</p>
                   </div>
                 </div>
-                <div className={styles.colMd1}>
-                </div>
-                <div className={styles.colMd5 + ' ' + styles.noPadding + ' ' + styles.cod}>
+                <div className={styles.colMd1} />
+                <div className={`${styles.colMd5} ${styles.noPadding} ${styles.cod}`}>
                   <p className={styles.title}>COD</p>
-                  <div className={styles.colMd6 + ' ' + styles.noPadding}>
+                  <div className={`${styles.colMd6} ${styles.noPadding}`}>
                     <h3><small>#</small>{CODCount}</h3>
                     <p>COD Orders</p>
                   </div>
-                  <div className={styles.colMd6 + ' ' + styles.noPadding}>
+                  <div className={`${styles.colMd6} ${styles.noPadding}`}>
                     <h3><small>Rp </small>{TotalCODValue}</h3>
                     <p>COD Value</p>
                   </div>
@@ -420,14 +524,20 @@ const DetailPage = React.createClass({
                 </span>
                 {
                   hasPermission && fillAble &&
-                  <ButtonWithLoading textBase={'+ Add Order'} onClick={this.goToFillContainer}
-                    styles={{ base: styles.normalBtn + ' ' + styles.addOrderBtn }} />
+                  <ButtonWithLoading
+                    textBase={'+ Add Order'}
+                    onClick={this.goToFillContainer}
+                    styles={{ base: `${styles.normalBtn} ${styles.addOrderBtn}` }}
+                  />
                 }
               </span>
               {
                 orders.length > 0 &&
                 <div style={{ position: 'relative' }}>
-                  <OrderTable columns={fillAble ? columns : nonFillColumn} headers={headers} items={orders} statusList={statusList} />
+                  <OrderTable
+                    columns={fillAble ? columns : nonFillColumn}
+                    headers={headers} items={orders} statusList={statusList}
+                  />
                 </div>
               }
             </div>
@@ -435,13 +545,20 @@ const DetailPage = React.createClass({
         }
       </div>
     );
-  }
+  },
 });
 
 const mapStateToProps = (state, ownProps) => {
   const { inboundTripDetails, outboundTripsService, userLogged } = state.app;
   const { hubID } = userLogged;
-  const { isDeassigning, isFetching, orders: rawOrders, isChangingRemarks, isTripEditing, isSaving3PL } = inboundTripDetails;
+  const {
+    isDeassigning,
+    isFetching,
+    orders: rawOrders,
+    isChangingRemarks,
+    isTripEditing,
+    isSaving3PL,
+  } = inboundTripDetails;
   const { isAssigning } = outboundTripsService;
   const trip = ownProps.trip;
   const containerID = ownProps.params.id;
@@ -458,22 +575,23 @@ const mapStateToProps = (state, ownProps) => {
 
   const emptying = false;
   const reusable = false;
-  const fillAble = trip.OrderStatus && (trip.OrderStatus.OrderStatusID === 1 || trip.OrderStatus.OrderStatusID === 9);
+  const fillAble = trip.OrderStatus &&
+    (trip.OrderStatus.OrderStatusID === 1 || trip.OrderStatus.OrderStatusID === 9);
 
-  const containerOrders = lodash.map(trip.UserOrderRoutes, (route) => {
+  const containerOrders = _.map(trip.UserOrderRoutes, (route) => {
     return route;
   });
 
   // const orders = _.map(containerOrders, (order) => {
   // const order = route.UserOrder;
-  var TotalWeight = 0;
+  let TotalWeight = 0;
   const orders = _.map(rawOrders, (order) => {
     const Recipient = order.RecipientName + '\n' + (order.DropoffAddress ? order.DropoffAddress.City + ' ' + order.DropoffAddress.ZipCode : '');
     TotalWeight += order.PackageWeight;
 
-    return lodash.assign({}, order, {
+    return _.assign({}, order, {
       id: `${order.UserOrderNumber} (${order.WebOrderID})`,
-      id2: order.User.FirstName + ' ' + order.User.LastName,
+      id2: `${order.User.FirstName} ${order.User.LastName}`,
       pickup: order.PickupAddress && order.PickupAddress.Address1,
       dropoff: Recipient,
       time: order.PickupTime && formatDate(order.PickupTime),
@@ -486,11 +604,11 @@ const mapStateToProps = (state, ownProps) => {
       tripID: trip.TripID,
       IsCOD: order.IsCOD ? 'Yes' : 'No',
       CODStatus: (order.CODPaymentUserOrder && order.CODPaymentUserOrder.CODPayment) ?
-        order.CODPaymentUserOrder.CODPayment.Status : 'No'
-    })
+        order.CODPaymentUserOrder.CODPayment.Status : 'No',
+    });
   });
 
-  const CODOrders = _.filter(orders, (order) => order.IsCOD === 'Yes');
+  const CODOrders = _.filter(orders, order => order.IsCOD === 'Yes');
 
   // if (!trip.ContainerNumber) {
   //   return {notFound: true, isFetching};
@@ -502,27 +620,27 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     trip: TripParser(trip),
-    orders: orders,
-    container: container,
-    isFetching: isFetching,
-    fillAble: fillAble,
-    reusable: reusable,
+    orders,
+    container,
+    isFetching,
+    fillAble,
+    reusable,
     emptying: emptying || {},
-    canDeassignDriver: (trip.Driver && trip.OrderStatus.OrderStatusID == 2) || false,
+    canDeassignDriver: (trip.Driver && trip.OrderStatus.OrderStatusID === 2) || false,
     canDeassignFleet: (trip.FleetManager) || false,
     driverState: {
       isDeassigning: state.app.driversStore.driverDeassignment,
       isPicking: state.app.driversStore.driverList.isLoading,
     },
     statusList: _.chain(statusList)
-      .map((key, val) => ({ key: key, value: val }))
-      .sortBy((arr) => (arr.key))
+      .map((key, val) => ({ key, value: val }))
+      .sortBy(arr => (arr.key))
       .value(),
     totalDeliveryFee: _.reduce(orders, (total, order) => {
       return total + order.DeliveryFee;
     }, 0),
     TotalCODValue: _.reduce(CODOrders, (sum, order) => sum + order.TotalValue, 0),
-    TotalWeight: TotalWeight,
+    TotalWeight,
     CODCount: CODOrders.length,
     isInbound,
 
@@ -534,49 +652,49 @@ const mapStateToProps = (state, ownProps) => {
     isTripEditing,
     isSaving3PL,
     isAssigning,
-    userLogged
-  }
-}
+    userLogged,
+  };
+};
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   const route = ownProps.routes[ownProps.routes.length - 1];
   const path = route.path;
 
   return {
-    backToContainer: function () {
+    backToContainer: () => {
       dispatch(push('/container'));
     },
-    clearContainer: function (id) {
+    clearContainer: (id) => {
       dispatch(ContainerDetailsActions.clearContainer(id));
     },
-    containerDetailsFetch: function (id) {
+    containerDetailsFetch: (id) => {
       dispatch(TripDetails.FetchDetails(id));
     },
-    driverDeassign: function () {
+    driverDeassign: () => {
       dispatch(TripDetails.Deassign(ownProps.params.id));
     },
-    fleetDeassign: function () {
+    fleetDeassign: () => {
       dispatch(TripDetails.DeassignFleet(ownProps.params.id));
     },
-    goToFillContainer: function (id) {
-      dispatch(push('/trips/' + id + '/fillReceived'));
+    goToFillContainer: (id) => {
+      dispatch(push(`/trips/${id}/fillReceived`));
     },
-    fetchStatusList: function () {
+    fetchStatusList: () => {
       dispatch(StatusList.fetch());
     },
-    markReceived: function (scannedID) {
+    markReceived: (scannedID) => {
       dispatch(TripDetails.OrderReceived(scannedID));
     },
-    deliverTrip: function (tripID) {
+    deliverTrip: (tripID) => {
       dispatch(TripDetails.TripDeliver(tripID));
     },
-    askReuse: function (modal) {
+    askReuse: (modal) => {
       dispatch(ModalActions.addConfirmation(modal));
     },
-    reuse: function (tripID) {
+    reuse: (tripID) => {
       dispatch(TripDetails.TripDeliver(tripID, true));
     },
-    exportManifest: function () {
+    exportManifest: () => {
       dispatch(TripDetails.ExportManifest(ownProps.params.id));
     },
     fetchListOnModal: (tripID) => {
@@ -589,6 +707,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     update: (externalTrip) => {
       dispatch(TripDetails.UpdateExternalTrip(externalTrip));
+    },
+    cancelExternalTrip: (externalTripID) => {
+      dispatch(OutboundTrips.cancelExternalTrip(externalTripID));
     },
   };
 };

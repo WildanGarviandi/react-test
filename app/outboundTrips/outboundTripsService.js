@@ -76,7 +76,7 @@ const initialState = {
   currentPage: 1,
   filters: {
     tripType: 0,
-    externalTrip: 'All'
+    externalTrip: 'All',
   },
   filtersStatus: 'SHOW ALL',
   isDetailFetching: false,
@@ -377,7 +377,7 @@ export function AddFilters(newFilters) {
     });
 
     dispatch(SetCurrentPage(1));
-  }
+  };
 }
 
 export function FetchList() {
@@ -390,7 +390,7 @@ export function FetchList() {
       limit: limit,
       nonDelivered: true,
       offset: (currentPage - 1) * limit,
-      suggestLastMileFleet: 1
+      suggestLastMileFleet: 1,
     });
 
     dispatch({ type: modalAction.BACKDROP_SHOW });
@@ -423,7 +423,7 @@ export function FetchList() {
 
       dispatch(ModalActions.addMessage('Failed to fetch outbound trips'));
     });
-  }
+  };
 }
 
 export function FetchListNearbyFleets() {
@@ -432,7 +432,7 @@ export function FetchListNearbyFleets() {
     const { token } = userLogged;
 
     const query = {
-      limit: 10000
+      limit: 10000,
     };
 
     const isHubAPI = true;
@@ -466,7 +466,7 @@ export function FetchListNearbyFleets() {
 
       dispatch(ModalActions.addMessage('Failed to fetch nearby vendor'));
     });
-  }
+  };
 }
 
 export function FetchListFleetDrivers(fleetID) {
@@ -476,12 +476,12 @@ export function FetchListFleetDrivers(fleetID) {
 
     dispatch({ type: modalAction.BACKDROP_SHOW });
     dispatch({
-      type: Constants.NEARBY_FLEETS_DRIVERS_FETCH_START
+      type: Constants.NEARBY_FLEETS_DRIVERS_FETCH_START,
     });
 
     const query = {
-      limit: 'all'
-    }
+      limit: 'all',
+    };
 
     FetchGet('/fleet/' + fleetID + '/drivers', token, query).then((response) => {
       if (!response.ok) {
@@ -492,22 +492,22 @@ export function FetchListFleetDrivers(fleetID) {
         dispatch({ type: modalAction.BACKDROP_HIDE });
         dispatch({
           type: Constants.NEARBY_FLEETS_DRIVERS_SET,
-          drivers: data.rows
+          drivers: data.rows,
         });
 
         dispatch({
-          type: Constants.NEARBY_FLEETS_DRIVERS_FETCH_END
+          type: Constants.NEARBY_FLEETS_DRIVERS_FETCH_END,
         });
       });
     }).catch(() => {
       dispatch({
-        type: Constants.NEARBY_FLEETS_DRIVERS_FETCH_END
+        type: Constants.NEARBY_FLEETS_DRIVERS_FETCH_END,
       });
       dispatch({ type: modalAction.BACKDROP_HIDE });
 
       dispatch(ModalActions.addMessage('Failed to fetch nearby driver'));
     });
-  }
+  };
 }
 
 export function StoreSetter(keyword, value) {
@@ -523,7 +523,7 @@ export function UpdateFiltersDrivers(filters) {
     const prevFilters = getState().app.pickupOrdersReady.filtersDrivers;
     const nextFilter = Object.assign({}, prevFilters, filters);
     dispatch(SetFiltersDrivers(nextFilter));
-  }
+  };
 }
 
 export function UpdateAndFetchDrivers(filters) {
@@ -531,7 +531,7 @@ export function UpdateAndFetchDrivers(filters) {
     dispatch(StoreSetter('currentPageDrivers', 1));
     dispatch(UpdateFiltersDrivers(filters));
     dispatch(FetchListNearbyDrivers());
-  }
+  };
 }
 
 export function SetCurrentPageDrivers(currentPage) {
@@ -542,7 +542,7 @@ export function SetCurrentPageDrivers(currentPage) {
     });
 
     dispatch(FetchListNearbyDrivers());
-  }
+  };
 }
 
 export function SetLimitDrivers(limit) {
@@ -553,7 +553,7 @@ export function SetLimitDrivers(limit) {
     });
 
     dispatch(SetCurrentPageDrivers(1));
-  }
+  };
 }
 
 export function FetchListNearbyDrivers(tripID) {
@@ -599,7 +599,7 @@ export function FetchListNearbyDrivers(tripID) {
 
       dispatch(ModalActions.addMessage('Failed to fetch nearby driver'));
     });
-  }
+  };
 }
 
 export function SetCurrentPage(currentPage) {
@@ -610,7 +610,7 @@ export function SetCurrentPage(currentPage) {
     });
 
     dispatch(FetchList());
-  }
+  };
 }
 
 export function SetFiltersStatus(keyword) {
@@ -639,7 +639,7 @@ export function SetFiltersStatus(keyword) {
     });
 
     dispatch(SetCurrentPage(1));
-  }
+  };
 }
 
 export function SetLimit(limit) {
@@ -650,13 +650,13 @@ export function SetLimit(limit) {
     });
 
     dispatch(SetCurrentPage(1));
-  }
+  };
 }
 
 export function ResetFilter() {
   return (dispatch) => {
     dispatch({ type: Constants.TRIPS_OUTBOUND_RESET_FILTER });
-  }
+  };
 }
 
 function SetTrip(trip, haveDone) {
@@ -694,7 +694,7 @@ function SetTrip(trip, haveDone) {
     if (trip.FleetManager) {
       dispatch(FetchDrivers(trip.FleetManager.UserID));
     }
-  }
+  };
 }
 
 export function FetchDetails(tripID) {
@@ -702,7 +702,7 @@ export function FetchDetails(tripID) {
     const { userLogged } = getState().app;
     const { token } = userLogged;
     let params = {
-      suggestLastMileFleet: 0
+      suggestLastMileFleet: 0,
     };
 
     dispatch({ type: modalAction.BACKDROP_SHOW });
@@ -727,7 +727,7 @@ export function FetchDetails(tripID) {
       dispatch({ type: modalAction.BACKDROP_HIDE });
       dispatch(ModalActions.addMessage(message));
     });
-  }
+  };
 }
 
 export function AssignDriver(tripID, driverID) {
@@ -754,7 +754,7 @@ export function AssignDriver(tripID, driverID) {
         dispatch({
           type: Constants.TRIPS_OUTBOUND_DETAILS_DRIVER_SET,
           driver: data.result,
-          isSuccessAssigning: true
+          isSuccessAssigning: true,
         });
         dispatch(FetchList());
         dispatch(DashboardService.FetchCount());
@@ -765,7 +765,7 @@ export function AssignDriver(tripID, driverID) {
       dispatch(ModalActions.addMessage(message));
       dispatch({ type: modalAction.BACKDROP_HIDE });
     });
-  }
+  };
 }
 
 export function AssignFleet(tripID, fleetManagerID, driverID) {
@@ -815,14 +815,14 @@ export function AssignFleet(tripID, fleetManagerID, driverID) {
           if (driverID) {
             dispatch(AssignDriver(tripID, driverID));
           } else {
-            dispatch(FetchList())
+            dispatch(FetchList());
             dispatch(DashboardService.FetchCount());
           }
         });
       }).catch((e) => {
         const message = (e && e.message) ? e.message : 'Failed to assign fleet';
         dispatch({
-          type: Constants.TRIPS_OUTBOUND_DETAILS_FLEET_END
+          type: Constants.TRIPS_OUTBOUND_DETAILS_FLEET_END,
         });
 
         dispatch(ModalActions.addMessage(message));
@@ -837,19 +837,19 @@ export function AssignFleet(tripID, fleetManagerID, driverID) {
         }
 
         response.json().then(({ data }) => {
-          dispatch({ type: modalAction.BACKDROP_HIDE })
+          dispatch({ type: modalAction.BACKDROP_HIDE });
           dispatch({
-            type: Constants.TRIPS_OUTBOUND_DETAILS_FLEET_END
+            type: Constants.TRIPS_OUTBOUND_DETAILS_FLEET_END,
           });
 
           dispatch({
             type: Constants.TRIPS_OUTBOUND_DETAILS_FLEET_SET,
             fleet: data.result,
-            isSuccessAssigning: (driverID == undefined)
+            isSuccessAssigning: (driverID == undefined),
           });
 
           if (driverID) {
-            dispatch(AssignDriver(tripID, driverID))
+            dispatch(AssignDriver(tripID, driverID));
           }
         });
       }).catch((e) => {
@@ -862,7 +862,7 @@ export function AssignFleet(tripID, fleetManagerID, driverID) {
         dispatch({ type: modalAction.BACKDROP_HIDE });
       });
     }
-  }
+  };
 }
 
 export function CreateExternalTrip(externalData) {
@@ -882,7 +882,7 @@ export function CreateExternalTrip(externalData) {
       { key: 'Fee', value: 'Fee' },
       { key: 'Transportation', value: 'Transportation' },
       { key: 'DepartureTime', value: 'Departure Time' },
-      { key: 'ArrivalTime', value: 'Arrival Time' }
+      { key: 'ArrivalTime', value: 'Arrival Time' },
     ];
 
     mandatoryInformation.forEach(function (x) {
@@ -925,7 +925,7 @@ export function CreateExternalTrip(externalData) {
       dispatch({ type: modalAction.BACKDROP_HIDE });
       dispatch(ModalActions.addMessage(message));
     });
-  }
+  };
 }
 
 export function GoToContainer(containerNumber) {
@@ -950,19 +950,19 @@ export function GoToContainer(containerNumber) {
 
         dispatch({ type: modalAction.BACKDROP_HIDE });
         dispatch(push(`/trips/${data.rows[0].TripID}`));
-      })
+      });
     }).catch((e) => {
       const message = (e && e.message) ? e.message : 'Failed to get container details';
       dispatch({ type: modalAction.BACKDROP_HIDE });
       dispatch(ModalActions.addMessage(message));
     });
-  }
+  };
 }
 
 export function ResetFilterInbound() {
   return (dispatch) => {
     dispatch({ type: Constants.TRIPS_INBOUND_RESET_FILTER });
-  }
+  };
 }
 
 export function EndAssigning() {
@@ -1011,6 +1011,28 @@ export function setHub(tripID, hubID) {
       dispatch({ type: Constants.HUB_UPDATE_END });
       dispatch({ type: modalAction.BACKDROP_HIDE });
       dispatch(ModalActions.addMessage(message));
+    });
+  };
+}
+
+export function cancelExternalTrip(externalTripID) {
+  return (dispatch, getState) => {
+    const { token } = getState().app.userLogged;
+
+    dispatch({ type: modalAction.BACKDROP_SHOW });
+    FetchDelete(`/external-trip/${externalTripID}`, token).then((response) => {
+      if (response.ok) {
+        response.json().then(() => {
+          dispatch(ModalActions.addMessage('Trip cancelled'));
+          window.location.reload();
+        });
+      } else {
+        dispatch(ModalActions.addError('Failed to remove order'));
+      }
+      dispatch({ type: modalAction.BACKDROP_HIDE });
+    }).catch(() => {
+      dispatch({ type: modalAction.BACKDROP_HIDE });
+      dispatch(ModalActions.addError('Network error while removing trip'));
     });
   };
 }
