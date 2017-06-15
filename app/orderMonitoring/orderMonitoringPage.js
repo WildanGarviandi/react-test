@@ -8,7 +8,7 @@ import styles from './styles.css';
 import { Page } from '../views/base';
 import OrderTable, {Filter, Deadline} from './orderTable';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
-import DragDropImageUploader from '../components/DragDropImageUploader';
+import DragDropImageUploaderContainer from '../containers/DragDropImageUploaderContainer';
 import { reasonReturn } from '../config/attempt.json';
 import { statusOptions } from '../config/configValues.json';
 import * as orderService from './orderMonitoringService';
@@ -636,10 +636,10 @@ class AttemptModal extends Component {
               <div className={styles.left}>
                 Choose Reason <i className={styles.text_red}>*</i>
                 <ul className={styles.reasons}>
-                  {reasonReturn.map((reason) => (
+                  {reasonReturn.map(reason => (
                     <Reason {...reason}
                       key={reason.id}
-                      className={(this.state.selected == reason.id) && styles.active}
+                      className={(this.state.selected === reason.id) && styles.active}
                       onClick={() => this.selectReason(reason.id)}
                     />
                   ))}
@@ -647,12 +647,12 @@ class AttemptModal extends Component {
               </div>
               <div className={styles.right}>
                 Add Image (Optional)
-                <DragDropImageUploader
-                  updateImageUrl={(data) => this.setPicture(data)}
+                <DragDropImageUploaderContainer
+                  updateImageUrl={data => this.setPicture(data)}
                   currentImageUrl={this.state.prove}
                 />
-                <button 
-                  className={styles.sendReport} 
+                <button
+                  className={styles.sendReport}
                   onClick={() => this.postAttempt()}
                 >
                   Send Report
