@@ -176,7 +176,7 @@ const Table = React.createClass({
             );
             const itemNot3PL = (
               <span className={styles.tripWithDriverCell}>
-                { item.driver &&
+                {item.driver &&
                   <img src={vehicleLogoSrc} className={styles.vehicleLogoOnTable} />
                 }
                 <p>
@@ -336,28 +336,32 @@ const Table = React.createClass({
         {Search}
         <table className={tableStyles.table}>
           <thead><tr>{Headers}</tr></thead>
-          { this.props.isFetching &&
+          {this.props.isFetching &&
             <tbody>
-              <td colSpan={ColumnsOrder.length}>
-                <div className={styles.fetchingText}>
-                  Fetching data....
-                </div>
-              </td>
+              <tr>
+                <td colSpan={ColumnsOrder.length}>
+                  <div className={styles.fetchingText}>
+                    Fetching data....
+                  </div>
+                </td>
+              </tr>
             </tbody>
           }
-          { !this.props.isFetching && this.props.items.length > 0 &&
+          {!this.props.isFetching && this.props.items.length > 0 &&
             <tbody>{Body}</tbody>
           }
-          { !this.props.isFetching && this.props.items.length === 0 &&
+          {!this.props.isFetching && this.props.items.length === 0 &&
             <tbody>
-              <td colSpan={ColumnsOrder.length}>
-                <div className={styles.emptyTableContainer}>
-                  <img src="/img/image-all-assigned.png" className={styles.emptyTableImage} />
-                  <div className={styles.bigText}>
-                    There are no active outbound trips
+              <tr>
+                <td colSpan={ColumnsOrder.length}>
+                  <div className={styles.emptyTableContainer}>
+                    <img src="/img/image-all-assigned.png" className={styles.emptyTableImage} />
+                    <div className={styles.bigText}>
+                      There are no active outbound trips
+                    </div>
                   </div>
-                </div>
-              </td>
+                </td>
+              </tr>
             </tbody>
           }
         </table>
@@ -409,14 +413,7 @@ const TableStateful = React.createClass({
     this.props.fetchListOnModal(item.key);
   },
   render() {
-    const {
-      filters,
-      paginationAction,
-      paginationState,
-      statusParams,
-      tripDetails,
-      tripsIsFetching,
-    } = this.props;
+    const { paginationAction, paginationState, tripDetails, tripsIsFetching } = this.props;
 
     const paginationProps = lodash.assign({}, paginationAction, paginationState);
 
@@ -482,7 +479,7 @@ function StateToProps(state) {
   };
 }
 
-function DispatchToProps(dispatch, ownProps) {
+function DispatchToProps(dispatch) {
   return {
     initialLoad() {
       dispatch(OutboundTrips.FetchList());

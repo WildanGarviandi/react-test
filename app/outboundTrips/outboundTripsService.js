@@ -1,4 +1,5 @@
-import lodash from 'lodash';
+import * as _ from 'lodash'; //eslint-disable-line
+
 import FetchGet from '../modules/fetch/get';
 import FetchDelete from '../modules/fetch/delete';
 import FetchPost from '../modules/fetch/post';
@@ -57,6 +58,7 @@ const Constants = {
   TRIPS_OUTBOUND_DETAILS_EXTERNALTRIP_START: 'outbound/details/externalTrip/start',
 
   TRIPS_OUTBOUND_DETAILS_TRIP_SET: 'outbound/details/trip/set',
+  TRIPS_OUTBOUND_DETAILS_TRIP_SET_ERROR: 'outbound/details/trip/set/error',
 
   TRIPS_OUTBOUND_DETAILS_FETCH_END: 'outbound/details/fetch/end',
   TRIPS_OUTBOUND_DETAILS_FETCH_START: 'outbound/details/fetch/start',
@@ -65,9 +67,9 @@ const Constants = {
 
   HUB_UPDATE_START: 'outbound/hub/update/start',
   HUB_UPDATE_END: 'outbound/hub/update/end',
-  BASE_OUTBOUND: "outbound/defaultSet/",
-  DRIVER_CURRENT_PAGE_SET: "outbound/driver/currentPage",
-  DRIVER_LIMIT_SET: "outbound/driver/limit",
+  BASE_OUTBOUND: 'outbound/defaultSet/',
+  DRIVER_CURRENT_PAGE_SET: 'outbound/driver/currentPage',
+  DRIVER_LIMIT_SET: 'outbound/driver/limit',
 };
 
 const initialState = {
@@ -111,49 +113,50 @@ const initialState = {
   isAssigning: false,
   isHubAssigning: false,
   isSuccessAssigning: false,
+  error: false,
 };
 
 export function Reducer(state = initialState, action) {
   const parsedActionType = action.type.split('/');
-  if (parsedActionType.length > 2 && parsedActionType[0] === "outbound" && parsedActionType[1] === "defaultSet") {
+  if (parsedActionType.length > 2 && parsedActionType[0] === 'outbound' && parsedActionType[1] === 'defaultSet') {
     const fieldName = parsedActionType[2];
-    return lodash.assign({}, state, { [fieldName]: action[fieldName] });
+    return Object.assign({}, state, { [fieldName]: action[fieldName] });
   }
 
   switch (action.type) {
     case Constants.TRIPS_OUTBOUND_CURRENTPAGE_SET: {
-      return lodash.assign({}, state, { currentPage: action.currentPage });
+      return Object.assign({}, state, { currentPage: action.currentPage });
     }
 
     case Constants.TRIPS_OUTBOUND_FETCH_END: {
-      return lodash.assign({}, state, { isFetching: false });
+      return Object.assign({}, state, { isFetching: false });
     }
 
     case Constants.TRIPS_OUTBOUND_FETCH_START: {
-      return lodash.assign({}, state, { isFetching: true });
+      return Object.assign({}, state, { isFetching: true });
     }
 
     case Constants.TRIPS_OUTBOUND_FILTERS_SET: {
-      return lodash.assign({}, state, { filters: action.filters });
+      return Object.assign({}, state, { filters: action.filters });
     }
 
     case Constants.TRIPS_OUTBOUND_FILTERS_STATUS_SET: {
-      return lodash.assign({}, state, { filtersStatus: action.filtersStatus });
+      return Object.assign({}, state, { filtersStatus: action.filtersStatus });
     }
 
     case Constants.TRIPS_OUTBOUND_LIMIT_SET: {
-      return lodash.assign({}, state, { limit: action.limit });
+      return Object.assign({}, state, { limit: action.limit });
     }
 
     case Constants.TRIPS_OUTBOUND_SET: {
-      return lodash.assign({}, state, {
+      return Object.assign({}, state, {
         trips: action.trips,
         total: action.total,
       });
     }
 
     case Constants.TRIPS_OUTBOUND_RESET_FILTER: {
-      return lodash.assign({}, state, {
+      return Object.assign({}, state, {
         filters: {
           tripType: 0,
           externalTrip: 'All',
@@ -165,7 +168,7 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.NEARBY_FLEETS_FETCH_END: {
-      return lodash.merge({}, state, {
+      return _.merge({}, state, {
         nearbyFleets: {
           isFetching: false,
         },
@@ -173,7 +176,7 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.NEARBY_FLEETS_FETCH_START: {
-      return lodash.merge({}, state, {
+      return _.merge({}, state, {
         nearbyFleets: {
           isFetching: true,
         },
@@ -181,7 +184,7 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.NEARBY_FLEETS_SET: {
-      return lodash.assign({}, state, {
+      return Object.assign({}, state, {
         nearbyFleets: {
           fleets: action.fleets,
           total: action.total,
@@ -190,7 +193,7 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.NEARBY_FLEETS_DRIVERS_FETCH_END: {
-      return lodash.merge({}, state, {
+      return _.merge({}, state, {
         nearbyFleets: {
           isDriverFetching: false,
         },
@@ -198,7 +201,7 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.NEARBY_FLEETS_DRIVERS_FETCH_START: {
-      return lodash.merge({}, state, {
+      return _.merge({}, state, {
         nearbyFleets: {
           isDriverFetching: true,
         },
@@ -206,15 +209,15 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.DRIVER_CURRENT_PAGE_SET: {
-      return lodash.assign({}, state, { currentPageDrivers: action.currentPage });
+      return Object.assign({}, state, { currentPageDrivers: action.currentPage });
     }
 
     case Constants.ORDERS_PICKUP_DRIVER_LIMIT_SET: {
-      return lodash.assign({}, state, { limitDrivers: action.limit });
+      return Object.assign({}, state, { limitDrivers: action.limit });
     }
 
     case Constants.NEARBY_FLEETS_DRIVERS_SET: {
-      return lodash.assign({}, state, {
+      return Object.assign({}, state, {
         nearbyFleets: {
           drivers: action.drivers,
         },
@@ -222,7 +225,7 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.NEARBY_DRIVERS_FETCH_END: {
-      return lodash.merge({}, state, {
+      return _.merge({}, state, {
         nearbyDrivers: {
           isFetching: false,
         },
@@ -230,7 +233,7 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.NEARBY_DRIVERS_FETCH_START: {
-      return lodash.merge({}, state, {
+      return _.merge({}, state, {
         nearbyDrivers: {
           isFetching: true,
         },
@@ -238,7 +241,7 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.NEARBY_DRIVERS_SET: {
-      return lodash.assign({}, state, {
+      return Object.assign({}, state, {
         nearbyDrivers: {
           drivers: action.drivers,
           total: action.total,
@@ -248,34 +251,41 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.TRIPS_OUTBOUND_DETAILS_TRIP_SET: {
-      return lodash.assign({}, state, {
-        driver: action.driver,
-        externalTrip: action.externalTrip,
-        fleet: action.fleet,
-        orders: action.orders,
-        prev3PL: action.externalTrip,
-        trip: action.trip,
-        suggestLastMileFleet: action.suggestLastMileFleet,
+      return Object.assign({}, state, {
+        driver: action.payload.driver,
+        externalTrip: action.payload.externalTrip,
+        fleet: action.payload.fleet,
+        orders: action.payload.orders,
+        prev3PL: action.payload.externalTrip,
+        trip: action.payload.trip,
+        suggestLastMileFleet: action.payload.suggestLastMileFleet,
+        error: false,
+      });
+    }
+
+    case Constants.TRIPS_OUTBOUND_DETAILS_TRIP_SET_ERROR: {
+      return Object.assign({}, state, {
+        error: true,
       });
     }
 
     case Constants.TRIPS_OUTBOUND_DETAILS_FETCH_END: {
-      return lodash.assign({}, state, { isDetailFetching: false });
+      return Object.assign({}, state, { isDetailFetching: false });
     }
 
     case Constants.TRIPS_OUTBOUND_DETAILS_FETCH_START: {
-      return lodash.assign({}, state, { isDetailFetching: true });
+      return Object.assign({}, state, { isDetailFetching: true });
     }
 
     case Constants.TRIPS_OUTBOUND_ASSIGNING_START: {
-      return lodash.assign({}, state, {
+      return Object.assign({}, state, {
         isAssigning: true,
         isSuccessAssigning: false,
       });
     }
 
     case Constants.TRIPS_OUTBOUND_ASSIGNING_END: {
-      return lodash.assign({}, state, {
+      return Object.assign({}, state, {
         isAssigning: false,
         nearbyDrivers: {
           drivers: [],
@@ -284,52 +294,53 @@ export function Reducer(state = initialState, action) {
         totalDrivers: 0,
         currentPageDrivers: 1,
         limitDrivers: 10,
+        error: false,
       });
     }
 
     case Constants.TRIPS_OUTBOUND_DETAILS_DRIVER_START: {
-      return lodash.assign({}, state, { isSetDriver: true });
+      return Object.assign({}, state, { isSetDriver: true });
     }
     case Constants.TRIPS_OUTBOUND_DETAILS_DRIVER_END: {
-      return lodash.assign({}, state, { isSetDriver: false });
+      return Object.assign({}, state, { isSetDriver: false });
     }
 
     case Constants.TRIPS_OUTBOUND_DETAILS_DRIVER_SET: {
-      return lodash.assign({}, state, {
+      return Object.assign({}, state, {
         driver: action.driver,
         isSuccessAssigning: action.isSuccessAssigning,
       });
     }
 
     case Constants.TRIPS_OUTBOUND_DETAILS_FLEET_START: {
-      return lodash.assign({}, state, { isSetFleet: true });
+      return Object.assign({}, state, { isSetFleet: true });
     }
 
     case Constants.TRIPS_OUTBOUND_DETAILS_FLEET_END: {
-      return lodash.assign({}, state, { isSetFleet: false });
+      return Object.assign({}, state, { isSetFleet: false });
     }
 
     case Constants.TRIPS_OUTBOUND_DETAILS_FLEET_SET: {
-      return lodash.assign({}, state, {
+      return Object.assign({}, state, {
         fleet: action.fleet,
         isSuccessAssigning: action.isSuccessAssigning,
       });
     }
 
     case Constants.TRIPS_OUTBOUND_DETAILS_EXTERNALTRIP_END: {
-      return lodash.assign({}, state, { isSaving3PL: false });
+      return Object.assign({}, state, { isSaving3PL: false });
     }
 
     case Constants.TRIPS_OUTBOUND_DETAILS_EXTERNALTRIP_SET: {
-      return lodash.assign({}, state, { isSuccessAssigning: true });
+      return Object.assign({}, state, { isSuccessAssigning: true });
     }
 
     case Constants.TRIPS_OUTBOUND_DETAILS_EXTERNALTRIP_START: {
-      return lodash.assign({}, state, { isSaving3PL: true });
+      return Object.assign({}, state, { isSaving3PL: true });
     }
 
     case Constants.TRIPS_INBOUND_RESET_FILTER: {
-      return lodash.assign({}, state, {
+      return Object.assign({}, state, {
         filters: {
           tripType: 0,
         },
@@ -340,11 +351,11 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.HUB_UPDATE_START: {
-      return lodash.assign({}, state, { isHubAssigning: true });
+      return Object.assign({}, state, { isHubAssigning: true });
     }
 
     case Constants.HUB_UPDATE_END: {
-      return lodash.assign({}, state, { isHubAssigning: false });
+      return Object.assign({}, state, { isHubAssigning: false });
     }
 
     default: return state;
@@ -362,7 +373,7 @@ export function AddFilters(newFilters) {
 
     dispatch({
       type: Constants.TRIPS_OUTBOUND_FILTERS_SET,
-      filters: lodash.assign({}, filters, newFilters),
+      filters: Object.assign({}, filters, newFilters),
     });
 
     dispatch(SetCurrentPage(1));
@@ -375,7 +386,7 @@ export function FetchList() {
     const { token } = userLogged;
     const { currentPage, filters, limit } = outboundTripsService;
 
-    const query = lodash.assign({}, filters, {
+    const query = Object.assign({}, filters, {
       limit: limit,
       nonDelivered: true,
       offset: (currentPage - 1) * limit,
@@ -395,7 +406,7 @@ export function FetchList() {
       response.json().then(({ data }) => {
         dispatch({
           type: Constants.TRIPS_OUTBOUND_SET,
-          trips: lodash.map(data.rows, TripParser),
+          trips: _.map(data.rows, TripParser),
           total: data.count,
         });
 
@@ -504,20 +515,20 @@ export function StoreSetter(keyword, value) {
 }
 
 export function SetFiltersDrivers(filters) {
-  return StoreSetter("filtersDrivers", filters);
+  return StoreSetter('filtersDrivers', filters);
 }
 
 export function UpdateFiltersDrivers(filters) {
   return (dispatch, getState) => {
     const prevFilters = getState().app.pickupOrdersReady.filtersDrivers;
-    const nextFilter = lodash.assign({}, prevFilters, filters);
+    const nextFilter = Object.assign({}, prevFilters, filters);
     dispatch(SetFiltersDrivers(nextFilter));
   };
 }
 
 export function UpdateAndFetchDrivers(filters) {
   return (dispatch) => {
-    dispatch(StoreSetter("currentPageDrivers", 1));
+    dispatch(StoreSetter('currentPageDrivers', 1));
     dispatch(UpdateFiltersDrivers(filters));
     dispatch(FetchListNearbyDrivers());
   };
@@ -551,7 +562,7 @@ export function FetchListNearbyDrivers(tripID) {
     const { token } = userLogged;
     const { currentPageDrivers, filtersDrivers, limitDrivers } = outboundTripsService;
 
-    const query = lodash.assign({}, filtersDrivers, {
+    const query = Object.assign({}, filtersDrivers, {
       limit: limitDrivers,
       offset: (currentPageDrivers - 1) * limitDrivers,
     });
@@ -605,7 +616,7 @@ export function SetCurrentPage(currentPage) {
 export function SetFiltersStatus(keyword) {
   return (dispatch, getState) => {
     const options = OrderStatusSelector.GetList(getState());
-    const orderStatus = lodash.reduce(options, (results, status) => {
+    const orderStatus = _.reduce(options, (results, status) => {
       results[status.value] = status.key;
       return results;
     }, {});
@@ -624,7 +635,7 @@ export function SetFiltersStatus(keyword) {
 
     dispatch({
       type: Constants.TRIPS_OUTBOUND_FILTERS_SET,
-      filters: lodash.assign({}, filters, newFilters),
+      filters: Object.assign({}, filters, newFilters),
     });
 
     dispatch(SetCurrentPage(1));
@@ -653,7 +664,7 @@ function SetTrip(trip, haveDone) {
     let orders, driver, externalTrip, fleet;
 
     orders = _.map(trip.UserOrderRoutes, (route) => {
-      return _.assign({}, route.UserOrder, {
+      return Object.assign({}, route.UserOrder, {
         Status: route.OrderStatus.OrderStatus,
         DeliveryFee: route.DeliveryFee,
       });
@@ -667,11 +678,13 @@ function SetTrip(trip, haveDone) {
 
     dispatch({
       type: Constants.TRIPS_OUTBOUND_DETAILS_TRIP_SET,
-      driver: trip.Driver,
-      externalTrip: externalTrip,
-      fleet: trip.FleetManager,
-      orders: orders,
-      trip: lodash.assign({}, getState().app.outboundTripsService.trip, trip),
+      payload: {
+        driver: trip.Driver,
+        externalTrip,
+        fleet: trip.FleetManager,
+        orders,
+        trip: Object.assign({}, getState().app.outboundTripsService.trip, trip),
+      },
     });
 
     dispatch({ type: Constants.TRIPS_OUTBOUND_DETAILS_FETCH_END });
@@ -796,7 +809,7 @@ export function AssignFleet(tripID, fleetManagerID, driverID) {
           dispatch({
             type: Constants.TRIPS_OUTBOUND_DETAILS_FLEET_SET,
             fleet: data.result,
-            isSuccessAssigning: (driverID == undefined),
+            isSuccessAssigning: driverID === undefined,
           });
 
           if (driverID) {
@@ -879,21 +892,21 @@ export function CreateExternalTrip(externalData) {
     });
 
     if (externalData.ArrivalTime <= externalData.DepartureTime) {
-      dispatch(ModalActions.addMessage("Arrival Time should be later than Departure Time"));
+      dispatch(ModalActions.addMessage('Arrival Time should be later than Departure Time'));
       return;
     }
 
     if (externalData.Fee < 1) {
-      dispatch(ModalActions.addMessage("Fee should be more than 0"));
+      dispatch(ModalActions.addMessage('Fee should be more than 0'));
       return;
     }
 
     if (missingInformation.length > 0) {
-      dispatch(ModalActions.addMessage("Can't create external trip. Missing " + missingInformation.join() + ' information.'));
+      dispatch(ModalActions.addMessage(`Can't create external trip. Missing ${missingInformation.join()} information.`));
       return;
     }
 
-    const body = lodash.assign({}, externalData, {
+    const body = Object.assign({}, externalData, {
       ArrivalTime: externalData.ArrivalTime.utc(),
       DepartureTime: externalData.DepartureTime.utc(),
     });
@@ -921,7 +934,7 @@ export function GoToContainer(containerNumber) {
     const { token } = userLogged;
 
     const query = {
-      containerNumber: containerNumber,
+      containerNumber,
     };
 
     dispatch({ type: modalAction.BACKDROP_SHOW });
@@ -958,7 +971,9 @@ export function EndAssigning() {
     const { isSuccessAssigning } = outboundTripsService;
 
     dispatch({ type: Constants.TRIPS_OUTBOUND_ASSIGNING_END });
-    (isSuccessAssigning) && dispatch(FetchList());
+    if (isSuccessAssigning) {
+      dispatch(FetchList());
+    }
   };
 }
 
@@ -983,12 +998,15 @@ export function setHub(tripID, hubID) {
       response.json().then(({ data }) => {
         dispatch({
           type: Constants.TRIPS_OUTBOUND_DETAILS_TRIP_SET,
-          trip: data,
+          payload: {
+            trip: data,
+          },
         });
         dispatch({ type: Constants.HUB_UPDATE_END });
         dispatch({ type: modalAction.BACKDROP_HIDE });
       });
     }).catch((e) => {
+      dispatch({ type: Constants.TRIPS_OUTBOUND_DETAILS_TRIP_SET_ERROR });
       const message = (e && e.message) ? e.message : 'Failed to set hub';
       dispatch({ type: Constants.HUB_UPDATE_END });
       dispatch({ type: modalAction.BACKDROP_HIDE });
