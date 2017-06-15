@@ -45,7 +45,7 @@ const ColumnsTitle = {
   actions: 'Action',
 };
 
-function FindFilter(filters, attr) {
+function findFilter(filters, attr) {
   switch (attr) {
     case 'fleetName':
       return filters.fleet;
@@ -66,14 +66,14 @@ const SearchCell = React.createClass({
   },
 });
 
-function StateToStatus(state) {
+function stateToStatus(state) {
   const statusName = state.app.outboundTripsService.filtersStatus;
   return {
     val: statusName,
   };
 }
 
-function SelectDispatch(dispatch) {
+function selectDispatch(dispatch) {
   return {
     handleSelect: (val) => {
       dispatch(OutboundTrips.SetFiltersStatus(val.value));
@@ -81,7 +81,7 @@ function SelectDispatch(dispatch) {
   };
 }
 
-const TrueSelect = connect(StateToStatus, SelectDispatch)(StatusDropdown);
+const TrueSelect = connect(stateToStatus, selectDispatch)(StatusDropdown);
 
 const TripTypeDropDown = React.createClass({
   handleSelect(val) {
@@ -281,7 +281,7 @@ const Table = React.createClass({
                 attr={columnKey}
                 onChange={changeFilter.bind(null, columnKey)}
                 onEnterKeyPressed={this.props.filteringAction.fetchTrips}
-                filter={FindFilter(this.props.filters, columnKey)}
+                filter={findFilter(this.props.filters, columnKey)}
               />
             </div>
           );
@@ -296,7 +296,7 @@ const Table = React.createClass({
                 attr={columnKey}
                 onChange={changeFilter.bind(null, columnKey)}
                 onEnterKeyPressed={this.props.filteringAction.fetchTrips}
-                filter={FindFilter(this.props.filters, columnKey)}
+                filter={findFilter(this.props.filters, columnKey)}
               />
             </div>
           );
