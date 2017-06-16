@@ -2,13 +2,14 @@ import lodash from 'lodash'
 import classNaming from 'classnames'
 import moment from 'moment'
 import React from 'react'
-import {connect} from 'react-redux'
-import {TripParser} from '../modules/trips'
+import { connect } from 'react-redux'
+
+import { TripParser } from '../modules/trips'
 import styles from './styles.scss'
 import * as Hubs from '../modules/hubs';
 import * as OutboundTrips from './outboundTripsService'
-import {ButtonWithLoading} from '../views/base'
-import {DropdownWithState} from '../views/base/dropdown'
+import { ButtonWithLoading } from '../views/base'
+import { DropdownWithState } from '../views/base/dropdown'
 import config from '../config/configValues.json'
 
 let vehicles = {}
@@ -16,7 +17,7 @@ lodash.each(config.vehicle, (vehicle) => {
   vehicles[vehicle.value.toUpperCase()] = vehicle.key;
 })
 
-export function FullAddress (address) {
+export function FullAddress(address) {
   const Addr = address.Address1 && address.Address2 && (address.Address1.length < address.Address2.length) ? address.Address2 : address.Address1
   return lodash.chain([Addr])
     .filter((str) => (str && str.length > 0))
@@ -24,7 +25,7 @@ export function FullAddress (address) {
     .join(', ')
 }
 
-export function TripDropOff (trip) {
+export function TripDropOff(trip) {
   const destinationHub = trip.DestinationHub && (FullAddress(trip.DestinationHub))
   const destinationDistrict = trip.District && ('District ' + trip.District.Name + ' - ' + trip.District.City + ' - ' + trip.District.Province)
   const dropoffAddress = trip.DropoffAddress && FullAddress(trip.DropoffAddress)
@@ -36,7 +37,7 @@ export function TripDropOff (trip) {
   }
 }
 
-export function AssignedTo (trip) {
+export function AssignedTo(trip) {
   var className = (trip.Driver && trip.Driver.Vehicle && trip.Driver.Vehicle.VehicleID === vehicles.MOTORCYCLE) ? styles.iconVehicleMotor : styles.iconVehicleMiniVan
   var isActionDisabled = ((trip.FleetManager && trip.FleetManager.CompanyDetail) || (trip.Driver) || (trip.ExternalTrip))
 
@@ -50,7 +51,7 @@ export function AssignedTo (trip) {
   }
 }
 
-export function Remarks (trip) {
+export function Remarks(trip) {
   var notes = ''
 
   if (trip.Notes) {
@@ -63,7 +64,7 @@ export function Remarks (trip) {
   return notes
 }
 
-export function Weight (trip) {
+export function Weight(trip) {
   var result = 0
 
   if (trip.UserOrderRoutes) {
@@ -75,7 +76,7 @@ export function Weight (trip) {
   return result
 }
 
-export function DstHub (trip) {
+export function DstHub(trip) {
   if (trip && trip.DestinationHub) {
     var text = 'Hub -- ' + trip.DestinationHub.Name
 
@@ -85,7 +86,7 @@ export function DstHub (trip) {
   return
 }
 
-export function DstDistrict (trip) {
+export function DstDistrict(trip) {
   if (trip && trip.District) {
     var text = 'District -- ' + trip.District.Name
     return text
@@ -94,12 +95,12 @@ export function DstDistrict (trip) {
   return
 }
 
-export function NextSuggestion (trip) {
+export function NextSuggestion(trip) {
   if (trip) {
     var nextSuggestion = [];
     for (var p in trip.NextDestinationSuggestion) {
       if (trip.NextDestinationSuggestion.hasOwnProperty(p) && p !== 'NO_SUGGESTION') {
-        nextSuggestion.push(p + ' (' + trip.NextDestinationSuggestion[p] + 
+        nextSuggestion.push(p + ' (' + trip.NextDestinationSuggestion[p] +
           (trip.NextDestinationSuggestion[p] > 1 ? ' orders' : ' order') + ')');
       }
     }
@@ -110,7 +111,7 @@ export function NextSuggestion (trip) {
   return
 }
 
-export function ProcessTrip (trip) {
+export function ProcessTrip(trip) {
   const parsedTrip = TripParser(trip)
   const dropoff = TripDropOff(trip)
   let tripType, nextDestination;
@@ -165,21 +166,23 @@ export function ProcessTrip (trip) {
 }
 
 const HubSetterClass = React.createClass({
-  componentWillMount () {
-    this.props.FetchList()
+  componentWillMount() {
+    this.props.FetchList();
   },
-  getInitialState () {
-    return {selected: {}}
+  getInitialState() {
+    return { selected: {} };
   },
-  selectHub (val) {
-    this.setState({selected: val})
+  selectHub(val) {
+    this.setState({ selected: val });
   },
-  pickHub () {
-    this.props.SetHub(this.state.selected.key || this.props.nextHubID)
-    this.props.onSelect && this.props.onSelect()
+  pickHub() {
+    this.props.SetHub(this.state.selected.key || this.props.nextHubID);
+    if (this.props.onSelect) {
+      this.props.onSelect();
+    }
   },
-  render () {
-    const {hubs, isFetching, isUpdating, nextHub} = this.props
+  render() {
+    const { hubs, isFetching, isUpdating, nextHub } = this.props;
 
     return (
       <div className={styles.hubSetter}>
@@ -192,51 +195,61 @@ const HubSetterClass = React.createClass({
           !isFetching &&
           <span>
             <span className={classNaming(styles.districtsWrapper)}>
-              <DropdownWithState options={hubs} handleSelect={this.selectHub} initialValue={nextHub} />
+              <DropdownWithState
+                options={hubs}
+                handleSelect={this.selectHub}
+                initialValue={nextHub}
+              />
             </span>
             <div className={classNaming(styles.buttonWrapper)}>
-              <ButtonWithLoading textBase='Set Destination' textLoading='Setting Destination'
+              <ButtonWithLoading
+                textBase="Set Destination"
+                textLoading="Setting Destination"
                 disabled={!this.state.selected.key && !this.props.nextHubID}
-                onClick={this.pickHub} isLoading={isUpdating} styles={{base: styles.normalBtn}} />
+                onClick={this.pickHub}
+                isLoading={isUpdating}
+                styles={{ base: styles.normalBtn }}
+              />
             </div>
           </span>
         }
       </div>
-    )
-  }
-})
+    );
+  },
+});
 
-function mapState (state, ownParams) {
-  const {hubs, outboundTripsService} = state.app
-  const {isFetching, list} = hubs
-  const {isHubUpdating} = outboundTripsService
-  const {trip} = ownParams
+function mapState(state, ownParams) {
+  const { hubs, outboundTripsService } = state.app;
+  const { isFetching, list } = hubs;
+  const { isHubUpdating } = outboundTripsService;
+  const { trip } = ownParams;
 
-  const nextHub = trip.DestinationHub && trip.DestinationHub.Name
-  const nextHubID = trip.DestinationHub && trip.DestinationHub.HubID
+  const nextHub = trip.DestinationHub && trip.DestinationHub.Name;
+  const nextHubID = trip.DestinationHub && trip.DestinationHub.HubID;
 
   return {
     isFetching,
     isUpdating: isHubUpdating,
     hubs: lodash.map(list, (hub) => {
-      return {key: hub.HubID, value: hub.Name}
+      const data = { key: hub.HubID, value: hub.Name };
+      return data;
     }),
     nextHub,
-    nextHubID
-  }
+    nextHubID,
+  };
 }
 
-function mapDispatch (dispatch, ownParams) {
+function mapDispatch(dispatch, ownParams) {
   return {
     FetchList: () => {
       dispatch(Hubs.fetchNextDestinationList());
     },
     SetHub: (hubID) => {
-      dispatch(OutboundTrips.setHub(ownParams.trip.TripID, hubID))
-    }
-  }
+      dispatch(OutboundTrips.setHub(ownParams.trip.TripID, hubID));
+    },
+  };
 }
 
-var HubSetter = connect(mapState, mapDispatch)(HubSetterClass)
+const HubSetter = connect(mapState, mapDispatch)(HubSetterClass);
 
-export { HubSetter }
+export { HubSetter };

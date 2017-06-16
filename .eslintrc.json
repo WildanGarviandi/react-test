@@ -10,5 +10,9 @@
         "window": true,
         "localStorage": true,
         "FormData": true
-    }
+    },
+    "parserOptions": {
+        "ecmaVersion": 8
+    },
+    "rules": {}
 }

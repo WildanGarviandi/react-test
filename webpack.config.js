@@ -4,9 +4,10 @@ const combineLoaders = require('webpack-combine-loaders');
 
 module.exports = {
   entry: [
-    './app/main.js',
-    'webpack/hot/dev-server',
-    'webpack-dev-server/client?http://localhost:8081'
+      './app/main.js',
+      'webpack/hot/dev-server',
+      'babel-polyfill',
+      'webpack-dev-server/client?http://localhost:8081'
   ],
 
   output: {

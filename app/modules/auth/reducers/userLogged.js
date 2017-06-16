@@ -13,6 +13,7 @@ const initialUserState = {
   editCOD: false,
   editVolume: false,
   editWeight: false,
+  roleName: null,
 };
 
 export default (state = initialUserState, action) => {
