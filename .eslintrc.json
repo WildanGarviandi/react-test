@@ -9,5 +9,9 @@
         "document": true,
         "window": true,
         "localStorage": true
-    }
+    },
+    "parserOptions": {
+        "ecmaVersion": 8
+    },
+    "rules": {}
 }
