@@ -2,8 +2,8 @@ import React from 'react'; // eslint-disable-line
 import classNaming from 'classnames';
 import PropTypes from 'prop-types';
 
-import styles from './styles.scss';
-import { CheckBox } from '../base';
+import styles from '../styles.scss';
+import { CheckBox } from '../../views/base';
 
 export default class LoginCheckBox extends React.Component {
 
