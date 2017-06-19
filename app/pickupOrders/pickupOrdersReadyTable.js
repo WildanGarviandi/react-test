@@ -28,8 +28,9 @@ import * as TripDetails from '../modules/inboundTripDetails';
 import config from '../config/configValues.json';
 import PickupOrdersModal from './pickupOrdersModal';
 import { checkPermission } from '../helper/permission';
+import { PickupType } from '../modules/orders';
 
-const ColumnsOrder = ['checkbox', 'tripID', 'webstoreNames', 'weight', 'quantity', 'pickup', 'pickupCity', 'pickupZip', 'deadline', 'action'];
+const ColumnsOrder = ['checkbox', 'tripID', 'pickupType', 'webstoreNames', 'weight', 'quantity', 'pickup', 'pickupCity', 'pickupZip', 'deadline', 'action'];
 
 const ColumnsTitle = {
   pickup: 'Pickup Address',
@@ -42,6 +43,7 @@ const ColumnsTitle = {
   action: 'Action',
   deadline: 'Deadline',
   checkbox: '',
+  pickupType: 'Service Type',
 };
 
 const cityList = {};
@@ -569,6 +571,7 @@ function ProcessTrip(trip) {
       isTrip: true,
       deadline: trip.Deadline,
       IsChecked: trip.IsChecked,
+      pickupType: parsedTrip.PickupType,
     };
   }
 
@@ -585,6 +588,7 @@ function ProcessTrip(trip) {
     deadline: trip.Deadline,
     IsChecked: trip.IsChecked,
     orderID: `${trip.UserOrderNumber} (${trip.WebOrderID})`,
+    pickupType: PickupType(trip.PickupType),
   };
 }
 

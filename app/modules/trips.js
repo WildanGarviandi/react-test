@@ -140,6 +140,21 @@ export function GetWebstoreNameWithMores(orders) {
   }
 }
 
+export function GetPickupTypeWithCount(orders) {
+  const arrayOfPickupType = [];
+  const PickupTypesCount = lodash.countBy(orders, 'PickupType');
+  for (const PickupTypeCount in PickupTypesCount) {
+    if (PickupTypesCount.hasOwnProperty(PickupTypeCount)) {
+      arrayOfPickupType.push(
+        `${PickupTypeCount === 'null' ? 'No Service Type' : PickupTypeCount}
+        (${PickupTypesCount[PickupTypeCount]}
+         ${(PickupTypesCount[PickupTypeCount] > 1 ? 'orders' : 'order')})`,
+      );
+    }
+  }
+  return arrayOfPickupType.join(', ');
+}
+
 export function TripParser(trip, hubID) {
   function GroupToString(colls) {
     return lodash.reduce(colls, (results, val, key) => {
@@ -163,6 +178,7 @@ export function TripParser(trip, hubID) {
   const ScannedOrders = GetScannedRoutes(routes);
   const ListWebstore = GetWebstoreNameWithoutCount(orders);
   const ListWebstoreMores = GetWebstoreNameWithMores(orders);
+  const PickupType = GetPickupTypeWithCount(orders);
 
   return lodash.assign({}, trip, {
     WebstoreNames,
@@ -171,5 +187,6 @@ export function TripParser(trip, hubID) {
     ScannedOrders,
     ListWebstore,
     ListWebstoreMores,
+    PickupType,
   });
 }
