@@ -445,7 +445,7 @@ const Driver = React.createClass({
               </tr>
               <tr className={styles.driverMaskLoad}>
                 <td>
-                  <img className={styles.vendorLoadImage} src="/img/icon-location.png" />
+                  <img className={styles.vendorLoadImage} src={config.IMAGES.LOCATION} />
                   <span className={styles.vendorLoad}>{driver.DistanceToNearestPickup || 'N/A'} km</span>
                 </td>
               </tr>

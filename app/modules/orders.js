@@ -1,25 +1,22 @@
-import lodash from 'lodash'; // eslint-disable-line
+import * as _ from 'lodash'; // eslint-disable-line
+import config from '../config/configValues.json';
 
 function GetOrders(state) {
   return state.app.orders.list;
 }
 
-export function PickupType(type) {
+export function pickupType(type) {
   switch (type) {
-    case 1: return 'Same Day';
-    case 2: return 'Next Day';
-    case 3: return 'On Demand';
-    case 4: return 'Regular';
+    case 1: return config.PICKUP_TYPE[0].label;
+    case 2: return config.PICKUP_TYPE[1].label;
+    case 3: return config.PICKUP_TYPE[2].label;
+    case 4: return config.PICKUP_TYPE[3].label;
     default: return '';
   }
 }
 
-function Currency(x) {
-  if (!x) {
-    x = 0;
-  }
-
-  return `${x}`;
+function currency(value) {
+  return `${value || 0}`;
 }
 
 function FullAddress(address) {
@@ -34,7 +31,7 @@ const boolAttributes = ['IncludeInsurance', 'UseExtraHelper'];
 export function OrderParser(order) {
   const dropoffTime = new Date(order.DropoffTime);
   const pickupTime = new Date(order.PickupTime);
-  return lodash.assign({}, order, {
+  return Object.assign({}, order, {
     CODValue: order.IsCOD ? order.TotalValue: 0,
     DropoffAddress: order.DropoffAddress ? FullAddress(order.DropoffAddress) : '',
     DropoffCity: order.DropoffAddress ? order.DropoffAddress.City : '',
@@ -49,7 +46,7 @@ export function OrderParser(order) {
     PickupZip: order.PickupAddress ? order.PickupAddress.ZipCode : '',
     PickupState: order.PickupAddress ? order.PickupAddress.State : '',
     PickupTime: pickupTime.toLocaleString(),
-    PickupType: PickupType(order.PickupType),
+    PickupType: pickupType(order.PickupType),
     RouteStatus: (order.CurrentRoute && order.CurrentRoute.OrderStatus && order.CurrentRoute.OrderStatus.OrderStatus) || '',
     User: (order.User && (order.User.FirstName + ' ' + order.User.LastName)) || '',
     WebstoreName: (order.User && (order.User.FirstName + ' ' + order.User.LastName)) || '',
@@ -59,15 +56,15 @@ export function OrderParser(order) {
       return val.CompanyDetail.CompanyName + ' (' + val.OrderCapacity + '/' + 
         val.CompanyDetail.OrderVolumeLimit + ')';
     }) : [],
-  }, lodash.reduce(currencyAttributes, (acc, attr) => {
-    return lodash.assign(acc, { [attr]: Currency(order[attr]) });
-  }, {}), lodash.reduce(boolAttributes, (acc, attr) => {
+  }, _.reduce(currencyAttributes, (acc, attr) => {
+    return _.assign(acc, { [attr]: currency(order[attr]) });
+  }, {}), _.reduce(boolAttributes, (acc, attr) => {
     let result = '';
     if (attr in order) {
-      result = order[attr] ? 'Yes' : 'No';
+      result = order[attr] ? config.OPTION.YES : config.OPTION.NO;
     }
 
-    return lodash.assign(acc, { [attr]: result });
+    return _.assign(acc, { [attr]: result });
   }, {}));
 }
 
