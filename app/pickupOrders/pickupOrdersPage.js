@@ -1,10 +1,10 @@
-import lodash from 'lodash';
+import lodash from 'lodash'; // eslint-disable-line
 import React from 'react';
-import {connect} from 'react-redux';
-import PickupOrdersTable, {Filter} from './pickupOrdersTable';
-import PickupOrdersReadyTable, {FilterReady} from './pickupOrdersReadyTable';
+import { connect } from 'react-redux';
+import PickupOrdersTable, { Filter } from './pickupOrdersTable';
+import PickupOrdersReadyTable, { FilterReady } from './pickupOrdersReadyTable';
 import styles from './styles.scss';
-import {ButtonWithLoading, Input, Page} from '../views/base';
+import { Page } from '../views/base';
 import * as PickupOrders from './pickupOrdersService';
 import * as PickupOrdersReady from './pickupOrdersReadyService';
 import config from '../config/configValues.json';
@@ -13,16 +13,16 @@ const PickupOrdersPage = React.createClass({
   getInitialState() {
     return ({
       showReady: true,
-      showNotReady: false
+      showNotReady: false,
     });
   },
   activateReady() {
-    this.setState({showReady: true});
-    this.setState({showNotReady: false});
+    this.setState({ showReady: true });
+    this.setState({ showNotReady: false });
   },
   activateNotReady() {
-    this.setState({showReady: false});
-    this.setState({showNotReady: true});
+    this.setState({ showReady: false });
+    this.setState({ showNotReady: true });
   },
   componentWillMount() {
     this.props.ResetFilter();
@@ -34,28 +34,34 @@ const PickupOrdersPage = React.createClass({
     }
   },
   checkAutoGroup() {
-    setInterval(function() {
+    setInterval(() => {
       this.props.CheckAutoGroup();
-    }.bind(this), config.autoGroupInterval);
+    }, config.autoGroupInterval);
   },
   render() {
     return (
       <Page title="Pickup Orders">
         <div className={styles.toggleReady}>
-          <span onClick={this.activateReady} 
-            className={this.state.showReady ? styles.togglePickupActive : styles.togglePickup}>
-            Ready to be picked 
+          <span
+            role="button"
+            onClick={this.activateReady}
+            className={this.state.showReady ? styles.togglePickupActive : styles.togglePickup}
+          >
+            Ready to be picked
             <span className={styles.blueSpan}> ({this.props.totalReady}) </span>
           </span>
           <span className={styles.arbitTogglePickup}> | </span>
-          <span onClick={this.activateNotReady} 
-            className={this.state.showNotReady ? styles.togglePickupActive : styles.togglePickup}>
-            Not ready to be picked 
+          <span
+            role="button"
+            onClick={this.activateNotReady}
+            className={this.state.showNotReady ? styles.togglePickupActive : styles.togglePickup}
+          >
+            Not ready to be picked
             <span className={styles.blueSpan}> ({this.props.totalNotReady}) </span>
           </span>
         </div>
         <div className={styles.mainTable}>
-          { this.state.showReady &&
+          {this.state.showReady &&
             <FilterReady
               isFetchingReady={this.props.isFetchingReady}
               isAutoGroupActive={this.props.isAutoGroupActive}
@@ -72,7 +78,7 @@ const PickupOrdersPage = React.createClass({
             />
           }
         </div>
-        { this.state.showReady &&
+        {this.state.showReady &&
           <PickupOrdersReadyTable />
         }
         {
@@ -81,11 +87,11 @@ const PickupOrdersPage = React.createClass({
         }
       </Page>
     );
-  }
+  },
 });
 
 function mapState(state) {
-  const {pickupOrders, pickupOrdersReady} = state.app;
+  const { pickupOrders, pickupOrdersReady } = state.app;
   const userLogged = state.app.userLogged;
   const totalNotReady = pickupOrders.fixTotal;
   const isFetchingNotReady = pickupOrders.isFetching;
@@ -101,7 +107,7 @@ function mapState(state) {
     .filter((order) => {
       return order.IsChecked;
     })
-    .map((order) => (order.UserOrderID))
+    .map(order => (order.UserOrderID))
     .value();
 
   if (checkedOrdersIDs.length === 0) {
@@ -112,7 +118,7 @@ function mapState(state) {
     .filter((order) => {
       return order.IsChecked;
     })
-    .map((order) => (order.UserOrderID))
+    .map(order => (order.UserOrderID))
     .value();
 
   if (checkedOrdersIDsNotReady.length === 0) {
@@ -153,8 +159,8 @@ function mapDispatch(dispatch) {
     },
     CheckAutoGroup: () => {
       dispatch(PickupOrdersReady.CheckAutoGroup());
-    }
-  }
+    },
+  };
 }
 
 export default connect(mapState, mapDispatch)(PickupOrdersPage);

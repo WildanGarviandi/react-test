@@ -62,61 +62,96 @@ function ProcessTrip(trip) {
       orderID: `${trip.UserOrderNumber} (${trip.WebOrderID})`
     }
   }
+
+  return {
+    key: trip.UserOrderID,
+    pickup: trip.PickupAddress && trip.PickupAddress.Address1,
+    pickupCity: trip.PickupAddress && trip.PickupAddress.City,
+    pickupZip: trip.PickupAddress && trip.PickupAddress.ZipCode,
+    quantity: 1,
+    webstoreNames: trip.User && `${trip.User.FirstName} ${trip.User.LastName}`,
+    tripID: `${trip.UserOrderID}`,
+    weight: trip.PackageWeight,
+    isTrip: false,
+    deadline: trip.Deadline,
+    IsChecked: trip.IsChecked,
+    orderID: `${trip.UserOrderNumber} (${trip.WebOrderID})`,
+  };
 }
 
-const Fleet = React.createClass({
-  render: function () {
-    var fleetComponents = fleetList.map(function (fleet, idx) {
-      let vendorLoad = styles.vendorLoad;
-      let availableLoad = fleet.CurrentLoad;
-      let rowStyle = styles.vendorInformation;
-      let capacity = fleet.FleetManager && fleet.FleetManager.CompanyDetail.OrderVolumeLimit;
-      if (fleet.FleetManagerID === this.props.selectedFleet) {
-        vendorLoad = styles.vendorLoadSelected;
-        availableLoad = parseInt(availableLoad) + parseInt(this.props.sumOrders);
-        rowStyle = styles.vendorInformationSelected;
-        selectedFleetName = fleet.FleetManager && fleet.FleetManager.CompanyDetail && fleet.FleetManager.CompanyDetail.CompanyName;
-        if (availableLoad > capacity) {
-          vendorLoad = styles.vendorLoadSelectedExceed;
-          rowStyle = styles.vendorInformationSelectedExceed;
-          isFleetExceed = true;
-        } else {
-          isFleetExceed = false;
-        }
+function Fleet({ selectedFleetProps, chooseFleet }) {
+  const fleetComponents = fleetList.map((fleet, idx) => {
+    let vendorLoad = styles.vendorLoad;
+    let availableLoad = fleet.CurrentLoad;
+    let rowStyle = styles.vendorInformation;
+    const capacity = fleet.FleetManager && fleet.FleetManager.CompanyDetail.OrderVolumeLimit;
+    if (fleet.FleetManagerID === selectedFleetProps) {
+      vendorLoad = styles.vendorLoadSelected;
+      availableLoad = parseInt(availableLoad, 10) + parseInt(this.props.sumOrders, 10);
+      rowStyle = styles.vendorInformationSelected;
+      selectedFleetName = fleet.FleetManager && fleet.FleetManager.CompanyDetail && fleet.FleetManager.CompanyDetail.CompanyName;
+      if (availableLoad > capacity) {
+        vendorLoad = styles.vendorLoadSelectedExceed;
+        rowStyle = styles.vendorInformationSelectedExceed;
+        isFleetExceed = true;
+      } else {
+        isFleetExceed = false;
       }
-      return (
-        <div key={idx} onClick={this.props.chooseFleet.bind(null, fleet.FleetManagerID)}
-          className={rowStyle}>
-          <div className={styles.maskInput}>
-            <img src={fleet.FleetManagerID === this.props.selectedFleet ? config.IMAGES.RADIO_ON : config.IMAGES.RADIO_OFF} />
-          </div>
-          <div className={styles.maskName}>
-            <span className={styles.vendorName}>
-              {fleet.FleetManager && fleet.FleetManager.CompanyDetail && fleet.FleetManager.CompanyDetail.CompanyName}
-            </span>
-          </div>
-          <div className={styles.maskLoad}>
-            <img className={styles.vendorLoadImage} src="/img/icon-grouping.png" />
-            <span className={vendorLoad}>
-              {availableLoad} / {capacity}
-            </span>
-          </div>
+    }
+    return (
+      <div
+        role="button"
+        key={fleet.FleetManagerID}
+        onClick={() => chooseFleet(fleet.FleetManagerID)}
+        className={rowStyle}
+      >
+        <div className={styles.maskInput}>
+          <img
+            src={fleet.FleetManagerID === selectedFleetProps ?
+            config.IMAGES.RADIO_ON : config.IMAGES.RADIO_OFF}
+          />
         </div>
-      );
-    }.bind(this));
-    return <div>{fleetComponents}</div>;
-  }
-});
+        <div className={styles.maskName}>
+          <span className={styles.vendorName}>
+            {fleet.FleetManager &&
+              fleet.FleetManager.CompanyDetail &&
+              fleet.FleetManager.CompanyDetail.CompanyName}
+          </span>
+        </div>
+        <div className={styles.maskLoad}>
+          <img className={styles.vendorLoadImage} src="/img/icon-grouping.png" />
+          <span className={vendorLoad}>
+            {availableLoad} / {capacity}
+          </span>
+        </div>
+      </div>
+    );
+  });
+
+  return <div>{fleetComponents}</div>;
+}
+
+/* eslint-disable */
+Fleet.propTypes = {
+  selectedFleetProps: PropTypes.any,
+  chooseFleet: PropTypes.func.isRequired,
+};
+/* eslint-enable */
+
+Fleet.defaultProps = {
+  selectedFleetProps: {},
+};
 
 export const AssignVendor = React.createClass({
   getInitialState() {
     return ({
-      selectedFleet: selectedFleet
+      selectedFleet,
     });
   },
   chooseFleet(id) {
     selectedFleet = id;
     this.setState({ selectedFleet: id });
+    this.props.fetchDriverVendorList(id);
   },
   render() {
     return (
@@ -159,7 +194,7 @@ export const AssignVendor = React.createClass({
           <div className={styles['clear-both']} />
         </div>
         <div className={styles.vendorList}>
-          {fleetList.length > 0 &&
+          { fleetList.length > 0 && !this.state.selectedFleet &&
             <div>
               <Fleet
                 chooseFleet={this.chooseFleet}
@@ -191,7 +226,7 @@ export const AssignVendor = React.createClass({
         </div>
       </div>
     );
-  }
+  },
 });
 
 function Hub({ selectedHubID, chooseHub }) {
@@ -203,12 +238,15 @@ function Hub({ selectedHubID, chooseHub }) {
     }
     return (
       <div
-        key={idx}
+        role="button"
+        key={hub.HubID}
         onClick={() => chooseHub(hub.HubID)}
         className={rowStyle}
       >
         <div className={styles.maskInput}>
-          <img src={hub.HubID === selectedHubID ? config.IMAGES.RADIO_ON : config.IMAGES.RADIO_OFF} />
+          <img
+            src={hub.HubID === selectedHubID ? config.IMAGES.RADIO_ON : config.IMAGES.RADIO_OFF}
+          />
         </div>
         <div className={styles.maskName}>
           <span className={styles.vendorName}>
@@ -369,8 +407,8 @@ AssignHub.defaultProps = {
 };
 
 const Driver = React.createClass({
-  render: function () {
-    var driverComponents = driverList.map(function (driver, idx) {
+  render: function() {
+    const driverComponents = driverList.map(function(driver, idx) {
       let rowStyle = styles.vendorInformation;
       let driverWeightStyle = styles.driverWeight;
       let availableWeight = driver.CurrentWeight;
@@ -397,27 +435,38 @@ const Driver = React.createClass({
           className={rowStyle}
         >
           <div className={styles.driverInput}>
-            <img src={driver.UserID === this.props.selectedDriver ? config.IMAGES.RADIO_ON : config.IMAGES.RADIO_OFF} />
+            <img
+              src={driver.UserID === this.props.selectedDriver ?
+                config.IMAGES.RADIO_ON : config.IMAGES.RADIO_OFF}
+            />
           </div>
           <div className={styles.driverPicture}>
             <img
               src={driver.Vehicle && driver.Vehicle.VehicleID === config.vehicleType.Motorcycle ?
-                config.IMAGES.MOTORCYCLE : config.IMAGES.VAN}
+              config.IMAGES.MOTORCYCLE : config.IMAGES.VAN}
             />
           </div>
           <table className={styles.driverMaskName}>
-            <tr>
-              <span className={styles.driverName}>{UtilHelper.trimString(`${driver.FirstName} ${driver.LastName}`, 25)}</span>
-            </tr>
+            <tbody>
+              <tr>
+                <td>
+                  <span className={styles.driverName}>{UtilHelper.trimString(`${driver.FirstName} ${driver.LastName}`, 25)}</span>
+                </td>
+              </tr>
+            </tbody>
           </table>
           <table className={styles.driverLocation}>
-            <tr>
-              From Pickup Location
-            </tr>
-            <tr className={styles.driverMaskLoad}>
-              <img className={styles.vendorLoadImage} src="/img/icon-location.png" />
-              <span className={styles.vendorLoad}>{driver.DistanceToNearestPickup || 'N/A'} km</span>
-            </tr>
+            <tbody>
+              <tr>
+                <td>From Pickup Location</td>
+              </tr>
+              <tr className={styles.driverMaskLoad}>
+                <td>
+                  <img className={styles.vendorLoadImage} src={config.IMAGES.LOCATION} />
+                  <span className={styles.vendorLoad}>{driver.DistanceToNearestPickup || 'N/A'} km</span>
+                </td>
+              </tr>
+            </tbody>
           </table>
         </div>
       );
@@ -504,16 +553,22 @@ export const AssignDriver = React.createClass({
             </div>
           </div>
           <div className={styles['clear-both']} />
-          {this.props.trip.Weight > config.motorcycleMaxWeight && this.state.selectedVehicle === 'Motorcycle'
+          { this.props.trip.Weight > config.motorcycleMaxWeight && this.state.selectedVehicle === 'Motorcycle'
             && !this.state.allowNoSeparate &&
-            <div className={styles.modalDescBottom}>
-              This trip is too big. Take {config.motorcycleMaxWeight} kg only and separate the rest?
+              <div className={styles.modalDescBottom}>
+                This trip is too big. Take {config.motorcycleMaxWeight}
+                 kg only and separate the rest?
                 <div className={styles['clear-both']} />
-              <button className={styles.buttonSplitNo} onClick={this.noSeparate}>No</button>
-              <button className={styles.buttonSplitYes} onClick={this.props.splitTrip}>Yes</button>
-            </div>
+                <button className={styles.buttonSplitNo} onClick={this.noSeparate}>No</button>
+                <button
+                  className={styles.buttonSplitYes}
+                  onClick={this.props.splitTrip}
+                >
+                  Yes
+                </button>
+              </div>
           }
-          {this.props.trip.Weight > config.vanMaxWeight && this.state.selectedVehicle === 'Van'
+          { this.props.trip.Weight > config.vanMaxWeight && this.state.selectedVehicle === 'Van'
             && !this.state.allowNoSeparate &&
             <div className={styles.modalDescBottom}>
               This trip is too big. Take {config.vanMaxWeight} kg only and separate the rest?
@@ -585,8 +640,8 @@ export const AssignDriver = React.createClass({
 });
 
 const DriverVendor = React.createClass({
-  render: function () {
-    var driverComponents = driverVendorList.map(function (driver, idx) {
+  render: function() {
+    const driverComponents = driverVendorList.map(function(driver, idx) {
       let rowStyle = styles.vendorInformation;
       let driverWeightStyle = styles.driverWeight;
       if (driver.UserID === this.props.selectedDriver) {
@@ -601,7 +656,10 @@ const DriverVendor = React.createClass({
           className={rowStyle}
         >
           <div className={styles.driverInput}>
-            <img src={driver.UserID === this.props.selectedDriver ? config.IMAGES.RADIO_ON : config.IMAGES.RADIO_OFF} />
+            <img
+              src={driver.UserID === this.props.selectedDriver ?
+              config.IMAGES.RADIO_ON : config.IMAGES.RADIO_OFF}
+            />
           </div>
           <div className={styles.driverPicture}>
             <img
@@ -610,9 +668,13 @@ const DriverVendor = React.createClass({
             />
           </div>
           <table className={styles.driverMaskName}>
-            <tr>
-              <span className={styles.driverName}>{driver.FirstName} {driver.LastName}</span>
-            </tr>
+            <tbody>
+              <tr>
+                <td>
+                  <span className={styles.driverName}>{driver.FirstName} {driver.LastName}</span>
+                </td>
+              </tr>
+            </tbody>
           </table>
         </div>
       );
@@ -632,6 +694,7 @@ export const AssignDriverVendor = React.createClass({
     this.setState({ selectedDriverVendor: id });
   },
   render() {
+    const { assignFleet, assignDriver } = this.props;
     return (
       <div>
         <div className={styles.mainAssignBox}>
@@ -672,16 +735,32 @@ export const AssignDriverVendor = React.createClass({
           <div className={styles['clear-both']} />
         </div>
         <div className={styles.driverList}>
-          <DriverVendor chooseDriver={this.chooseDriver} selectedDriver={this.state.selectedDriverVendor} />
+          <DriverVendor
+            chooseDriver={this.chooseDriver}
+            selectedDriver={this.state.selectedDriverVendor}
+          />
         </div>
         <div>
-          <div>
-            <button disabled={!this.state.selectedDriverVendor} className={styles.buttonAssign} onClick={this.props.assignDriver}>Assign to Driver</button>
+          <div className={styles['modal-footer']}>
+            <button
+              className={styles['fleet-driver-button']}
+              onClick={assignFleet}
+            >
+              Choose without driver
+            </button>
+
+            <button
+              className={styles['fleet-driver-button']}
+              onClick={assignDriver}
+              disabled={!selectedDriverVendor}
+            >
+              Choose driver
+            </button>
           </div>
         </div>
       </div>
     );
-  }
+  },
 });
 
 const PickupOrdersModal = React.createClass({
@@ -747,18 +826,14 @@ const PickupOrdersModal = React.createClass({
     }
     if (isFleetExceed) {
       if (confirm('Are you sure you want to assign ' + this.props.trip.Weight + ' kg to ' + selectedFleetName + '?')) {
-        this.props.FleetSet(this.props.trip.TripID, selectedFleet);
+        this.props.fleetSet(this.props.trip.TripID, selectedFleet);
       }
     } else {
-      this.props.FleetSet(this.props.trip.TripID, selectedFleet);
+      this.props.fleetSet(this.props.trip.TripID, selectedFleet);
     }
   },
   assignDriverVendor() {
-    if (!selectedDriverVendor) {
-      alert('Please select driver first');
-      return;
-    }
-    this.props.DriverSet(this.props.trip.TripID, selectedDriverVendor);
+    this.props.setDriverVendor(this.props.trip.TripID, selectedFleet, selectedDriverVendor);
   },
   assignHub() {
     if (!selectedHub) {
@@ -773,11 +848,6 @@ const PickupOrdersModal = React.createClass({
   },
   splitTrip() {
     this.props.SplitTrip(this.props.trip.TripID, selectedVehicleID);
-  },
-  componentWillMount() {
-    if (this.props.trip.FleetManager) {
-      this.props.FetchDriverVendorList(this.props.trip.FleetManager.UserID);
-    }
   },
   render() {
     const trips = _.map(this.props.trips, ProcessTrip);
@@ -838,13 +908,17 @@ const PickupOrdersModal = React.createClass({
                   }
                   {
                     this.state.showVendor && driverVendorList.length === 0 &&
-                    <AssignVendor trip={this.props.trip} assignFleet={this.assignFleet} />
+                    <AssignVendor
+                      trip={this.props.trip}
+                      fetchDriverVendorList={this.props.fetchDriverVendorList}
+                    />
                   }
                   {
                     this.state.showVendor && driverVendorList.length > 0 &&
                     <AssignDriverVendor
                       trip={this.props.trip}
                       assignDriver={this.assignDriverVendor}
+                      assignFleet={this.assignFleet}
                     />
                   }
                   {
@@ -864,7 +938,7 @@ const PickupOrdersModal = React.createClass({
         }
       </div>
     );
-  }
+  },
 });
 
 function StateToProps(state) {
@@ -913,13 +987,13 @@ function DispatchToProps(dispatch, ownProps) {
     DriverSet(tripID, driverID) {
       dispatch(PickupOrdersReady.AssignDriver(tripID, driverID));
     },
-    FleetSet(tripID, fleetID) {
-      dispatch(PickupOrdersReady.AssignFleet(tripID, fleetID));
+    fleetSet(tripID, fleetID) {
+      dispatch(PickupOrdersReady.assignFleet(tripID, fleetID));
     },
     SplitTrip(id, vehicleID) {
       dispatch(PickupOrdersReady.SplitTrip(id, vehicleID));
     },
-    FetchDriverVendorList: function (fleetID) {
+    fetchDriverVendorList(fleetID) {
       dispatch(NearbyFleets.FetchDriverFleet(fleetID));
     },
     PaginationActionDrivers: {
@@ -947,6 +1021,9 @@ function DispatchToProps(dispatch, ownProps) {
     },
     assignHub(tripID, hubID) {
       dispatch(PickupOrdersReady.assignHub(tripID, hubID));
+    },
+    setDriverVendor(tripID, fleetID, DriverID) {
+      dispatch(PickupOrdersReady.setDriverVendor(tripID, fleetID, DriverID));
     },
   };
 }
