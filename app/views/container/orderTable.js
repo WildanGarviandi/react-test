@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {Collection, Pagination} from '../base';
 import {BaseCell, BaseHeader, BaseRow} from './table';
 
-import styles from './table.css';
+import styles from './table.scss';
 
 export default React.createClass({
   componentDidMount() {

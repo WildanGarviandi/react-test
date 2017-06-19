@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import OrderStatusSelector from '../../modules/orderStatus/selector';
 import {Input} from './';
 import {DropdownWithState2} from './dropdown';
-import styles from './table.css';
+import styles from './table.scss';
 
 function mapStateToStatusDropdown(state, ownProps) {
   const val = ownProps.val;

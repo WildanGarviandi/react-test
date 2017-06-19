@@ -2,7 +2,7 @@ import lodash from 'lodash';
 import React from 'react';
 import {connect} from 'react-redux';
 import moment from 'moment';
-import tripManifestStyle from './outboundTripsManifest.css';
+import tripManifestStyle from './outboundTripsManifest.scss';
 import * as OutboundTrips from './outboundTripsService';
 import QRCode from 'qrcode.react';
 import {formatDate} from '../helper/time';

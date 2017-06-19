@@ -2,7 +2,7 @@ import lodash from 'lodash';
 import React from 'react';
 import {connect} from 'react-redux';
 import PickupOrdersTable from './pickupOrdersTable';
-import styles from './styles.css';
+import styles from './styles.scss';
 import {ButtonWithLoading, Input, Page} from '../base';
 import Accordion from './pickupOrdersAccordion';
 import * as PickupOrders from '../../modules/pickupOrders';

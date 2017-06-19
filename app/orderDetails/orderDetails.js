@@ -3,7 +3,7 @@ import lodash from 'lodash';
 import React from 'react';
 import moment from 'moment';
 import {connect} from 'react-redux';
-import styles from './styles.css';
+import styles from './styles.scss';
 import Accordion from '../views/base/accordion';
 import {ButtonWithLoading, Input, Page, Glyph} from '../views/base';
 import {InputWithDefault, CheckBox} from '../views/base/input';

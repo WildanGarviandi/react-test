@@ -3,8 +3,9 @@ import classNaming from 'classnames'
 import moment from 'moment'
 import React from 'react'
 import { connect } from 'react-redux'
+
 import { TripParser } from '../modules/trips'
-import styles from './styles.css'
+import styles from './styles.scss'
 import * as Hubs from '../modules/hubs';
 import * as OutboundTrips from './outboundTripsService'
 import { ButtonWithLoading } from '../views/base'

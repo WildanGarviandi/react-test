@@ -7,7 +7,7 @@ import { ModalDialog } from 'react-modal-dialog';
 
 import * as OutboundTrips from './outboundTripsService';
 import { Input, EmptySpace } from '../views/base';
-import styles from './styles.css';
+import styles from './styles.scss';
 import { RadioGroup, Radio } from '../components/form';
 import { formatDateHourOnly } from '../helper/time';
 import ImagePreview from '../views/base/imagePreview';

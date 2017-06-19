@@ -8,7 +8,8 @@
     "globals": {
         "document": true,
         "window": true,
-        "localStorage": true
+        "localStorage": true,
+        "FormData": true
     },
     "parserOptions": {
         "ecmaVersion": 8

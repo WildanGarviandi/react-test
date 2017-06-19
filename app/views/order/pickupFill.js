@@ -3,7 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
 import PickupOrdersTable from './pickupOrdersTable';
-import styles from './styles.css';
+import styles from './styles.scss';
 import {ButtonWithLoading, Input, Page} from '../base';
 import Accordion from './pickupOrdersAccordion';
 import * as OrdersPickup from '../../modules/orders/actions/pickup';
