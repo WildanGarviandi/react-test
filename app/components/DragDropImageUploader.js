@@ -4,7 +4,7 @@ import Dropzone from 'react-dropzone';
 import PropTypes from 'prop-types';
 
 import FetchPost from '../modules/fetch/post';
-import styles from './dragDropImageUploader.css';
+import styles from './dragDropImageUploader.scss';
 import config from '../config/configValues.json';
 import ModalActions from '../modules/modals/actions';
 import { modalAction } from '../modules/modals/constants';
@@ -19,7 +19,7 @@ const mapStateToProps = (store) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {
+  const dispatchData = {
     showBackdrop: () => {
       dispatch({ type: modalAction.BACKDROP_SHOW });
     },
@@ -30,6 +30,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(ModalActions(text));
     },
   };
+
+  return dispatchData;
 };
 
 class DragDropImageUploader extends Component {

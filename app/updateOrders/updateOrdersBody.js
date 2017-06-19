@@ -8,8 +8,8 @@ import BodyRow, {CheckBoxCell, LinkCell, TextCell, OrderIDLinkCell} from '../vie
 import * as UpdateOrders from './updateOrdersService';
 import {formatDate, formatDateHourOnly} from '../helper/time';
 import {CheckboxCell} from '../views/base/tableCell';
-import tableStyles from '../views/base/table.css';
-import styles from './styles.css';
+import tableStyles from '../views/base/table.scss';
+import styles from './styles.scss';
 import moment from 'moment';
 
 function mapDispatchToLink(dispatch, ownParams) {

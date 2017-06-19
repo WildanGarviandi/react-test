@@ -6,8 +6,8 @@ import * as OutboundTrips from '../../modules/outboundTrips';
 import MyTripsTable from './myTripsTable';
 import InboundTable from './inboundTable';
 import FleetsFetch from '../../modules/drivers/actions/fleetsFetch';
-import styles from './styles.css';
-import formStyles from '../../components/form.css';
+import styles from './styles.scss';
+import formStyles from '../../components/form.scss';
 
 const ContainerPage = React.createClass({
   componentWillMount() {

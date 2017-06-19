@@ -137,7 +137,8 @@
       "RADIO_OFF": "/img/icon-radio-off.png",
       "MOTORCYCLE": "/img/icon-vehicle-motorcycle.png",
       "VAN": "/img/icon-vehicle-van.png",
-      "LOCATION": "/img/icon-location.png"
+      "LOCATION": "/img/icon-location.png",
+      "INBOUND_TRIP_DONE": "/img/image-inbound-trip-done.png"
     },
     "assignCentralHub": true,
     "HTTP_STATUS": {

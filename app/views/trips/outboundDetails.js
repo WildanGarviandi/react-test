@@ -16,7 +16,7 @@ import Accordion from '../base/accordion';
 import NextDestinationSetter from '../container/nextDestinationSetter';
 import TransportSetter from '../container/secondSetting';
 import RemarksSetter from '../container/remarksSetter';
-import styles from './styles.css';
+import styles from './styles.scss';
 import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered} from '../../modules/trips';
 import {formatDate} from '../../helper/time';
 

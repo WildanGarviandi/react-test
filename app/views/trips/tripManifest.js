@@ -1,23 +1,25 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import moment from 'moment';
-import tripManifestStyle from './tripManifest.css';
-import * as TripDetails from '../../tripDetails/tripDetailsService.js';
 import QRCode from 'qrcode.react';
+
+import tripManifestStyle from './tripManifest.scss';
+import * as TripDetails from '../../tripDetails/tripDetailsService';
+
 
 const TripManifestPage = React.createClass({
   componentWillMount() {
     this.props.detailsFetch(this.props.params.tripID);
   },
   componentWillReceiveProps(nextProps) {
-    if(this.props.params.tripID !== nextProps.params.tripID) {
+    if (this.props.params.tripID !== nextProps.params.tripID) {
       this.props.detailsFetch(nextProps.params.tripID);
     }
   },
   componentDidUpdate(prevProps) {
     if (this.props.trip !== prevProps.trip) {
       // when page is rendered with trip & order details, print
-      document.title = "#TRIP-" + this.props.trip.TripID;
+      document.title = `#TRIP-${this.props.trip.TripID}`;
       window.print();
     }
   },
@@ -69,7 +71,7 @@ const TripManifestPage = React.createClass({
                     size={80}
                     className={tripManifestStyle.qrcode}
                   />
-                  </div>
+                </div>
                 <p>Trip ID</p>
                 <h2>#TRIP-{trip.TripID}</h2>
               </div>
@@ -102,7 +104,7 @@ const TripManifestPage = React.createClass({
                   </thead>
                   <tbody>
                     {
-                      orders.map((order, i)=> {
+                      orders.map((order, i) => {
                         return (
                           <tr key={i}>
                             <td>{order.UserOrderNumber}</td>
@@ -149,8 +151,8 @@ const TripManifestPage = React.createClass({
 });
 
 function StateToProps(store) {
-  const {tripDetails} = store.app;
-  const {isFetching, orders, trip} = tripDetails;
+  const { tripDetails } = store.app;
+  const { isFetching, orders, trip } = tripDetails;
 
   return {
     isFetching,
@@ -161,7 +163,7 @@ function StateToProps(store) {
 
 function DispatchToProps(dispatch) {
   return {
-    detailsFetch: function(id) {
+    detailsFetch: function (id) {
       dispatch(TripDetails.FetchDetails(id));
     },
   }

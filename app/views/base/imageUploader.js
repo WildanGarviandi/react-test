@@ -2,7 +2,7 @@ import config from '../../../config.json';
 import React from 'react';
 import {connect} from 'react-redux';
 import FetchPost from '../../modules/fetch/post';
-import styles from './imageUploader.css';
+import styles from './imageUploader.scss';
 import ImagePreview from '../base/imagePreview';
 
 const ImageUploader = React.createClass({

@@ -1,6 +1,6 @@
 import React from 'react';
 import {ButtonBase, Glyph} from '../base';
-import styles from './filterAccordion.css';
+import styles from './filterAccordion.scss';
 
 export default React.createClass({
   getInitialState() {

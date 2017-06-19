@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PickupOrdersTable, { Filter } from './pickupOrdersTable';
 import PickupOrdersReadyTable, { FilterReady } from './pickupOrdersReadyTable';
-import styles from './styles.css';
+import styles from './styles.scss';
 import { Page } from '../views/base';
 import * as PickupOrders from './pickupOrdersService';
 import * as PickupOrdersReady from './pickupOrdersReadyService';

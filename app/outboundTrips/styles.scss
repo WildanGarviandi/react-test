@@ -6,7 +6,7 @@
 }
 
 .panel .title {
-  background-color: #222D32;
+  background-color: #222d32;
   color: #f2f2f2;
   cursor: pointer;
   margin: 0;
@@ -27,7 +27,7 @@
 }
 
 .row:nth-of-type(odd) {
-    background-color: #f9f9f9;
+  background-color: #f9f9f9;
 }
 
 .label {
@@ -65,7 +65,7 @@
 .finderWrapper2 {
   position: relative;
   top: -40px;
-  right: 0px;
+  right: 0;
   border-radius: 5px;
   color: #fff;
 }
@@ -85,14 +85,15 @@
   font-size: 15px;
 }
 
-.greenBtn, .greenBtn:hover {
+.greenBtn,
+.greenBtn:hover {
   background-color: #4cc38e;
 }
 
 .manifestLink {
   border: 0;
   border-radius: 5px;
-  background-color: #FF5A60;
+  background-color: #ff5a60;
   color: #fff;
   cursor: pointer;
   float: right;
@@ -169,7 +170,7 @@
 
 .submitButton {
   background-color: #4cc38e;
-  padding: 7px 15px 7px 15px;
+  padding: 7px 15px;
   border-radius: 3px;
   margin-left: 10px;
   cursor: pointer;
@@ -206,7 +207,7 @@
   margin-top: 30px;
   border: solid 1px #ebebeb;
   border-radius: 3px;
-  height: 30px
+  height: 30px;
 }
 
 .bgInput {
@@ -236,7 +237,7 @@
   font-size: 20px;
   font-weight: 900;
   text-align: center;
-  color: #ffffff;
+  color: #fff;
   margin-top: 10px;
 }
 
@@ -253,32 +254,32 @@
   font-size: 16px;
   font-weight: 700;
   text-align: center;
-  color: #ffffff;
+  color: #fff;
 }
 
 .toggleScanButtonInactive {
   width: 240px;
   height: 48px;
   border-radius: 4px;
-  background-color: #dddddd;
+  background-color: #ddd;
   font-size: 16px;
   font-weight: 700;
   text-align: center;
-  color: #ffffff;
+  color: #fff;
 }
 
 .toggleQuestion {
   height: 22px;
   font-size: 16px;
   font-weight: 700;
-  color: #000000;
+  color: #000;
 }
 
 .updateSuccess {
   font-size: 20px;
   font-weight: 500;
   text-align: center;
-  color: #000000;
+  color: #000;
 }
 
 .tr {
@@ -290,15 +291,18 @@
   background-color: #fff;
 }
 
-.thTripID, .tdTripID {
+.thTripID,
+.tdTripID {
   width: 60px;
 }
 
-.thAssignedTo, .tdAssignedTo {
+.thAssignedTo,
+.tdAssignedTo {
   width: 100px;
 }
 
-.thActions, .tdActions {
+.thActions,
+.tdActions {
   width: 100px;
 }
 
@@ -315,7 +319,8 @@
   background-color: #38b393 !important;
 }
 
-.btnPrintOnTable a, .btnAssignOnTable button {
+.btnPrintOnTable a,
+.btnAssignOnTable button {
   width: 90%;
 }
 
@@ -329,12 +334,6 @@
   width: 66.6666%;
   float: left;
   padding: 0;
-}
-
-.colMd1, .colMd2, .colMd3, .colMd4, .colMd5, .colMd6, .colMd7, .colMd8, .colMd9, .colMd10, .colMd11, .colMd12 {
-  padding-right: 15px;
-  padding-left: 15px; 
-  min-height: 1px;
 }
 
 .colMd1 {
@@ -423,7 +422,7 @@ td.withIcon {
 }
 
 .filterDropDown input {
-  margin: 0px;
+  margin: 0;
   width: 100%;
   padding: 8px 16px;
   border: 1px solid #e8e8e8;
@@ -432,17 +431,14 @@ td.withIcon {
 
 .filterDropDown > div > input {
   border: 1px solid #e8e8e8;
-  border-right: 0px;
+  border-right: 0;
   padding: 8px;
   height: inherit;
 }
 
 .filterDropDown > div > span {
   border: 1px solid #e8e8e8;
-  border-left: 0px;
-  background-color: #fff;
-  border: 1px solid #e8e8e8;
-  border-left: 0px;
+  border-left: 0;
   background-color: #fff;
   display: flex;
   justify-content: center;
@@ -450,8 +446,8 @@ td.withIcon {
 }
 
 .filterDropDown > div > div {
-  border: 0px;
-  margin-top: 0px;
+  border: 0;
+  margin-top: 0;
 }
 
 .filterDropDown > div > div > span {
@@ -461,7 +457,8 @@ td.withIcon {
   color: #929292 !important;
 }
 
-.filterDropDown > div > div > span:hover, .filterDropDown > div > div > span:focus {
+.filterDropDown > div > div > span:hover,
+.filterDropDown > div > div > span:focus {
   background-image: url('/img/icon-checkmark.png');
   background-repeat: no-repeat;
   background-size: 25px;
@@ -469,8 +466,9 @@ td.withIcon {
   background-position-y: 50%;
 }
 
-@media (max-width:1300px) {
-  .btnPrintOnTable a, .btnAssignOnTable button {
+@media (max-width: 1300px) {
+  .btnPrintOnTable a,
+  .btnAssignOnTable button {
     padding: 5px 0 !important;
   }
 
@@ -487,8 +485,9 @@ td.withIcon {
   }
 }
 
-@media (min-width:769px) and (max-width:991px) {
-  .btnPrintOnTable a, .btnAssignOnTable button {
+@media (min-width: 769px) and (max-width: 991px) {
+  .btnPrintOnTable a,
+  .btnAssignOnTable button {
     padding: 5px 0 !important;
   }
 
@@ -505,8 +504,9 @@ td.withIcon {
   }
 }
 
-@media (max-width:768px) {
-  .btnPrintOnTable a, .btnAssignOnTable button {
+@media (max-width: 768px) {
+  .btnPrintOnTable a,
+  .btnAssignOnTable button {
     padding: 5px 0 !important;
   }
 
@@ -524,6 +524,7 @@ td.withIcon {
 }
 
 /* ********************************* */
+
 /* MODAL CSS */
 
 .driverDistance {
@@ -647,7 +648,6 @@ td.withIcon {
   height: 100%;
 }
 
-
 .searchLoadingArea {
   width: 400px;
   margin: auto;
@@ -658,7 +658,7 @@ td.withIcon {
   position: relative;
   padding: 15px 60px;
   background: #fff;
-  border: 1px solid #e8e8e8; 
+  border: 1px solid #e8e8e8;
   border-radius: 5px;
   margin-bottom: 8px;
   height: 72px;
@@ -677,8 +677,8 @@ td.withIcon {
   float: left;
   left: 20px;
   z-index: 5;
-  transition: border .25s linear;
-  -webkit-transition: border .25s linear;
+  transition: border 0.25s linear;
+  -webkit-transition: border 0.25s linear;
   cursor: pointer;
 }
 
@@ -711,8 +711,8 @@ td.withIcon {
 .listInModal input[type="radio"]:checked ~ .checkedFleet {
   top: 24px;
   border: 2.5px solid #38b393;
-  transition: border .25s linear;
-  -webkit-transition: border .25s linear;
+  transition: border 0.25s linear;
+  -webkit-transition: border 0.25s linear;
 }
 
 .listInModal input[type="radio"]:checked ~ .checkedFleet::before {
@@ -801,7 +801,8 @@ td.withIcon {
   text-align: right;
 }
 
-.uploadButton, .uploadButton label {
+.uploadButton,
+.uploadButton label {
   padding: 0;
   margin: 0;
 }
@@ -809,17 +810,17 @@ td.withIcon {
 .uploadButton label {
   padding-top: 10px;
   color: #fff;
-  background-color: #2196f3; 
+  background-color: #2196f3;
 }
 
 .uploadButton label:hover {
   color: #fff;
-  background-color: #1682d8; 
+  background-color: #1682d8;
 }
 
 .uploadButton input {
   width: 100%;
-  padding: 0; 
+  padding: 0;
   height: 10px;
 }
 
@@ -856,10 +857,10 @@ td.withIcon {
 }
 
 .modalInfo > div > div {
-  margin: 0px !important;
+  margin: 0 !important;
 }
 
-.modalInfo > div small{
+.modalInfo > div small {
   color: #000;
   opacity: 0.5;
 }
@@ -907,7 +908,11 @@ td.withIcon {
   padding-left: 15px;
 }
 
-.modalInfoTripID p, .modalInfoWeight p, .modalInfoQuantity p, .modalInfoDeadline p, .modalInfoDestination p {
+.modalInfoTripID p,
+.modalInfoWeight p,
+.modalInfoQuantity p,
+.modalInfoDeadline p,
+.modalInfoDestination p {
   margin: 0;
 }
 
@@ -923,7 +928,7 @@ td.withIcon {
 }
 
 .modalNo {
-  width: 70px;
+  width: 80px;
   height: 44px;
   padding: 0 10px;
   border: none;
@@ -936,7 +941,7 @@ td.withIcon {
 }
 
 .modalYes {
-  width: 70px;
+  width: 80px;
   height: 44px;
   padding: 0 10px;
   border: none;
@@ -1015,11 +1020,9 @@ td.withIcon {
   transition: 0.3s;
 }
 
-.tabs__labels > li > a:hover, .tabs__labels > li > a:focus {
+.tabs__labels > li > a:hover,
+.tabs__labels > li > a:focus {
   text-decoration: none;
-}
-
-.tabs__content {
 }
 
 .tabs__content .modalTabPanel {
@@ -1074,7 +1077,7 @@ td.withIcon {
   font-weight: bold;
   font-style: normal;
   font-stretch: normal;
-  color: #000000;
+  color: #000;
   margin-bottom: 8px;
 }
 
@@ -1094,9 +1097,20 @@ td.withIcon {
   padding: 0 !important;
 }
 
-.colMd1, .colMd2, .colMd3, .colMd4, .colMd5, .colMd6, .colMd7, .colMd8, .colMd9, .colMd10, .colMd11, .colMd12 {
+.colMd1,
+.colMd2,
+.colMd3,
+.colMd4,
+.colMd5,
+.colMd6,
+.colMd7,
+.colMd8,
+.colMd9,
+.colMd10,
+.colMd11,
+.colMd12 {
   padding-right: 15px;
-  padding-left: 15px; 
+  padding-left: 15px;
   min-height: 1px;
 }
 
@@ -1174,7 +1188,7 @@ td.withIcon {
   flex-direction: column;
   justify-content: center;
   text-align: center;
-  padding: 25px 25px;
+  padding: 25px;
   height: 100%;
   align-items: center;
 }
@@ -1193,7 +1207,7 @@ td.withIcon {
 }
 
 .endButton:focus {
-  animation: blink .5s step-end infinite alternate;
+  animation: blink 0.5s step-end infinite alternate;
 }
 
 .vehicleLogoOnTable {
@@ -1230,7 +1244,7 @@ td.withIcon {
 
 .emptyTableSmallText {
   font-size: 15px;
-  color: #9C9C9C;
+  color: #9c9c9c;
   margin-top: 12px;
 }
 
@@ -1261,10 +1275,23 @@ td.withIcon {
 }
 
 .inputDriverSearch {
-  background-color: #e8e8e8;
   border-radius: 4px;
-  background-color: #ffffff;
+  background-color: #fff;
   border: solid 1px #e8e8e8;
   width: 95%;
   height: 30px;
+}
+
+.display-table {
+  display: table;
+  width: 100%;
+}
+
+.table-cell {
+  display: table-cell;
+  padding-right: 10px;
+}
+
+.table-cell:last-child {
+  padding-right: 0;
 }

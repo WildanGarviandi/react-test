@@ -8,12 +8,12 @@ import * as OutboundTrips from '../../modules/trips/actions/outbound';
 import * as InboundTrips from '../../modules/inboundTrips';
 import {DropdownTypeAhead, Input, Pagination} from '../base';
 import DateRangePicker from '../base/dateRangePicker';
-import tableStyles from '../base/table.css';
+import tableStyles from '../base/table.scss';
 import StatusDropdown from '../base/statusDropdown';
 import {TripParser} from '../../modules/trips';
 import {formatDate} from '../../helper/time';
 import {modalAction} from '../../modules/modals/constants';
-import stylesModal from '../base/modal.css';
+import stylesModal from '../base/modal.scss';
 import classnaming from 'classnames';
 
 const ColumnsOrder = ['fleetName', 'driver', 'webstoreNames', 'pickup', 'pickupCity', 'pickupState', 'containerNumber', 'status', 'numberPackages', 'remarks'];

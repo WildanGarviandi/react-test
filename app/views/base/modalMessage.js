@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import ModalActions from '../../modules/modals/actions';
 
 import {ButtonBase, Modal} from '.';
-import styles from './modal.css';
+import styles from './modal.scss';
 
 const ModalMessage = React.createClass({
   componentDidMount() {

@@ -10,7 +10,7 @@ import moment from 'moment';
 
 import * as PickupOrders from './pickupOrdersService';
 import OrdersSelector from '../modules/orders/selector';
-import styles from './styles.css';
+import styles from './styles.scss';
 import { ButtonWithLoading, ButtonStandard, Input, Pagination, DropdownWithState, ButtonBase } from '../views/base';
 import BodyRow, { CheckBoxCell, LinkCell, TextCell, OrderIDLinkCell, ButtonCell } from '../views/base/cells';
 import { FilterTop, FilterText, FilterTopMultiple } from '../components/form';
@@ -19,7 +19,7 @@ import HeadersRow from '../views/base/headers';
 import { CheckBox } from '../views/base/input';
 import { CheckboxHeader, CheckboxCell } from '../views/base/tableCell';
 import { formatDate } from '../helper/time';
-import stylesTable from '../views/base/table.css';
+import stylesTable from '../views/base/table.scss';
 import ModalActions from '../modules/modals/actions';
 import config from '../config/configValues.json';
 import { checkPermission } from '../helper/permission';

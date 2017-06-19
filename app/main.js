@@ -4,7 +4,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import store from './store';
-import './main.css';
+import './main.scss';
 import routes from './routes';
 import { IntlProvider } from 'react-intl-redux';
 import ReactGA from 'react-ga';

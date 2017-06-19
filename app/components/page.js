@@ -1,6 +1,6 @@
 import React from 'react';
 import {ButtonWithLoading} from './button';
-import styles from './page.css';
+import styles from './page.scss';
 
 const PageTitle = ({additional, title}) => {
   return (
