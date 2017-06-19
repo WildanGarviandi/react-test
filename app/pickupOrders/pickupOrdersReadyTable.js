@@ -104,7 +104,7 @@ function connectFilterText(keyword, title) {
 function getStoreFilterDropdown(name, title) {
   return (store) => {
     const { hubs, pickupOrdersReady } = store.app;
-    let cityOptions = [{
+    const defaultOptions = [{
       key: 0, value: 'All',
     }];
 
@@ -122,7 +122,7 @@ function getStoreFilterDropdown(name, title) {
       checked: false,
     }];
 
-    cityOptions = cityOptions.concat(_.chain(cityList)
+    const cityOptions = defaultOptions.concat(_.chain(cityList)
       .map((key, val) => ({ key, value: val }))
       .sortBy(arr => (arr.key))
       .value());
@@ -156,6 +156,7 @@ function getStoreFilterDropdown(name, title) {
       city: cityOptions,
       listType: listOptions,
       hubs: hubOptions,
+      pickupType: defaultOptions.concat(config.PICKUP_TYPE),
     };
 
     return {
@@ -219,6 +220,7 @@ const CityFilter = connectFilterDropdown('city', 'City')(FilterTop);
 const TypeFilter = connectFilterDropdown('listType', 'Type')(FilterTop);
 const ZipFilter = connectFilterText('zipCode', 'ZIP Code')(FilterText);
 const HubFilter = connectFilterMultiDropdown('hubs', 'hubIDs', 'Hubs (can be multiple)')(FilterTopMultiple);
+const ServiceTypeFilter = connectFilterDropdown('pickupType', 'ServiceType')(FilterTop);
 
 /*
  * Dispatch for link cell
@@ -376,6 +378,7 @@ export const FilterReady = React.createClass({
     return (
       <div className={styles.filterTop}>
         <TypeFilter />
+        <ServiceTypeFilter />
         <MerchantFilter />
         <CityFilter />
         <ZipFilter />
