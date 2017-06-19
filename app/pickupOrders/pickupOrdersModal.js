@@ -418,7 +418,10 @@ const Driver = React.createClass({
           className={rowStyle}
         >
           <div className={styles.driverInput}>
-            <img src={driver.UserID === this.props.selectedDriver ? config.IMAGES.RADIO_ON : config.IMAGES.RADIO_OFF} />
+            <img
+              src={driver.UserID === this.props.selectedDriver ?
+                config.IMAGES.RADIO_ON : config.IMAGES.RADIO_OFF}
+            />
           </div>
           <div className={styles.driverPicture}>
             <img
@@ -427,18 +430,26 @@ const Driver = React.createClass({
             />
           </div>
           <table className={styles.driverMaskName}>
-            <tr>
-              <span className={styles.driverName}>{UtilHelper.trimString(`${driver.FirstName} ${driver.LastName}`, 25)}</span>
-            </tr>
+            <tbody>
+              <tr>
+                <td>
+                  <span className={styles.driverName}>{UtilHelper.trimString(`${driver.FirstName} ${driver.LastName}`, 25)}</span>
+                </td>
+              </tr>
+            </tbody>
           </table>
           <table className={styles.driverLocation}>
-            <tr>
-              From Pickup Location
-            </tr>
-            <tr className={styles.driverMaskLoad}>
-              <img className={styles.vendorLoadImage} src="/img/icon-location.png" />
-              <span className={styles.vendorLoad}>{driver.DistanceToNearestPickup || 'N/A'} km</span>
-            </tr>
+            <tbody>
+              <tr>
+                <td>From Pickup Location</td>
+              </tr>
+              <tr className={styles.driverMaskLoad}>
+                <td>
+                  <img className={styles.vendorLoadImage} src="/img/icon-location.png" />
+                  <span className={styles.vendorLoad}>{driver.DistanceToNearestPickup || 'N/A'} km</span>
+                </td>
+              </tr>
+            </tbody>
           </table>
         </div>
       );
