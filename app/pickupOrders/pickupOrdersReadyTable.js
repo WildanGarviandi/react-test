@@ -32,19 +32,19 @@ import { checkPermission } from '../helper/permission';
 const ColumnsOrder = ['checkbox', 'tripID', 'webstoreNames', 'weight', 'quantity', 'pickup', 'pickupCity', 'pickupZip', 'deadline', 'action'];
 
 const ColumnsTitle = {
-  pickup: "Pickup Address",
-  pickupCity: "City",
-  pickupZip: "Zip Code",
-  webstoreNames: "Merchant",
-  tripID: "Trip / Order ID",
-  weight: "Weight",
-  quantity: "Quantity",
-  action: "Action",
-  deadline: "Deadline",
-  checkbox: ''
-}
+  pickup: 'Pickup Address',
+  pickupCity: 'City',
+  pickupZip: 'Zip Code',
+  webstoreNames: 'Merchant',
+  tripID: 'Trip / Order ID',
+  weight: 'Weight',
+  quantity: 'Quantity',
+  action: 'Action',
+  deadline: 'Deadline',
+  checkbox: '',
+};
 
-let cityList = {};
+const cityList = {};
 
 /*
  * Get filter text from store
@@ -76,15 +76,15 @@ function dispatchFilterText(keyword) {
         return;
       }
 
-      dispatch(PickupOrdersReady.StoreSetter("currentPage", 1));
+      dispatch(PickupOrdersReady.StoreSetter('currentPage', 1));
       dispatch(PickupOrdersReady.FetchList());
     }
 
     return {
       onChange: OnChange,
       onKeyDown: OnKeyDown,
-    }
-  }
+    };
+  };
 }
 
 /*
@@ -224,13 +224,13 @@ const HubFilter = connectFilterMultiDropdown('hubs', 'hubIDs', 'Hubs (can be mul
 */
 function mapDispatchToLink(dispatch, ownParams) {
   return {
-    onClickModals: function () {
-      dispatch(PickupOrdersReady.ShowDetails(parseInt(ownParams.item.tripID)));
+    onClickModals: () => {
+      dispatch(PickupOrdersReady.ShowDetails(parseInt(ownParams.item.tripID, 10)));
     },
-    onClickDetails: function () {
-      dispatch(push(`/trips/${parseInt(ownParams.item.tripID)}/`));
-    }
-  }
+    onClickDetails: () => {
+      dispatch(push(`/trips/${parseInt(ownParams.item.tripID, 10)}/`));
+    },
+  };
 }
 
 /*
@@ -239,13 +239,13 @@ function mapDispatchToLink(dispatch, ownParams) {
 */
 function mapDispatchToButton(dispatch, ownParams) {
   return {
-    onClick: function () {
-      dispatch(PickupOrdersReady.ShowAssignModal(parseInt(ownParams.item.tripID)));
+    onClick: () => {
+      dispatch(PickupOrdersReady.ShowAssignModal(parseInt(ownParams.item.tripID, 10)));
       dispatch(NearbyFleets.FetchList());
-      dispatch(PickupOrdersReady.FetchDrivers(parseInt(ownParams.item.tripID)));
+      dispatch(PickupOrdersReady.FetchDrivers(parseInt(ownParams.item.tripID, 10)));
       dispatch(PickupOrdersReady.fetchHubs());
-    }
-  }
+    },
+  };
 }
 
 const PickupOrdersID = connect(undefined, mapDispatchToLink)(IDCell);
@@ -253,7 +253,11 @@ const PickupOrdersButton = connect(undefined, mapDispatchToButton)(ButtonCell);
 
 function AutoButtonGroup({ onClick, disabled }) {
   return (
-    <button className={disabled ? styles.autoGroupButtonDisable : styles.autoGroupButton} disabled={disabled} onClick={onClick}>
+    <button
+      className={disabled ? styles.autoGroupButtonDisable : styles.autoGroupButton}
+      disabled={disabled}
+      onClick={onClick}
+    >
       {disabled ? 'Auto Group On Progress' : 'Auto Group'}
     </button>
   );
@@ -265,10 +269,10 @@ function AutoButtonGroup({ onClick, disabled }) {
 */
 function mapDispatchToAutoButtonGroup(dispatch, ownParams) {
   return {
-    onClick: function () {
+    onClick: () => {
       dispatch(PickupOrdersReady.AutoGroup());
-    }
-  }
+    },
+  };
 }
 
 const AutoGroupButton = connect(undefined, mapDispatchToAutoButtonGroup)(AutoButtonGroup);
@@ -303,10 +307,10 @@ ManualButtonGroup.propTypes = {
 */
 function mapDispatchToManualButtonGroup(dispatch, ownParams) {
   return {
-    onClick: function () {
+    onClick: () => {
       dispatch(PickupOrdersReady.GroupOrders());
     },
-  }
+  };
 }
 
 function stateToManualButtonGroupProps(state) {
@@ -324,7 +328,7 @@ function stateToCheckboxHeader(state) {
   const checkedAll = state.app.pickupOrdersReady.checkedAll;
   return {
     isChecked: checkedAll,
-  }
+  };
 }
 
 /*
@@ -333,13 +337,16 @@ function stateToCheckboxHeader(state) {
 */
 function mapDispatchToCheckBoxHeader(dispatch) {
   return {
-    onToggle: function () {
+    onToggle: () => {
       dispatch(PickupOrdersReady.ToggleSelectAll());
-    }
-  }
+    },
+  };
 }
 
-const PickupOrdersCheckBoxHeader = connect(stateToCheckboxHeader, mapDispatchToCheckBoxHeader)(CheckboxHeader);
+const PickupOrdersCheckBoxHeader = connect(
+  stateToCheckboxHeader,
+  mapDispatchToCheckBoxHeader,
+)(CheckboxHeader);
 
 /*
  * Dispatch for checkbox cell
@@ -347,10 +354,10 @@ const PickupOrdersCheckBoxHeader = connect(stateToCheckboxHeader, mapDispatchToC
 */
 function mapDispatchToCheckBox(dispatch, ownProps) {
   return {
-    onToggle: function (val) {
-      dispatch(PickupOrdersReady.ToggleSelectOne(parseInt(ownProps.item.tripID)));
-    }
-  }
+    onToggle: () => {
+      dispatch(PickupOrdersReady.ToggleSelectOne(parseInt(ownProps.item.tripID, 10)));
+    },
+  };
 }
 
 const PickupOrdersCheckBox = connect(undefined, mapDispatchToCheckBox)(CheckboxCell);
@@ -374,17 +381,17 @@ export const FilterReady = React.createClass({
         <ManualGroupButton disabled={!this.props.isGroupActive} />
       </div>
     );
-  }
-})
+  },
+});
 
 const Table = React.createClass({
   render() {
     const Headers = _.map(ColumnsOrder, (columnKey) => {
       if (columnKey === 'checkbox') {
         return <PickupOrdersCheckBoxHeader key={columnKey} />;
-      } else {
-        return <th key={columnKey}>{ColumnsTitle[columnKey]}</th>;
       }
+
+      return <th key={columnKey}>{ColumnsTitle[columnKey]}</th>;
     });
 
     const Body = _.map(this.props.items, (item) => {
@@ -392,74 +399,88 @@ const Table = React.createClass({
         if (columnKey === 'tripID') {
           if (item.isTrip) {
             return <td key={columnKey} className={tableStyles.td + ' ' + styles.tripColumn}><PickupOrdersID item={item} text={item[columnKey]} /></td>;
-          } else {
-            return <td key={columnKey} className={tableStyles.td + ' ' + styles.tripColumn}>
-              <Link to={`/orders/${item.key}`} className={styles.link}>{item['orderID']}</Link>
-            </td>;
           }
+
+          return (
+            <td key={columnKey} className={tableStyles.td + ' ' + styles.tripColumn}>
+              <Link to={`/orders/${item.key}`} className={styles.link}>{item['orderID']}</Link>
+            </td>
+          );
         }
         if (columnKey === 'weight') {
-          return <td key={columnKey} className={tableStyles.td} key={columnKey}>{item[columnKey]} kg</td>;
+          return (
+            <td key={columnKey} className={tableStyles.td}>{item[columnKey]} kg</td>
+          );
         }
         if (columnKey === 'checkbox' && !item.isTrip) {
-          return <td key={columnKey} className={tableStyles.td} key={columnKey}>
-            <PickupOrdersCheckBox isChecked={item['IsChecked']} item={item} />
-          </td>;
+          return (
+            <td key={columnKey} className={tableStyles.td}>
+              <PickupOrdersCheckBox isChecked={item['IsChecked']} item={item} />
+            </td>
+          );
         }
         if (columnKey === 'action') {
           if (item.isTrip) {
             return <td key={columnKey} className={tableStyles.td}><PickupOrdersButton item={item} value={'Assign'} /></td>;
-          } else {
-            const buttonAction = {
-              textBase: 'Assign',
-              styles: {
-                base: styles.cellButtonDisabled,
-              },
-              disabled: false,
-            }
-            return <td key={columnKey} className={tableStyles.td}><ButtonStandard {...buttonAction} /></td>;
           }
+          const buttonAction = {
+            textBase: 'Assign',
+            styles: {
+              base: styles.cellButtonDisabled,
+            },
+            disabled: false,
+          };
+          return (
+            <td key={columnKey} className={tableStyles.td}><ButtonStandard {...buttonAction} /></td>
+          );
         }
         if (columnKey === 'deadline') {
-          let format = {
+          const format = {
             hour: 'hh',
             minute: 'mm',
-            second: 'ss'
+            second: 'ss',
           };
           let Duration = moment.duration(moment(item[columnKey]).diff(moment(new Date())));
           if (Duration._milliseconds > config.deadline.day) {
-            return <td key={columnKey} className={tableStyles.td} key={columnKey}>
-              <span style={{ color: 'black' }}>
-                <span>
-                  {Duration.humanize()}
+            return (
+              <td key={columnKey} className={tableStyles.td}>
+                <span style={{ color: 'black' }}>
+                  <span>
+                    {Duration.humanize()}
+                  </span>
                 </span>
-              </span>
-            </td>
+              </td>
+            );
           } else if (Duration._milliseconds < 0) {
-            return <td key={columnKey} className={tableStyles.td} key={columnKey}>
-              <span style={{ color: 'red' }}>
-                <span>
-                  Passed
+            return (
+              <td key={columnKey} className={tableStyles.td}>
+                <span style={{ color: 'red' }}>
+                  <span>
+                    Passed
+                  </span>
                 </span>
-              </span>
-            </td>
-          } else {
-            let normalDeadline = (Duration._milliseconds > config.deadline['3hours']) && (Duration._milliseconds < config.deadline.day);
-            return <td key={columnKey} className={tableStyles.td} key={columnKey}>
+              </td>
+            );
+          }
+          const normalDeadline = (Duration._milliseconds > config.deadline['3hours']) && (Duration._milliseconds < config.deadline.day);
+          return (
+            <td key={columnKey} className={tableStyles.td}>
               <span style={{ color: normalDeadline ? 'black' : 'red' }}>
                 <span>
-                  <Countdown targetDate={new Date(item[columnKey])}
+                  <Countdown
+                    targetDate={new Date(item[columnKey])}
                     startDelay={500}
                     interval={1000}
                     format={format}
                     timeSeparator={':'}
-                    leadingZero={true} />
+                    leadingZero
+                  />
                 </span>
               </span>
             </td>
-          }
+          );
         }
-        return <td key={columnKey} className={tableStyles.td} key={columnKey}>{item[columnKey]}</td>;
+        return <td key={columnKey} className={tableStyles.td}>{item[columnKey]}</td>;
       });
 
       return <tr className={tableStyles.tr + ' ' + styles.noPointer} key={item.key}>{cells}</tr>;
@@ -527,7 +548,7 @@ const Table = React.createClass({
         );
       }
     }
-  }
+  },
 });
 
 function ProcessTrip(trip) {
@@ -547,29 +568,29 @@ function ProcessTrip(trip) {
       weight: parseFloat(parsedTrip.Weight).toFixed(2),
       isTrip: true,
       deadline: trip.Deadline,
-      IsChecked: trip.IsChecked
-    }
-  } else {
-    return {
-      key: trip.UserOrderID,
-      pickup: trip.PickupAddress && trip.PickupAddress.Address1,
-      pickupCity: trip.PickupAddress && trip.PickupAddress.City,
-      pickupZip: trip.PickupAddress && trip.PickupAddress.ZipCode,
-      quantity: 1,
-      webstoreNames: trip.User && `${trip.User.FirstName} ${trip.User.LastName}`,
-      tripID: `${trip.UserOrderID}`,
-      weight: parseFloat(trip.PackageWeight).toFixed(2),
-      isTrip: false,
-      deadline: trip.Deadline,
       IsChecked: trip.IsChecked,
-      orderID: `${trip.UserOrderNumber} (${trip.WebOrderID})`
-    }
+    };
   }
+
+  return {
+    key: trip.UserOrderID,
+    pickup: trip.PickupAddress && trip.PickupAddress.Address1,
+    pickupCity: trip.PickupAddress && trip.PickupAddress.City,
+    pickupZip: trip.PickupAddress && trip.PickupAddress.ZipCode,
+    quantity: 1,
+    webstoreNames: trip.User && `${trip.User.FirstName} ${trip.User.LastName}`,
+    tripID: `${trip.UserOrderID}`,
+    weight: parseFloat(trip.PackageWeight).toFixed(2),
+    isTrip: false,
+    deadline: trip.Deadline,
+    IsChecked: trip.IsChecked,
+    orderID: `${trip.UserOrderNumber} (${trip.WebOrderID})`,
+  };
 }
 
 const OrderList = React.createClass({
-  render: function () {
-    var orderComponents = this.props.routes.map(function (route, idx) {
+  render: () => {
+    const orderComponents = this.props.routes.map((route, idx) => {
       return (
         <div key={idx} className={styles.modalOrderMain}>
           <table>
@@ -588,7 +609,7 @@ const OrderList = React.createClass({
       );
     });
     return <div>{orderComponents}</div>;
-  }
+  },
 });
 
 const TableStateful = React.createClass({
@@ -607,16 +628,16 @@ const TableStateful = React.createClass({
       changeFilter: this.changeFilter,
       changeFilterAndFetch: this.changeFilterAndFetch,
       fetchTrips: this.fetchTrips,
-    }
+    };
 
     const trips = _.map(this.props.trips, ProcessTrip);
     const tableProps = {
       items: trips,
       toDetails: tripDetails,
-      filters: filters,
+      filters,
       isFetching: tripsIsFetching,
-      showModals: this.props.showModals
-    }
+      showModals: this.props.showModals,
+    };
 
     return (
       <div>
@@ -633,8 +654,12 @@ const TableStateful = React.createClass({
                 <div className={styles.modalTitle}>
                   TRIP-{this.props.trip.TripID}
                 </div>
-                <div onClick={this.closeModal} className={styles.modalClose}>
-                  X
+                <div
+                  role="button"
+                  onClick={this.closeModal}
+                  className={styles.modalClose}
+                >
+                  &times;
                 </div>
                 <div className={styles.topDescDetails}>
                   <div className={styles.modalDescDetails}>
@@ -665,7 +690,7 @@ const TableStateful = React.createClass({
         }
       </div>
     );
-  }
+  },
 });
 
 function StateToProps(state) {
@@ -675,22 +700,28 @@ function StateToProps(state) {
 
   const { cities } = state.app.cityList;
 
-  cities.forEach(function (city) {
+  cities.forEach((city) => {
     cityList[city.Name] = city.CityID;
   });
 
   const paginationState = {
-    currentPage: currentPage,
-    limit: limit,
-    total: total,
-  }
+    currentPage,
+    limit,
+    total,
+  };
 
   const statusList = state.app.containers.statusList;
-  const trip = TripParser(tripActive)
+  const trip = TripParser(tripActive);
 
   return {
-    paginationState, trips, tripsIsFetching: isFetching,
-    statusList: _.chain(statusList).map((key, val) => [val, key]).sortBy((arr) => (arr[1])).map((arr) => (arr[0])).value(),
+    paginationState,
+    trips,
+    tripsIsFetching: isFetching,
+    statusList: _.chain(statusList)
+      .map((key, val) => [val, key])
+      .sortBy(arr => (arr[1]))
+      .map(arr => (arr[0]))
+      .value(),
     nameToID: _.reduce(statusList, (memo, key, val) => {
       memo[val] = key;
       return memo;
