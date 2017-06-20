@@ -6,7 +6,7 @@ import FetchPost from '../modules/fetch/post';
 import config from '../config/configValues.json';
 import ModalActions from '../modules/modals/actions';
 import { modalAction } from '../modules/modals/constants';
-import DragdropImageUploader from '../components/DragDropimageUploader';
+import DragdropImageUploader from '../components/DragDropImageUploader';
 
 const mapStateToProps = (store) => {
   const { userLogged } = store.app;
@@ -18,7 +18,7 @@ const mapStateToProps = (store) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {
+  const dispatchData = {
     showBackdrop: () => {
       dispatch({ type: modalAction.BACKDROP_SHOW });
     },
@@ -29,6 +29,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(ModalActions(text));
     },
   };
+
+  return dispatchData;
 };
 
 class DragDropImageUploaderContainer extends Component {

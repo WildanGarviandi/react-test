@@ -3,12 +3,13 @@ import Dropzone from 'react-dropzone';
 import PropTypes from 'prop-types';
 
 import styles from './dragDropImageUploader.css';
+import config from '../config/configValues.json';
 
 export default function DragDropImageUploader({ currentImageUrl, uploadImage }) {
   return (
     <Dropzone
       className={styles.outerDropzone}
-      accept="image/jpeg, image/png"
+      accept={`${config.IMAGE_TYPE.JPEG}, ${config.IMAGE_TYPE.PNG}`}
       onDrop={(acc, reject) => uploadImage(acc, reject)}
     >
       {({ isDragReject }) => {
@@ -25,7 +26,7 @@ export default function DragDropImageUploader({ currentImageUrl, uploadImage }) 
         }
         return (
           <div className={styles.dragDropFiller}>
-            <img src="/img/icon-add-image-drag-drop.png" />
+            <img src={config.IMAGES.DRAG_DROP} />
             Drag your image to this area or tap this button
             below to choose from your folder
             <button>Add Image</button>

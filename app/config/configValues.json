@@ -137,10 +137,15 @@
       "RADIO_OFF": "/img/icon-radio-off.png",
       "MOTORCYCLE": "/img/icon-vehicle-motorcycle.png",
       "VAN": "/img/icon-vehicle-van.png",
-      "INBOUND_TRIP_DONE": "/img/image-inbound-trip-done.png"
+      "INBOUND_TRIP_DONE": "/img/image-inbound-trip-done.png",
+      "DRAG_DROP": "/img/icon-add-image-drag-drop.png"
     },
     "assignCentralHub": true,
     "HTTP_STATUS": {
       "OK": 200
+    },
+    "IMAGE_TYPE": {
+      "JPEG": "image/jpeg",
+      "PNG": "image/png"
     }
 }
