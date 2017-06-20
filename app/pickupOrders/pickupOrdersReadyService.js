@@ -598,11 +598,12 @@ export function assignFleet(tripID, fleetManagerID, noAlert) {
           dispatch(DashboardService.FetchCount());
           dispatch(HideAssignModal());
           if (!noAlert) {
-            dispatch(ModalActions.addMessage('Trip assigned to hub'));
+            dispatch(ModalActions.addMessage('Trips assigned to vendor'));
           }
+          window.location.reload();
         });
       }).catch((e) => {
-        const message = (e && e.message) ? e.message : 'Failed to assign fleet';
+        const message = (e && e.message) ? e.message : 'Failed to assign trips';
         dispatch({ type: modalAction.BACKDROP_HIDE });
 
         dispatch(ModalActions.addMessage(message));
@@ -621,11 +622,12 @@ export function assignFleet(tripID, fleetManagerID, noAlert) {
           dispatch(DashboardService.FetchCount());
           dispatch(HideAssignModal());
           if (!noAlert) {
-            dispatch(ModalActions.addMessage('Trip assigned to hub'));
+            dispatch(ModalActions.addMessage('Trip assigned to vendor'));
           }
+          window.location.reload();
         });
       }).catch((e) => {
-        const message = (e && e.message) ? e.message : 'Failed to assign fleet';
+        const message = (e && e.message) ? e.message : 'Failed to assign trips';
         dispatch({ type: modalAction.BACKDROP_HIDE });
 
         dispatch(ModalActions.addMessage(message));
@@ -652,14 +654,14 @@ export function AssignDriver(tripID, driverID) {
       }
 
       return response.json().then(() => {
-        dispatch(ModalActions.addMessage('Assign driver success'));
+        dispatch(ModalActions.addMessage('Trips assigned to driver'));
         dispatch(FetchList());
         dispatch({ type: modalAction.BACKDROP_HIDE });
         dispatch(HideAssignModal());
         window.location.reload(false);
       });
     }).catch((e) => {
-      const message = (e && e.message) ? e.message : 'Failed to set driver';
+      const message = (e && e.message) ? e.message : 'Failed to assign trips';
       dispatch({ type: modalAction.BACKDROP_HIDE });
       dispatch(ModalActions.addMessage(message));
     });
