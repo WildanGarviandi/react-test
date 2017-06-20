@@ -616,11 +616,6 @@ Filter.propTypes = {
 };
 /* eslint-enable */
 
-Filter.defaultProps = {
-  userLogged: {},
-  exportOrders: () => {},
-};
-
 class TableStateful extends Component {
   constructor(props) {
     super(props);
