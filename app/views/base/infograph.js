@@ -1,6 +1,6 @@
 import React from 'react';
 import {Glyph} from './';
-import styles from './infograph.css';
+import styles from './infograph.scss';
 import classNaming from 'classnames';
 
 const BoxState = {

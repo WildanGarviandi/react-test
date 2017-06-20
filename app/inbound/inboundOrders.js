@@ -2,9 +2,10 @@ import * as _ from 'lodash'; //eslint-disable-line
 import React from 'react';
 import { connect } from 'react-redux';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
+import PropTypes from 'prop-types';
 
 import InboundOrdersTable from './inboundOrdersTable';
-import styles from './styles.css';
+import styles from './styles.scss';
 import { Input, Page, Glyph } from '../views/base';
 import * as InboundOrders from './inboundOrdersService';
 import { ButtonBase } from '../components/button';
@@ -159,6 +160,36 @@ const PanelSuggestion = React.createClass({
   },
 });
 
+class VerifyButton extends React.Component {
+  constructor() {
+    super();
+    this.onClick = this.onClick.bind(this);
+  }
+
+  onClick() {
+    this.props.onClick(this.props.orderMarked);
+  }
+
+  render() {
+    return (
+      <button
+        onClick={this.onClick}
+        className={styles.verifyButton}
+        disabled={this.props.orderMarked === ''}
+      >
+        Verify
+      </button>
+    );
+  }
+}
+
+/* eslint-disable */
+VerifyButton.propTypes = {
+  orderMarked: PropTypes.any.isRequired,
+  onClick: PropTypes.func.isRequired,
+};
+/* eslint-enable */
+
 function mapStateToProps(state) {
   const { inboundOrders } = state.app;
   const userLogged = state.app.userLogged;
@@ -276,7 +307,7 @@ const InboundOrdersPage = React.createClass({
             <DuplicateModal
               orders={this.props.duplicateOrders}
               closeModal={this.closeModal}
-              pickOrder={this.markReceived}
+              pickOrder={this.test}
             />
           </ModalContainer>
         }
@@ -285,17 +316,14 @@ const InboundOrdersPage = React.createClass({
             styles={inputVerifyStyles}
             onChange={this.changeMark}
             onEnterKeyPressed={this.markReceived}
-            ref={(c) => { this.markReceived = c; }}
+            ref={(c) => { this.markReceivedInput = c; }}
             base={{ value: this.state.orderMarked, placeholder: 'Scan EDS, WebOrderID, or TripID...' }}
             id="markReceivedInput"
           />
-          <button
-            onClick={this.markReceived.bind(null, this.state.orderMarked)}
-            className={styles.verifyButton}
-            disabled={this.state.orderMarked === ''}
-          >
-            Verify
-          </button>
+          <VerifyButton
+            orderMarked={this.state.orderMarked}
+            onClick={this.markReceived}
+          />
         </div>
         <div style={{ clear: 'both' }} />
         <div style={{ marginBottom: 15 }}>

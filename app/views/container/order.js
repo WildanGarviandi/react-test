@@ -12,7 +12,7 @@ const headers = [{
   time: 'Pickup Time', status: 'Status'
 }];
 
-import styles from './styles.css';
+import styles from './styles.scss';
 
 const FetchComponent = React.createClass({
   getInitialState() {

@@ -1,56 +1,57 @@
-import lodash from 'lodash';
+import lodash from 'lodash'; // eslint-disable-line
 import moment from 'moment';
 import React from 'react';
-import {connect} from 'react-redux';
-import {push} from 'react-router-redux';
+import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
+
 import * as OutboundTrips from './outboundTripsService';
-import {Input, Pagination} from '../views/base';
-import {DropdownWithState2} from '../views/base/dropdown';
-import tableStyles from '../views/base/table.css';
-import styles from './styles.css';
-import {Glyph} from '../views/base/glyph';
+import { Input, Pagination } from '../views/base';
+import { DropdownWithState2 } from '../views/base/dropdown';
+import tableStyles from '../views/base/table.scss';
+import styles from './styles.scss';
+import { Glyph } from '../views/base/glyph';
 import StatusDropdown from '../views/base/statusDropdown';
-import {Interval} from './outboundTripsModal';
-import {ProcessTrip} from './outboundTripsHelper';
+import { Interval } from './outboundTripsModal';
+import { ProcessTrip } from './outboundTripsHelper';
 import config from '../config/configValues.json';
 
-let vehicles = {}
+const vehicles = {};
 lodash.each(config.vehicle, (vehicle) => {
   vehicles[vehicle.value.toUpperCase()] = vehicle.key;
-})
+});
 
-const ColumnsOrder = ['tripID', 'nextDestination', 'tripType', 'fleet', 
+const ColumnsOrder = ['tripID', 'nextDestination', 'tripType', 'fleet',
   'status', 'nextSuggestion', 'numberPackages', 'weight', 'remarks', 'deadline', 'actions'];
 
 const ColumnsTitle = {
-  containerNumber: "Container",
-  district: "District",
-  tripID: "Trip ID",
-  fleet: "Assigned To",
-  driver: "Driver",
-  nextDestination: "Destination",
-  dropoffTime: "Dropoff Time",
-  pickup: "Pickup Address",
-  pickupTime: "Pickup Time",
-  status: "Status",
-  tripNumber: "Trip Number",
-  tripType: "Type",
-  webstoreNames: "Webstore",
-  numberPackages: "Qty",
-  nextSuggestion: "Suggested Destination",
-  weight: "Weight",
-  remarks: "Remarks",
-  deadline: "Deadline", 
-  actions: "Action"
-}
+  containerNumber: 'Container',
+  district: 'District',
+  tripID: 'Trip ID',
+  fleet: 'Assigned To',
+  driver: 'Driver',
+  nextDestination: 'Destination',
+  dropoffTime: 'Dropoff Time',
+  pickup: 'Pickup Address',
+  pickupTime: 'Pickup Time',
+  status: 'Status',
+  tripNumber: 'Trip Number',
+  tripType: 'Type',
+  webstoreNames: 'Webstore',
+  numberPackages: 'Qty',
+  nextSuggestion: 'Suggested Destination',
+  weight: 'Weight',
+  remarks: 'Remarks',
+  deadline: 'Deadline',
+  actions: 'Action',
+};
 
-function FindFilter(filters, attr) {
-  switch(attr) {
+function findFilter(filters, attr) {
+  switch (attr) {
     case 'fleetName':
-      return filters['fleet'];
+      return filters.fleet;
 
     case 'webstoreNames':
-      return filters['merchant'];
+      return filters.merchant;
 
     default:
       return filters[attr];
@@ -60,27 +61,27 @@ function FindFilter(filters, attr) {
 const SearchCell = React.createClass({
   render() {
     return (
-      <Input styles={{input: tableStyles.searchInput}} base={{type:"text"}} onChange={this.props.onChange} onEnterKeyPressed={this.props.onEnterKeyPressed} base={{value:this.props.filter}} />
+      <Input styles={{ input: tableStyles.searchInput }} onChange={this.props.onChange} onEnterKeyPressed={this.props.onEnterKeyPressed} base={{ value: this.props.filter, type: 'text' }} />
     );
-  }
+  },
 });
 
-function StateToStatus(state) {
+function stateToStatus(state) {
   const statusName = state.app.outboundTripsService.filtersStatus;
   return {
-    val: statusName
-  }
+    val: statusName,
+  };
 }
 
-function SelectDispatch(dispatch) {
+function selectDispatch(dispatch) {
   return {
     handleSelect: (val) => {
       dispatch(OutboundTrips.SetFiltersStatus(val.value));
-    }
-  }
+    },
+  };
 }
 
-const TrueSelect = connect(StateToStatus, SelectDispatch)(StatusDropdown);
+const TrueSelect = connect(stateToStatus, selectDispatch)(StatusDropdown);
 
 const TripTypeDropDown = React.createClass({
   handleSelect(val) {
@@ -88,34 +89,37 @@ const TripTypeDropDown = React.createClass({
   },
   render() {
     const options = [
-      { key: 0, value: "All"},
-      { key: 1, value: "Last Mile"},
-      { key: 2, value: "Hub"},
-      { key: 3, value: "No Destination Yet"},
+      { key: 0, value: 'All' },
+      { key: 1, value: 'Last Mile' },
+      { key: 2, value: 'Hub' },
+      { key: 3, value: 'No Destination Yet' },
     ];
     const val = options[this.props.val].value;
 
     return (
       <DropdownWithState2 val={val} options={options} handleSelect={this.handleSelect} />
     );
-  }
+  },
 });
 
 function TripTypeDropDownDispatch(dispatch) {
   return {
     setType: (type) => {
-      dispatch(OutboundTrips.AddFilters({'tripType': type}));
-    }
-  }
+      dispatch(OutboundTrips.AddFilters({ tripType: type }));
+    },
+  };
 }
 
 function TripTypeDropDownState(state) {
   return {
     val: state.app.outboundTripsService.filters.tripType,
-  }
+  };
 }
 
-const TripTypeDropDownWithState = connect(TripTypeDropDownState, TripTypeDropDownDispatch)(TripTypeDropDown);
+const TripTypeDropDownWithState = connect(
+  TripTypeDropDownState,
+  TripTypeDropDownDispatch,
+)(TripTypeDropDown);
 
 const TripStatusSelect = React.createClass({
   selectVal(val) {
@@ -125,22 +129,22 @@ const TripStatusSelect = React.createClass({
     return (
       <TrueSelect />
     );
-  }
+  },
 });
 
 const Table = React.createClass({
   render() {
     const Headers = lodash.map(ColumnsOrder, (columnKey) => {
       switch (columnKey) {
-        case "tripID": {
+        case 'tripID': {
           return <th key={columnKey} className={styles.thTripID}>{ColumnsTitle[columnKey]}</th>;
         }
 
-        case "fleet": {
+        case 'fleet': {
           return <th key={columnKey} className={styles.thAssignedTo}>{ColumnsTitle[columnKey]}</th>;
         }
 
-        case "actions": {
+        case 'actions': {
           return <th key={columnKey} className={styles.thActions}>{ColumnsTitle[columnKey]}</th>;
         }
 
@@ -154,13 +158,14 @@ const Table = React.createClass({
       const cells = lodash.map(ColumnsOrder, (columnKey) => {
         switch (columnKey) {
           case 'tripID': {
-            return <td className={tableStyles.td + ' ' + styles.clickable} key={columnKey} onClick={this.props.toDetails.bind(null, item.key)}>{item[columnKey]}</td>;
+            return <td className={`${tableStyles.td} ${styles.clickable}`} key={columnKey} onClick={this.props.toDetails.bind(null, item.key)}>{item[columnKey]}</td>;
           }
 
           case 'fleet': {
             let vehicleLogoSrc = '';
             if (item.driver) {
-              vehicleLogoSrc = (item.vehicleID === vehicles.MOTORCYCLE) ? '/img/icon-vehicle-motor.png' : '/img/icon-vehicle-van.png'
+              vehicleLogoSrc = (item.vehicleID === vehicles.MOTORCYCLE) ?
+              config.IMAGES.MOTORCYCLE : config.IMAGES.VAN;
             }
             const itemWith3PL = (
               <p>
@@ -168,10 +173,10 @@ const Table = React.createClass({
                 <br />
                 {item.fleet.awbNumber}
               </p>
-            )
+            );
             const itemNot3PL = (
               <span className={styles.tripWithDriverCell}>
-                { item.driver &&
+                {item.driver &&
                   <img src={vehicleLogoSrc} className={styles.vehicleLogoOnTable} />
                 }
                 <p>
@@ -180,7 +185,7 @@ const Table = React.createClass({
                   {item.fleet.driverDetail}
                 </p>
               </span>
-            )
+            );
             const textValue = (item.fleet.thirdPartyLogistic) ? itemWith3PL : itemNot3PL;
 
             if (!item.isAssigned) {
@@ -196,50 +201,63 @@ const Table = React.createClass({
 
           case 'weight': {
             return (
-              <td className={tableStyles.td} key={columnKey}>{parseFloat(item.weight).toFixed(2)} Kg</td>
+              <td className={tableStyles.td} key={columnKey}>
+                {parseFloat(item.weight).toFixed(2)} Kg
+              </td>
             );
           }
 
           case 'actions': {
             const btnPrint = (
               <div className={styles.btnPrintOnTable}>
-                <a href={"/trips/" + item.actions + "/manifest#"} className="btn btn-sm btn-default" target="_blank">
-                  <Glyph name={"print"} />
+                <a href={`/trips/'${item.actions}/manifest#`} className="btn btn-sm btn-default" target="_blank" rel="noopener noreferrer">
+                  <Glyph name={'print'} />
                 </a>
               </div>
             );
             const btnAssign = (
               <div className={styles.btnAssignOnTable}>
-                <button className={styles.btnAssign + " btn btn-sm btn-success"} disabled={item.isActionDisabled} onClick={this.props.openModal.bind(null, item)}>
+                <button
+                  className={`${styles.btnAssign} btn btn-sm btn-success`}
+                  disabled={item.isActionDisabled}
+                  onClick={this.props.openModal.bind(null, item)}
+                >
                   Assign
                 </button>
               </div>
             );
-            const btnAction = (<div className='nb'>{btnPrint}{btnAssign}</div>)
+            const btnAction = <div className="nb">{btnPrint}{btnAssign}</div>;
             return <td className={tableStyles.td} key={columnKey}>{btnAction}</td>;
           }
 
           case 'deadline': {
             const deadlineDiff = item.deadline.diff(moment());
-            const itemComponent = (deadlineDiff > 0) ? <Interval startTime={deadlineDiff} down={true} />: <span>{item.deadline.fromNow()}</span>;
-            
+            const itemComponent = (deadlineDiff > 0) ?
+              <Interval startTime={deadlineDiff} down={true} />
+              : <span>{item.deadline.fromNow()}</span>;
+
             return (
-              <td className={tableStyles.td + ((deadlineDiff > 0) ? '' : ' ' + styles.redColumn)} key={columnKey}>{itemComponent}</td>
-            )
+              <td
+                className={tableStyles.td + ((deadlineDiff > 0) ? '' : ` ${styles.redColumn}`)}
+                key={columnKey}
+              >
+                {itemComponent}
+              </td>
+            );
           }
 
           case 'nextSuggestion': {
-            const suggestionComponents = item.nextSuggestion.map(function(suggestion, idx) {
+            const suggestionComponents = item.nextSuggestion.map((suggestion, idx) => {
               return (
-                <li key={ idx }>{suggestion}</li>
-              )
-            })
+                <li key={idx}>{suggestion}</li>
+              );
+            });
 
             return (
               <td className={tableStyles.td} key={columnKey}>
                 <ul>{suggestionComponents}</ul>
               </td>
-            )
+            );
           }
 
           default: {
@@ -254,37 +272,61 @@ const Table = React.createClass({
     const changeFilter = this.props.filteringAction.changeFilter;
     const Filters = lodash.map(ColumnsOrder, (columnKey) => {
       switch (columnKey) {
-        case "nextDestination": {
+        case 'tripID': {
           return (
-            <div key={columnKey} className={styles.colMd3 + ' ' +styles.filterDropDown}>
+            <div key={columnKey} className={`${styles['table-cell']} ${styles.filterDropDown}`}>
               <span className={styles.title}>{ColumnsTitle[columnKey]}</span>
-              <SearchCell key={columnKey} attr={columnKey} onChange={changeFilter.bind(null, columnKey)} onEnterKeyPressed={this.props.filteringAction.fetchTrips} filter={FindFilter(this.props.filters, columnKey)} />
+              <SearchCell
+                key={columnKey}
+                attr={columnKey}
+                onChange={changeFilter.bind(null, columnKey)}
+                onEnterKeyPressed={this.props.filteringAction.fetchTrips}
+                filter={findFilter(this.props.filters, columnKey)}
+              />
             </div>
-          )
+          );
         }
 
-        case "tripType": {
+        case 'nextDestination': {
           return (
-            <div key={columnKey} className={styles.colMd3 + ' ' +styles.filterDropDown}>
+            <div key={columnKey} className={`${styles['table-cell']} ${styles.filterDropDown}`}>
+              <span className={styles.title}>{ColumnsTitle[columnKey]}</span>
+              <SearchCell
+                key={columnKey}
+                attr={columnKey}
+                onChange={changeFilter.bind(null, columnKey)}
+                onEnterKeyPressed={this.props.filteringAction.fetchTrips}
+                filter={findFilter(this.props.filters, columnKey)}
+              />
+            </div>
+          );
+        }
+
+        case 'tripType': {
+          return (
+            <div key={columnKey} className={`${styles['table-cell']} ${styles.filterDropDown}`}>
               <span>{ColumnsTitle[columnKey]}</span>
               <TripTypeDropDownWithState />
             </div>
-          )
+          );
         }
 
-        case "status": {
+        case 'status': {
           return (
-            <div key={columnKey} className={styles.colMd3 + ' ' +styles.filterDropDown}>
+            <div key={columnKey} className={`${styles['table-cell']} ${styles.filterDropDown}`}>
               <span>{ColumnsTitle[columnKey]}</span>
               <TripStatusSelect {...this.props.statusProps} />
             </div>
-          )
+          );
         }
+
+        default:
+          return null;
       }
     });
 
     const Search = (
-      <div className='row'>
+      <div className={styles['display-table']}>
         {Filters}
       </div>
     );
@@ -294,34 +336,38 @@ const Table = React.createClass({
         {Search}
         <table className={tableStyles.table}>
           <thead><tr>{Headers}</tr></thead>
-          { this.props.isFetching &&
+          {this.props.isFetching &&
             <tbody>
-              <td colSpan={ColumnsOrder.length}>
-                <div className={styles.fetchingText}>
-                  Fetching data....
-                </div>
-              </td>
+              <tr>
+                <td colSpan={ColumnsOrder.length}>
+                  <div className={styles.fetchingText}>
+                    Fetching data....
+                  </div>
+                </td>
+              </tr>
             </tbody>
           }
-          { !this.props.isFetching && this.props.items.length > 0 &&
+          {!this.props.isFetching && this.props.items.length > 0 &&
             <tbody>{Body}</tbody>
           }
-          { !this.props.isFetching && this.props.items.length === 0 &&
+          {!this.props.isFetching && this.props.items.length === 0 &&
             <tbody>
-              <td colSpan={ColumnsOrder.length}>
-                <div className={styles.emptyTableContainer}>
-                  <img src="/img/image-all-assigned.png" className={styles.emptyTableImage}/>
-                  <div className={styles.bigText}>
-                    There are no active outbound trips
+              <tr>
+                <td colSpan={ColumnsOrder.length}>
+                  <div className={styles.emptyTableContainer}>
+                    <img src="/img/image-all-assigned.png" className={styles.emptyTableImage} />
+                    <div className={styles.bigText}>
+                      There are no active outbound trips
+                    </div>
                   </div>
-                </div>
-              </td>
+                </td>
+              </tr>
             </tbody>
           }
         </table>
       </div>
     );
-  }
+  },
 });
 
 const TableStateful = React.createClass({
@@ -335,13 +381,15 @@ const TableStateful = React.createClass({
     this.props.changeFilter(this.state);
   },
   pickStatus(val) {
-    this.setState({statusName: val, status: this.props.nameToID[val]}, () => {
+    this.setState({
+      statusName: val, status: this.props.nameToID[val],
+    }, () => {
       this.fetchTrips();
     });
   },
   changeFilter(attr, val) {
     let attrName;
-    switch(attr) {
+    switch (attr) {
       case 'fleetName':
         attrName = 'fleet';
         break;
@@ -354,7 +402,7 @@ const TableStateful = React.createClass({
         attrName = attr;
     }
 
-    this.setState({[attrName]: val});
+    this.setState({ [attrName]: val });
   },
   changeFilterAndFetch(filters) {
     this.setState(filters, () => {
@@ -365,70 +413,73 @@ const TableStateful = React.createClass({
     this.props.fetchListOnModal(item.key);
   },
   render() {
-    const {filters, paginationAction, paginationState, statusParams, tripDetails, tripsIsFetching} = this.props;
+    const { paginationAction, paginationState, tripDetails, tripsIsFetching } = this.props;
 
     const paginationProps = lodash.assign({}, paginationAction, paginationState);
 
     const statusProps = {
       pickStatus: this.pickStatus,
       statusList: this.props.statusList,
-      statusName: this.state.statusName
-    }
+      statusName: this.state.statusName,
+    };
 
     const filteringAction = {
       changeFilter: this.changeFilter,
       changeFilterAndFetch: this.changeFilterAndFetch,
-      fetchTrips: this.fetchTrips
-    }
+      fetchTrips: this.fetchTrips,
+    };
 
     const trips = lodash.map(this.props.trips, ProcessTrip);
 
     const tableProps = {
       items: trips,
       toDetails: tripDetails,
-      filteringAction, statusProps,
+      filteringAction,
+      statusProps,
       filters: this.state,
       isFetching: tripsIsFetching,
-      openModal: this.openModal
-    }
-    
+      openModal: this.openModal,
+    };
+
     return (
       <div>
-        <div style={{opacity: tripsIsFetching ? 0.5 : 1}}>
+        <div style={{ opacity: tripsIsFetching ? 0.5 : 1 }}>
           <Table {...tableProps} />
           <Pagination {...paginationProps} />
         </div>
       </div>
     );
-  }
+  },
 });
 
 function StateToProps(state) {
-  const {outboundTripsService} = state.app;
-  const {isFetching, limit, total, currentPage, trips, filters} = outboundTripsService;
+  const { outboundTripsService } = state.app;
+  const { isFetching, limit, total, currentPage, trips, filters } = outboundTripsService;
 
   const paginationState = {
-    currentPage: currentPage,
-    limit: limit,
-    total: total
-  }
+    currentPage,
+    limit,
+    total,
+  };
 
   const statusList = state.app.containers.statusList;
 
   return {
-    paginationState, 
-    trips, 
+    paginationState,
+    trips,
     tripsIsFetching: isFetching,
-    statusList: lodash.chain(statusList).map((key, val) => [val, key]).sortBy((arr) => (arr[1])).map((arr) => (arr[0])).value(),
+    statusList: lodash.chain(statusList).map((key, val) => [val, key])
+      .sortBy(arr => (arr[1])).map(arr => (arr[0]))
+      .value(),
     nameToID: lodash.reduce(statusList, (memo, key, val) => {
       memo[val] = key;
       return memo;
     }, {}),
-    filters
+    filters,
   };
 }
 
-function DispatchToProps(dispatch, ownProps) {
+function DispatchToProps(dispatch) {
   return {
     initialLoad() {
       dispatch(OutboundTrips.FetchList());
@@ -451,7 +502,7 @@ function DispatchToProps(dispatch, ownProps) {
     },
     tripDetails(id) {
       dispatch(push(`/trips/${id}`));
-    }
+    },
   };
 }
 

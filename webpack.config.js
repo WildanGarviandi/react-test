@@ -1,10 +1,12 @@
-var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+/* eslint-disable */
+const webpack = require('webpack');
+const combineLoaders = require('webpack-combine-loaders');
 
 module.exports = {
   entry: [
       './app/main.js',
       'webpack/hot/dev-server',
+      'babel-polyfill',
       'webpack-dev-server/client?http://localhost:8081'
   ],
 
@@ -15,46 +17,53 @@ module.exports = {
   },
 
   module: {
-    loaders: [
-      {
-        test: /\.json$/,
-        loader: "json"
-      },
+    rules: [
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         loader: 'babel-loader'
       },
       {
-        test: /\.css$/,
-        exclude: /node_modules/,
-        loader: 'style!css?modules!postcss'
+        test: /\.scss$/,
+        use: [
+          {
+            loader: 'style-loader',
+          }, {
+            loader: 'css-loader',
+            query: {
+              modules: true,
+              localIdentName: '[name]__[local]--[hash:base64:5]',
+            }
+          }, {
+            loader: 'sass-loader',
+          }
+        ]
       },
-      { 
-        test: /\.jpg$/, 
-        loader: "file-loader" 
+      {
+        test: /\.jpg$/,
+        loader: "file-loader"
       },
-      { 
-        test: /\.png$/, 
-        loader: "url-loader?limit=100000" 
-      }, 
-      { 
-        test: /\.gif$/, 
-        loader: "url-loader?limit=100000" 
-      }, 
+      {
+        test: /\.png$/,
+        loader: "url-loader?limit=100000"
+      },
+      {
+        test: /\.gif$/,
+        loader: "url-loader?limit=100000"
+      },
       {
         test: /\.woff$/,
-        loader: 'url?limit=100000'
+        loader: 'url-loader?limit=100000'
       },
       {
         test: /\.mp3$/,
-        loader: 'file'
+        loader: 'file-loader'
       }
     ]
   },
 
   plugins: [
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
   ],
 
   devServer: {
@@ -68,7 +77,6 @@ module.exports = {
   resolve: {
     alias: {
       soundmanager2: 'soundmanager2/script/soundmanager2-nodebug-jsmin.js'
-    },
-    extensions: ['', '.js', '.jsx'],
+    }
   }
 }

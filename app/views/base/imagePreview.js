@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from 'react-modal';
 import {Glyph} from '../base';
-import styles from './imageUploader.css';
+import styles from './imageUploader.scss';
 
 const customStyles = {
   overlay : {

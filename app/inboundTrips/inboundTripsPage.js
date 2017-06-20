@@ -1,14 +1,40 @@
-import React from 'react';
+import React from 'react'; //eslint-disable-line
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
 
-import { Input, Page } from '../views/base';
+import { Page } from '../views/base';
 import * as InboundTrips from './inboundTripsService';
 import InboundTable, { Filter } from './inboundTripsTable';
-import FleetsFetch from '../modules/drivers/actions/fleetsFetch';
-import styles from './styles.css';
-import formStyles from '../components/form.css';
+import styles from './styles.scss';
 import InboundTripsModal from './inboundTripsModal';
+
+function mapStateToProps(state, ownProps) {
+  const routes = ownProps.routes;
+  const paths = routes[routes.length - 1].path.split('/');
+  const lastPath = paths[paths.length - 1];
+  const { inboundTrips, userLogged } = state.app;
+  const { total, isFetching } = inboundTrips;
+
+  return {
+    lastPath,
+    total,
+    isFetching,
+    userLogged,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    gotoTrip: (tripID) => {
+      dispatch(InboundTrips.GoToTrip(tripID));
+    },
+    getList: () => {
+      dispatch(InboundTrips.FetchList());
+    },
+    exportOrders: () => {
+      dispatch(InboundTrips.exportOrders());
+    },
+  };
+}
 
 const InboundTripPage = React.createClass({
   getInitialState() {
@@ -28,13 +54,16 @@ const InboundTripPage = React.createClass({
     });
   },
   render() {
-    const title = this.props.isFetching ? 'Inbound Trips' : this.props.total > 0 ? `Inbound Trips (${this.props.total})` : 'Inbound Trips (All Done)';
-    const { userLogged } = this.props;
+    const { userLogged, exportOrders } = this.props;
     return (
       <div>
-        <Page title="Inbound Trips" count={{ itemName: 'Items', done: 'All Done', value: this.props.total }}>
+        <Page
+          title="Inbound Trips"
+          count={{ itemName: 'Items', done: 'All Done', value: this.props.total }}
+        >
           <Filter
             userLogged={userLogged}
+            exportOrders={exportOrders}
           />
           <div className={styles.mainTable}>
             <InboundTable
@@ -50,30 +79,4 @@ const InboundTripPage = React.createClass({
   },
 });
 
-function StateToProps(state, ownProps) {
-  const routes = ownProps.routes;
-  const paths = routes[routes.length - 1].path.split('/');
-  const lastPath = paths[paths.length - 1];
-  const { inboundTrips, userLogged } = state.app;
-  const { total, isFetching } = inboundTrips;
-
-  return {
-    lastPath,
-    total,
-    isFetching,
-    userLogged,
-  };
-}
-
-function DispatchToPage(dispatch) {
-  return {
-    gotoTrip: (tripID) => {
-      dispatch(InboundTrips.GoToTrip(tripID));
-    },
-    getList: () => {
-      dispatch(InboundTrips.FetchList());
-    },
-  };
-}
-
-export default connect(StateToProps, DispatchToPage)(InboundTripPage);
+export default connect(mapStateToProps, mapDispatchToProps)(InboundTripPage);

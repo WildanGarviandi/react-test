@@ -1,6 +1,6 @@
 import React from 'react'
 import {CheckBox} from './input'
-import styles from './tableCell.css'
+import styles from './tableCell.scss'
 
 export function CheckboxHeader({isChecked, onToggle}) {
     return (

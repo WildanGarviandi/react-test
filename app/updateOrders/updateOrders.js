@@ -2,7 +2,7 @@ import lodash from 'lodash';
 import React from 'react';
 import {connect} from 'react-redux';
 import UpdateOrdersTable from './updateOrdersTable';
-import styles from './styles.css';
+import styles from './styles.scss';
 import {Input, Page, InputWithDefault, InputWithDefaultNumberFormatted} from '../views/base';
 import * as UpdateOrders from './updateOrdersService';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';

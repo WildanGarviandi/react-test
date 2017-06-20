@@ -2,7 +2,7 @@ import lodash from 'lodash'; //eslint-disable-line
 import React from 'react';
 import { connect } from 'react-redux';
 
-import styles from './styles.css';
+import styles from './styles.scss';
 import InboundOrdersBody from './inboundOrdersBody';
 import InboundOrdersHeaders from './inboundOrdersHeaders';
 import * as InboundOrders from './inboundOrdersService';

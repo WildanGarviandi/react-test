@@ -12,8 +12,8 @@ import { Pagination2 } from '../components/pagination2';
 import OrderStatusSelector from '../modules/orderStatus/selector';
 import * as orderMonitoringService from './orderMonitoringService';
 import { CheckboxHeaderPlain, CheckboxCell } from '../views/base/tableCell';
-import styles from './table.css';
-import mainStyles from './styles.css';
+import styles from './table.scss';
+import mainStyles from './styles.scss';
 import config from '../config/configValues.json';
 import envConfig from '../../config.json';
 

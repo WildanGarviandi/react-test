@@ -2,7 +2,7 @@ import React, { Component } from 'react'; //eslint-disable-line
 import Dropzone from 'react-dropzone';
 import PropTypes from 'prop-types';
 
-import styles from './dragDropImageUploader.css';
+import styles from './dragDropImageUploader.scss';
 import config from '../config/configValues.json';
 
 export default function DragDropImageUploader({ currentImageUrl, uploadImage }) {

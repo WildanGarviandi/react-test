@@ -1,7 +1,7 @@
 import classNaming from 'classnames';
 import lodash from 'lodash';
 import React from 'react';
-import styles from './table.css';
+import styles from './table.scss';
 
 function Headers({items, components}) {
   const cells = lodash.map(items, (item) => {

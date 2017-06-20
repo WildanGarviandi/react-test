@@ -3,7 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
 import GroupingTable from './groupingTable';
-import styles from './styles.css';
+import styles from './styles.scss';
 import {ButtonWithLoading, Input, Page, InputWithDefault} from '../views/base';
 import * as Grouping from './groupingService';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';

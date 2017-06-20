@@ -5,7 +5,7 @@ import UpdateOrdersBody from './updateOrdersBody';
 import UpdateOrdersHeaders from './updateOrdersHeaders';
 import * as UpdateOrders from './updateOrdersService';
 import {conf, updateOrdersColumns} from './updateOrdersColumns';
-import styles from './styles.css';
+import styles from './styles.scss';
 import {ButtonWithLoading, Input, Pagination} from '../views/base';
 
 const Table = React.createClass({

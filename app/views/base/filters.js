@@ -3,7 +3,7 @@ import lodash from 'lodash';
 import React from 'react';
 import {InputWithState} from './input';
 import StatusDropdown from './statusDropdown';
-import styles from './table.css';
+import styles from './table.scss';
 
 function HandleFilter(keyword, filterFunc) {
   return (val) => {

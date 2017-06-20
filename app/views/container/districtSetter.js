@@ -6,7 +6,7 @@ import {DistrictsActions} from '../../modules';
 import DistrictsFetch from '../../modules/districts/actions/districtsFetch';
 
 import {ButtonBase, ButtonWithLoading, DropdownTypeAhead} from '../base';
-import styles from './styles.css';
+import styles from './styles.scss';
 
 function FindByDistrictID(districts, districtID) {
   return _.find(districts, (district) => (district.DistrictID == districtID));
