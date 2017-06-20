@@ -1,12 +1,12 @@
 import config from './config';
 
-function formatParams(params){
-    return "?" + Object
+function formatParams(params) {
+    return '?' + Object
         .keys(params)
-        .map(function(key) {
-          return key+"="+params[key];
+        .map(function (key) {
+            return key + '=' + params[key];
         })
-        .join("&");
+        .join('&');
 }
 
 export function fetchXhr(url, params, token, acceptHeader, responseType) {

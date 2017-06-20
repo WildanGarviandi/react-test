@@ -153,5 +153,11 @@
     "OPTION": {
       "YES": "Yes",
       "NO": "No"
+    },
+    "FILE_TYPE": {
+      "EXCEL": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    },
+    "RESPONSE_TYPE": {
+      "ARRAY_BUFFER": "arraybuffer"
     }
 }
