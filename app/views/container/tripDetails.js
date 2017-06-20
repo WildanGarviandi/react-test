@@ -14,7 +14,7 @@ import Accordion from '../base/accordion';
 import NextDestinationSetter from './nextDestinationSetter';
 import TransportSetter from './secondSetting';
 
-import styles from './styles.css';
+import styles from './styles.scss';
 
 const columns = ['id', 'id2', 'pickup', 'dropoff', 'time', 'CODValue', 'orderStatus', 'routeStatus', 'action'];
 const nonFillColumn = columns.slice(0, columns.length - 1);

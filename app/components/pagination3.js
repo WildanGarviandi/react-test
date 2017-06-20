@@ -1,7 +1,7 @@
 import React from 'react';
 import * as _ from 'lodash';
 import {Dropdown} from '../views/base';
-import styles from './pagination3.css';
+import styles from './pagination3.scss';
 
 function PaginationInfo(props) {
   var {limit, total, page} = props;

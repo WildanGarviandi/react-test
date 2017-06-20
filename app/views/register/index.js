@@ -5,7 +5,7 @@ import lodash from 'lodash';
 
 import {ButtonWithLoading, CheckBox, Input} from '../base';
 import {DropdownWithState} from '../base/dropdown'
-import styles from './styles.css';
+import styles from './styles.scss';
 import configValues from '../../config/configValues.json';
 import * as CountryService from '../../location/countryService';
 import * as StateService from '../../location/stateService';

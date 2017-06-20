@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './glyph.css';
+import styles from './glyph.scss';
 import classNaming from 'classnames';
 
 const Glyph = ({className, name}) => {

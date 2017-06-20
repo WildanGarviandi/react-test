@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import * as Hubs from '../../modules/hubs';
 import {ButtonBase, ButtonWithLoading} from '../base';
 import {DropdownWithState} from '../base/dropdown';
-import styles from './styles.css';
+import styles from './styles.scss';
 
 const HubSetter = React.createClass({
   componentWillMount() {

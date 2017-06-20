@@ -1,6 +1,6 @@
 import React from 'react';
 import {ButtonWithLoading, Glyph} from './';
-import styles from './page.css';
+import styles from './page.scss';
 import { browserHistory } from 'react-router';
 
 const PageTitle = ({additional, title, backButton, count}) => {

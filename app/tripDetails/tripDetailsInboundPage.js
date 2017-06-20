@@ -10,7 +10,7 @@ import { OrderTable } from './tripDetailsTable';
 import * as TripDetails from './tripDetailsService';
 import ModalActions from '../modules/modals/actions';
 import RemarksSetter from '../components/remarksSetter';
-import styles from './styles.css';
+import styles from './styles.scss';
 import { CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered, TripParser } from '../modules/trips';
 import { formatDate } from '../helper/time';
 import ImagePreview from '../views/base/imagePreview';
@@ -308,7 +308,7 @@ const DetailPage = React.createClass({
                           :
                           <div>
                             <p className={styles.title}>
-                            3PL / Fleet :
+                              3PL / Fleet :
                             </p>
                             <p>Not assigned yet</p>
                             <button

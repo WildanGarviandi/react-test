@@ -3,7 +3,7 @@ import lodash from 'lodash';
 import React from 'react';
 import {connect} from 'react-redux';
 import {conf, orderDetailsSummary, orderDetailsCost, orderDetailsPricing} from './ordersColumns';
-import styles from './styles.css';
+import styles from './styles.scss';
 import Accordion from '../base/accordion';
 import {ButtonWithLoading, Input, Page} from '../base';
 import {InputWithDefault, CheckBox} from '../base/input';

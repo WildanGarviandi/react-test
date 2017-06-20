@@ -46,6 +46,7 @@ const initialState = {
   checkedAll: false,
   currentPage: 1,
   filters: {},
+  pickupType: 'All',
   city: 'All',
   listType: 'All',
   isFetching: false,
@@ -279,16 +280,28 @@ export function FetchList() {
     const { pickupOrdersReady, userLogged } = getState().app;
     const { token } = userLogged;
     const { currentPage, filters, limit } = pickupOrdersReady;
+    let tempFilter = Object.assign({}, filters);
 
-    if (filters.city === 'All') {
-      delete filters.city;
+    if (tempFilter.city === 'All') {
+      delete tempFilter.city;
     }
 
-    if (filters.hubIDs && filters.hubIDs.length > 0) {
-      filters.hubIDs = _.filter(filters.hubIDs, hubID => hubID > 0).join();
+    if (tempFilter.pickupType && tempFilter.pickupType !== 'All') {
+      const selectedType = _.find(config.PICKUP_TYPE, (type) => {
+        return type.value === tempFilter.pickupType && type;
+      });
+      tempFilter.pickupType = selectedType.key;
     }
 
-    const query = Object.assign({}, filters, {
+    if (tempFilter.pickupType === 'All') {
+      delete tempFilter.pickupType;
+    }
+
+    if (tempFilter.hubIDs && tempFilter.hubIDs.length > 0) {
+      tempFilter.hubIDs = _.filter(tempFilter.hubIDs, hubID => hubID > 0).join();
+    }
+
+    const query = Object.assign({}, tempFilter, {
       limit,
       offset: (currentPage - 1) * limit,
     });
@@ -335,14 +348,20 @@ export function SetDropDownFilter(keyword) {
     city: 'city',
     listType: 'listType',
     hubIDs: 'hubIDs',
+    pickupType: 'pickupType',
   };
 
   return (selectedOption) => {
     const filterName = filterNames[keyword];
 
     return (dispatch, getState) => {
-      const filter = filterName === 'hubIDs' ?
-        getState().app.pickupOrdersReady.hubIDs : selectedOption.value;
+      let filter;
+      if (filterName === 'hubIDs') {
+        filter = getState().app.pickupOrdersReady.hubIDs;
+      } else {
+        filter = selectedOption.value;
+      }
+
       dispatch(StoreSetter(keyword, filter));
       dispatch(StoreSetter('currentPage', 1));
       dispatch(UpdateFilters({ [filterName]: filter }));

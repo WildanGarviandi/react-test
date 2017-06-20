@@ -11,7 +11,7 @@ import * as OrderService from '../../orders/orderService';
 import * as FleetService from '../../nearbyFleets/nearbyFleetService';
 import {Glyph} from '../base';
 import Accordion from '../base/accordion';
-import styles from './styles.css';
+import styles from './styles.scss';
 import * as _ from 'lodash';
 import config from '../../../config.json';
 import {push} from 'react-router-redux';

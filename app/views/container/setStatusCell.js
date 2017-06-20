@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import classNaming from 'classnames';
 import {StatusList} from '../../modules';
 import {Dropdown, DropdownTypeAhead} from '../base';
-import styles from './table.css';
+import styles from './table.scss';
 
 const TripStatusSelect = React.createClass({
   selectVal(val) {

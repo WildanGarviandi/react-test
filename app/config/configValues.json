@@ -136,10 +136,22 @@
       "RADIO_ON": "/img/icon-radio-on.png",
       "RADIO_OFF": "/img/icon-radio-off.png",
       "MOTORCYCLE": "/img/icon-vehicle-motorcycle.png",
-      "VAN": "/img/icon-vehicle-van.png"
+      "VAN": "/img/icon-vehicle-van.png",
+      "LOCATION": "/img/icon-location.png",
+      "INBOUND_TRIP_DONE": "/img/image-inbound-trip-done.png"
     },
     "assignCentralHub": true,
     "HTTP_STATUS": {
       "OK": 200
+    },
+    "PICKUP_TYPE": [
+      {"key": "1", "value": "SDS", "label": "Same Day"},
+      {"key": "2", "value": "NDS", "label": "Next Day"},
+      {"key": "3", "value": "ODS", "label": "On Demand"},
+      {"key": "4", "value": "REG", "label": "Regular"}
+    ],
+    "OPTION": {
+      "YES": "Yes",
+      "NO": "No"
     }
 }

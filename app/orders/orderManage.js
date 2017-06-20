@@ -6,13 +6,13 @@ import {ButtonWithLoading} from '../components/button';
 import * as Form from '../components/form';
 import * as OrderService from './orderService';
 import * as ContactService from '../contacts/contactService';
-import styles from './styles.css';
+import styles from './styles.scss';
 import configValues from '../config/configValues.json';
 import DateTime from 'react-datetime';
 import moment from 'moment';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import {Link} from 'react-router';
-import stylesButton from '../components/button.css';
+import stylesButton from '../components/button.scss';
 import {Glyph} from '../views/base';
 import {formatDate} from '../helper/time';
 
