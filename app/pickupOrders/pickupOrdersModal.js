@@ -805,6 +805,7 @@ const PickupOrdersModal = React.createClass({
     this.props.CloseModal();
     this.activateDriver();
     this.props.SetFilterHub({});
+    selectedDriverVendor = null;
   },
   assignDriver() {
     if (!selectedDriver) {
