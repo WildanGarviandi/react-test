@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import * as _ from 'lodash'; //eslint-disable-line
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
@@ -16,7 +16,7 @@ import ModalActions from '../modules/modals/actions';
 import styles from './styles.scss';
 import { CanMarkContainer, TripParser, CanMarkTripDelivered } from '../modules/trips';
 import { OrderParser } from '../modules/orders';
-import { FilterText, FilterTopMultiple } from '../components/form';
+import { FilterTopMultiple } from '../components/form';
 import * as config from '../config/configValues.json';
 import * as InboundTrips from './inboundTripsService';
 import { checkPermission } from '../helper/permission';
@@ -574,6 +574,15 @@ const HubDropdown = connect(
 )(FilterTopMultiple);
 
 export class Filter extends Component {
+  constructor() {
+    super();
+    this.onClick = this.onClick.bind(this);
+  }
+
+  onClick() {
+    this.props.exportOrders();
+  }
+
   render() {
     return (
       <div className={styles['filter-container']}>
@@ -581,6 +590,12 @@ export class Filter extends Component {
           <TripProblemDropdown />
           <CityDropdown />
           {this.props.userLogged.roleName === config.role.SUPERHUB && <HubDropdown />}
+          <button
+            className={styles['export-trip']}
+            onClick={this.onClick}
+          >
+            Export Not Picked Up Order
+          </button>
         </div>
         <div className={styles['filter-box']}>
           <TripIDSearch />
@@ -597,12 +612,9 @@ export class Filter extends Component {
 /* eslint-disable */
 Filter.propTypes = {
   userLogged: PropTypes.object.isRequired,
+  exportOrders: PropTypes.func.isRequired,
 };
 /* eslint-enable */
-
-Filter.defaultProps = {
-  userLogged: {},
-};
 
 class TableStateful extends Component {
   constructor(props) {
@@ -716,7 +728,11 @@ class TableStateful extends Component {
                 <div className={styles.modalTitle}>
                   TRIP-{this.state.trip.TripID}
                 </div>
-                <div role="button" onClick={() => this.props.closeModal()} className={styles.modalClose}>
+                <div
+                  role="button"
+                  onClick={() => this.props.closeModal()}
+                  className={styles.modalClose}
+                >
                   &times;
                 </div>
                 <div className={styles.topDesc}>
@@ -796,11 +812,13 @@ function StateToProps(state) {
 
 
   return {
-    paginationState, trips, tripsIsFetching: isFetching,
+    paginationState,
+    trips,
+    tripsIsFetching: isFetching,
     statusList: _.chain(statusList)
       .map((key, val) => [val, key])
-      .sortBy((arr) => (arr[1]))
-      .map((arr) => (arr[0]))
+      .sortBy(arr => (arr[1]))
+      .map(arr => (arr[0]))
       .value(),
     nameToID: _.reduce(statusList, (memo, key, val) => {
       memo[val] = key;
@@ -816,7 +834,7 @@ function StateToProps(state) {
   };
 }
 
-function DispatchToProps(dispatch, ownProps) {
+function DispatchToProps(dispatch) {
   return {
     initialLoad() {
       dispatch(InboundTrips.FetchList());

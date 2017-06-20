@@ -1026,3 +1026,20 @@ td.webstoreNames {
 .table-cell:last-child {
   padding-right: 0;
 }
+
+.export-trip {
+  border: 0;
+  width: 210px;
+  height: 44px;
+  border-radius: 4px;
+  background-color: #2196f3;
+  color: #fff;
+  cursor: pointer;
+  padding: 5px;
+  margin-left: 20px;
+  margin-top: 25px;
+  float: right;
+  font-size: 14px;
+  font-weight: bold;
+}
+
