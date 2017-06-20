@@ -1,4 +1,4 @@
-import lodash from 'lodash'; //eslint-disable-line
+import * as _ from 'lodash'; //eslint-disable-line
 import Promise from 'bluebird';
 
 import FetchGet from '../modules/fetch/get';
@@ -47,23 +47,23 @@ const initialState = {
 export function Reducer(state = initialState, action) {
   switch (action.type) {
     case Constants.ORDERS_UPDATE_CURRENT_PAGE_SET: {
-      return lodash.assign({}, state, { currentPage: action.currentPage });
+      return Object.assign({}, state, { currentPage: action.currentPage });
     }
 
     case Constants.ORDERS_UPDATE_FETCH_END: {
-      return lodash.assign({}, state, { isFetching: false });
+      return Object.assign({}, state, { isFetching: false });
     }
 
     case Constants.ORDERS_UPDATE_FETCH_START: {
-      return lodash.assign({}, state, { isFetching: true });
+      return Object.assign({}, state, { isFetching: true });
     }
 
     case Constants.ORDERS_UPDATE_LIMIT_SET: {
-      return lodash.assign({}, state, { limit: action.limit });
+      return Object.assign({}, state, { limit: action.limit });
     }
 
     case Constants.ORDERS_UPDATE_SET: {
-      return lodash.assign({}, state, {
+      return Object.assign({}, state, {
         orders: action.orders,
         total: action.total,
       });
@@ -71,7 +71,7 @@ export function Reducer(state = initialState, action) {
 
     case Constants.ORDERS_UPDATE_START_EDIT_ORDER: {
       if (!action.duplicate) {
-        return lodash.assign({}, state, {
+        return Object.assign({}, state, {
           isEditing: true,
           isDuplicate: false,
           scannedOrder: action.scannedOrder || state.scannedOrder,
@@ -80,7 +80,7 @@ export function Reducer(state = initialState, action) {
         });
       }
 
-      return lodash.assign({}, state, {
+      return Object.assign({}, state, {
         isEditing: true,
         duplicateOrders: action.orders,
         isDuplicate: true,
@@ -88,7 +88,7 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.ORDERS_UPDATE_END_EDIT_ORDER: {
-      return lodash.assign({}, state, {
+      return Object.assign({}, state, {
         isEditing: false,
         scannedOrder: {},
         scannedPricing: 0,
@@ -98,19 +98,19 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.ORDERS_UPDATE_START: {
-      return lodash.assign({}, state, { isUpdating: true });
+      return Object.assign({}, state, { isUpdating: true });
     }
 
     case Constants.ORDERS_UPDATE_END: {
-      return lodash.assign({}, state, { isUpdating: false });
+      return Object.assign({}, state, { isUpdating: false });
     }
 
     case Constants.ORDERS_UPDATE_SUCCESS_EDITING: {
-      return lodash.assign({}, state, { isSuccessEditing: true });
+      return Object.assign({}, state, { isSuccessEditing: true });
     }
 
     case Constants.ORDERS_UPDATE_REVERT_SUCCESS_EDITING: {
-      return lodash.assign({}, state, { isSuccessEditing: false });
+      return Object.assign({}, state, { isSuccessEditing: false });
     }
 
     default: return state;
@@ -127,7 +127,7 @@ export function FetchList() {
     const { token } = userLogged;
     const { currentPage, limit } = updateOrders;
 
-    const query = lodash.assign({}, {
+    const query = Object.assign({}, {
       limit,
       offset: (currentPage - 1) * limit,
     });
@@ -140,7 +140,7 @@ export function FetchList() {
       response.json().then(({ data }) => {
         dispatch({
           type: Constants.ORDERS_UPDATE_SET,
-          orders: lodash.map(data.rows, OrderParser),
+          orders: _.map(data.rows, OrderParser),
           total: data.count,
         });
 
@@ -187,10 +187,10 @@ const mapPricing = (pricing) => {
     let mappedPricing = [];
     let price;
 
-    if (pricing.length > 0) {
-      if (pricing[0] && !pricing[0].MaxWeight) {
+    if (pricing.length > 0 && pricing[0]) {
+      if (pricing[0].PickupType === 1 && !pricing[0].MaxWeight) {
         isPricingByWeight = false;
-        mappedPricing = lodash.map(pricing, (priceData) => {
+        mappedPricing = _.map(pricing, (priceData) => {
           const hasPackageDimensionData = (priceData.WebstoreUser) &&
             (priceData.WebstoreUser.PackageDimension) &&
             priceData.WebstoreUser.PackageDimension[0];
@@ -255,8 +255,8 @@ export function StartEditOrder(orderID) {
               .then((response) => {
                 const responseJson = response.json();
                 return responseJson;
-              }).then(({ resolvedData }) => {
-                const result = resolvedData;
+              }).then((responseJson) => {
+                const result = responseJson.data;
                 return result;
               });
 
@@ -281,7 +281,8 @@ export function StartEditOrder(orderID) {
                 });
               }
               return response.json();
-            }).then(({ result }) => {
+            }).then((responseJson) => {
+              const result = responseJson.data;
               dispatch({
                 type: Constants.ORDERS_UPDATE_START_EDIT_ORDER,
                 scannedOrder: result,
@@ -300,7 +301,8 @@ export function StartEditOrder(orderID) {
               const responseJson = response.json();
               return responseJson;
             })
-            .then(({ result }) => {
+            .then((responseJson) => {
+              const result = responseJson.data;
               dispatch({ type: modalAction.BACKDROP_HIDE });
               dispatch(mapPricing(result));
             });
