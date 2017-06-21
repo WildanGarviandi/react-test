@@ -45,20 +45,20 @@ function GetOrders(state) {
 
 function PickupType(type) {
   switch (type) {
-    case 1: return `${configValues.PICKUP_TYPE[0].label} Service`;
-    case 2: return `${configValues.PICKUP_TYPE[1].label} Service`;
-    case 3: return `${configValues.PICKUP_TYPE[2].label} Service`;
-    case 4: return `${configValues.PICKUP_TYPE[3].label} Service`;
+    case 1: return configValues.PICKUP_TYPE[0].label;
+    case 2: return configValues.PICKUP_TYPE[1].label;
+    case 3: return configValues.PICKUP_TYPE[2].label;
+    case 4: return configValues.PICKUP_TYPE[3].label;
     default: return '';
   }
 }
 
 function PickupTypeAbbr(type) {
   switch (type) {
-    case 1: return `${configValues.PICKUP_TYPE[0].value}`;
-    case 2: return `${configValues.PICKUP_TYPE[1].value}`;
-    case 3: return `${configValues.PICKUP_TYPE[2].value}`;
-    case 4: return `${configValues.PICKUP_TYPE[3].value}`;
+    case 1: return configValues.PICKUP_TYPE[0].value;
+    case 2: return configValues.PICKUP_TYPE[1].value;
+    case 3: return configValues.PICKUP_TYPE[2].value;
+    case 4: return configValues.PICKUP_TYPE[3].value;
     default: return '';
   }
 }
