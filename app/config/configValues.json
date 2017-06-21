@@ -150,10 +150,10 @@
       "PNG": "image/png"
     },
     "PICKUP_TYPE": [
-      {"key": "1", "value": "SDS", "label": "Same Day"},
-      {"key": "2", "value": "NDS", "label": "Next Day"},
-      {"key": "3", "value": "ODS", "label": "On Demand"},
-      {"key": "4", "value": "REG", "label": "Regular"}
+      {"key": "1", "value": "SDS", "label": "Same Day Service"},
+      {"key": "2", "value": "NDS", "label": "Next Day Service"},
+      {"key": "3", "value": "ODS", "label": "On Demand Service"},
+      {"key": "4", "value": "REG", "label": "Regular Service"}
     ],
     "OPTION": {
       "YES": "Yes",
