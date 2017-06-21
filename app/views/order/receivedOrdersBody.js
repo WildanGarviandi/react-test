@@ -10,7 +10,7 @@ import * as OrdersReceived from '../../modules/orders/actions/received';
 import * as ReceivedOrders from '../../modules/receivedOrders';
 import {formatDate} from '../../helper/time';
 import {CheckboxCell} from '../base/tableCell';
-import styles from '../base/table.css';
+import styles from '../base/table.scss';
 
 function mapDispatchToCheckBox(dispatch, ownProps) {
   return {

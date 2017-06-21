@@ -279,7 +279,7 @@ export function markReceived(id) {
             scannedOrder: scannedID,
             isTripID,
             isInterHub,
-            totalOrderByTrip: data.Trip.UserOrderRoutes.length,
+            totalOrderByTrip: data.Trip ? data.Trip.UserOrderRoutes.length : 0,
           },
         });
         dispatch(reFetchList());

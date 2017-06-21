@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
-import styles from './table.css';
+import styles from './table.scss';
 
 const PickRow = React.createClass({
   handleClick() {

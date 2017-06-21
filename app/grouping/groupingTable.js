@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import groupingBody from './groupingBody';
 import groupingHeaders from './groupingHeaders';
 import * as Grouping from './groupingService';
-import styles from './styles.css';
+import styles from './styles.scss';
 import {ButtonWithLoading, Input, Pagination} from '../views/base';
 
 const Table = React.createClass({

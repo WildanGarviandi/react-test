@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import ReactDOM from 'react-dom';
 import classNaming from 'classnames';
 
-import styles from './form.css';
+import styles from './form.scss';
 import { Glyph } from '../views/base/glyph';
 import { ButtonBase } from './button';
 import config from '../config/configValues.json';

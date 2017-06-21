@@ -2,7 +2,7 @@ import lodash from 'lodash';
 import fetchGet from '../modules/fetch/get';
 import fetchPost from '../modules/fetch/post';
 import ModalActions from '../modules/modals/actions';
-import {modalAction} from '../modules/modals/constants';
+import { modalAction } from '../modules/modals/constants';
 import * as DashboardService from '../dashboard/dashboardService';
 
 const Constants = {
@@ -42,7 +42,7 @@ function GetOrders(state) {
 }
 
 function PickupType(type) {
-  switch(type) {
+  switch (type) {
     case 1: return "Same Day Service";
     case 2: return "Next Day Service";
     case 3: return "On Demand Service";
@@ -52,7 +52,7 @@ function PickupType(type) {
 }
 
 function PickupTypeAbbr(type) {
-  switch(type) {
+  switch (type) {
     case 1: return "SDS";
     case 2: return "NDS";
     case 3: return "ODS";
@@ -62,7 +62,7 @@ function PickupTypeAbbr(type) {
 }
 
 function Currency(x) {
-  if(!x) {
+  if (!x) {
     x = 0;
   }
 
@@ -86,7 +86,7 @@ export function OrderParser(order) {
   const pickupTime = new Date(order.PickupTime);
   order.DeliveryFee = order.OrderCost;
   return lodash.assign({}, order, {
-    CODValue: order.IsCOD ? order.TotalValue: 0,
+    CODValue: order.IsCOD ? order.TotalValue : 0,
     DropoffAddress: order.DropoffAddress ? FullAddress(order.DropoffAddress) : "",
     DropoffTime: dropoffTime.toLocaleString(),
     ID: (order.UserOrderNumber + ' / ' + order.WebOrderID) || "",
@@ -104,43 +104,43 @@ export function OrderParser(order) {
     Dropoff: order.DropoffAddress,
     ZipCode: order.DropoffAddress && order.DropoffAddress.ZipCode,
   }, lodash.reduce(currencyAttributes, (acc, attr) => {
-    return lodash.assign(acc, {[attr]: Currency(order[attr])});
+    return lodash.assign(acc, { [attr]: Currency(order[attr]) });
   }, {}), lodash.reduce(boolAttributes, (acc, attr) => {
     let result = "";
-    if(attr in order) {
+    if (attr in order) {
       result = order[attr] ? "Yes" : "No";
     }
 
-    return lodash.assign(acc, {[attr]: result});
+    return lodash.assign(acc, { [attr]: result });
   }, {}));
 }
 
 export const startEditing = () => {
-  return {type: Constants.EDIT_ORDER_START};
+  return { type: Constants.EDIT_ORDER_START };
 }
 
 export const endEditing = () => {
-  return {type: Constants.EDIT_ORDER_END};
-}
+  return { type: Constants.EDIT_ORDER_END };
+};
 
 export const revertSuccessEditing = () => {
-  return {type: Constants.REVERT_SUCCESS_EDITING};
-}
+  return { type: Constants.REVERT_SUCCESS_EDITING };
+};
 
 export const editOrder = (id, order, fromInbound) => {
-  return (dispatch, getState) => {
-    const {userLogged, orderDetails} = getState().app;
-    const {token} = userLogged;
+  const dispatchData = (dispatch, getState) => {
+    const { userLogged, orderDetails } = getState().app;
+    const { token } = userLogged;
 
     const postBody = {
-      updateData: order,
-    }
+      UpdateData: order,
+    };
 
     dispatch({ type: Constants.UPDATE_ORDERS_START });
     dispatch({ type: modalAction.BACKDROP_SHOW });
-    fetchPost('/order/' + id, token, postBody).then((response) => {
-      if(response.ok) {
-        response.json().then(function({data}) {
+    fetchPost(`/order/${id}`, token, postBody).then((response) => {
+      if (response.ok) {
+        response.json().then(() => {
           dispatch({
             type: Constants.DETAILS_SET,
             order: lodash.assign({}, orderDetails.order, order),
@@ -156,32 +156,36 @@ export const editOrder = (id, order, fromInbound) => {
       } else {
         dispatch({ type: Constants.UPDATE_ORDERS_END });
         dispatch({ type: modalAction.BACKDROP_HIDE });
-        response.json().then(({error}) => {
-          dispatch(ModalActions.addMessage('Failed to edit order details. ' + error.message));
+        response.json().then(({ error }) => {
+          dispatch(ModalActions.addMessage(
+            `Failed to edit order details. ${error.message}`,
+          ));
         });
       }
-    }).catch(() => { 
+    }).catch(() => {
       dispatch({ type: Constants.UPDATE_ORDERS_END });
       dispatch({ type: modalAction.BACKDROP_HIDE });
       dispatch(ModalActions.addMessage('Network error'));
     });
-  }
-}
+  };
+
+  return dispatchData;
+};
 
 export const fetchDetails = (id) => {
   return (dispatch, getState) => {
-    const {userLogged} = getState().app;
-    const {token} = userLogged;
+    const { userLogged } = getState().app;
+    const { token } = userLogged;
 
     dispatch({ type: Constants.DETAILS_FETCH_START });
-    fetchGet('/order/' + id, token).then(function(response) {
-      if(!response.ok) {
-        return response.json().then(({error}) => {
+    fetchGet('/order/' + id, token).then(function (response) {
+      if (!response.ok) {
+        return response.json().then(({ error }) => {
           throw error;
         });
       }
 
-      response.json().then(function({data}) {
+      response.json().then(function ({ data }) {
         dispatch({
           type: Constants.DETAILS_SET,
           order: OrderParser(data),

@@ -10,7 +10,7 @@ import * as TripDetails from '../../modules/inboundTripDetails';
 import {CanAssignFleet} from '../../modules/trips';
 
 import {ButtonBase, ButtonWithLoading, DropdownTypeAhead} from '../base';
-import styles from './styles.css';
+import styles from './styles.scss';
 
 const DriverSetter = React.createClass({
   componentWillMount() {

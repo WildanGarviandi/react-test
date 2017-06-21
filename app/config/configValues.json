@@ -137,10 +137,32 @@
       "RADIO_OFF": "/img/icon-radio-off.png",
       "MOTORCYCLE": "/img/icon-vehicle-motorcycle.png",
       "VAN": "/img/icon-vehicle-van.png",
-      "INBOUND_TRIP_DONE": "/img/image-inbound-trip-done.png"
+      "INBOUND_TRIP_DONE": "/img/image-inbound-trip-done.png",
+      "DRAG_DROP": "/img/icon-add-image-drag-drop.png",
+      "LOCATION": "/img/icon-location.png"
     },
     "assignCentralHub": true,
     "HTTP_STATUS": {
       "OK": 200
+    },
+    "IMAGE_TYPE": {
+      "JPEG": "image/jpeg",
+      "PNG": "image/png"
+    },
+    "PICKUP_TYPE": [
+      {"key": "1", "value": "SDS", "label": "Same Day"},
+      {"key": "2", "value": "NDS", "label": "Next Day"},
+      {"key": "3", "value": "ODS", "label": "On Demand"},
+      {"key": "4", "value": "REG", "label": "Regular"}
+    ],
+    "OPTION": {
+      "YES": "Yes",
+      "NO": "No"
+    },
+    "FILE_TYPE": {
+      "EXCEL": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    },
+    "RESPONSE_TYPE": {
+      "ARRAY_BUFFER": "arraybuffer"
     }
 }

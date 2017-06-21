@@ -1,13 +1,17 @@
 import * as _ from 'lodash'; //eslint-disable-line
+import moment from 'moment';
 import { push } from 'react-router-redux';
 
+import { fetchXhr } from '../modules/fetch/getXhr';
 import FetchGet from '../modules/fetch/get';
 import FetchPost from '../modules/fetch/post';
+import fetchDelete from '../modules/fetch/delete';
 import ModalActions from '../modules/modals/actions';
 import { TripParser } from '../modules/trips';
 import OrderStatusSelector from '../modules/orderStatus/selector';
 import { modalAction } from '../modules/modals/constants';
 import * as DashboardService from '../dashboard/dashboardService';
+import configValues from '../config/configValues.json';
 
 const Constants = {
   TRIPS_INBOUND_CURRENTPAGE_SET: 'inbound/currentPage/set',
@@ -263,8 +267,9 @@ export function SetFiltersStatus(keyword) {
   return (dispatch, getState) => {
     const options = OrderStatusSelector.GetList(getState());
     const orderStatus = _.reduce(options, (results, status) => {
-      results[status.value] = status.key;
-      return results;
+      const data = _.cloneDeep(results);
+      data[status.value] = status.key;
+      return data;
     }, {});
 
     const { inboundTrips } = getState().app;
@@ -547,9 +552,48 @@ export function SetFilterDriver(payload) {
   };
 }
 
-export function AssignDriver(tripID, driverID) {
-  return (dispatch, getState) => {
-    const { userLogged } = getState().app;
+const handleErrorResponse = async (response) => {
+  const errorValue = response.json().then(({ error }) => {
+    throw error;
+  });
+  return errorValue;
+};
+
+const getCancelDriverPromise = async (tripID, token) => {
+  const promise = fetchDelete(`/trip/${tripID}/driver`, token, {});
+  return promise;
+};
+
+const getCancelHubPromise = async (tripID, token) => {
+  const promise = fetchDelete(`/trip/${tripID}/fleetmanager`,
+    token, {}, true);
+  return promise;
+};
+
+const getMockPromise = async () => {
+  const promise = new Promise((resolve) => {
+    const resolvedData = resolve({
+      skip: true,
+    });
+
+    return resolvedData;
+  });
+  return promise;
+};
+
+const handleErrMsgArr = (arr) => {
+  let message = '';
+  arr.forEach((data, index) => {
+    message += `${index + 1}. ${data.order} - ${data.reason}
+    ${index < arr.length - 1 ? '\n' : ''}`;
+  });
+  return message;
+};
+
+export function assignDriver(tripID, driverID) {
+  return async (dispatch, getState) => {
+    const { userLogged, inboundTrips } = getState().app;
+    const { currentTrip } = inboundTrips;
     const { token } = userLogged;
 
     const body = {
@@ -557,30 +601,50 @@ export function AssignDriver(tripID, driverID) {
     };
 
     dispatch({ type: modalAction.BACKDROP_SHOW });
-    FetchPost(`/trip/${tripID}/driver`, token, body).then((response) => {
-      if (!response.ok) {
-        return response.json().then(({ error }) => {
-          throw error;
-        });
+
+    try {
+      let response = currentTrip.Driver ?
+        await getCancelDriverPromise(tripID, token) :
+        await getMockPromise();
+
+      if (!(response.ok || response.skip)) {
+        await handleErrorResponse(response);
       }
 
-      return response.json().then(() => {
-        dispatch(ModalActions.addMessage('Assign driver success'));
-        dispatch(FetchList());
-        dispatch({ type: modalAction.BACKDROP_HIDE });
-        dispatch(HideReAssignModal());
-      });
-    }).catch((e) => {
-      const message = (e && e.message) ? e.message : 'Failed to set driver';
+      response = currentTrip.FleetManager ?
+        await getCancelHubPromise(tripID, token) :
+        await getMockPromise();
+
+      if (!(response.ok || response.skip)) {
+        await handleErrorResponse(response);
+      }
+
+      response = await FetchPost(`/trip/${tripID}/driver`, token, body);
+
+      if (!(response.ok || response.skip)) {
+        await handleErrorResponse(response);
+      }
+
+      response = await response.json();
+
+      dispatch(ModalActions.addMessage('Assign driver success'));
+    } catch (e) {
+      let message = (e && e.message) ? e.message : 'Failed to set driver';
+      message = Array.isArray(message) ? handleErrMsgArr(message) : message;
       dispatch({ type: modalAction.BACKDROP_HIDE });
       dispatch(ModalActions.addMessage(message));
-    });
+    } finally {
+      dispatch(FetchList());
+      dispatch({ type: modalAction.BACKDROP_HIDE });
+      dispatch(HideReAssignModal());
+    }
   };
 }
 
-export function AssignHub(tripID, hubID) {
-  return (dispatch, getState) => {
-    const { userLogged } = getState().app;
+export function assignHub(tripID, hubID) {
+  return async (dispatch, getState) => {
+    const { userLogged, inboundTrips } = getState().app;
+    const { currentTrip } = inboundTrips;
     const { token } = userLogged;
 
     const body = {
@@ -588,24 +652,43 @@ export function AssignHub(tripID, hubID) {
     };
 
     dispatch({ type: modalAction.BACKDROP_SHOW });
-    FetchPost(`/trip/${tripID}/transfer`, token, body, true).then((response) => {
-      if (!response.ok) {
-        return response.json().then(({ error }) => {
-          throw error;
-        });
+
+    try {
+      let response = currentTrip.Driver ?
+        await getCancelDriverPromise(tripID, token) :
+        await getMockPromise();
+
+      if (!(response.ok || response.skip)) {
+        await handleErrorResponse(response);
       }
 
-      return response.json().then(() => {
-        dispatch(ModalActions.addMessage('Assign hub success'));
-        dispatch(FetchList());
-        dispatch({ type: modalAction.BACKDROP_HIDE });
-        dispatch(HideReAssignModal());
-      });
-    }).catch((e) => {
-      const message = (e && e.message) ? e.message : 'Failed to assign hub';
+      response = currentTrip.FleetManager ?
+        await getCancelHubPromise(tripID, token) :
+        await getMockPromise();
+
+      if (!(response.ok || response.skip)) {
+        await handleErrorResponse(response);
+      }
+
+      response = await FetchPost(`/trip/${tripID}/transfer`, token, body, true);
+
+      if (!(response.ok || response.skip)) {
+        await handleErrorResponse(response);
+      }
+
+      response = await response.json();
+
+      dispatch(ModalActions.addMessage('Assign hub success'));
+    } catch (e) {
+      let message = (e && e.message) ? e.message : 'Failed to assign hub';
+      message = Array.isArray(message) ? handleErrMsgArr(message) : message;
       dispatch({ type: modalAction.BACKDROP_HIDE });
       dispatch(ModalActions.addMessage(message));
-    });
+    } finally {
+      dispatch(FetchList());
+      dispatch({ type: modalAction.BACKDROP_HIDE });
+      dispatch(HideReAssignModal());
+    }
   };
 }
 
@@ -660,5 +743,56 @@ export function setAllHubFilter(hubOptions) {
     payload: {
       hubs,
     },
+  };
+}
+
+export function exportOrders() {
+  return (dispatch, getState) => {
+    const { userLogged } = getState().app;
+    const { token } = userLogged;
+    const acceptHeader = configValues.FILE_TYPE.EXCEL;
+    const responseType = configValues.RESPONSE_TYPE.ARRAY_BUFFER;
+
+    const output = `<p style="text-align: center">
+      <img src="../../img/loading.gif" style="width:100px; height:100px;" />
+      <br />
+      You can do other things, while exporting in progress
+      </p>`;
+
+    const popout = window.open();
+    popout.document.write(output);
+    const xhr = fetchXhr('/order/unscanned-inbound/export', {}, token,
+      acceptHeader, responseType);
+    xhr.onload = () => {
+      const blob = new Blob([xhr.response], { type: acceptHeader });
+      const fileName = `not_picked_up_order_${moment(new Date()).format('YYYY-MM-DD HH:mm:ss')}.xlsx`;
+      if (typeof window.navigator.msSaveBlob !== 'undefined') {
+        window.navigator.msSaveBlob(blob, fileName);
+      } else {
+        const downloadUrl = window.URL.createObjectURL(blob);
+
+        if (fileName) {
+          const link = document.createElement('a');
+          if (typeof link.download === 'undefined') {
+            popout.location.href = downloadUrl;
+          } else {
+            link.href = downloadUrl;
+            link.download = fileName;
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+          }
+        } else {
+          popout.location.href = downloadUrl;
+        }
+
+        setTimeout(() => {
+          window.URL.revokeObjectURL(downloadUrl);
+          popout.close();
+        }, 1000);
+      }
+    };
+
+    xhr.send(null);
   };
 }

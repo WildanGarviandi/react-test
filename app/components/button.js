@@ -1,6 +1,6 @@
 import React from 'react';
 import classNaming from 'classnames';
-import baseStyle from './button.css';
+import baseStyle from './button.scss';
 
 const ButtonBase = React.createClass({
   render() {
