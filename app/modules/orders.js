@@ -53,6 +53,7 @@ export function OrderParser(order) {
     RouteStatus: (order.CurrentRoute && order.CurrentRoute.OrderStatus && order.CurrentRoute.OrderStatus.OrderStatus) || "",
     User: (order.User && (order.User.FirstName + ' ' + order.User.LastName)) || '',
     WebstoreName: (order.User && (order.User.FirstName + ' ' + order.User.LastName)) || '',
+    WebstoreUser: order.WebstoreUser ? `${order.WebstoreUser.FirstName} ${order.WebstoreUser.LastName}` : null,
     Weight: (order.PackageWeight && (order.PackageWeight + ' kg')) || "",
     ZipCode: order.DropoffAddress && order.DropoffAddress.ZipCode,
     SuggestedVendors: (order.LastMileFleetSuggestion) ? order.LastMileFleetSuggestion.map((val) => {
