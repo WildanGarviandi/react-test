@@ -1,4 +1,4 @@
-import * as _ from 'lodash'; //eslint-disable-line
+import * as _ from 'lodash';
 import Promise from 'bluebird';
 
 import FetchGet from '../modules/fetch/get';

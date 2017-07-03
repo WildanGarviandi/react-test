@@ -1,12 +1,13 @@
-import * as _ from 'lodash'; //eslint-disable-line
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { Link } from 'react-router';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
+import ReactTooltip from 'react-tooltip';
+
+import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import ReactTooltip from 'react-tooltip';
 
 import { DropdownWithState2 } from '../views/base/dropdown';
 import { Pagination } from '../views/base';

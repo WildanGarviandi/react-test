@@ -1,4 +1,4 @@
-import ModalActions from '../modals/actions'; //eslint-disable-line
+import ModalActions from '../modals/actions';
 import fetchGet from '../fetch/get';
 import fetchPost from '../fetch/post';
 import { SetTrip } from '../inboundTripDetails';

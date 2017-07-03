@@ -1,4 +1,4 @@
-export const CHECK_AUTH = 'CHECK_AUTH_START'; //eslint-disable-line
+export const CHECK_AUTH = 'CHECK_AUTH_START';
 export const AUTH_VALID = 'CHECK_AUTH_SUCCESS';
 export const AUTH_INVALID = 'CHECK_AUTH_FAILED';
 

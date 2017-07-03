@@ -1,4 +1,4 @@
-import { createSelector } from 'reselect'; //eslint-disable-line
+import { createSelector } from 'reselect';
 
 const getState = (state) => {
   const data = state.app.userLogged;

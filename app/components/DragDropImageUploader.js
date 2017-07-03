@@ -1,4 +1,4 @@
-import React, { Component } from 'react'; //eslint-disable-line
+import React from 'react';
 import Dropzone from 'react-dropzone';
 import PropTypes from 'prop-types';
 

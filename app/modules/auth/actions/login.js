@@ -1,4 +1,4 @@
-import { push } from 'react-router-redux'; //eslint-disable-line
+import { push } from 'react-router-redux';
 
 import * as actionTypes from '../constants';
 import fetchPost from '../../fetch/post';

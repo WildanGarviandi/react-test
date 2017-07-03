@@ -1,4 +1,4 @@
-import * as actionTypes from '../constants'; //eslint-disable-line
+import * as actionTypes from '../constants';
 
 const initialUserState = {
   isFetching: false,
