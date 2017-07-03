@@ -22,7 +22,8 @@ module.exports = {
           use: [{
             loader: 'css-loader',
             query: {
-              modules: true
+              modules: true,
+              localIdentName: '[name]__[local]--[hash:base64:5]',
             }
           }, {
             loader: 'sass-loader',
