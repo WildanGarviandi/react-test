@@ -1,14 +1,20 @@
 # Etobee Hub
 
+## Description
+
+Etobee web application for managing inbound, processing, and outbound orders 
+
 ## Technologies
 - React 15.5.4 (JS Framework)
-- Webpack 1.15.0 (Module Bundler)
-- ESLint 3.19.0 (Linting Utility - AirBnB Style)
+- Webpack 2.6.1 (Module Bundler)
+- ESLint 3.19.0 and ESLint Config AirBnb 15.0.1 (Linter and Code Style)
 - Lodash 4.17.4 (Data Manipulation)
 - Moment 2.18.1 (Date Utility)
 - Redux 3.6.0 (State Management)
 - React Bootstrap 0.28.5
 - React Router 2.8.1
+- Reselect 3.0.1 (Redux Selector)
+- SASS (CSS Preprocessor)
 
 ## Configuration
 
@@ -55,6 +61,13 @@ npm run server
 
 ## Style Guide
 
+```
+WARNING: This guide is subject to be changed.
+Guide Example: Login and DragDropImageUploader Component
+```
+
+- [Project Structure](https://medium.com/@alexmngn/how-to-better-organize-your-react-applications-2fd3ea1920f1)
+
 - React
 Use [AirBnB React Style Guide](https://github.com/airbnb/javascript/tree/master/react#alignment)
 
@@ -66,6 +79,9 @@ MUST export its action creators as functions
 MUST have action types in the form npm-module-or-app/reducer/ACTION_TYPE
 MAY export its action types as UPPER_SNAKE_CASE, if an external reducer needs to listen for them, or if it is a published reusable library
 ```
+
+- Redux Selector
+Use [Selector](https://github.com/reactjs/reselect) for Redux performance
 
 - Action Format
 Use [Flux Standard Action](https://github.com/acdlite/flux-standard-action)
