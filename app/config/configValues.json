@@ -139,7 +139,9 @@
       "VAN": "/img/icon-vehicle-van.png",
       "INBOUND_TRIP_DONE": "/img/image-inbound-trip-done.png",
       "DRAG_DROP": "/img/icon-add-image-drag-drop.png",
-      "LOCATION": "/img/icon-location.png"
+      "LOCATION": "/img/icon-location.png",
+      "DEFAULT": "/img/default-logo.png",
+      "ETOBEE": "/img/etobee-logo.png"
     },
     "assignCentralHub": true,
     "HTTP_STATUS": {
@@ -164,5 +166,11 @@
     },
     "RESPONSE_TYPE": {
       "ARRAY_BUFFER": "arraybuffer"
+    },
+    "SORT": {
+      "DIRECTION": {
+        "ASC": "ASC",
+        "DESC": "DESC"
+      }
     }
 }

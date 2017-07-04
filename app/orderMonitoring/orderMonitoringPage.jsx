@@ -208,6 +208,7 @@ class OrderMonitoringPage extends Component {
 
         <div className={styles.widgetOuterContainer}>
           <div
+            role="button"
             onClick={() => this.activatePending()}
             className={`${styles.widgetContainer}
             ${this.state.showPending ? styles.toggleWidgetActive : styles.toggleWidget}`}
@@ -217,6 +218,7 @@ class OrderMonitoringPage extends Component {
           </div>
           <span className={styles.arbitTogglePickup}> | </span>
           <div
+            role="button"
             onClick={() => this.activateSucceed()}
             className={`${styles.widgetContainer}
             ${this.state.showSucceed ? styles.toggleWidgetActive : styles.toggleWidget}`}
@@ -226,6 +228,7 @@ class OrderMonitoringPage extends Component {
           </div>
           <span className={styles.arbitTogglePickup}> | </span>
           <div
+            role="button"
             onClick={() => this.activateFailed()}
             className={`${styles.widgetContainer}
             ${this.state.showFailed ? styles.toggleWidgetActive : styles.toggleWidget}`}
