@@ -1,4 +1,4 @@
-import { modalAction } from '../constants'; //eslint-disable-line
+import { modalAction } from '../constants';
 
 const initialState = { modals: [], showBackdrop: false };
 

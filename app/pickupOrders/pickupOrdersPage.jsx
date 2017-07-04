@@ -1,4 +1,4 @@
-import lodash from 'lodash'; // eslint-disable-line
+import lodash from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 import PickupOrdersTable, { Filter } from './pickupOrdersTable';

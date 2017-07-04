@@ -1,4 +1,3 @@
-import lodash from 'lodash'; //eslint-disable-line
 import React from 'react';
 import { connect } from 'react-redux';
 

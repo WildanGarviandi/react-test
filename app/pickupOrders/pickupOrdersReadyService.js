@@ -1,4 +1,4 @@
-import * as _ from 'lodash'; //eslint-disable-line
+import * as _ from 'lodash';
 import { push } from 'react-router-redux';
 
 import FetchGet from '../modules/fetch/get';

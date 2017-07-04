@@ -1,4 +1,4 @@
-import React from 'react'; // eslint-disable-line
+import React from 'react';
 import classNaming from 'classnames';
 import PropTypes from 'prop-types';
 

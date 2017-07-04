@@ -1,4 +1,4 @@
-import React from 'react';  // eslint-disable-line
+import React from 'react';
 import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -24,6 +24,7 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 class LoginPage extends React.Component {
+
   constructor(props) {
     super(props);
 
@@ -60,7 +61,8 @@ class LoginPage extends React.Component {
       <Login
         input={this.state}
         handleInputChange={this.handleInputChange}
-        handleSubmit={this.handleSubmit} loginState={loginState}
+        handleSubmit={this.handleSubmit}
+        loginState={loginState}
       />
     );
   }
