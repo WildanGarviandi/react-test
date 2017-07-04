@@ -28,7 +28,7 @@ let classnaming = require('classnames/bind').bind(styles);
 let interval = null;
 
 const MenuItem = ({ active, children, to, onClick }) => {
-  let className = classnaming('menuItem', { active: active });
+  let className = classnaming('menuItem', { active });
   return (
     <li onClick={onClick} className={className}>
       <Link className={styles.link} to={to}>{children}</Link>
@@ -38,7 +38,14 @@ const MenuItem = ({ active, children, to, onClick }) => {
 
 const AccordionMenu = React.createClass({
   render() {
-    const { accordionAction, accordionState, activeMenuIdx, activeMenuTarget, iconName, iconTitle } = this.props;
+    const {
+      accordionAction,
+      accordionState,
+      activeMenuIdx,
+      activeMenuTarget,
+      iconName,
+      iconTitle,
+    } = this.props;
     const isActive = _.includes(activeMenuTarget, activeMenuIdx);
 
     const chevronStyle = classnaming('menuGlyph', 'chevron');
@@ -47,7 +54,7 @@ const AccordionMenu = React.createClass({
 
     return (
       <div className={styles.accWrapper}>
-        <div onClick={accordionAction.toggleView} className={className}>
+        <div role="button" onClick={accordionAction.toggleView} className={className}>
           <Glyph className={styles.menuGlyph} name={iconName} />
           <Glyph className={chevronStyle} name={chevronType} />
           <span>{iconTitle}</span>
@@ -58,8 +65,8 @@ const AccordionMenu = React.createClass({
         }
       </div>
     );
-  }
-})
+  },
+});
 
 const DashboardMenu = ({ activeMenuIdx, handleLogout, toggleCompact,
   hubID, loggedName, counterOrder, count, countTMS, tmsMenu, switchMenu,
@@ -131,7 +138,7 @@ const DashboardMenu = ({ activeMenuIdx, handleLogout, toggleCompact,
         {config.features.menuTMS && (tmsMenu || !hubID) &&
           <div>
             <div className={styles.titlePanel}>
-              <MenuItem active={activeMenuIdx === 11} to={'/ordermonitoring'}>
+              <MenuItem active={activeMenuIdx === 12} to={'/ordermonitoring'}>
                 <img src="/img/icon-hub-performance.png" className={styles.menuGlyph} />
                 <span>Order Monitoring</span>
               </MenuItem>
@@ -178,7 +185,7 @@ const DashboardMenu = ({ activeMenuIdx, handleLogout, toggleCompact,
       {
         hubID &&
         <div>
-          <a className={styles.switchLink} onClick={switchMenu}>
+          <a role="button" className={styles.switchLink} onClick={switchMenu}>
             <img src="/img/icon-switch.png" className={styles.menuSwitch} />
             <span>Switch to {tmsMenu ? 'Hub' : 'TMS'}</span>
           </a>
@@ -186,11 +193,11 @@ const DashboardMenu = ({ activeMenuIdx, handleLogout, toggleCompact,
       }
     </div>
   );
-}
+};
 
 const DashboardContent = ({ children }) => {
   return (<div className={styles.content}>{children}</div>);
-}
+};
 
 const menuPaths = [
   '/performance',
@@ -205,7 +212,7 @@ const menuPaths = [
   '/mytrips',
   '/myongoingtrips',
   '/mydrivers',
-  '/ordermonitoring'
+  '/ordermonitoring',
 ];
 
 const menuPathsTMS = [
@@ -214,12 +221,12 @@ const menuPathsTMS = [
   '/mytrips',
   '/myongoingtrips',
   '/mydrivers',
-  '/ordermonitoring'
+  '/ordermonitoring',
 ];
 
 function GetActiveMenuIdx(path) {
-  let fpath = _.find(menuPaths, (menu) => (path.indexOf(menu) > -1));
-  let idx = menuPaths.indexOf(fpath);
+  const fpath = _.find(menuPaths, menu => (path.indexOf(menu) > -1));
+  const idx = menuPaths.indexOf(fpath);
   return idx;
 }
 
@@ -250,9 +257,9 @@ const DashboardContainer = React.createClass({
     this.props.switchMenu(!this.state.tmsMenu);
   },
   checkAuth() {
-    interval = setInterval(function () {
+    interval = setInterval(() => {
       this.props.checkAuth();
-    }.bind(this), 10000);
+    }, 10000);
   },
   render() {
     const { routes, userLogged } = this.props;

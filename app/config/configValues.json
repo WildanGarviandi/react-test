@@ -27,7 +27,7 @@
     "volumetricFactor": 6000,
     "outboundDeadlineFromCreated": 3,
     "defaultMainPage": "/orders/pickup",
-    "defaultMainPageTMS": "/mytrips",
+    "defaultMainPageTMS": "/ordermonitoring",
     "performanceInterval": 180000,
     "defaultStatuses": {
       "total": "[2, 3, 4, 5, 8, 12, 13, 15, 16]",
