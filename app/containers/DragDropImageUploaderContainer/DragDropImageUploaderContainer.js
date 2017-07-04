@@ -1,20 +1,19 @@
 import React, { Component } from 'react'; // eslint-disable-line
 import { connect } from 'react-redux';
+
 import PropTypes from 'prop-types';
 
-import FetchPost from '../modules/fetch/post';
-import config from '../config/configValues.json';
-import ModalActions from '../modules/modals/actions';
-import { modalAction } from '../modules/modals/constants';
-import DragdropImageUploader from '../components/DragDropImageUploader';
+import FetchPost from '../../modules/fetch/post';
+import config from '../../config/configValues.json';
+import ModalActions from '../../modules/modals/actions';
+import { modalAction } from '../../modules/modals/constants';
+import DragdropImageUploader from
+  '../../components/DragDropImageUploader/DragDropImageUploader';
+import getDragDropImageUploaderState from './Selector';
 
-const mapStateToProps = (store) => {
-  const { userLogged } = store.app;
-  const { token } = userLogged;
-
-  return {
-    token,
-  };
+const mapStateToProps = (state) => {
+  const stateProps = getDragDropImageUploaderState(state);
+  return stateProps;
 };
 
 const mapDispatchToProps = (dispatch) => {

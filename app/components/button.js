@@ -8,7 +8,7 @@ const ButtonBase = React.createClass({
     var btnClass = classNaming(baseStyle.btnBase, styles);
 
     return (
-      <button className={btnClass} onClick={onClick} type={type} style={{width: width}}>{children}</button>
+      <button className={btnClass} onClick={onClick} type={type} style={{ width: width }}>{children}</button>
     );
   }
 });
@@ -19,11 +19,11 @@ function ButtonAction(props) {
 
 const ButtonWithLoading = React.createClass({
   render() {
-    const {textBase, textLoading, isLoading, onClick, styles = {}, base} = this.props;
-    const btnClass = classNaming(baseStyle.btnBase, {[baseStyle.loading]: isLoading}, styles.base);
+    const { textBase, textLoading, isLoading, onClick, styles = {}, base } = this.props;
+    const btnClass = classNaming(baseStyle.btnBase, { [baseStyle.loading]: isLoading }, styles.base);
     const spinnerClass = classNaming(baseStyle.spinner, styles.spinner);
 
-    if(isLoading) {
+    if (isLoading) {
       return (
         <button {...base} disabled className={btnClass}>
           <span className={spinnerClass}>{textLoading}</span>
