@@ -1,25 +1,27 @@
-import classNaming from 'classnames';
-import lodash from 'lodash';
 import React from 'react';
-import {connect} from 'react-redux';
-import {conf, orderDetailsSummary, orderDetailsCost, orderDetailsPricing} from './ordersColumns';
+import { connect } from 'react-redux';
+
+import classNaming from 'classnames';
+import * as _ from 'lodash';
+
+import { conf, orderDetailsSummary, orderDetailsCost, orderDetailsPricing } from './ordersColumns';
 import styles from './styles.scss';
-import Accordion from '../base/accordion';
-import {ButtonWithLoading, Input, Page} from '../base';
-import {InputWithDefault, CheckBox} from '../base/input';
+import Accordion from '../../components/accordion';
+import { ButtonWithLoading, Input, Page } from '../base';
+import { InputWithDefault, CheckBox } from '../base/input';
 import * as OrdersDetails from '../../modules/orders/actions/details';
 import OrdersSelector from '../../modules/orders/selector';
-import {formatDate} from '../../helper/time';
+import { formatDate } from '../../helper/time';
 
 const boolAttributes = ["IncludeInsurance", "UseExtraHelper", "IsCOD"];
 const dateTimeAttributes = ["Pickup Time", "Dropoff Time", "Deadline"];
 
 const DetailRow = React.createClass({
   render() {
-    const {isEditing, label, value} = this.props;
+    const { isEditing, label, value } = this.props;
 
     return (
-      <div style={{clear: 'both'}}>
+      <div style={{ clear: 'both' }}>
         <span className={styles.itemLabel}>{label}</span>
         {
           !isEditing && !dateTimeAttributes.includes(label) &&
@@ -49,15 +51,15 @@ const DetailRow = React.createClass({
 const DetailAcc = React.createClass({
   textChange(key) {
     return (value) => {
-      this.setState({[key]: value});
+      this.setState({ [key]: value });
     };
   },
   submit() {
-    let updatedData = lodash.assign({}, this.state);
+    let updatedData = _.assign({}, this.state);
     delete updatedData.isEditing;
     this.props.UpdateOrder(updatedData);
-    let updatedDataBoolean = lodash.intersection(lodash.keys(updatedData), boolAttributes);
-    updatedDataBoolean.forEach(function(key) {
+    let updatedDataBoolean = _.intersection(_.keys(updatedData), boolAttributes);
+    updatedDataBoolean.forEach(function (key) {
       updatedData[key] = updatedData[key] ? 'Yes' : 'No';
     });
     setTimeout(() => {
@@ -68,7 +70,7 @@ const DetailAcc = React.createClass({
     }, 1500);
   },
   render() {
-    const {accordionAction, accordionState, height, rows, order, title, topStyle, canEdit, isEditing, isUpdating} = this.props;
+    const { accordionAction, accordionState, height, rows, order, title, topStyle, canEdit, isEditing, isUpdating } = this.props;
 
     const editBtnProps = {
       textBase: "Edit",
@@ -100,9 +102,9 @@ const DetailAcc = React.createClass({
       },
     }
 
-    const colls = lodash.map(rows, (row) => {
-      return <DetailRow key={row.key} label={conf[row.key].title} value={order[row.key]} 
-        isEditing={row.canEdit && isEditing} onChange={this.textChange(row.key) } submitForm={this.submit} />
+    const colls = _.map(rows, (row) => {
+      return <DetailRow key={row.key} label={conf[row.key].title} value={order[row.key]}
+        isEditing={row.canEdit && isEditing} onChange={this.textChange(row.key)} submitForm={this.submit} />
     });
 
     return (
@@ -110,15 +112,15 @@ const DetailAcc = React.createClass({
         <div className={styles.accHeader}>
           {title}
         </div>
-        <div style={{height: height}}>
+        <div style={{ height: height }}>
           {colls}
         </div>
         {
           canEdit &&
           <div className={styles.btnColls}>
-            { !isEditing && <ButtonWithLoading {...editBtnProps} /> }
-            { isEditing && <ButtonWithLoading {...saveBtnProps} /> }
-            { isEditing && !isUpdating && <ButtonWithLoading {...cancelBtnProps} /> }
+            {!isEditing && <ButtonWithLoading {...editBtnProps} />}
+            {isEditing && <ButtonWithLoading {...saveBtnProps} />}
+            {isEditing && !isUpdating && <ButtonWithLoading {...cancelBtnProps} />}
           </div>
         }
       </div>
@@ -134,8 +136,8 @@ const Details = React.createClass({
     }
   },
   render() {
-    const {canEdit, isEditing, isFetching, isUpdating, order, 
-      StartEdit, EndEdit, UpdateOrder, GetDetails, editCOD, editVolume, editWeight} = this.props;
+    const { canEdit, isEditing, isFetching, isUpdating, order,
+      StartEdit, EndEdit, UpdateOrder, GetDetails, editCOD, editVolume, editWeight } = this.props;
 
     const Title = "Order Details " + (order.UserOrderNumber || "");
 
@@ -178,10 +180,10 @@ const Details = React.createClass({
           !isFetching &&
           <div>
             <Accordion initialState="expanded">
-              <DetailAcc rows={summaryRows} order={order} title={"Summary"} topStyle={classNaming(styles.detailWrapper, styles.right, styles.detailsPanel)}/>
+              <DetailAcc rows={summaryRows} order={order} title={"Summary"} topStyle={classNaming(styles.detailWrapper, styles.right, styles.detailsPanel)} />
             </Accordion>
             <Accordion initialState="expanded">
-              <DetailAcc rows={costRows} order={order} title={"Cost and Dimension"} canEdit={canEdit} isEditing={isEditing} isUpdating={isUpdating} UpdateOrder={UpdateOrder} GetDetails={GetDetails} StartEdit={StartEdit} EndEdit={EndEdit}/>
+              <DetailAcc rows={costRows} order={order} title={"Cost and Dimension"} canEdit={canEdit} isEditing={isEditing} isUpdating={isUpdating} UpdateOrder={UpdateOrder} GetDetails={GetDetails} StartEdit={StartEdit} EndEdit={EndEdit} />
             </Accordion>
             <Accordion initialState="expanded">
               <DetailAcc rows={pricingRows} order={order} title={"Pricing Details"} />
@@ -196,7 +198,7 @@ const Details = React.createClass({
 function mapStateToPickupOrders(state) {
   const { orderDetails, userLogged } = state.app;
   const { editCOD, editVolume, editWeight } = userLogged;
-  const {isEditing, isFetching, isUpdating, order} = orderDetails;
+  const { isEditing, isFetching, isUpdating, order } = orderDetails;
   const canEdit = userLogged && (editCOD || editVolume || editWeight);
 
   return {

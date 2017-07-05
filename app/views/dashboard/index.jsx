@@ -1,25 +1,25 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import {Link} from 'react-router';
+import { connect } from 'react-redux';
+import { Link } from 'react-router';
 
-import {AppLoadedActions, LogoutAction} from '../../modules';
+import { AppLoadedActions, LogoutAction } from '../../modules';
 import FetchStatusList from '../../modules/containers/actions/statusFetch';
 import * as ContactService from '../../contacts/contactService';
 import * as StateService from '../../states/stateService';
 import * as CityService from '../../cities/cityService';
 import * as OrderService from '../../orders/orderService';
 import * as FleetService from '../../nearbyFleets/nearbyFleetService';
-import {Glyph} from '../base';
-import Accordion from '../base/accordion';
+import { Glyph } from '../base';
+import Accordion from '../../components/accordion';
 import styles from './styles.scss';
 import * as _ from 'lodash';
 import config from '../../../config.json';
-import {push} from 'react-router-redux';
+import { push } from 'react-router-redux';
 
 var classnaming = require('classnames/bind').bind(styles);
 
-const MenuItem = ({active, children, to, onClick}) => {
-  let className = classnaming('menuItem', {active: active});
+const MenuItem = ({ active, children, to, onClick }) => {
+  let className = classnaming('menuItem', { active: active });
   return (
     <li onClick={onClick} className={className}>
       <Link className={styles.link} to={to}>{children}</Link>
@@ -29,18 +29,18 @@ const MenuItem = ({active, children, to, onClick}) => {
 
 const AccordionMenu = React.createClass({
   render() {
-    const {accordionAction, accordionState, activeMenuIdx, activeMenuTarget, iconName, iconTitle} = this.props;
+    const { accordionAction, accordionState, activeMenuIdx, activeMenuTarget, iconName, iconTitle } = this.props;
     const isActive = _.includes(activeMenuTarget, activeMenuIdx);
 
     const chevronStyle = classnaming('menuGlyph', 'chevron');
     const chevronType = accordionState === 'expanded' ? 'chevron-up' : 'chevron-down';
-    const className = classnaming('menuItem', 'accItem', {active: isActive});
+    const className = classnaming('menuItem', 'accItem', { active: isActive });
 
     return (
       <div className={styles.accWrapper}>
         <div onClick={accordionAction.toggleView} className={className}>
-          <Glyph className={styles.menuGlyph} name={iconName}/>
-          <Glyph className={chevronStyle} name={chevronType}/>
+          <Glyph className={styles.menuGlyph} name={iconName} />
+          <Glyph className={chevronStyle} name={chevronType} />
           <span>{iconTitle}</span>
         </div>
         {
@@ -52,14 +52,14 @@ const AccordionMenu = React.createClass({
   }
 })
 
-const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, loggedName, counterOrder, tmsMenu, switchMenu}) => {
+const DashboardMenu = ({ activeMenuIdx, handleLogout, toggleCompact, hubID, loggedName, counterOrder, tmsMenu, switchMenu }) => {
   return (
     <div className={styles.menuPanel}>
       <img src="/img/logo.png" className={styles.menuLogo} />
       <h5 className={styles.menuTitle}>{loggedName}</h5>
       <h4 className={styles.compactTitle}>{tmsMenu ? 'E-TMS' : 'E-Hub'}</h4>
       <ul className={styles.menuList}>
-        { hubID && !tmsMenu &&
+        {hubID && !tmsMenu &&
           <div>
             <MenuItem active={activeMenuIdx == 0} to={'/orders/pickup'}>
               <img src="/img/icon-pickup-orders.png" className={styles.menuGlyph} />
@@ -91,36 +91,36 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
             </MenuItem>
           </div>
         }
-        { config.features.menuTMS && (tmsMenu || !hubID) &&
+        {config.features.menuTMS && (tmsMenu || !hubID) &&
           <div>
-          <Accordion initialState={'collapsed'}>
-            <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[7,8,9]} iconName={'shopping-cart'} iconTitle={'My Orders'}>
-              <MenuItem active={activeMenuIdx == 7} to={'/myorders/open'}>
-                 <Glyph className={styles.menuGlyph} name={'open-file'}/>
-                 <span>Open Orders ({counterOrder.countOpen})</span>
-              </MenuItem>
-              <MenuItem active={activeMenuIdx == 8} to={'/myorders/ongoing'}>
-                 <Glyph className={styles.menuGlyph} name={'open-file'}/>
-                 <span>Ongoing Orders ({counterOrder.countInProgress})</span>
-              </MenuItem>
-              <MenuItem active={activeMenuIdx == 9} to={'/myorders/completed'}>
-                 <Glyph className={styles.menuGlyph} name={'open-file'}/>
-                 <span>Completed Orders ({counterOrder.countFinished})</span>
-              </MenuItem>
-            </AccordionMenu>
-          </Accordion>
-          <MenuItem active={activeMenuIdx == 10} to={'/mytrips'}>
-           <Glyph className={styles.menuGlyph} name={'briefcase'}/>
-           <span>My Trips</span>
-          </MenuItem>
-          <MenuItem active={activeMenuIdx == 11} to={'/mycontacts'}>
-             <Glyph className={styles.menuGlyph} name={'book'}/>
-             <span>My Contacts</span>
-          </MenuItem>
-          <MenuItem active={activeMenuIdx == 12} to={'/mydrivers'}>
-            <Glyph className={styles.menuGlyph} name={'user'}/>
-            <span>My Drivers</span>
-          </MenuItem>
+            <Accordion initialState={'collapsed'}>
+              <AccordionMenu activeMenuIdx={activeMenuIdx} activeMenuTarget={[7, 8, 9]} iconName={'shopping-cart'} iconTitle={'My Orders'}>
+                <MenuItem active={activeMenuIdx == 7} to={'/myorders/open'}>
+                  <Glyph className={styles.menuGlyph} name={'open-file'} />
+                  <span>Open Orders ({counterOrder.countOpen})</span>
+                </MenuItem>
+                <MenuItem active={activeMenuIdx == 8} to={'/myorders/ongoing'}>
+                  <Glyph className={styles.menuGlyph} name={'open-file'} />
+                  <span>Ongoing Orders ({counterOrder.countInProgress})</span>
+                </MenuItem>
+                <MenuItem active={activeMenuIdx == 9} to={'/myorders/completed'}>
+                  <Glyph className={styles.menuGlyph} name={'open-file'} />
+                  <span>Completed Orders ({counterOrder.countFinished})</span>
+                </MenuItem>
+              </AccordionMenu>
+            </Accordion>
+            <MenuItem active={activeMenuIdx == 10} to={'/mytrips'}>
+              <Glyph className={styles.menuGlyph} name={'briefcase'} />
+              <span>My Trips</span>
+            </MenuItem>
+            <MenuItem active={activeMenuIdx == 11} to={'/mycontacts'}>
+              <Glyph className={styles.menuGlyph} name={'book'} />
+              <span>My Contacts</span>
+            </MenuItem>
+            <MenuItem active={activeMenuIdx == 12} to={'/mydrivers'}>
+              <Glyph className={styles.menuGlyph} name={'user'} />
+              <span>My Drivers</span>
+            </MenuItem>
           </div>
         }
       </ul>
@@ -130,7 +130,7 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
           <span>Logout</span>
         </a>
       </div>
-      { 
+      {
         // hubID &&
         // <center className={styles.menuTitle}>
         //   <a className={styles.switchLink} onClick={switchMenu}>
@@ -142,7 +142,7 @@ const DashboardMenu = ({activeMenuIdx, handleLogout, toggleCompact, hubID, logge
   );
 }
 
-const DashboardContent = ({children}) => {
+const DashboardContent = ({ children }) => {
   return (<div className={styles.content}>{children}</div>);
 }
 
@@ -173,37 +173,37 @@ const DashboardContainer = React.createClass({
     router: React.PropTypes.object.isRequired
   },
   getInitialState() {
-    return {isCompact: false, tmsMenu: this.props.hubID};
+    return { isCompact: false, tmsMenu: this.props.hubID };
   },
   componentWillMount() {
     this.props.initialLoad();
   },
   toggleCompact() {
-    this.setState({isCompact: !this.state.isCompact});
+    this.setState({ isCompact: !this.state.isCompact });
   },
   handleLogout() {
     this.props.logout();
   },
   switchMenu() {
-    this.setState({tmsMenu: !this.state.tmsMenu});
+    this.setState({ tmsMenu: !this.state.tmsMenu });
     this.props.switchMenu(!this.state.tmsMenu);
   },
   render() {
-    let {routes, userLogged} = this.props;
-    let {hubID, hubName, fleetName} = userLogged;
-    let activeMenuIdx = GetActiveMenuIdx(routes[routes.length-1].path);
-    let panelClass = classnaming('panel', {compact: this.state.isCompact});
+    let { routes, userLogged } = this.props;
+    let { hubID, hubName, fleetName } = userLogged;
+    let activeMenuIdx = GetActiveMenuIdx(routes[routes.length - 1].path);
+    let panelClass = classnaming('panel', { compact: this.state.isCompact });
     const loggedName = hubID ? `${fleetName} \n ${hubName}` : `${fleetName}`;
 
     return (
-      <div style={{display: 'table', width: '100%', minHeight: '100%'}}>
+      <div style={{ display: 'table', width: '100%', minHeight: '100%' }}>
         <div className={panelClass} >
-          <DashboardMenu 
-            activeMenuIdx={activeMenuIdx} 
-            handleLogout={this.handleLogout} 
-            toggleCompact={this.toggleCompact} 
-            hubID={hubID} 
-            loggedName={loggedName} 
+          <DashboardMenu
+            activeMenuIdx={activeMenuIdx}
+            handleLogout={this.handleLogout}
+            toggleCompact={this.toggleCompact}
+            hubID={hubID}
+            loggedName={loggedName}
             counterOrder={this.props.counterOrder}
             tmsMenu={this.state.tmsMenu}
             switchMenu={this.switchMenu} />
@@ -215,16 +215,16 @@ const DashboardContainer = React.createClass({
 });
 
 function StoreToDashboard(store) {
-    const userLogged = store.app.userLogged;
-    const {countOpen, countInProgress, countFinished} = store.app.myOrders;
-    return {
-        userLogged: userLogged,
-        counterOrder: {
-          countOpen: countOpen,
-          countInProgress: countInProgress,
-          countFinished: countFinished
-        }
+  const userLogged = store.app.userLogged;
+  const { countOpen, countInProgress, countFinished } = store.app.myOrders;
+  return {
+    userLogged: userLogged,
+    counterOrder: {
+      countOpen: countOpen,
+      countInProgress: countInProgress,
+      countFinished: countFinished
     }
+  }
 }
 
 function DispatchToProps(dispatch) {
@@ -236,10 +236,10 @@ function DispatchToProps(dispatch) {
       dispatch(StateService.FetchList());
       dispatch(OrderService.FetchCountOrder());
     },
-    logout: function() {
+    logout: function () {
       dispatch(LogoutAction.logout());
     },
-    switchMenu: function(tmsMenu) {
+    switchMenu: function (tmsMenu) {
       if (tmsMenu) {
         dispatch(push('/myorders/open'));
       } else {

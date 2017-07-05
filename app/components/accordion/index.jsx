@@ -7,8 +7,11 @@ const viewAccordion = {
 };
 
 class Accordion extends PureComponent {
-  getInitialState() {
-    return { view: this.props.initialState };
+  constructor(props) {
+    super(props);
+    this.state = {
+      view: this.props.initialState,
+    };
   }
   collapseView() {
     this.setState({ view: viewAccordion.COLLAPSED });
