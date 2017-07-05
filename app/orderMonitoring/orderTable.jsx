@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import _ from 'lodash';
-import moment from 'moment';
 import PropTypes from 'prop-types';
 import Countdown from 'react-cntdwn';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import ReactDOM from 'react-dom';
+
+import _ from 'lodash';
+import moment from 'moment';
 
 import { FilterTop, Filter as FilterDropdown } from '../components/form';
 import { Pagination2 } from '../components/pagination2';
@@ -23,7 +24,7 @@ const rowPropTypes = {
   profilePicture: PropTypes.any,
   tab: PropTypes.any,
   getDetail: PropTypes.func,
-}
+};
 
 const rowDefaultProps = {
   expandedOrder: null,
@@ -31,17 +32,11 @@ const rowDefaultProps = {
   profilePicture: null,
   tab: null,
   getDetail: null,
-}
+};
 
 class OrderRow extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const { expandedOrder, order, profilePicture, tab, getDetail } = this.props;
-    const DEFAULT_IMAGE = "/img/default-logo.png";
-    const ETOBEE_IMAGE = "/img/etobee-logo.png";
     const FLEET_IMAGE = profilePicture;
     let rowStyles = `${styles.tr} ${styles.card} `;
     if (expandedOrder.UserOrderNumber === order.UserOrderNumber) {
@@ -50,49 +45,76 @@ class OrderRow extends Component {
 
     return (
       <tr className={rowStyles}>
-        <td className={styles.driverInput + ' ' + styles.td}>
+        <td className={`${styles.driverInput} ${styles.td}`}>
           <Checkbox isChecked={order.IsChecked} orderID={order.UserOrderNumber} tab={tab} />
         </td>
-        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}>
+          <div className={styles.cardSeparator} />
+        </td>
         <td onClick={() => getDetail(order.UserOrderID)}>
           <img
             className={styles.orderLoadImage}
-            src={order.IsTrunkeyOrder ? ETOBEE_IMAGE : FLEET_IMAGE}
-            onError={(e)=>{e.target.src=DEFAULT_IMAGE}}
+            src={order.IsTrunkeyOrder ? config.IMAGES.ETOBEE_LOGO : FLEET_IMAGE}
+            onError={(e) => { e.target.src = config.IMAGES.DEFAULT_LOGO; }}
           />
         </td>
-        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)} className={styles.orderIDColumn}>{order.UserOrderNumber}</td>
-        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td
+          className={`${styles.td} ${styles.orderIDColumn}`}
+          onClick={() => getDetail(order.UserOrderID)}
+        >
+          {order.UserOrderNumber}
+        </td>
+        <td
+          className={styles.td}
+          onClick={() => getDetail(order.UserOrderID)}
+        >
+          <div className={styles.cardSeparator} />
+        </td>
         <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}>
           <div className={styles.cardLabel}>
             Deadline
           </div>
           <br />
-          <div className={styles.cardValue + ' ' + styles['cancelled']}>
+          <div className={`${styles.cardValue} ${styles.cancelled}`}>
             <Deadline deadline={order.DueTime} />
           </div>
         </td>
-        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td
+          className={styles.td}
+          onClick={() => getDetail(order.UserOrderID)}
+        >
+          <div className={styles.cardSeparator} />
+        </td>
         <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}>
           <div className={styles.cardLabel}>
-            Driver's Name
+            {"Driver's Name"}
           </div>
           <br />
           <div className={styles.cardValue}>
             {order.Driver ? `${order.Driver.FirstName} ${order.Driver.LastName}` : '-'}
           </div>
         </td>
-        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td
+          className={styles.td}
+          onClick={() => getDetail(order.UserOrderID)}
+        >
+          <div className={styles.cardSeparator} />
+        </td>
         <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}>
           <div className={styles.cardLabel}>
             Order Status
           </div>
           <br />
-          <div className={styles.cardValue + ' ' + styles[order.OrderStatus.OrderStatus]}>
+          <div className={`${styles.cardValue} ${styles[order.OrderStatus.OrderStatus]}`}>
             {order.OrderStatus.OrderStatus}
           </div>
         </td>
-        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td
+          className={styles.td}
+          onClick={() => getDetail(order.UserOrderID)}
+        >
+          <div className={styles.cardSeparator} />
+        </td>
         <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}>
           <div className={styles.cardLabel}>
             COD Type
@@ -102,10 +124,15 @@ class OrderRow extends Component {
             {order.IsCOD ? 'COD' : 'Non-COD'}
           </div>
         </td>
-        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}><div className={styles.cardSeparator} /></td>
+        <td
+          className={styles.td}
+          onClick={() => getDetail(order.UserOrderID)}
+        >
+          <div className={styles.cardSeparator} />
+        </td>
         <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}>
           <div className={styles.cardLabel}>
-            Fleet's Area
+            {"Fleet's Area"}
           </div>
           <br />
           <div className={styles.cardValue}>
@@ -126,10 +153,10 @@ function DropdownDispatchBuilder(keyword, tab) {
   return (dispatch, props) => {
     return {
       handleSelect: (value) => {
-        dispatch(orderMonitoringService.SetDropDownFilter(keyword, value, tab||props.tab));
-      }
-    }
-  }
+        dispatch(orderMonitoringService.SetDropDownFilter(keyword, value, tab || props.tab));
+      },
+    };
+  };
 }
 
 function DropdownStoreBuilder(name) {
@@ -138,20 +165,20 @@ function DropdownStoreBuilder(name) {
     statusOptions.total = _.union(
       statusOptions.pending,
       statusOptions.succeed,
-      statusOptions.failed
+      statusOptions.failed,
     );
     const options = {
       statusOptions: statusOptions[props.tab],
       sortOptions,
       orderTypeOptions,
-      codOptions
+      codOptions,
     };
 
     return {
       value: store.app.orderMonitoring[name][props.tab],
-      options: options[name]
+      options: options[name],
     };
-  }
+  };
 }
 
 function ConnectDropdownBuilder(keyword) {
@@ -169,34 +196,34 @@ const OrderTypeFilter = ConnectDropdownBuilder('orderTypeOptions')(FilterTop);
 // START INPUT FILTER
 
 function InputStoreBuilder(keyword) {
-  return(store, props) => {
+  return (store, props) => {
     const { filters } = store.app.orderMonitoring;
-    if(!_.isEmpty(filters[props.tab])){
-      return {value: filters[props.tab][keyword]};
+    if (!_.isEmpty(filters[props.tab])) {
+      return { value: filters[props.tab][keyword] };
     }
 
-    return {value: ""};
-  }
+    return { value: '' };
+  };
 }
 
 function InputDispatchBuilder(keyword, placeholder) {
   return (dispatch, props) => {
     const { tab } = props;
     function OnChange(e) {
-      let value = (keyword == 'userOrderNumber') ? e.target.value.toUpperCase() : e.target.value ;
+      const value = (keyword === 'userOrderNumber') ? e.target.value.toUpperCase() : e.target.value;
 
       const newFilters = {
         filters: {
           [tab]: {
-            [keyword]: value
-          }
-        }
+            [keyword]: value,
+          },
+        },
       };
       dispatch(orderMonitoringService.SetFilter(newFilters));
     }
 
     function OnKeyDown(e) {
-      if(e.keyCode !== 13) {
+      if (e.keyCode !== config.KEY_ACTION.ENTER) {
         return;
       }
       dispatch(orderMonitoringService.SetCurrentPage(1, tab));
@@ -206,20 +233,43 @@ function InputDispatchBuilder(keyword, placeholder) {
     return {
       onChange: OnChange,
       onKeyDown: OnKeyDown,
-      placeholder: placeholder
-    }
-  }
+      placeholder,
+    };
+  };
 }
 
 function ConnectBuilder(keyword, placeholder) {
-    return connect(InputStoreBuilder(keyword), InputDispatchBuilder(keyword, placeholder));
+  return connect(InputStoreBuilder(keyword), InputDispatchBuilder(keyword, placeholder));
 }
 
-function InputFilter({value, onChange, onKeyDown, placeholder}) {
+function InputFilter({ value, onChange, onKeyDown, placeholder }) {
   return (
-    <input className={styles.inputSearch} placeholder={placeholder} type="text" value={value} onChange={onChange} onKeyDown={onKeyDown} />
+    <input
+      className={styles.inputSearch}
+      placeholder={placeholder}
+      type="text"
+      value={value}
+      onChange={onChange}
+      onKeyDown={onKeyDown}
+    />
   );
 }
+
+/* eslint-disable */
+InputFilter.propTypes = {
+  value: PropTypes.any,
+  onChange: PropTypes.func,
+  onKeyDown: PropTypes.func,
+  placeholder: PropTypes.any,
+};
+/* eslint-enable */
+
+InputFilter.defaultProps = {
+  value: {},
+  onChange: () => {},
+  onKeyDown: () => {},
+  placeholder: {},
+};
 
 const EDSFilter = ConnectBuilder('userOrderNumber', 'Search for EDS...')(InputFilter);
 const NameFilter = ConnectBuilder('driverName', 'Search for driver...')(InputFilter);
@@ -229,17 +279,17 @@ const FleetFilter = ConnectBuilder('dropoffCity', "Search for fleet's area...")(
 
 // START DATERANGEPICKER
 
-function Daterangepicker({startDate, endDate, onChange}) {
+function Daterangepicker({ startDate, endDate, onChange }) {
   const startDateFormatted = moment(startDate).format('MM-DD-YYYY');
   const endDateFormatted = moment(endDate).format('MM-DD-YYYY');
-  let dateValue = startDateFormatted + ' - ' + endDateFormatted;
+  let dateValue = `${startDateFormatted} - ${endDateFormatted}`;
   if (!startDate && !endDate) {
-      dateValue = '';
+    dateValue = '';
   }
 
   return (
     <div className={styles.searchInputWrapper}>
-      <DateRangePicker 
+      <DateRangePicker
         startDate={startDateFormatted}
         endDate={endDateFormatted}
         onApply={onChange}
@@ -247,40 +297,51 @@ function Daterangepicker({startDate, endDate, onChange}) {
         parentEl="#bootstrapPlaceholder"
       >
         <input className={styles.searchInput} type="text" defaultValue={dateValue} />
-      </ DateRangePicker>
+      </DateRangePicker>
     </div>
-  )
+  );
 }
 
-function DaterangeStoreBuilder(keyword) {
-  return (store, props) => {
-    const { startDate, endDate } = store.app.orderMonitoring;
-    const { tab } = props;
+/* eslint-disable */
+Daterangepicker.propTypes = {
+  startDate: PropTypes.string,
+  endDate: PropTypes.string,
+  onChange: PropTypes.func,
+};
+/* eslint-enable */
 
-    return {startDate, endDate};
-  }
+Daterangepicker.defaultProps = {
+  startDate: '',
+  endDate: '',
+  onChange: () => {},
+};
+
+function DaterangeStoreBuilder() {
+  return (store) => {
+    const { startDate, endDate } = store.app.orderMonitoring;
+
+    return { startDate, endDate };
+  };
 }
 
 function DaterangeDispatch() {
-  return (dispatch, props) => {
-    const { tab } = props;
-
+  return (dispatch) => {
     return {
       onChange: (event, picker) => {
-        const {startDate, endDate} = picker;
+        const { startDate, endDate } = picker;
         const newDate = {
-          'startDate': startDate.toISOString(),
-          'endDate': endDate.toISOString(),
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString(),
         };
 
         dispatch(orderMonitoringService.SetDate(newDate));
         dispatch(orderMonitoringService.FetchAllList());
-      }
-    }
-  }
+      },
+    };
+  };
 }
 
-const Datepicker = connect(DaterangeStoreBuilder, DaterangeDispatch)(Daterangepicker)
+const Datepicker = connect(DaterangeStoreBuilder, DaterangeDispatch)(Daterangepicker);
 
 // END DATERANGEPICKER
 
@@ -290,8 +351,8 @@ function CheckboxHeaderStore() {
   return (store, props) => {
     return {
       isChecked: store.app.orderMonitoring.selectedAll[props.tab],
-    }
-  }
+    };
+  };
 }
 
 function CheckboxHeaderDispatch() {
@@ -299,9 +360,9 @@ function CheckboxHeaderDispatch() {
     return {
       onToggle: () => {
         dispatch(orderMonitoringService.ToggleCheckAll(props.tab));
-      }
-    }
-  }
+      },
+    };
+  };
 }
 
 const CheckboxHeader = connect(CheckboxHeaderStore, CheckboxHeaderDispatch)(CheckboxHeaderPlain);
@@ -310,8 +371,8 @@ function CheckboxDispatch(dispatch, props) {
   return {
     onToggle: () => {
       dispatch(orderMonitoringService.ToggleSelectOrder(props.orderID, props.tab));
-    }
-  }
+    },
+  };
 }
 
 const Checkbox = connect(null, CheckboxDispatch)(CheckboxCell);
@@ -320,39 +381,58 @@ const Checkbox = connect(null, CheckboxDispatch)(CheckboxCell);
 
 // START COUNTDOWN
 
-export class Deadline extends Component{
+export class Deadline extends Component {
   render() {
-    let format = {
+    const format = {
       hour: 'hh',
       minute: 'mm',
-      second: 'ss'
+      second: 'ss',
     };
-    let Duration = moment.duration(moment(this.props.deadline).diff(moment(new Date())));
+    const Duration = moment.duration(moment(this.props.deadline).diff(moment(new Date())));
     if (!this.props.deadline) {
-      return <span style={{color: 'black'}}>
-          -
-      </span>
+      return (
+        <span className={styles['text-black']}>
+            -
+        </span>
+      );
     } else if (Duration._milliseconds > config.deadline.day) {
-      return <span style={{color: 'black'}}>
+      return (
+        <span className={styles['text-black']}>
           {Duration.humanize()} remaining
-      </span>
+        </span>
+      );
     } else if (Duration._milliseconds < 0) {
-      return <span style={{color: 'red'}}>
+      return (
+        <span className={styles['text-red']}>
           Passed
-      </span>
-    } else {
-      let normalDeadline = (Duration._milliseconds > config.deadline['3hours']) && (Duration._milliseconds < config.deadline.day);
-      return <span style={{color: normalDeadline ? 'black' : 'red'}}>
-        <Countdown targetDate={new Date(this.props.deadline)}
-         startDelay={500}
-         interval={1000}
-         format={format}
-         timeSeparator={':'}
-         leadingZero={true} />
-      </span>
+        </span>
+      );
     }
+    const normalDeadline = (Duration._milliseconds > config.deadline['3hours']) && (Duration._milliseconds < config.deadline.day);
+    return (
+      <span className={normalDeadline ? styles['text-black'] : styles['text-red']}>
+        <Countdown
+          targetDate={new Date(this.props.deadline)}
+          startDelay={500}
+          interval={1000}
+          format={format}
+          timeSeparator={':'}
+          leadingZero
+        />
+      </span>
+    );
   }
 }
+
+/* eslint-disable */
+Deadline.propTypes = {
+  deadline: PropTypes.any,
+};
+/* eslint-enable */
+
+Deadline.defaultProps = {
+  deadline: {},
+};
 
 // END COUNTDOWN
 
@@ -360,24 +440,30 @@ const filterPropTypes = {
   pagination: PropTypes.any,
   tab: PropTypes.any,
   orders: PropTypes.any,
-}
+  hideOrder: PropTypes.func,
+  checkedOrders: PropTypes.any,
+  showDelivery: PropTypes.func,
+  showUpdateCOD: PropTypes.func,
+  searchResult: PropTypes.any,
+};
 
 const filterDefaultProps = {
   pagination: null,
   tab: null,
   orders: null,
-}
+  hideOrder: () => {},
+  checkedOrders: {},
+  showDelivery: () => {},
+  showUpdateCOD: () => {},
+  searchResult: {},
+};
 
 export class Filter extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showMenu: false
+      showMenu: false,
     };
-  }
-
-  toggleMenu(){
-    this.setState({showMenu: !this.state.showMenu});
   }
 
   componentDidMount() {
@@ -388,26 +474,31 @@ export class Filter extends Component {
     document.removeEventListener('click', this.handleClickOutside.bind(this), true);
   }
 
+  toggleMenu() {
+    this.setState({ showMenu: !this.state.showMenu });
+  }
+
   handleClickOutside(event) {
     try {
       const domNode = ReactDOM.findDOMNode(this);
       if ((!domNode || !domNode.contains(event.target))) {
         this.setState({
-            showMenu : false
+          showMenu: false,
         });
       }
     } catch (e) {
       return false;
     }
+    return null;
   }
 
   showDelivery() {
     this.props.hideOrder();
     let checkedInvalidStatus = false;
-    let validStatus = config.deliverableOrderStatus;
-    this.props.checkedOrders.some(function(order) {
+    const validStatus = config.deliverableOrderStatus;
+    this.props.checkedOrders.some((order) => {
       if (!_.includes(validStatus, order.OrderStatus.OrderStatusID)) {
-          checkedInvalidStatus = true;
+        checkedInvalidStatus = true;
       }
     });
     if (checkedInvalidStatus) {
@@ -420,10 +511,10 @@ export class Filter extends Component {
   showUpdateCOD() {
     this.props.hideOrder();
     let checkedInvalidStatus = false;
-    let validStatus = config.updatableCOD;
-    this.props.checkedOrders.some(function(order) {
+    const validStatus = config.updatableCOD;
+    this.props.checkedOrders.some((order) => {
       if (!_.includes(validStatus, order.OrderStatus.OrderStatusID)) {
-          checkedInvalidStatus = true;
+        checkedInvalidStatus = true;
       }
       if (!order.IsCOD) {
         checkedInvalidStatus = true;
@@ -439,11 +530,11 @@ export class Filter extends Component {
   render() {
     const { PaginationAction, paginationState } = this.props.pagination;
     const { tab, orders, searchResult } = this.props;
-    
+
     let checked = false;
-    orders[tab].some(function(order) {
+    orders[tab].some((order) => {
       if (order.IsChecked) {
-          checked = true;
+        checked = true;
       }
     });
 
@@ -453,16 +544,24 @@ export class Filter extends Component {
         <OrderTypeFilter tab={tab} />
         <Datepicker tab={tab} />
 
-        { searchResult[tab] && 
-          <span className={styles.searchResult}>{searchResult[tab]} order found from search result.</span>
+        { searchResult[tab] &&
+          <span className={styles.searchResult}>
+            {searchResult[tab]} order found from search result.
+          </span>
         }
 
         { (tab === 'succeed' || tab === 'pending') &&
           <div className={mainStyles.menuActionContainer}>
-            <button disabled={!checked} className={mainStyles.buttonAction} onClick={() => this.toggleMenu()}>
+            <button
+              disabled={!checked}
+              className={mainStyles.buttonAction}
+              onClick={() => this.toggleMenu()}
+            >
               <div className={mainStyles.spanAction}>Action</div>
-              <img src={this.state.showMenu ? "/img/icon-collapse.png" : "/img/icon-dropdown-2.png"} 
-                className={mainStyles.iconAction} />
+              <img
+                src={this.state.showMenu ? '/img/icon-collapse.png' : '/img/icon-dropdown-2.png'}
+                className={mainStyles.iconAction}
+              />
             </button>
               { this.state.showMenu &&
                 <ul className={mainStyles.actionContainer}>
@@ -479,11 +578,13 @@ export class Filter extends Component {
           </div>
         }
 
-        { searchResult[tab] && 
-          <span className={styles.searchResult}>{searchResult[tab]} order found from search result.</span>
+        { searchResult[tab] &&
+          <span className={styles.searchResult}>
+            {searchResult[tab]} order found from search result.
+          </span>
         }
 
-        <Pagination2 {...paginationState} {...PaginationAction} tab={this.props.tab} style={{marginTop: "5px"}} />
+        <Pagination2 {...paginationState} {...PaginationAction} tab={this.props.tab} style={{marginTop: '5px'}} />
 
         <div className={styles.row}>
           <CheckboxHeader tab={tab} />
@@ -509,9 +610,9 @@ function FilterDispatchBuilder() {
       },
       HideDeliveryModal: () => {
         dispatch(orderMonitoringService.HideDeliveryModal());
-      }
-    }
-  }
+      },
+    };
+  };
 }
 
 connect(undefined, FilterDispatchBuilder)(Filter);
@@ -519,12 +620,20 @@ connect(undefined, FilterDispatchBuilder)(Filter);
 const tablePropsType = {
   orders: PropTypes.any,
   tab: PropTypes.any,
-}
+  expandedOrder: PropTypes.any,
+  FetchDetails: PropTypes.func,
+  HideOrder: PropTypes.func,
+  ExpandOrder: PropTypes.func,
+};
 
 const tableDefaultProps = {
   orders: null,
   tab: null,
-}
+  expandedOrder: {},
+  FetchDetails: () => {},
+  HideOrder: () => {},
+  ExpandOrder: () => {},
+};
 
 class OrderTable extends Component {
   expand(order, tab) {
@@ -543,7 +652,7 @@ class OrderTable extends Component {
             <OrderRow
               key={idx}
               order={order}
-              expandOrder={(tab === "pending") && (() => this.expand(order, tab))}
+              expandOrder={(tab === 'pending') && (() => this.expand(order, tab))}
               expandedOrder={this.props.expandedOrder}
               getDetail={this.props.FetchDetails}
               tab={tab}
@@ -559,16 +668,8 @@ function OrderTableStoreBuilder() {
   return (store) => {
     const { orders, expandedOrder } = store.app.orderMonitoring;
 
-    return {orders, expandedOrder};
-  }
-}
-
-function OrderTableStoreBuilder() {
-  return (store) => {
-    const { orders, expandedOrder } = store.app.orderMonitoring;
-
-    return {orders, expandedOrder};
-  }
+    return { orders, expandedOrder };
+  };
 }
 
 function OrderTableDispatchBuilder() {
@@ -585,9 +686,9 @@ function OrderTableDispatchBuilder() {
       },
       FetchDetails: (orderID) => {
         dispatch(orderMonitoringService.FetchDetails(orderID));
-      }
-    }
-  }
+      },
+    };
+  };
 }
 
 

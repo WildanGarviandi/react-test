@@ -27,7 +27,7 @@
     "volumetricFactor": 6000,
     "outboundDeadlineFromCreated": 3,
     "defaultMainPage": "/orders/pickup",
-    "defaultMainPageTMS": "/mytrips",
+    "defaultMainPageTMS": "/ordermonitoring",
     "performanceInterval": 180000,
     "defaultStatuses": {
       "total": "[2, 3, 4, 5, 8, 12, 13, 15, 16]",
@@ -139,7 +139,11 @@
       "VAN": "/img/icon-vehicle-van.png",
       "INBOUND_TRIP_DONE": "/img/image-inbound-trip-done.png",
       "DRAG_DROP": "/img/icon-add-image-drag-drop.png",
-      "LOCATION": "/img/icon-location.png"
+      "LOCATION": "/img/icon-location.png",
+      "DEFAULT_LOGO": "/img/default-logo.png",
+      "ETOBEE_LOGO": "/img/etobee-logo.png",
+      "ICON_MENU": "/img/icon-menu.png",
+      "ICON_SUCCESS": "/img/icon-success.png"
     },
     "assignCentralHub": true,
     "HTTP_STATUS": {
@@ -164,5 +168,6 @@
     },
     "RESPONSE_TYPE": {
       "ARRAY_BUFFER": "arraybuffer"
-    }
+    },
+    "CHECK_AUTH_INTERVAL": 10000
 }
