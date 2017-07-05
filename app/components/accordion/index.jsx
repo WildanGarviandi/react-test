@@ -1,22 +1,28 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 
-const Accordion = React.createClass({
+const viewAccordion = {
+  EXPANDED: 'expanded',
+  COLLAPSED: 'collapsed',
+};
+
+class Accordion extends PureComponent {
   getInitialState() {
     return { view: this.props.initialState };
-  },
+  }
   collapseView() {
-    this.setState({ view: 'collapsed' });
-  },
+    this.setState({ view: viewAccordion.COLLAPSED });
+  }
   expandView() {
-    this.setState({ view: 'expanded' });
-  },
+    this.setState({ view: viewAccordion.EXPANDED });
+  }
   toggleView() {
-    if (this.state.view === 'collapsed') {
+    if (this.state.view === viewAccordion.COLLAPSED) {
       this.expandView();
     } else {
       this.collapseView();
     }
-  },
+  }
   render() {
     const accordionAction = {
       collapseView: this.collapseView,
@@ -31,7 +37,18 @@ const Accordion = React.createClass({
         {React.cloneElement(this.props.children, { accordionAction, accordionState })}
       </div>
     );
-  },
-});
+  }
+}
+
+/* eslint-disable */
+Accordion.propTypes = {
+  initialState: PropTypes.any.isRequired,
+  children: PropTypes.any,
+};
+/* eslint-enable */
+
+Accordion.defaultProps = {
+  children: {},
+};
 
 export default Accordion;
