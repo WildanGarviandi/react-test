@@ -169,5 +169,11 @@
     "RESPONSE_TYPE": {
       "ARRAY_BUFFER": "arraybuffer"
     },
+    "SORT": {
+      "DIRECTION": {
+        "ASC": "ASC",
+        "DESC": "DESC"
+      }
+    },
     "CHECK_AUTH_INTERVAL": 10000
 }

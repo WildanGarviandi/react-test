@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+/* eslint no-underscore-dangle: ["error", { "allow": ["_milliseconds"] }] */
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Countdown from 'react-cntdwn';
@@ -10,7 +11,6 @@ import moment from 'moment';
 
 import { FilterTop, Filter as FilterDropdown } from '../components/form';
 import { Pagination2 } from '../components/pagination2';
-import OrderStatusSelector from '../modules/orderStatus/selector';
 import * as orderMonitoringService from './orderMonitoringService';
 import { CheckboxHeaderPlain, CheckboxCell } from '../views/base/tableCell';
 import styles from './table.scss';
@@ -34,7 +34,7 @@ const rowDefaultProps = {
   getDetail: null,
 };
 
-class OrderRow extends Component {
+class OrderRow extends PureComponent {
   render() {
     const { expandedOrder, order, profilePicture, tab, getDetail } = this.props;
     const FLEET_IMAGE = profilePicture;
@@ -48,29 +48,43 @@ class OrderRow extends Component {
         <td className={`${styles.driverInput} ${styles.td}`}>
           <Checkbox isChecked={order.IsChecked} orderID={order.UserOrderNumber} tab={tab} />
         </td>
-        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}>
+        <td
+          role="none"
+          className={styles.td}
+          onClick={() => getDetail(order.UserOrderID)}
+        >
           <div className={styles.cardSeparator} />
         </td>
-        <td onClick={() => getDetail(order.UserOrderID)}>
+        <td
+          role="none"
+          onClick={() => getDetail(order.UserOrderID)}
+        >
           <img
+            alt="etobee"
             className={styles.orderLoadImage}
             src={order.IsTrunkeyOrder ? config.IMAGES.ETOBEE_LOGO : FLEET_IMAGE}
             onError={(e) => { e.target.src = config.IMAGES.DEFAULT_LOGO; }}
           />
         </td>
         <td
+          role="none"
           className={`${styles.td} ${styles.orderIDColumn}`}
           onClick={() => getDetail(order.UserOrderID)}
         >
           {order.UserOrderNumber}
         </td>
         <td
+          role="none"
           className={styles.td}
           onClick={() => getDetail(order.UserOrderID)}
         >
           <div className={styles.cardSeparator} />
         </td>
-        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}>
+        <td
+          role="none"
+          className={styles.td}
+          onClick={() => getDetail(order.UserOrderID)}
+        >
           <div className={styles.cardLabel}>
             Deadline
           </div>
@@ -80,12 +94,17 @@ class OrderRow extends Component {
           </div>
         </td>
         <td
+          role="none"
           className={styles.td}
           onClick={() => getDetail(order.UserOrderID)}
         >
           <div className={styles.cardSeparator} />
         </td>
-        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}>
+        <td
+          role="none"
+          className={styles.td}
+          onClick={() => getDetail(order.UserOrderID)}
+        >
           <div className={styles.cardLabel}>
             {"Driver's Name"}
           </div>
@@ -95,12 +114,17 @@ class OrderRow extends Component {
           </div>
         </td>
         <td
+          role="none"
           className={styles.td}
           onClick={() => getDetail(order.UserOrderID)}
         >
           <div className={styles.cardSeparator} />
         </td>
-        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}>
+        <td
+          role="none"
+          className={styles.td}
+          onClick={() => getDetail(order.UserOrderID)}
+        >
           <div className={styles.cardLabel}>
             Order Status
           </div>
@@ -110,12 +134,17 @@ class OrderRow extends Component {
           </div>
         </td>
         <td
+          role="none"
           className={styles.td}
           onClick={() => getDetail(order.UserOrderID)}
         >
           <div className={styles.cardSeparator} />
         </td>
-        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}>
+        <td
+          role="none"
+          className={styles.td}
+          onClick={() => getDetail(order.UserOrderID)}
+        >
           <div className={styles.cardLabel}>
             COD Type
           </div>
@@ -125,14 +154,49 @@ class OrderRow extends Component {
           </div>
         </td>
         <td
+          role="none"
           className={styles.td}
           onClick={() => getDetail(order.UserOrderID)}
         >
           <div className={styles.cardSeparator} />
         </td>
-        <td className={styles.td} onClick={() => getDetail(order.UserOrderID)}>
+        <td
+          role="none"
+          className={styles.td}
+          onClick={() => getDetail(order.UserOrderID)}
+        >
           <div className={styles.cardLabel}>
-            {"Fleet's Area"}
+            COD Status
+          </div>
+          <br />
+          {
+            order.IsCOD &&
+            <div className={styles.cardValue}>
+              {
+                order.CODPaymentUserOrder && order.CODPaymentUserOrder.CODPayment ?
+                  order.CODPaymentUserOrder.CODPayment.Status : 'Unpaid'
+              }
+            </div>
+          }
+          {
+            !order.IsCOD &&
+            <div className={styles.cardValue}>-</div>
+          }
+        </td>
+        <td
+          role="none"
+          className={styles.td}
+          onClick={() => getDetail(order.UserOrderID)}
+        >
+          <div className={styles.cardSeparator} />
+        </td>
+        <td
+          role="none"
+          className={styles.td}
+          onClick={() => getDetail(order.UserOrderID)}
+        >
+          <div className={styles.cardLabel}>
+            Fleet&apos;s Area
           </div>
           <br />
           <div className={styles.cardValue}>
@@ -150,13 +214,15 @@ OrderRow.defaultProps = rowDefaultProps;
 // START DROPDOWN FILTER
 
 function DropdownDispatchBuilder(keyword, tab) {
-  return (dispatch, props) => {
-    return {
+  const dispatchFunc = (dispatch, props) => {
+    const handleSelectFunc = {
       handleSelect: (value) => {
         dispatch(orderMonitoringService.SetDropDownFilter(keyword, value, tab || props.tab));
       },
     };
+    return handleSelectFunc;
   };
+  return dispatchFunc;
 }
 
 function DropdownStoreBuilder(name) {
@@ -266,8 +332,8 @@ InputFilter.propTypes = {
 
 InputFilter.defaultProps = {
   value: {},
-  onChange: () => {},
-  onKeyDown: () => {},
+  onChange: () => { },
+  onKeyDown: () => { },
   placeholder: {},
 };
 
@@ -313,7 +379,7 @@ Daterangepicker.propTypes = {
 Daterangepicker.defaultProps = {
   startDate: '',
   endDate: '',
-  onChange: () => {},
+  onChange: () => { },
 };
 
 function DaterangeStoreBuilder() {
@@ -326,7 +392,7 @@ function DaterangeStoreBuilder() {
 
 function DaterangeDispatch() {
   return (dispatch) => {
-    return {
+    const onChange = {
       onChange: (event, picker) => {
         const { startDate, endDate } = picker;
         const newDate = {
@@ -338,6 +404,7 @@ function DaterangeDispatch() {
         dispatch(orderMonitoringService.FetchAllList());
       },
     };
+    return onChange;
   };
 }
 
@@ -349,20 +416,23 @@ const Datepicker = connect(DaterangeStoreBuilder, DaterangeDispatch)(Daterangepi
 
 function CheckboxHeaderStore() {
   return (store, props) => {
-    return {
+    const isCheckedFunc = {
       isChecked: store.app.orderMonitoring.selectedAll[props.tab],
     };
+    return isCheckedFunc;
   };
 }
 
 function CheckboxHeaderDispatch() {
-  return (dispatch, props) => {
-    return {
+  const dispatchFunc = (dispatch, props) => {
+    const onToggleFunc = {
       onToggle: () => {
         dispatch(orderMonitoringService.ToggleCheckAll(props.tab));
       },
     };
+    return onToggleFunc;
   };
+  return dispatchFunc;
 }
 
 const CheckboxHeader = connect(CheckboxHeaderStore, CheckboxHeaderDispatch)(CheckboxHeaderPlain);
@@ -381,7 +451,7 @@ const Checkbox = connect(null, CheckboxDispatch)(CheckboxCell);
 
 // START COUNTDOWN
 
-export class Deadline extends Component {
+export class Deadline extends PureComponent {
   render() {
     const format = {
       hour: 'hh',
@@ -392,7 +462,7 @@ export class Deadline extends Component {
     if (!this.props.deadline) {
       return (
         <span className={styles['text-black']}>
-            -
+          -
         </span>
       );
     } else if (Duration._milliseconds > config.deadline.day) {
@@ -451,14 +521,14 @@ const filterDefaultProps = {
   pagination: null,
   tab: null,
   orders: null,
-  hideOrder: () => {},
+  hideOrder: () => { },
   checkedOrders: {},
-  showDelivery: () => {},
-  showUpdateCOD: () => {},
+  showDelivery: () => { },
+  showUpdateCOD: () => { },
   searchResult: {},
 };
 
-export class Filter extends Component {
+export class Filter extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -531,12 +601,7 @@ export class Filter extends Component {
     const { PaginationAction, paginationState } = this.props.pagination;
     const { tab, orders, searchResult } = this.props;
 
-    let checked = false;
-    orders[tab].some((order) => {
-      if (order.IsChecked) {
-        checked = true;
-      }
-    });
+    const checked = _.some(orders[tab], ['IsChecked', true]);
 
     return (
       <div>
@@ -544,13 +609,13 @@ export class Filter extends Component {
         <OrderTypeFilter tab={tab} />
         <Datepicker tab={tab} />
 
-        { searchResult[tab] &&
+        {searchResult[tab] &&
           <span className={styles.searchResult}>
             {searchResult[tab]} order found from search result.
           </span>
         }
 
-        { (tab === 'succeed' || tab === 'pending') &&
+        {(tab === 'succeed' || tab === 'pending') &&
           <div className={mainStyles.menuActionContainer}>
             <button
               disabled={!checked}
@@ -559,32 +624,39 @@ export class Filter extends Component {
             >
               <div className={mainStyles.spanAction}>Action</div>
               <img
+                alt="icon"
                 src={this.state.showMenu ? '/img/icon-collapse.png' : '/img/icon-dropdown-2.png'}
                 className={mainStyles.iconAction}
               />
             </button>
-              { this.state.showMenu &&
-                <ul className={mainStyles.actionContainer}>
-                  <li onClick={() => this.showDelivery()}>
-                    Mark Delivered
-                  </li>
-                  { envConfig.features.updateCODVendor &&
-                    <li onClick={() => this.showUpdateCOD()}>
-                      Update COD
-                    </li>
-                  }
-                </ul>
-              }
+            {this.state.showMenu &&
+              <ul className={mainStyles.actionContainer}>
+                <li
+                  role="none"
+                  onClick={() => this.showDelivery()}
+                >
+                  Mark Delivered
+                </li>
+                {envConfig.features.updateCODVendor &&
+                  <li
+                    role="none"
+                    onClick={() => this.showUpdateCOD()}
+                  >
+                    Update COD
+                </li>
+                }
+              </ul>
+            }
           </div>
         }
 
-        { searchResult[tab] &&
+        {searchResult[tab] &&
           <span className={styles.searchResult}>
             {searchResult[tab]} order found from search result.
           </span>
         }
 
-        <Pagination2 {...paginationState} {...PaginationAction} tab={this.props.tab} style={{marginTop: '5px'}} />
+        <Pagination2 {...paginationState} {...PaginationAction} tab={this.props.tab} style={{ marginTop: '5px' }} />
 
         <div className={styles.row}>
           <CheckboxHeader tab={tab} />
@@ -604,7 +676,7 @@ Filter.defaultProps = filterDefaultProps;
 
 function FilterDispatchBuilder() {
   return (dispatch) => {
-    return {
+    const modalFunc = {
       ShowDeliveryModal: () => {
         dispatch(orderMonitoringService.ShowDeliveryModal());
       },
@@ -612,6 +684,7 @@ function FilterDispatchBuilder() {
         dispatch(orderMonitoringService.HideDeliveryModal());
       },
     };
+    return modalFunc;
   };
 }
 
@@ -630,12 +703,12 @@ const tableDefaultProps = {
   orders: null,
   tab: null,
   expandedOrder: {},
-  FetchDetails: () => {},
-  HideOrder: () => {},
-  ExpandOrder: () => {},
+  FetchDetails: () => { },
+  HideOrder: () => { },
+  ExpandOrder: () => { },
 };
 
-class OrderTable extends Component {
+class OrderTable extends PureComponent {
   expand(order, tab) {
     this.props.HideOrder();
     setTimeout(() => {
@@ -648,7 +721,7 @@ class OrderTable extends Component {
     return (
       <table className={styles.table}>
         <tbody>
-          { orders[tab].map((order, idx) => (
+          {orders[tab].map((order, idx) => (
             <OrderRow
               key={idx}
               order={order}
@@ -657,7 +730,7 @@ class OrderTable extends Component {
               getDetail={this.props.FetchDetails}
               tab={tab}
             />
-          )) }
+          ))}
         </tbody>
       </table>
     );
@@ -674,7 +747,7 @@ function OrderTableStoreBuilder() {
 
 function OrderTableDispatchBuilder() {
   return (dispatch) => {
-    return {
+    const orderFunc = {
       ExpandOrder: (order, tab) => {
         dispatch(orderMonitoringService.ExpandOrder(order, tab));
       },
@@ -688,6 +761,8 @@ function OrderTableDispatchBuilder() {
         dispatch(orderMonitoringService.FetchDetails(orderID));
       },
     };
+
+    return orderFunc;
   };
 }
 
