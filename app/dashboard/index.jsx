@@ -16,7 +16,6 @@ import * as DashboardService from './dashboardService';
 import * as FleetService from '../nearbyFleets/nearbyFleetService';
 import * as TripProblemService from '../tripProblems/tripProblemsService';
 import { Glyph } from '../views/base';
-import Accordion from '../views/base/accordion';
 import styles from './styles.scss';
 import config from '../../config.json';
 import configValues from '../config/configValues.json';
