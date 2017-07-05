@@ -1,8 +1,9 @@
-import lodash from 'lodash'; // eslint-disable-line
-import moment from 'moment';
 import React from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
+
+import lodash from 'lodash';
+import moment from 'moment';
 
 import * as OutboundTrips from './outboundTripsService';
 import { Input, Pagination } from '../views/base';

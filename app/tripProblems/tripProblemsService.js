@@ -1,4 +1,4 @@
-import * as _ from 'lodash'; //eslint-disable-line
+import * as _ from 'lodash';
 
 import FetchGet from '../modules/fetch/get';
 import ModalActions from '../modules/modals/actions';

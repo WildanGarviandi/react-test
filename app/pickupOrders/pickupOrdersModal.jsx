@@ -1,4 +1,4 @@
-import React, { Component } from 'react'; //eslint-disable-line
+import React, { Component } from 'react';
 import * as _ from 'lodash';
 import { connect } from 'react-redux';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';

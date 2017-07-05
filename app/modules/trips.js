@@ -1,4 +1,5 @@
-import * as _ from 'lodash'; // eslint-disable-line
+import * as _ from 'lodash';
+
 import { OrderParser } from './orders';
 import config from '../config/configValues.json';
 

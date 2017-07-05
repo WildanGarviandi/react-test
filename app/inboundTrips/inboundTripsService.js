@@ -1,6 +1,7 @@
-import * as _ from 'lodash'; //eslint-disable-line
-import moment from 'moment';
 import { push } from 'react-router-redux';
+
+import * as _ from 'lodash';
+import moment from 'moment';
 
 import { fetchXhr } from '../modules/fetch/getXhr';
 import FetchGet from '../modules/fetch/get';
