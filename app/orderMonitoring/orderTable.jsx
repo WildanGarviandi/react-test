@@ -37,8 +37,6 @@ const rowDefaultProps = {
 class OrderRow extends Component {
   render() {
     const { expandedOrder, order, profilePicture, tab, getDetail } = this.props;
-    const DEFAULT_IMAGE = '/img/default-logo.png';
-    const ETOBEE_IMAGE = '/img/etobee-logo.png';
     const FLEET_IMAGE = profilePicture;
     let rowStyles = `${styles.tr} ${styles.card} `;
     if (expandedOrder.UserOrderNumber === order.UserOrderNumber) {
@@ -56,8 +54,8 @@ class OrderRow extends Component {
         <td onClick={() => getDetail(order.UserOrderID)}>
           <img
             className={styles.orderLoadImage}
-            src={order.IsTrunkeyOrder ? ETOBEE_IMAGE : FLEET_IMAGE}
-            onError={(e) => { e.target.src = DEFAULT_IMAGE; }}
+            src={order.IsTrunkeyOrder ? config.IMAGES.ETOBEE_LOGO : FLEET_IMAGE}
+            onError={(e) => { e.target.src = config.IMAGES.DEFAULT_LOGO; }}
           />
         </td>
         <td
@@ -225,7 +223,7 @@ function InputDispatchBuilder(keyword, placeholder) {
     }
 
     function OnKeyDown(e) {
-      if (e.keyCode !== 13) {
+      if (e.keyCode !== config.KEY_ACTION.ENTER) {
         return;
       }
       dispatch(orderMonitoringService.SetCurrentPage(1, tab));

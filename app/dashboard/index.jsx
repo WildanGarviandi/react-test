@@ -54,7 +54,7 @@ const AccordionMenu = React.createClass({
 
     return (
       <div className={styles.accWrapper}>
-        <div role="button" onClick={accordionAction.toggleView} className={className}>
+        <div role="none" onClick={accordionAction.toggleView} className={className}>
           <Glyph className={styles.menuGlyph} name={iconName} />
           <Glyph className={chevronStyle} name={chevronType} />
           <span>{iconTitle}</span>
@@ -185,7 +185,7 @@ const DashboardMenu = ({ activeMenuIdx, handleLogout, toggleCompact,
       {
         hubID &&
         <div>
-          <a role="button" className={styles.switchLink} onClick={switchMenu}>
+          <a role="none" className={styles.switchLink} onClick={switchMenu}>
             <img src="/img/icon-switch.png" className={styles.menuSwitch} />
             <span>Switch to {tmsMenu ? 'Hub' : 'TMS'}</span>
           </a>
@@ -259,7 +259,7 @@ const DashboardContainer = React.createClass({
   checkAuth() {
     interval = setInterval(() => {
       this.props.checkAuth();
-    }, 10000);
+    }, configValues.CHECK_AUTH_INTERVAL);
   },
   render() {
     const { routes, userLogged } = this.props;

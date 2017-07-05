@@ -1,3 +1,15 @@
+@mixin text-color($color) {
+  color: $color;
+}
+
+.text-black {
+  @include text-color(black);
+}
+
+.text-red {
+  @include text-color(red);
+}
+
 .table {
   border-image-source: initial;
   border-image-slice: initial;
@@ -157,12 +169,4 @@
   display: inline-block;
   margin: 25px 0 0 20px;
   color: rgba(33, 150, 243, 0.56);
-}
-
-.text-black {
-  color: black;
-}
-
-.text-red {
-  color: red;
 }

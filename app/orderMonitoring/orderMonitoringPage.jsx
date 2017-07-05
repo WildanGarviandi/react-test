@@ -161,8 +161,6 @@ class OrderMonitoringPage extends Component {
       updateCODReport,
     } = this.props;
 
-    const DEFAULT_IMAGE = '/img/default-logo.png';
-
     const checkedOrders = _.filter(orders[this.getActiveTab()], { IsChecked: true });
 
     return (
@@ -183,7 +181,7 @@ class OrderMonitoringPage extends Component {
           <AttemptDetails
             expandedOrder={expandedOrder}
             hideAttempt={this.props.HideAttempt}
-            defaultImg={DEFAULT_IMAGE}
+            defaultImg={config.IMAGES.DEFAULT_LOGO}
           />
         }
         {modal.addAttempt &&
@@ -196,7 +194,7 @@ class OrderMonitoringPage extends Component {
                 <div className={styles.modalHeader}>
                   <h2 className={styles.modalTitle}>Success</h2>
                   <div className={`${styles.successContent} ${styles.ordersContentEmpty}`}>
-                    <img className={styles.successIcon} src={'/img/icon-success.png'} alt="success" />
+                    <img className={styles.successIcon} src={config.IMAGES.ICON_SUCCESS} alt="success" />
                     <div className={styles.mediumText}>
                       You have successfully assigned the attempt
                     </div>
@@ -308,8 +306,8 @@ OrderMonitoringPage.propTypes = {
   HideSucceedAttempt: PropTypes.any,
   searchResult: PropTypes.any,
   succeedAttempt: PropTypes.any,
-  HideAttempt: PropTypes.any,
-  HideAttemptModal: PropTypes.any,
+  HideAttempt: PropTypes.func,
+  HideAttemptModal: PropTypes.func,
 };
 /* eslint-enable */
 
@@ -319,8 +317,8 @@ OrderMonitoringPage.defaultProps = {
   HideSucceedAttempt: {},
   searchResult: {},
   succeedAttempt: {},
-  HideAttempt: {},
-  HideAttemptModal: {},
+  HideAttempt: () => {},
+  HideAttemptModal: () => {},
 };
 
 function mapState(store) {
@@ -503,8 +501,7 @@ class PanelDetails extends Component {
         {isExpanded &&
           <div className={expandedAttempt ? styles.panelDetailsShiftLeft : styles.panelDetails}>
             <div
-              role="button"
-              tabIndex="0"
+              role="none"
               className={styles.closeButton}
               onClick={this.props.hideOrder}
             >
@@ -514,8 +511,8 @@ class PanelDetails extends Component {
               <Deadline deadline={expandedOrder.DueTime} />
             </div>
             <div className={styles.menuOuterContainer}>
-              <div role="button" tabIndex="0" onClick={() => this.toggleMenu()}>
-                <img src="/img/icon-menu.png" alt="menu" className={styles.iconMenu} />
+              <div role="none" onClick={() => this.toggleMenu()}>
+                <img src={config.IMAGES.ICON_MENU} alt="menu" className={styles.iconMenu} />
               </div>
               {this.state.showMenu &&
                 <ul className={styles.menuContainer}>
@@ -526,7 +523,7 @@ class PanelDetails extends Component {
                       )) && styles.disabled}
                     onClick={() => this.showDeliveryModal()}
                   >
-                    <img src="/img/icon-success.png" alt="success" />
+                    <img src={config.IMAGES.ICON_SUCCESS} alt="success" />
                     <p>Deliver Confirmation</p>
                   </li>
                   {envConfig.features.updateCODVendor &&
@@ -692,7 +689,7 @@ class AttemptModal extends Component {
           <div>
             <div className={styles.addAttemptTitle}>
               Report Attempt
-              <div role="button" className={styles.close} onClick={this.props.hide}>&times;</div>
+              <div role="none" className={styles.close} onClick={this.props.hide}>&times;</div>
             </div>
             <div className={styles.addAttemptBody}>
               <div className={styles.left}>
@@ -767,7 +764,7 @@ Reason.defaultProps = {
 function AttemptDetails({ hideAttempt, expandedOrder, defaultImg }) {
   return (
     <div className={styles.attemptPanel}>
-      <div role="button" className={styles.attemptHeader} onClick={hideAttempt}>
+      <div role="none" className={styles.attemptHeader} onClick={hideAttempt}>
         <img src="/img/icon-previous.png" />
         {expandedOrder.UserOrderAttempts && expandedOrder.UserOrderAttempts.length} Attempt Details
         </div>
@@ -915,7 +912,7 @@ class ModalDelivery extends Component {
               <div className={styles.modalTitle}>
                 Delivery Confirmation
               </div>
-              <div role="button" onClick={() => this.closeModal()} className={styles.modalClose}>
+              <div role="none" onClick={() => this.closeModal()} className={styles.modalClose}>
                 &times;
               </div>
               <div className={styles.divider} />
@@ -935,12 +932,12 @@ class ModalDelivery extends Component {
                         styles.orderDeliverySelected : styles.orderDelivery;
                       return (
                         <div
-                          role="button"
+                          role="none"
                           className={orderClass}
                           onClick={() => this.setOrderActive(object.UserOrderID)}
                           key={i}
                         >
-                          <img className={styles.imageOrderDelivery} src="/img/etobee-logo.png" />
+                          <img className={styles.imageOrderDelivery} src={config.IMAGES.ETOBEE_LOGO} />
                           <div className={styles.orderNumberDelivery}>
                             {object.UserOrderNumber}
                             {
@@ -1092,7 +1089,7 @@ class ModalDeliveryReport extends Component {
                 <div className={styles.modalHeader}>
                   <h2 className={styles.modalTitle}>Success</h2>
                   <div>
-                    <img className={styles.successIcon} src={'/img/icon-success.png'} />
+                    <img className={styles.successIcon} src={config.IMAGES.ICON_SUCCESS} />
                     <div className={styles.mediumText}>You have successfully set delivered</div>
                   </div>
                 </div>
@@ -1172,8 +1169,8 @@ class ModalUpdateCOD extends Component {
               <div className={styles.modalTitle}>
                 Update COD Confirmation
               </div>
-              <div role="button" onClick={() => this.closeModal()} className={styles.modalClose}>
-                X
+              <div role="none" onClick={() => this.closeModal()} className={styles.modalClose}>
+                &times;
               </div>
               <div className={styles.divider} />
               <div className={styles.listOrderUpdateCOD}>
@@ -1184,12 +1181,12 @@ class ModalUpdateCOD extends Component {
                         styles.orderDeliverySelected : styles.orderDelivery;
                       return (
                         <div
-                          role="button"
+                          role="none"
                           className={orderClass}
                           onClick={() => this.setOrderActive(object.UserOrderID)}
                           key={i}
                         >
-                          <img className={styles.imageOrderDelivery} src="/img/etobee-logo.png" />
+                          <img className={styles.imageOrderDelivery} src={config.IMAGES.ETOBEE_LOGO} />
                           <div className={styles.orderNumberDelivery}>
                             {object.UserOrderNumber}
                             {
@@ -1334,7 +1331,7 @@ class ModalUpdateCODReport extends Component {
                 <div className={styles.modalHeader}>
                   <h2 className={styles.modalTitle}>Success</h2>
                   <div>
-                    <img className={styles.successIcon} src={'/img/icon-success.png'} />
+                    <img className={styles.successIcon} src={config.IMAGES.ICON_SUCCESS} />
                     <div className={styles.mediumText}>You have successfully set COD status</div>
                   </div>
                 </div>
