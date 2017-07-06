@@ -596,7 +596,7 @@ function ProcessTrip(trip) {
 
 function OrderList({ routes }) {
   const orderComponents = routes.map((route, idx) => {
-    return (
+    const elem = (
       <div key={idx} className={styles.modalOrderMain}>
         <table>
           <tr>
@@ -612,6 +612,8 @@ function OrderList({ routes }) {
         </table>
       </div>
     );
+
+    return elem;
   });
   return <div>{orderComponents}</div>;
 }
