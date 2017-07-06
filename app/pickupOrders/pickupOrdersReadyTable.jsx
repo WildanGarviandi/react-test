@@ -594,29 +594,35 @@ function ProcessTrip(trip) {
   };
 }
 
-const OrderList = React.createClass({
-  render: () => {
-    const orderComponents = this.props.routes.map((route, idx) => {
-      return (
-        <div key={idx} className={styles.modalOrderMain}>
-          <table>
-            <tr>
-              <td className={styles.modalOrderID}>
-                {route.UserOrder.UserOrderNumber}
-              </td>
-            </tr>
-            <tr>
-              <td className={styles.modalOrderWeight}>
-                Weight: {route.UserOrder.PackageWeight} kg
-              </td>
-            </tr>
-          </table>
-        </div>
-      );
-    });
-    return <div>{orderComponents}</div>;
-  },
-});
+function OrderList({ routes }) {
+  const orderComponents = routes.map((route, idx) => {
+    const elem = (
+      <div key={idx} className={styles.modalOrderMain}>
+        <table>
+          <tr>
+            <td className={styles.modalOrderID}>
+              {route.UserOrder.UserOrderNumber}
+            </td>
+          </tr>
+          <tr>
+            <td className={styles.modalOrderWeight}>
+              Weight: {route.UserOrder.PackageWeight} kg
+            </td>
+          </tr>
+        </table>
+      </div>
+    );
+
+    return elem;
+  });
+  return <div>{orderComponents}</div>;
+}
+
+/* eslint-disable */
+OrderList.propTypes = {
+  routes: PropTypes.any.isRequired,
+};
+/* eslint-enable */
 
 const TableStateful = React.createClass({
   componentWillUnmount() {

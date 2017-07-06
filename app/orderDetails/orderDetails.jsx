@@ -2,53 +2,52 @@ import classNaming from 'classnames';
 import lodash from 'lodash';
 import React from 'react';
 import moment from 'moment';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import styles from './styles.scss';
-import Accordion from '../views/base/accordion';
-import {ButtonWithLoading, Input, Page, Glyph} from '../views/base';
-import {InputWithDefault, CheckBox} from '../views/base/input';
+import { ButtonWithLoading, Input, Page, Glyph } from '../views/base';
+import { InputWithDefault, CheckBox } from '../views/base/input';
 import * as OrdersDetails from './orderDetailsService';
-import {formatDate} from '../helper/time';
+import { formatDate } from '../helper/time';
 
 const conf = {
-  Actions: {title: "Actions", cellType: "Actions"},
-  DriverShare: {title: "Driver Share"},
-  DropoffAddress: {filterType: "String", title: "Dropoff Address", cellType: "String"},
-  DropoffCity: {filterType: "String", title: "City", cellType: "String"},
-  DropoffState: {filterType: "String", title: "State", cellType: "String"},
-  DropoffTime: {title: "Dropoff Time"},
-  DueTime: {title: "Deadline", cellType: "Datetime"},
-  EtobeeShare: {title: "Etobee Share"},
-  FinalCost: {title: "Final Cost"},
-  ID: {filterType: "String", title: "AWB / Web Order ID", cellType: "IDLink"},
-  IncludeInsurance: {title: "Include Insurance"},
-  IsChecked: {headerType: "Checkbox", cellType: "Checkbox"},
-  LogisticShare: {title: "Logistic Share"},
-  NextDestination: {filterType: "String", title: "Suggested Destination", cellType: "String"},
-  OrderCost: {title: "Order Cost"},
-  DeliveryFee: {title: "Delivery Fee"},
-  OrderStatus: {filterType: "StatusDropdown", title: "Order Status", cellType: "Status"},
-  PackageHeight: {title: "Height"},
-  PackageLength: {title: "Length"},
-  PackageWeight: {title: "Weight"},
-  PackageWidth: {title: "Width"},
-  PickupAddress: {filterType: "String", title: "Pickup Address", cellType: "String"},
-  PickupCity: {filterType: "String", title: "City", cellType: "String"},
-  PickupState: {filterType: "String", title: "State", cellType: "String"},
-  PickupTime: {filterType: "DateTime", title: "Pickup Time", cellType: "Datetime"},
-  PickupType: {title: "Pickup Type"},
-  RouteStatus: {filterType: "StatusDropdown", title: "Route Status", cellType: "String"},
-  TotalValue: {title: "Total Value"},
-  UseExtraHelper: {title: "Use Extra Helper"},
-  User: {title: "User"},
-  UserOrderNumber: {filterType: "String", title: "AWB", cellType: "Link"},
-  VAT: {title: "VAT"},
-  WebOrderID: {filterType: "String", title: "Web Order ID", cellType: "String"},
-  WebstoreName: {filterType: "String", title: "Webstore Name", cellType: "String"},
-  Weight: {filterType: "String", title: "Weight", cellType: "String"},
-  ZipCode: {filterType: "String", title: "Zip Code", cellType: "String"},
-  IsCOD: {title: "COD Order"},
-  SuggestedVendors: {title: "Suggested Vendors", cellType: "Array", filterType: "String"},
+  Actions: { title: "Actions", cellType: "Actions" },
+  DriverShare: { title: "Driver Share" },
+  DropoffAddress: { filterType: "String", title: "Dropoff Address", cellType: "String" },
+  DropoffCity: { filterType: "String", title: "City", cellType: "String" },
+  DropoffState: { filterType: "String", title: "State", cellType: "String" },
+  DropoffTime: { title: "Dropoff Time" },
+  DueTime: { title: "Deadline", cellType: "Datetime" },
+  EtobeeShare: { title: "Etobee Share" },
+  FinalCost: { title: "Final Cost" },
+  ID: { filterType: "String", title: "AWB / Web Order ID", cellType: "IDLink" },
+  IncludeInsurance: { title: "Include Insurance" },
+  IsChecked: { headerType: "Checkbox", cellType: "Checkbox" },
+  LogisticShare: { title: "Logistic Share" },
+  NextDestination: { filterType: "String", title: "Suggested Destination", cellType: "String" },
+  OrderCost: { title: "Order Cost" },
+  DeliveryFee: { title: "Delivery Fee" },
+  OrderStatus: { filterType: "StatusDropdown", title: "Order Status", cellType: "Status" },
+  PackageHeight: { title: "Height" },
+  PackageLength: { title: "Length" },
+  PackageWeight: { title: "Weight" },
+  PackageWidth: { title: "Width" },
+  PickupAddress: { filterType: "String", title: "Pickup Address", cellType: "String" },
+  PickupCity: { filterType: "String", title: "City", cellType: "String" },
+  PickupState: { filterType: "String", title: "State", cellType: "String" },
+  PickupTime: { filterType: "DateTime", title: "Pickup Time", cellType: "Datetime" },
+  PickupType: { title: "Pickup Type" },
+  RouteStatus: { filterType: "StatusDropdown", title: "Route Status", cellType: "String" },
+  TotalValue: { title: "Total Value" },
+  UseExtraHelper: { title: "Use Extra Helper" },
+  User: { title: "User" },
+  UserOrderNumber: { filterType: "String", title: "AWB", cellType: "Link" },
+  VAT: { title: "VAT" },
+  WebOrderID: { filterType: "String", title: "Web Order ID", cellType: "String" },
+  WebstoreName: { filterType: "String", title: "Webstore Name", cellType: "String" },
+  Weight: { filterType: "String", title: "Weight", cellType: "String" },
+  ZipCode: { filterType: "String", title: "Zip Code", cellType: "String" },
+  IsCOD: { title: "COD Order" },
+  SuggestedVendors: { title: "Suggested Vendors", cellType: "Array", filterType: "String" },
 };
 
 const orderDetailsSummary = ["UserOrderNumber", "WebOrderID", "User", "PickupType", "RouteStatus", "PickupTime", "PickupAddress", "DropoffTime", "DropoffAddress", "DueTime", "NextDestination"];
@@ -61,7 +60,7 @@ const dateTimeAttributes = ["Pickup Time", "Dropoff Time", "Deadline"];
 
 const DetailRow = React.createClass({
   render() {
-    const {isEditing, label, value, unit} = this.props;
+    const { isEditing, label, value, unit } = this.props;
 
     return (
       <div className="row">
@@ -101,7 +100,7 @@ const DetailRow = React.createClass({
 const DetailAcc = React.createClass({
   textChange(key) {
     return (value) => {
-      this.setState({[key]: value});
+      this.setState({ [key]: value });
     };
   },
   submit() {
@@ -109,7 +108,7 @@ const DetailAcc = React.createClass({
     delete updatedData.isEditing;
     this.props.UpdateOrder(updatedData);
     let updatedDataBoolean = lodash.intersection(lodash.keys(updatedData), boolAttributes);
-    updatedDataBoolean.forEach(function(key) {
+    updatedDataBoolean.forEach(function (key) {
       updatedData[key] = updatedData[key] ? 'Yes' : 'No';
     });
     setTimeout(() => {
@@ -120,7 +119,7 @@ const DetailAcc = React.createClass({
     }, 1500);
   },
   render() {
-    const {accordionAction, accordionState, height, rows, order, title, topStyle, canEdit, isEditing, isUpdating} = this.props;
+    const { accordionAction, accordionState, height, rows, order, title, topStyle, canEdit, isEditing, isUpdating } = this.props;
 
     const editBtnProps = {
       textBase: "Edit",
@@ -153,7 +152,7 @@ const DetailAcc = React.createClass({
     }
 
     function PackageUnit(type) {
-      switch(type) {
+      switch (type) {
         case 'PackageWeight': return 'kg';
         default: return 'cm';
       }
@@ -161,20 +160,20 @@ const DetailAcc = React.createClass({
 
     const colls = lodash.map(rows, (row) => {
       return <DetailRow key={row.key} label={conf[row.key].title} value={order[row.key]} unit={PackageUnit(row.key)}
-        isEditing={row.canEdit && isEditing} onChange={this.textChange(row.key) } submitForm={this.submit} />
+        isEditing={row.canEdit && isEditing} onChange={this.textChange(row.key)} submitForm={this.submit} />
     });
 
     return (
       <div className={styles.colMd4}>
         <p className={styles.title}>{title}
-        {
-          canEdit &&
-          <div className="pull-right">
-            { !isEditing && <ButtonWithLoading {...editBtnProps} /> }
-            { isEditing && <ButtonWithLoading {...saveBtnProps} /> }
-            { isEditing && !isUpdating && <ButtonWithLoading {...cancelBtnProps} /> }
-          </div>
-        }
+          {
+            canEdit &&
+            <div className="pull-right">
+              {!isEditing && <ButtonWithLoading {...editBtnProps} />}
+              {isEditing && <ButtonWithLoading {...saveBtnProps} />}
+              {isEditing && !isUpdating && <ButtonWithLoading {...cancelBtnProps} />}
+            </div>
+          }
         </p>
         {colls}
       </div>
@@ -184,22 +183,22 @@ const DetailAcc = React.createClass({
 
 const Details = React.createClass({
   getInitialState() {
-      return ({
-          showAddressWebstore: false,
-          showAddressDropoff: false
-      });
+    return ({
+      showAddressWebstore: false,
+      showAddressDropoff: false
+    });
   },
   showAddressWebstore() {
-      this.setState({showAddressWebstore: true});
+    this.setState({ showAddressWebstore: true });
   },
   hideAddressWebstore() {
-      this.setState({showAddressWebstore: false});
+    this.setState({ showAddressWebstore: false });
   },
   showAddressDropoff() {
-      this.setState({showAddressDropoff: true});
+    this.setState({ showAddressDropoff: true });
   },
   hideAddressDropoff() {
-      this.setState({showAddressDropoff: false});
+    this.setState({ showAddressDropoff: false });
   },
   componentWillMount() {
     this.props.GetDetails();
@@ -208,8 +207,8 @@ const Details = React.createClass({
     }
   },
   render() {
-    const {canEdit, isEditing, isFetching, isUpdating, order, 
-      StartEdit, EndEdit, UpdateOrder, GetDetails, editCOD, editVolume, editWeight} = this.props;
+    const { canEdit, isEditing, isFetching, isUpdating, order,
+      StartEdit, EndEdit, UpdateOrder, GetDetails, editCOD, editVolume, editWeight } = this.props;
 
     const Title = "Order Details";
 
@@ -368,7 +367,7 @@ const Details = React.createClass({
                   </div>
                 </div>
 
-                <DetailAcc rows={costRows} order={order} title={"WEIGHT & DIMENSION"} canEdit={canEdit} isEditing={isEditing} isUpdating={isUpdating} UpdateOrder={UpdateOrder} GetDetails={GetDetails} StartEdit={StartEdit} EndEdit={EndEdit}/>
+                <DetailAcc rows={costRows} order={order} title={"WEIGHT & DIMENSION"} canEdit={canEdit} isEditing={isEditing} isUpdating={isUpdating} UpdateOrder={UpdateOrder} GetDetails={GetDetails} StartEdit={StartEdit} EndEdit={EndEdit} />
 
                 <div className={styles.colMd4}>
                   <p className={styles.title}>COD</p>
@@ -459,53 +458,53 @@ const Details = React.createClass({
                   <p className={styles.title}>PROOF OF DELIVERY</p>
                   {
                     (order.CurrentRoute && order.CurrentRoute.OrderStatus && order.CurrentRoute.OrderStatus.OrderStatus !== 'DELIVERED') ?
-                    <p>Package not yet delivered</p>
-                    :
-                    <div>
-                      <div className="row">
-                        <div className={styles.colMd5}>
-                          <p>Recipient Name</p>
+                      <p>Package not yet delivered</p>
+                      :
+                      <div>
+                        <div className="row">
+                          <div className={styles.colMd5}>
+                            <p>Recipient Name</p>
+                          </div>
+                          <div className={styles.colMd1}>
+                            :
                         </div>
-                        <div className={styles.colMd1}>
-                          :
+                          <div className={styles.colMd6}>
+                            {order.RecipientName}
+                          </div>
                         </div>
-                        <div className={styles.colMd6}>
-                          {order.RecipientName}
+                        <div className="row">
+                          <div className={styles.colMd5}>
+                            <p>Recipient Phone</p>
+                          </div>
+                          <div className={styles.colMd1}>
+                            :
+                        </div>
+                          <div className={styles.colMd6}>
+                            {order.RecipientPhone}
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className={styles.colMd5}>
+                            <p>Recipient Relation</p>
+                          </div>
+                          <div className={styles.colMd1}>
+                            :
+                        </div>
+                          <div className={styles.colMd6}>
+                            {order.RecipientRelation}
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className={styles.colMd6}>
+                            <p><b>Signature</b></p>
+                            <img className={styles.colMd12} src={order.RecipientSignature} />
+                          </div>
+                          <div className={styles.colMd6}>
+                            <p><b>Photo</b></p>
+                            <img className={styles.colMd12} src={order.RecipientPhoto} />
+                          </div>
                         </div>
                       </div>
-                      <div className="row">
-                        <div className={styles.colMd5}>
-                          <p>Recipient Phone</p>
-                        </div>
-                        <div className={styles.colMd1}>
-                          :
-                        </div>
-                        <div className={styles.colMd6}>
-                          {order.RecipientPhone}
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className={styles.colMd5}>
-                          <p>Recipient Relation</p>
-                        </div>
-                        <div className={styles.colMd1}>
-                          :
-                        </div>
-                        <div className={styles.colMd6}>
-                          {order.RecipientRelation}
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className={styles.colMd6}>
-                          <p><b>Signature</b></p>
-                          <img className={styles.colMd12} src={order.RecipientSignature} />
-                        </div>
-                        <div className={styles.colMd6}>
-                          <p><b>Photo</b></p>
-                          <img className={styles.colMd12} src={order.RecipientPhoto} />
-                        </div>
-                      </div>
-                    </div>
                   }
                 </div>
               </div>
@@ -520,7 +519,7 @@ const Details = React.createClass({
 function mapStateToPickupOrders(state) {
   const { orderDetails, userLogged } = state.app;
   const { editCOD, editVolume, editWeight } = userLogged;
-  const {isEditing, isFetching, isUpdating, order} = orderDetails;
+  const { isEditing, isFetching, isUpdating, order } = orderDetails;
   const canEdit = userLogged && (editCOD || editVolume || editWeight);
 
   return {

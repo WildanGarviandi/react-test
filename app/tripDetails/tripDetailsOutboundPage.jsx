@@ -16,7 +16,6 @@ import * as TripDetails from './tripDetailsService';
 import * as OutboundTrips from '../outboundTrips/outboundTripsService';
 import AssignTripModal from '../outboundTrips/outboundTripsModal';
 import ModalActions from '../modules/modals/actions';
-import Accordion from '../views/base/accordion';
 import RemarksSetter from '../components/remarksSetter';
 import styles from './styles.scss';
 import { CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered, TripParser } from '../modules/trips';
@@ -391,7 +390,7 @@ const DetailPage = React.createClass({
                               <div>
                                 <p className={styles.title}>
                                   Fleet : {trip.FleetManager.CompanyDetail &&
-                                   trip.FleetManager.CompanyDetail.CompanyName
+                                    trip.FleetManager.CompanyDetail.CompanyName
                                   }
                                 </p>
                                 {

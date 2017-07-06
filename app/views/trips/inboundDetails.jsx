@@ -1,27 +1,29 @@
-import lodash from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
+import { ModalContainer, ModalDialog } from 'react-modal-dialog';
+
+import * as _ from 'lodash';
 import classNaming from 'classnames';
-import {connect} from 'react-redux';
-import {push} from 'react-router-redux';
-import {ContainerDetailsActions, StatusList} from '../../modules';
+
+import { ContainerDetailsActions, StatusList } from '../../modules';
 import districtsFetch from '../../modules/districts/actions/districtsFetch';
-import {ButtonBase, ButtonWithLoading, Input, InputWithDefault, Modal, Page} from '../base';
+import { ButtonBase, ButtonWithLoading, Input, InputWithDefault, Modal, Page } from '../base';
 import DistrictAndDriver from '../container/districtAndDriver';
-import {OrderTable} from '../container/table';
+import { OrderTable } from '../container/table';
 import * as TripDetails from '../../modules/trips/actions/details';
 import * as TripDetailsTrue from '../../modules/inboundTripDetails';
 import ModalActions from '../../modules/modals/actions';
-import Accordion from '../base/accordion';
+import Accordion from '../../components/accordion';
 import NextDestinationSetter from '../container/nextDestinationSetter';
 import TransportSetter from '../container/secondSetting';
 import RemarksSetter from '../container/remarksSetter';
 import styles from './styles.scss';
-import {CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered} from '../../modules/trips';
-import {formatDate} from '../../helper/time';
-import {TripParser} from '../../modules/trips';
-import {Glyph} from '../base';
-import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import { CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered } from '../../modules/trips';
+import { formatDate } from '../../helper/time';
+import { TripParser } from '../../modules/trips';
+import { Glyph } from '../base';
 import * as OrdersDetails from '../../modules/orders/actions/details';
 
 const columns = ['id', 'id2', 'pickup', 'time', 'CODValue', 'CODStatus', 'orderStatus', 'routeStatus', 'isSuccess', 'action'];
@@ -29,7 +31,7 @@ const nonFillColumn = columns.slice(0, columns.length - 1);
 const headers = [{
   id: 'Web Order ID', id2: 'User Order Number',
   pickup: 'Pickup Address', dropoff: 'Dropoff Address',
-  time: 'Pickup Time', orderStatus: 'Order Status',routeStatus: 'Route Status', action: 'Action',
+  time: 'Pickup Time', orderStatus: 'Order Status', routeStatus: 'Route Status', action: 'Action',
   CODValue: 'COD Value', isSuccess: 'Scanned', CODStatus: 'COD Status'
 }];
 
@@ -39,23 +41,23 @@ const InputRow = React.createClass({
       hover: false
     };
   },
-  onMouseEnterHandler: function() {
+  onMouseEnterHandler: function () {
     this.setState({
       hover: true
     });
   },
-  onMouseLeaveHandler: function() {
+  onMouseLeaveHandler: function () {
     this.setState({
       hover: false
     });
   },
   render() {
-    const {isEditing, label, value, onChange, type, icon, id} = this.props;
+    const { isEditing, label, value, onChange, type, icon, id } = this.props;
     let stylesLabel = styles.itemLabelHover;
     let stylesValue = styles.itemValueHover;
 
     return (
-      <div style={{clear: 'both'}} 
+      <div style={{ clear: 'both' }}
         className={styles.bgInput}>
         <img className={styles.iconInput} src={"/img/" + icon + ".png"} />
         <span className={stylesLabel}>{label}</span>
@@ -69,7 +71,7 @@ const DetailPage = React.createClass({
   getInitialState() {
     return {
       showModal: false,
-      driver: '', 
+      driver: '',
       district: {
         isChanging: false,
       },
@@ -80,18 +82,18 @@ const DetailPage = React.createClass({
     };
   },
   openModal() {
-    this.setState({showModal: true});
+    this.setState({ showModal: true });
   },
   closeModal() {
-    this.setState({showModal: false, scannedOrder: {}});    
+    this.setState({ showModal: false, scannedOrder: {} });
     this.props.StopEditOrder();
   },
   changeToggle() {
-    this.setState({scanUpdateToggle: !this.state.scanUpdateToggle});    
+    this.setState({ scanUpdateToggle: !this.state.scanUpdateToggle });
   },
   clearContainer() {
-    if(confirm('Are you sure you want to empty and reuse this container?')) {
-      this.setState({showModal: true});
+    if (confirm('Are you sure you want to empty and reuse this container?')) {
+      this.setState({ showModal: true });
       this.props.clearContainer(this.props.container.ContainerID);
     }
   },
@@ -100,18 +102,18 @@ const DetailPage = React.createClass({
     this.props.StopEditOrder();
   },
   goToFillContainer() {
-    const {trip} = this.props;
+    const { trip } = this.props;
     this.props.goToFillContainer(trip.TripID);
   },
   pickDriver(val) {
     const driver = _.find(this.props.drivers, (driver) => (val == PrepareDriver(driver.Driver)));
-    this.setState({driverID: driver.Driver.UserID, driver: val});
+    this.setState({ driverID: driver.Driver.UserID, driver: val });
   },
   finalizeDriver() {
-    this.props.driverPick(this.props.container.ContainerID,this.state.driverID);
+    this.props.driverPick(this.props.container.ContainerID, this.state.driverID);
   },
   deassignDriver() {
-    if(confirm('Are you sure you want to deassign driver on this container?')) {
+    if (confirm('Are you sure you want to deassign driver on this container?')) {
       this.props.driverDeassign();
     }
   },
@@ -152,8 +154,8 @@ const DetailPage = React.createClass({
     this.props.exportManifest();
   },
   deliverTrip() {
-    if(this.props.canMarkTripDelivered) {
-      let scanned = lodash.reduce(this.props.orders, function (sum, order) {
+    if (this.props.canMarkTripDelivered) {
+      let scanned = _.reduce(this.props.orders, function (sum, order) {
         if (order.routeStatus === 'DELIVERED') {
           return sum + 1;
         } else {
@@ -161,9 +163,9 @@ const DetailPage = React.createClass({
         }
       }, 0);
 
-      if (scanned < lodash.size(this.props.orders)) {
-        let mark = confirm('You have scanned only ' + scanned + ' from ' + lodash.size(this.props.orders) +
-            ' orders. Continue to mark this trip as delivered?');
+      if (scanned < _.size(this.props.orders)) {
+        let mark = confirm('You have scanned only ' + scanned + ' from ' + _.size(this.props.orders) +
+          ' orders. Continue to mark this trip as delivered?');
         if (mark) {
           this.props.deliverTrip(this.props.trip.TripID);
         }
@@ -180,17 +182,17 @@ const DetailPage = React.createClass({
   },
   stateChange(key) {
     return (value) => {
-      this.setState({[key]: value});
+      this.setState({ [key]: value });
     };
   },
   updateOrder() {
     let updatedFields = ['PackageVolume', 'PackageWeight', 'DeliveryFee']
-    let currentData = lodash.assign({}, this.state);
+    let currentData = _.assign({}, this.state);
     let updatedData = {}
-    updatedFields.forEach(function(field) {
+    updatedFields.forEach(function (field) {
       if (typeof currentData[field] !== 'undefined') {
         updatedData[field] = parseInt(currentData[field]);
-      } 
+      }
     });
     this.props.UpdateOrder(this.props.scannedOrder.UserOrderID, updatedData);
   },
@@ -199,11 +201,11 @@ const DetailPage = React.createClass({
     this.props.revertSuccessEditing();
   },
   render() {
-    const {activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, fillAble, hasDriver, isFetching, isInbound, orders, reusable, statusList, TotalCODValue, CODCount, totalDeliveryFee, trip} = this.props;
+    const { activeDistrict, backToContainer, canDeassignDriver, container, districts, driverState, driversName, fillAble, hasDriver, isFetching, isInbound, orders, reusable, statusList, TotalCODValue, CODCount, totalDeliveryFee, trip } = this.props;
 
-    const {canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, isDeassigning, isEditing, scannedOrder} = this.props;
+    const { canMarkContainer, canMarkOrderReceived, canMarkTripDelivered, isDeassigning, isEditing, scannedOrder } = this.props;
 
-    const successfullScan = lodash.filter(this.props.orders, {'isSuccess': 'Yes'});
+    const successfullScan = _.filter(this.props.orders, { 'isSuccess': 'Yes' });
 
     const tripType = trip.OriginHub ? 'Interhub' : 'First Leg';
     const tripOrigin = trip.OriginHub ? `Hub ${trip.OriginHub.Name}` : TripParser(trip).WebstoreNames;
@@ -225,21 +227,21 @@ const DetailPage = React.createClass({
           this.state.showModal && isEditing &&
           <ModalContainer onClose={this.closeModal}>
             <ModalDialog onClose={this.closeModal}>
-              { !this.state.isSuccessEditing &&
-                <div style={{clear: 'both'}}>
-                  <InputRow id={'packageVolume'} label={'Package Volume'} icon={'icon-volume'} value={this.state.scannedOrder.PackageVolume} type={'text'} onChange={this.stateChange('PackageVolume') } />
-                  <InputRow label={'Package Weight'} icon={'icon-weight'} value={this.state.scannedOrder.PackageWeight} type={'text'} onChange={this.stateChange('PackageWeight') } />
-                  <InputRow label={'Delivery Fee'} icon={'icon-delivery-fee'} value={this.state.scannedOrder.OrderCost} type={'text'} onChange={this.stateChange('DeliveryFee') } />
-                  <div style={{clear: 'both'}} />
+              {!this.state.isSuccessEditing &&
+                <div style={{ clear: 'both' }}>
+                  <InputRow id={'packageVolume'} label={'Package Volume'} icon={'icon-volume'} value={this.state.scannedOrder.PackageVolume} type={'text'} onChange={this.stateChange('PackageVolume')} />
+                  <InputRow label={'Package Weight'} icon={'icon-weight'} value={this.state.scannedOrder.PackageWeight} type={'text'} onChange={this.stateChange('PackageWeight')} />
+                  <InputRow label={'Delivery Fee'} icon={'icon-delivery-fee'} value={this.state.scannedOrder.OrderCost} type={'text'} onChange={this.stateChange('DeliveryFee')} />
+                  <div style={{ clear: 'both' }} />
                   <button className={styles.saveButton} onClick={this.updateOrder}>SUBMIT</button>
-                </div> 
-              }   
-              { this.state.isSuccessEditing &&
+                </div>
+              }
+              {this.state.isSuccessEditing &&
                 <div>
                   <img className={styles.successIcon} src={"/img/icon-success.png"} />
                   <div className={styles.updateSuccess}>
                     Update Order Success
-                  </div> 
+                  </div>
                   <button className={styles.saveButton} onClick={this.confirmSuccess}>OK</button>
                 </div>
               }
@@ -254,7 +256,7 @@ const DetailPage = React.createClass({
           !this.props.notFound && !isFetching &&
           <Page title={'Inbound Trip Details' + (trip.ContainerNumber ? (" of Container " + trip.ContainerNumber) : "")}
             backButton="true">
-            <div style={{clear: 'both'}} />
+            <div style={{ clear: 'both' }} />
             <div className={classNaming(styles.container)}>
               <Glyph name={'tags'} className={styles.glyph} />
               <span className={styles.num}>Type</span>
@@ -265,7 +267,7 @@ const DetailPage = React.createClass({
               <span className={styles.num}>Origin</span>
               <span className={styles.attr}>{tripOrigin}</span>
             </div>
-            <div style={{clear: 'both'}} />
+            <div style={{ clear: 'both' }} />
             {
               reusable &&
               <ButtonWithLoading textBase={'Clear and Reuse Container'} textLoading={'Clearing Container'} isLoading={emptying.isInProcess} onClick={this.clearContainer} />
@@ -276,14 +278,14 @@ const DetailPage = React.createClass({
             }
             {
               (canMarkTripDelivered || canMarkContainer) &&
-              <ButtonWithLoading styles={{base: styles.greenBtn}} textBase={'Complete Trip'} textLoading={'Clearing Container'} isLoading={false} onClick={this.deliverTrip} />
+              <ButtonWithLoading styles={{ base: styles.greenBtn }} textBase={'Complete Trip'} textLoading={'Clearing Container'} isLoading={false} onClick={this.deliverTrip} />
             }
             <a href={'/trips/' + trip.TripID + '/manifest#'} className={styles.manifestLink} target="_blank">Print Manifest</a>
             <a onClick={this.exportManifest} className={styles.manifestLink} target="_blank">Export Excel Manifest</a>
             <Accordion initialState="collapsed">
               <TransportSetter trip={trip} isInbound={true} />
             </Accordion>
-            { this.props.isCentralHub && canMarkOrderReceived &&
+            {this.props.isCentralHub && canMarkOrderReceived &&
               <div className={styles.bgToggle}>
                 <div className={styles.toggleQuestion}>
                   What do you want to do?
@@ -293,33 +295,33 @@ const DetailPage = React.createClass({
               </div>
             }
             <RemarksSetter trip={trip} />
-            <span style={{display: 'block', marginTop: 25, marginBottom: 5}}>
-              <span style={{fontSize: 20, display: 'initial', verticalAlign: 'middle'}}>{statisticItem}</span>
+            <span style={{ display: 'block', marginTop: 25, marginBottom: 5 }}>
+              <span style={{ fontSize: 20, display: 'initial', verticalAlign: 'middle' }}>{statisticItem}</span>
               {
                 fillAble &&
-                <ButtonWithLoading textBase={'+ Add Order'} onClick={this.goToFillContainer} 
-                  styles={{base: styles.normalBtn + ' ' + styles.addOrderBtn}} />
+                <ButtonWithLoading textBase={'+ Add Order'} onClick={this.goToFillContainer}
+                  styles={{ base: styles.normalBtn + ' ' + styles.addOrderBtn }} />
               }
             </span>
             {
               !trip.DestinationHub && trip.District &&
               <span>
-                <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>Total Delivery Fee Rp {totalDeliveryFee || 0}</span>
-                <span style={{display: 'block', marginTop: 10, marginBottom: 5}}>Total COD Value Rp {TotalCODValue},- ({CODCount} items)</span>
+                <span style={{ display: 'block', marginTop: 10, marginBottom: 5 }}>Total Delivery Fee Rp {totalDeliveryFee || 0}</span>
+                <span style={{ display: 'block', marginTop: 10, marginBottom: 5 }}>Total COD Value Rp {TotalCODValue},- ({CODCount} items)</span>
               </span>
             }
             {
               orders.length > 0 &&
-              <div style={{position: 'relative'}}>
+              <div style={{ position: 'relative' }}>
                 <div className={styles.finderWrapperContainer}>
                   {
                     canMarkOrderReceived &&
-                    <span className={styles.finderWrapper} style={{top: -25}}>
+                    <span className={styles.finderWrapper} style={{ top: -25 }}>
                       <span className={styles.finderLabel} onKeyDown={this.jumpTo}>
                         Received Order :
                       </span>
-                      <Input onChange={this.changeMark} onEnterKeyPressed={this.markReceived} ref="markReceived" base={{value:this.state.orderMarked}}
-                      id="markReceivedInput" />
+                      <Input onChange={this.changeMark} onEnterKeyPressed={this.markReceived} ref="markReceived" base={{ value: this.state.orderMarked }}
+                        id="markReceivedInput" />
                       <a onClick={this.submitReceived} className={styles.submitButton}>Submit</a>
                     </span>
                   }
@@ -335,34 +337,34 @@ const DetailPage = React.createClass({
 });
 
 const mapStateToProps = (state, ownProps) => {
-  const {inboundTripDetails, userLogged, orderDetails} = state.app;
-  const {hubID, isCentralHub} = userLogged;
-  const {isDeassigning, isFetching, orders: rawOrders, isEditing, scannedOrder} = inboundTripDetails;
+  const { inboundTripDetails, userLogged, orderDetails } = state.app;
+  const { hubID, isCentralHub } = userLogged;
+  const { isDeassigning, isFetching, orders: rawOrders, isEditing, scannedOrder } = inboundTripDetails;
   const trip = ownProps.trip;
   const isSuccessEditing = orderDetails.isSuccessEditing;
   const containerID = ownProps.params.id;
-  const {containers, statusList} = state.app.containers;
+  const { containers, statusList } = state.app.containers;
   const container = containers[containerID];
 
-  if(isFetching) {
-    return {isFetching: true};
+  if (isFetching) {
+    return { isFetching: true };
   }
 
-  if(!trip) {
-    return {notFound: true};
+  if (!trip) {
+    return { notFound: true };
   }
 
   const emptying = false;
   const reusable = false;
   const fillAble = trip.OrderStatus && (trip.OrderStatus.OrderStatusID === 1 || trip.OrderStatus.OrderStatusID === 9);
-  const {drivers} = state.app;
+  const { drivers } = state.app;
 
-  const containerOrders = lodash.map(trip.UserOrderRoutes, (route) => {
+  const containerOrders = _.map(trip.UserOrderRoutes, (route) => {
     return route;
   });
 
   // const orders = _.map(containerOrders, (order) => {
-    // const order = route.UserOrder;
+  // const order = route.UserOrder;
 
   const orders = _.map(rawOrders, (order) => {
     return {
@@ -409,7 +411,7 @@ const mapStateToProps = (state, ownProps) => {
       isPicking: state.app.driversStore.driverList.isLoading,
     },
     statusList: _.chain(statusList)
-      .map((key, val) => ({key: key, value: val}))
+      .map((key, val) => ({ key: key, value: val }))
       .sortBy((arr) => (arr.key))
       .value(),
     totalDeliveryFee: _.reduce(orders, (total, order) => {
@@ -431,50 +433,50 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const route = ownProps.routes[ownProps.routes.length-1];
+  const route = ownProps.routes[ownProps.routes.length - 1];
   const path = route.path;
 
   return {
-    backToContainer: function() {
+    backToContainer: function () {
       dispatch(push('/container'));
     },
-    clearContainer: function(id) {
+    clearContainer: function (id) {
       dispatch(ContainerDetailsActions.clearContainer(id));
     },
-    containerDetailsFetch: function(id) {
+    containerDetailsFetch: function (id) {
       dispatch(TripDetailsTrue.FetchDetails(id));
     },
-    driverDeassign: function() {
+    driverDeassign: function () {
       dispatch(TripDetailsTrue.Deassign(ownProps.params.id));
     },
-    goToFillContainer: function(id) {
+    goToFillContainer: function (id) {
       dispatch(push('/trips/' + id + '/fillPickup'));
     },
-    fetchStatusList: function() {
+    fetchStatusList: function () {
       dispatch(StatusList.fetch());
     },
-    markReceived: function(scannedID, backElementFocusID, scanUpdateToggle) {
+    markReceived: function (scannedID, backElementFocusID, scanUpdateToggle) {
       dispatch(TripDetailsTrue.OrderReceived(scannedID, backElementFocusID, scanUpdateToggle));
     },
-    deliverTrip: function(tripID, orders) {
+    deliverTrip: function (tripID, orders) {
       dispatch(TripDetailsTrue.TripDeliver(tripID));
     },
-    askReuse: function(modal) {
+    askReuse: function (modal) {
       dispatch(ModalActions.addConfirmation(modal));
     },
-    reuse: function(tripID) {
+    reuse: function (tripID) {
       dispatch(TripDetailsTrue.TripDeliver(tripID, true));
     },
-    exportManifest: function() {
+    exportManifest: function () {
       dispatch(TripDetailsTrue.ExportManifest(ownProps.params.id));
     },
-    UpdateOrder: function(id, order){
+    UpdateOrder: function (id, order) {
       dispatch(OrdersDetails.editOrder(id, order, true));
     },
-    StopEditOrder: function() {
+    StopEditOrder: function () {
       dispatch(TripDetailsTrue.StopEditOrder());
     },
-    revertSuccessEditing: function(){
+    revertSuccessEditing: function () {
       dispatch(OrdersDetails.revertSuccessEditing());
     }
   };
