@@ -12,6 +12,10 @@ class Accordion extends PureComponent {
     this.state = {
       view: this.props.initialState,
     };
+
+    this.collapseView = this.collapseView.bind(this);
+    this.expandView = this.expandView.bind(this);
+    this.toggleView = this.toggleView.bind(this);
   }
   collapseView() {
     this.setState({ view: viewAccordion.COLLAPSED });
