@@ -1,81 +1,78 @@
-import lodash from 'lodash';
 import React from 'react';
-import {connect} from 'react-redux';
-import {Page} from '../components/page';
-import {ButtonWithLoading} from '../components/button';
+import { connect } from 'react-redux';
+import DateTime from 'react-datetime';
+
+import lodash from 'lodash';
+
+import { Page } from '../components/page';
+import { ButtonWithLoading } from '../components/Button';
 import * as Form from '../components/form';
 import * as ContactService from './contactService';
 import styles from './styles.scss';
-import configValues from '../config/configValues.json';
-import configEnv from '../../config.json';
-import DateTime from 'react-datetime';
-import moment from 'moment';
-import {ModalContainer, ModalDialog} from 'react-modal-dialog';
-import {Link} from 'react-router';
-import stylesButton from '../components/button.scss';
+import stylesButton from '../components/Button/styles.scss';
 
 const InputRow = React.createClass({
-  render() {
-    const {isEditing, label, value, onChange, type} = this.props;
+    render() {
+        const { isEditing, label, value, onChange, type } = this.props;
 
-    return (
-      <div style={{clear: 'both'}}>
-        <span className={styles.itemLabel}>{label}</span>
-          <span className={styles.itemValue}>
-            {this.props.unitLabel}
-            <Form.InputWithDefault currentText={value} onChange={this.props.onChange} type={type} />
-          </span>
-      </div>
-    );
-  }
+        return (
+            <div style={{ clear: 'both' }}>
+                <span className={styles.itemLabel}>{label}</span>
+                <span className={styles.itemValue}>
+                    {this.props.unitLabel}
+                    <Form.InputWithDefault currentText={value} onChange={this.props.onChange} type={type} />
+                </span>
+            </div>
+        );
+    }
 });
 
 const TextareaRow = React.createClass({
-  render() {
-    const {isEditing, label, value, onChange, type} = this.props;
+    render() {
+        const { isEditing, label, value, onChange, type } = this.props;
 
-    return (
-      <div style={{clear: 'both'}}>
-        <span className={styles.itemLabel}>{label}</span>
-          <span className={styles.itemValue}>
-            {this.props.unitLabel}
-            <Form.TextareaWithDefault currentText={value} onChange={this.props.onChange} type={type} />
-          </span>
-      </div>
-    );
-  }
+        return (
+            <div style={{ clear: 'both' }}>
+                <span className={styles.itemLabel}>{label}</span>
+                <span className={styles.itemValue}>
+                    {this.props.unitLabel}
+                    <Form.TextareaWithDefault currentText={value} onChange={this.props.onChange} type={type} />
+                </span>
+            </div>
+        );
+    }
 });
 
 const DropdownRow = React.createClass({
-  render() {
-    const {isEditing, label, value, onChange, type, options, handleSelect} = this.props;
+    render() {
+        const { isEditing, label, value, onChange, type, options, handleSelect } = this.props;
 
-    return (
-      <div style={{clear: 'both'}}>
-        <span className={styles.itemLabel}>{label}</span>
-          <span className={styles.itemValue}>
-            <Form.DropdownWithState initialValue={value} options={options} handleSelect={handleSelect} />
-          </span>
-      </div>
-    );
-  }
+        return (
+            <div style={{ clear: 'both' }}>
+                <span className={styles.itemLabel}>{label}</span>
+                <span className={styles.itemValue}>
+                    <Form.DropdownWithState initialValue={value} options={options} handleSelect={handleSelect} />
+                </span>
+            </div>
+        );
+    }
 });
 
 const DatetimeRow = React.createClass({
     render() {
-        const {isEditing, label, value, onChange, type, options, handleSelect} = this.props;
+        const { isEditing, label, value, onChange, type, options, handleSelect } = this.props;
 
         return (
-          <div style={{clear: 'both'}}>
-            <span className={styles.itemLabel}>{label}</span>
-              <span className={styles.itemValue}>
-                <DateTime onChange={this.props.onChange} defaultValue={value} />
-              </span>
-          </div>
+            <div style={{ clear: 'both' }}>
+                <span className={styles.itemLabel}>{label}</span>
+                <span className={styles.itemValue}>
+                    <DateTime onChange={this.props.onChange} defaultValue={value} />
+                </span>
+            </div>
         );
     }
 });
- 
+
 const ManagePage = React.createClass({
     getInitialState() {
         return ({});
@@ -103,9 +100,9 @@ const ManagePage = React.createClass({
     },
     stateChange(key) {
         return (value) => {
-            this.setState({[key]: value});
+            this.setState({ [key]: value });
             if (typeof value === 'object') {
-                this.setState({[key]: value.key});
+                this.setState({ [key]: value.key });
             }
         };
     },
@@ -122,14 +119,14 @@ const ManagePage = React.createClass({
         console.log(updatedData);
     },
     render() {
-        const {isEditing, isFetching, stateList} = this.props;
+        const { isEditing, isFetching, stateList } = this.props;
         const Title = this.props.params.id ? "Edit Contact" : "Add Contact";
         const contact = this.props.params.id ? this.props.contact : {};
 
         const stateOptions = lodash.chain(stateList)
-             .map((key, val) => ({key:key, value: val.toUpperCase()}))
-             .sortBy((arr) => (arr.key))
-             .value();
+            .map((key, val) => ({ key: key, value: val.toUpperCase() }))
+            .sortBy((arr) => (arr.key))
+            .value();
 
         const saveBtnProps = {
             textBase: "Save",
@@ -155,17 +152,17 @@ const ManagePage = React.createClass({
                         Contact Information
                     </div>
                     <div className={styles.contactDetailsInformation}>
-                        <InputRow label={'First Name'} value={this.state.FirstName} type={'text'} onChange={this.stateChange('FirstName') } />
-                        <InputRow label={'Last Name'} value={this.state.LastName} type={'text'} onChange={this.stateChange('LastName') } />
-                        <InputRow label={'Phone Number'} value={this.state.Phone} type={'text'} onChange={this.stateChange('Phone') } />
-                        <InputRow label={'Email'} value={this.state.Email} type={'text'} onChange={this.stateChange('Email') } />
-                        <TextareaRow label={'Address'} value={this.state.Street} type={'text'} onChange={this.stateChange('Street') } />
+                        <InputRow label={'First Name'} value={this.state.FirstName} type={'text'} onChange={this.stateChange('FirstName')} />
+                        <InputRow label={'Last Name'} value={this.state.LastName} type={'text'} onChange={this.stateChange('LastName')} />
+                        <InputRow label={'Phone Number'} value={this.state.Phone} type={'text'} onChange={this.stateChange('Phone')} />
+                        <InputRow label={'Email'} value={this.state.Email} type={'text'} onChange={this.stateChange('Email')} />
+                        <TextareaRow label={'Address'} value={this.state.Street} type={'text'} onChange={this.stateChange('Street')} />
                         <DropdownRow label={'State'} value={contact.State && contact.State.Name} options={stateOptions} handleSelect={this.stateChange('StateID')} />
-                        <InputRow label={'City'} value={this.state.City} type={'text'} onChange={this.stateChange('City') } />
-                        <InputRow label={'Zip Code'} value={this.state.ZipCode} type={'text'} onChange={this.stateChange('ZipCode') } />
+                        <InputRow label={'City'} value={this.state.City} type={'text'} onChange={this.stateChange('City')} />
+                        <InputRow label={'Zip Code'} value={this.state.ZipCode} type={'text'} onChange={this.stateChange('ZipCode')} />
                     </div>
-                    <div style={{clear: 'both'}}>
-                        { <ButtonWithLoading {...saveBtnProps} /> }
+                    <div style={{ clear: 'both' }}>
+                        {<ButtonWithLoading {...saveBtnProps} />}
                     </div>
                 </Page>
             );
@@ -174,10 +171,10 @@ const ManagePage = React.createClass({
 });
 
 function StoreToContactsPage(store) {
-    const {isEditing, contact, isFetching} = store.app.myContacts;
-    const {states} = store.app.stateList;
-    let stateList = {}; 
-    states.forEach(function(state) {
+    const { isEditing, contact, isFetching } = store.app.myContacts;
+    const { states } = store.app.stateList;
+    let stateList = {};
+    states.forEach(function (state) {
         stateList[state.Name] = state.StateID;
     });
     return {
@@ -189,20 +186,20 @@ function StoreToContactsPage(store) {
 }
 
 function mapDispatchToContacts(dispatch, ownProps) {
-  return {
-    ResetManageContact: () => {
-      dispatch(ContactService.resetManageContact());
-    },
-    GetDetails: () => {
-      dispatch(ContactService.fetchDetails(ownProps.params.id));
-    },
-    EditContact: (order) => {
-      dispatch(ContactService.editContact(ownProps.params.id, order));
-    },
-    AddContact: (order) => {
-      dispatch(ContactService.addContact(order));
+    return {
+        ResetManageContact: () => {
+            dispatch(ContactService.resetManageContact());
+        },
+        GetDetails: () => {
+            dispatch(ContactService.fetchDetails(ownProps.params.id));
+        },
+        EditContact: (order) => {
+            dispatch(ContactService.editContact(ownProps.params.id, order));
+        },
+        AddContact: (order) => {
+            dispatch(ContactService.addContact(order));
+        }
     }
-  }
 }
 
 export default connect(StoreToContactsPage, mapDispatchToContacts)(ManagePage);

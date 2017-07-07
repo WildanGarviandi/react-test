@@ -1,43 +1,40 @@
-import lodash from 'lodash';
 import React from 'react';
-import DateTime from 'react-datetime';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
+import NumberFormat from 'react-number-format';
+import Countdown from 'react-cntdwn';
+
+import lodash from 'lodash';
 import moment from 'moment';
+
 import * as Table from '../components/table';
 import styles from './table.scss';
 import * as TripService from './tripService';
 import OrderStatusSelector from '../modules/orderStatus/selector';
-import {Glyph} from '../views/base';
-import {formatDate} from '../helper/time';
-import {ButtonBase} from '../views/base';
-import {CheckboxHeader2 as CheckboxHeaderBase, CheckboxCell} from '../views/base/tableCell';
-import {FilterTop, FilterTop2, FilterText} from '../components/form';
-import NumberFormat from 'react-number-format';
-import stylesButton from '../components/button.scss';
-import {ButtonWithLoading} from '../components/button';
+import { CheckboxHeader2 as CheckboxHeaderBase, CheckboxCell } from '../views/base/tableCell';
+import { FilterTop } from '../components/form';
+import stylesButton, { ButtonWithLoading } from '../components/Button';
 import config from '../config/configValues.json';
-import Countdown from 'react-cntdwn';
 import * as Helper from '../helper/utility';
 
 function StoreBuilder(keyword) {
   return (store) => {
-    const {filters} = store.app.myOngoingTrips;
+    const { filters } = store.app.myOngoingTrips;
 
     return {
       value: filters[keyword],
     }
-  }    
+  }
 }
 
 function DispatchBuilder(keyword) {
   return (dispatch) => {
     function OnChange(e) {
-      const newFilters = {[keyword]: e.target.value};
+      const newFilters = { [keyword]: e.target.value };
       dispatch(TripService.UpdateFilters(newFilters));
     }
 
     function OnKeyDown(e) {
-      if(e.keyCode !== 13) {
+      if (e.keyCode !== 13) {
         return;
       }
 
@@ -46,7 +43,7 @@ function DispatchBuilder(keyword) {
     }
 
     return {
-      onChange: OnChange, 
+      onChange: OnChange,
       onKeyDown: OnKeyDown,
     }
   }
@@ -54,7 +51,7 @@ function DispatchBuilder(keyword) {
 
 function DispatchDateTime(dispatch) {
   return {
-    onChange: function(date) {
+    onChange: function (date) {
       dispatch(TripService.SetCreatedDate(date));
     }
   }
@@ -64,7 +61,7 @@ function DropdownStoreBuilder(name) {
   return (store) => {
 
     const sortOptions = [{
-      key: 1, value: 'Deadline (newest)', 
+      key: 1, value: 'Deadline (newest)',
     }, {
       key: 2, value: 'Deadline (oldest)',
     }];
@@ -99,13 +96,13 @@ function CheckboxDispatch(dispatch, props) {
     }
   }
 }
- 
+
 function CheckboxHeaderStore(store) {
   return {
     isChecked: store.app.myOngoingTrips.selectedAll,
   }
 }
- 
+
 function CheckboxHeaderDispatch(dispatch) {
   return {
     onToggle: () => {
@@ -116,14 +113,14 @@ function CheckboxHeaderDispatch(dispatch) {
 
 function DateRangeBuilder(keyword) {
   return (store) => {
-    const {filters} = store.app.myOngoingTrips;
+    const { filters } = store.app.myOngoingTrips;
     return {
       startDate: filters['start' + keyword],
       endDate: filters['end' + keyword],
     }
   }
 }
- 
+
 function DateRangeDispatch(keyword) {
   return (dispatch) => {
     return {
@@ -192,7 +189,7 @@ function TripHeader() {
       <Table.TextHeader text="Dropoff" />
       <Table.TextHeader text="Pickup Time" />
       <Table.TextHeader text="Driver" />
-      <Table.TextHeader text="Number of Orders" style={{whiteSpace:'nowrap'}} />
+      <Table.TextHeader text="Number of Orders" style={{ whiteSpace: 'nowrap' }} />
     </tr>
   );
 }
@@ -220,7 +217,7 @@ function TripParser(trip) {
 
   function getDropoffCity(route) {
     return route && route.UserOrder && route.UserOrder.DropoffAddress && route.UserOrder.DropoffAddress.District
-      && route.UserOrder.DropoffAddress.District.DistrictMaster && route.UserOrder.DropoffAddress.District.DistrictMaster.Name;        
+      && route.UserOrder.DropoffAddress.District.DistrictMaster && route.UserOrder.DropoffAddress.District.DistrictMaster.Name;
   }
 
   const merchantNames = lodash
@@ -280,7 +277,7 @@ function TripParser(trip) {
   });
 
   const Weight = GetWeightTrip(orders);
-  
+
   const CODOrders = _.filter(orders, (order) => order.IsCOD === true);
 
   return lodash.assign({}, trip, {
@@ -320,34 +317,34 @@ function TripFilter() {
 }
 
 export const Deadline = React.createClass({
-  render: function() {
+  render: function () {
     let format = {
       hour: 'hh',
       minute: 'mm',
       second: 'ss'
     };
     let Duration = moment.duration(moment(this.props.deadline).diff(moment(new Date())));
-    if (!this.props.deadline) {            
-      return <span style={{color: 'black'}}>
-          -
+    if (!this.props.deadline) {
+      return <span style={{ color: 'black' }}>
+        -
       </span>
-    } else if (Duration._milliseconds > config.deadline.day) {            
-      return <span style={{color: 'black'}}>
-          {Duration.humanize()} remaining
+    } else if (Duration._milliseconds > config.deadline.day) {
+      return <span style={{ color: 'black' }}>
+        {Duration.humanize()} remaining
       </span>
     } else if (Duration._milliseconds < 0) {
-      return <span style={{color: 'red'}}>
-          Passed
+      return <span style={{ color: 'red' }}>
+        Passed
       </span>
     } else {
       let normalDeadline = (Duration._milliseconds > config.deadline['3hours']) && (Duration._milliseconds < config.deadline.day);
-      return <span style={{color: normalDeadline ? 'black' : 'red'}}>
-          <Countdown targetDate={new Date(this.props.deadline)}
-           startDelay={500}
-           interval={1000}
-           format={format}
-           timeSeparator={':'}
-           leadingZero={true} />
+      return <span style={{ color: normalDeadline ? 'black' : 'red' }}>
+        <Countdown targetDate={new Date(this.props.deadline)}
+          startDelay={500}
+          interval={1000}
+          format={format}
+          timeSeparator={':'}
+          leadingZero={true} />
       </span>
     }
   }
@@ -355,11 +352,11 @@ export const Deadline = React.createClass({
 
 const TripRow = React.createClass({
   getInitialState() {
-    return ({isHover: false, isEdit: false});
+    return ({ isHover: false, isEdit: false });
   },
   expandTrip(trip) {
     this.props.shrink();
-    setTimeout(function() {
+    setTimeout(function () {
       if (!this.props.expandedTrip.TripID) {
         this.props.expand(trip);
       } else {
@@ -372,40 +369,40 @@ const TripRow = React.createClass({
     }.bind(this), 100);
   },
   onMouseOver() {
-    this.setState({isHover: true});
+    this.setState({ isHover: true });
   },
   onMouseOut() {
-    this.setState({isHover: false});
+    this.setState({ isHover: false });
   },
   render() {
     const { trip, expandedTrip } = this.props;
     const { isEdit, isHover } = this.state;
     const parsedTrip = TripParser(trip);
     const cardValueStatus = styles['cardValueStatus' + trip.OrderStatus.OrderStatusID];
-    let rowStyles = styles.tr + ' ' + styles.card  + (this.state.isHover && (' ' + styles.hovered));
+    let rowStyles = styles.tr + ' ' + styles.card + (this.state.isHover && (' ' + styles.hovered));
     if (expandedTrip.TripID === trip.TripID) {
-      rowStyles = styles.tr + ' ' + styles.card +  ' ' + styles.select;
+      rowStyles = styles.tr + ' ' + styles.card + ' ' + styles.select;
     }
     return (
       <tr className={rowStyles} onMouseEnter={this.onMouseOver} onMouseLeave={this.onMouseOut}>
         <td><CheckboxRow isChecked={trip.IsChecked} tripID={trip.TripID} /></td>
-        <td onClick={()=>{this.expandTrip(trip)}}><div className={styles.cardSeparator} /></td>
-        <td onClick={()=>{this.expandTrip(trip)}} className={styles.tripIDColumn}>{`TRIP- ${trip.TripID}`}</td>
-        <td onClick={()=>{this.expandTrip(trip)}}><div className={styles.cardSeparator} /></td>
-        <td onClick={()=>{this.expandTrip(trip)}}>
+        <td onClick={() => { this.expandTrip(trip) }}><div className={styles.cardSeparator} /></td>
+        <td onClick={() => { this.expandTrip(trip) }} className={styles.tripIDColumn}>{`TRIP- ${trip.TripID}`}</td>
+        <td onClick={() => { this.expandTrip(trip) }}><div className={styles.cardSeparator} /></td>
+        <td onClick={() => { this.expandTrip(trip) }}>
           <div className={cardValueStatus}>
             {trip.OrderStatus.OrderStatus}
           </div>
         </td>
-        <td onClick={()=>{this.expandTrip(trip)}}><div className={styles.cardSeparator} /></td>
-        <td onClick={()=>{this.expandTrip(trip)}}>
-          { 
+        <td onClick={() => { this.expandTrip(trip) }}><div className={styles.cardSeparator} /></td>
+        <td onClick={() => { this.expandTrip(trip) }}>
+          {
             trip.Driver &&
             <div className={styles.cardValueDriver}>
               <div className={styles.vehicleIcon}>
                 <img className={styles.driverLoadImage}
-                  src={trip.Driver && trip.Driver.Vehicle && trip.Driver.Vehicle.Name === 'Motorcycle' ? 
-                  "/img/icon-vehicle-motor.png" : "/img/icon-vehicle-van.png"} />
+                  src={trip.Driver && trip.Driver.Vehicle && trip.Driver.Vehicle.Name === 'Motorcycle' ?
+                    "/img/icon-vehicle-motor.png" : "/img/icon-vehicle-van.png"} />
               </div>
               <div className={styles.cardLabel}>
                 Driver
@@ -422,8 +419,8 @@ const TripRow = React.createClass({
             </div>
           }
         </td>
-        <td onClick={()=>{this.expandTrip(trip)}}><div className={styles.cardSeparator} /></td>
-        <td onClick={()=>{this.expandTrip(trip)}}>
+        <td onClick={() => { this.expandTrip(trip) }}><div className={styles.cardSeparator} /></td>
+        <td onClick={() => { this.expandTrip(trip) }}>
           <div className={styles.cardLabel}>
             Items
           </div>
@@ -432,8 +429,8 @@ const TripRow = React.createClass({
             {trip.UserOrderRoutes.length}
           </div>
         </td>
-        <td onClick={()=>{this.expandTrip(trip)}}><div className={styles.cardSeparator} /></td>
-        <td onClick={()=>{this.expandTrip(trip)}}>
+        <td onClick={() => { this.expandTrip(trip) }}><div className={styles.cardSeparator} /></td>
+        <td onClick={() => { this.expandTrip(trip) }}>
           <div className={styles.cardLabel}>
             Weight
           </div>
@@ -442,8 +439,8 @@ const TripRow = React.createClass({
             {parsedTrip.Weight} kg
           </div>
         </td>
-        <td onClick={()=>{this.expandTrip(trip)}}><div className={styles.cardSeparator} /></td>
-        <td onClick={()=>{this.expandTrip(trip)}}>
+        <td onClick={() => { this.expandTrip(trip) }}><div className={styles.cardSeparator} /></td>
+        <td onClick={() => { this.expandTrip(trip) }}>
           <div className={styles.cardLabel}>
             Total Value
           </div>
@@ -452,14 +449,14 @@ const TripRow = React.createClass({
             <NumberFormat displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp '} value={trip.TotalValue} />
           </div>
         </td>
-        <td onClick={()=>{this.expandTrip(trip)}}><div className={styles.cardSeparator} /></td>
-        <td onClick={()=>{this.expandTrip(trip)}}>
+        <td onClick={() => { this.expandTrip(trip) }}><div className={styles.cardSeparator} /></td>
+        <td onClick={() => { this.expandTrip(trip) }}>
           <div className={styles.cardLabel}>
-              Deadline
+            Deadline
           </div>
           <br />
           <div className={styles.cardValue}>
-              <Deadline deadline={trip.Deadline} />
+            <Deadline deadline={trip.Deadline} />
           </div>
         </td>
       </tr>
@@ -509,7 +506,7 @@ function TripBodyDispatch() {
 
 const TripBodyContainer = connect(TripBodyStore, TripBodyDispatch)(TripBody);
 
-function TripTable({trips}) {
+function TripTable({ trips }) {
   const headers = <TripHeader />;
 
   return (
