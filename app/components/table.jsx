@@ -1,14 +1,16 @@
-import lodash from 'lodash';
 import React from 'react';
 import DateTime from 'react-datetime';
-import styles from './table.scss';
-import {Glyph, CheckBox} from '../views/base';
-import {DropdownWithState2} from '../views/base/dropdown';
-import StatusDropdown from '../views/base/statusDropdown';
-import {Link} from 'react-router';
-import DateRangePicker from 'react-bootstrap-daterangepicker';
-import moment from 'moment';
+import { Link } from 'react-router';
 import { FormattedNumber } from 'react-intl';
+import DateRangePicker from 'react-bootstrap-daterangepicker';
+
+import moment from 'moment';
+
+import styles from './table.scss';
+import Glyph from './Glyph';
+import { CheckBox } from '../views/base';
+import { DropdownWithState2 } from '../views/base/dropdown';
+import StatusDropdown from '../views/base/statusDropdown';
 
 export function EmptyCell() {
     return <td className={styles.td}></td>;

@@ -10,7 +10,7 @@ import { Input, Pagination } from '../views/base';
 import { DropdownWithState2 } from '../views/base/dropdown';
 import tableStyles from '../views/base/table.scss';
 import styles from './styles.scss';
-import { Glyph } from '../views/base/glyph';
+import Glyph from '../components/Glyph';
 import StatusDropdown from '../views/base/statusDropdown';
 import { Interval } from './outboundTripsModal';
 import { ProcessTrip } from './outboundTripsHelper';

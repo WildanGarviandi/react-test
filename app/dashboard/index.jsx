@@ -2,8 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import { push } from 'react-router-redux';
-import * as _ from 'lodash';
 import FontAwesome from 'react-fontawesome';
+
+import * as _ from 'lodash';
 
 import { LogoutAction } from '../modules';
 import checkAuth from '../modules/auth/actions/checkAuth';
@@ -15,7 +16,7 @@ import * as CityService from '../cities/cityService';
 import * as DashboardService from './dashboardService';
 import * as FleetService from '../nearbyFleets/nearbyFleetService';
 import * as TripProblemService from '../tripProblems/tripProblemsService';
-import { Glyph } from '../views/base';
+import Glyph from '../components/Glyph';
 import styles from './styles.scss';
 import config from '../../config.json';
 import configValues from '../config/configValues.json';
