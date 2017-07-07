@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
@@ -20,10 +19,9 @@ import NextDestinationSetter from '../container/nextDestinationSetter';
 import TransportSetter from '../container/secondSetting';
 import RemarksSetter from '../container/remarksSetter';
 import styles from './styles.scss';
-import { CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered } from '../../modules/trips';
+import { CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered, TripParser } from '../../modules/trips';
 import { formatDate } from '../../helper/time';
-import { TripParser } from '../../modules/trips';
-import { Glyph } from '../base';
+import Glyph from '../../components/Glyph';
 import * as OrdersDetails from '../../modules/orders/actions/details';
 
 const columns = ['id', 'id2', 'pickup', 'time', 'CODValue', 'CODStatus', 'orderStatus', 'routeStatus', 'isSuccess', 'action'];

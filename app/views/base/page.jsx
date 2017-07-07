@@ -1,12 +1,14 @@
 import React from 'react';
-import {ButtonWithLoading, Glyph} from './';
-import styles from './page.scss';
 import { browserHistory } from 'react-router';
 
-const PageTitle = ({additional, title, backButton, count}) => {
+import Glyph from '../../components/Glyph';
+import { ButtonWithLoading } from './';
+import styles from './page.scss';
+
+const PageTitle = ({ additional, title, backButton, count }) => {
   return (
     <span>
-      { backButton &&
+      {backButton &&
         <button className={styles.backButton} onClick={browserHistory.goBack}>
           <Glyph className="" name="chevron-left" />
         </button>
@@ -25,8 +27,8 @@ const PageTitle = ({additional, title, backButton, count}) => {
   );
 }
 
-const ButtonAtRightTop = ({onClick, val}) => {
-  return (<ButtonWithLoading styles={{base: styles.mainBtn}} onClick={onClick}>{val}</ButtonWithLoading>);
+const ButtonAtRightTop = ({ onClick, val }) => {
+  return (<ButtonWithLoading styles={{ base: styles.mainBtn }} onClick={onClick}>{val}</ButtonWithLoading>);
 }
 
 const MoveButtonToTopRight = (buttons) => {
@@ -34,7 +36,7 @@ const MoveButtonToTopRight = (buttons) => {
     const baseStyle = button.props.styles ?
       styles.topRightBtn + ' ' + button.props.styles.base :
       styles.topRightBtn;
-    return React.cloneElement(button, {key: button.props.textBase, styles: {base: baseStyle}});
+    return React.cloneElement(button, { key: button.props.textBase, styles: { base: baseStyle } });
   })
 }
 
@@ -44,33 +46,33 @@ const ClassifyChildren = (children) => {
   let backLink = [];
 
   React.Children.forEach(children, (child) => {
-    if(!child) return;
-    if(child.type.displayName == 'ButtonWithLoading') {
+    if (!child) return;
+    if (child.type.displayName == 'ButtonWithLoading') {
       buttons.push(child);
-    } else if(child.type == 'a') {
-      backLink.push(React.cloneElement(child, {key: backLink.length, style: {marginBottom: 10, display: "block"}}));
+    } else if (child.type == 'a') {
+      backLink.push(React.cloneElement(child, { key: backLink.length, style: { marginBottom: 10, display: "block" } }));
     } else {
       body.push(child);
     }
   });
 
-  return {body, buttons: MoveButtonToTopRight(buttons), backLink};
+  return { body, buttons: MoveButtonToTopRight(buttons), backLink };
 }
 
 export default React.createClass({
   render() {
-    const {title, children, additional, backButton, count} = this.props;
-    const {backLink, buttons, body} = ClassifyChildren(children);
+    const { title, children, additional, backButton, count } = this.props;
+    const { backLink, buttons, body } = ClassifyChildren(children);
 
     return (
-      <div style={{position: 'relative'}}>
+      <div style={{ position: 'relative' }}>
         {backLink}
         {buttons}
-        <PageTitle title={title} additional={additional} backButton={backButton} count={count}/>
+        <PageTitle title={title} additional={additional} backButton={backButton} count={count} />
         {body}
       </div>
     );
   }
 });
 
-export {PageTitle, ButtonAtRightTop};
+export { PageTitle, ButtonAtRightTop };

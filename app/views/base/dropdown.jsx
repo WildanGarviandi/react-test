@@ -1,7 +1,9 @@
-import classNaming from 'classnames';
 import React from 'react';
 import ReactDOM from 'react-dom';
+
+import classNaming from 'classnames';
 import * as _ from 'lodash';
+
 import Glyph from '../../components/Glyph';
 import styles from './dropdown.scss';
 

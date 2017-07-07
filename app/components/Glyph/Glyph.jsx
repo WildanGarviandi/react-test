@@ -6,7 +6,6 @@ import classNaming from 'classnames';
 import styles from './glyph.scss';
 
 function Glyph({ className, name }) {
-  console.log('components/glyph');
   const stylename = classNaming(className, styles.glyphicon, styles[`glyphicon-${name}`]);
   return <span className={stylename} />;
 }
