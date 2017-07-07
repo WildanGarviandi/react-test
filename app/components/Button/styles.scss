@@ -1,4 +1,5 @@
-.btnBase {
+.btnBase,
+.btnStandard {
   border: 0;
   border-radius: 5px;
   background-color: #ff5a60;
@@ -8,6 +9,17 @@
 
 .btnBase:hover {
   text-decoration: underline;
+}
+
+.btnStandard:hover {
+  background-color: #ef4a50;
+  color: #fff;
+  text-decoration: none !important;
+}
+
+.btnStandard:disabled {
+  cursor: default;
+  background-color: #ff8b8f;
 }
 
 .btnBase.loading {
@@ -144,4 +156,12 @@
   font-weight: bold;
   margin-right: 10px;
   margin-bottom: 10px;
+}
+
+.buttonImage {
+  float: left;
+}
+
+.buttonTitle {
+  padding: 2px;
 }
