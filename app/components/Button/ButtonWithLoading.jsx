@@ -11,10 +11,10 @@ export default class ButtonWithLoading extends PureComponent {
     const { textBase, textLoading, isLoading, onClick, styles = {}, base } = this.props;
     const btnClass = classNames(baseStyle.btnBase, { [baseStyle.loading]: isLoading }, styles.base);
     const spinnerClass = classNames(baseStyle.spinner, styles.spinner);
-    const elem = [];
+    let elem = textBase;
 
     if (isLoading) {
-      elem.push(<span className={spinnerClass}>{textLoading}</span>);
+      elem = (<span className={spinnerClass}>{textLoading}</span>);
     }
 
     return (
@@ -24,7 +24,7 @@ export default class ButtonWithLoading extends PureComponent {
         disabled={isLoading}
         {...base}
       >
-        {textBase}
+        {elem}
       </ButtonBase>
     );
   }
