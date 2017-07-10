@@ -14,12 +14,12 @@ function Glyph({ className, name }) {
 Glyph.propTypes = {
   className: PropTypes.any,
   name: PropTypes.any,
-}
-/* eslint-disable */
+};
+/* eslint-enable */
 
 Glyph.defaultProps = {
   className: '',
   name: '',
-}
+};
 
 export default Glyph;
