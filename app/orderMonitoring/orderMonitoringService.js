@@ -77,9 +77,9 @@ const initialStore = {
     failed: 'Search for order status...',
   },
   codOptions: {
-    succeed: 'Search for COD status...',
-    pending: 'Search for COD status...',
-    failed: 'Search for COD status...',
+    succeed: 'Search for payment type...',
+    pending: 'Search for payment type...',
+    failed: 'Search for payment type...',
   },
   currentPage: {
     succeed: 1,
