@@ -1,4 +1,4 @@
-import login from './auth/actions/login'; //eslint-disable-line
+import login from './auth/actions/login';
 import logout from './auth/actions/logout';
 import containers, { statusList } from './containers/actions';
 import districts from './districts/actions';

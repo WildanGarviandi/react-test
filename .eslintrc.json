@@ -1,13 +1,28 @@
 {
-    "extends": "airbnb",
-    "plugins": [
-        "react",
-        "jsx-a11y",
-        "import"
-    ],
-    "globals": {
-        "document": true,
-        "window": true,
-        "localStorage": true
+  "extends": [
+    "airbnb",
+    "plugin:flowtype/recommended"
+  ],
+  "parser": "babel-eslint",
+  "plugins": [
+    "react",
+    "jsx-a11y",
+    "import",
+    "flowtype"
+  ],
+  "globals": {
+    "document": true,
+    "window": true,
+    "localStorage": true,
+    "FormData": true,
+    "Blob": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 8
+  },
+  "settings": {
+    "flowtype": {
+      "onlyFilesWithFlowAnnotation": false
     }
+  }
 }

@@ -1,4 +1,4 @@
-import * as _ from 'lodash'; //eslint-disable-line
+import * as _ from 'lodash';
 
 import config from '../config/configValues.json';
 

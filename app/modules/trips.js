@@ -1,4 +1,5 @@
-import lodash from 'lodash';
+import * as _ from 'lodash';
+
 import { OrderParser } from './orders';
 import config from '../config/configValues.json';
 
@@ -25,7 +26,7 @@ export function CanMarkContainer(trip, hubID) {
 export function CanMarkOrderReceived(trip, orders) {
   if (!trip || !trip.OrderStatus || trip.OriginHub) return false;
 
-  if (!lodash.some(orders, (order) => {
+  if (!_.some(orders, (order) => {
     return order.Status !== "DELIVERED";
   })) {
     return false;
@@ -61,7 +62,7 @@ export function GetTripType(trip, hubID, roleName) {
 }
 
 function JoinAttr(orders, attr) {
-  return lodash.chain(orders)
+  return _.chain(orders)
     .map((order) => (order[attr]))
     .uniq()
     .value()
@@ -70,7 +71,7 @@ function JoinAttr(orders, attr) {
 
 export function GetWebstoreNameByCount(orders) {
   let arrayOfWebstore = [];
-  const WebstoreNamesCount = lodash.countBy(orders, 'WebstoreName');
+  const WebstoreNamesCount = _.countBy(orders, 'WebstoreName');
   for (let WebstoreNameCount in WebstoreNamesCount) {
     if (WebstoreNamesCount.hasOwnProperty(WebstoreNameCount)) {
       arrayOfWebstore.push(
@@ -85,7 +86,7 @@ export function GetWebstoreNameByCount(orders) {
 
 export function GetWebstoreUserByCount(orders) {
   let arrayOfWebstore = [];
-  const WebstoreUsersCount = lodash.countBy(orders, 'WebstoreUser');
+  const WebstoreUsersCount = _.countBy(orders, 'WebstoreUser');
   for (let WebstoreUserCount in WebstoreUsersCount) {
     if (WebstoreUsersCount.hasOwnProperty(WebstoreUserCount)) {
       arrayOfWebstore.push(
@@ -100,7 +101,7 @@ export function GetWebstoreUserByCount(orders) {
 
 export function GetWebstoreNameWithoutCount(orders) {
   let arrayOfWebstore = [];
-  const WebstoreNamesCount = lodash.countBy(orders, 'WebstoreName');
+  const WebstoreNamesCount = _.countBy(orders, 'WebstoreName');
   for (let WebstoreNameCount in WebstoreNamesCount) {
     if (WebstoreNamesCount.hasOwnProperty(WebstoreNameCount)) {
       arrayOfWebstore.push(WebstoreNameCount);
@@ -110,7 +111,7 @@ export function GetWebstoreNameWithoutCount(orders) {
 }
 
 export function GetWeightTrip(orders) {
-  return `${lodash.sumBy(orders, 'PackageWeight')}`;
+  return `${_.sumBy(orders, 'PackageWeight')}`;
 }
 
 export function GetScannedRoutes(routes) {
@@ -125,7 +126,7 @@ export function GetScannedRoutes(routes) {
 
 export function GetWebstoreNameWithMores(orders) {
   let arrayOfWebstore = [];
-  const WebstoreNames = lodash.countBy(orders, 'WebstoreName');
+  const WebstoreNames = _.countBy(orders, 'WebstoreName');
   for (let WebstoreName in WebstoreNames) {
     if (WebstoreNames.hasOwnProperty(WebstoreName)) {
       arrayOfWebstore.push(WebstoreName);
@@ -140,20 +141,35 @@ export function GetWebstoreNameWithMores(orders) {
   }
 }
 
+export function getPickupTypeWithCount(orders) {
+  const arrayOfPickupType = [];
+  const PickupTypesCount = _.countBy(orders, 'PickupType');
+  for (const PickupTypeCount in PickupTypesCount) {
+    if (PickupTypesCount.hasOwnProperty(PickupTypeCount)) {
+      arrayOfPickupType.push(
+        `${PickupTypeCount === 'null' ? 'No Service Type' : PickupTypeCount}
+        (${PickupTypesCount[PickupTypeCount]}
+         ${(PickupTypesCount[PickupTypeCount] > 1 ? 'orders' : 'order')})`,
+      );
+    }
+  }
+  return arrayOfPickupType.join(', ');
+}
+
 export function TripParser(trip, hubID) {
   function GroupToString(colls) {
-    return lodash.reduce(colls, (results, val, key) => {
+    return _.reduce(colls, (results, val, key) => {
       return `(${val.length}): ${key}\n${results}`;
     }, '');
   }
 
   if (!trip) return {};
 
-  const routes = lodash.map(trip.UserOrderRoutes, (route) => {
+  const routes = _.map(trip.UserOrderRoutes, (route) => {
     return route;
   });
 
-  const orders = lodash.map(trip.UserOrderRoutes, (route) => {
+  const orders = _.map(trip.UserOrderRoutes, (route) => {
     return OrderParser(route.UserOrder);
   });
 
@@ -163,13 +179,15 @@ export function TripParser(trip, hubID) {
   const ScannedOrders = GetScannedRoutes(routes);
   const ListWebstore = GetWebstoreNameWithoutCount(orders);
   const ListWebstoreMores = GetWebstoreNameWithMores(orders);
+  const PickupType = getPickupTypeWithCount(orders);
 
-  return lodash.assign({}, trip, {
+  return Object.assign({}, trip, {
     WebstoreNames,
     WebstoreUser,
     Weight,
     ScannedOrders,
     ListWebstore,
     ListWebstoreMores,
+    PickupType,
   });
 }
