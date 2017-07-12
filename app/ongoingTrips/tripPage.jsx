@@ -1,183 +1,199 @@
-import lodash from 'lodash';
 import React from 'react';
-import {connect} from 'react-redux';
-import {Page} from '../views/base';
-import {Pagination2} from '../components/pagination2';
-import {ButtonWithLoading} from '../components/button';
-import * as Form from '../components/form';
-import Table, {Filter, Deadline} from './tripTable';
+import { connect } from 'react-redux';
+import NumberFormat from 'react-number-format';
+import { ModalContainer, ModalDialog } from 'react-modal-dialog';
+
+import lodash from 'lodash';
+import PropTypes from 'prop-types';
+
+import { Page } from '../views/base';
+import { Pagination2 } from '../components/pagination2';
+import { ButtonWithLoading } from '../components/button';
+import Table, { Filter, Deadline } from './tripTable';
 import * as TripService from './tripService';
 import driversFetch from '../modules/drivers/actions/driversFetch';
 import styles from './styles.scss';
 import stylesButton from '../components/button.scss';
 import * as UtilHelper from '../helper/utility';
-import NumberFormat from 'react-number-format';
-import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 
-const TripOrders = React.createClass({
-  render: function() {
-    var orderComponents = this.props.orders.map(function(order, idx) {
-      return (
-        <div className={styles.mainOrder} key={idx}>
-          <div className={styles.orderName}>
-            <div className={styles.orderNum}>
-              Order #{idx+1}
-            </div>
-            <div className={styles.orderEDS}>
-              {order.UserOrder.UserOrderNumber}
-            </div>
-            { 
-              order.UserOrder.IsCOD &&
-              <div className={styles.orderCOD}>
-                COD
-              </div>
-            }
+function TripOrders({ orders }) {
+  const orderComponents = orders.map((order, idx) => (
+    <div className={styles.mainOrder} key={idx}>
+      <div className={styles.orderName}>
+        <div className={styles.orderNum}>
+          Order #{idx+1}
+        </div>
+        <div className={styles.orderEDS}>
+          {order.UserOrder.UserOrderNumber}
+        </div>
+        {
+          order.UserOrder.IsCOD &&
+          <div className={styles.orderCOD}>
+            COD
           </div>
-          <div style={{clear: 'both'}} />
-          <div>
+        }
+      </div>
+      <div style={{ clear: 'both' }} />
+      <div>
+        <div className={styles.tripDetailsLabel}>
+          From
+        </div>
+        <div className={styles.tripDetailsValue}>
+          {order.UserOrder.PickupAddress && `${order.UserOrder.PickupAddress.FirstName} ${order.UserOrder.PickupAddress.LastName}`}
+        </div>
+        <div>
+          {order.UserOrder.PickupAddress && order.UserOrder.PickupAddress.Address1}
+        </div>
+        <div className={styles.tripDetailsLabel}>
+          To
+        </div>
+        <div className={styles.tripDetailsValue}>
+          {order.UserOrder.DropoffAddress && `${order.UserOrder.DropoffAddress.FirstName} ${order.UserOrder.DropoffAddress.LastName}`}
+        </div>
+        <div>
+          {order.UserOrder.DropoffAddress && order.UserOrder.DropoffAddress.Address1}
+        </div>
+        <div className={styles.deadlineValue}>
+            Deadline: <Deadline deadline={order.UserOrder.DueTime} />
+        </div>
+      </div>
+    </div>
+  ));
+  return <div>{orderComponents}</div>;
+}
+
+/* eslint-disable */
+TripOrders.propTypes = {
+  orders: PropTypes.array,
+};
+/* eslint-enable */
+
+TripOrders.defaultProps = {
+  orders: [],
+};
+
+function PanelDetails({ expandedTrip, shrinkTrip, isExpandDriver, expandDriver }) {
+  const reassignTripButton = {
+    textBase: 'Reassign Trips',
+    onClick: expandDriver,
+    styles: {
+      base: stylesButton.greenButton2,
+    },
+  };
+  const tripStatusStyles = styles[`tripStatus${expandedTrip.OrderStatus.OrderStatusID}`];
+  return (
+    <div>
+      { expandedTrip &&
+        <div className={isExpandDriver ? styles.panelDetails2 : styles.panelDetails}>
+          <div onClick={shrinkTrip} className={styles.closeButton}>
+            &times;
+          </div>
+          <div className={tripStatusStyles}>
+            {expandedTrip.OrderStatus.OrderStatus}
+          </div>       
+          { expandedTrip.Driver &&                  
+            <div className={styles.tripDriver}>
+              <div className={styles.vehicleIcon}>
+                <img className={styles.driverLoadImage} 
+                  src={expandedTrip.Driver && expandedTrip.Driver.Vehicle && expandedTrip.Driver.Vehicle.Name === 'Motorcycle' ? 
+                  "/img/icon-vehicle-motor.png" : "/img/icon-vehicle-van.png"} />
+              </div>
+              <div className={styles.driverDetails}>
+                <span className={styles.driverName}>
+                  {UtilHelper.trimString(expandedTrip.Driver && expandedTrip.Driver.FirstName + ' ' + expandedTrip.Driver.LastName, 20)} 
+                </span>
+              </div>
+              <div className={styles.driverDetails}>
+                <span className={styles.vendorLoad}>
+                  Available Weight {expandedTrip.Driver && expandedTrip.Driver.TotalWeight} / {expandedTrip.Driver && expandedTrip.Driver.AvailableWeight}
+                </span>
+              </div>
+            </div>
+          }
+          <div className={styles.tripDetails}>
+            <div className={styles.reassignButton}>
+              <button className={stylesButton.greenButton2} onClick={expandDriver}>Assign</button>
+            </div>
+            <div className={styles.tripDetailsLabel}>
+              TripID
+            </div>
+            <div className={styles.tripDetailsValue}>
+              TRIP-{expandedTrip.TripID}
+            </div>
             <div className={styles.tripDetailsLabel}>
               From
             </div>
             <div className={styles.tripDetailsValue}>
-              {order.UserOrder.PickupAddress && order.UserOrder.PickupAddress.FirstName + ' ' + order.UserOrder.PickupAddress.LastName}
-            </div>
-            <div>
-              {order.UserOrder.PickupAddress && order.UserOrder.PickupAddress.Address1}
+              {expandedTrip.TripMerchantsAll || 'Unknown'}
             </div>
             <div className={styles.tripDetailsLabel}>
-              To
+              Destination
             </div>
             <div className={styles.tripDetailsValue}>
-              {order.UserOrder.DropoffAddress && order.UserOrder.DropoffAddress.FirstName + ' ' + order.UserOrder.DropoffAddress.LastName}
+              {expandedTrip.TripDropoffAll || 'Unknown'}
             </div>
             <div>
-              {order.UserOrder.DropoffAddress && order.UserOrder.DropoffAddress.Address1}
+              <div className={styles.tripAdditionalInfo}>
+                <div className={styles.tripDetailsLabel}>
+                  Weight
+                </div>
+                <div className={styles.tripDetailsValue}>
+                  {expandedTrip.Weight} kg
+                </div>
+              </div>
+              <div className={styles.tripAdditionalInfo}>
+                <div className={styles.tripDetailsLabel}>
+                  COD Order
+                </div>
+                <div className={styles.tripDetailsValue}>
+                  {expandedTrip.CODOrders} items
+                </div>
+              </div>
+              <div className={styles.tripAdditionalInfo}>
+                <div className={styles.tripDetailsLabel}>
+                  COD Value
+                </div>
+                <div className={styles.tripDetailsValue}>
+                  <NumberFormat displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp '} value={expandedTrip.CODTotalValue} />
+                </div>
+              </div>
             </div>
-            <div className={styles.deadlineValue}>
-                Deadline: <Deadline deadline={order.UserOrder.DueTime} />                
+          </div>
+          <div className={styles.tripValue}>                            
+            <div className={styles.tripValueLabel}>
+              Total Value
             </div>
+            <div className={styles.tripTotalValue}>
+              <NumberFormat displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp '} value={expandedTrip.TotalValue} />    
+            </div>
+          </div>
+          <div className={styles.tripNumOrders}>
+            <div className={styles.numOrderLeft}>
+              Number of orders:
+            </div>
+            <div className={styles.numOrderRight}>
+              {expandedTrip.UserOrderRoutes.length}
+            </div>
+          </div>
+          <div className={styles.tripDetailsOrder}>
+            <TripOrders orders={expandedTrip.UserOrderRoutes} />
           </div>
         </div>
-      );
-    }.bind(this));
-    return <div>{orderComponents}</div>;
-  }
-});
-
-const PanelDetails = React.createClass({
-  render() {
-    const { expandedTrip, shrinkTrip, isExpandDriver } = this.props;
-    const reassignTripButton = {
-      textBase: 'Reassign Trips',
-      onClick: this.props.expandDriver,
-      styles: {
-        base: stylesButton.greenButton2,
       }
-    };
-    const tripStatusStyles = styles['tripStatus' + expandedTrip.OrderStatus.OrderStatusID];
-    return (
-      <div>
-        { expandedTrip &&
-          <div className={isExpandDriver ? styles.panelDetails2 : styles.panelDetails}>
-            <div onClick={shrinkTrip} className={styles.closeButton}>
-              X
-            </div>
-            <div className={tripStatusStyles}>
-              {expandedTrip.OrderStatus.OrderStatus}
-            </div>       
-            { expandedTrip.Driver &&                  
-              <div className={styles.tripDriver}>
-                <div className={styles.vehicleIcon}>
-                  <img className={styles.driverLoadImage} 
-                    src={expandedTrip.Driver && expandedTrip.Driver.Vehicle && expandedTrip.Driver.Vehicle.Name === 'Motorcycle' ? 
-                    "/img/icon-vehicle-motor.png" : "/img/icon-vehicle-van.png"} />
-                </div>
-                <div className={styles.driverDetails}>
-                  <span className={styles.driverName}>
-                    {UtilHelper.trimString(expandedTrip.Driver && expandedTrip.Driver.FirstName + ' ' + expandedTrip.Driver.LastName, 20)} 
-                  </span>
-                </div>
-                <div className={styles.driverDetails}>
-                  <span className={styles.vendorLoad}>
-                    Available Weight {expandedTrip.Driver && expandedTrip.Driver.TotalWeight} / {expandedTrip.Driver && expandedTrip.Driver.AvailableWeight}
-                  </span>
-                </div>
-              </div>
-            }
-            <div className={styles.tripDetails}>
-              <div className={styles.reassignButton}>
-                <button className={stylesButton.greenButton2} onClick={this.props.expandDriver}>Assign</button>
-              </div>
-              <div className={styles.tripDetailsLabel}>
-                TripID
-              </div>
-              <div className={styles.tripDetailsValue}>
-                TRIP-{expandedTrip.TripID}
-              </div>
-              <div className={styles.tripDetailsLabel}>
-                From
-              </div>
-              <div className={styles.tripDetailsValue}>
-                {expandedTrip.TripMerchantsAll || 'Unknown'}
-              </div>
-              <div className={styles.tripDetailsLabel}>
-                Destination
-              </div>
-              <div className={styles.tripDetailsValue}>
-                {expandedTrip.TripDropoffAll || 'Unknown'}
-              </div>
-              <div>
-                <div className={styles.tripAdditionalInfo}>
-                  <div className={styles.tripDetailsLabel}>
-                    Weight
-                  </div>
-                  <div className={styles.tripDetailsValue}>
-                    {expandedTrip.Weight} kg
-                  </div>
-                </div>
-                <div className={styles.tripAdditionalInfo}>
-                  <div className={styles.tripDetailsLabel}>
-                    COD Order
-                  </div>
-                  <div className={styles.tripDetailsValue}>
-                    {expandedTrip.CODOrders} items
-                  </div>
-                </div>
-                <div className={styles.tripAdditionalInfo}>
-                  <div className={styles.tripDetailsLabel}>
-                    COD Value
-                  </div>
-                  <div className={styles.tripDetailsValue}>
-                    <NumberFormat displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp '} value={expandedTrip.CODTotalValue} />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className={styles.tripValue}>                            
-              <div className={styles.tripValueLabel}>
-                Total Value
-              </div>
-              <div className={styles.tripTotalValue}>
-                <NumberFormat displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp '} value={expandedTrip.TotalValue} />    
-              </div>
-            </div>
-            <div className={styles.tripNumOrders}>
-              <div className={styles.numOrderLeft}>
-                Number of orders: 
-              </div>
-              <div className={styles.numOrderRight}>
-                {expandedTrip.UserOrderRoutes.length}
-              </div>
-            </div>
-            <div className={styles.tripDetailsOrder}>
-              <TripOrders orders={expandedTrip.UserOrderRoutes} />
-            </div>
-          </div>
-        }
-      </div>
-    );
-  }
-});
+    </div>
+  );
+}
+
+/* eslint-disable */
+PanelDetails.propTypes = {
+  expandedTrip: PropTypes.any.isRequired,
+  shrinkTrip: PropTypes.func,
+};
+/* eslint-enable */
+
+PanelDetails.defaultProps = {
+  shrinkTrip: () => {},
+};
 
 const Drivers = React.createClass({
   render: function() {
@@ -230,16 +246,16 @@ const Drivers = React.createClass({
 
 const PanelDrivers = React.createClass({
   getInitialState() {
-    return ({driverList: this.props.drivers, searchValue: ''})
+    return ({ driverList: this.props.drivers, searchValue: '' })
   },
   searchDriver(e) {
-    this.setState({searchValue: e.target.value});
+    this.setState({ searchValue: e.target.value });
     let driverList = lodash.filter(this.props.drivers, function(driver) { 
       let driverName = driver.FirstName + ' ' + driver.LastName;
       let searchValue = e.target.value;
       return driverName.toLowerCase().includes(searchValue);
     });
-    this.setState({driverList: driverList});
+    this.setState({ driverList: driverList });
   },
   render() {
     const setDriverButton = {
@@ -297,7 +313,7 @@ const ErrorAssign = React.createClass({
 
 const TripPage = React.createClass({
   getInitialState() {
-    return ({driverID: null, trips: [], selectedTrips: [], isSuccessAssign: false});
+    return ({ driverID: null, trips: [], selectedTrips: [], isSuccessAssign: false });
   },
   componentWillMount() {
     this.props.ShrinkTrip();
@@ -310,7 +326,7 @@ const TripPage = React.createClass({
     });
   },
   selectDriver(e) {
-    this.setState({driverID: e.key});
+    this.setState({ driverID: e.key });
   },
   expandBulkAssign() {
     let selectedTrips = lodash.filter(this.props.trips, ['IsChecked', true]);
@@ -318,7 +334,7 @@ const TripPage = React.createClass({
       alert('No trip selected');
       return;
     }
-    this.setState({selectedTrips: selectedTrips});
+    this.setState({ selectedTrips: selectedTrips });
     this.props.ShrinkTrip();
     setTimeout(function() {
       this.props.ExpandDriverBulk();
@@ -328,9 +344,9 @@ const TripPage = React.createClass({
     this.props.ExportTrip();
   },
   render() {
-    const {paginationState, PaginationAction, errorIDs, successAssign, errorAssign, drivers, total, trips, expandedTrip, isExpandTrip, isExpandDriver, isExpandDriverBulk, AssignTrip, BulkAssignTrip, ShrinkTrip, ExpandDriver, selectedDriver, SetDriver} = this.props;
+    const { paginationState, PaginationAction, errorIDs, successAssign, errorAssign, drivers, total, trips, expandedTrip, isExpandTrip, isExpandDriver, isExpandDriverBulk, AssignTrip, BulkAssignTrip, ShrinkTrip, ExpandDriver, selectedDriver, SetDriver } = this.props;
     return (
-      <Page title="My Ongoing Trips" count={{itemName: 'Items', done: 'All Done', value: total}}>
+      <Page title="My Ongoing Trips" count={{ itemName: 'Items', done: 'All Done', value: total }}>
         <Pagination2 {...paginationState} {...PaginationAction} />
           <div className={styles.filterOption}>
             <Filter expandDriver={this.expandBulkAssign} />
@@ -338,9 +354,9 @@ const TripPage = React.createClass({
           {
             (this.props.isFetching || this.props.isLoadingDriver) &&
             <div>
-              <div style={{clear: 'both'}} />
-              <div style={{textAlign:'center'}}>
-                <div style={{fontSize: 20}}>
+              <div style={{ clear: 'both' }} />
+              <div style={{ textAlign:'center' }}>
+                <div style={{ fontSize: 20 }}>
                   Fetching data....
                 </div>
               </div>
@@ -349,13 +365,13 @@ const TripPage = React.createClass({
           {
             !this.props.isFetching && this.props.trips.length === 0 && !lodash.isEmpty(this.props.filters) &&
             <div>
-              <div style={{clear: 'both'}} />
+              <div style={{ clear: 'both' }} />
               <div className={styles.noTripDesc}>
                 <img src="/img/image-on-going-trips.png" />
-                <div style={{fontSize: 20}}>
+                <div style={{ fontSize: 20 }}>
                   Trips not found
                 </div>
-                <div style={{fontSize: 12, marginTop: 20}}>
+                <div style={{ fontSize: 12, marginTop: 20 }}>
                   Please choose another filter to get the orders.
                 </div>
               </div>
@@ -364,13 +380,13 @@ const TripPage = React.createClass({
           {
             !this.props.isFetching && this.props.trips.length === 0 && lodash.isEmpty(this.props.filters) &&
             <div>
-              <div style={{clear: 'both'}} />
+              <div style={{ clear: 'both' }} />
               <div className={styles.noTripDesc}>
                 <img src="/img/image-on-going-trips.png" />
-                <div style={{fontSize: 20}}>
+                <div style={{ fontSize: 20 }}>
                   You do not have any ongoing trips right now
                 </div>
-                <div style={{fontSize: 12, marginTop: 20}}>
+                <div style={{ fontSize: 12, marginTop: 20 }}>
                   Please check and assign more trips on the “My Trips” Page.
                 </div>
               </div>
@@ -454,7 +470,7 @@ const TripPage = React.createClass({
 });
 
 function StoreToTripsPage(store) {
-  const {currentPage, limit, total, isFetching, filters, trips, errorIDs, successAssign, errorAssign, expandedTrip, isExpandTrip, isExpandDriver, isExpandDriverBulk, selectedDriver, isSuccessAssign} = store.app.myOngoingTrips;  
+  const { currentPage, limit, total, isFetching, filters, trips, errorIDs, successAssign, errorAssign, expandedTrip, isExpandTrip, isExpandDriver, isExpandDriverBulk, selectedDriver, isSuccessAssign } = store.app.myOngoingTrips;  
   const userLogged = store.app.userLogged;  
   const driversStore = store.app.driversStore;
   const driverList = driversStore.driverList;
