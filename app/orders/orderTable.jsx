@@ -244,7 +244,11 @@ const OrderRow = React.createClass({
             onError={(e) => { e.target.src = config.IMAGES.DEFAULT_LOGO; }}
           />
         </td>
-        <td className={styles.orderIDColumn}>{`${order.UserOrderNumber}`}</td>
+        <td className={styles.orderIDColumn}>
+          {order.UserOrderNumber}
+          <br />
+          {order.WebOrderID}
+        </td>
         <td><div className={styles.cardSeparator} /></td>
         <td>
           <div className={styles.cardLabel}>
