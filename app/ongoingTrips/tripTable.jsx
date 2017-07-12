@@ -18,12 +18,26 @@ import { ButtonWithLoading } from '../components/button';
 import config from '../config/configValues.json';
 import * as Helper from '../helper/utility';
 
-function StoreBuilder(keyword) {
+function InputFilter({ value, onChange, onKeyDown, placeholder }) {
+  return (
+    <input
+      className={styles.inputSearch}
+      placeholder={placeholder}
+      type="text"
+      value={value}
+      onChange={onChange}
+      onKeyDown={onKeyDown}
+    />
+  );
+}
+
+function StoreBuilder(keyword, placeholder) {
   return (store) => {
     const { filters } = store.app.myOngoingTrips;
 
     return {
       value: filters[keyword],
+      placeholder,
     };
   };
 }
@@ -132,8 +146,8 @@ function DateRangeDispatch(keyword) {
   };
 }
 
-function ConnectBuilder(keyword) {
-  return connect(StoreBuilder(keyword), DispatchBuilder(keyword));
+function ConnectBuilder(keyword, placeholder) {
+  return connect(StoreBuilder(keyword, placeholder), DispatchBuilder(keyword));
 }
 
 function ConnectDropdownBuilder(keyword) {
@@ -151,6 +165,7 @@ const DropoffFilter = ConnectBuilder('dropoff')(Table.InputCell);
 const DriverFilter = ConnectBuilder('driver')(Table.InputCell);
 const PickupDateFilter = connect(DateRangeBuilder('Pickup'), DateRangeDispatch('Pickup'))(Table.FilterDateTimeRangeCell);
 const OrderFilter = ConnectBuilder('order')(Table.InputCell);
+const EDSFilter = ConnectBuilder('userOrderNumber', 'Search for EDS...')(InputFilter);
 
 export const Filter = React.createClass({
   render() {
@@ -165,6 +180,7 @@ export const Filter = React.createClass({
       <div>
         <CheckboxHeader />
         <SortFilter />
+        <EDSFilter />
         {
           <div className={styles.reassignBulkButton}>
             <ButtonWithLoading {...reassignTripButton} />
