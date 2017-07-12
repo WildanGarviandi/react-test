@@ -328,16 +328,16 @@ export function Deadline({ deadline }) {
   const Duration = moment.duration(moment(deadline).diff(moment(new Date())));
 
   if (!deadline) {
-    return <span style={{ color: 'black' }}>-</span>;
+    return <span className={styles['text-black']}>-</span>;
   } else if (Duration._milliseconds > config.deadline.day) {
-    return <span style={{ color: 'black' }}>{Duration.humanize()} remaining</span>;
+    return <span className={styles['text-black']}>{Duration.humanize()} remaining</span>;
   } else if (Duration._milliseconds < 0) {
-    return <span style={{ color: 'red' }}>Passed</span>;
+    return <span className={styles['text-red']}>Passed</span>;
   }
 
   const normalDeadline = (Duration._milliseconds > config.deadline['3hours']) && (Duration._milliseconds < config.deadline.day);
   return (
-    <span style={{ color: normalDeadline ? 'black' : 'red' }}>
+    <span className={normalDeadline ? styles['float-black'] : styles['float-red']}>
       <Countdown
         targetDate={new Date(deadline)}
         startDelay={500}
@@ -382,7 +382,9 @@ const TripRow = React.createClass({
   render() {
     const { trip, expandedTrip } = this.props;
     const parsedTrip = TripParser(trip);
+    const deadline = moment(trip.Deadline).format('DD-MM-YYYY');
     const cardValueStatus = styles[`cardValueStatus${trip.OrderStatus.OrderStatusID}`];
+    const Duration = moment.duration(moment(trip.Deadline).diff(moment(new Date())));
     let rowStyles = `${styles.tr} ${styles.card} ${this.state.isHover && styles.hovered}`;
     if (expandedTrip.TripID === trip.TripID) {
       rowStyles = `${styles.tr} ${styles.card} ${styles.select}`;
@@ -468,6 +470,10 @@ const TripRow = React.createClass({
           <br />
           <div className={styles.cardValue}>
             <Deadline deadline={trip.Deadline} />
+            <br />
+            <span className={Duration._milliseconds < 0 ? styles['text-red'] : styles['text-black']}>
+              {deadline}
+            </span>
           </div>
         </td>
       </tr>
@@ -503,16 +509,14 @@ class TripBody extends Component {
 
 /* eslint-disable */
 TripBody.propTypes = {
-  trips: PropTypes.array,
-  expandedTrip: PropTypes.any,
+  trips: PropTypes.array.isRequired,
+  expandedTrip: PropTypes.any.isRequired,
   expand: PropTypes.func,
   shrink: PropTypes.func,
 };
 /* eslint-enable */
 
 TripBody.propTypes = {
-  trips: [],
-  expandedTrip: {},
   expand: () => {},
   shrink: () => {},
 };
@@ -552,10 +556,6 @@ export default TripTable;
 
 /* eslint-disable */
 TripTable.propTypes = {
-  trips: PropTypes.array,
+  trips: PropTypes.array.isRequired,
 };
 /* eslint-enable */
-
-TripTable.propTypes = {
-  trips: [],
-};
