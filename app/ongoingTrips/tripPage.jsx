@@ -1,9 +1,10 @@
+/* eslint no-underscore-dangle: ["error", { "allow": ["_milliseconds"] }] */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import NumberFormat from 'react-number-format';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
 
-import lodash from 'lodash';
+import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
@@ -21,12 +22,12 @@ import config from '../config/configValues.json';
 function TripOrders({ orders }) {
   const orderComponents = orders.map((order, idx) => {
     const deadline = moment(order.UserOrder.DueTime).format('DD-MM-YYYY');
-    const Duration = moment.duration(moment(order.UserOrder.DueTime).diff(moment(new Date())));
+    const duration = moment.duration(moment(order.UserOrder.DueTime).diff(moment(new Date())));
     return (
-      <div className={styles.mainOrder} key={idx}>
+      <div className={styles.mainOrder} key={order.UserOrderRouteID}>
         <div className={styles.orderName}>
           <div className={styles.orderNum}>
-            Order #{idx+1}
+            Order #{idx + 1}
           </div>
           <div className={styles.orderEDS}>
             {order.UserOrder.UserOrderNumber}
@@ -60,8 +61,8 @@ function TripOrders({ orders }) {
           </div>
           <div className={styles.deadlineValue}>
             Deadline: <Deadline deadline={order.UserOrder.DueTime} />
-            <span className={Duration._milliseconds < 0 ? styles['text-red'] : styles['text-black']}>
-              {Duration._milliseconds < 0 && <br />}
+            <span className={duration._milliseconds < 0 ? styles['text-red'] : styles['text-black']}>
+              {duration._milliseconds < 0 && <br />}
                ({deadline})
               </span>
           </div>
@@ -100,7 +101,8 @@ function PanelDetails({ expandedTrip, shrinkTrip, isExpandDriver, expandDriver }
                 <img
                   alt="vehicle"
                   className={styles.driverLoadImage}
-                  src={expandedTrip.Driver && expandedTrip.Driver.Vehicle && expandedTrip.Driver.Vehicle.Name === 'Motorcycle' ?
+                  src={expandedTrip.Driver && expandedTrip.Driver.Vehicle &&
+                  expandedTrip.Driver.Vehicle.Name === config.vehicle[config.vehicleType.Motorcycle - 1].value ?
                   config.IMAGES.MOTORCYCLE : config.IMAGES.VAN}
                 />
               </div>
@@ -209,17 +211,17 @@ PanelDetails.defaultProps = {
 
 class Drivers extends Component {
   handleDriversView() {
-    const driverComponents = this.props.drivers.map((driver, idx) => {
+    const driverComponents = this.props.drivers.map((driver) => {
       const isSelected = this.props.selectedDriver === driver.UserID;
       let selectedWeight = this.props.selectedTrip.Weight;
       if (this.props.selectedTrips.length > 0) {
         selectedWeight = 0;
         this.props.selectedTrips.forEach((trip) => {
-          const orders = lodash.map(trip.UserOrderRoutes, (route) => {
+          const orders = _.map(trip.UserOrderRoutes, (route) => {
             const userOrder = route.UserOrder;
             return userOrder;
           });
-          const weight = lodash.sumBy(orders, 'PackageWeight');
+          const weight = _.sumBy(orders, 'PackageWeight');
           selectedWeight += weight;
         });
       }
@@ -230,7 +232,7 @@ class Drivers extends Component {
         tripDriverStyle = styles.tripDriverSelectedExceed;
       }
       return (
-        <div className={styles.mainDriver} key={idx}>
+        <div className={styles.mainDriver} key={driver.UserID}>
           <div
             role="none"
             className={tripDriverStyle}
@@ -300,7 +302,7 @@ class PanelDrivers extends Component {
   }
   searchDriver(e) {
     this.setState({ searchValue: e.target.value });
-    const driverList = lodash.filter(this.props.drivers, (driver) => {
+    const driverList = _.filter(this.props.drivers, (driver) => {
       const driverName = `${driver.FirstName} ${driver.LastName}`;
       const searchValue = e.target.value;
       return driverName.toLowerCase().includes(searchValue);
@@ -402,6 +404,40 @@ ErrorAssign.defaultProps = {
   errorIDs: [],
 };
 
+function TripNotFound() {
+  return (
+    <div>
+      <div style={{ clear: 'both' }} />
+      <div className={styles.noTripDesc}>
+        <img alt="on going trips" src={config.IMAGES.ON_GOING_TRIPS} />
+        <div style={{ fontSize: 20 }}>
+          Trips not found
+        </div>
+        <div style={{ fontSize: 12, marginTop: 20 }}>
+          Please choose another filter to get the orders.
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function NoOngoingTrips() {
+  return (
+    <div>
+      <div style={{ clear: 'both' }} />
+      <div className={styles.noTripDesc}>
+        <img alt="on going trips" src={config.IMAGES.ON_GOING_TRIPS} />
+        <div style={{ fontSize: 20 }}>
+          You do not have any ongoing trips right now
+        </div>
+        <div style={{ fontSize: 12, marginTop: 20 }}>
+          Please check and assign more trips on the “My Trips” Page.
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const TripPage = React.createClass({
   getInitialState() {
     return ({ driverID: null, trips: [], selectedTrips: [], isSuccessAssign: false });
@@ -420,7 +456,7 @@ const TripPage = React.createClass({
     this.setState({ driverID: e.key });
   },
   expandBulkAssign() {
-    const selectedTrips = lodash.filter(this.props.trips, ['IsChecked', true]);
+    const selectedTrips = _.filter(this.props.trips, ['IsChecked', true]);
     if (selectedTrips.length < 1) {
       alert('No trip selected');
       return;
@@ -474,35 +510,13 @@ const TripPage = React.createClass({
         }
         {
           !this.props.isFetching && this.props.trips.length === 0 &&
-          !lodash.isEmpty(this.props.filters) &&
-          <div>
-            <div style={{ clear: 'both' }} />
-            <div className={styles.noTripDesc}>
-              <img alt="on going trips" src="/img/image-on-going-trips.png" />
-              <div style={{ fontSize: 20 }}>
-                Trips not found
-              </div>
-              <div style={{ fontSize: 12, marginTop: 20 }}>
-                Please choose another filter to get the orders.
-              </div>
-            </div>
-          </div>
+          !_.isEmpty(this.props.filters) &&
+          <TripNotFound />
         }
         {
           !this.props.isFetching &&
-          this.props.trips.length === 0 && lodash.isEmpty(this.props.filters) &&
-          <div>
-            <div style={{ clear: 'both' }} />
-            <div className={styles.noTripDesc}>
-              <img alt="on going trips" src="/img/image-on-going-trips.png" />
-              <div style={{ fontSize: 20 }}>
-                You do not have any ongoing trips right now
-              </div>
-              <div style={{ fontSize: 12, marginTop: 20 }}>
-                Please check and assign more trips on the “My Trips” Page.
-              </div>
-            </div>
-          </div>
+          this.props.trips.length === 0 && _.isEmpty(this.props.filters) &&
+          <NoOngoingTrips />
         }
         {
           !this.props.isFetching && !this.props.isLoadingDriver && this.props.trips.length > 0 &&

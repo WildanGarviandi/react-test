@@ -1,3 +1,4 @@
+/* eslint no-underscore-dangle: ["error", { "allow": ["_milliseconds"] }] */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import NumberFormat from 'react-number-format';
@@ -279,7 +280,7 @@ function TripParser(trip) {
 
   const Weight = GetWeightTrip(orders);
 
-  const CODOrders = _.filter(orders, order => order.IsCOD === true);
+  const CODOrders = _.filter(orders, ['IsCOD']);
 
   return _.assign({}, trip, {
     TripDriver: getDriverName(trip),
@@ -325,17 +326,17 @@ export function Deadline({ deadline }) {
     minute: 'mm',
     second: 'ss',
   };
-  const Duration = moment.duration(moment(deadline).diff(moment(new Date())));
+  const duration = moment.duration(moment(deadline).diff(moment(new Date())));
 
   if (!deadline) {
     return <span className={styles['text-black']}>-</span>;
-  } else if (Duration._milliseconds > config.deadline.day) {
-    return <span className={styles['text-black']}>{Duration.humanize()} remaining</span>;
-  } else if (Duration._milliseconds < 0) {
+  } else if (duration._milliseconds > config.deadline.day) {
+    return <span className={styles['text-black']}>{duration.humanize()} remaining</span>;
+  } else if (duration._milliseconds < 0) {
     return <span className={styles['text-red']}>Passed</span>;
   }
 
-  const normalDeadline = (Duration._milliseconds > config.deadline['3hours']) && (Duration._milliseconds < config.deadline.day);
+  const normalDeadline = (duration._milliseconds > config.deadline['3hours']) && (duration._milliseconds < config.deadline.day);
   return (
     <span className={normalDeadline ? styles['float-black'] : styles['float-red']}>
       <Countdown
@@ -382,9 +383,9 @@ const TripRow = React.createClass({
   render() {
     const { trip, expandedTrip } = this.props;
     const parsedTrip = TripParser(trip);
-    const deadline = moment(trip.Deadline).format('DD-MM-YYYY');
+    const deadline = moment(trip.Deadline).format(config.DATE_FORMAT.DATE_MONTH_YEAR);
     const cardValueStatus = styles[`cardValueStatus${trip.OrderStatus.OrderStatusID}`];
-    const Duration = moment.duration(moment(trip.Deadline).diff(moment(new Date())));
+    const duration = moment.duration(moment(trip.Deadline).diff(moment(new Date())));
     let rowStyles = `${styles.tr} ${styles.card} ${this.state.isHover && styles.hovered}`;
     if (expandedTrip.TripID === trip.TripID) {
       rowStyles = `${styles.tr} ${styles.card} ${styles.select}`;
@@ -414,7 +415,8 @@ const TripRow = React.createClass({
                 <img
                   className={styles.driverLoadImage}
                   alt="vehicle"
-                  src={trip.Driver && trip.Driver.Vehicle && trip.Driver.Vehicle.Name === 'Motorcycle' ?
+                  src={trip.Driver && trip.Driver.Vehicle &&
+                    trip.Driver.Vehicle.Name === config.vehicle[config.vehicleType.Motorcycle - 1].value ?
                     config.IMAGES.MOTORCYCLE : config.IMAGES.VAN}
                 />
               </div>
@@ -471,7 +473,7 @@ const TripRow = React.createClass({
           <div className={styles.cardValue}>
             <Deadline deadline={trip.Deadline} />
             <br />
-            <span className={Duration._milliseconds < 0 ? styles['text-red'] : styles['text-black']}>
+            <span className={duration._milliseconds < 0 ? styles['text-red'] : styles['text-black']}>
               {deadline}
             </span>
           </div>

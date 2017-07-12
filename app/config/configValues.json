@@ -143,7 +143,8 @@
       "DEFAULT_LOGO": "/img/default-logo.png",
       "ETOBEE_LOGO": "/img/etobee-logo.png",
       "ICON_MENU": "/img/icon-menu.png",
-      "ICON_SUCCESS": "/img/icon-success.png"
+      "ICON_SUCCESS": "/img/icon-success.png",
+      "ON_GOING_TRIPS": "/img/image-on-going-trips.png"
     },
     "assignCentralHub": true,
     "HTTP_STATUS": {
@@ -175,5 +176,8 @@
         "DESC": "DESC"
       }
     },
-    "CHECK_AUTH_INTERVAL": 10000
+    "CHECK_AUTH_INTERVAL": 10000,
+    "DATE_FORMAT": {
+      "DATE_MONTH_YEAR": "DD-MM-YYYY"
+    }
 }
