@@ -1,10 +1,11 @@
 import React, { PropTypes } from 'react';
-import * as _ from 'lodash';
 import ReactDOM from 'react-dom';
+
+import * as _ from 'lodash';
 import classNaming from 'classnames';
 
 import styles from './form.scss';
-import { Glyph } from '../views/base/glyph';
+import Glyph from './Glyph';
 import { ButtonBase } from './button';
 import config from '../config/configValues.json';
 import { DropdownWithState2 as Dropdown2 } from '../views/base/dropdown';

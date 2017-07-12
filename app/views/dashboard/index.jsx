@@ -1,6 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
+import { push } from 'react-router-redux';
+
+import * as _ from 'lodash';
 
 import { AppLoadedActions, LogoutAction } from '../../modules';
 import FetchStatusList from '../../modules/containers/actions/statusFetch';
@@ -9,12 +12,10 @@ import * as StateService from '../../states/stateService';
 import * as CityService from '../../cities/cityService';
 import * as OrderService from '../../orders/orderService';
 import * as FleetService from '../../nearbyFleets/nearbyFleetService';
-import { Glyph } from '../base';
+import Glyph from '../../components/Glyph';
 import Accordion from '../../components/accordion';
 import styles from './styles.scss';
-import * as _ from 'lodash';
 import config from '../../../config.json';
-import { push } from 'react-router-redux';
 
 var classnaming = require('classnames/bind').bind(styles);
 

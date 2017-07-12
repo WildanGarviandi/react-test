@@ -1,15 +1,14 @@
-import * as _ from 'lodash';
 import React from 'react';
-import ReactDOM from 'react-dom';
-import classNaming from 'classnames';
-import moment from 'moment';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import DateTime from 'react-datetime';
+import { ModalContainer, ModalDialog } from 'react-modal-dialog';
+
+import * as _ from 'lodash';
 
 import { ContainerDetailsActions, StatusList } from '../modules';
 import districtsFetch from '../modules/districts/actions/districtsFetch';
-import { ButtonBase, ButtonWithLoading, Input, Modal, Page, Glyph, DropdownTypeAhead } from '../views/base';
+import { ButtonBase, ButtonWithLoading, Input, Modal, Page, DropdownTypeAhead } from '../views/base';
 import DistrictAndDriver from '../views/container/districtAndDriver';
 import { OrderTable } from './tripDetailsTable';
 import * as TripDetails from './tripDetailsService';
@@ -20,12 +19,12 @@ import RemarksSetter from '../components/remarksSetter';
 import styles from './styles.scss';
 import { CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered, TripParser } from '../modules/trips';
 import { formatDate } from '../helper/time';
-import { ModalContainer, ModalDialog } from 'react-modal-dialog';
 import config from '../config/configValues.json';
 import ImagePreview from '../views/base/imagePreview';
 import ImageUploader from '../views/base/imageUploader';
 import { InputWithDefault } from '../views/base/input';
 import { checkPermission } from '../helper/permission';
+import Glyph from '../components/Glyph';
 
 const columns = ['id', 'id2', 'dropoff', 'time', 'CODValue', 'IsCOD', 'orderStatus', 'routeStatus', 'action'];
 const nonFillColumn = columns.slice(0, columns.length - 1);
