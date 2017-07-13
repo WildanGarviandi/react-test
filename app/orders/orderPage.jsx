@@ -48,6 +48,12 @@ const PanelDetails = React.createClass({
                 {expandedOrder.UserOrderNumber}
               </div>
               <div className={styles.orderDetailsLabel}>
+                Web Order ID
+              </div>
+              <div className={styles.orderDetailsValue}>
+                {expandedOrder.WebOrderID}
+              </div>
+              <div className={styles.orderDetailsLabel}>
                 Origin
               </div>
               <div className={styles.orderDetailsValue}>
