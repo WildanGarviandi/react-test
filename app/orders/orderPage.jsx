@@ -1,3 +1,4 @@
+/* eslint no-underscore-dangle: ["error", { "allow": ["_milliseconds"] }] */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import NumberFormat from 'react-number-format';
@@ -6,6 +7,7 @@ import { push } from 'react-router-redux';
 
 import * as _ from 'lodash';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 
 import { Page } from '../views/base';
 import { Pagination2 } from '../components/pagination2';
@@ -22,6 +24,8 @@ import config from '../config/configValues.json';
 const PanelDetails = React.createClass({
   render() {
     const { expandedOrder, shrinkOrder, isExpandDriver } = this.props;
+    const duration = moment.duration(moment(expandedOrder.DueTime).diff(moment(new Date())));
+    const deadline = moment(expandedOrder.DueTime).format(config.DATE_FORMAT.DATE_MONTH_YEAR);
     return (
       <div>
         {expandedOrder &&
@@ -31,6 +35,13 @@ const PanelDetails = React.createClass({
             </div>
             <div className={styles.orderDueTime}>
               <Deadline deadline={expandedOrder.DueTime} />
+              <br />
+              <span
+                className={`${duration._milliseconds < 0 ? styles['text-red'] : styles['text-black']} 
+                 ${styles.deadlineDate}`}
+              >
+               ({deadline})
+              </span>
             </div>
             <div className={styles.orderDetails}>
               <div className={styles.reassignButton}>

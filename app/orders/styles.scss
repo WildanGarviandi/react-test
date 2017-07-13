@@ -13,7 +13,7 @@
 }
 
 .panel .title {
-  background-color: #222D32;
+  background-color: #222d32;
   color: #f2f2f2;
   cursor: pointer;
   margin: 0;
@@ -56,7 +56,7 @@
 .assignOrderButton {
   border: 0;
   border-radius: 5px;
-  background-color: #FF5A60;
+  background-color: #ff5a60;
   color: #fff;
   cursor: pointer;
   padding: 5px;
@@ -69,26 +69,26 @@
 
 /* The animation code */
 @keyframes panelDetailsAnimation {
-  from {right: -400px;}
-  to {right: 0px;}
+  from { right: -400px; }
+  to { right: 0; }
 }
 
 .panelDetails {
   position: fixed;
-  right: 0px;
+  right: 0;
   top: 50px;
   width: 400px;
   background-color: white;
   height: 100%;
-  box-shadow: -1px 2px 10px 0px rgba(50, 50, 50, 0.75);
+  box-shadow: -1px 2px 10px 0 rgba(50, 50, 50, 0.75);
   animation-name: panelDetailsAnimation;
   animation-duration: 0.5s;
 }
 
 /* The animation code */
 @keyframes panelDetailsAnimation2 {
-  from {right: 0px;}
-  to {right: 400px;}
+  from { right: 0; }
+  to { right: 400px; }
 }
 
 .panelDetails2 {
@@ -99,23 +99,22 @@
   background-color: white;
   height: 100%;
   border-right: 1px solid #e8e8e8;
-  box-shadow: -1px 2px 10px 0px rgba(50, 50, 50, 0.75);
+  box-shadow: -1px 2px 10px 0 rgba(50, 50, 50, 0.75);
   animation-name: panelDetailsAnimation2;
   animation-duration: 0.5s;
 }
 
 .orderDueTime {
   width: 360px;
-  height: 40px;
   border-radius: 4px;
   border: solid 1px #e8e8e8;
-  background-color: #ffffff;
+  background-color: #fff;
   margin-left: 20px;
   font-family: Helvetica;
   font-size: 24px;
   text-align: center;
-  color: #000000;
-  padding-top: 10px;
+  color: #000;
+  padding: 5px 0;
   margin-top: 15px;
 }
 
@@ -124,12 +123,12 @@
   height: 60px;
   border-radius: 4px;
   border: solid 1px #e8e8e8;
-  background-color: #ffffff;
+  background-color: #fff;
   margin-left: 20px;
   font-family: Helvetica;
   font-size: 24px;
   text-align: center;
-  color: #000000;
+  color: #000;
   padding-top: 5px;
   margin-top: 15px;
 }
@@ -138,13 +137,12 @@
   width: 360px;
   height: 60px;
   border-radius: 4px;
-  border: solid 1px #e8e8e8;
-  background-color: #ffffff;
+  background-color: #fff;
   margin-left: 20px;
   font-family: Helvetica;
   font-size: 24px;
   text-align: center;
-  color: #000000;
+  color: #000;
   padding-top: 5px;
   margin-top: 15px;
   border: 2px solid #4cc38e;
@@ -154,16 +152,15 @@
   width: 360px;
   height: 60px;
   border-radius: 4px;
-  border: solid 1px #e8e8e8;
-  background-color: #ffffff;
+  background-color: #fff;
   margin-left: 20px;
   font-family: Helvetica;
   font-size: 24px;
   text-align: center;
-  color: #000000;
+  color: #000;
   padding-top: 5px;
   margin-top: 15px;
-  border: 2px solid #ff0000;
+  border: 2px solid #f00;
 }
 
 .orderValue {
@@ -171,12 +168,12 @@
   height: 40px;
   border-radius: 4px;
   border: solid 1px #e8e8e8;
-  background-color: #ffffff;
+  background-color: #fff;
   margin-left: 20px;
   font-family: Helvetica;
   font-size: 24px;
   text-align: center;
-  color: #000000;
+  color: #000;
   padding-top: 5px;
   margin-top: 15px;
 }
@@ -184,11 +181,11 @@
 .orderDetails {
   width: 360px;
   border-radius: 4px;
-  background-color: #ffffff;
+  background-color: #fff;
   margin-left: 20px;
   font-family: Helvetica;
   font-size: 12px;
-  color: #000000;
+  color: #000;
   margin-top: 15px;
   padding-right: 10px;
   overflow-y: auto;
@@ -213,17 +210,16 @@
 
 .closeButton {
   background-color: #fff;
-  box-shadow: none;
   border: none;
   font-size: 24px;
-  color: #cccccc;
+  color: #ccc;
   cursor: pointer;
   padding: 8px;
   margin-left: -32px;
   float: left;
   z-index: -1;
   border-left: 1px solid #e8e8e8;
-  box-shadow: -2px 1px 2px 0px rgba(50, 50, 50, 0.75);
+  box-shadow: -2px 1px 2px 0 rgba(50, 50, 50, 0.75);
 }
 
 .filterOption {
@@ -311,18 +307,18 @@
 
 /* The animation code */
 @keyframes panelDriversAnimation {
-  from {right: -400px;}
-  to {right: 0px;}
+  from { right: -400px; }
+  to { right: 0; }
 }
 
 .mainDriverPanel {
   position: fixed;
-  right: 0px;
+  right: 0;
   top: 50px;
   width: 400px;
   background-color: white;
   height: 100%;
-  box-shadow: 3px 2px 8px 0px rgba(50, 50, 50, 0.75);
+  box-shadow: 3px 2px 8px 0 rgba(50, 50, 50, 0.75);
   animation-name: panelDriversAnimation;
   animation-duration: 0.5s;
 }
@@ -342,10 +338,10 @@
   width: 400px;
   overflow-y: scroll;
   border-radius: 4px;
-  background-color: #ffffff;
+  background-color: #fff;
   font-family: Helvetica;
   font-size: 12px;
-  color: #000000;
+  color: #000;
   height: calc(100vh - 200px);
 }
 
@@ -371,7 +367,6 @@
 }
 
 .inputDriverSearch {
-  background-color: #e8e8e8;
   border-radius: 4px;
   background-color: #f1f1f1;
   border: solid 1px #e8e8e8;
@@ -401,11 +396,8 @@
 }
 
 .noOrderDesc {
-  margin-top: 80px;
-  margin-bottom: 80px;
-  margin-left: auto;
-  margin-right: auto;
-  background-color: #ffffff;
+  margin: 80px auto;
+  background-color: #fff;
   height: 200px;
   text-align: center;
   width: 480px;
@@ -480,7 +472,7 @@
   display: block;
   margin-left: 150px;
   max-width: 350px;
-  text-indent: 0px;
+  text-indent: 0;
   font-weight: bold;
 }
 
@@ -496,7 +488,7 @@
   display: block;
   float: left;
   width: 100px;
-  text-indent: 0px;
+  text-indent: 0;
   font-weight: bold;
 }
 
@@ -505,7 +497,7 @@
   display: block;
   float: left;
   width: 155px;
-  text-indent: 0px;
+  text-indent: 0;
   font-weight: bold;
   text-align: right;
 }
@@ -527,8 +519,8 @@
 }
 
 .orderDetailsHeader {
-  background-color: #ffffff;
-  color: #000000;
+  background-color: #fff;
+  color: #000;
   text-indent: 10px;
   border-radius: 12px;
   font-size: 16px;
@@ -541,12 +533,9 @@
 
 .orderDetailsInformation {
   min-height: 260px;
-  background-color: #ffffff;
+  background-color: #fff;
   padding: 15px;
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
-  border-top-left-radius: 0px;
-  border-top-right-radius: 0px;
+  border-radius: 0 0 4px 4px;
   border: solid 1px #e8e8e8;
   clear: both;
   padding-bottom: 30px;
@@ -580,7 +569,7 @@
 .addOrderButton {
   border: 0;
   border-radius: 5px;
-  background-color: #FF5A60;
+  background-color: #ff5a60;
   color: #fff;
   cursor: pointer;
   padding: 5px;
@@ -601,15 +590,12 @@
 .contactDetailsBox {
   min-height: 260px;
   padding: 15px;
-  background-color: #ffffff;
+  background-color: #fff;
   color: #000;
   clear: both;
   padding-bottom: 30px;
   margin-bottom: 20px;
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
-  border-top-left-radius: 0px;
-  border-top-right-radius: 0px;
+  border-radius: 0 0 4px 4px;
 }
 
 .detailsTableColumn {
@@ -617,7 +603,7 @@
 }
 
 .attemptInformationHeader {
-  background-color: #222D32;
+  background-color: #222d32;
   color: #eee;
   text-indent: 10px;
   border-radius: 5px;
@@ -634,7 +620,7 @@
   margin-left: 160px;
   max-width: 150px;
   max-height: 200px;
-  text-indent: 0px;
+  text-indent: 0;
 }
 
 .orderDetailsFullWidth {
@@ -645,7 +631,7 @@
 .assignOrderButton {
   border: 0;
   border-radius: 5px;
-  background-color: #FF5A60;
+  background-color: #ff5a60;
   color: #fff;
   cursor: pointer;
   padding: 5px;
@@ -703,7 +689,8 @@
   margin: 0;
 }
 
-.modalBtn, .modalLink {
+.modalBtn,
+.modalLink {
   padding: 8px;
   display: inline-block;
   margin-left: 4px;
@@ -738,7 +725,7 @@
   height: 28px;
   border-radius: 4px;
   padding: 10px;
-  background-color: #ffffff;
+  background-color: #fff;
   border: solid 1px #e8e8e8;
   cursor: pointer;
 }
@@ -760,7 +747,7 @@
 }
 
 .removeShipperButton {
-  background-color: #FF5A60;
+  background-color: #ff5a60;
   color: #eee;
   border-radius: 5px;
   cursor: pointer;
@@ -829,7 +816,7 @@
   width: 296px;
   height: 48px;
   border-radius: 4px;
-  background-color: #ffffff;
+  background-color: #fff;
   border: solid 1px #e8e8e8;
   color: #38b393;
   font-size: 14px;
@@ -842,7 +829,7 @@
   width: 296px;
   margin-top: 10px;
   opacity: 0.5;
-  color: #000000;
+  color: #000;
 }
 
 .addCompanyOrderButton {
@@ -877,17 +864,21 @@
   background-color: #fff;
   color: #333;
   border: 1px solid #e8e8e8;
-  border-radius: 5px;
   text-indent: 10px;
   border-radius: 5px;
   cursor: pointer;
 }
 
 .top2 h4 {
-  margin: 0px;
+  margin: 0;
 }
 
 .glyphFilter {
   position: relative;
   left: -13px;
+}
+
+.deadlineDate {
+  font-size: 13px;
+  opacity: 0.4;
 }
