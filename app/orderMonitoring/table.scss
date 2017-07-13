@@ -1,13 +1,12 @@
-@mixin text-color($color) {
-  color: $color;
+@import '../../stylesheets/_variables.scss';
+@import '../../stylesheets/_mixins.scss';
+
+.text-normal {
+  @include text-color($text-normal);
 }
 
-.text-black {
-  @include text-color(black);
-}
-
-.text-red {
-  @include text-color(red);
+.text-danger {
+  @include text-color($text-danger);
 }
 
 .table {

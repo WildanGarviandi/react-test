@@ -11,7 +11,7 @@ import * as TripsHistoryService from './service';
 import styles from './styles.scss';
 import tableStyle from '../views/base/table.scss';
 import Glyph from '../components/Glyph';
-import { ButtonBase } from '../components/button';
+import { ButtonBase } from '../components/Button';
 
 const LinkComponents = React.createClass({
     render: function () {

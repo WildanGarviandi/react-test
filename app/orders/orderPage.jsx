@@ -9,12 +9,12 @@ import PropTypes from 'prop-types';
 
 import { Page } from '../views/base';
 import { Pagination2 } from '../components/pagination2';
-import { ButtonWithLoading, ButtonBase } from '../components/button';
+import { ButtonWithLoading, ButtonBase } from '../components/Button';
 import Table, { Filter, Deadline } from './orderTable';
 import * as OrderService from './orderService';
 import driversFetch from '../modules/drivers/actions/driversFetch';
 import styles from './styles.scss';
-import stylesButton from '../components/button.scss';
+import stylesButton from '../components/Button/styles.scss';
 import * as UtilHelper from '../helper/utility';
 import Glyph from '../components/Glyph';
 import config from '../config/configValues.json';

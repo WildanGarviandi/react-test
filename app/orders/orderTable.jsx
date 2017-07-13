@@ -1,3 +1,4 @@
+/* eslint no-underscore-dangle: ["error", { "allow": ["_milliseconds"] }] */
 import React from 'react';
 import { connect } from 'react-redux';
 import NumberFormat from 'react-number-format';
@@ -12,8 +13,8 @@ import * as OrderService from './orderService';
 import OrderStatusSelector from '../modules/orderStatus/selector';
 import { CheckboxHeader2 as CheckboxHeaderBase, CheckboxCell } from '../views/base/tableCell';
 import { FilterTop } from '../components/form';
-import stylesButton from '../components/button.scss';
-import { ButtonWithLoading } from '../components/button';
+import stylesButton from '../components/Button/styles.scss';
+import { ButtonWithLoading } from '../components/Button';
 import config from '../config/configValues.json';
 
 function StoreBuilder(keyword) {

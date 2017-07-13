@@ -1,41 +1,42 @@
-import lodash from 'lodash';
 import React from 'react';
-import {connect} from 'react-redux';
-import {Page} from '../views/base';
-import {Pagination2} from '../components/pagination2';
-import {ButtonWithLoading} from '../components/button';
-import * as Form from '../components/form';
-import Table, {Filter, Deadline} from './tripTable';
+import { connect } from 'react-redux';
+import { ModalContainer, ModalDialog } from 'react-modal-dialog';
+import ReactGA from 'react-ga';
+import NumberFormat from 'react-number-format';
+
+import lodash from 'lodash';
+
+import { Page } from '../views/base';
+import { Pagination2 } from '../components/pagination2';
+import { ButtonWithLoading } from '../components/Button';
+import Table, { Filter, Deadline } from './tripTable';
 import * as TripService from './tripService';
 import driversFetch from '../modules/drivers/actions/driversFetch';
 import styles from './styles.scss';
-import stylesButton from '../components/button.scss';
+import stylesButton from '../components/Button/styles.scss';
 import * as UtilHelper from '../helper/utility';
-import NumberFormat from 'react-number-format';
-import {ModalContainer, ModalDialog} from 'react-modal-dialog';
-import ReactGA from 'react-ga';
 import tripAnalytics from './tripAnalytics.json';
 
 const TripOrders = React.createClass({
-  render: function() {
-    var orderComponents = this.props.orders.map(function(order, idx) {
+  render: function () {
+    var orderComponents = this.props.orders.map(function (order, idx) {
       return (
         <div className={styles.mainOrder} key={idx}>
           <div className={styles.orderName}>
             <div className={styles.orderNum}>
-              Order #{idx+1}
+              Order #{idx + 1}
             </div>
             <div className={styles.orderEDS}>
               {order.UserOrder.UserOrderNumber}
             </div>
-            { 
+            {
               order.UserOrder.IsCOD &&
               <div className={styles.orderCOD}>
                 COD
               </div>
             }
           </div>
-          <div style={{clear: 'both'}} />
+          <div style={{ clear: 'both' }} />
           <div>
             <div className={styles.tripDetailsLabel}>
               From
@@ -56,7 +57,7 @@ const TripOrders = React.createClass({
               {order.UserOrder.DropoffAddress && order.UserOrder.DropoffAddress.Address1}
             </div>
             <div className={styles.deadlineValue}>
-                Deadline: <Deadline deadline={order.UserOrder.DueTime} />                
+              Deadline: <Deadline deadline={order.UserOrder.DueTime} />
             </div>
           </div>
         </div>
@@ -78,14 +79,14 @@ const PanelDetails = React.createClass({
     };
     return (
       <div>
-        { expandedTrip &&
+        {expandedTrip &&
           <div className={isExpandDriver ? styles.panelDetails2 : styles.panelDetails}>
             <div onClick={shrinkTrip} className={styles.closeButton}>
               X
             </div>
             <div className={styles.tripDetails}>
               <div className={styles.reassignButton}>
-              <button className={stylesButton.greenButton2} onClick={this.props.expandDriver}>Assign</button>
+                <button className={stylesButton.greenButton2} onClick={this.props.expandDriver}>Assign</button>
               </div>
               <div className={styles.tripDetailsLabel}>
                 TripID
@@ -132,17 +133,17 @@ const PanelDetails = React.createClass({
                 </div>
               </div>
             </div>
-            <div className={styles.tripValue}>                            
+            <div className={styles.tripValue}>
               <div className={styles.tripValueLabel}>
                 Total Value
               </div>
               <div className={styles.tripTotalValue}>
-                <NumberFormat displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp '} value={expandedTrip.TotalValue} />    
+                <NumberFormat displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp '} value={expandedTrip.TotalValue} />
               </div>
             </div>
             <div className={styles.tripNumOrders}>
               <div className={styles.numOrderLeft}>
-                Number of orders: 
+                Number of orders:
               </div>
               <div className={styles.numOrderRight}>
                 {expandedTrip.UserOrderRoutes.length}
@@ -159,20 +160,20 @@ const PanelDetails = React.createClass({
 });
 
 const Drivers = React.createClass({
-  render: function() {
-    var driverComponents = this.props.drivers.map(function(driver, idx) {
+  render: function () {
+    var driverComponents = this.props.drivers.map(function (driver, idx) {
       const isSelected = this.props.selectedDriver === driver.UserID;
       let selectedWeight = this.props.selectedTrip.Weight;
       if (this.props.selectedTrips.length > 0) {
         selectedWeight = 0;
-        this.props.selectedTrips.forEach(function(trip) {
+        this.props.selectedTrips.forEach(function (trip) {
           const orders = lodash.map(trip.UserOrderRoutes, (route) => {
             return route.UserOrder;
           });
           const weight = lodash.sumBy(orders, 'PackageWeight');
-          selectedWeight += weight;  
+          selectedWeight += weight;
         })
-      } 
+      }
       const totalWeight = parseFloat(driver.TotalCurrentWeight) + parseFloat(selectedWeight);
       const driverWeight = isSelected ? totalWeight : parseFloat(driver.TotalCurrentWeight);
       let tripDriverStyle = isSelected ? styles.tripDriverSelected : styles.tripDriver;
@@ -181,17 +182,17 @@ const Drivers = React.createClass({
       }
       return (
         <div className={styles.mainDriver} key={idx}>
-          <div className={tripDriverStyle} onClick={()=>{this.props.setDriver(driver.UserID)}}>
+          <div className={tripDriverStyle} onClick={() => { this.props.setDriver(driver.UserID) }}>
             <div className={styles.driverInput}>
               <img src={this.props.selectedDriver === driver.UserID ? "/img/icon-radio-on.png" : "/img/icon-radio-off.png"} />
             </div>
             <div className={styles.vehicleIcon}>
-              <img className={styles.driverLoadImage} 
+              <img className={styles.driverLoadImage}
                 src={driver.Vehicle && driver.Vehicle.VehicleID === 1 ? "/img/icon-vehicle-motor.png" : "/img/icon-vehicle-van.png"} />
             </div>
             <div className={styles.driverDetails}>
               <span className={styles.driverName}>
-                {UtilHelper.trimString(driver.FirstName + ' ' + driver.LastName, 20)} 
+                {UtilHelper.trimString(driver.FirstName + ' ' + driver.LastName, 20)}
               </span>
             </div>
             <div className={styles.driverDetails}>
@@ -209,26 +210,26 @@ const Drivers = React.createClass({
 
 const PanelDrivers = React.createClass({
   getInitialState() {
-    return ({driverList: this.props.drivers, searchValue: ''})
+    return ({ driverList: this.props.drivers, searchValue: '' })
   },
   searchDriver(e) {
-    this.setState({searchValue: e.target.value});
+    this.setState({ searchValue: e.target.value });
     ReactGA.event({
       category: tripAnalytics.searchDriver.category,
       action: tripAnalytics.searchDriver.action,
       label: this.props.userLogged.hubName
     });
-    let driverList = lodash.filter(this.props.drivers, function(driver) { 
+    let driverList = lodash.filter(this.props.drivers, function (driver) {
       let driverName = driver.FirstName + ' ' + driver.LastName;
       let searchValue = e.target.value;
       return driverName.toLowerCase().includes(searchValue);
     });
-    this.setState({driverList: driverList});
+    this.setState({ driverList: driverList });
   },
   render() {
     const setDriverButton = {
       textBase: 'Assign Driver',
-      onClick: this.props.isExpandDriverBulk ? 
+      onClick: this.props.isExpandDriverBulk ?
         this.props.bulkAssignTrip.bind(null, this.props.selectedTrips, this.props.selectedDriver) :
         this.props.assignTrip.bind(null, this.props.expandedTrip.TripID, this.props.selectedDriver),
       styles: {
@@ -237,17 +238,17 @@ const PanelDrivers = React.createClass({
     };
     return (
       <div className={styles.mainDriverPanel}>
-        { this.props.isExpandDriverBulk && 
+        {this.props.isExpandDriverBulk &&
           <div onClick={this.props.shrinkTrip} className={styles.closeButton}>
             X
           </div>
         }
-        { this.props.isExpandDriverBulk && 
+        {this.props.isExpandDriverBulk &&
           <div className={styles.panelDriverChoose}>
-            Choose a driver for {this.props.selectedTrips.length} trip: 
+            Choose a driver for {this.props.selectedTrips.length} trip:
           </div>
         }
-        { !this.props.isExpandDriverBulk && 
+        {!this.props.isExpandDriverBulk &&
           <div className={styles.panelDriverChoose}>
             Choose a driver for this trip
           </div>
@@ -267,8 +268,8 @@ const PanelDrivers = React.createClass({
 });
 
 const ErrorAssign = React.createClass({
-  render: function() {
-    var errorComponents = this.props.errorIDs.map(function(error, idx) {
+  render: function () {
+    var errorComponents = this.props.errorIDs.map(function (error, idx) {
       return (
         <div key={idx}>
           {error.TripID} : {error.error}
@@ -281,7 +282,7 @@ const ErrorAssign = React.createClass({
 
 const TripPage = React.createClass({
   getInitialState() {
-    return ({driverID: null, trips: [], selectedTrips: [], isSuccessAssign: false});
+    return ({ driverID: null, trips: [], selectedTrips: [], isSuccessAssign: false });
   },
   componentWillMount() {
     this.props.ShrinkTrip();
@@ -294,7 +295,7 @@ const TripPage = React.createClass({
     });
   },
   selectDriver(e) {
-    this.setState({driverID: e.key});
+    this.setState({ driverID: e.key });
   },
   expandBulkAssign() {
     let selectedTrips = lodash.filter(this.props.trips, ['IsChecked', true]);
@@ -302,9 +303,9 @@ const TripPage = React.createClass({
       alert('No trip selected');
       return;
     }
-    this.setState({selectedTrips: selectedTrips});
+    this.setState({ selectedTrips: selectedTrips });
     this.props.ShrinkTrip();
-    setTimeout(function() {
+    setTimeout(function () {
       this.props.ExpandDriverBulk();
     }.bind(this), 100);
   },
@@ -312,135 +313,135 @@ const TripPage = React.createClass({
     this.props.ExportTrip();
   },
   render() {
-    const {paginationState, PaginationAction, drivers, total, userLogged, errorIDs, successAssign, errorAssign, trips, expandedTrip, isExpandTrip, isExpandDriver, isExpandDriverBulk, AssignTrip, BulkAssignTrip, ShrinkTrip, ExpandDriver, selectedDriver, SetDriver} = this.props;
+    const { paginationState, PaginationAction, drivers, total, userLogged, errorIDs, successAssign, errorAssign, trips, expandedTrip, isExpandTrip, isExpandDriver, isExpandDriverBulk, AssignTrip, BulkAssignTrip, ShrinkTrip, ExpandDriver, selectedDriver, SetDriver } = this.props;
     return (
-      <Page title="My Trips" count={{itemName: 'Items', done: 'All Done', value: total}}>
+      <Page title="My Trips" count={{ itemName: 'Items', done: 'All Done', value: total }}>
         <Pagination2 {...paginationState} {...PaginationAction} />
-          <div className={styles.filterOption}>
-            <Filter expandDriver={this.expandBulkAssign} />
+        <div className={styles.filterOption}>
+          <Filter expandDriver={this.expandBulkAssign} />
+        </div>
+        {
+          (this.props.isFetching || this.props.isLoadingDriver) &&
+          <div>
+            <div style={{ clear: 'both' }} />
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: 20 }}>
+                Fetching data....
+                </div>
+            </div>
           </div>
-          {
-            (this.props.isFetching || this.props.isLoadingDriver) &&
-            <div>
-              <div style={{clear: 'both'}} />
-              <div style={{textAlign:'center'}}>
-                <div style={{fontSize: 20}}>
-                  Fetching data....
+        }
+        {
+          !this.props.isFetching && this.props.trips.length === 0 && !lodash.isEmpty(this.props.filters) &&
+          <div>
+            <div style={{ clear: 'both' }} />
+            <div className={styles.noTripDesc}>
+              <img src="/img/image-inbound-trip-done.png" />
+              <div style={{ fontSize: 20 }}>
+                Trips not found
                 </div>
-              </div>
+              <div style={{ fontSize: 12, marginTop: 20 }}>
+                Please choose another filter to get the orders.
+                </div>
             </div>
-          }
-          {
-            !this.props.isFetching && this.props.trips.length === 0 && !lodash.isEmpty(this.props.filters) &&
-            <div>
-              <div style={{clear: 'both'}} />
-              <div className={styles.noTripDesc}>
-                <img src="/img/image-inbound-trip-done.png" />
-                <div style={{fontSize: 20}}>
-                  Trips not found
+          </div>
+        }
+        {
+          !this.props.isFetching && this.props.trips.length === 0 && lodash.isEmpty(this.props.filters) &&
+          <div>
+            <div style={{ clear: 'both' }} />
+            <div className={styles.noTripDesc}>
+              <img src="/img/image-inbound-trip-done.png" />
+              <div style={{ fontSize: 20 }}>
+                Awesome work guys!
                 </div>
-                <div style={{fontSize: 12, marginTop: 20}}>
-                  Please choose another filter to get the orders.
+              <div style={{ fontSize: 12, marginTop: 20 }}>
+                You have assign all trips, please always check if there’s another trip to assign every 5 minutes.
                 </div>
-              </div>
             </div>
-          }
-          {
-            !this.props.isFetching && this.props.trips.length === 0 && lodash.isEmpty(this.props.filters) &&
-            <div>
-              <div style={{clear: 'both'}} />
-              <div className={styles.noTripDesc}>
-                <img src="/img/image-inbound-trip-done.png" />
-                <div style={{fontSize: 20}}>
-                  Awesome work guys!
-                </div>
-                <div style={{fontSize: 12, marginTop: 20}}>
-                  You have assign all trips, please always check if there’s another trip to assign every 5 minutes.
-                </div>
-              </div>
-            </div>   
-          }
-          {
-            !this.props.isFetching && !this.props.isLoadingDriver && this.props.trips.length > 0 &&
-            <div>
-              <Table trips={trips} />
-              {   
-                isExpandTrip &&
-                <PanelDetails 
-                  isExpandDriver={isExpandDriver} 
-                  expandedTrip={expandedTrip} 
-                  shrinkTrip={ShrinkTrip} 
-                  expandDriver={ExpandDriver} />
-              }
-              {   
-                isExpandDriver &&
-                <PanelDrivers 
-                  selectedTrips={this.state.selectedTrips} 
-                  isExpandDriverBulk={isExpandDriverBulk} 
-                  shrinkTrip={ShrinkTrip} 
-                  expandedTrip={expandedTrip} 
-                  assignTrip={AssignTrip} 
-                  bulkAssignTrip={BulkAssignTrip} 
-                  selectedDriver={selectedDriver} 
-                  setDriver={SetDriver} 
-                  drivers={drivers}
-                  userLogged={userLogged} />
-              }
-            </div>
-          }
+          </div>
+        }
+        {
+          !this.props.isFetching && !this.props.isLoadingDriver && this.props.trips.length > 0 &&
+          <div>
+            <Table trips={trips} />
+            {
+              isExpandTrip &&
+              <PanelDetails
+                isExpandDriver={isExpandDriver}
+                expandedTrip={expandedTrip}
+                shrinkTrip={ShrinkTrip}
+                expandDriver={ExpandDriver} />
+            }
+            {
+              isExpandDriver &&
+              <PanelDrivers
+                selectedTrips={this.state.selectedTrips}
+                isExpandDriverBulk={isExpandDriverBulk}
+                shrinkTrip={ShrinkTrip}
+                expandedTrip={expandedTrip}
+                assignTrip={AssignTrip}
+                bulkAssignTrip={BulkAssignTrip}
+                selectedDriver={selectedDriver}
+                setDriver={SetDriver}
+                drivers={drivers}
+                userLogged={userLogged} />
+            }
+          </div>
+        }
 
-          { this.state.isSuccessAssign &&
-            <ModalContainer>
-              <ModalDialog>
-                {
-                  errorIDs.length > 0 &&
-                  <div className={styles.modal}>
-                    <div className={styles.modalHeader}>
-                      <h2 className={styles.modalTitle}>Assign Report</h2>
-                      <div className={styles.successContent + ' ' + styles.ordersContentEmpty}>
-                        <div>
-                          Success: {successAssign}
-                        </div>
-                        <div>
-                          Error: {errorAssign}
-                        </div>
-                        <ErrorAssign errorIDs={errorIDs} />
+        {this.state.isSuccessAssign &&
+          <ModalContainer>
+            <ModalDialog>
+              {
+                errorIDs.length > 0 &&
+                <div className={styles.modal}>
+                  <div className={styles.modalHeader}>
+                    <h2 className={styles.modalTitle}>Assign Report</h2>
+                    <div className={styles.successContent + ' ' + styles.ordersContentEmpty}>
+                      <div>
+                        Success: {successAssign}
                       </div>
-                    </div>
-                    <div className={styles.modalFooter}>
-                      <button className={styles.endButton} onClick={this.props.CloseSuccessAssign}>
-                        <span className={styles.mediumText}>Got It</span>
-                      </button>
+                      <div>
+                        Error: {errorAssign}
+                      </div>
+                      <ErrorAssign errorIDs={errorIDs} />
                     </div>
                   </div>
-                }
-                { errorIDs.length === 0 &&
-                  <div className={styles.modal}>
-                    <div className={styles.modalHeader}>
-                      <h2 className={styles.modalTitle}>Success</h2>
-                      <div className={styles.successContent + ' ' + styles.ordersContentEmpty}>
-                        <img className={styles.successIcon} src={"/img/icon-success.png"} />
-                        <div className={styles.mediumText}>You have successfully assigned this trip</div>
-                      </div>
-                    </div>
-                    <div className={styles.modalFooter}>
-                      <button className={styles.endButton} onClick={this.props.CloseSuccessAssign}>
-                        <span className={styles.mediumText}>Got It</span>
-                      </button>
+                  <div className={styles.modalFooter}>
+                    <button className={styles.endButton} onClick={this.props.CloseSuccessAssign}>
+                      <span className={styles.mediumText}>Got It</span>
+                    </button>
+                  </div>
+                </div>
+              }
+              {errorIDs.length === 0 &&
+                <div className={styles.modal}>
+                  <div className={styles.modalHeader}>
+                    <h2 className={styles.modalTitle}>Success</h2>
+                    <div className={styles.successContent + ' ' + styles.ordersContentEmpty}>
+                      <img className={styles.successIcon} src={"/img/icon-success.png"} />
+                      <div className={styles.mediumText}>You have successfully assigned this trip</div>
                     </div>
                   </div>
-                }
-              </ModalDialog>
-            </ModalContainer>
-          }
+                  <div className={styles.modalFooter}>
+                    <button className={styles.endButton} onClick={this.props.CloseSuccessAssign}>
+                      <span className={styles.mediumText}>Got It</span>
+                    </button>
+                  </div>
+                </div>
+              }
+            </ModalDialog>
+          </ModalContainer>
+        }
       </Page>
     );
   }
 });
 
 function StoreToTripsPage(store) {
-  const {currentPage, limit, total, isFetching, filters, trips, errorIDs, successAssign, errorAssign, expandedTrip, isExpandTrip, isExpandDriver, isExpandDriverBulk, selectedDriver, isSuccessAssign} = store.app.myTrips;  
-  const userLogged = store.app.userLogged;  
+  const { currentPage, limit, total, isFetching, filters, trips, errorIDs, successAssign, errorAssign, expandedTrip, isExpandTrip, isExpandDriver, isExpandDriverBulk, selectedDriver, isSuccessAssign } = store.app.myTrips;
+  const userLogged = store.app.userLogged;
   const driversStore = store.app.driversStore;
   const driverList = driversStore.driverList;
   const isLoadingDriver = driverList.isLoading;
@@ -451,7 +452,7 @@ function StoreToTripsPage(store) {
     drivers: drivers,
     userLogged: userLogged,
     paginationState: {
-        currentPage, limit, total,
+      currentPage, limit, total,
     },
     expandedTrip,
     isFetching,

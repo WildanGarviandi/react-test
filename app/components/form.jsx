@@ -6,7 +6,7 @@ import classNaming from 'classnames';
 
 import styles from './form.scss';
 import Glyph from './Glyph';
-import { ButtonBase } from './button';
+import { ButtonBase } from './Button';
 import config from '../config/configValues.json';
 import { DropdownWithState2 as Dropdown2 } from '../views/base/dropdown';
 
@@ -722,14 +722,6 @@ const FilterTopMultiple = React.createClass({
     );
   },
 });
-
-function Filter({ value, options, handleSelect }) {
-  return (
-    <div className={styles.custFilterTop}>
-      <Dropdown2 val={value} options={options} handleSelect={handleSelect} custClass={styles.custDropdown} />
-    </div>
-  )
-}
 
 const FilterTop2 = React.createClass({
   render() {

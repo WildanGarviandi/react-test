@@ -14,8 +14,8 @@ import * as TripService from './tripService';
 import OrderStatusSelector from '../modules/orderStatus/selector';
 import { CheckboxHeader2 as CheckboxHeaderBase, CheckboxCell } from '../views/base/tableCell';
 import { FilterTop } from '../components/form';
-import stylesButton from '../components/button.scss';
-import { ButtonWithLoading } from '../components/button';
+import stylesButton from '../components/Button/styles.scss';
+import { ButtonWithLoading } from '../components/Button';
 import config from '../config/configValues.json';
 import * as Helper from '../helper/utility';
 
@@ -416,7 +416,8 @@ const TripRow = React.createClass({
                   className={styles.driverLoadImage}
                   alt="vehicle"
                   src={trip.Driver && trip.Driver.Vehicle &&
-                    trip.Driver.Vehicle.Name === config.vehicle[config.vehicleType.Motorcycle - 1].value ?
+                    trip.Driver.Vehicle.Name === config
+                      .vehicle[config.vehicleType.Motorcycle - 1].value ?
                     config.IMAGES.MOTORCYCLE : config.IMAGES.VAN}
                 />
               </div>
@@ -519,8 +520,8 @@ TripBody.propTypes = {
 /* eslint-enable */
 
 TripBody.propTypes = {
-  expand: () => {},
-  shrink: () => {},
+  expand: () => { },
+  shrink: () => { },
 };
 
 function TripBodyStore() {
