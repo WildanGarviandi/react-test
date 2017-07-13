@@ -1,3 +1,4 @@
+/* eslint no-underscore-dangle: ["error", { "allow": ["_milliseconds"] }] */
 import React from 'react';
 import { connect } from 'react-redux';
 import NumberFormat from 'react-number-format';
@@ -222,7 +223,9 @@ const OrderRow = React.createClass({
   render() {
     const { order, expandedOrder, profilePicture } = this.props;
     const { isHover } = this.state;
+    const deadline = moment(order.DueTime).format(config.DATE_FORMAT.DATE_MONTH_YEAR);
     let rowStyles = `${styles.tr} ${styles.card} ${isHover && ` ${styles.hovered}`}`;
+    const duration = moment.duration(moment(order.DueTime).diff(moment(new Date())));
     if (expandedOrder.UserOrderID === order.UserOrderID) {
       rowStyles = `${styles.tr} ${styles.card} ${styles.select}`;
     }
@@ -257,6 +260,13 @@ const OrderRow = React.createClass({
           <br />
           <div className={styles.cardValue}>
             <Deadline deadline={order.DueTime} />
+            <br />
+            <span
+              className={`${duration._milliseconds < 0 ? styles['text-red'] : styles['text-black']}
+              ${styles.deadlineDate}`}
+            >
+              {deadline}
+            </span>
           </div>
         </td>
         <td><div className={styles.cardSeparator} /></td>
