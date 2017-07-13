@@ -1,15 +1,16 @@
 import React from 'react';
-import { ModalContainer, ModalDialog } from 'react-modal-dialog';
 import { connect } from 'react-redux';
+import { ModalContainer, ModalDialog } from 'react-modal-dialog';
 
 import lodash from 'lodash';
 
-import { Page, Pagination, Glyph } from '../views/base';
+import { Page, Pagination } from '../views/base';
 import Table from './table';
 import TripParser from './parser';
 import * as TripsHistoryService from './service';
 import styles from './styles.scss';
 import tableStyle from '../views/base/table.scss';
+import Glyph from '../components/Glyph';
 import { ButtonBase } from '../components/Button';
 
 const LinkComponents = React.createClass({

@@ -331,10 +331,10 @@ InputFilter.propTypes = {
 /* eslint-enable */
 
 InputFilter.defaultProps = {
-  value: {},
+  value: '',
   onChange: () => { },
   onKeyDown: () => { },
-  placeholder: {},
+  placeholder: '',
 };
 
 const EDSFilter = ConnectBuilder('userOrderNumber', 'Search for EDS...')(InputFilter);

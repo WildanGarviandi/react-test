@@ -1,15 +1,15 @@
-import lodash from 'lodash';
 import React from 'react';
-import DateTime from 'react-datetime';
-import {connect} from 'react-redux';
-import moment from 'moment';
+import { connect } from 'react-redux';
+import { Link } from 'react-router';
+
+import * as _ from 'lodash';
+
 import * as Table from '../components/table';
 import styles from '../components/table.scss';
 import * as ContactService from './contactService';
 import OrderStatusSelector from '../modules/orderStatus/selector';
-import {Glyph} from '../views/base';
-import {Link} from 'react-router';
-import {CheckboxHeader as CheckboxHeaderBase, CheckboxCell} from '../views/base/tableCell';
+import Glyph from '../components/Glyph';
+import { CheckboxHeader as CheckboxHeaderBase, CheckboxCell } from '../views/base/tableCell';
 
 function StoreBuilder(keyword) {
     return (store) => {
@@ -141,7 +141,7 @@ const CheckboxRow = connect(undefined, CheckboxDispatch)(CheckboxCell);
 
 function ContactParser(contact) {
 
-    return lodash.assign({}, contact, {
+    return Object.assign({}, contact, {
         IsChecked: ('IsChecked' in contact) ? contact.IsChecked : false,
         Name: contact.FirstName + ' ' + contact.LastName,
         Mobile: contact.Phone,
@@ -194,7 +194,7 @@ function ContactRow({contact}) {
 
 function ContactTable({contacts}) {
   const headers = <ContactHeader />;
-  const body = lodash.map(contacts, (contact) => {
+  const body = _.map(contacts, (contact) => {
     return <ContactRow key={contact.ContactID} contact={ContactParser(contact)} />
   });
 

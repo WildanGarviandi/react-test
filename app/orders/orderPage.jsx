@@ -4,9 +4,9 @@ import NumberFormat from 'react-number-format';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
 import { push } from 'react-router-redux';
 
-import lodash from 'lodash';
+import * as _ from 'lodash';
 
-import { Page, Glyph } from '../views/base';
+import { Page } from '../views/base';
 import { Pagination2 } from '../components/pagination2';
 import { ButtonWithLoading, ButtonBase } from '../components/Button';
 import Table, { Filter, Deadline } from './orderTable';
@@ -15,6 +15,7 @@ import driversFetch from '../modules/drivers/actions/driversFetch';
 import styles from './styles.scss';
 import stylesButton from '../components/Button/styles.scss';
 import * as UtilHelper from '../helper/utility';
+import Glyph from '../components/Glyph';
 
 const PanelDetails = React.createClass({
   render() {
@@ -165,7 +166,7 @@ const PanelDrivers = React.createClass({
   },
   searchDriver(e) {
     this.setState({ searchValue: e.target.value });
-    let driverList = lodash.filter(this.props.drivers, function (driver) {
+    let driverList = _.filter(this.props.drivers, function (driver) {
       let driverName = driver.FirstName + ' ' + driver.LastName;
       let searchValue = e.target.value;
       return driverName.toLowerCase().includes(searchValue);
@@ -272,7 +273,7 @@ const OrderPage = React.createClass({
     this.setState({ driverID: e.key });
   },
   expandBulkAssign() {
-    let selectedOrders = lodash.filter(this.props.orders, ['IsChecked', true]);
+    let selectedOrders = _.filter(this.props.orders, ['IsChecked', true]);
     if (selectedOrders.length < 1) {
       alert('No order selected');
       return;
@@ -337,7 +338,7 @@ const OrderPage = React.createClass({
           </div>
         }
         {
-          !this.props.isFetching && this.props.orders.length === 0 && !lodash.isEmpty(this.props.filters) &&
+          !this.props.isFetching && this.props.orders.length === 0 && !_.isEmpty(this.props.filters) &&
           <div>
             <div style={{ clear: 'both' }} />
             <div className={styles.noOrderDesc}>
@@ -352,7 +353,7 @@ const OrderPage = React.createClass({
           </div>
         }
         {
-          !this.props.isFetching && this.props.orders.length === 0 && lodash.isEmpty(this.props.filters) &&
+          !this.props.isFetching && this.props.orders.length === 0 && _.isEmpty(this.props.filters) &&
           <div>
             <div style={{ clear: 'both' }} />
             <div className={styles.noOrderDesc}>

@@ -7,7 +7,7 @@ import classNaming from 'classnames';
 
 import { ContainerDetailsActions, StatusList } from '../../modules';
 import districtsFetch from '../../modules/districts/actions/districtsFetch';
-import { ButtonBase, ButtonWithLoading, Input, Modal, Page, Glyph } from '../base';
+import { ButtonBase, ButtonWithLoading, Input, Modal, Page } from '../base';
 import DistrictAndDriver from '../container/districtAndDriver';
 import { OrderTable } from '../container/table';
 import * as TripDetails from '../../modules/trips/actions/details';
@@ -19,6 +19,7 @@ import RemarksSetter from '../container/remarksSetter';
 import styles from './styles.scss';
 import { CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered } from '../../modules/trips';
 import { formatDate } from '../../helper/time';
+import Glyph from '../../components/Glyph';
 
 const columns = ['id', 'id2', 'dropoff', 'time', 'CODValue', 'CODStatus', 'orderStatus', 'routeStatus', 'action'];
 const nonFillColumn = columns.slice(0, columns.length - 1);
