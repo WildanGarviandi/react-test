@@ -67,13 +67,6 @@ const TripOrders = React.createClass({
 const PanelDetails = React.createClass({
   render() {
     const { expandedTrip, shrinkTrip, isExpandDriver } = this.props;
-    const reassignTripButton = {
-      textBase: 'Reassign Trips',
-      onClick: this.props.expandDriver,
-      styles: {
-        base: stylesButton.greenButton2,
-      }
-    };
     const tripStatusStyles = styles['tripStatus' + expandedTrip.OrderStatus.OrderStatusID];
     return (
       <div>
@@ -176,7 +169,7 @@ const PanelDetails = React.createClass({
         }
       </div>
     );
-  }
+  },
 });
 
 const Drivers = React.createClass({
