@@ -12,7 +12,8 @@ import * as TripService from './tripService';
 import OrderStatusSelector from '../modules/orderStatus/selector';
 import { CheckboxHeader2 as CheckboxHeaderBase, CheckboxCell } from '../views/base/tableCell';
 import { FilterTop } from '../components/form';
-import stylesButton, { ButtonWithLoading } from '../components/Button';
+import { ButtonWithLoading } from '../components/Button';
+import stylesButton from '../components/Button/styles.scss';
 import config from '../config/configValues.json';
 import * as Helper from '../helper/utility';
 
