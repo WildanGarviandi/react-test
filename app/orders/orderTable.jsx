@@ -1,27 +1,23 @@
-import lodash from 'lodash';
 import React from 'react';
-import DateTime from 'react-datetime';
-import {connect} from 'react-redux';
+import NumberFormat from 'react-number-format';
+import { connect } from 'react-redux';
+import Countdown from 'react-cntdwn';
+
+import lodash from 'lodash';
+
 import moment from 'moment';
-import * as Table from '../components/table';
 import styles from './table.scss';
 import * as OrderService from './orderService';
 import OrderStatusSelector from '../modules/orderStatus/selector';
-import {Glyph} from '../views/base';
-import {formatDate} from '../helper/time';
-import {ButtonBase} from '../views/base';
-import {CheckboxHeader2 as CheckboxHeaderBase, CheckboxCell} from '../views/base/tableCell';
-import {FilterTop, FilterTop2, FilterText} from '../components/form';
-import NumberFormat from 'react-number-format';
-import stylesButton from '../components/button.scss';
-import {ButtonWithLoading} from '../components/button';
-import ReactTooltip from 'react-tooltip';
+import { CheckboxHeader2 as CheckboxHeaderBase, CheckboxCell } from '../views/base/tableCell';
+import { FilterTop } from '../components/form';
+import stylesButton from '../components/Button/styles.scss';
+import { ButtonWithLoading } from '../components/Button';
 import config from '../config/configValues.json';
-import Countdown from 'react-cntdwn';
 
 function StoreBuilder(keyword) {
   return (store) => {
-    const {filters} = store.app.myOrders;
+    const { filters } = store.app.myOrders;
 
     return {
       value: filters[keyword],
@@ -32,12 +28,12 @@ function StoreBuilder(keyword) {
 function DispatchBuilder(keyword) {
   return (dispatch) => {
     function OnChange(e) {
-      const newFilters = {[keyword]: e.target.value};
+      const newFilters = { [keyword]: e.target.value };
       dispatch(OrderService.UpdateFilters(newFilters));
     }
 
     function OnKeyDown(e) {
-      if(e.keyCode !== 13) {
+      if (e.keyCode !== 13) {
         return;
       }
 
@@ -54,7 +50,7 @@ function DispatchBuilder(keyword) {
 
 function DispatchDateTime(dispatch) {
   return {
-    onChange: function(date) {
+    onChange: function (date) {
       dispatch(OrderService.SetCreatedDate(date));
     }
   }
@@ -126,7 +122,7 @@ function CheckboxHeaderDispatch(dispatch) {
 
 function DateRangeBuilder(keyword) {
   return (store) => {
-    const {filters} = store.app.myOrders;
+    const { filters } = store.app.myOrders;
     return {
       startDate: filters['start' + keyword],
       endDate: filters['end' + keyword],
@@ -177,7 +173,7 @@ export const Filter = React.createClass({
         <OrderTypeFilter />
         {
           <div className={styles.reassignBulkButton}>
-              <ButtonWithLoading {...reassignOrderButton} />
+            <ButtonWithLoading {...reassignOrderButton} />
           </div>
         }
       </div>
@@ -200,26 +196,26 @@ export const Deadline = React.createClass({
     };
     let Duration = moment.duration(moment(this.props.deadline).diff(moment(new Date())));
     if (!this.props.deadline) {
-      return <span style={{color: 'black'}}>
-          -
+      return <span style={{ color: 'black' }}>
+        -
       </span>
     } else if (Duration._milliseconds > config.deadline.day) {
-      return <span style={{color: 'black'}}>
-          {Duration.humanize()} remaining
+      return <span style={{ color: 'black' }}>
+        {Duration.humanize()} remaining
       </span>
     } else if (Duration._milliseconds < 0) {
-      return <span style={{color: 'red'}}>
-          Passed
+      return <span style={{ color: 'red' }}>
+        Passed
       </span>
     } else {
       let normalDeadline = (Duration._milliseconds > config.deadline['3hours']) && (Duration._milliseconds < config.deadline.day);
-      return <span style={{color: normalDeadline ? 'black' : 'red'}}>
+      return <span style={{ color: normalDeadline ? 'black' : 'red' }}>
         <Countdown targetDate={new Date(this.props.deadline)}
-         startDelay={500}
-         interval={1000}
-         format={format}
-         timeSeparator={':'}
-         leadingZero={true} />
+          startDelay={500}
+          interval={1000}
+          format={format}
+          timeSeparator={':'}
+          leadingZero={true} />
       </span>
     }
   }
@@ -227,11 +223,11 @@ export const Deadline = React.createClass({
 
 const OrderRow = React.createClass({
   getInitialState() {
-    return ({isHover: false, isEdit: false});
+    return ({ isHover: false, isEdit: false });
   },
   expandOrder(order) {
     this.props.shrink();
-    setTimeout(function() {
+    setTimeout(function () {
       if (!this.props.expandedOrder.UserOrderID) {
         this.props.expand(order);
       } else {
@@ -244,18 +240,18 @@ const OrderRow = React.createClass({
     }.bind(this), 100);
   },
   onMouseOver() {
-    this.setState({isHover: true});
+    this.setState({ isHover: true });
   },
   onMouseOut() {
-    this.setState({isHover: false});
+    this.setState({ isHover: false });
   },
   render() {
     const { order, expandedOrder, profilePicture } = this.props;
     const { isEdit, isHover } = this.state;
     const parsedOrder = OrderParser(order);
-    let rowStyles = styles.tr + ' ' + styles.card  + (this.state.isHover && (' ' + styles.hovered));
+    let rowStyles = styles.tr + ' ' + styles.card + (this.state.isHover && (' ' + styles.hovered));
     if (expandedOrder.UserOrderID === order.UserOrderID) {
-      rowStyles = styles.tr + ' ' + styles.card +  ' ' + styles.select;
+      rowStyles = styles.tr + ' ' + styles.card + ' ' + styles.select;
     }
     const DEFAULT_IMAGE = "/img/default-logo.png";
     const ETOBEE_IMAGE = "/img/etobee-logo.png";
@@ -264,11 +260,11 @@ const OrderRow = React.createClass({
       <tr className={rowStyles}
         onMouseEnter={this.onMouseOver} onMouseLeave={this.onMouseOut}>
         <td><CheckboxRow isChecked={order.IsChecked} orderID={order.UserOrderID} /></td>
-        <td onClick={()=>{this.expandOrder(order)}}><div className={styles.cardSeparator} /></td>
-        <td onClick={()=>{this.expandOrder(order)}}><img className={styles.orderLoadImage} src={order.IsTrunkeyOrder ? ETOBEE_IMAGE : FLEET_IMAGE} onError={(e)=>{e.target.src=DEFAULT_IMAGE}} /></td>
-        <td onClick={()=>{this.expandOrder(order)}} className={styles.orderIDColumn}>{`${order.UserOrderNumber}`}</td>
-        <td onClick={()=>{this.expandOrder(order)}}><div className={styles.cardSeparator} /></td>
-        <td onClick={()=>{this.expandOrder(order)}}>
+        <td onClick={() => { this.expandOrder(order) }}><div className={styles.cardSeparator} /></td>
+        <td onClick={() => { this.expandOrder(order) }}><img className={styles.orderLoadImage} src={order.IsTrunkeyOrder ? ETOBEE_IMAGE : FLEET_IMAGE} onError={(e) => { e.target.src = DEFAULT_IMAGE }} /></td>
+        <td onClick={() => { this.expandOrder(order) }} className={styles.orderIDColumn}>{`${order.UserOrderNumber}`}</td>
+        <td onClick={() => { this.expandOrder(order) }}><div className={styles.cardSeparator} /></td>
+        <td onClick={() => { this.expandOrder(order) }}>
           <div className={styles.cardLabel}>
             Deadline
           </div>
@@ -277,8 +273,8 @@ const OrderRow = React.createClass({
             <Deadline deadline={order.DueTime} />
           </div>
         </td>
-        <td onClick={()=>{this.expandOrder(order)}}><div className={styles.cardSeparator} /></td>
-        <td onClick={()=>{this.expandOrder(order)}}>
+        <td onClick={() => { this.expandOrder(order) }}><div className={styles.cardSeparator} /></td>
+        <td onClick={() => { this.expandOrder(order) }}>
           <div className={styles.cardLabel}>
             Origin
           </div>
@@ -287,8 +283,8 @@ const OrderRow = React.createClass({
             {order.PickupAddress && order.PickupAddress.City}
           </div>
         </td>
-        <td onClick={()=>{this.expandOrder(order)}}><div className={styles.cardSeparator} /></td>
-        <td onClick={()=>{this.expandOrder(order)}}>
+        <td onClick={() => { this.expandOrder(order) }}><div className={styles.cardSeparator} /></td>
+        <td onClick={() => { this.expandOrder(order) }}>
           <div className={styles.cardLabel}>
             Destination
           </div>
@@ -297,8 +293,8 @@ const OrderRow = React.createClass({
             {order.DropoffAddress && order.DropoffAddress.City}
           </div>
         </td>
-        <td onClick={()=>{this.expandOrder(order)}}><div className={styles.cardSeparator} /></td>
-        <td onClick={()=>{this.expandOrder(order)}}>
+        <td onClick={() => { this.expandOrder(order) }}><div className={styles.cardSeparator} /></td>
+        <td onClick={() => { this.expandOrder(order) }}>
           <div className={styles.cardLabel}>
             Weight
           </div>
@@ -307,8 +303,8 @@ const OrderRow = React.createClass({
             {parseFloat(order.PackageWeight).toFixed(2)} kg
           </div>
         </td>
-        <td onClick={()=>{this.expandOrder(order)}}><div className={styles.cardSeparator} /></td>
-        <td onClick={()=>{this.expandOrder(order)}}>
+        <td onClick={() => { this.expandOrder(order) }}><div className={styles.cardSeparator} /></td>
+        <td onClick={() => { this.expandOrder(order) }}>
           <div className={styles.cardLabel}>
             COD Type
           </div>
@@ -317,8 +313,8 @@ const OrderRow = React.createClass({
             {order.IsCOD ? 'COD' : 'Non-COD'}
           </div>
         </td>
-        <td onClick={()=>{this.expandOrder(order)}}><div className={styles.cardSeparator} /></td>
-        <td onClick={()=>{this.expandOrder(order)}}>
+        <td onClick={() => { this.expandOrder(order) }}><div className={styles.cardSeparator} /></td>
+        <td onClick={() => { this.expandOrder(order) }}>
           <div className={styles.cardLabel}>
             Value
           </div>
@@ -376,7 +372,7 @@ function OrderBodyDispatch() {
 
 const OrderBodyContainer = connect(OrderBodyStore, OrderBodyDispatch)(OrderBody);
 
-function OrderTable({orders}) {
+function OrderTable({ orders }) {
 
   return (
     <table className={styles.table}>

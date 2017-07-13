@@ -6,7 +6,7 @@ import classNaming from 'classnames';
 
 import styles from './form.scss';
 import Glyph from './Glyph';
-import { ButtonBase } from './button';
+import { ButtonBase } from './Button';
 import config from '../config/configValues.json';
 import { DropdownWithState2 as Dropdown2 } from '../views/base/dropdown';
 

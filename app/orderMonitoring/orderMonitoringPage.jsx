@@ -9,7 +9,8 @@ import PropTypes from 'prop-types';
 import styles from './styles.scss';
 import { Page } from '../views/base';
 import OrderTable, { Filter, Deadline } from './orderTable';
-import DragDropImageUploaderContainer from '../containers/DragDropImageUploaderContainer';
+import DragDropImageUploaderContainer from
+  '../containers/DragDropImageUploaderContainer/DragDropImageUploaderContainer';
 import { reasonReturn } from '../config/attempt.json';
 import * as orderService from './orderMonitoringService';
 import config from '../config/configValues.json';

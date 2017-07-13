@@ -1,8 +1,8 @@
 import React from 'react';
-import {ButtonWithLoading} from './button';
+import { ButtonWithLoading } from './Button';
 import styles from './page.scss';
 
-const PageTitle = ({additional, title}) => {
+const PageTitle = ({ additional, title }) => {
   return (
     <span>
       <h2 className={styles.contentTitle}>{title}</h2>
@@ -11,8 +11,8 @@ const PageTitle = ({additional, title}) => {
   );
 }
 
-const ButtonAtRightTop = ({onClick, val}) => {
-  return (<ButtonWithLoading styles={{base: styles.mainBtn}} onClick={onClick}>{val}</ButtonWithLoading>);
+const ButtonAtRightTop = ({ onClick, val }) => {
+  return (<ButtonWithLoading styles={{ base: styles.mainBtn }} onClick={onClick}>{val}</ButtonWithLoading>);
 }
 
 const MoveButtonToTopRight = (buttons) => {
@@ -20,7 +20,7 @@ const MoveButtonToTopRight = (buttons) => {
     const baseStyle = button.props.styles ?
       styles.topRightBtn + ' ' + button.props.styles.base :
       styles.topRightBtn;
-    return React.cloneElement(button, {key: button.props.textBase, styles: {base: baseStyle}});
+    return React.cloneElement(button, { key: button.props.textBase, styles: { base: baseStyle } });
   })
 }
 
@@ -30,26 +30,26 @@ const ClassifyChildren = (children) => {
   let backLink = [];
 
   React.Children.forEach(children, (child) => {
-    if(!child) return;
-    if(child.type.displayName == 'ButtonWithLoading') {
+    if (!child) return;
+    if (child.type.displayName == 'ButtonWithLoading') {
       buttons.push(child);
-    } else if(child.type == 'a') {
-      backLink.push(React.cloneElement(child, {key: backLink.length, style: {marginBottom: 10, display: "block"}}));
+    } else if (child.type == 'a') {
+      backLink.push(React.cloneElement(child, { key: backLink.length, style: { marginBottom: 10, display: "block" } }));
     } else {
       body.push(child);
     }
   });
 
-  return {body, buttons: MoveButtonToTopRight(buttons), backLink};
+  return { body, buttons: MoveButtonToTopRight(buttons), backLink };
 }
 
 const Page = React.createClass({
   render() {
-    const {title, children, additional} = this.props;
-    const {backLink, buttons, body} = ClassifyChildren(children);
+    const { title, children, additional } = this.props;
+    const { backLink, buttons, body } = ClassifyChildren(children);
 
     return (
-      <div style={{position: 'relative'}}>
+      <div style={{ position: 'relative' }}>
         {backLink}
         {buttons}
         <PageTitle title={title} additional={additional} />
@@ -59,4 +59,4 @@ const Page = React.createClass({
   }
 });
 
-export {Page, PageTitle, ButtonAtRightTop};
+export { Page, PageTitle, ButtonAtRightTop };
