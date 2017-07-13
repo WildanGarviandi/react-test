@@ -829,7 +829,7 @@ class InputForm extends Component {
         </div>
         <div className={styles.rowDetailsValue}>
           <span>
-            <InputWithDefault type={type || 'text'} className={styles.inputDetails} currentText={value} onChange={onChange} />
+            <InputWithDefault type={type || 'text'} className={styles.inputDetails} currentText={value} onChange={onChange()} />
           </span>
         </div>
       </div>
