@@ -246,6 +246,7 @@ table th:last-child {
   margin-top: 5px;
   color: #000;
   opacity: 0.8;
+  text-align: left;
 }
 
 .cardValueStatus2 {
@@ -300,4 +301,16 @@ table th:last-child {
 .driverLoadImage {
   height: 40px;
   margin-right: 10px;
+}
+
+.text-red {
+  color: red;
+}
+
+.text-black {
+  color: black;
+}
+
+.cardValue span {
+  float: left;
 }

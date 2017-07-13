@@ -1,141 +1,136 @@
-import lodash from 'lodash';
-import React from 'react';
-import DateTime from 'react-datetime';
-import {connect} from 'react-redux';
+/* eslint no-underscore-dangle: ["error", { "allow": ["_milliseconds"] }] */
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import NumberFormat from 'react-number-format';
+import Countdown from 'react-cntdwn';
+
 import moment from 'moment';
+import * as _ from 'lodash';
+import PropTypes from 'prop-types';
+
 import * as Table from '../components/table';
 import styles from './table.scss';
 import * as TripService from './tripService';
 import OrderStatusSelector from '../modules/orderStatus/selector';
-import {Glyph} from '../views/base';
-import {formatDate} from '../helper/time';
-import {ButtonBase} from '../views/base';
-import {CheckboxHeader2 as CheckboxHeaderBase, CheckboxCell} from '../views/base/tableCell';
-import {FilterTop, FilterTop2, FilterText} from '../components/form';
-import NumberFormat from 'react-number-format';
+import { CheckboxHeader2 as CheckboxHeaderBase, CheckboxCell } from '../views/base/tableCell';
+import { FilterTop } from '../components/form';
 import stylesButton from '../components/button.scss';
-import {ButtonWithLoading} from '../components/button';
+import { ButtonWithLoading } from '../components/button';
 import config from '../config/configValues.json';
-import Countdown from 'react-cntdwn';
 import * as Helper from '../helper/utility';
 
 function StoreBuilder(keyword) {
   return (store) => {
-    const {filters} = store.app.myOngoingTrips;
+    const { filters } = store.app.myOngoingTrips;
 
     return {
       value: filters[keyword],
-    }
-  }    
+    };
+  };
 }
 
 function DispatchBuilder(keyword) {
   return (dispatch) => {
     function OnChange(e) {
-      const newFilters = {[keyword]: e.target.value};
+      const newFilters = { [keyword]: e.target.value };
       dispatch(TripService.UpdateFilters(newFilters));
     }
 
     function OnKeyDown(e) {
-      if(e.keyCode !== 13) {
+      if (e.keyCode !== config.KEY_ACTION.ENTER) {
         return;
       }
 
-      dispatch(TripService.StoreSetter("currentPage", 1));
+      dispatch(TripService.StoreSetter('currentPage', 1));
       dispatch(TripService.FetchList());
     }
 
     return {
-      onChange: OnChange, 
+      onChange: OnChange,
       onKeyDown: OnKeyDown,
-    }
-  }
-}
-
-function DispatchDateTime(dispatch) {
-  return {
-    onChange: function(date) {
-      dispatch(TripService.SetCreatedDate(date));
-    }
-  }
+    };
+  };
 }
 
 function DropdownStoreBuilder(name) {
   return (store) => {
-
     const sortOptions = [{
-      key: 1, value: 'Deadline (newest)', 
+      key: 1, value: 'Deadline (newest)',
     }, {
       key: 2, value: 'Deadline (oldest)',
     }];
 
     const options = {
-      "statusName": OrderStatusSelector.GetList(store),
-      "sortOptions": sortOptions
-    }
+      statusName: OrderStatusSelector.GetList(store),
+      sortOptions,
+    };
 
     return {
       value: store.app.myOngoingTrips[name],
-      options: options[name]
-    }
-  }
+      options: options[name],
+    };
+  };
 }
 
 function DropdownDispatchBuilder(filterKeyword) {
   return (dispatch) => {
-    return {
+    const dispatchFunc = {
       handleSelect: (selectedOption) => {
         const SetFn = TripService.SetDropDownFilter(filterKeyword);
         dispatch(SetFn(selectedOption));
-      }
-    }
-  }
+      },
+    };
+
+    return dispatchFunc;
+  };
 }
 
 function CheckboxDispatch(dispatch, props) {
   return {
     onToggle: () => {
       dispatch(TripService.ToggleChecked(props.tripID));
-    }
-  }
+    },
+  };
 }
- 
+
 function CheckboxHeaderStore(store) {
   return {
     isChecked: store.app.myOngoingTrips.selectedAll,
-  }
+  };
 }
- 
+
 function CheckboxHeaderDispatch(dispatch) {
   return {
     onToggle: () => {
       dispatch(TripService.ToggleCheckedAll());
-    }
-  }
+    },
+  };
 }
 
 function DateRangeBuilder(keyword) {
   return (store) => {
-    const {filters} = store.app.myOngoingTrips;
+    const { filters } = store.app.myOngoingTrips;
     return {
-      startDate: filters['start' + keyword],
-      endDate: filters['end' + keyword],
-    }
-  }
+      startDate: filters[`start${keyword}`],
+      endDate: filters[`end${keyword}`],
+    };
+  };
 }
- 
+
 function DateRangeDispatch(keyword) {
   return (dispatch) => {
-    return {
+    const dispatchFunc = {
       onChange: (event, picker) => {
         const newFilters = {
-          ['start' + keyword]: picker.startDate.toISOString(),
-          ['end' + keyword]: picker.endDate.toISOString()
-        }
-        dispatch(TripService.UpdateAndFetch(newFilters))
-      }
-    }
-  }
+          [`start${keyword}`]: picker.startDate.toISOString(),
+          [`end${keyword}`]: picker.endDate.toISOString(),
+        };
+        dispatch(TripService.UpdateAndFetch(newFilters));
+      },
+    };
+
+    return dispatchFunc;
+  };
 }
 
 function ConnectBuilder(keyword) {
@@ -165,7 +160,7 @@ export const Filter = React.createClass({
       onClick: this.props.expandDriver,
       styles: {
         base: stylesButton.greenButton3,
-      }
+      },
     };
     return (
       <div>
@@ -178,8 +173,8 @@ export const Filter = React.createClass({
         }
       </div>
     );
-  }
-})
+  },
+});
 
 function TripHeader() {
   return (
@@ -192,19 +187,19 @@ function TripHeader() {
       <Table.TextHeader text="Dropoff" />
       <Table.TextHeader text="Pickup Time" />
       <Table.TextHeader text="Driver" />
-      <Table.TextHeader text="Number of Orders" style={{whiteSpace:'nowrap'}} />
+      <Table.TextHeader text="Number of Orders" style={{ whiteSpace: 'nowrap' }} />
     </tr>
   );
 }
 
 function GetWeightTrip(orders) {
-  return `${lodash.sumBy(orders, 'PackageWeight')}`;
+  return `${_.sumBy(orders, 'PackageWeight')}`;
 }
 
 function TripParser(trip) {
   function getFullName(user) {
     if (!user) {
-      return "";
+      return '';
     }
 
     return `${user.FirstName} ${user.LastName}`;
@@ -214,51 +209,53 @@ function TripParser(trip) {
     return route && route.UserOrder && route.UserOrder.User && getFullName(route.UserOrder.User);
   }
 
-  function getDriverName(trip) {
-    return trip.Driver && getFullName(trip.Driver);
+  function getDriverName(tripParam) {
+    return tripParam.Driver && getFullName(tripParam.Driver);
   }
 
   function getDropoffCity(route) {
-    return route && route.UserOrder && route.UserOrder.DropoffAddress && route.UserOrder.DropoffAddress.District
-      && route.UserOrder.DropoffAddress.District.DistrictMaster && route.UserOrder.DropoffAddress.District.DistrictMaster.Name;        
+    return route && route.UserOrder && route.UserOrder.DropoffAddress
+      && route.UserOrder.DropoffAddress.District
+      && route.UserOrder.DropoffAddress.District.DistrictMaster
+      && route.UserOrder.DropoffAddress.District.DistrictMaster.Name;
   }
 
-  const merchantNames = lodash
+  const merchantNames = _
     .chain(trip.UserOrderRoutes)
-    .map((route) => (getMerchantName(route)))
+    .map(route => (getMerchantName(route)))
     .uniq()
     .value();
 
-  const merchantNamesAll = lodash
+  const merchantNamesAll = _
     .chain(trip.UserOrderRoutes)
-    .map((route) => (getMerchantName(route)))
+    .map(route => (getMerchantName(route)))
     .uniq()
     .value()
     .join(', ');
 
-  const uniqueDropoffNames = lodash
+  const uniqueDropoffNames = _
     .chain(trip.UserOrderRoutes)
-    .map((route) => (getDropoffCity(route)))
+    .map(route => (getDropoffCity(route)))
     .compact()
     .uniq()
     .value();
 
-  const uniqueDropoffNamesAll = lodash
+  const uniqueDropoffNamesAll = _
     .chain(trip.UserOrderRoutes)
-    .map((route) => (getDropoffCity(route)))
+    .map(route => (getDropoffCity(route)))
     .compact()
     .uniq()
     .value()
     .join(', ');
 
-  function getMerchantDetails(merchantNames) {
-    if (merchantNames.length === 0 || merchantNames.length === 1) {
+  function getMerchantDetails(merchantNamesParam) {
+    if (merchantNamesParam.length === 0 || merchantNamesParam.length === 1) {
       return '';
-    } else if (merchantNames.length === 2) {
+    } else if (merchantNamesParam.length === 2) {
       return ' +1 other';
-    } else {
-      return ' +' + (merchantNames.length - 1) + ' others';
     }
+
+    return ` +${merchantNamesParam.length - 1} others`;
   }
 
   function getDropoffDetails(dropoffNames) {
@@ -266,24 +263,26 @@ function TripParser(trip) {
       return '';
     } else if (dropoffNames.length === 2) {
       return ' +1 other';
-    } else {
-      return ' +' + (dropoffNames.length - 1) + ' others';
     }
+
+    return ` +${dropoffNames.length - 1} others`;
   }
 
-  const routes = lodash.map(trip.UserOrderRoutes, (route) => {
-    return route;
+  const routes = _.map(trip.UserOrderRoutes, (route) => {
+    const resultRoute = route;
+    return resultRoute;
   });
 
-  const orders = lodash.map(trip.UserOrderRoutes, (route) => {
-    return route.UserOrder;
+  const orders = _.map(trip.UserOrderRoutes, (route) => {
+    const userOrder = route.UserOrder;
+    return userOrder;
   });
 
   const Weight = GetWeightTrip(orders);
-  
-  const CODOrders = _.filter(orders, (order) => order.IsCOD === true);
 
-  return lodash.assign({}, trip, {
+  const CODOrders = _.filter(orders, ['IsCOD']);
+
+  return _.assign({}, trip, {
     TripDriver: getDriverName(trip),
     TripMerchant: merchantNames,
     TripMerchantsAll: merchantNamesAll,
@@ -294,13 +293,15 @@ function TripParser(trip) {
     IsChecked: ('IsChecked' in trip) ? trip.IsChecked : false,
     Weight: parseFloat(Weight).toFixed(2),
     TotalValue: _.reduce(orders, (total, order) => {
-      return total + order.TotalValue;
+      const totalValue = total + order.TotalValue;
+      return totalValue;
     }, 0),
     CODOrders: CODOrders.length,
     CODTotalValue: _.reduce(CODOrders, (total, order) => {
-      return total + order.TotalValue;
-    }, 0)
-  })
+      const codTotalValue = total + order.TotalValue;
+      return codTotalValue;
+    }, 0),
+  });
 }
 
 function TripFilter() {
@@ -316,96 +317,108 @@ function TripFilter() {
       <DriverFilter />
       <OrderFilter />
     </tr>
-  )
+  );
 }
 
-export const Deadline = React.createClass({
-  render: function() {
-    let format = {
-      hour: 'hh',
-      minute: 'mm',
-      second: 'ss'
-    };
-    let Duration = moment.duration(moment(this.props.deadline).diff(moment(new Date())));
-    if (!this.props.deadline) {            
-      return <span style={{color: 'black'}}>
-          -
-      </span>
-    } else if (Duration._milliseconds > config.deadline.day) {            
-      return <span style={{color: 'black'}}>
-          {Duration.humanize()} remaining
-      </span>
-    } else if (Duration._milliseconds < 0) {
-      return <span style={{color: 'red'}}>
-          Passed
-      </span>
-    } else {
-      let normalDeadline = (Duration._milliseconds > config.deadline['3hours']) && (Duration._milliseconds < config.deadline.day);
-      return <span style={{color: normalDeadline ? 'black' : 'red'}}>
-          <Countdown targetDate={new Date(this.props.deadline)}
-           startDelay={500}
-           interval={1000}
-           format={format}
-           timeSeparator={':'}
-           leadingZero={true} />
-      </span>
-    }
+export function Deadline({ deadline }) {
+  const format = {
+    hour: 'hh',
+    minute: 'mm',
+    second: 'ss',
+  };
+  const duration = moment.duration(moment(deadline).diff(moment(new Date())));
+
+  if (!deadline) {
+    return <span className={styles['text-black']}>-</span>;
+  } else if (duration._milliseconds > config.deadline.day) {
+    return <span className={styles['text-black']}>{duration.humanize()} remaining</span>;
+  } else if (duration._milliseconds < 0) {
+    return <span className={styles['text-red']}>Passed</span>;
   }
-});
+
+  const normalDeadline = (duration._milliseconds > config.deadline['3hours']) && (duration._milliseconds < config.deadline.day);
+  return (
+    <span className={normalDeadline ? styles['float-black'] : styles['float-red']}>
+      <Countdown
+        targetDate={new Date(deadline)}
+        startDelay={500}
+        interval={1000}
+        format={format}
+        timeSeparator={':'}
+        leadingZero
+      />
+    </span>
+  );
+}
+
+/* eslint-disable */
+Deadline.propTypes = {
+  deadline: PropTypes.any.isRequired,
+};
+/* eslint-enable */
 
 const TripRow = React.createClass({
   getInitialState() {
-    return ({isHover: false, isEdit: false});
+    return ({ isHover: false, isEdit: false });
   },
   expandTrip(trip) {
     this.props.shrink();
-    setTimeout(function() {
+    setTimeout(() => {
       if (!this.props.expandedTrip.TripID) {
         this.props.expand(trip);
       } else {
         if (this.props.expandedTrip.TripID !== trip.TripID) {
           this.props.expand(trip);
-        } else {
-          this.props.shrink();
         }
+        this.props.shrink();
       }
-    }.bind(this), 100);
+    }, 100);
   },
   onMouseOver() {
-    this.setState({isHover: true});
+    this.setState({ isHover: true });
   },
   onMouseOut() {
-    this.setState({isHover: false});
+    this.setState({ isHover: false });
   },
   render() {
     const { trip, expandedTrip } = this.props;
-    const { isEdit, isHover } = this.state;
     const parsedTrip = TripParser(trip);
-    const cardValueStatus = styles['cardValueStatus' + trip.OrderStatus.OrderStatusID];
-    let rowStyles = styles.tr + ' ' + styles.card  + (this.state.isHover && (' ' + styles.hovered));
+    const deadline = moment(trip.Deadline).format(config.DATE_FORMAT.DATE_MONTH_YEAR);
+    const cardValueStatus = styles[`cardValueStatus${trip.OrderStatus.OrderStatusID}`];
+    const duration = moment.duration(moment(trip.Deadline).diff(moment(new Date())));
+    let rowStyles = `${styles.tr} ${styles.card} ${this.state.isHover && styles.hovered}`;
     if (expandedTrip.TripID === trip.TripID) {
-      rowStyles = styles.tr + ' ' + styles.card +  ' ' + styles.select;
+      rowStyles = `${styles.tr} ${styles.card} ${styles.select}`;
     }
     return (
-      <tr className={rowStyles} onMouseEnter={this.onMouseOver} onMouseLeave={this.onMouseOut}>
+      <tr
+        className={rowStyles}
+        onMouseEnter={this.onMouseOver}
+        onMouseLeave={this.onMouseOut}
+        onClick={() => this.expandTrip(trip)}
+      >
         <td><CheckboxRow isChecked={trip.IsChecked} tripID={trip.TripID} /></td>
-        <td onClick={()=>{this.expandTrip(trip)}}><div className={styles.cardSeparator} /></td>
-        <td onClick={()=>{this.expandTrip(trip)}} className={styles.tripIDColumn}>{`TRIP- ${trip.TripID}`}</td>
-        <td onClick={()=>{this.expandTrip(trip)}}><div className={styles.cardSeparator} /></td>
-        <td onClick={()=>{this.expandTrip(trip)}}>
+        <td><div className={styles.cardSeparator} /></td>
+        <td className={styles.tripIDColumn}>{`TRIP- ${trip.TripID}`}</td>
+        <td><div className={styles.cardSeparator} /></td>
+        <td>
           <div className={cardValueStatus}>
             {trip.OrderStatus.OrderStatus}
           </div>
         </td>
-        <td onClick={()=>{this.expandTrip(trip)}}><div className={styles.cardSeparator} /></td>
-        <td onClick={()=>{this.expandTrip(trip)}}>
-          { 
+        <td><div className={styles.cardSeparator} /></td>
+        <td>
+          {
             trip.Driver &&
             <div className={styles.cardValueDriver}>
               <div className={styles.vehicleIcon}>
-                <img className={styles.driverLoadImage}
-                  src={trip.Driver && trip.Driver.Vehicle && trip.Driver.Vehicle.Name === 'Motorcycle' ? 
-                  "/img/icon-vehicle-motor.png" : "/img/icon-vehicle-van.png"} />
+                <img
+                  className={styles.driverLoadImage}
+                  alt="vehicle"
+                  src={trip.Driver && trip.Driver.Vehicle &&
+                    trip.Driver.Vehicle.Name === config.vehicle[config.vehicleType.Motorcycle - 1].value ?
+                    config.IMAGES.MOTORCYCLE : config.IMAGES.VAN}
+                />
               </div>
               <div className={styles.cardLabel}>
                 Driver
@@ -418,12 +431,11 @@ const TripRow = React.createClass({
           }
           {
             !trip.Driver &&
-            <div className={styles.cardValueDriver}>
-            </div>
+            <div className={styles.cardValueDriver} />
           }
         </td>
-        <td onClick={()=>{this.expandTrip(trip)}}><div className={styles.cardSeparator} /></td>
-        <td onClick={()=>{this.expandTrip(trip)}}>
+        <td><div className={styles.cardSeparator} /></td>
+        <td>
           <div className={styles.cardLabel}>
             Items
           </div>
@@ -432,8 +444,8 @@ const TripRow = React.createClass({
             {trip.UserOrderRoutes.length}
           </div>
         </td>
-        <td onClick={()=>{this.expandTrip(trip)}}><div className={styles.cardSeparator} /></td>
-        <td onClick={()=>{this.expandTrip(trip)}}>
+        <td><div className={styles.cardSeparator} /></td>
+        <td>
           <div className={styles.cardLabel}>
             Weight
           </div>
@@ -442,8 +454,8 @@ const TripRow = React.createClass({
             {parsedTrip.Weight} kg
           </div>
         </td>
-        <td onClick={()=>{this.expandTrip(trip)}}><div className={styles.cardSeparator} /></td>
-        <td onClick={()=>{this.expandTrip(trip)}}>
+        <td><div className={styles.cardSeparator} /></td>
+        <td>
           <div className={styles.cardLabel}>
             Total Value
           </div>
@@ -452,30 +464,42 @@ const TripRow = React.createClass({
             <NumberFormat displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp '} value={trip.TotalValue} />
           </div>
         </td>
-        <td onClick={()=>{this.expandTrip(trip)}}><div className={styles.cardSeparator} /></td>
-        <td onClick={()=>{this.expandTrip(trip)}}>
+        <td><div className={styles.cardSeparator} /></td>
+        <td>
           <div className={styles.cardLabel}>
-              Deadline
+            Deadline
           </div>
           <br />
           <div className={styles.cardValue}>
-              <Deadline deadline={trip.Deadline} />
+            <Deadline deadline={trip.Deadline} />
+            <br />
+            <span className={duration._milliseconds < 0 ? styles['text-red'] : styles['text-black']}>
+              {deadline}
+            </span>
           </div>
         </td>
       </tr>
     );
-  }
+  },
 });
 
-const TripBody = React.createClass({
+class TripBody extends Component {
   getBodyContent() {
     const { trips, expandedTrip, expand, shrink } = this.props;
-    let content = [];
+    const content = [];
     trips.forEach((trip) => {
-      content.push(<TripRow key={trip.TripID} trip={TripParser(trip)} expandedTrip={expandedTrip} expand={expand} shrink={shrink} />);
+      content.push(
+        <TripRow
+          key={trip.TripID}
+          trip={TripParser(trip)}
+          expandedTrip={expandedTrip}
+          expand={expand}
+          shrink={shrink}
+        />,
+      );
     });
     return content;
-  },
+  }
   render() {
     return (
       <tbody>
@@ -483,35 +507,46 @@ const TripBody = React.createClass({
       </tbody>
     );
   }
-});
+}
+
+/* eslint-disable */
+TripBody.propTypes = {
+  trips: PropTypes.array.isRequired,
+  expandedTrip: PropTypes.any.isRequired,
+  expand: PropTypes.func,
+  shrink: PropTypes.func,
+};
+/* eslint-enable */
+
+TripBody.propTypes = {
+  expand: () => {},
+  shrink: () => {},
+};
 
 function TripBodyStore() {
   return (store) => {
     const { expandedTrip } = store.app.myOngoingTrips;
-    return {
-      expandedTrip: expandedTrip
-    }
-  }
+    return { expandedTrip };
+  };
 }
 
 function TripBodyDispatch() {
   return (dispatch) => {
-    return {
+    const dispatchFunc = {
       expand: (trip) => {
         dispatch(TripService.ExpandTrip(trip));
       },
       shrink: () => {
         dispatch(TripService.ShrinkTrip());
-      }
-    }
-  }
+      },
+    };
+    return dispatchFunc;
+  };
 }
 
 const TripBodyContainer = connect(TripBodyStore, TripBodyDispatch)(TripBody);
 
-function TripTable({trips}) {
-  const headers = <TripHeader />;
-
+function TripTable({ trips }) {
   return (
     <table className={styles.table}>
       <TripBodyContainer trips={trips} />
@@ -520,3 +555,9 @@ function TripTable({trips}) {
 }
 
 export default TripTable;
+
+/* eslint-disable */
+TripTable.propTypes = {
+  trips: PropTypes.array.isRequired,
+};
+/* eslint-enable */
