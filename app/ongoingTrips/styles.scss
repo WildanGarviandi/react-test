@@ -247,15 +247,16 @@
 
 .tripDetailsOrder {
   width: 360px;
-  height: calc(100vh - 370px);
-  overflow-y: scroll; 
+  height: calc(100vh - 500px);
+  box-sizing: border-box;
+  overflow-y: scroll;
   border-radius: 4px;
   border: solid 1px #e8e8e8;
-  background-color: #ffffff;
+  background-color: #fff;
   margin-left: 20px;
   font-family: Helvetica;
   font-size: 12px;
-  color: #000000;
+  color: #000;
   padding-left: 10px;
   padding-right: 10px;
   margin-bottom: 50px;
