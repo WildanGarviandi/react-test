@@ -247,7 +247,7 @@ const OrderRow = React.createClass({
         <td className={styles.orderIDColumn}>
           {order.UserOrderNumber}
           <br />
-          {order.WebOrderID}
+          <span className={styles.webOrderID}>{order.WebOrderID}</span>
         </td>
         <td><div className={styles.cardSeparator} /></td>
         <td>
