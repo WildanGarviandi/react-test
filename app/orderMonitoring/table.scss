@@ -1,13 +1,4 @@
-@import '../../stylesheets/_variables.scss';
-@import '../../stylesheets/_mixins.scss';
-
-.text-normal {
-  @include text-color($text-normal);
-}
-
-.text-danger {
-  @include text-color($text-danger);
-}
+@import '../../stylesheets/global';
 
 .table {
   border-image-source: initial;

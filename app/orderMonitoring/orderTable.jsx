@@ -461,26 +461,26 @@ export class Deadline extends PureComponent {
     const Duration = moment.duration(moment(this.props.deadline).diff(moment(new Date())));
     if (!this.props.deadline) {
       return (
-        <span className={styles['text-normal']}>
+        <span className={styles['text-black']}>
           -
         </span>
       );
     } else if (Duration._milliseconds > config.deadline.day) {
       return (
-        <span className={styles['text-normal']}>
+        <span className={styles['text-black']}>
           {Duration.humanize()} remaining
         </span>
       );
     } else if (Duration._milliseconds < 0) {
       return (
-        <span className={styles['text-danger']}>
+        <span className={styles['text-red']}>
           Passed
         </span>
       );
     }
     const normalDeadline = (Duration._milliseconds > config.deadline['3hours']) && (Duration._milliseconds < config.deadline.day);
     return (
-      <span className={normalDeadline ? styles['text-normal'] : styles['text-danger']}>
+      <span className={normalDeadline ? styles['text-black'] : styles['text-red']}>
         <Countdown
           targetDate={new Date(this.props.deadline)}
           startDelay={500}
