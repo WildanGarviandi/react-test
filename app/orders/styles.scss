@@ -1,3 +1,5 @@
+@import '../../stylesheets/global';
+
 .panel {
   border: solid 1px #ccc;
   border-radius: 5px;
@@ -881,4 +883,11 @@
 .deadlineDate {
   font-size: 13px;
   opacity: 0.4;
+  margin: 3px;
+}
+
+.scrollable {
+  overflow-y: auto;
+  max-height: 50%;
+  margin: 15px 0;
 }

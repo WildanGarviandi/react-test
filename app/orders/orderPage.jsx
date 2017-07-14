@@ -36,12 +36,12 @@ const PanelDetails = React.createClass({
             <div className={styles.orderDueTime}>
               <Deadline deadline={expandedOrder.DueTime} />
               <br />
-              <span
+              <p
                 className={`${duration._milliseconds < 0 ? styles['text-red'] : styles['text-black']} 
                  ${styles.deadlineDate}`}
               >
                ({deadline})
-              </span>
+              </p>
             </div>
             <div className={styles.orderDetails}>
               <div className={styles.reassignButton}>
@@ -103,26 +103,28 @@ const PanelDetails = React.createClass({
                 <NumberFormat displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp '} value={expandedOrder.TotalValue} />
               </div>
             </div>
-            <div className={styles.orderDetails}>
-              <div className={styles.orderDetailsLabel}>
-                From
+            <div className={styles.scrollable}>
+              <div className={styles.orderDetails}>
+                <div className={styles.orderDetailsLabel}>
+                  From
+                </div>
+                <div className={styles.orderDetailsValue}>
+                  {expandedOrder.PickupAddress && `${expandedOrder.PickupAddress.FirstName} ${expandedOrder.PickupAddress.LastName}`}
+                </div>
+                <div className={styles.orderDetailsValue2}>
+                  {expandedOrder.PickupAddress && expandedOrder.PickupAddress.Address1}
+                </div>
               </div>
-              <div className={styles.orderDetailsValue}>
-                {expandedOrder.PickupAddress && `${expandedOrder.PickupAddress.FirstName} ${expandedOrder.PickupAddress.LastName}`}
-              </div>
-              <div className={styles.orderDetailsValue2}>
-                {expandedOrder.PickupAddress && expandedOrder.PickupAddress.Address1}
-              </div>
-            </div>
-            <div className={styles.orderDetails}>
-              <div className={styles.orderDetailsLabel}>
-                To
-              </div>
-              <div className={styles.orderDetailsValue}>
-                {expandedOrder.DropoffAddress && `${expandedOrder.DropoffAddress.FirstName} ${expandedOrder.DropoffAddress.LastName}`}
-              </div>
-              <div className={styles.orderDetailsValue2}>
-                {expandedOrder.DropoffAddress && expandedOrder.DropoffAddress.Address1}
+              <div className={styles.orderDetails}>
+                <div className={styles.orderDetailsLabel}>
+                  To
+                </div>
+                <div className={styles.orderDetailsValue}>
+                  {expandedOrder.DropoffAddress && `${expandedOrder.DropoffAddress.FirstName} ${expandedOrder.DropoffAddress.LastName}`}
+                </div>
+                <div className={styles.orderDetailsValue2}>
+                  {expandedOrder.DropoffAddress && expandedOrder.DropoffAddress.Address1}
+                </div>
               </div>
             </div>
           </div>
