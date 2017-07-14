@@ -30,10 +30,10 @@
     "defaultMainPageTMS": "/ordermonitoring",
     "performanceInterval": 180000,
     "defaultStatuses": {
-      "total": "[2, 3, 4, 5, 8, 12, 13, 15, 16, 21]",
+      "total": "[2, 3, 4, 5, 8, 12, 13, 15, 16, 17, 18, 19, 20, 21]",
       "succeed": "[5]",
       "pending": "[2, 3, 4]",
-      "failed": "[8, 12, 13, 15, 16, 21]"
+      "failed": "[8, 12, 13, 15, 16, 17, 18, 19, 20, 21]"
     },
     "sortOptions": [{
       "key": 0, "value": "A-Z (Driver's Name)"
@@ -68,6 +68,10 @@
         { "key": 13, "value": "CANCELLED" },
         { "key": 15, "value": "RETURNED_WAREHOUSE" },
         { "key": 16, "value": "RETURNED_SENDER" },
+        { "key": 17, "value": "MISSING" },
+        { "key": 18, "value": "CLAIMED_VENDOR" },
+        { "key": 19, "value": "CLAIMED_MERCHANT" },
+        { "key": 20, "value": "CLAIMED_ALL" },
         { "key": 21, "value": "PICKUP_CANCELLED"}
       ]
     },
@@ -144,7 +148,9 @@
       "DEFAULT_LOGO": "/img/default-logo.png",
       "ETOBEE_LOGO": "/img/etobee-logo.png",
       "ICON_MENU": "/img/icon-menu.png",
-      "ICON_SUCCESS": "/img/icon-success.png"
+      "ICON_SUCCESS": "/img/icon-success.png",
+      "ORDERS_DONE": "/img/icon-orders-done.png",
+      "ON_GOING_TRIPS": "/img/image-on-going-trips.png"
     },
     "assignCentralHub": true,
     "HTTP_STATUS": {
@@ -176,5 +182,8 @@
         "DESC": "DESC"
       }
     },
-    "CHECK_AUTH_INTERVAL": 10000
+    "CHECK_AUTH_INTERVAL": 10000,
+    "DATE_FORMAT": {
+      "DATE_MONTH_YEAR": "DD-MM-YYYY"
+    }
 }
