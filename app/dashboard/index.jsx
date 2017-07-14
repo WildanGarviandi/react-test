@@ -149,16 +149,29 @@ const DashboardMenu = ({ activeMenuIdx, handleLogout, toggleCompact,
               </span>
               <hr className={styles.menuSeparator} />
               <MenuItem active={activeMenuIdx === 8} to={'/myorders'}>
-                <img src="/img/icon-orders.png" className={styles.menuGlyph} />
+                <img
+                  alt="icon-orders"
+                  src={configValues.IMAGES.ICON_ORDERS}
+                  className={styles.menuGlyph}
+                />
                 <span>My Orders</span>
+                <span className={styles.counterNumber}>{countTMS && countTMS.AssignedOrder}</span>
               </MenuItem>
               <MenuItem active={activeMenuIdx === 9} to={'/mytrips'}>
-                <img src="/img/icon-my-trips.png" className={styles.menuGlyph} />
+                <img
+                  alt="icon-my-trips"
+                  src={configValues.IMAGES.ICON_MY_TRIPS}
+                  className={styles.menuGlyph}
+                />
                 <span>My Trips</span>
                 <span className={styles.counterNumber}>{countTMS && countTMS.NotAssigned}</span>
               </MenuItem>
               <MenuItem active={activeMenuIdx === 10} to={'/myongoingtrips'}>
-                <img src="/img/icon-ongoing-trips.png" className={styles.menuGlyph} />
+                <img
+                  alt="icon-ongoing-trips"
+                  src={configValues.IMAGES.ICON_ONGOING_TRIPS}
+                  className={styles.menuGlyph}
+                />
                 <span>My Ongoing Trips</span>
                 <span className={styles.counterNumber}>{countTMS && countTMS.NotDelivered}</span>
               </MenuItem>

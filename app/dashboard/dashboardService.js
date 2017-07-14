@@ -1,40 +1,37 @@
-import lodash from 'lodash';
 import FetchGet from '../modules/fetch/get';
-import FetchPost from '../modules/fetch/post';
 import ModalActions from '../modules/modals/actions';
-import {modalAction} from '../modules/modals/constants';
-import moment from 'moment';
+import { modalAction } from '../modules/modals/constants';
 
 const Constants = {
-  BASE: "dashboard/defaultSet/",
-  SET_COUNT: "dashboard/setCount",
-  SET_COUNT_TMS: "dashboard/setCountTMS",
-}
+  BASE: 'dashboard/defaultSet/',
+  SET_COUNT: 'dashboard/setCount',
+  SET_COUNT_TMS: 'dashboard/setCountTMS',
+};
 
 const initialStore = {
   currentPage: 1,
   limit: 100,
   count: [],
-  countTMS: []
-}
+  countTMS: [],
+};
 
 export default function Reducer(store = initialStore, action) {
   const parsedActionType = action.type.split('/');
-  if (parsedActionType.length > 2 && parsedActionType[0] === "dashboard" && parsedActionType[1] === "defaultSet") {
+  if (parsedActionType.length > 2 && parsedActionType[0] === 'dashboard' && parsedActionType[1] === 'defaultSet') {
     const fieldName = parsedActionType[2];
-    return lodash.assign({}, store, {[fieldName]: action[fieldName]});
+    return Object.assign({}, store, { [fieldName]: action[fieldName] });
   }
 
-  switch(action.type) {
+  switch (action.type) {
     case Constants.SET_COUNT: {
-      return lodash.assign({}, store, {
-          count: action.count,
+      return Object.assign({}, store, {
+        count: action.count,
       });
     }
 
     case Constants.SET_COUNT_TMS: {
-      return lodash.assign({}, store, {
-          countTMS: action.count,
+      return Object.assign({}, store, {
+        countTMS: action.count,
       });
     }
 
@@ -46,46 +43,47 @@ export default function Reducer(store = initialStore, action) {
 
 export function FetchCount() {
   return (dispatch, getState) => {
-    const {userLogged} = getState().app;
-    const {token} = userLogged;
-    let params = {};
+    const { userLogged } = getState().app;
+    const { token } = userLogged;
 
-    dispatch({type: modalAction.BACKDROP_SHOW});
-    FetchGet('/order/order-count', token, params, true).then((response) => {
-      return response.json().then(({data}) => {
+    dispatch({ type: modalAction.BACKDROP_SHOW });
+    FetchGet('/order/order-count', token, {}, true).then((response) => {
+      const responseData = response.json().then(({ data }) => {
         dispatch({
           type: Constants.SET_COUNT,
           count: data,
-        })
-        dispatch({type: modalAction.BACKDROP_HIDE});
+        });
+        dispatch({ type: modalAction.BACKDROP_HIDE });
       });
-    })
-    .catch((e) => {
-      dispatch({type: modalAction.BACKDROP_HIDE});
+
+      return responseData;
+    }).catch((e) => {
+      dispatch({ type: modalAction.BACKDROP_HIDE });
       dispatch(ModalActions.addMessage(e.message));
     });
-  }
+  };
 }
 
 export function FetchCountTMS() {
   return (dispatch, getState) => {
-    const {userLogged} = getState().app;
-    const {token} = userLogged;
-    let params = {};
+    const { userLogged } = getState().app;
+    const { token } = userLogged;
 
-    dispatch({type: modalAction.BACKDROP_SHOW});
-    FetchGet('/trip/counter', token, params).then((response) => {
-      return response.json().then(({data}) => {
+    dispatch({ type: modalAction.BACKDROP_SHOW });
+    FetchGet('/trip/counter', token, {}).then((response) => {
+      const responseData = response.json().then(({ data }) => {
         dispatch({
           type: Constants.SET_COUNT_TMS,
           count: data,
-        })
-        dispatch({type: modalAction.BACKDROP_HIDE});
+        });
+        dispatch({ type: modalAction.BACKDROP_HIDE });
       });
+
+      return responseData;
     })
-    .catch((e) => {
-      dispatch({type: modalAction.BACKDROP_HIDE});
-      dispatch(ModalActions.addMessage(e.message));
-    });
-  }
+      .catch((e) => {
+        dispatch({ type: modalAction.BACKDROP_HIDE });
+        dispatch(ModalActions.addMessage(e.message));
+      });
+  };
 }
