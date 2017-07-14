@@ -150,7 +150,10 @@
       "ICON_MENU": "/img/icon-menu.png",
       "ICON_SUCCESS": "/img/icon-success.png",
       "ORDERS_DONE": "/img/icon-orders-done.png",
-      "ON_GOING_TRIPS": "/img/image-on-going-trips.png"
+      "ON_GOING_TRIPS": "/img/image-on-going-trips.png",
+      "ICON_ORDERS": "/img/icon-orders.png",
+      "ICON_MY_TRIPS": "/img/icon-my-trips.png",
+      "ICON_ONGOING_TRIPS": "/img/icon-ongoing-trips.png"
     },
     "assignCentralHub": true,
     "HTTP_STATUS": {
