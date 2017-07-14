@@ -10,12 +10,12 @@ import moment from 'moment';
 
 import { Page } from '../views/base';
 import { Pagination2 } from '../components/pagination2';
-import { ButtonWithLoading } from '../components/button';
+import { ButtonWithLoading } from '../components/Button';
 import Table, { Filter, Deadline } from './tripTable';
 import * as TripService from './tripService';
 import driversFetch from '../modules/drivers/actions/driversFetch';
 import styles from './styles.scss';
-import stylesButton from '../components/button.scss';
+import stylesButton from '../components/Button/styles.scss';
 import * as UtilHelper from '../helper/utility';
 import config from '../config/configValues.json';
 
@@ -63,7 +63,7 @@ function TripOrders({ orders }) {
             Deadline: <Deadline deadline={order.UserOrder.DueTime} />
             <span className={duration._milliseconds < 0 ? styles['text-red'] : styles['text-black']}>
               {duration._milliseconds < 0 && <br />}
-               ({deadline})
+              ({deadline})
               </span>
           </div>
         </div>
@@ -87,7 +87,7 @@ function PanelDetails({ expandedTrip, shrinkTrip, isExpandDriver, expandDriver }
   const tripStatusStyles = styles[`tripStatus${expandedTrip.OrderStatus.OrderStatusID}`];
   return (
     <div>
-      { expandedTrip &&
+      {expandedTrip &&
         <div className={isExpandDriver ? styles.panelDetails2 : styles.panelDetails}>
           <div role="none" onClick={shrinkTrip} className={styles.closeButton}>
             &times;
@@ -95,15 +95,16 @@ function PanelDetails({ expandedTrip, shrinkTrip, isExpandDriver, expandDriver }
           <div className={tripStatusStyles}>
             {expandedTrip.OrderStatus.OrderStatus}
           </div>
-          { expandedTrip.Driver &&
+          {expandedTrip.Driver &&
             <div className={styles.tripDriver}>
               <div className={styles.vehicleIcon}>
                 <img
                   alt="vehicle"
                   className={styles.driverLoadImage}
                   src={expandedTrip.Driver && expandedTrip.Driver.Vehicle &&
-                  expandedTrip.Driver.Vehicle.Name === config.vehicle[config.vehicleType.Motorcycle - 1].value ?
-                  config.IMAGES.MOTORCYCLE : config.IMAGES.VAN}
+                    expandedTrip.Driver.Vehicle.Name === config
+                      .vehicle[config.vehicleType.Motorcycle - 1].value ?
+                    config.IMAGES.MOTORCYCLE : config.IMAGES.VAN}
                 />
               </div>
               <div className={styles.driverDetails}>
@@ -204,9 +205,9 @@ PanelDetails.propTypes = {
 /* eslint-enable */
 
 PanelDetails.defaultProps = {
-  shrinkTrip: () => {},
+  shrinkTrip: () => { },
   isExpandDriver: false,
-  expandDriver: () => {},
+  expandDriver: () => { },
 };
 
 class Drivers extends Component {
@@ -289,7 +290,7 @@ Drivers.defaultProps = {
   selectedTrips: [],
   selectedDriver: {},
   selectedTrip: {},
-  setDriver: () => {},
+  setDriver: () => { },
 };
 
 class PanelDrivers extends Component {
@@ -321,17 +322,17 @@ class PanelDrivers extends Component {
     };
     return (
       <div className={styles.mainDriverPanel}>
-        { this.props.isExpandDriverBulk &&
+        {this.props.isExpandDriverBulk &&
           <div role="none" onClick={this.props.shrinkTrip} className={styles.closeButton}>
             &times;
           </div>
         }
-        { this.props.isExpandDriverBulk &&
+        {this.props.isExpandDriverBulk &&
           <div className={styles.panelDriverChoose}>
             Choose a driver for {this.props.selectedTrips.length} trip:
           </div>
         }
-        { !this.props.isExpandDriverBulk &&
+        {!this.props.isExpandDriverBulk &&
           <div className={styles.panelDriverChoose}>
             Choose a driver for this trip
           </div>
@@ -374,11 +375,11 @@ PanelDrivers.defaultProps = {
   selectedDriver: {},
   selectedTrips: {},
   expandedTrip: {},
-  setDriver: () => {},
-  bulkAssignTrip: () => {},
-  assignTrip: () => {},
+  setDriver: () => { },
+  bulkAssignTrip: () => { },
+  assignTrip: () => { },
   isExpandDriverBulk: false,
-  shrinkTrip: () => {},
+  shrinkTrip: () => { },
   drivers: {},
 };
 
@@ -548,7 +549,7 @@ const TripPage = React.createClass({
           </div>
         }
 
-        { this.state.isSuccessAssign &&
+        {this.state.isSuccessAssign &&
           <ModalContainer>
             <ModalDialog>
               {
@@ -573,7 +574,7 @@ const TripPage = React.createClass({
                   </div>
                 </div>
               }
-              { errorIDs.length === 0 &&
+              {errorIDs.length === 0 &&
                 <div className={styles.modal}>
                   <div className={styles.modalHeader}>
                     <h2 className={styles.modalTitle}>Success</h2>
@@ -582,6 +583,7 @@ const TripPage = React.createClass({
                       <div className={styles.mediumText}>
                         You have successfully assigned this trip
                       </div>
+                      <ErrorAssign errorIDs={errorIDs} />
                     </div>
                   </div>
                   <div className={styles.modalFooter}>

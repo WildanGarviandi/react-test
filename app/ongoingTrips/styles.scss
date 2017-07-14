@@ -245,7 +245,8 @@
 
 .tripDetailsOrder {
   width: 360px;
-  height: calc(100vh - 370px);
+  height: calc(100vh - 500px);
+  box-sizing: border-box;
   overflow-y: scroll;
   border-radius: 4px;
   border: solid 1px #e8e8e8;
@@ -257,7 +258,6 @@
   padding-left: 10px;
   padding-right: 10px;
   margin-bottom: 50px;
-  box-sizing: border-box;
 }
 
 .closeButton {
@@ -276,7 +276,7 @@
 
 .filterOption {
   float: left;
-  width: 50%;
+  width: 60%;
   margin-top: 0;
 }
 

@@ -1,29 +1,24 @@
-import * as _ from 'lodash';
-import moment from 'moment';
 import React from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { Link } from 'react-router';
 import Countdown from 'react-cntdwn';
+
+import * as _ from 'lodash';
+import moment from 'moment';
 import PropTypes from 'prop-types';
+import { ModalContainer, ModalDialog } from 'react-modal-dialog';
 
 import * as PickupOrdersReady from './pickupOrdersReadyService';
 import * as NearbyFleets from '../nearbyFleets/nearbyFleetService';
-import { DropdownTypeAhead, Input, Pagination, ButtonStandard } from '../views/base';
-import DateRangePicker from '../views/base/dateRangePicker';
+import { Pagination } from '../views/base';
+import { ButtonStandard } from '../components/Button';
 import tableStyles from '../views/base/table.scss';
-import StatusDropdown from '../views/base/statusDropdown';
 import { TripParser } from '../modules/trips';
-import { OrderParser } from '../modules/orders';
-import { formatDate } from '../helper/time';
-import { modalAction } from '../modules/modals/constants';
-import classnaming from 'classnames';
-import { ModalContainer, ModalDialog } from 'react-modal-dialog';
 import styles from './styles.scss';
-import BodyRow, { CheckBoxCell, LinkCell, TextCell, OrderIDLinkCell, ButtonCell, IDCell } from '../views/base/cells';
+import { ButtonCell, IDCell } from '../views/base/cells';
 import { CheckboxHeader, CheckboxCell } from '../views/base/tableCell';
 import { FilterTop, FilterText, FilterTopMultiple } from '../components/form';
-import * as TripDetails from '../modules/inboundTripDetails';
 import config from '../config/configValues.json';
 import PickupOrdersModal from './pickupOrdersModal';
 import { checkPermission } from '../helper/permission';

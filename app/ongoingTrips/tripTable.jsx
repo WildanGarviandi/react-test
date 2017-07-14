@@ -14,17 +14,31 @@ import * as TripService from './tripService';
 import OrderStatusSelector from '../modules/orderStatus/selector';
 import { CheckboxHeader2 as CheckboxHeaderBase, CheckboxCell } from '../views/base/tableCell';
 import { FilterTop } from '../components/form';
-import stylesButton from '../components/button.scss';
-import { ButtonWithLoading } from '../components/button';
+import stylesButton from '../components/Button/styles.scss';
+import { ButtonWithLoading } from '../components/Button';
 import config from '../config/configValues.json';
 import * as Helper from '../helper/utility';
 
-function StoreBuilder(keyword) {
+function InputFilter({ value, onChange, onKeyDown, placeholder }) {
+  return (
+    <input
+      className={styles.inputSearch}
+      placeholder={placeholder}
+      type="text"
+      value={value}
+      onChange={onChange}
+      onKeyDown={onKeyDown}
+    />
+  );
+}
+
+function StoreBuilder(keyword, placeholder) {
   return (store) => {
     const { filters } = store.app.myOngoingTrips;
 
     return {
       value: filters[keyword],
+      placeholder,
     };
   };
 }
@@ -133,8 +147,8 @@ function DateRangeDispatch(keyword) {
   };
 }
 
-function ConnectBuilder(keyword) {
-  return connect(StoreBuilder(keyword), DispatchBuilder(keyword));
+function ConnectBuilder(keyword, placeholder) {
+  return connect(StoreBuilder(keyword, placeholder), DispatchBuilder(keyword));
 }
 
 function ConnectDropdownBuilder(keyword) {
@@ -152,6 +166,7 @@ const DropoffFilter = ConnectBuilder('dropoff')(Table.InputCell);
 const DriverFilter = ConnectBuilder('driver')(Table.InputCell);
 const PickupDateFilter = connect(DateRangeBuilder('Pickup'), DateRangeDispatch('Pickup'))(Table.FilterDateTimeRangeCell);
 const OrderFilter = ConnectBuilder('order')(Table.InputCell);
+const EDSFilter = ConnectBuilder('userOrderNumber', 'Search for EDS...')(InputFilter);
 
 export const Filter = React.createClass({
   render() {
@@ -166,6 +181,7 @@ export const Filter = React.createClass({
       <div>
         <CheckboxHeader />
         <SortFilter />
+        <EDSFilter />
         {
           <div className={styles.reassignBulkButton}>
             <ButtonWithLoading {...reassignTripButton} />
@@ -416,7 +432,8 @@ const TripRow = React.createClass({
                   className={styles.driverLoadImage}
                   alt="vehicle"
                   src={trip.Driver && trip.Driver.Vehicle &&
-                    trip.Driver.Vehicle.Name === config.vehicle[config.vehicleType.Motorcycle - 1].value ?
+                    trip.Driver.Vehicle.Name === config
+                      .vehicle[config.vehicleType.Motorcycle - 1].value ?
                     config.IMAGES.MOTORCYCLE : config.IMAGES.VAN}
                 />
               </div>
@@ -519,8 +536,8 @@ TripBody.propTypes = {
 /* eslint-enable */
 
 TripBody.propTypes = {
-  expand: () => {},
-  shrink: () => {},
+  expand: () => { },
+  shrink: () => { },
 };
 
 function TripBodyStore() {
