@@ -881,4 +881,19 @@
 .deadlineDate {
   font-size: 13px;
   opacity: 0.4;
+  margin: 3px;
+}
+
+.scrollable {
+  overflow-y: auto;
+  max-height: 50%;
+  margin: 15px 0;
+}
+
+.text-black {
+  color: black;
+}
+
+.text-red {
+  color: red;
 }
