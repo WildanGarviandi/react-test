@@ -7,19 +7,18 @@ import * as _ from 'lodash';
 import classNaming from 'classnames';
 
 import { ContainerDetailsActions, StatusList } from '../../modules';
-import districtsFetch from '../../modules/districts/actions/districtsFetch';
-import { ButtonBase, ButtonWithLoading, Input, InputWithDefault, Modal, Page } from '../base';
-import DistrictAndDriver from '../container/districtAndDriver';
+import { ButtonWithLoading, Input, InputWithDefault, Page } from '../base';
 import { OrderTable } from '../container/table';
-import * as TripDetails from '../../modules/trips/actions/details';
 import * as TripDetailsTrue from '../../modules/inboundTripDetails';
 import ModalActions from '../../modules/modals/actions';
-import Accordion from '../../components/accordion';
-import NextDestinationSetter from '../container/nextDestinationSetter';
+import Accordion from '../../components/Accordion';
 import TransportSetter from '../container/secondSetting';
 import RemarksSetter from '../container/remarksSetter';
 import styles from './styles.scss';
-import { CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered, TripParser } from '../../modules/trips';
+import {
+  CanMarkContainer, CanMarkOrderReceived,
+  CanMarkTripDelivered, TripParser,
+} from '../../modules/trips';
 import { formatDate } from '../../helper/time';
 import Glyph from '../../components/Glyph';
 import * as OrdersDetails from '../../modules/orders/actions/details';

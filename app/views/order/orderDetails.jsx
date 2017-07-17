@@ -4,13 +4,13 @@ import { connect } from 'react-redux';
 import classNaming from 'classnames';
 import * as _ from 'lodash';
 
-import { conf, orderDetailsSummary, orderDetailsCost, orderDetailsPricing } from './ordersColumns';
+import { conf, orderDetailsSummary, orderDetailsCost,
+  orderDetailsPricing } from './ordersColumns';
 import styles from './styles.scss';
-import Accordion from '../../components/accordion';
-import { ButtonWithLoading, Input, Page } from '../base';
+import Accordion from '../../components/Accordion';
+import { ButtonWithLoading, Page } from '../base';
 import { InputWithDefault, CheckBox } from '../base/input';
 import * as OrdersDetails from '../../modules/orders/actions/details';
-import OrdersSelector from '../../modules/orders/selector';
 import { formatDate } from '../../helper/time';
 
 const boolAttributes = ["IncludeInsurance", "UseExtraHelper", "IsCOD"];
