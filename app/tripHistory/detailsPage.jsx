@@ -1,11 +1,11 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import TimeFormatter from '../helper/time';
-import {FetchDetails} from '../modules/inboundTripDetails';
-import {Page} from '../views/base';
+import { connect } from 'react-redux';
+
+import TimeFormatter, { formatDate } from '../helper/time';
+import { FetchDetails } from '../modules/inboundTripDetails';
+import { Page } from '../views/base';
 import Accordion from '../components/accordion';
 import styles from './styles.scss';
-import {formatDate} from '../helper/time';
 
 const tripAttrs = ['fleet', 'driver', 'container', 'status', 'pickupTime', 'dropoffTime'];
 const tripLabel = {
@@ -83,7 +83,7 @@ function ProcessRoute(route) {
 
   return _.assign({}, route, {
     deliveryFee: `Rp ${route.DeliveryFee}`,
-    distance: `${route.Distance/1000} km`,
+    distance: `${route.Distance / 1000} km`,
     dropoffAddress: route.DropoffAddress && route.DropoffAddress.Address1,
     dropoffTime: route.DropoffTime && `${dropoffTime.toDateString()} ${dropoffTime.toTimeString()}`,
     etaDelivery: TimeFormatter(route.ETADelivery),
@@ -130,7 +130,7 @@ function ProcessOrder(order) {
 
 const Route = React.createClass({
   render() {
-    const {idx, route} = this.props;
+    const { idx, route } = this.props;
     const order = ProcessOrder(route.UserOrder);
 
     const routeTitle = `Order ${idx + 1}: ${order.UserOrderNumber} / ${order.WebOrderID}`;
@@ -158,11 +158,11 @@ const Route = React.createClass({
         {
           this.props.accordionState === 'expanded' &&
           <div>
-            <div style={{width: "48%", float: 'left', marginLeft: 10}}>
+            <div style={{ width: "48%", float: 'left', marginLeft: 10 }}>
               <h5 className={styles.subtitle}>Route Details</h5>
               <div className={styles.detail}>{routeDetails}</div>
             </div>
-            <div style={{width: "48%", float: 'right', marginRight: 10}}>
+            <div style={{ width: "48%", float: 'right', marginRight: 10 }}>
               <h5 className={styles.subtitle}>Order Details</h5>
               <div className={styles.detail}>{orderDetails}</div>
             </div>
@@ -219,7 +219,7 @@ const DetailPageStateful = React.createClass({
     this.props.detailsFetch(this.props.params.id);
   },
   render() {
-    const {isFetchingTripDetails, trip} = this.props;
+    const { isFetchingTripDetails, trip } = this.props;
 
     const DetailPageParams = {
       isFetching: isFetchingTripDetails,
@@ -243,7 +243,7 @@ function StateToProps(state, ownProps) {
 
 function DispatchToProps(dispatch) {
   return {
-    detailsFetch: function(idx) {
+    detailsFetch: function (idx) {
       dispatch(FetchDetails(idx));
     }
   };
