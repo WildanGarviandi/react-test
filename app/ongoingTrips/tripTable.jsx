@@ -369,9 +369,13 @@ export function Deadline({ deadline }) {
 
 /* eslint-disable */
 Deadline.propTypes = {
-  deadline: PropTypes.any.isRequired,
+  deadline: PropTypes.any,
 };
 /* eslint-enable */
+
+Deadline.defaultProps = {
+  deadline: {},
+};
 
 const TripRow = React.createClass({
   getInitialState() {
