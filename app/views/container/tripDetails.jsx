@@ -3,18 +3,14 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
 import * as _ from 'lodash';
-import classNaming from 'classnames';
+
 import { ContainerDetailsActions, StatusList } from '../../modules';
-import districtsFetch from '../../modules/districts/actions/districtsFetch';
-import { ButtonBase, ButtonWithLoading, Modal, Page } from '../base';
-import DistrictAndDriver from './districtAndDriver';
+import { ButtonWithLoading, Page } from '../base';
 import { OrderTable } from './table';
-import * as TripDetails from '../../modules/trips/actions/details';
 import * as TripDetailsTrue from '../../modules/inboundTripDetails';
-import Accordion from '../../components/accordion';
+import Accordion from '../../components/Accordion';
 import NextDestinationSetter from './nextDestinationSetter';
 import TransportSetter from './secondSetting';
-
 import styles from './styles.scss';
 
 const columns = ['id', 'id2', 'pickup', 'dropoff', 'time', 'CODValue', 'orderStatus', 'routeStatus', 'action'];

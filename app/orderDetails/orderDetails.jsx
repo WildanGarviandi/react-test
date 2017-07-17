@@ -1,62 +1,64 @@
-import classNaming from 'classnames';
-import lodash from 'lodash';
 import React from 'react';
-import moment from 'moment';
 import { connect } from 'react-redux';
+
+import lodash from 'lodash';
+import moment from 'moment';
+
 import styles from './styles.scss';
-import { ButtonWithLoading, Input, Page, Glyph } from '../views/base';
+import Glyph from '../components/Glyph';
+import { ButtonWithLoading, Page } from '../views/base';
 import { InputWithDefault, CheckBox } from '../views/base/input';
 import * as OrdersDetails from './orderDetailsService';
 import { formatDate } from '../helper/time';
 
 const conf = {
-  Actions: { title: "Actions", cellType: "Actions" },
-  DriverShare: { title: "Driver Share" },
-  DropoffAddress: { filterType: "String", title: "Dropoff Address", cellType: "String" },
-  DropoffCity: { filterType: "String", title: "City", cellType: "String" },
-  DropoffState: { filterType: "String", title: "State", cellType: "String" },
-  DropoffTime: { title: "Dropoff Time" },
-  DueTime: { title: "Deadline", cellType: "Datetime" },
-  EtobeeShare: { title: "Etobee Share" },
-  FinalCost: { title: "Final Cost" },
-  ID: { filterType: "String", title: "AWB / Web Order ID", cellType: "IDLink" },
-  IncludeInsurance: { title: "Include Insurance" },
-  IsChecked: { headerType: "Checkbox", cellType: "Checkbox" },
-  LogisticShare: { title: "Logistic Share" },
-  NextDestination: { filterType: "String", title: "Suggested Destination", cellType: "String" },
-  OrderCost: { title: "Order Cost" },
-  DeliveryFee: { title: "Delivery Fee" },
-  OrderStatus: { filterType: "StatusDropdown", title: "Order Status", cellType: "Status" },
-  PackageHeight: { title: "Height" },
-  PackageLength: { title: "Length" },
-  PackageWeight: { title: "Weight" },
-  PackageWidth: { title: "Width" },
-  PickupAddress: { filterType: "String", title: "Pickup Address", cellType: "String" },
-  PickupCity: { filterType: "String", title: "City", cellType: "String" },
-  PickupState: { filterType: "String", title: "State", cellType: "String" },
-  PickupTime: { filterType: "DateTime", title: "Pickup Time", cellType: "Datetime" },
-  PickupType: { title: "Pickup Type" },
-  RouteStatus: { filterType: "StatusDropdown", title: "Route Status", cellType: "String" },
-  TotalValue: { title: "Total Value" },
-  UseExtraHelper: { title: "Use Extra Helper" },
-  User: { title: "User" },
-  UserOrderNumber: { filterType: "String", title: "AWB", cellType: "Link" },
-  VAT: { title: "VAT" },
-  WebOrderID: { filterType: "String", title: "Web Order ID", cellType: "String" },
-  WebstoreName: { filterType: "String", title: "Webstore Name", cellType: "String" },
-  Weight: { filterType: "String", title: "Weight", cellType: "String" },
-  ZipCode: { filterType: "String", title: "Zip Code", cellType: "String" },
-  IsCOD: { title: "COD Order" },
-  SuggestedVendors: { title: "Suggested Vendors", cellType: "Array", filterType: "String" },
+  Actions: { title: 'Actions', cellType: 'Actions' },
+  DriverShare: { title: 'Driver Share' },
+  DropoffAddress: { filterType: 'String', title: 'Dropoff Address', cellType: 'String' },
+  DropoffCity: { filterType: 'String', title: 'City', cellType: 'String' },
+  DropoffState: { filterType: 'String', title: 'State', cellType: 'String' },
+  DropoffTime: { title: 'Dropoff Time' },
+  DueTime: { title: 'Deadline', cellType: 'Datetime' },
+  EtobeeShare: { title: 'Etobee Share' },
+  FinalCost: { title: 'Final Cost' },
+  ID: { filterType: 'String', title: 'AWB / Web Order ID', cellType: 'IDLink' },
+  IncludeInsurance: { title: 'Include Insurance' },
+  IsChecked: { headerType: 'Checkbox', cellType: 'Checkbox' },
+  LogisticShare: { title: 'Logistic Share' },
+  NextDestination: { filterType: 'String', title: 'Suggested Destination', cellType: 'String' },
+  OrderCost: { title: 'Order Cost' },
+  DeliveryFee: { title: 'Delivery Fee' },
+  OrderStatus: { filterType: 'StatusDropdown', title: 'Order Status', cellType: 'Status' },
+  PackageHeight: { title: 'Height' },
+  PackageLength: { title: 'Length' },
+  PackageWeight: { title: 'Weight' },
+  PackageWidth: { title: 'Width' },
+  PickupAddress: { filterType: 'String', title: 'Pickup Address', cellType: 'String' },
+  PickupCity: { filterType: 'String', title: 'City', cellType: 'String' },
+  PickupState: { filterType: 'String', title: 'State', cellType: 'String' },
+  PickupTime: { filterType: 'DateTime', title: 'Pickup Time', cellType: 'Datetime' },
+  PickupType: { title: 'Pickup Type' },
+  RouteStatus: { filterType: 'StatusDropdown', title: 'Route Status', cellType: 'String' },
+  TotalValue: { title: 'Total Value' },
+  UseExtraHelper: { title: 'Use Extra Helper' },
+  User: { title: 'User' },
+  UserOrderNumber: { filterType: 'String', title: 'AWB', cellType: 'Link' },
+  VAT: { title: 'VAT' },
+  WebOrderID: { filterType: 'String', title: 'Web Order ID', cellType: 'String' },
+  WebstoreName: { filterType: 'String', title: 'Webstore Name', cellType: 'String' },
+  Weight: { filterType: 'String', title: 'Weight', cellType: 'String' },
+  ZipCode: { filterType: 'String', title: 'Zip Code', cellType: 'String' },
+  IsCOD: { title: 'COD Order' },
+  SuggestedVendors: { title: 'Suggested Vendors', cellType: 'Array', filterType: 'String' },
 };
 
-const orderDetailsSummary = ["UserOrderNumber", "WebOrderID", "User", "PickupType", "RouteStatus", "PickupTime", "PickupAddress", "DropoffTime", "DropoffAddress", "DueTime", "NextDestination"];
-const orderDetailsPackage = ["PackageWeight", "PackageLength", "PackageWidth", "PackageHeight"];
-const orderDetailsCost = ["TotalValue", "IsCOD"];
-const orderDetailsPricing = ["DeliveryFee", "FinalCost", "VAT", "IncludeInsurance", "UseExtraHelper", "EtobeeShare", "DriverShare", "LogisticShare"];
+const orderDetailsSummary = ['UserOrderNumber', 'WebOrderID', 'User', 'PickupType', 'RouteStatus', 'PickupTime', 'PickupAddress', 'DropoffTime', 'DropoffAddress', 'DueTime', 'NextDestination'];
+const orderDetailsPackage = ['PackageWeight', 'PackageLength', 'PackageWidth', 'PackageHeight'];
+const orderDetailsCost = ['TotalValue', 'IsCOD'];
+const orderDetailsPricing = ['DeliveryFee', 'FinalCost', 'VAT', 'IncludeInsurance', 'UseExtraHelper', 'EtobeeShare', 'DriverShare', 'LogisticShare'];
 
-const boolAttributes = ["IncludeInsurance", "UseExtraHelper", "IsCOD"];
-const dateTimeAttributes = ["Pickup Time", "Dropoff Time", "Deadline"];
+const boolAttributes = ['IncludeInsurance', 'UseExtraHelper', 'IsCOD'];
+const dateTimeAttributes = ['Pickup Time', 'Dropoff Time', 'Deadline'];
 
 const DetailRow = React.createClass({
   render() {
@@ -122,8 +124,8 @@ const DetailAcc = React.createClass({
     const { accordionAction, accordionState, height, rows, order, title, topStyle, canEdit, isEditing, isUpdating } = this.props;
 
     const editBtnProps = {
-      textBase: "Edit",
-      textLoading: "Grouping Orders",
+      textBase: 'Edit',
+      textLoading: 'Grouping Orders',
       isLoading: false,
       onClick: this.props.StartEdit,
       styles: {
@@ -132,8 +134,8 @@ const DetailAcc = React.createClass({
     }
 
     const saveBtnProps = {
-      textBase: "Save",
-      textLoading: "Saving Changes",
+      textBase: 'Save',
+      textLoading: 'Saving Changes',
       isLoading: isUpdating,
       onClick: this.submit,
       styles: {
@@ -142,8 +144,8 @@ const DetailAcc = React.createClass({
     }
 
     const cancelBtnProps = {
-      textBase: "Cancel",
-      textLoading: "Grouping Orders",
+      textBase: 'Cancel',
+      textLoading: 'Grouping Orders',
       isLoading: false,
       onClick: this.props.EndEdit,
       styles: {
@@ -210,7 +212,7 @@ const Details = React.createClass({
     const { canEdit, isEditing, isFetching, isUpdating, order,
       StartEdit, EndEdit, UpdateOrder, GetDetails, editCOD, editVolume, editWeight } = this.props;
 
-    const Title = "Order Details";
+    const Title = 'Order Details';
 
     const summaryRows = orderDetailsSummary.map(function (val) {
       return {
@@ -250,18 +252,18 @@ const Details = React.createClass({
         {
           !isFetching &&
           <div>
-            <div className={styles.mB15 + " nb"}>
+            <div className={styles.mB15 + ' nb'}>
               <div className="row">
                 <div className={styles.colMd6 + ' ' + styles.orderTitle}>
-                  <h4>{(order.UserOrderNumber || "")}
-                    <span> / {(order.WebOrderID || "")}</span>
+                  <h4>{(order.UserOrderNumber || '')}
+                    <span> / {(order.WebOrderID || '')}</span>
                     <span className={styles.bgGray}>{(order.CurrentRoute && order.CurrentRoute.OrderStatus ? order.CurrentRoute.OrderStatus.OrderStatus : '')}</span>
                   </h4>
                 </div>
               </div>
             </div>
             <div className="nb">
-              <div className={styles.mB30 + " row"}>
+              <div className={styles.mB30 + ' row'}>
                 <div className={styles.colMd4}>
                   <div className={styles.infoArea + ' ' + styles.bgWhite}>
                     <p className={styles.title}>FROM</p>
@@ -305,7 +307,7 @@ const Details = React.createClass({
                   </div>
                 </div>
               </div>
-              <div className={styles.mB30 + " row"}>
+              <div className={styles.mB30 + ' row'}>
                 <div className={styles.colMd4}>
                   <p className={styles.title}>FEES</p>
                   <div className="row">
@@ -367,7 +369,7 @@ const Details = React.createClass({
                   </div>
                 </div>
 
-                <DetailAcc rows={costRows} order={order} title={"WEIGHT & DIMENSION"} canEdit={canEdit} isEditing={isEditing} isUpdating={isUpdating} UpdateOrder={UpdateOrder} GetDetails={GetDetails} StartEdit={StartEdit} EndEdit={EndEdit} />
+                <DetailAcc rows={costRows} order={order} title={'WEIGHT & DIMENSION'} canEdit={canEdit} isEditing={isEditing} isUpdating={isUpdating} UpdateOrder={UpdateOrder} GetDetails={GetDetails} StartEdit={StartEdit} EndEdit={EndEdit} />
 
                 <div className={styles.colMd4}>
                   <p className={styles.title}>COD</p>
@@ -395,7 +397,7 @@ const Details = React.createClass({
                   </div>
                 </div>
               </div>
-              <div className={styles.mB30 + " row"}>
+              <div className={styles.mB30 + ' row'}>
                 <div className={styles.colMd4}>
                   <p className={styles.title}>HISTORY</p>
                   <div className="row">

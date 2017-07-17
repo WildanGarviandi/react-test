@@ -1,0 +1,10 @@
+@import '_mixins';
+@import '_variables';
+
+.text-black {
+  @include text-color($text-black);
+}
+
+.text-red {
+  @include text-color($text-red);
+}

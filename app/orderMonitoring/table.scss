@@ -1,14 +1,4 @@
-@mixin text-color($color) {
-  color: $color;
-}
-
-.text-black {
-  @include text-color(black);
-}
-
-.text-red {
-  @include text-color(red);
-}
+@import '../../stylesheets/global';
 
 .table {
   border-image-source: initial;

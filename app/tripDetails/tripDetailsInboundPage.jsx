@@ -1,11 +1,12 @@
-import * as _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
 import { push } from 'react-router-redux';
 
+import * as _ from 'lodash';
+
 import { ContainerDetailsActions, StatusList } from '../modules';
-import { ButtonWithLoading, InputWithDefault, Page, Glyph } from '../views/base';
+import { ButtonWithLoading, InputWithDefault, Page } from '../views/base';
 import { OrderTable } from './tripDetailsTable';
 import * as TripDetails from './tripDetailsService';
 import ModalActions from '../modules/modals/actions';
@@ -18,6 +19,7 @@ import PickupOrdersModal from '../pickupOrders/pickupOrdersModal';
 import * as PickupOrdersReady from '../pickupOrders//pickupOrdersReadyService';
 import * as NearbyFleets from '../nearbyFleets/nearbyFleetService';
 import { checkPermission } from '../helper/permission';
+import Glyph from '../components/Glyph';
 
 const columns = ['id', 'id2', 'pickup', 'time', 'CODValue', 'IsCOD', 'orderStatus', 'routeStatus', 'isSuccess', 'action'];
 const nonFillColumn = columns.slice(0, columns.length - 1);

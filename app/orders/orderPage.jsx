@@ -1,50 +1,68 @@
-import lodash from 'lodash';
-import React from 'react';
-import {connect} from 'react-redux';
-import {Page} from '../views/base';
-import {Pagination2} from '../components/pagination2';
-import {ButtonWithLoading, ButtonBase} from '../components/button';
-import * as Form from '../components/form';
-import Table, {Filter, Deadline} from './orderTable';
+/* eslint no-underscore-dangle: ["error", { "allow": ["_milliseconds"] }] */
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import NumberFormat from 'react-number-format';
+import { ModalContainer, ModalDialog } from 'react-modal-dialog';
+import { push } from 'react-router-redux';
+
+import * as _ from 'lodash';
+import PropTypes from 'prop-types';
+import moment from 'moment';
+
+import { Page } from '../views/base';
+import { Pagination2 } from '../components/pagination2';
+import { ButtonWithLoading, ButtonBase } from '../components/Button';
+import Table, { Filter, Deadline } from './orderTable';
 import * as OrderService from './orderService';
 import driversFetch from '../modules/drivers/actions/driversFetch';
 import styles from './styles.scss';
-import stylesButton from '../components/button.scss';
+import stylesButton from '../components/Button/styles.scss';
 import * as UtilHelper from '../helper/utility';
-import NumberFormat from 'react-number-format';
-import {ModalContainer, ModalDialog} from 'react-modal-dialog';
-import {push} from 'react-router-redux';
-import {Glyph} from '../views/base';
+import Glyph from '../components/Glyph';
+import config from '../config/configValues.json';
 
 const PanelDetails = React.createClass({
   render() {
     const { expandedOrder, shrinkOrder, isExpandDriver } = this.props;
-    const reassignOrderButton = {
-      textBase: 'Assign',
-      onClick: this.props.expandDriver,
-      styles: {
-        base: stylesButton.greenButton2,
-      }
-    };
+    const duration = moment.duration(moment(expandedOrder.DueTime).diff(moment(new Date())));
+    const deadline = moment(expandedOrder.DueTime).format(config.DATE_FORMAT.DATE_MONTH_YEAR);
     return (
       <div>
-        { expandedOrder &&
+        {expandedOrder &&
           <div className={isExpandDriver ? styles.panelDetails2 : styles.panelDetails}>
-            <div onClick={shrinkOrder} className={styles.closeButton}>
-              X
+            <div role="none" onClick={shrinkOrder} className={styles.closeButton}>
+              &times;
             </div>
             <div className={styles.orderDueTime}>
               <Deadline deadline={expandedOrder.DueTime} />
+              <br />
+              <p
+                className={`${duration._milliseconds < 0 ? styles['text-red'] : styles['text-black']} 
+                 ${styles.deadlineDate}`}
+              >
+               ({deadline})
+              </p>
             </div>
             <div className={styles.orderDetails}>
               <div className={styles.reassignButton}>
-                <button className={stylesButton.greenButton2} onClick={this.props.expandDriver}>Assign</button>
+                <button
+                  className={stylesButton.greenButton2}
+                  onClick={this.props.expandDriver}
+                >
+                  Assign
+                </button>
               </div>
               <div className={styles.orderDetailsLabel}>
                 Order ID
               </div>
               <div className={styles.orderDetailsValue}>
                 {expandedOrder.UserOrderNumber}
+              </div>
+              <div className={styles.orderDetailsLabel}>
+                Web Order ID
+              </div>
+              <div className={styles.orderDetailsValue}>
+                {expandedOrder.WebOrderID}
               </div>
               <div className={styles.orderDetailsLabel}>
                 Origin
@@ -85,45 +103,47 @@ const PanelDetails = React.createClass({
                 <NumberFormat displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp '} value={expandedOrder.TotalValue} />
               </div>
             </div>
-            <div className={styles.orderDetails}>
-              <div className={styles.orderDetailsLabel}>
-                From
+            <div className={styles.scrollable}>
+              <div className={styles.orderDetails}>
+                <div className={styles.orderDetailsLabel}>
+                  From
+                </div>
+                <div className={styles.orderDetailsValue}>
+                  {expandedOrder.PickupAddress && `${expandedOrder.PickupAddress.FirstName} ${expandedOrder.PickupAddress.LastName}`}
+                </div>
+                <div className={styles.orderDetailsValue2}>
+                  {expandedOrder.PickupAddress && expandedOrder.PickupAddress.Address1}
+                </div>
               </div>
-              <div className={styles.orderDetailsValue}>
-                {expandedOrder.PickupAddress && expandedOrder.PickupAddress.FirstName + ' ' + expandedOrder.PickupAddress.LastName}
-              </div>
-              <div className={styles.orderDetailsValue2}>
-                {expandedOrder.PickupAddress && expandedOrder.PickupAddress.Address1}
-              </div>
-            </div>
-            <div className={styles.orderDetails}>
-              <div className={styles.orderDetailsLabel}>
-                To
-              </div>
-              <div className={styles.orderDetailsValue}>
-                {expandedOrder.DropoffAddress && expandedOrder.DropoffAddress.FirstName + ' ' + expandedOrder.DropoffAddress.LastName}
-              </div>
-              <div className={styles.orderDetailsValue2}>
-                {expandedOrder.DropoffAddress && expandedOrder.DropoffAddress.Address1}
+              <div className={styles.orderDetails}>
+                <div className={styles.orderDetailsLabel}>
+                  To
+                </div>
+                <div className={styles.orderDetailsValue}>
+                  {expandedOrder.DropoffAddress && `${expandedOrder.DropoffAddress.FirstName} ${expandedOrder.DropoffAddress.LastName}`}
+                </div>
+                <div className={styles.orderDetailsValue2}>
+                  {expandedOrder.DropoffAddress && expandedOrder.DropoffAddress.Address1}
+                </div>
               </div>
             </div>
           </div>
         }
       </div>
     );
-  }
+  },
 });
 
-const Drivers = React.createClass({
-  render: function() {
-    var driverComponents = this.props.drivers.map(function(driver, idx) {
+class Drivers extends Component {
+  render() {
+    const driverComponents = this.props.drivers.map((driver) => {
       const isSelected = this.props.selectedDriver === driver.UserID;
       let selectedWeight = this.props.selectedOrder.PackageWeight;
       if (this.props.selectedOrders.length > 0) {
         selectedWeight = 0;
-        this.props.selectedOrders.forEach(function(order) {
+        this.props.selectedOrders.forEach((order) => {
           selectedWeight += order.PackageWeight;
-        })
+        });
       }
       const totalWeight = parseFloat(driver.TotalCurrentWeight) + parseFloat(selectedWeight);
       const driverWeight = isSelected ? totalWeight : parseFloat(driver.TotalCurrentWeight);
@@ -132,18 +152,26 @@ const Drivers = React.createClass({
         orderDriverStyle = styles.orderDriverSelectedExceed;
       }
       return (
-        <div className={styles.mainDriver} key={idx}>
-          <div className={orderDriverStyle} onClick={()=>{this.props.setDriver(driver.UserID)}}>
+        <div className={styles.mainDriver} key={driver.UserID}>
+          <div role="none" className={orderDriverStyle} onClick={() => this.props.setDriver(driver.UserID)}>
             <div className={styles.driverInput}>
-              <img src={this.props.selectedDriver === driver.UserID ? "/img/icon-radio-on.png" : "/img/icon-radio-off.png"} />
+              <img
+                alt="radio button"
+                src={this.props.selectedDriver === driver.UserID ?
+                config.IMAGES.RADIO_ON : config.IMAGES.RADIO_OFF}
+              />
             </div>
             <div className={styles.vehicleIcon}>
-              <img className={styles.driverLoadImage}
-                src={driver.Vehicle && driver.Vehicle.VehicleID === 1 ? "/img/icon-vehicle-motor.png" : "/img/icon-vehicle-van.png"} />
+              <img
+                alt="vehicle"
+                className={styles.driverLoadImage}
+                src={driver.Vehicle && driver.Vehicle.VehicleID === config.vehicleType.Motorcycle ?
+                  config.IMAGES.MOTORCYCLE : config.IMAGES.VAN}
+              />
             </div>
             <div className={styles.driverDetails}>
               <span className={styles.driverName}>
-                {UtilHelper.trimString(driver.FirstName + ' ' + driver.LastName, 20)}
+                {UtilHelper.trimString(`${driver.FirstName} ${driver.LastName}`, 20)}
               </span>
             </div>
             <div className={styles.driverDetails}>
@@ -154,47 +182,75 @@ const Drivers = React.createClass({
           </div>
         </div>
       );
-    }.bind(this));
+    });
     return <div>{driverComponents}</div>;
   }
-});
+}
 
-const PanelDrivers = React.createClass({
-  getInitialState() {
-    return ({driverList: this.props.drivers, searchValue: ''})
-  },
+/* eslint-disable */
+Drivers.propTypes = {
+  drivers: PropTypes.array,
+  selectedDriver: PropTypes.any,
+  selectedOrder: PropTypes.any,
+  selectedOrders: PropTypes.any,
+  setDriver: PropTypes.func,
+};
+/* eslint-enable */
+
+Drivers.defaultProps = {
+  drivers: [],
+  selectedDriver: {},
+  selectedOrder: {},
+  selectedOrders: [],
+  setDriver: () => {},
+};
+
+class PanelDrivers extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      driverList: this.props.drivers,
+      searchValue: '',
+    };
+  }
   searchDriver(e) {
-    this.setState({searchValue: e.target.value});
-    let driverList = lodash.filter(this.props.drivers, function(driver) {
-      let driverName = driver.FirstName + ' ' + driver.LastName;
-      let searchValue = e.target.value;
+    this.setState({ searchValue: e.target.value });
+    const driverList = _.filter(this.props.drivers, (driver) => {
+      const driverName = `${driver.FirstName} ${driver.LastName}`;
+      const searchValue = e.target.value;
       return driverName.toLowerCase().includes(searchValue);
     });
-    this.setState({driverList: driverList});
-  },
+    this.setState({ driverList });
+  }
   render() {
     const setDriverButton = {
       textBase: 'Assign Driver',
       onClick: this.props.isExpandDriverBulk ?
-        this.props.bulkAssignOrder.bind(null, this.props.selectedOrders, this.props.selectedDriver) :
-        this.props.assignOrder.bind(null, this.props.expandedOrder.UserOrderID, this.props.selectedDriver),
+        this.props.bulkAssignOrder.bind(
+          null, this.props.selectedOrders,
+          this.props.selectedDriver,
+        ) :
+        this.props.assignOrder.bind(
+          null, this.props.expandedOrder.UserOrderID,
+          this.props.selectedDriver,
+        ),
       styles: {
         base: stylesButton.greenButton4,
-      }
+      },
     };
     return (
       <div className={styles.mainDriverPanel}>
-        { this.props.isExpandDriverBulk &&
-          <div onClick={this.props.shrinkOrder} className={styles.closeButton}>
-            X
+        {this.props.isExpandDriverBulk &&
+          <div role="none" onClick={this.props.shrinkOrder} className={styles.closeButton}>
+            &times;
           </div>
         }
-        { this.props.isExpandDriverBulk &&
+        {this.props.isExpandDriverBulk &&
           <div className={styles.panelDriverChoose}>
             Choose a driver for {this.props.selectedOrders.length} order:
           </div>
         }
-        { !this.props.isExpandDriverBulk &&
+        {!this.props.isExpandDriverBulk &&
           <div className={styles.panelDriverChoose}>
             Choose a driver for this order
           </div>
@@ -203,7 +259,13 @@ const PanelDrivers = React.createClass({
           <input className={styles.inputDriverSearch} onChange={this.searchDriver} placeholder={'Search Driver...'} />
         </div>
         <div className={styles.panelDriverList}>
-          <Drivers selectedDriver={this.props.selectedDriver} selectedOrders={this.props.selectedOrders} selectedOrder={this.props.expandedOrder} setDriver={this.props.setDriver} drivers={this.state.driverList} />
+          <Drivers
+            selectedDriver={this.props.selectedDriver}
+            selectedOrders={this.props.selectedOrders}
+            selectedOrder={this.props.expandedOrder}
+            setDriver={this.props.setDriver}
+            drivers={this.state.driverList}
+          />
         </div>
         <div className={styles.setDriverButton}>
           <ButtonWithLoading {...setDriverButton} />
@@ -211,51 +273,82 @@ const PanelDrivers = React.createClass({
       </div>
     );
   }
-});
+}
 
-const ErrorAssign = React.createClass({
-  render: function() {
-    var errorComponents = this.props.errorIDs.map(function(error, idx) {
-      return (
+/* eslint-disable */
+PanelDrivers.propTypes = {
+  drivers: PropTypes.any,
+  isExpandDriverBulk: PropTypes.bool,
+  bulkAssignOrder: PropTypes.func,
+  selectedOrders: PropTypes.any,
+  selectedDriver: PropTypes.any,
+  assignOrder: PropTypes.func,
+  expandedOrder: PropTypes.any,
+  shrinkOrder: PropTypes.func,
+  setDriver: PropTypes.func,
+};
+/* eslint-enable */
+
+PanelDrivers.defaultProps = {
+  drivers: [],
+  isExpandDriverBulk: false,
+  bulkAssignOrder: () => {},
+  selectedOrders: {},
+  selectedDriver: {},
+  assignOrder: () => {},
+  expandedOrder: {},
+  shrinkOrder: () => {},
+  setDriver: () => {},
+};
+
+function ErrorAssign({ errorIDs }) {
+  return (
+    <div>
+      {errorIDs.map((error, idx) => (
         <div key={idx}>
           {error.UserOrderID} : {error.error}
         </div>
-      );
-    }.bind(this));
-    return <div>{errorComponents}</div>;
-  }
-});
+      ))}
+    </div>
+  );
+}
+
+/* eslint-disable */
+ErrorAssign.propTypes = {
+  errorIDs: PropTypes.any.isRequired,
+};
+/* eslint-enable */
 
 const OrderPage = React.createClass({
   getInitialState() {
-    return ({opened: true, idsRaw: '', ids: [], idsStart: '', driverID: null, orders: [], selectedOrders: [], isSuccessAssign: false});
+    return ({ opened: true, idsRaw: '', ids: [], idsStart: '', driverID: null, orders: [], selectedOrders: [], isSuccessAssign: false });
   },
   toggleOpen() {
-      this.setState({opened: !this.state.opened, idsStart: this.state.idsRaw});
+    this.setState({ opened: !this.state.opened, idsStart: this.state.idsRaw });
   },
   cancelChange() {
-      this.setState({opened: true, idsRaw: '', ids: []});
+    this.setState({ opened: true, idsRaw: '', ids: [] });
   },
   textChange(e) {
-      this.setState({idsRaw: e.target.value});
+    this.setState({ idsRaw: e.target.value });
   },
   processText() {
-      const {filterAction} = this.props;
-      const IDs = _.chain(this.state.idsRaw.match(/\S+/g)).uniq().value();
-      if (IDs.length === 0) {
-          alert('Please write EDS Number or Order ID');
-          return;
-      }
-      this.setState({ids: IDs});
-      this.toggleOpen();
-      const newFilters = {['userOrderNumbers']: JSON.stringify(IDs)};
-      this.props.UpdateAndFetch(newFilters);
+    const { filterAction } = this.props;
+    const IDs = _.chain(this.state.idsRaw.match(/\S+/g)).uniq().value();
+    if (IDs.length === 0) {
+      alert('Please write EDS Number or Order ID');
+      return;
+    }
+    this.setState({ ids: IDs });
+    this.toggleOpen();
+    const newFilters = { userOrderNumbers: JSON.stringify(IDs) };
+    this.props.UpdateAndFetch(newFilters);
   },
   clearText() {
-      this.setState({opened: true, idsRaw: '', ids: []});
-      this.setState({ids: []});
-      const newFilters = {['userOrderNumbers']: []};
-      this.props.UpdateAndFetch(newFilters);
+    this.setState({ opened: true, idsRaw: '', ids: [] });
+    this.setState({ ids: [] });
+    const newFilters = { userOrderNumbers: [] };
+    this.props.UpdateAndFetch(newFilters);
   },
   componentWillMount() {
     this.clearText();
@@ -265,60 +358,95 @@ const OrderPage = React.createClass({
   },
   componentWillReceiveProps(nextProps) {
     this.setState({
-      isSuccessAssign: nextProps['isSuccessAssign']
+      isSuccessAssign: nextProps.isSuccessAssign,
     });
   },
   selectDriver(e) {
-    this.setState({driverID: e.key});
+    this.setState({ driverID: e.key });
   },
   expandBulkAssign() {
-    let selectedOrders = lodash.filter(this.props.orders, ['IsChecked', true]);
+    const selectedOrders = _.filter(this.props.orders, ['IsChecked', true]);
     if (selectedOrders.length < 1) {
       alert('No order selected');
       return;
     }
-    this.setState({selectedOrders: selectedOrders});
+    this.setState({ selectedOrders });
     this.props.ShrinkOrder();
-    setTimeout(function() {
+    setTimeout(() => {
       this.props.ExpandDriverBulk();
-    }.bind(this), 100);
+    }, 100);
   },
   render() {
-    const {paginationState, PaginationAction, drivers, total, errorIDs, successAssign, errorAssign, orders, expandedOrder, isExpandOrder, isExpandDriver, isExpandDriverBulk, AssignOrder, BulkAssignOrder, ShrinkOrder, ExpandDriver, selectedDriver, SetDriver} = this.props;
+    const {
+      paginationState,
+      PaginationAction,
+      drivers,
+      total,
+      errorIDs,
+      successAssign,
+      errorAssign,
+      orders,
+      expandedOrder,
+      isExpandOrder,
+      isExpandDriver,
+      isExpandDriverBulk,
+      AssignOrder,
+      BulkAssignOrder,
+      ShrinkOrder,
+      ExpandDriver,
+      selectedDriver,
+      SetDriver,
+    } = this.props;
     return (
-      <Page title="My Orders" count={{itemName: 'Items', done: 'All Done', value: total}}>
+      <Page title="My Orders" count={{ itemName: 'Items', done: 'All Done', value: total }}>
         <div>
-          <div className={styles.addCompanyOrderButton} onClick={this.props.GoToAddOrder}>
+          <div role="none" className={styles.addCompanyOrderButton} onClick={this.props.GoToAddOrder}>
             + Add Company Order
           </div>
           <div className={styles.filterOrderArea}>
-              {
+            {
               this.state.opened ?
-              <div className={styles.top2} onClick={this.toggleOpen}>
-                <h4 className={styles.title}>
-                  <Glyph name='chevron-down' className={styles.glyphFilter} />
-                  {(this.state.ids.length ? 'Search multiple orders (' + this.state.ids.length + ' keywords)' : 'Search multiple orders')}
-                </h4>
-              </div> :
-              <div className={styles.panel2}>
-                <div className={styles.top} onClick={this.toggleOpen}>
+                <div role="none" className={styles.top2} onClick={this.toggleOpen}>
                   <h4 className={styles.title}>
-                    <Glyph name='chevron-up' className={styles.glyphFilter} />
-                    {'Search multiple orders:'}
+                    <Glyph name="chevron-down" className={styles.glyphFilter} />
+                    {(this.state.ids.length ? `Search multiple orders (${this.state.ids.length} keywords)` : 'Search multiple orders')}
                   </h4>
-                </div>
-                <div className={styles.bottom}>
-                  <textarea
-                      style={{height: 100, width: '100%'}}
+                </div> :
+                <div className={styles.panel2}>
+                  <div role="none" className={styles.top} onClick={this.toggleOpen}>
+                    <h4 className={styles.title}>
+                      <Glyph name="chevron-up" className={styles.glyphFilter} />
+                      {'Search multiple orders:'}
+                    </h4>
+                  </div>
+                  <div className={styles.bottom}>
+                    <textarea
+                      style={{ height: 100, width: '100%' }}
                       value={this.state.idsRaw}
                       onChange={this.textChange}
-                      placeholder={'Write/Paste EDS Number or Order ID here, separated with newline'} />
-                  <ButtonBase styles={styles.modalBtn} onClick={this.processText}>Filter</ButtonBase>
-                  <ButtonBase styles={styles.modalBtn} onClick={this.clearText}>Clear</ButtonBase>
-                  <ButtonBase styles={styles.modalBtn} onClick={this.cancelChange}>Cancel</ButtonBase>
+                      placeholder={'Write/Paste EDS Number or Order ID here, separated with newline'}
+                    />
+                    <ButtonBase
+                      styles={styles.modalBtn}
+                      onClick={this.processText}
+                    >
+                      Filter
+                    </ButtonBase>
+                    <ButtonBase
+                      styles={styles.modalBtn}
+                      onClick={this.clearText}
+                    >
+                      Clear
+                    </ButtonBase>
+                    <ButtonBase
+                      styles={styles.modalBtn}
+                      onClick={this.cancelChange}
+                    >
+                      Cancel
+                    </ButtonBase>
+                  </div>
                 </div>
-              </div>
-              }
+            }
           </div>
         </div>
         <Pagination2 {...paginationState} {...PaginationAction} />
@@ -328,39 +456,41 @@ const OrderPage = React.createClass({
         {
           (this.props.isFetching || this.props.isLoadingDriver) &&
           <div>
-            <div style={{clear: 'both'}} />
-            <div style={{textAlign:'center'}}>
-              <div style={{fontSize: 20}}>
+            <div style={{ clear: 'both' }} />
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: 20 }}>
                 Fetching data....
               </div>
             </div>
           </div>
         }
         {
-          !this.props.isFetching && this.props.orders.length === 0 && !lodash.isEmpty(this.props.filters) &&
+          !this.props.isFetching && this.props.orders.length === 0 &&
+          !_.isEmpty(this.props.filters) &&
           <div>
-            <div style={{clear: 'both'}} />
+            <div style={{ clear: 'both' }} />
             <div className={styles.noOrderDesc}>
-              <img src="/img/icon-orders-done.png" />
-              <div style={{fontSize: 20}}>
+              <img alt="done" src={config.IMAGES.ORDERS_DONE} />
+              <div style={{ fontSize: 20 }}>
                 Orders not found
               </div>
-              <div style={{fontSize: 12, marginTop: 20}}>
+              <div style={{ fontSize: 12, marginTop: 20 }}>
                 Please choose another filter to get the orders.
               </div>
             </div>
           </div>
         }
         {
-          !this.props.isFetching && this.props.orders.length === 0 && lodash.isEmpty(this.props.filters) &&
+          !this.props.isFetching && this.props.orders.length === 0
+          && _.isEmpty(this.props.filters) &&
           <div>
-            <div style={{clear: 'both'}} />
+            <div style={{ clear: 'both' }} />
             <div className={styles.noOrderDesc}>
-              <img src="/img/icon-orders-done.png" />
-              <div style={{fontSize: 20}}>
+              <img alt="done" src={config.IMAGES.ORDERS_DONE} />
+              <div style={{ fontSize: 20 }}>
                 You dont have any orders right now!
               </div>
-              <div style={{fontSize: 12, marginTop: 20}}>
+              <div style={{ fontSize: 12, marginTop: 20 }}>
                 You have assign all orders
               </div>
             </div>
@@ -376,7 +506,8 @@ const OrderPage = React.createClass({
                 isExpandDriver={isExpandDriver}
                 expandedOrder={expandedOrder}
                 shrinkOrder={ShrinkOrder}
-                expandDriver={ExpandDriver} />
+                expandDriver={ExpandDriver}
+              />
             }
             {
               isExpandDriver &&
@@ -389,12 +520,13 @@ const OrderPage = React.createClass({
                 bulkAssignOrder={BulkAssignOrder}
                 selectedDriver={selectedDriver}
                 setDriver={SetDriver}
-                drivers={drivers} />
+                drivers={drivers}
+              />
             }
           </div>
         }
 
-        { this.state.isSuccessAssign &&
+        {this.state.isSuccessAssign &&
           <ModalContainer>
             <ModalDialog>
               {
@@ -402,7 +534,7 @@ const OrderPage = React.createClass({
                 <div className={styles.modal}>
                   <div className={styles.modalHeader}>
                     <h2 className={styles.modalTitle}>Assign Report</h2>
-                    <div className={styles.successContent + ' ' + styles.ordersContentEmpty}>
+                    <div className={`${styles.successContent} ${styles.ordersContentEmpty}`}>
                       <div>
                         Success: {successAssign}
                       </div>
@@ -419,13 +551,15 @@ const OrderPage = React.createClass({
                   </div>
                 </div>
               }
-              { errorIDs.length === 0 &&
+              {errorIDs.length === 0 &&
                 <div className={styles.modal}>
                   <div className={styles.modalHeader}>
                     <h2 className={styles.modalTitle}>Success</h2>
-                    <div className={styles.successContent + ' ' + styles.ordersContentEmpty}>
-                      <img className={styles.successIcon} src={"/img/icon-success.png"} />
-                      <div className={styles.mediumText}>You have successfully assigned this order</div>
+                    <div className={`${styles.successContent} ${styles.ordersContentEmpty}`}>
+                      <img alt="success" className={styles.successIcon} src={config.IMAGES.ICON_SUCCESS} />
+                      <div className={styles.mediumText}>
+                        You have successfully assigned this order
+                      </div>
                     </div>
                   </div>
                   <div className={styles.modalFooter}>
@@ -440,11 +574,27 @@ const OrderPage = React.createClass({
         }
       </Page>
     );
-  }
+  },
 });
 
 function StoreToOrdersPage(store) {
-  const {currentPage, limit, total, isFetching, filters, errorIDs, successAssign, errorAssign, orders, expandedOrder, isExpandOrder, isExpandDriver, isExpandDriverBulk, selectedDriver, isSuccessAssign} = store.app.myOrders;
+  const {
+    currentPage,
+    limit,
+    total,
+    isFetching,
+    filters,
+    errorIDs,
+    successAssign,
+    errorAssign,
+    orders,
+    expandedOrder,
+    isExpandOrder,
+    isExpandDriver,
+    isExpandDriverBulk,
+    selectedDriver,
+    isSuccessAssign,
+  } = store.app.myOrders;
   const userLogged = store.app.userLogged;
   const driversStore = store.app.driversStore;
   const driverList = driversStore.driverList;
@@ -452,11 +602,11 @@ function StoreToOrdersPage(store) {
   const fleetDrivers = driversStore.fleetDrivers;
   const drivers = fleetDrivers.driverList;
   return {
-    orders: orders,
-    drivers: drivers,
-    userLogged: userLogged,
+    orders,
+    drivers,
+    userLogged,
     paginationState: {
-        currentPage, limit, total,
+      currentPage, limit, total,
     },
     expandedOrder,
     isFetching,
@@ -470,8 +620,8 @@ function StoreToOrdersPage(store) {
     isLoadingDriver,
     errorIDs,
     successAssign,
-    errorAssign
-  }
+    errorAssign,
+  };
 }
 
 function DispatchToOrdersPage(dispatch) {
@@ -513,12 +663,12 @@ function DispatchToOrdersPage(dispatch) {
       },
     },
     GoToAddOrder: () => {
-      dispatch(push(`/myorders/add/`));
+      dispatch(push('/myorders/add/'));
     },
     UpdateAndFetch: (newFilters) => {
       dispatch(OrderService.UpdateAndFetch(newFilters));
-    }
-  }
+    },
+  };
 }
 
 export default connect(StoreToOrdersPage, DispatchToOrdersPage)(OrderPage);

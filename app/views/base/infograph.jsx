@@ -1,7 +1,9 @@
 import React from 'react';
-import {Glyph} from './';
-import styles from './infograph.scss';
+
 import classNaming from 'classnames';
+
+import Glyph from '../../components/Glyph';
+import styles from './infograph.scss';
 
 const BoxState = {
   all: {
@@ -38,7 +40,7 @@ export default React.createClass({
     this.props.onClick(this.props.attr);
   },
   render() {
-    const {attr, val} = this.props;
+    const { attr, val } = this.props;
     const state = BoxState[attr] || {};
     return (
       <div className={classNaming(styles.container, state.styles)} onClick={this.handleClick}>

@@ -6,9 +6,10 @@ import PropTypes from 'prop-types';
 
 import InboundOrdersTable from './inboundOrdersTable';
 import styles from './styles.scss';
-import { Input, Page, Glyph } from '../views/base';
+import { Input, Page } from '../views/base';
+import Glyph from '../components/Glyph';
 import * as InboundOrders from './inboundOrdersService';
-import { ButtonBase } from '../components/button';
+import { ButtonBase } from '../components/Button';
 
 const DuplicateModal = React.createClass({
   componentWillUnmount() {

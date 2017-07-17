@@ -1,13 +1,13 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import {ContainersAction} from '../../modules';
-import {initialLoad as InitialLoad} from '../../modules/containers/actions/containersFetch';
-import {Collection, Pagination, ButtonBase, ButtonAction} from '../base';
-import {BaseCellGray, BaseHeader, BaseRow, SearchCell} from './table';
+import { connect } from 'react-redux';
+
+import { ContainersAction } from '../../modules';
+import { initialLoad as InitialLoad } from '../../modules/containers/actions/containersFetch';
+import { Collection, Pagination, ButtonAction } from '../base';
+import { BaseCellGray, BaseHeader, BaseRow, SearchCell } from './table';
 import ActiveCell from './activeCell';
 import PickRow from './pickContainerRow';
 import SetStatusCell from './setStatusCell';
-
 import styles from './table.scss';
 
 function camelize(str) {
@@ -22,7 +22,7 @@ function DriverFullName(driver) {
 
 const ActionCell = React.createClass({
   handleClick(e) {
-    const {item} = this.props;
+    const { item } = this.props;
     const qrCodeLink = '/qrcode/' + item.ContainerNumber;
     window.open(qrCodeLink);
     e.preventDefault();
@@ -30,7 +30,7 @@ const ActionCell = React.createClass({
   },
   render() {
     return (
-      <td className={styles.td} style={{width: '40px', textAlign: 'center'}}>
+      <td className={styles.td} style={{ width: '40px', textAlign: 'center' }}>
         <a href='javascript:;' onClick={this.handleClick}>
           <ButtonAction>Print</ButtonAction>
         </a>
@@ -52,16 +52,16 @@ const ContainerTable = React.createClass({
   render() {
     const columns = ['ContainerNumber', 'OrderCount', 'ContainerStatus', 'Driver', 'District', 'status', 'action'];
     const header = {
-      ContainerNumber: 'Container Number', 
+      ContainerNumber: 'Container Number',
       OrderCount: 'Number of Orders',
       ContainerStatus: 'Status',
-      Driver: 'Driver', 
+      Driver: 'Driver',
       District: 'District',
-      status: 'Active', 
+      status: 'Active',
       action: 'Action'
     };
 
-    const {containers, isFetching, pagination} = this.props;
+    const { containers, isFetching, pagination } = this.props;
     const items = containers;
 
     const HeaderComponent = {
@@ -90,7 +90,7 @@ const ContainerTable = React.createClass({
     return (
       <div>
         <Pagination {...pagination} setCurrentPage={this.setCurrentPage} setLimit={this.setLimit} />
-        <table className={styles.table} style={isFetching ? {opacity: 0.5} : {}}>
+        <table className={styles.table} style={isFetching ? { opacity: 0.5 } : {}}>
           <thead>{Header}</thead>
           <tbody>
             <tr>
@@ -111,11 +111,11 @@ const ContainerTable = React.createClass({
 });
 
 const stateToProps = (state) => {
-  const {containers, isFetching, shown, total} = state.app.containers;
-  const {currentPage, limit} = state.app.containerList.myContainer;
+  const { containers, isFetching, shown, total } = state.app.containers;
+  const { currentPage, limit } = state.app.containerList.myContainer;
   return {
     containers: _.chain(containers).map((container) => {
-      if(!container.CurrentTrip) return _.assign({}, container, {
+      if (!container.CurrentTrip) return _.assign({}, container, {
         OrderCount: 0
       });
 
@@ -142,16 +142,16 @@ const stateToProps = (state) => {
 
 const dispatchToProps = (dispatch) => {
   return {
-    fetchContainer: function() {
+    fetchContainer: function () {
       dispatch(ContainersAction.fetch());
     },
-    setLimit: function(limit) {
+    setLimit: function (limit) {
       dispatch(ContainersAction.setLimit(limit));
     },
-    setCurrentPage: function(page) {
+    setCurrentPage: function (page) {
       dispatch(ContainersAction.setCurrentPage(page));
     },
-    initialLoad: function() {
+    initialLoad: function () {
       dispatch(InitialLoad());
     },
   }
