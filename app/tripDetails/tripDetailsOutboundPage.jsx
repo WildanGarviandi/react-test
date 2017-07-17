@@ -15,7 +15,7 @@ import * as TripDetails from './tripDetailsService';
 import * as OutboundTrips from '../outboundTrips/outboundTripsService';
 import AssignTripModal from '../outboundTrips/outboundTripsModal';
 import ModalActions from '../modules/modals/actions';
-import RemarksSetter from '../components/remarksSetter';
+import RemarksSetter from '../components/RemarksSetter';
 import styles from './styles.scss';
 import { CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered, TripParser } from '../modules/trips';
 import { formatDate } from '../helper/time';

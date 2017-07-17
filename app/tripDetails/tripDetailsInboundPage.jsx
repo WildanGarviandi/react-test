@@ -10,7 +10,7 @@ import { ButtonWithLoading, InputWithDefault, Page } from '../views/base';
 import { OrderTable } from './tripDetailsTable';
 import * as TripDetails from './tripDetailsService';
 import ModalActions from '../modules/modals/actions';
-import RemarksSetter from '../components/remarksSetter';
+import RemarksSetter from '../components/RemarksSetter';
 import styles from './styles.scss';
 import { CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered, TripParser } from '../modules/trips';
 import { formatDate } from '../helper/time';
