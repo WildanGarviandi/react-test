@@ -12,7 +12,7 @@ import * as StateService from '../../states/stateService';
 import * as CityService from '../../cities/cityService';
 import * as OrderService from '../../orders/orderService';
 import Glyph from '../../components/Glyph';
-import Accordion from '../../components/accordion';
+import Accordion from '../../components/Accordion';
 import styles from './styles.scss';
 import config from '../../../config.json';
 

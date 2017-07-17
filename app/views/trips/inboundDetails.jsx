@@ -11,7 +11,7 @@ import { ButtonWithLoading, Input, InputWithDefault, Page } from '../base';
 import { OrderTable } from '../container/table';
 import * as TripDetailsTrue from '../../modules/inboundTripDetails';
 import ModalActions from '../../modules/modals/actions';
-import Accordion from '../../components/accordion';
+import Accordion from '../../components/Accordion';
 import TransportSetter from '../container/secondSetting';
 import RemarksSetter from '../container/remarksSetter';
 import styles from './styles.scss';

@@ -8,7 +8,7 @@ import { ContainerDetailsActions, StatusList } from '../../modules';
 import { ButtonWithLoading, Page } from '../base';
 import { OrderTable } from './table';
 import * as TripDetailsTrue from '../../modules/inboundTripDetails';
-import Accordion from '../../components/accordion';
+import Accordion from '../../components/Accordion';
 import NextDestinationSetter from './nextDestinationSetter';
 import TransportSetter from './secondSetting';
 import styles from './styles.scss';

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import TimeFormatter, { formatDate } from '../helper/time';
 import { FetchDetails } from '../modules/inboundTripDetails';
 import { Page } from '../views/base';
-import Accordion from '../components/accordion';
+import Accordion from '../components/Accordion';
 import styles from './styles.scss';
 
 const tripAttrs = ['fleet', 'driver', 'container', 'status', 'pickupTime', 'dropoffTime'];

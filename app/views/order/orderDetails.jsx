@@ -7,7 +7,7 @@ import * as _ from 'lodash';
 import { conf, orderDetailsSummary, orderDetailsCost,
   orderDetailsPricing } from './ordersColumns';
 import styles from './styles.scss';
-import Accordion from '../../components/accordion';
+import Accordion from '../../components/Accordion';
 import { ButtonWithLoading, Page } from '../base';
 import { InputWithDefault, CheckBox } from '../base/input';
 import * as OrdersDetails from '../../modules/orders/actions/details';
