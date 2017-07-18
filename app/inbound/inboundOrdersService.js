@@ -5,7 +5,7 @@ import FetchPost from '../modules/fetch/post';
 import ModalActions from '../modules/modals/actions';
 import { modalAction } from '../modules/modals/constants';
 import { OrderParser } from '../modules/orders';
-import NotifActions from '../modules/notification/actions';
+import { addNotification } from '../modules/notification';
 import * as DashboardService from '../dashboard/dashboardService';
 
 const Constants = {
@@ -240,7 +240,7 @@ export function markReceived(id) {
 
       return response.json().then(({ data }) => {
         if (data.duplicate) {
-          dispatch(NotifActions.addNotification(`Order ${scannedID} was found in more than one data`, 'warning', null, null, 5, true));
+          dispatch(addNotification(`Order ${scannedID} was found in more than one data`, 'warning', null, null, 5, true));
 
           dispatch({
             type: Constants.ORDERS_INBOUND_MARK_RECEIVED_SET,
@@ -249,19 +249,19 @@ export function markReceived(id) {
           });
         } else if (data.Trip) {
           isInterHub = data.Trip.OriginHub && data.Trip.OriginHub.HubID;
-          dispatch(NotifActions.addNotification(`Trip ID ${data.Trip.TripID} was received`, 'info', null, null, 3, true));
+          dispatch(addNotification(`Trip ID ${data.Trip.TripID} was received`, 'info', null, null, 3, true));
 
           dispatch({
             type: Constants.ORDERS_INBOUND_MARK_RECEIVED_SET,
           });
         } else if (data.hasScanned) {
-          dispatch(NotifActions.addNotification(`Order ${scannedID} already scanned`, 'success', null, null, 3, true));
+          dispatch(addNotification(`Order ${scannedID} already scanned`, 'success', null, null, 3, true));
 
           dispatch({
             type: Constants.ORDERS_INBOUND_MARK_RECEIVED_SET,
           });
         } else {
-          dispatch(NotifActions.addNotification(`Order ${scannedID} was received`, 'success', null, null, 3, true));
+          dispatch(addNotification(`Order ${scannedID} was received`, 'success', null, null, 3, true));
 
           dispatch({
             type: Constants.ORDERS_INBOUND_MARK_RECEIVED_SET,
@@ -297,7 +297,7 @@ export function markReceived(id) {
         scannedOrder: scannedID,
       });
 
-      dispatch(NotifActions.addNotification(message, 'error', null, null, 5, true));
+      dispatch(addNotification(message, 'error', null, null, 5, true));
     });
   };
 }
@@ -364,7 +364,7 @@ export function BulkMarkReceived(scannedIDs) {
         },
       });
 
-      dispatch(NotifActions.addNotification(message, 'error', null, null, 5, true));
+      dispatch(addNotification(message, 'error', null, null, 5, true));
     });
   };
 }

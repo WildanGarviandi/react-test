@@ -1,16 +1,17 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import {BackDrop} from './base/modal';
-import {ModalMessage, NotificationContainer} from './base';
-import store from '../store';
-import {push} from 'react-router-redux';
+import { connect } from 'react-redux';
+
+import { BackDrop } from './base/modal';
+import { ModalMessage } from './base';
+import NotificationContainer from '../containers/NotificationContainer/NotificationContainer';
 
 const App = React.createClass({
   render() {
-    const {haveModal, showBackdrop, haveNotif} = this.props;
+    const { haveModal, showBackdrop } = this.props;
+    const isBackDrop = true;
 
     return (
-      <div style={{height: "100%", overflow: (haveModal && 'hidden')}}>
+      <div style={{ height: '100%', overflow: (haveModal && 'hidden') }}>
         {this.props.children}
         {
           haveModal &&
@@ -18,27 +19,23 @@ const App = React.createClass({
         }
         {
           showBackdrop &&
-          <BackDrop show={true} />
+          <BackDrop show={isBackDrop} />
         }
-        {
-          haveNotif &&
-          <NotificationContainer />
-        }
+        <NotificationContainer />
       </div>
     );
-  }
+  },
 });
 
 function StateToProps(state) {
-  const { notification, userLogged } = state.app;
+  const { userLogged } = state.app;
   const { modals, showBackdrop } = state.app.modals;
 
   return {
     haveModal: modals.length > 0,
     showBackdrop,
-    haveNotif: (notification && notification.message),
-    userLogged
-  }
+    userLogged,
+  };
 }
 
 export default connect(StateToProps)(App);

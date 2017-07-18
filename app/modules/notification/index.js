@@ -1,7 +1,14 @@
 const ADD_NOTIFICATION = 'components/notification/ADD_NOTIFICATION';
 const REMOVE_NOTIFICATION = 'components/notification/REMOVE_NOTIFICATION';
 
-const initialState = {};
+const initialState = {
+  message: '',
+  level: null,
+  position: null,
+  style: null,
+  timeout: null,
+  withSound: false,
+};
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
@@ -15,9 +22,7 @@ export default function reducer(state = initialState, action) {
         withSound: action.payload.withSound,
       });
     case REMOVE_NOTIFICATION:
-      return Object.assign({}, state, {
-        message: '',
-      });
+      return Object.assign({}, initialState);
     default:
       return state;
   }
