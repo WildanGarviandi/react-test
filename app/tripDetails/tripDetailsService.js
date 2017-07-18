@@ -561,7 +561,7 @@ export function FetchDetails(tripID) {
     FetchGet('/trip/' + tripID, token, params).then((response) => {
       if (!response.ok) {
         if (response.status == 403) {
-          throw new Error('This trip doesn't belong to this hub');
+          throw new Error('This trip is not belong to this hub');
         }
 
         return response.json().then(({ error }) => {
@@ -704,7 +704,7 @@ export function CreateExternalTrip(tripID) {
     const { externalTrip } = tripDetails;
 
     if (!externalTrip) {
-      dispatch(ModalActions.addMessage('Can't create external trip without any information'));
+      dispatch(ModalActions.addMessage('Cannot create external trip without any information'));
       return;
     }
 
@@ -726,7 +726,7 @@ export function CreateExternalTrip(tripID) {
     });
 
     if (missingInformation.length > 0) {
-      dispatch(ModalActions.addMessage('Can't create external trip. Missing ' + missingInformation.join() + ' information.'));
+      dispatch(ModalActions.addMessage('Cannot create external trip. Missing ' + missingInformation.join() + ' information.'));
       return;
     }
 
@@ -768,8 +768,8 @@ export function ExportManifest(tripID) {
     const acceptHeader = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
     const responseType = 'arraybuffer';
 
-    var output = '<p style='text-align: center'>' +
-      '<img src='../../img/loading.gif' style='width:100px; height:100px;' />' +
+    var output = '<p style="text-align: center">' +
+      '<img src="../../img/loading.gif" style="width:100px; height:100px;" />' +
       '<br />' +
       'You can do other things, while exporting in progress' +
       '</p>';
@@ -953,7 +953,7 @@ export function SaveEdit3PL(tripID) {
     const { externalTrip } = inboundTripDetails;
 
     if (!externalTrip) {
-      dispatch(ModalActions.addMessage('Can't create external trip without any information'));
+      dispatch(ModalActions.addMessage('Cannot create external trip without any information'));
       return;
     }
 
@@ -975,7 +975,7 @@ export function SaveEdit3PL(tripID) {
     });
 
     if (missingInformation.length > 0) {
-      dispatch(ModalActions.addMessage('Can't create external trip. Missing ' + missingInformation.join() + ' information.'));
+      dispatch(ModalActions.addMessage('Cannot create external trip. Missing ' + missingInformation.join() + ' information.'));
       return;
     }
 
