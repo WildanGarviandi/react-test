@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { BackDrop } from './base/modal';
 import { ModalMessage } from './base';
-import NotificationContainer from '../containers/NotificationContainer/NotificationContainer';
+import NotificationContainer from '../containers/NotificationContainer';
 
 const App = React.createClass({
   render() {
