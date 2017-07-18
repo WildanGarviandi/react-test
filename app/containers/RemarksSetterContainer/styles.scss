@@ -24,9 +24,7 @@
   background-color: grey;
   width: 60px;
   height: 30px;
-  position: absolute;
-  top: 20px;
-  right: 0;
+  display: block;
 }
 
 .remarksCancel:hover {
@@ -37,9 +35,7 @@
   margin-left: 286px;
   width: 60px;
   height: 30px;
-  position: absolute;
-  top: 60px;
-  right: 0;
+  margin-top: 10px !important;
 }
 
 .remarksEdit {
@@ -50,4 +46,18 @@
 
 .remarksEdit:hover {
   background-color: darkgrey;
+}
+
+.remarks-textarea {
+  width: 85%;
+  resize: none;
+}
+
+.remarks-textarea:disabled {
+  border: 0;
+  resize: none;
+}
+
+.float-right {
+  float: right;
 }

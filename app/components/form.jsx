@@ -640,7 +640,6 @@ const Textarea = React.createClass({
   },
   render() {
     let { base, notes, styles = {} } = this.props;
-
     return (
       <span className={styles.container}>
         <textarea {...base} className={styles.input} onChange={this.handleChange} onKeyDown={this.handleEnterKey} rows={4} cols={22} />
@@ -669,7 +668,7 @@ const TextareaWithDefault = React.createClass({
     this.props.handleSelect(this.state.currentText);
   },
   render() {
-    return <Textarea {...this.props} base={{ value: this.state.currentText, type: this.props.type }} onChange={this.setText} onEnterKeyPressed={this.handleSelect} />
+    return <Textarea {...this.props} base={{ value: this.state.currentText, type: this.props.type, disabled: this.props.disabled }} onChange={this.setText} onEnterKeyPressed={this.handleSelect} />
   }
 });
 

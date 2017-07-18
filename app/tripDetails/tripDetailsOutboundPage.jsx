@@ -15,7 +15,7 @@ import * as TripDetails from './tripDetailsService';
 import * as OutboundTrips from '../outboundTrips/outboundTripsService';
 import AssignTripModal from '../outboundTrips/outboundTripsModal';
 import ModalActions from '../modules/modals/actions';
-import RemarksSetter from '../components/RemarksSetter';
+import RemarksSetterContainer from '../containers/RemarksSetterContainer';
 import styles from './styles.scss';
 import { CanMarkContainer, CanMarkOrderReceived, CanMarkTripDelivered, TripParser } from '../modules/trips';
 import { formatDate } from '../helper/time';
@@ -359,7 +359,7 @@ const DetailPage = React.createClass({
               </div>
               <div className={`${styles.mB30} ${styles.displayFlex} nb`}>
                 <div className={`${styles.colMd6} ${styles.noPadding}`}>
-                  <RemarksSetter trip={trip} />
+                  <RemarksSetterContainer trip={trip} />
                 </div>
                 <div className={styles.colMd6}>
                   {
