@@ -356,7 +356,6 @@ class InboundOrdersPage extends Component {
       container: styles.verifyInputContainer,
       input: styles.verifyInput,
     };
-    console.log(this.props);
     return (
       <Page title="Inbound Orders" count={{ itemName: 'Items', done: 'All Done', value: this.props.total }}>
         {
