@@ -651,7 +651,7 @@ const Textarea = React.createClass({
 
 const TextareaWithDefault = React.createClass({
   getInitialState() {
-    return { currentText: this.props.currentText || "" };
+    return { currentText: this.props.currentText || '' };
   },
   componentWillReceiveProps(nextProps) {
     if (this.props.currentText !== nextProps.currentText) {
@@ -668,8 +668,20 @@ const TextareaWithDefault = React.createClass({
     this.props.handleSelect(this.state.currentText);
   },
   render() {
-    return <Textarea {...this.props} base={{ value: this.state.currentText, type: this.props.type, disabled: this.props.disabled }} onChange={this.setText} onEnterKeyPressed={this.handleSelect} />
-  }
+    const { disabled, type } = this.props;
+    return (
+      <Textarea
+        {...this.props}
+        base={{
+          value: this.state.currentText,
+          type,
+          disabled: !!disabled,
+        }}
+        onChange={this.setText}
+        onEnterKeyPressed={this.handleSelect}
+      />
+    );
+  },
 });
 
 const FilterTop = React.createClass({
