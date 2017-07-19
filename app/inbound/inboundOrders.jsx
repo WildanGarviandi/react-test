@@ -299,6 +299,16 @@ class InboundOrdersPage extends Component {
       idsStart: '',
       showModalMessage: false,
     };
+
+    this.markReceived = this.markReceived.bind(this);
+    this.changeMark = this.changeMark.bind(this);
+    this.closeModal = this.closeModal.bind(this);
+    this.closeModalMessage = this.closeModalMessage.bind(this);
+    this.toggleOpen = this.toggleOpen.bind(this);
+    this.textChange = this.textChange.bind(this);
+    this.clearText = this.clearText.bind(this);
+    this.cancelChange = this.cancelChange.bind(this);
+    this.processText = this.processText.bind(this);
   }
   componentDidMount() {
     document.getElementById('markReceivedInput').focus();
