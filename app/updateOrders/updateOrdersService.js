@@ -188,7 +188,7 @@ const mapPricing = (pricing) => {
     let price;
 
     if (pricing.length > 0 && pricing[0]) {
-      if (pricing[0] && !pricing[0].MaxWeight) {
+      if (pricing[0].PickupType === 1 && !pricing[0].MaxWeight) {
         isPricingByWeight = false;
         mappedPricing = _.map(pricing, (priceData) => {
           const hasPackageDimensionData = (priceData.WebstoreUser) &&
