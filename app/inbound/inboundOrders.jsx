@@ -1,7 +1,8 @@
-import * as _ from 'lodash';
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
+
+import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 
 import InboundOrdersTable from './inboundOrdersTable';
@@ -11,27 +12,27 @@ import Glyph from '../components/Glyph';
 import * as InboundOrders from './inboundOrdersService';
 import { ButtonBase } from '../components/Button';
 
-const DuplicateModal = React.createClass({
+class DuplicateModal extends Component {
   componentWillUnmount() {
     if (document.getElementById('markReceivedInput')) {
       document.getElementById('markReceivedInput').focus();
     }
-  },
+  }
   closeModal() {
     this.props.closeModal();
-  },
+  }
   pickOrder(id) {
     this.props.pickOrder(id);
     this.closeModal();
-  },
+  }
   render() {
-    const thisComponent = this;
-    const ordersContent = this.props.orders.map((order, index) => {
+    const ordersContent = this.props.orders.map((order) => {
       const data = (
         <div
+          role="none"
           className={styles.orderContent}
-          key={index}
-          onClick={thisComponent.pickOrder.bind(null, order.UserOrderNumber)}
+          key={order.UserOrderNumber}
+          onClick={() => this.pickOrder(order.UserOrderNumber)}
         >
           <div className={styles.orderContentLeft}>
             <div className={styles.smallText}>To</div>
@@ -58,7 +59,7 @@ const DuplicateModal = React.createClass({
     return (
       <ModalDialog>
         <button className={styles.closeModalButton} onClick={this.closeModal}>
-          <img src="/img/icon-close.png" className={styles.closeButtonImage} />
+          <img alt="close" src="/img/icon-close.png" className={styles.closeButtonImage} />
         </button>
         <div className={styles.modal}>
           <div className={styles.modalHeader}>
@@ -74,103 +75,155 @@ const DuplicateModal = React.createClass({
         </div>
       </ModalDialog>
     );
-  },
-});
+  }
+}
 
-const PanelSuggestion = React.createClass({
-  render() {
-    const { nextDestination, lastDestination, successScanned, scannedOrder,
-      closeModalMessage, bulkScan, errorIDs, countSuccess, countError,
-      isTripID, isInterHub, totalOrderByTrip } = this.props;
-    const hideDestination = isTripID && isInterHub;
-    return (
-      <div className={styles.panelSuggestion}>
-        {!bulkScan &&
-          <div>
-            <div className={styles.scanMessage}>
-              <div
-                role="button"
-                onClick={closeModalMessage}
-                className={styles.modalClose}
-              >
-                X
-              </div>
-              {
-                !hideDestination && (
-                  <div className={styles.successScanned}>
-                    Success: {successScanned}
-                  </div>
-                )
-              }
-            </div>
-            <div className={styles.scannedOrder}>
-              {scannedOrder}
+/* eslint-disable */
+DuplicateModal.propTypes = {
+  closeModal: PropTypes.func,
+  pickOrder: PropTypes.func,
+  orders: PropTypes.array,
+};
+/* eslint-enable */
+
+DuplicateModal.defaultProps = {
+  closeModal: () => {},
+  pickOrder: () => {},
+  orders: [],
+};
+
+function PanelSuggestion({
+  nextDestination,
+  lastDestination,
+  successScanned,
+  scannedOrder,
+  closeModalMessage,
+  bulkScan,
+  errorIDs,
+  countSuccess,
+  countError,
+  isTripID,
+  isInterHub,
+  totalOrderByTrip,
+}) {
+  const hideDestination = isTripID && isInterHub;
+  return (
+    <div className={styles.panelSuggestion}>
+      {!bulkScan &&
+        <div>
+          <div className={styles.scanMessage}>
+            <div
+              role="none"
+              onClick={closeModalMessage}
+              className={styles.modalClose}
+            >
+              &times;
             </div>
             {
               !hideDestination && (
-                <div>
-                  <div>
-                    {lastDestination.City}
-                  </div>
-                  <div className={styles.scannedOrder}>
-                    {nextDestination.Hub ? `via Hub ${nextDestination.Hub.Name}` : (nextDestination && 'Dropoff')}
-                  </div>
-                  <div className={styles.scannedOrder}>
-                    {lastDestination.District && `Kec. ${lastDestination.District}`}
-                  </div>
-                  <div className={styles.scannedOrder}>
-                    {lastDestination.ZipCode}
-                  </div>
-                </div>
-              )
-            }
-            {
-              hideDestination && (
-                <div>
-                  <div className={styles['total-order']}>
-                    Trip berhasil diterima: {totalOrderByTrip} order
-                  </div>
+                <div className={styles.successScanned}>
+                  Success: {successScanned}
                 </div>
               )
             }
           </div>
-        }
-        {bulkScan &&
-          <div>
-            <div className={styles.scanMessage}>
-              <div
-                role="button"
-                onClick={closeModalMessage}
-                className={styles.modalClose}
-              >
-                X
-              </div>
-            </div>
-            <div className={styles.bulkScanInformation}>
-              Success: {countSuccess}, Error: {countError}
-            </div>
-            {errorIDs.length > 0 &&
-              <div className={styles.bulkScanFailed}>
-                Error Order: {errorIDs.join(', ')}
-              </div>
-            }
+          <div className={styles.scannedOrder}>
+            {scannedOrder}
           </div>
-        }
-      </div>
-    );
-  },
-});
+          {
+            !hideDestination && (
+              <div>
+                <div>
+                  {lastDestination.City}
+                </div>
+                <div className={styles.scannedOrder}>
+                  {nextDestination.Hub ? `via Hub ${nextDestination.Hub.Name}` : (nextDestination && 'Dropoff')}
+                </div>
+                <div className={styles.scannedOrder}>
+                  {lastDestination.District && `Kec. ${lastDestination.District}`}
+                </div>
+                <div className={styles.scannedOrder}>
+                  {lastDestination.ZipCode}
+                </div>
+              </div>
+            )
+          }
+          {
+            hideDestination && (
+              <div>
+                <div className={styles['total-order']}>
+                  Trip berhasil diterima: {totalOrderByTrip} order
+                </div>
+              </div>
+            )
+          }
+        </div>
+      }
+      {bulkScan &&
+        <div>
+          <div className={styles.scanMessage}>
+            <div
+              role="none"
+              onClick={closeModalMessage}
+              className={styles.modalClose}
+            >
+              &times;
+            </div>
+          </div>
+          <div className={styles.bulkScanInformation}>
+            Success: {countSuccess}, Error: {countError}
+          </div>
+          {errorIDs.length > 0 &&
+            <div className={styles.bulkScanFailed}>
+              Error Order: {errorIDs.join(', ')}
+            </div>
+          }
+        </div>
+      }
+    </div>
+  );
+}
 
-class VerifyButton extends React.Component {
-  constructor() {
-    super();
+/* eslint-disable */
+PanelSuggestion.propTypes = {
+  nextDestination: PropTypes.any,
+  lastDestination: PropTypes.any,
+  successScanned: PropTypes.any,
+  scannedOrder: PropTypes.any,
+  closeModalMessage: PropTypes.func,
+  bulkScan: PropTypes.bool,
+  errorIDs: PropTypes.array,
+  countSuccess: PropTypes.number,
+  countError: PropTypes.number,
+  isTripID: PropTypes.bool,
+  isInterHub: PropTypes.bool,
+  totalOrderByTrip: PropTypes.number,
+};
+/* eslint-enable */
+
+PanelSuggestion.defaultProps = {
+  nextDestination: {},
+  lastDestination: {},
+  successScanned: {},
+  scannedOrder: {},
+  closeModalMessage: () => {},
+  bulkScan: false,
+  errorIDs: [],
+  countSuccess: 0,
+  countError: 0,
+  isTripID: false,
+  isInterHub: false,
+  totalOrderByTrip: 0,
+};
+
+class VerifyButton extends Component {
+  constructor(props) {
+    super(props);
     this.onClick = this.onClick.bind(this);
   }
-
   onClick() {
     this.props.onClick(this.props.orderMarked);
   }
-
   render() {
     return (
       <button
@@ -218,7 +271,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return {
+  const dispatchFunc = {
     markReceived: (scannedID) => {
       dispatch(InboundOrders.resetSuggestion());
       dispatch(InboundOrders.markReceived(scannedID));
@@ -230,11 +283,14 @@ function mapDispatchToProps(dispatch) {
       dispatch(InboundOrders.resetSuggestion());
     },
   };
+
+  return dispatchFunc;
 }
 
-const InboundOrdersPage = React.createClass({
-  getInitialState() {
-    return {
+class InboundOrdersPage extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
       orderMarked: '',
       isDuplicate: false,
       opened: true,
@@ -243,21 +299,21 @@ const InboundOrdersPage = React.createClass({
       idsStart: '',
       showModalMessage: false,
     };
-  },
+  }
   componentDidMount() {
     document.getElementById('markReceivedInput').focus();
     this.props.resetSuggestion();
-  },
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.isDuplicate) {
       this.setState({ isDuplicate: true });
     }
-  },
+  }
   changeMark(val) {
     this.setState({
       orderMarked: val,
     });
-  },
+  }
   markReceived(val) {
     if (val === '') {
       return;
@@ -267,19 +323,19 @@ const InboundOrdersPage = React.createClass({
       orderMarked: '',
       showModalMessage: true,
     });
-  },
+  }
   closeModal() {
     this.setState({ isDuplicate: false });
-  },
+  }
   toggleOpen() {
     this.setState({ opened: !this.state.opened, idsStart: this.state.idsRaw });
-  },
+  }
   cancelChange() {
     this.setState({ opened: true, idsRaw: this.state.idsStart });
-  },
+  }
   textChange(e) {
     this.setState({ idsRaw: e.target.value });
-  },
+  }
   processText() {
     const IDs = _.chain(this.state.idsRaw.match(/\S+/g)).uniq().value();
     if (IDs.length === 0) {
@@ -288,18 +344,19 @@ const InboundOrdersPage = React.createClass({
     }
     this.setState({ ids: IDs, showModalMessage: true });
     this.props.bulkMarkReceived(IDs);
-  },
+  }
   clearText() {
     this.setState({ ids: [], idsRaw: '' });
-  },
+  }
   closeModalMessage() {
     this.setState({ showModalMessage: false });
-  },
+  }
   render() {
     const inputVerifyStyles = {
       container: styles.verifyInputContainer,
       input: styles.verifyInput,
     };
+    console.log(this.props);
     return (
       <Page title="Inbound Orders" count={{ itemName: 'Items', done: 'All Done', value: this.props.total }}>
         {
@@ -330,7 +387,7 @@ const InboundOrdersPage = React.createClass({
         <div style={{ marginBottom: 15 }}>
           {this.state.opened ?
             <div
-              role="button"
+              role="none"
               className={styles.top2}
               onClick={this.toggleOpen}
             >
@@ -342,7 +399,7 @@ const InboundOrdersPage = React.createClass({
             </div> :
             <div className={styles.panel}>
               <div
-                role="button"
+                role="none"
                 className={styles.top2}
                 onClick={this.toggleOpen}
               >
@@ -401,7 +458,47 @@ const InboundOrdersPage = React.createClass({
         }
       </Page>
     );
-  },
-});
+  }
+}
+
+/* eslint-disable */
+InboundOrdersPage.propTypes = {
+  resetSuggestion: PropTypes.func,
+  isDuplicate: PropTypes.bool,
+  markReceived: PropTypes.func,
+  bulkMarkReceived: PropTypes.func,
+  duplicateOrders: PropTypes.array,
+  lastDestination: PropTypes.any,
+  suggestion: PropTypes.any,
+  successScanned: PropTypes.number,
+  scannedOrder: PropTypes.any,
+  bulkScan: PropTypes.bool,
+  errorIDs: PropTypes.array,
+  countSuccess: PropTypes.number,
+  countError: PropTypes.number,
+  isTripID: PropTypes.bool,
+  isInterHub: PropTypes.bool,
+  totalOrderByTrip: PropTypes.number
+};
+/* eslint-enable */
+
+InboundOrdersPage.defaultProps = {
+  resetSuggestion: () => {},
+  isDuplicate: false,
+  markReceived: () => {},
+  bulkMarkReceived: () => {},
+  duplicateOrders: [],
+  lastDestination: {},
+  suggestion: {},
+  successScanned: 0,
+  scannedOrder: '',
+  bulkScan: false,
+  errorIDs: [],
+  countSuccess: 0,
+  countError: 0,
+  isTripID: false,
+  isInterHub: false,
+  totalOrderByTrip: 0,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(InboundOrdersPage);
