@@ -11,6 +11,7 @@ import { Input, Page } from '../views/base';
 import Glyph from '../components/Glyph';
 import * as InboundOrders from './inboundOrdersService';
 import { ButtonBase } from '../components/Button';
+import config from '../config/configValues.json';
 
 class DuplicateModal extends Component {
   componentWillUnmount() {
@@ -249,7 +250,7 @@ function mapStateToProps(state) {
   const userLogged = state.app.userLogged;
   const { duplicateOrders, isDuplicate, total, suggestion, lastDestination, successScanned,
     scannedOrder, bulkScan, errorIDs, countSuccess, countError, isTripID, isInterHub,
-    totalOrderByTrip } = inboundOrders;
+    totalOrderByTrip, misroute } = inboundOrders;
 
   return {
     userLogged,
@@ -267,6 +268,7 @@ function mapStateToProps(state) {
     isTripID,
     isInterHub,
     totalOrderByTrip,
+    misroute,
   };
 }
 
@@ -282,10 +284,105 @@ function mapDispatchToProps(dispatch) {
     resetSuggestion: () => {
       dispatch(InboundOrders.resetSuggestion());
     },
+    closeMisrouteModal: () => {
+      dispatch(InboundOrders.setDefault({
+        misroute: null,
+        lastDestination: {},
+      }));
+    },
   };
 
   return dispatchFunc;
 }
+
+class MisrouteModal extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      rerouted: false,
+    };
+
+    this.closeModal = this.closeModal.bind(this);
+    this.reRoute = this.reRoute.bind(this);
+  }
+  componentDidMount() {
+    document.getElementById('misrouteModal').focus();
+  }
+  handleKeyDown(e) {
+    if (e.keyCode === config.KEY_ACTION.ENTER) {
+      this.reRoute();
+    }
+    if (e.keyCode === config.KEY_ACTION.ESCAPE) {
+      this.closeModal();
+    }
+  }
+  closeModal() {
+    this.props.closeModal();
+  }
+  reRoute() {
+    this.setState({
+      rerouted: true,
+    });
+    setTimeout(() => {
+      this.props.closeModal();
+    }, 800);
+  }
+  render() {
+    return (
+      <ModalContainer>
+        <ModalDialog>
+          {!this.state.rerouted &&
+            <div role="button" id="misrouteModal" tabIndex="0" className={styles.modal} onKeyDown={e => this.handleKeyDown(e)}>
+              <div className={styles.modalHeader}>
+                <div className={`${styles.successContent} ${styles.ordersContentEmpty}`}>
+                  <img className={styles.successIcon} src={config.IMAGES.ICON_NOT_READY} alt="not ready" />
+                  <div className={styles.mediumText}>
+                    Order {this.props.orderID} is misroute.
+                    Would you like to reroute the order?
+                  </div>
+                </div>
+              </div>
+              <div className={styles['modal-footer']}>
+                <button className={styles['modal-button-no']} onClick={this.closeModal}>
+                  No
+                </button>
+                <button className={styles['modal-button-yes']} onClick={this.reRoute}>
+                  Yes
+                </button>
+              </div>
+            </div>
+          }
+          {this.state.rerouted &&
+            <div className={styles.modal}>
+              <div className={styles.modalHeader}>
+                <div className={`${styles.successContent} ${styles.ordersContentEmpty}`}>
+                  <img className={styles.successIcon} src={config.IMAGES.ICON_SUCCESS} alt="success" />
+                  <div className={styles.mediumText}>
+                    Order {this.props.orderID} successfully moved to {this.props.newDestination}
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </ModalDialog>
+      </ModalContainer>
+    );
+  }
+}
+
+/* eslint-disable */
+MisrouteModal.propTypes = {
+  closeModal: PropTypes.func,
+  orderID: PropTypes.any,
+  newDestination: PropTypes.any,
+};
+/* eslint-enable */
+
+MisrouteModal.defaultProps = {
+  closeModal: () => {},
+  orderID: '',
+  newDestination: '',
+};
 
 class InboundOrdersPage extends Component {
   constructor(props) {
@@ -328,6 +425,7 @@ class InboundOrdersPage extends Component {
     if (val === '') {
       return;
     }
+    document.getElementById('markReceivedInput').blur();
     this.props.markReceived(val);
     this.setState({
       orderMarked: '',
@@ -449,7 +547,7 @@ class InboundOrdersPage extends Component {
         <InboundOrdersTable />
         {
           (!_.isEmpty(this.props.lastDestination) || this.props.bulkScan) &&
-          this.state.showModalMessage &&
+          this.state.showModalMessage && !this.props.misroute &&
           <PanelSuggestion
             closeModalMessage={this.closeModalMessage}
             nextDestination={this.props.suggestion}
@@ -463,6 +561,13 @@ class InboundOrdersPage extends Component {
             isTripID={this.props.isTripID}
             isInterHub={this.props.isInterHub}
             totalOrderByTrip={this.props.totalOrderByTrip}
+            misroute={this.props.misroute}
+          />
+        }
+        {this.props.misroute &&
+          <MisrouteModal
+            closeModal={this.props.closeMisrouteModal}
+            orderID={this.props.misroute}
           />
         }
       </Page>
@@ -487,7 +592,10 @@ InboundOrdersPage.propTypes = {
   countError: PropTypes.number,
   isTripID: PropTypes.bool,
   isInterHub: PropTypes.bool,
-  totalOrderByTrip: PropTypes.number
+  totalOrderByTrip: PropTypes.number,
+  misroute: PropTypes.any,
+  closeMisrouteModal: PropTypes.func,
+  total: PropTypes.number,
 };
 /* eslint-enable */
 
@@ -508,6 +616,9 @@ InboundOrdersPage.defaultProps = {
   isTripID: false,
   isInterHub: false,
   totalOrderByTrip: 0,
+  misroute: null,
+  closeMisrouteModal: () => {},
+  total: 0,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(InboundOrdersPage);

@@ -19,6 +19,7 @@ const Constants = {
   ORDERS_INBOUND_MARK_RECEIVED_END_ERROR: 'inbound/mark/endError',
   ORDERS_INBOUND_MARK_RECEIVED_SET: 'inbound/mark/set',
   ORDERS_INBOUND_RESET_SUGGESTION: 'inbound/resetSuggestion',
+  ORDERS_INBOUND_SET_DEFAULT: 'inbound/set/default',
 };
 
 const initialState = {
@@ -41,6 +42,7 @@ const initialState = {
   countError: 0,
   bulkScan: false,
   totalOrderByTrip: 0,
+  misroute: null,
 };
 
 export function Reducer(state = initialState, action) {
@@ -77,19 +79,35 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.ORDERS_INBOUND_MARK_RECEIVED_END: {
+      const {
+        suggestion,
+        lastDestination,
+        successScanned,
+        scannedOrder,
+        errorIDs,
+        countSuccess,
+        countError,
+        bulkScan,
+        isTripID,
+        isInterHub,
+        totalOrderByTrip,
+        misroute,
+      } = action.payload;
+
       return Object.assign({}, state, {
         isMarking: false,
-        suggestion: action.payload.nextDestination,
-        lastDestination: action.payload.lastDestination,
-        successScanned: action.payload.successScanned,
-        scannedOrder: action.payload.scannedOrder,
-        errorIDs: action.payload.errorIDs,
-        countSuccess: action.payload.countSuccess,
-        countError: action.payload.countError,
-        bulkScan: action.payload.bulkScan,
-        isTripID: action.payload.isTripID,
-        isInterHub: action.payload.isInterHub,
-        totalOrderByTrip: action.payload.totalOrderByTrip,
+        suggestion,
+        lastDestination,
+        successScanned,
+        scannedOrder,
+        errorIDs,
+        countSuccess,
+        countError,
+        bulkScan,
+        isTripID,
+        isInterHub,
+        totalOrderByTrip,
+        misroute,
       });
     }
 
@@ -127,6 +145,10 @@ export function Reducer(state = initialState, action) {
         isInterHub: false,
         totalOrderByTrip: 0,
       });
+    }
+
+    case Constants.ORDERS_INBOUND_SET_DEFAULT: {
+      return Object.assign({}, state, action.payload);
     }
 
     default: return state;
@@ -260,6 +282,12 @@ export function markReceived(id) {
           dispatch({
             type: Constants.ORDERS_INBOUND_MARK_RECEIVED_SET,
           });
+        } else if (data.notFound) {
+          dispatch(NotifActions.addNotification(`Order ${scannedID} is misroute`, 'error', null, null, 3, true));
+
+          dispatch({
+            type: Constants.ORDERS_INBOUND_MARK_RECEIVED_SET,
+          });
         } else {
           dispatch(NotifActions.addNotification(`Order ${scannedID} was received`, 'success', null, null, 3, true));
 
@@ -272,7 +300,7 @@ export function markReceived(id) {
         dispatch({
           type: Constants.ORDERS_INBOUND_MARK_RECEIVED_END,
           payload: {
-            nextDestination: data.nextDestination,
+            suggestion: data.nextDestination,
             lastDestination: data.lastDestination,
             successScanned: (data.hasScanned || data.duplicate) ? successScanned :
               (successScanned + 1),
@@ -280,6 +308,7 @@ export function markReceived(id) {
             isTripID,
             isInterHub,
             totalOrderByTrip: data.Trip ? data.Trip.UserOrderRoutes.length : 0,
+            misroute: scannedID, //data.notFound &&
           },
         });
         dispatch(reFetchList());
@@ -372,5 +401,14 @@ export function BulkMarkReceived(scannedIDs) {
 export function resetSuggestion() {
   return (dispatch) => {
     dispatch({ type: Constants.ORDERS_INBOUND_RESET_SUGGESTION });
+  };
+}
+
+export function setDefault(payload) {
+  return (dispatch) => {
+    dispatch({
+      type: Constants.ORDERS_INBOUND_SET_DEFAULT,
+      payload,
+    });
   };
 }
