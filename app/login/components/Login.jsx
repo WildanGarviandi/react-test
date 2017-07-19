@@ -1,10 +1,12 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
 
 import styles from '../styles.scss';
 import LoginInput from './LoginInput';
 import LoginCheckBox from './LoginCheckBox';
 import { ButtonWithLoading } from '../../views/base';
+import GoogleAuth from '../../components/GoogleAuth';
 
 export default class Login extends React.Component {
 
@@ -74,6 +76,7 @@ export default class Login extends React.Component {
             <ButtonWithLoading {...submitBtnProps} />
           </form>
         </div>
+        <GoogleAuth />
       </div>
     );
   }
