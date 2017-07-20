@@ -53,6 +53,14 @@ export default class Login extends React.Component {
     };
   }
 
+  handleSuccessResponse(response) {
+    console.log(response, 'sucess');
+  }
+
+  handleFailureResponse(response) {
+    console.log(response, 'failed');
+  }
+
   render() {
     const emailInputProps = this.getEmailInputProps();
     const passwordInputProps = this.getPasswordInputProps();
