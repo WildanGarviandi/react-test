@@ -293,6 +293,56 @@ CreateTripModal.defaultProps = {
   createdTrip: {},
 };
 
+function mapStateToProps(state) {
+  const { grouping } = state.app;
+  const {
+    total,
+    isGrouping,
+    trip,
+    addedOrders,
+    isSuccessCreating,
+    createdTrip,
+    duplicateOrders,
+    isDuplicate,
+  } = grouping;
+
+  return {
+    total,
+    isGrouping,
+    trip,
+    isSuccessCreating,
+    addedOrders,
+    createdTrip,
+    duplicateOrders,
+    isDuplicate,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  const dispatchFunc = {
+    createTrip: () => {
+      dispatch(Grouping.CreateTrip());
+    },
+    doneCreateTrip: () => {
+      dispatch(Grouping.DoneCreateTrip());
+    },
+    addOrder: (orderQuery, backElementFocusID) => {
+      dispatch(Grouping.AddOrder(orderQuery, backElementFocusID));
+    },
+    askRemove: (modal) => {
+      dispatch(ModalActions.addConfirmation(modal));
+    },
+    removeOrder: (index) => {
+      dispatch(Grouping.RemoveOrder(index));
+    },
+    askClose: (modal) => {
+      dispatch(ModalActions.addConfirmation(modal));
+    },
+  };
+
+  return dispatchFunc;
+}
+
 class GroupingPage extends Component {
   constructor(props) {
     super(props);
@@ -356,55 +406,5 @@ GroupingPage.defaultProps = {
   doneCreateTrip: () => {},
   total: 0,
 };
-
-function mapStateToProps(state) {
-  const { grouping } = state.app;
-  const {
-    total,
-    isGrouping,
-    trip,
-    addedOrders,
-    isSuccessCreating,
-    createdTrip,
-    duplicateOrders,
-    isDuplicate,
-  } = grouping;
-
-  return {
-    total,
-    isGrouping,
-    trip,
-    isSuccessCreating,
-    addedOrders,
-    createdTrip,
-    duplicateOrders,
-    isDuplicate,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  const dispatchFunc = {
-    createTrip: () => {
-      dispatch(Grouping.CreateTrip());
-    },
-    doneCreateTrip: () => {
-      dispatch(Grouping.DoneCreateTrip());
-    },
-    addOrder: (orderQuery, backElementFocusID) => {
-      dispatch(Grouping.AddOrder(orderQuery, backElementFocusID));
-    },
-    askRemove: (modal) => {
-      dispatch(ModalActions.addConfirmation(modal));
-    },
-    removeOrder: (index) => {
-      dispatch(Grouping.RemoveOrder(index));
-    },
-    askClose: (modal) => {
-      dispatch(ModalActions.addConfirmation(modal));
-    },
-  };
-
-  return dispatchFunc;
-}
 
 export default connect(mapStateToProps, mapDispatchToProps)(GroupingPage);

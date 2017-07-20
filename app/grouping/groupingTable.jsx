@@ -1,21 +1,60 @@
-import lodash from 'lodash';
-import React from 'react';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
+import PropTypes from 'prop-types';
+
 import groupingBody from './groupingBody';
 import groupingHeaders from './groupingHeaders';
 import * as Grouping from './groupingService';
 import styles from './styles.scss';
-import {ButtonWithLoading, Input, Pagination} from '../views/base';
+import { Pagination } from '../views/base';
 
-const Table = React.createClass({
-  getInitialState() {
-    return {id: ''};
-  },
+function mapStateToGrouping(state) {
+  const { grouping } = state.app;
+  const { currentPage, isFetching, limit, orders, total, isGrouping } = grouping;
+
+  return {
+    Headers: groupingHeaders,
+    Body: groupingBody,
+    isFetching,
+    isGrouping,
+    items: orders,
+    pagination: {
+      currentPage, limit, total,
+    },
+  };
+}
+
+function mapDispatchToGrouping(dispatch) {
+  const dispatchFunc = {
+    GetList: () => {
+      dispatch(Grouping.FetchList());
+    },
+    PaginationActions: {
+      setCurrentPage: (currentPage) => {
+        dispatch(Grouping.SetCurrentPage(currentPage));
+      },
+      setLimit: (limit) => {
+        dispatch(Grouping.SetLimit(limit));
+      },
+    },
+  };
+
+  return dispatchFunc;
+}
+
+class Table extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      id: '',
+    };
+  }
   componentDidMount() {
     this.props.GetList();
-  },
+  }
   render() {
-    const {Headers, Filters, Body, PaginationActions, isFetching, items, pagination} = this.props;
+    const { Headers, Body, PaginationActions, isFetching, items, pagination } = this.props;
 
     let bodyComponents = (
       <td colSpan={8}>
@@ -30,7 +69,7 @@ const Table = React.createClass({
           <td colSpan={12}>
             <div className={styles.emptyTableContainer}>
               <span>
-                <img src="/img/image-group-done.png" className={styles.emptyTableImage} />
+                <img alt="group done" src="/img/image-group-done.png" className={styles.emptyTableImage} />
                 <div className={styles.bigText}>
                   You have successfully create Bags/Trips for all of your orders!
                 </div>
@@ -44,7 +83,7 @@ const Table = React.createClass({
       } else {
         bodyComponents = (
           <Body items={items} />
-        )
+        );
       }
     }
 
@@ -58,38 +97,28 @@ const Table = React.createClass({
       </div>
     );
   }
-});
-
-function mapStateToGrouping(state, ownProps) {
-  const {grouping} = state.app;
-  const {currentPage, isFetching, limit, orders, selected, total, isGrouping} = grouping;
-
-  return {
-    Headers: groupingHeaders,
-    Body: groupingBody,
-    isFetching,
-    isGrouping,
-    items: orders,
-    pagination: {
-      currentPage, limit, total,
-    }
-  }
 }
 
-function mapDispatchToGrouping(dispatch, ownProps) {
-  return {
-    GetList: () => {
-      dispatch(Grouping.FetchList());
-    },
-    PaginationActions: {
-      setCurrentPage: (currentPage) => {
-        dispatch(Grouping.SetCurrentPage(currentPage));
-      },
-      setLimit: (limit) => {
-        dispatch(Grouping.SetLimit(limit));
-      },
-    }
-  }
+/* eslint-disable */
+Table.propTypes = {
+  GetList: PropTypes.func,
+  Headers: PropTypes.any,
+  Body: PropTypes.any,
+  PaginationActions: PropTypes.any,
+  isFetching: PropTypes.bool,
+  items: PropTypes.array,
+  pagination: PropTypes.any,
 }
+/* eslint-enable */
+
+Table.defaultProps = {
+  GetList: () => {},
+  Headers: {},
+  Body: {},
+  PaginationActions: {},
+  isFetching: false,
+  items: [],
+  pagination: {},
+};
 
 export default connect(mapStateToGrouping, mapDispatchToGrouping)(Table);
