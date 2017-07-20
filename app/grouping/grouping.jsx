@@ -9,6 +9,7 @@ import styles from './styles.scss';
 import { Input, Page } from '../views/base';
 import * as Grouping from './groupingService';
 import ModalActions from '../modules/modals/actions';
+import config from '../config/configValues.json';
 
 class CreateTripModal extends Component {
   constructor(props) {
@@ -293,6 +294,100 @@ CreateTripModal.defaultProps = {
   createdTrip: {},
 };
 
+class MisrouteModal extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      rerouted: false,
+    };
+
+    this.hideContent = this.hideContent.bind(this);
+    this.reRoute = this.reRoute.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+  }
+  componentDidMount() {
+    document.getElementById('misrouteModal').focus();
+  }
+  handleKeyDown(e) {
+    if (e.keyCode === config.KEY_ACTION.ENTER) {
+      this.reRoute();
+    }
+    if (e.keyCode === config.KEY_ACTION.ESCAPE) {
+      this.hideContent();
+    }
+  }
+  hideContent() {
+    this.props.hideContent();
+  }
+  closeModal() {
+    this.props.closeModal();
+    this.props.hideContent();
+  }
+  reRoute() {
+    this.setState({
+      rerouted: true,
+    });
+    setTimeout(() => {
+      this.closeModal();
+    }, 800);
+  }
+  render() {
+    return (
+      <ModalDialog>
+        {!this.state.rerouted &&
+          <div role="button" id="misrouteModal" tabIndex="0" className={styles.modal} onKeyDown={e => this.handleKeyDown(e)}>
+            <div className={styles.modalHeader}>
+              <div className={`${styles.successContent} ${styles.ordersContentEmpty}`}>
+                <img className={styles.successIcon} src={config.IMAGES.ICON_NOT_READY} alt="not ready" />
+                <div className={styles.mediumText}>
+                  Order {this.props.orderID} is misroute.
+                  Would you like to reroute the order?
+                </div>
+              </div>
+            </div>
+            <div className={styles['modal-footer']}>
+              <button className={styles['modal-button-no']} onClick={this.hideContent}>
+                No
+              </button>
+              <button className={styles['modal-button-yes']} onClick={this.reRoute}>
+                Yes
+              </button>
+            </div>
+          </div>
+        }
+        {this.state.rerouted &&
+          <div className={styles.modal}>
+            <div className={styles.modalHeader}>
+              <div className={`${styles.successContent} ${styles.ordersContentEmpty}`}>
+                <img className={styles.successIcon} src={config.IMAGES.ICON_SUCCESS} alt="success" />
+                <div className={styles.mediumText}>
+                  Order {this.props.orderID} successfully moved to {this.props.newDestination}
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </ModalDialog>
+    );
+  }
+}
+
+/* eslint-disable */
+MisrouteModal.propTypes = {
+  orderID: PropTypes.any,
+  newDestination: PropTypes.any,
+  closeModal: PropTypes.func,
+  hideContent: PropTypes.func,
+};
+/* eslint-enable */
+
+MisrouteModal.defaultProps = {
+  orderID: '',
+  newDestination: '',
+  closeModal: () => {},
+  hideContent: () => {},
+};
+
 function mapStateToProps(state) {
   const { grouping } = state.app;
   const {
@@ -304,6 +399,7 @@ function mapStateToProps(state) {
     createdTrip,
     duplicateOrders,
     isDuplicate,
+    misroute,
   } = grouping;
 
   return {
@@ -315,6 +411,7 @@ function mapStateToProps(state) {
     createdTrip,
     duplicateOrders,
     isDuplicate,
+    misroute,
   };
 }
 
@@ -337,6 +434,9 @@ function mapDispatchToProps(dispatch) {
     },
     askClose: (modal) => {
       dispatch(ModalActions.addConfirmation(modal));
+    },
+    hideMisrouteContent: () => {
+      dispatch(Grouping.setDefault({ misroute: null }));
     },
   };
 
@@ -372,6 +472,17 @@ class GroupingPage extends Component {
     this.setState({ showModal: false });
     this.props.doneCreateTrip();
   }
+  handleModalContent() {
+    if (this.props.misroute) {
+      return (
+        <MisrouteModal
+          hideContent={this.props.hideMisrouteContent}
+          closeModal={this.closeModal}
+        />
+      );
+    }
+    return <CreateTripModal {...this.props} onClose={this.closeModal} />;
+  }
   render() {
     const { total } = this.props;
     return (
@@ -379,7 +490,7 @@ class GroupingPage extends Component {
         {
           this.state.showModal &&
           <ModalContainer>
-            <CreateTripModal {...this.props} onClose={this.closeModal} />
+            {this.handleModalContent()}
           </ModalContainer>
         }
         <div className={styles.actionContainer}>
@@ -397,6 +508,8 @@ GroupingPage.propTypes = {
   isSuccessEditing: PropTypes.bool,
   doneCreateTrip: PropTypes.func,
   total: PropTypes.number,
+  misroute: PropTypes.any,
+  hideMisrouteContent: PropTypes.func,
 }
 /* eslint-enable */
 
@@ -405,6 +518,8 @@ GroupingPage.defaultProps = {
   isSuccessEditing: false,
   doneCreateTrip: () => {},
   total: 0,
+  misroute: null,
+  hideMisrouteContent: () => {},
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(GroupingPage);

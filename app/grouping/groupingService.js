@@ -19,6 +19,7 @@ const Constants = {
   GROUPING_ORDER_ADD_START: 'grouping/order/add/start',
   GROUPING_ORDER_ADD_END: 'grouping/order/add/end',
   GROUPING_ORDER_REMOVE: 'grouping/order/remove',
+  GROUPING_SET_DEFAULT: 'grouping/set/default',
 };
 
 const initialState = {
@@ -34,6 +35,7 @@ const initialState = {
   createdTrip: {},
   duplicateOrders: [],
   isDuplicate: false,
+  misroute: null,
 };
 
 export function Reducer(state = initialState, action) {
@@ -101,6 +103,10 @@ export function Reducer(state = initialState, action) {
       return lodash.assign({}, state, { addedOrders });
     }
 
+    case Constants.GROUPING_SET_DEFAULT: {
+      return lodash.assign({}, state, action.payload);
+    }
+
     default: return state;
   }
 }
@@ -150,6 +156,15 @@ export function FetchList() {
   };
 }
 
+export function RemoveOrder(index) {
+  return (dispatch) => {
+    dispatch({
+      type: Constants.GROUPING_ORDER_REMOVE,
+      index,
+    });
+  };
+}
+
 export function AddOrder(orderNumber, backElementFocusID) {
   return (dispatch, getState) => {
     const { userLogged, grouping } = getState().app;
@@ -178,8 +193,10 @@ export function AddOrder(orderNumber, backElementFocusID) {
       });
 
       return response.json().then(({ data }) => {
-        if (data.count < 1) {
-          throw new Error(`${orderNumber} is not found`);
+        if (data.count < 1 || true) {
+          dispatch(this.setDefault({
+            misroute: orderNumber,
+          }));
         } else if (data.count > 1) {
           dispatch({
             type: Constants.GROUPING_ORDER_ADD_END,
@@ -215,15 +232,6 @@ export function AddOrder(orderNumber, backElementFocusID) {
       });
 
       dispatch(ModalActions.addMessage(message, backElementFocusID));
-    });
-  };
-}
-
-export function RemoveOrder(index) {
-  return (dispatch) => {
-    dispatch({
-      type: Constants.GROUPING_ORDER_REMOVE,
-      index,
     });
   };
 }
@@ -317,6 +325,15 @@ export function CreateTrip() {
           dispatch(ModalActions.addMessage(`Failed to grouping orders. ${error.message[0].reason}`));
         });
       }
+    });
+  };
+}
+
+export function setDefault(payload) {
+  return (dispatch) => {
+    dispatch({
+      type: Constants.GROUPING_SET_DEFAULT,
+      payload,
     });
   };
 }
