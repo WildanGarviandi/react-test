@@ -1,0 +1,31 @@
+.profile {
+  float: right;
+  display: flex;
+}
+
+.switch {
+  width: 200px;
+  height: 35px;
+  color: #4990e2;
+  font-weight: bold;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  &__label {
+    cursor: pointer;
+  }
+}
+
+.chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+
+  &__arrow {
+    color: #4990e2;
+  }
+}
