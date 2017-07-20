@@ -26,11 +26,13 @@ class CreateTripModal extends Component {
     this.addOrder = this.addOrder.bind(this);
   }
   componentDidMount() {
-    document.getElementById('addOrder') && document.getElementById('addOrder').focus();
+    if (document.getElementById('addOrder')) {
+      document.getElementById('addOrder').focus();
+    }
   }
   componentWillReceiveProps(nextProps) {
-    if (!nextProps.isDuplicate && !nextProps.isSuccessCreating) {
-      document.getElementById('addOrder') && document.getElementById('addOrder').focus();
+    if (!nextProps.isDuplicate && !nextProps.isSuccessCreating && document.getElementById('addOrder')) {
+      document.getElementById('addOrder').focus();
     }
 
     this.setState({
@@ -39,12 +41,14 @@ class CreateTripModal extends Component {
     });
   }
   componentDidUpdate() {
-    if (this.state.isSuccessCreating) {
-      document.getElementById('gotItButton') && document.getElementById('gotItButton').focus();
+    if (this.state.isSuccessCreating && document.getElementById('gotItButton')) {
+      document.getElementById('gotItButton').focus();
     }
   }
   componentWillUnmount() {
-    document.getElementById('prepareBtn') && document.getElementById('prepareBtn').focus();
+    if (document.getElementById('prepareBtn')) {
+      document.getElementById('prepareBtn').focus();
+    }
   }
   handleInputChange(key) {
     return (value) => {
@@ -120,32 +124,30 @@ class CreateTripModal extends Component {
     });
 
     if (isDuplicate) {
-      duplicateOrdersContent = duplicateOrders.map((order) => {
-        return (
-          <div
-            role="none"
-            className={`${styles.orderContent} ${styles.orderContentHover}`}
-            key={order.UserOrderID}
-            onClick={() => this.chooseOrder(order.UserOrderNumber)}
-          >
-            <div className={styles.orderContentLeft}>
-              <div className={styles.smallText}>To</div>
-              {order.DropoffAddress &&
-                <div>
-                  <div className={styles.bigText}>{`${order.DropoffAddress.FirstName} ${order.DropoffAddress.LastName}`}</div>
-                  <div className={styles.mediumText}>{order.DropoffAddress.City}</div>
-                </div>
-              }
-            </div>
-            <div className={styles.orderContentRight}>
-              <div style={{ textAlign: 'center' }}>
-                <div className={styles.smallTextBold}>{order.UserOrderNumber}</div>
-                <div className={styles.smallText}>({order.WebOrderID})</div>
+      duplicateOrdersContent = duplicateOrders.map(order => (
+        <div
+          role="none"
+          className={`${styles.orderContent} ${styles.orderContentHover}`}
+          key={order.UserOrderID}
+          onClick={() => this.chooseOrder(order.UserOrderNumber)}
+        >
+          <div className={styles.orderContentLeft}>
+            <div className={styles.smallText}>To</div>
+            {order.DropoffAddress &&
+              <div>
+                <div className={styles.bigText}>{`${order.DropoffAddress.FirstName} ${order.DropoffAddress.LastName}`}</div>
+                <div className={styles.mediumText}>{order.DropoffAddress.City}</div>
               </div>
+            }
+          </div>
+          <div className={styles.orderContentRight}>
+            <div style={{ textAlign: 'center' }}>
+              <div className={styles.smallTextBold}>{order.UserOrderNumber}</div>
+              <div className={styles.smallText}>({order.WebOrderID})</div>
             </div>
           </div>
-        );
-      });
+        </div>
+      ));
     }
 
     return (
