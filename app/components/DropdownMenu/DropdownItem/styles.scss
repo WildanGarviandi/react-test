@@ -14,15 +14,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-
-    &-etobee {
-      width: 30px;
-      height: 30px;
-      background-image: url('../../../../../img/app-icon.png');
-      background-size: 100%;
-      background-repeat: no-repeat;
-      border-radius: 30px;
-    }
   }
 
   &__content {

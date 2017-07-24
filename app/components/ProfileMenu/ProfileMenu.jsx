@@ -5,7 +5,7 @@ import onClickOutside from 'react-onclickoutside';
 import PropTypes from 'prop-types';
 
 import styles from './styles.scss';
-import DropdownList from './DropdownMenu';
+import DropdownList from '../DropdownMenu';
 
 class ProfileMenu extends PureComponent {
   constructor(props) {
@@ -95,6 +95,8 @@ class ProfileMenu extends PureComponent {
             toggleMenu={this.toggleMenu}
             data={this.state.data}
             handleSelect={this.handleSelect}
+            dropdownStyles={styles['dropdown-profile']}
+            iconStyles={styles['etobee-logo']}
           />
         )}
       </span>

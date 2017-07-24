@@ -26,17 +26,18 @@ class DropdownItemBase extends PureComponent {
   }
 
   render() {
-    const { data } = this.props;
+    const { data, iconStyles } = this.props;
 
     return (
       <div
+        role="none"
         className={styles.dropdownitem}
         onMouseEnter={this.toggleHover}
         onMouseLeave={this.toggleHover}
         onClick={this.handleSelect}
       >
         <div className={styles.dropdownitem__icon}>
-          <div className={styles['dropdownitem__icon-etobee']} />
+          <div className={iconStyles} />
           <div className={styles.dropdownitem__content}>
             <div className={styles['dropdownitem__content-hub']}>
               {data.name}
@@ -52,11 +53,13 @@ class DropdownItemBase extends PureComponent {
 DropdownItemBase.propTypes = {
   data: PropTypes.any,
   handleSelect: PropTypes.func.isRequired,
+  iconStyles: PropTypes.any,
 };
 /* eslint-enable */
 
 DropdownItemBase.defaultProps = {
   data: {},
+  iconStyles: {},
 };
 
 export default DropdownItemBase;
