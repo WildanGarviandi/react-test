@@ -195,5 +195,6 @@
       "JOB_DONE": "/sound/job-done.mp3",
       "MAY_I_HAVE_YOUR_ATTENTION": "/sound/may-i-have-your-attention.mp3"
     },
-    "GOOGLE_CLIENT_ID": "196844091368-1nd35vc6r4i3df7u9scdpitaee37a66r.apps.googleusercontent.com"
+    "GOOGLE_CLIENT_ID": "196844091368-1nd35vc6r4i3df7u9scdpitaee37a66r.apps.googleusercontent.com",
+    "IS_ACTIVATE_GOOGLE_AUTH": true
 }

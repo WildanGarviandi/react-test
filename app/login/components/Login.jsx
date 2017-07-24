@@ -5,6 +5,8 @@ import styles from '../styles.scss';
 import LoginInput from './LoginInput';
 import LoginCheckBox from './LoginCheckBox';
 import { ButtonWithLoading } from '../../views/base';
+import GoogleAuth from '../../components/GoogleAuth';
+import configValues from '../../config/configValues.json';
 
 export default class Login extends React.Component {
 
@@ -72,14 +74,25 @@ export default class Login extends React.Component {
         <div className={styles.logo} />
         <div className={styles.panel}>
           <form className={styles.form} onSubmit={this.props.handleSubmit}>
-            <h4 className={styles.header}>LOGIN</h4>
-            {this.props.loginState.isError &&
-              <span className={styles.errorMsg}>{this.props.loginState.message}</span>}
-            <LoginInput {...emailInputProps} />
-            <LoginInput {...passwordInputProps} />
-            <LoginCheckBox {...checkboxInputProps} />
-            <a href="" className={styles.forgot}>Forgot password?</a>
-            <ButtonWithLoading {...submitBtnProps} />
+            {
+              configValues.IS_ACTIVATE_GOOGLE_AUTH ?
+                (<GoogleAuth
+                  handleSuccessResponse={this.handleSuccessResponse}
+                  handleFailureResponse={this.handleFailureResponse}
+                />) :
+                (
+                  <div>
+                    <h4 className={styles.header}>LOGIN</h4>
+                    {this.props.loginState.isError &&
+                      <span className={styles.errorMsg}>{this.props.loginState.message}</span>}
+                    <LoginInput {...emailInputProps} />
+                    <LoginInput {...passwordInputProps} />
+                    <LoginCheckBox {...checkboxInputProps} />
+                    <a href="" className={styles.forgot}>Forgot password?</a>
+                    <ButtonWithLoading {...submitBtnProps} />
+                  </div>
+                )
+            }
           </form>
         </div>
       </div>
