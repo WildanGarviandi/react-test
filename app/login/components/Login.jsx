@@ -1,4 +1,5 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
 
 import styles from '../styles.scss';
@@ -95,6 +96,7 @@ export default class Login extends React.Component {
             }
           </form>
         </div>
+        <GoogleAuth />
       </div>
     );
   }
