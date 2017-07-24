@@ -1,0 +1,19 @@
+.page {
+  background: url('../../img/bg-login.jpg') no-repeat center center fixed;
+  -webkit-background-size: cover;
+  background-size: cover;
+  height: 100%;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  display: flex;
+  justify-content: center;
+}
+
+.choose {
+  width: 480px;
+  height: 200px;
+  border-radius: 4px;
+  border: 1px solid #d5d5d5;
+  background-color: #fff;
+  margin-top: 50px;
+}
