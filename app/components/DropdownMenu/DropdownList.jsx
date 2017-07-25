@@ -19,6 +19,7 @@ class DropdownList extends PureComponent {
                 key={data.id}
                 data={data}
                 iconStyles={this.props.iconStyles}
+                dropdownItemStyles={this.props.dropdownItemStyles}
                 handleSelect={this.props.handleSelect}
               />
             );
@@ -35,6 +36,7 @@ DropdownList.propTypes = {
   data: PropTypes.array,
   handleSelect: PropTypes.func.isRequired,
   dropdownStyles: PropTypes.any.isRequired,
+  dropdownItemStyles: PropTypes.any.isRequired,
   iconStyles: PropTypes.any,
 };
 /* eslint-enable */
@@ -42,6 +44,7 @@ DropdownList.propTypes = {
 DropdownList.defaultProps = {
   data: [],
   iconStyles: {},
+  dropdownItemStyles: {},
 };
 
 export default DropdownList;

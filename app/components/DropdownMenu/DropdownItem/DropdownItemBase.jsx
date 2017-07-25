@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 import styles from './styles.scss';
 
@@ -28,10 +29,13 @@ class DropdownItemBase extends PureComponent {
   render() {
     const { data, iconStyles } = this.props;
 
+    const dropdownItemStyles = classNames(styles.dropdownitem,
+      this.props.dropdownItemStyles);
+
     return (
       <div
         role="none"
-        className={styles.dropdownitem}
+        className={dropdownItemStyles}
         onMouseEnter={this.toggleHover}
         onMouseLeave={this.toggleHover}
         onClick={this.handleSelect}
@@ -54,12 +58,14 @@ DropdownItemBase.propTypes = {
   data: PropTypes.any,
   handleSelect: PropTypes.func.isRequired,
   iconStyles: PropTypes.any,
+  dropdownItemStyles: PropTypes.any,
 };
 /* eslint-enable */
 
 DropdownItemBase.defaultProps = {
   data: {},
   iconStyles: {},
+  dropdownItemStyles: {},
 };
 
 export default DropdownItemBase;

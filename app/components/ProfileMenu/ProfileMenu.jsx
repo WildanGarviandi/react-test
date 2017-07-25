@@ -97,6 +97,7 @@ class ProfileMenu extends PureComponent {
             handleSelect={this.handleSelect}
             dropdownStyles={styles['dropdown-profile']}
             iconStyles={styles['etobee-logo']}
+            dropdownItemStyles={styles['dropdown-hub']}
           />
         )}
       </span>
