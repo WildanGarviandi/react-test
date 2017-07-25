@@ -19,9 +19,9 @@ const PostParams = (token, body, multipart) => {
 export default (url, token, body = {}, isHubAPI = false, multipart) => {
   let baseUrl = isHubAPI ? config.baseUrlHub : config.baseUrl;
   return fetch(baseUrl + url, PostParams(token, body, multipart)).then(function(response) {
-    if (response.status === 403) {
-      window.location.href = '/login';
-    }
+    // if (response.status === 403) {
+    //   window.location.href = '/login';
+    // }
     return response;
   });
 }

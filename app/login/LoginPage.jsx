@@ -18,6 +18,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   const dispatchData = bindActionCreators({
     login: LoginAction.login,
+    loginGoogle: LoginAction.loginGoogle,
   }, dispatch);
 
   return dispatchData;
@@ -31,6 +32,7 @@ class LoginPage extends React.Component {
     this.state = { email: '', password: '', rememberMe: false };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleGoogleAuth = this.handleGoogleAuth.bind(this);
   }
 
   componentWillMount() {
@@ -54,6 +56,10 @@ class LoginPage extends React.Component {
     this.props.login(this.state.email, this.state.password);
   }
 
+  handleGoogleAuth(response) {
+    this.props.loginGoogle(response.tokenId);
+  }
+
   render() {
     const { loginState } = this.props;
 
@@ -61,6 +67,7 @@ class LoginPage extends React.Component {
       <Login
         input={this.state}
         handleInputChange={this.handleInputChange}
+        handleGoogleAuth={this.handleGoogleAuth}
         handleSubmit={this.handleSubmit}
         loginState={loginState}
       />
@@ -72,7 +79,8 @@ class LoginPage extends React.Component {
 LoginPage.propTypes = {
   token: PropTypes.string,
   hubID: PropTypes.any,
-  login: PropTypes.any,
+  login: PropTypes.func,
+  loginGoogle: PropTypes.func,
   loginState: PropTypes.any,
 };
 /* eslint-enable */
@@ -80,7 +88,8 @@ LoginPage.propTypes = {
 LoginPage.defaultProps = {
   token: '',
   hubID: null,
-  login: null,
+  login: () => {},
+  loginGoogle: () => {},
   loginState: null,
 };
 

@@ -10,6 +10,11 @@ import GoogleAuth from '../../components/GoogleAuth';
 import configValues from '../../config/configValues.json';
 
 export default class Login extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleSuccessResponse = this.handleSuccessResponse.bind(this);
+    this.handleFailureResponse = this.handleFailureResponse.bind(this);
+  }
 
   getEmailInputProps() {
     return {
@@ -57,11 +62,11 @@ export default class Login extends React.Component {
   }
 
   handleSuccessResponse(response) {
-    console.log(response, 'sucess');
+    this.props.handleGoogleAuth(response);
   }
 
   handleFailureResponse(response) {
-    console.log(response, 'failed');
+    console.error(response, 'failed');
   }
 
   render() {
@@ -74,7 +79,7 @@ export default class Login extends React.Component {
       <div className={styles.page}>
         <div className={styles.logo} />
         <div className={styles.panel}>
-          <form className={styles.form} onSubmit={this.props.handleSubmit}>
+          <form className={styles.form}>
             {
               configValues.IS_ACTIVATE_GOOGLE_AUTH ?
                 (<GoogleAuth
@@ -107,6 +112,7 @@ Login.propTypes = {
   handleInputChange: PropTypes.any,
   handleSubmit: PropTypes.any,
   loginState: PropTypes.any,
+  handleGoogleAuth: PropTypes.func,
 };
 /* eslint-enable */
 
@@ -115,4 +121,5 @@ Login.defaultProps = {
   handleInputChange: null,
   handleSubmit: null,
   loginState: null,
+  handleGoogleAuth: () => {},
 };

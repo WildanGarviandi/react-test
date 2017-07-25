@@ -13,6 +13,8 @@ export default class GoogleAuth extends PureComponent {
     this.state = {
       clientId: configValues.GOOGLE_CLIENT_ID,
     };
+    this.handleSuccessResponse = this.handleSuccessResponse.bind(this);
+    this.handleFailureResponse = this.handleFailureResponse.bind(this);
   }
 
   handleSuccessResponse(response) {

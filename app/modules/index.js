@@ -1,4 +1,4 @@
-import login from './auth/actions/login';
+import { login, loginGoogle } from './auth/actions/login';
 import logout from './auth/actions/logout';
 import containers, { statusList } from './containers/actions';
 import districts from './districts/actions';
@@ -7,6 +7,7 @@ import modals from './modals/actions';
 
 export const LoginAction = {
   login,
+  loginGoogle,
 };
 
 export const LogoutAction = {
