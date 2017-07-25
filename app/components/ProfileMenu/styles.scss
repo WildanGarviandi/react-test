@@ -1,0 +1,50 @@
+.profile {
+  float: right;
+  display: flex;
+}
+
+.switch {
+  width: 200px;
+  height: 35px;
+  color: #4990e2;
+  font-weight: bold;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  &__label {
+    cursor: pointer;
+  }
+}
+
+.chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+
+  &__arrow {
+    color: #4990e2;
+  }
+}
+
+.dropdown-profile {
+  width: 240px;
+  height: 240px;
+  right: 0;
+  top: 50px;
+  border-radius: 5px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  position: absolute;
+}
+
+.etobee-logo {
+  width: 30px;
+  height: 30px;
+  background-image: url('../../../img/app-icon.png');
+  background-size: 100%;
+  background-repeat: no-repeat;
+  border-radius: 30px;
+}
