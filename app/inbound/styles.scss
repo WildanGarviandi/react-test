@@ -382,12 +382,14 @@
   }
 }
 
-.modal__button--yes {
-  background-color: #38b393;
-}
+.modal__button{
+  &--yes {
+    background-color: #38b393;
+  }
 
-.modal__button--no {
-  background-color: #b33838;
+  &--no {
+    background-color: #b33838;
+  }
 }
 
 .modal-footer {
