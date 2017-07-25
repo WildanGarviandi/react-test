@@ -351,26 +351,30 @@
   cursor: default;
 }
 
-.modal-button-yes,
-.modal-button-no {
-  font-size: 20px;
-  font-weight: 700;
-  box-shadow: none;
-  border: none;
-  border-radius: 4px;
-  color: white;
-  width: 49%;
-  margin-right: 1%;
-  height: 50px;
-  cursor: pointer;
+.modal__button {
+  &--yes,
+  &--no {
+    font-size: 20px;
+    font-weight: 700;
+    box-shadow: none;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    width: 49%;
+    margin-right: 1%;
+    height: 50px;
+    cursor: pointer;
+  }
 }
 
-.modal-button-yes {
-  background-color: #38b393;
-}
+.modal__button {
+  &--yes {
+    background-color: #38b393;
+  }
 
-.modal-button-no {
-  background-color: #b33838;
+  &--no {
+    background-color: #b33838;
+  }
 }
 
 .modal-footer {

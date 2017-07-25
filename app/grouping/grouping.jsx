@@ -26,13 +26,11 @@ class CreateTripModal extends Component {
     this.addOrder = this.addOrder.bind(this);
   }
   componentDidMount() {
-    if (document.getElementById('addOrder')) {
-      document.getElementById('addOrder').focus();
-    }
+    this.addOrderInput.focus();
   }
   componentWillReceiveProps(nextProps) {
-    if (!nextProps.isDuplicate && !nextProps.isSuccessCreating && document.getElementById('addOrder')) {
-      document.getElementById('addOrder').focus();
+    if (!nextProps.isDuplicate && !nextProps.isSuccessCreating && this.addOrderInput) {
+      this.addOrderInput.focus();
     }
 
     this.setState({
@@ -41,13 +39,13 @@ class CreateTripModal extends Component {
     });
   }
   componentDidUpdate() {
-    if (this.state.isSuccessCreating && document.getElementById('gotItButton')) {
-      document.getElementById('gotItButton').focus();
+    if (this.state.isSuccessCreating && this.gotItButton) {
+      this.gotItButton.focus();
     }
   }
   componentWillUnmount() {
-    if (document.getElementById('prepareBtn')) {
-      document.getElementById('prepareBtn').focus();
+    if (this.prepareBtn) {
+      this.prepareBtn.focus();
     }
   }
   handleInputChange(key) {
@@ -188,7 +186,8 @@ class CreateTripModal extends Component {
 
             <div className={styles.modalContent4}>
               <Input
-                id={'addOrder'}
+                id="addOrder"
+                inputRef={(input) => { this.addOrderInput = input; }}
                 className={`${styles.input} ${styles.addOrderInput}`}
                 base={{ value: this.state.addOrderQuery, placeholder: 'Write the EDS here to manually verify...' }}
                 type={'text'}
@@ -262,7 +261,11 @@ class CreateTripModal extends Component {
               </div>
             </div>
             <div className={styles.modalFooter}>
-              <button className={styles.endButton} onClick={this.closeModal} id="gotItButton">
+              <button
+                className={styles.endButton}
+                onClick={this.closeModal}
+                ref={(btn) => { this.gotItButton = btn; }}
+              >
                 <span className={styles.mediumText}>Got It</span></button>
             </div>
           </div>
@@ -309,11 +312,12 @@ class MisrouteModal extends Component {
     this.closeModal = this.closeModal.bind(this);
   }
   componentDidMount() {
-    document.getElementById('misrouteModal').focus();
+    this.misrouteModal.focus();
   }
   handleKeyDown(e) {
     if (e.keyCode === config.KEY_ACTION.ENTER) {
       this.reroute();
+      return;
     }
     if (e.keyCode === config.KEY_ACTION.ESCAPE) {
       this.hideContent();
@@ -328,35 +332,41 @@ class MisrouteModal extends Component {
   reroute() {
     this.props.reroute([this.props.misroute]);
   }
-  emptyRerouteResult() {
+  isEmptyRerouteResult() {
     return this.props.rerouteSuccess.length === 0 && this.props.rerouteFailed.length === 0;
   }
   render() {
     const { rerouteSuccess, rerouteFailed } = this.props;
     return (
       <ModalDialog>
-        {this.emptyRerouteResult() &&
-          <div role="button" id="misrouteModal" tabIndex="0" className={styles.modal} onKeyDown={e => this.handleKeyDown(e)}>
+        {this.isEmptyRerouteResult() &&
+          <div
+            role="button"
+            ref={(div) => { this.misrouteModal = div; }}
+            tabIndex="0"
+            className={styles.modal}
+            onKeyDown={e => this.handleKeyDown(e)}
+          >
             <div className={styles.modalHeader}>
               <div className={`${styles.successContent} ${styles.ordersContentEmpty}`}>
                 <img className={styles.successIcon} src={config.IMAGES.ICON_NOT_READY} alt="not ready" />
                 <div className={styles.mediumText}>
-                  Order {this.props.orderID} is misroute.
+                  Order {this.props.misroute} is misroute.
                   Would you like to reroute the order?
                 </div>
               </div>
             </div>
             <div className={styles['modal-footer']}>
-              <button className={styles['modal-button-no']} onClick={this.hideContent}>
+              <button className={styles['modal__button--no']} onClick={this.hideContent}>
                 No
               </button>
-              <button className={styles['modal-button-yes']} onClick={this.reroute}>
+              <button className={styles['modal__button--yes']} onClick={this.reroute}>
                 Yes
               </button>
             </div>
           </div>
         }
-        {!this.emptyRerouteResult() &&
+        {!this.isEmptyRerouteResult() &&
           <div className={styles.modal}>
             <div className={styles.modalHeader}>
               <div
@@ -370,9 +380,10 @@ class MisrouteModal extends Component {
                 {rerouteSuccess.length > 0 &&
                   <div>
                     <img className={styles.successIcon} src={config.IMAGES.ICON_SUCCESS} alt="success" />
-                    {rerouteSuccess.map(order => (
-                      <div key={order.UserOrderID} className={styles.mediumText}>
-                        Order {order.UserOrderNumber} successfully moved to {order.DestinationHub.Name}
+                    {rerouteSuccess.map((order, idx) => (
+                      <div key={order.UserOrderID || idx} className={styles.mediumText}>
+                        Order {order.UserOrderNumber} successfully
+                         moved to {order.DestinationHub.Name}.
                       </div>
                     ))}
                   </div>
@@ -381,9 +392,9 @@ class MisrouteModal extends Component {
                 {rerouteFailed.length > 0 &&
                   <div>
                     <img className={styles.successIcon} src={config.IMAGES.ICON_NOT_READY} alt="success" />
-                    {rerouteFailed.map(order => (
-                      <div key={order.UserOrderID} className={styles.mediumText}>
-                        Order {order.UserOrderNumber} reroute failed. {order.error}
+                    {rerouteFailed.map((order, idx) => (
+                      <div key={order.UserOrderID || idx} className={styles.mediumText}>
+                        Order {order.UserOrderNumber} reroute failed. {order.error}.
                       </div>
                     ))}
                   </div>
@@ -499,7 +510,7 @@ class GroupingPage extends Component {
     this.closeModal = this.closeModal.bind(this);
   }
   componentDidMount() {
-    document.getElementById('prepareBtn').focus();
+    this.prepareBtn.focus();
   }
   componentWillReceiveProps(nextProps) {
     if ((nextProps.isGrouping)) {
@@ -542,7 +553,13 @@ class GroupingPage extends Component {
           </ModalContainer>
         }
         <div className={styles.actionContainer}>
-          <button className={styles.createTripButton} onClick={this.openModal} id="prepareBtn">Prepare Bag</button>
+          <button
+            className={styles.createTripButton}
+            onClick={this.openModal}
+            ref={(btn) => { this.prepareBtn = btn; }}
+          >
+            Prepare Bag
+          </button>
         </div>
         <GroupingTable />
       </Page>
