@@ -135,11 +135,7 @@
   color: #bfbfbf;
 }
 
-.verifyInput:-moz-placeholder { /* Firefox 18- */
-  color: #bfbfbf;
-}
-
-.verifyInput::-moz-placeholder {  /* Firefox 19+ */
+.verifyInput:-moz-placeholder {
   color: #bfbfbf;
 }
 
@@ -370,25 +366,27 @@
   z-index: 999;
 }
 
-.modal-button-yes,
-.modal-button-no {
-  font-size: 20px;
-  font-weight: 700;
-  box-shadow: none;
-  border: none;
-  border-radius: 4px;
-  color: white;
-  width: 49%;
-  margin-right: 1%;
-  height: 50px;
-  cursor: pointer;
+.modal__button {
+  &--yes,
+  &--no {
+    font-size: 20px;
+    font-weight: 700;
+    box-shadow: none;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    width: 49%;
+    margin-right: 1%;
+    height: 50px;
+    cursor: pointer;
+  }
 }
 
-.modal-button-yes {
+.modal__button--yes {
   background-color: #38b393;
 }
 
-.modal-button-no {
+.modal__button--no {
   background-color: #b33838;
 }
 
@@ -396,11 +394,6 @@
   background-color: white;
   text-align: center;
   padding: 20px 20px 0;
-}
-
-#misrouteModal:focus {
-  outline: 0;
-  background: black;
 }
 
 .glyph-info {

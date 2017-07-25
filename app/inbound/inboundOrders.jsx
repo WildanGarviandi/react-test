@@ -15,9 +15,7 @@ import config from '../config/configValues.json';
 
 class DuplicateModal extends Component {
   componentWillUnmount() {
-    if (document.getElementById('markReceivedInput')) {
-      document.getElementById('markReceivedInput').focus();
-    }
+    this.markReceivedInput.focus();
   }
   closeModal() {
     this.props.closeModal();
@@ -305,19 +303,17 @@ function mapDispatchToProps(dispatch) {
 class MisrouteModal extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      rerouted: false,
-    };
 
     this.closeModal = this.closeModal.bind(this);
     this.reroute = this.reroute.bind(this);
   }
   componentDidMount() {
-    document.getElementById('misrouteModal').focus();
+    this.misrouteModal.focus();
   }
   handleKeyDown(e) {
     if (e.keyCode === config.KEY_ACTION.ENTER) {
       this.reroute();
+      return;
     }
     if (e.keyCode === config.KEY_ACTION.ESCAPE) {
       this.closeModal();
@@ -327,12 +323,8 @@ class MisrouteModal extends Component {
     this.props.closeModal();
   }
   reroute() {
-    if (Array.isArray(this.props.orderID)) {
-      this.props.reroute(this.props.orderID);
-    } else {
-      this.props.reroute([this.props.orderID]);
-    }
-    this.setState({ rerouted: true });
+    const id = this.props.orderID;
+    this.props.reroute(Array.isArray(id) ? id : [id]);
   }
   handleViewOrder() {
     if (Array.isArray(this.props.orderID)) {
@@ -340,7 +332,7 @@ class MisrouteModal extends Component {
     }
     return this.props.orderID;
   }
-  emptyRerouteResult() {
+  isEmptyRerouteResult() {
     return this.props.rerouteSuccess.length === 0 && this.props.rerouteFailed.length === 0;
   }
   render() {
@@ -348,8 +340,14 @@ class MisrouteModal extends Component {
     return (
       <ModalContainer>
         <ModalDialog>
-          {this.emptyRerouteResult() &&
-            <div role="button" id="misrouteModal" tabIndex="0" className={styles.modal} onKeyDown={e => this.handleKeyDown(e)}>
+          {this.isEmptyRerouteResult() &&
+            <div
+              role="button"
+              ref={(div) => { this.misrouteModal = div; }}
+              tabIndex="0"
+              className={styles.modal}
+              onKeyDown={e => this.handleKeyDown(e)}
+            >
               <div className={styles.modalHeader}>
                 <div className={`${styles.successContent} ${styles.ordersContentEmpty}`}>
                   <img className={styles.successIcon} src={config.IMAGES.ICON_NOT_READY} alt="not ready" />
@@ -361,16 +359,16 @@ class MisrouteModal extends Component {
                 </div>
               </div>
               <div className={styles['modal-footer']}>
-                <button className={styles['modal-button-no']} onClick={this.closeModal}>
+                <button className={styles['modal__button--no']} onClick={this.closeModal}>
                   No
                 </button>
-                <button className={styles['modal-button-yes']} onClick={this.reroute}>
+                <button className={styles['modal__button--yes']} onClick={this.reroute}>
                   Yes
                 </button>
               </div>
             </div>
           }
-          {!this.emptyRerouteResult() &&
+          {!this.isEmptyRerouteResult() &&
             <div className={styles.modal}>
               <div className={styles.modalHeader}>
                 <div
@@ -447,7 +445,7 @@ class InboundOrdersPage extends Component {
     this.processText = this.processText.bind(this);
   }
   componentDidMount() {
-    document.getElementById('markReceivedInput').focus();
+    this.markReceivedInput.focus();
     this.props.resetSuggestion();
   }
   componentWillReceiveProps(nextProps) {
@@ -464,7 +462,7 @@ class InboundOrdersPage extends Component {
     if (val === '') {
       return;
     }
-    document.getElementById('markReceivedInput').blur();
+    this.markReceivedInput.blur();
     this.props.markReceived(val);
     this.setState({
       orderMarked: '',
@@ -520,9 +518,8 @@ class InboundOrdersPage extends Component {
             styles={inputVerifyStyles}
             onChange={this.changeMark}
             onEnterKeyPressed={this.markReceived}
-            ref={(c) => { this.markReceivedInput = c; }}
             base={{ value: this.state.orderMarked, placeholder: 'Scan EDS, WebOrderID, or TripID...' }}
-            id="markReceivedInput"
+            inputRef={(input) => { this.markReceivedInput = input; }}
           />
           <VerifyButton
             orderMarked={this.state.orderMarked}
