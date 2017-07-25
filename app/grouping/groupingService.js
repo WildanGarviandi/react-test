@@ -368,7 +368,9 @@ export function reroute(scannedID) {
             rerouteFailed: data.failedOrder,
           },
         });
-        dispatch(InboundService.markReceived(scannedID[0]));
+        if (data.successOrder.length > 0) {
+          dispatch(InboundService.markReceived(scannedID[0]));
+        }
       }).catch((e) => {
         const message = (e && e.message) ? e.message : 'Failed to reroute order';
         dispatch({
