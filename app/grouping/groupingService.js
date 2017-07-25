@@ -7,6 +7,7 @@ import { OrderParser } from '../modules/orders';
 import { addNotification } from '../modules/notification';
 import { modalAction } from '../modules/modals/constants';
 import * as DashboardService from '../dashboard/dashboardService';
+import * as InboundService from '../inbound/inboundOrdersService';
 
 const Constants = {
   GROUPING_CURRENT_PAGE_SET: 'grouping/currentPage/set',
@@ -367,6 +368,7 @@ export function reroute(scannedID) {
             rerouteFailed: data.failedOrder,
           },
         });
+        dispatch(InboundService.markReceived(scannedID[0]));
       }).catch((e) => {
         const message = (e && e.message) ? e.message : 'Failed to reroute order';
         dispatch({
