@@ -304,15 +304,16 @@ class MisrouteModal extends Component {
     };
 
     this.hideContent = this.hideContent.bind(this);
-    this.reRoute = this.reRoute.bind(this);
+    this.reroute = this.reroute.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.closeModal = this.closeModal.bind(this);
   }
   componentDidMount() {
     document.getElementById('misrouteModal').focus();
   }
   handleKeyDown(e) {
     if (e.keyCode === config.KEY_ACTION.ENTER) {
-      this.reRoute();
+      this.reroute();
     }
     if (e.keyCode === config.KEY_ACTION.ESCAPE) {
       this.hideContent();
@@ -322,21 +323,19 @@ class MisrouteModal extends Component {
     this.props.hideContent();
   }
   closeModal() {
-    this.props.closeModal();
     this.props.hideContent();
   }
-  reRoute() {
-    this.setState({
-      rerouted: true,
-    });
-    setTimeout(() => {
-      this.closeModal();
-    }, 800);
+  reroute() {
+    this.props.reroute([this.props.misroute]);
+  }
+  emptyRerouteResult() {
+    return this.props.rerouteSuccess.length === 0 && this.props.rerouteFailed.length === 0;
   }
   render() {
+    const { rerouteSuccess, rerouteFailed } = this.props;
     return (
       <ModalDialog>
-        {!this.state.rerouted &&
+        {this.emptyRerouteResult() &&
           <div role="button" id="misrouteModal" tabIndex="0" className={styles.modal} onKeyDown={e => this.handleKeyDown(e)}>
             <div className={styles.modalHeader}>
               <div className={`${styles.successContent} ${styles.ordersContentEmpty}`}>
@@ -351,20 +350,44 @@ class MisrouteModal extends Component {
               <button className={styles['modal-button-no']} onClick={this.hideContent}>
                 No
               </button>
-              <button className={styles['modal-button-yes']} onClick={this.reRoute}>
+              <button className={styles['modal-button-yes']} onClick={this.reroute}>
                 Yes
               </button>
             </div>
           </div>
         }
-        {this.state.rerouted &&
+        {!this.emptyRerouteResult() &&
           <div className={styles.modal}>
             <div className={styles.modalHeader}>
+              <div
+                role="none"
+                onClick={this.closeModal}
+                className={styles.modalClose}
+              >
+                &times;
+              </div>
               <div className={`${styles.successContent} ${styles.ordersContentEmpty}`}>
-                <img className={styles.successIcon} src={config.IMAGES.ICON_SUCCESS} alt="success" />
-                <div className={styles.mediumText}>
-                  Order {this.props.orderID} successfully moved to {this.props.newDestination}
-                </div>
+                {rerouteSuccess.length > 0 &&
+                  <div>
+                    <img className={styles.successIcon} src={config.IMAGES.ICON_SUCCESS} alt="success" />
+                    {rerouteSuccess.map(order => (
+                      <div key={order.UserOrderID} className={styles.mediumText}>
+                        Order {order.UserOrderNumber} successfully moved to {order.DestinationHub.Name}
+                      </div>
+                    ))}
+                  </div>
+                }
+
+                {rerouteFailed.length > 0 &&
+                  <div>
+                    <img className={styles.successIcon} src={config.IMAGES.ICON_NOT_READY} alt="success" />
+                    {rerouteFailed.map(order => (
+                      <div key={order.UserOrderID} className={styles.mediumText}>
+                        Order {order.UserOrderNumber} reroute failed. {order.error}
+                      </div>
+                    ))}
+                  </div>
+                }
               </div>
             </div>
           </div>
@@ -380,6 +403,10 @@ MisrouteModal.propTypes = {
   newDestination: PropTypes.any,
   closeModal: PropTypes.func,
   hideContent: PropTypes.func,
+  rerouteSuccess: PropTypes.array,
+  rerouteFailed: PropTypes.array,
+  reroute: PropTypes.func,
+  misroute: PropTypes.any,
 };
 /* eslint-enable */
 
@@ -388,6 +415,10 @@ MisrouteModal.defaultProps = {
   newDestination: '',
   closeModal: () => {},
   hideContent: () => {},
+  rerouteSuccess: [],
+  rerouteFailed: [],
+  reroute: () => {},
+  misroute: '',
 };
 
 function mapStateToProps(state) {
@@ -402,6 +433,8 @@ function mapStateToProps(state) {
     duplicateOrders,
     isDuplicate,
     misroute,
+    rerouteSuccess,
+    rerouteFailed,
   } = grouping;
 
   return {
@@ -414,6 +447,8 @@ function mapStateToProps(state) {
     duplicateOrders,
     isDuplicate,
     misroute,
+    rerouteSuccess,
+    rerouteFailed,
   };
 }
 
@@ -438,7 +473,14 @@ function mapDispatchToProps(dispatch) {
       dispatch(ModalActions.addConfirmation(modal));
     },
     hideMisrouteContent: () => {
-      dispatch(Grouping.setDefault({ misroute: null }));
+      dispatch(Grouping.setDefault({
+        misroute: null,
+        rerouteSuccess: [],
+        rerouteFailed: [],
+      }));
+    },
+    reroute: (scannedID) => {
+      dispatch(Grouping.reroute(scannedID));
     },
   };
 
@@ -480,6 +522,10 @@ class GroupingPage extends Component {
         <MisrouteModal
           hideContent={this.props.hideMisrouteContent}
           closeModal={this.closeModal}
+          rerouteSuccess={this.props.rerouteSuccess}
+          rerouteFailed={this.props.rerouteFailed}
+          reroute={this.props.reroute}
+          misroute={this.props.misroute}
         />
       );
     }
@@ -512,6 +558,9 @@ GroupingPage.propTypes = {
   total: PropTypes.number,
   misroute: PropTypes.any,
   hideMisrouteContent: PropTypes.func,
+  rerouteSuccess: PropTypes.array,
+  rerouteFailed: PropTypes.array,
+  reroute: PropTypes.func,
 }
 /* eslint-enable */
 
@@ -522,6 +571,9 @@ GroupingPage.defaultProps = {
   total: 0,
   misroute: null,
   hideMisrouteContent: () => {},
+  rerouteSuccess: [],
+  rerouteFailed: [],
+  reroute: () => {},
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(GroupingPage);

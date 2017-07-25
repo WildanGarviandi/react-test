@@ -4,6 +4,7 @@ import FetchGet from '../modules/fetch/get';
 import FetchPost from '../modules/fetch/post';
 import ModalActions from '../modules/modals/actions';
 import { OrderParser } from '../modules/orders';
+import { addNotification } from '../modules/notification';
 import { modalAction } from '../modules/modals/constants';
 import * as DashboardService from '../dashboard/dashboardService';
 
@@ -36,6 +37,8 @@ const initialState = {
   duplicateOrders: [],
   isDuplicate: false,
   misroute: null,
+  rerouteSuccess: [],
+  rerouteFailed: [],
 };
 
 export function Reducer(state = initialState, action) {
@@ -193,7 +196,7 @@ export function AddOrder(orderNumber, backElementFocusID) {
       });
 
       return response.json().then(({ data }) => {
-        if (data.count < 1 || true) {
+        if (data.count < 1) {
           dispatch(this.setDefault({
             misroute: orderNumber,
           }));
@@ -335,5 +338,48 @@ export function setDefault(payload) {
       type: Constants.GROUPING_SET_DEFAULT,
       payload,
     });
+  };
+}
+
+export function reroute(scannedID) {
+  return (dispatch, getState) => {
+    const { userLogged } = getState().app;
+    const { token } = userLogged;
+
+    const query = {
+      orderIDs: scannedID,
+    };
+
+    dispatch({ type: modalAction.BACKDROP_SHOW });
+
+    FetchPost('/order/reroute', token, query, true).then((response) => {
+      if (!response.ok) {
+        return response.json().then(({ error }) => {
+          throw error;
+        });
+      }
+
+      return response.json().then(({ data }) => {
+        dispatch({
+          type: Constants.GROUPING_SET_DEFAULT,
+          payload: {
+            rerouteSuccess: data.successOrder,
+            rerouteFailed: data.failedOrder,
+          },
+        });
+      }).catch((e) => {
+        const message = (e && e.message) ? e.message : 'Failed to reroute order';
+        dispatch({
+          type: Constants.GROUPING_SET_DEFAULT,
+          payload: {
+            misroute: null,
+          },
+        });
+
+        dispatch(addNotification(message, 'error', null, null, 5, true));
+      });
+    });
+
+    dispatch({ type: modalAction.BACKDROP_HIDE });
   };
 }
