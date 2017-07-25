@@ -250,7 +250,7 @@ function mapStateToProps(state) {
   const userLogged = state.app.userLogged;
   const { duplicateOrders, isDuplicate, total, suggestion, lastDestination, successScanned,
     scannedOrder, bulkScan, errorIDs, countSuccess, countError, isTripID, isInterHub,
-    totalOrderByTrip, misroute } = inboundOrders;
+    totalOrderByTrip, misroute, rerouteSuccess, rerouteFailed } = inboundOrders;
 
   return {
     userLogged,
@@ -269,6 +269,8 @@ function mapStateToProps(state) {
     isInterHub,
     totalOrderByTrip,
     misroute,
+    rerouteSuccess,
+    rerouteFailed,
   };
 }
 
@@ -290,6 +292,9 @@ function mapDispatchToProps(dispatch) {
         lastDestination: {},
       }));
     },
+    reroute: (scannedIDs) => {
+      dispatch(InboundOrders.reroute(scannedIDs));
+    },
   };
 
   return dispatchFunc;
@@ -303,14 +308,14 @@ class MisrouteModal extends Component {
     };
 
     this.closeModal = this.closeModal.bind(this);
-    this.reRoute = this.reRoute.bind(this);
+    this.reroute = this.reroute.bind(this);
   }
   componentDidMount() {
     document.getElementById('misrouteModal').focus();
   }
   handleKeyDown(e) {
     if (e.keyCode === config.KEY_ACTION.ENTER) {
-      this.reRoute();
+      this.reroute();
     }
     if (e.keyCode === config.KEY_ACTION.ESCAPE) {
       this.closeModal();
@@ -319,15 +324,18 @@ class MisrouteModal extends Component {
   closeModal() {
     this.props.closeModal();
   }
-  reRoute() {
-    this.setState({
-      rerouted: true,
-    });
-    setTimeout(() => {
-      this.props.closeModal();
-    }, 800);
+  reroute() {
+    this.props.reroute([this.props.orderID]);
+    this.setState({ rerouted: true });
+  }
+  handleViewOrder() {
+    if (Array.isArray(this.props.orderID)) {
+      return this.props.orderID.join(', ');
+    }
+    return this.props.orderID;
   }
   render() {
+    const { rerouteSuccess, rerouteFailed, orderID } = this.props;
     return (
       <ModalContainer>
         <ModalDialog>
@@ -337,8 +345,9 @@ class MisrouteModal extends Component {
                 <div className={`${styles.successContent} ${styles.ordersContentEmpty}`}>
                   <img className={styles.successIcon} src={config.IMAGES.ICON_NOT_READY} alt="not ready" />
                   <div className={styles.mediumText}>
-                    Order {this.props.orderID} is misroute.
-                    Would you like to reroute the order?
+                    Order {this.handleViewOrder()} is misroute.
+                    Would you like to reroute the order
+                    {(Array.isArray(orderID) && orderID.length > 1) ? 's' : ''}?
                   </div>
                 </div>
               </div>
@@ -346,7 +355,7 @@ class MisrouteModal extends Component {
                 <button className={styles['modal-button-no']} onClick={this.closeModal}>
                   No
                 </button>
-                <button className={styles['modal-button-yes']} onClick={this.reRoute}>
+                <button className={styles['modal-button-yes']} onClick={this.reroute}>
                   Yes
                 </button>
               </div>
@@ -355,11 +364,26 @@ class MisrouteModal extends Component {
           {this.state.rerouted &&
             <div className={styles.modal}>
               <div className={styles.modalHeader}>
+                <div
+                  role="none"
+                  onClick={this.closeModal}
+                  className={styles.modalClose}
+                >
+                  &times;
+                </div>
                 <div className={`${styles.successContent} ${styles.ordersContentEmpty}`}>
-                  <img className={styles.successIcon} src={config.IMAGES.ICON_SUCCESS} alt="success" />
-                  <div className={styles.mediumText}>
-                    Order {this.props.orderID} successfully moved to {this.props.newDestination}
-                  </div>
+                  <Glyph name="info-sign" className={styles['glyph-info']} />
+                  {rerouteSuccess.map(order => (
+                    <div key={order.UserOrderNumber} className={styles.mediumText}>
+                      Order {order.UserOrderNumber} successfully moved to {order.DestinationHub.Name}.
+                    </div>
+                  ))}
+                  <br />
+                  {rerouteFailed.map(order => (
+                    <div key={order.UserOrderNumber} className={styles.mediumText}>
+                      Failed to reroute {order.UserOrderNumber}. {order.error}.
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -375,6 +399,9 @@ MisrouteModal.propTypes = {
   closeModal: PropTypes.func,
   orderID: PropTypes.any,
   newDestination: PropTypes.any,
+  reroute: PropTypes.func,
+  rerouteSuccess: PropTypes.array,
+  rerouteFailed: PropTypes.array,
 };
 /* eslint-enable */
 
@@ -382,6 +409,9 @@ MisrouteModal.defaultProps = {
   closeModal: () => {},
   orderID: '',
   newDestination: '',
+  reroute: () => {},
+  rerouteSuccess: [],
+  rerouteFailed: [],
 };
 
 class InboundOrdersPage extends Component {
@@ -568,6 +598,9 @@ class InboundOrdersPage extends Component {
           <MisrouteModal
             closeModal={this.props.closeMisrouteModal}
             orderID={this.props.misroute}
+            reroute={this.props.reroute}
+            rerouteSuccess={this.props.rerouteSuccess}
+            rerouteFailed={this.props.rerouteFailed}
           />
         }
       </Page>
@@ -596,6 +629,9 @@ InboundOrdersPage.propTypes = {
   misroute: PropTypes.any,
   closeMisrouteModal: PropTypes.func,
   total: PropTypes.number,
+  reroute: PropTypes.func,
+  rerouteSuccess: PropTypes.array,
+  rerouteFailed: PropTypes.array,
 };
 /* eslint-enable */
 
@@ -619,6 +655,9 @@ InboundOrdersPage.defaultProps = {
   misroute: null,
   closeMisrouteModal: () => {},
   total: 0,
+  reroute: () => {},
+  rerouteSuccess: [],
+  rerouteFailed: [],
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(InboundOrdersPage);

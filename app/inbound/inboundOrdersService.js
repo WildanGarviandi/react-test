@@ -43,6 +43,8 @@ const initialState = {
   bulkScan: false,
   totalOrderByTrip: 0,
   misroute: null,
+  rerouteSuccess: [],
+  rerouteFailed: [],
 };
 
 export function Reducer(state = initialState, action) {
@@ -308,7 +310,7 @@ export function markReceived(id) {
             isTripID,
             isInterHub,
             totalOrderByTrip: data.Trip ? data.Trip.UserOrderRoutes.length : 0,
-            misroute: scannedID, //data.notFound &&
+            misroute: data.notFound && scannedID,
           },
         });
         dispatch(reFetchList());
@@ -354,9 +356,13 @@ export function BulkMarkReceived(scannedIDs) {
 
       return response.json().then(({ data }) => {
         const failedIds = [];
+        const misroute = [];
         if (data.failedIds.length > 0) {
           data.failedIds.forEach((failed) => {
             failedIds.push(failed.id);
+            if (failed.notFound) {
+              misroute.push(failed.id);
+            }
           });
         }
 
@@ -374,6 +380,7 @@ export function BulkMarkReceived(scannedIDs) {
             isTripID: false,
             isInterHub: false,
             totalOrderByTrip: 0,
+            misroute: misroute.length > 0 ? misroute : null,
           },
         });
 
@@ -410,5 +417,48 @@ export function setDefault(payload) {
       type: Constants.ORDERS_INBOUND_SET_DEFAULT,
       payload,
     });
+  };
+}
+
+export function reroute(scannedIDs) {
+  return (dispatch, getState) => {
+    const { userLogged } = getState().app;
+    const { token } = userLogged;
+
+    const query = {
+      orderIDs: scannedIDs,
+    };
+
+    dispatch({ type: modalAction.BACKDROP_SHOW });
+
+    FetchPost('/order/reroute', token, query, true).then((response) => {
+      if (!response.ok) {
+        return response.json().then(({ error }) => {
+          throw error;
+        });
+      }
+
+      return response.json().then(({ data }) => {
+        dispatch({
+          type: Constants.ORDERS_INBOUND_SET_DEFAULT,
+          payload: {
+            rerouteSuccess: data.successOrder,
+            rerouteFailed: data.failedOrder,
+          },
+        });
+      }).catch((e) => {
+        const message = (e && e.message) ? e.message : 'Failed to reroute order';
+        dispatch({
+          type: Constants.ORDERS_INBOUND_SET_DEFAULT,
+          payload: {
+            misroute: null,
+          },
+        });
+
+        dispatch(NotifActions.addNotification(message, 'error', null, null, 5, true));
+      });
+    });
+
+    dispatch({ type: modalAction.BACKDROP_HIDE });
   };
 }
