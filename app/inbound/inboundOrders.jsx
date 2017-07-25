@@ -290,6 +290,8 @@ function mapDispatchToProps(dispatch) {
       dispatch(InboundOrders.setDefault({
         misroute: null,
         lastDestination: {},
+        rerouteSuccess: [],
+        rerouteFailed: [],
       }));
     },
     reroute: (scannedIDs) => {
@@ -325,7 +327,11 @@ class MisrouteModal extends Component {
     this.props.closeModal();
   }
   reroute() {
-    this.props.reroute([this.props.orderID]);
+    if (Array.isArray(this.props.orderID)) {
+      this.props.reroute(this.props.orderID);
+    } else {
+      this.props.reroute([this.props.orderID]);
+    }
     this.setState({ rerouted: true });
   }
   handleViewOrder() {
@@ -334,12 +340,15 @@ class MisrouteModal extends Component {
     }
     return this.props.orderID;
   }
+  emptyRerouteResult() {
+    return this.props.rerouteSuccess.length === 0 && this.props.rerouteFailed.length === 0;
+  }
   render() {
     const { rerouteSuccess, rerouteFailed, orderID } = this.props;
     return (
       <ModalContainer>
         <ModalDialog>
-          {!this.state.rerouted &&
+          {this.emptyRerouteResult() &&
             <div role="button" id="misrouteModal" tabIndex="0" className={styles.modal} onKeyDown={e => this.handleKeyDown(e)}>
               <div className={styles.modalHeader}>
                 <div className={`${styles.successContent} ${styles.ordersContentEmpty}`}>
@@ -361,7 +370,7 @@ class MisrouteModal extends Component {
               </div>
             </div>
           }
-          {this.state.rerouted &&
+          {!this.emptyRerouteResult() &&
             <div className={styles.modal}>
               <div className={styles.modalHeader}>
                 <div
