@@ -161,12 +161,14 @@ export function FetchList() {
 }
 
 export function RemoveOrder(index) {
-  return (dispatch) => {
+  const dispatchFunc = (dispatch) => {
     dispatch({
       type: Constants.GROUPING_ORDER_REMOVE,
       index,
     });
   };
+
+  return dispatchFunc;
 }
 
 export function AddOrder(orderNumber, backElementFocusID) {
@@ -334,16 +336,18 @@ export function CreateTrip() {
 }
 
 export function setDefault(payload) {
-  return (dispatch) => {
+  const dispatchFunc = (dispatch) => {
     dispatch({
       type: Constants.GROUPING_SET_DEFAULT,
       payload,
     });
   };
+
+  return dispatchFunc;
 }
 
 export function reroute(scannedID) {
-  return (dispatch, getState) => {
+  const dispatchFunc = (dispatch, getState) => {
     const { userLogged } = getState().app;
     const { token } = userLogged;
 
@@ -386,4 +390,6 @@ export function reroute(scannedID) {
 
     dispatch({ type: modalAction.BACKDROP_HIDE });
   };
+
+  return dispatchFunc;
 }

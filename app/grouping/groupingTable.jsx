@@ -13,7 +13,7 @@ function mapStateToGrouping(state) {
   const { grouping } = state.app;
   const { currentPage, isFetching, limit, orders, total, isGrouping } = grouping;
 
-  return {
+  const stateToProps = {
     Headers: groupingHeaders,
     Body: groupingBody,
     isFetching,
@@ -23,6 +23,8 @@ function mapStateToGrouping(state) {
       currentPage, limit, total,
     },
   };
+
+  return stateToProps;
 }
 
 function mapDispatchToGrouping(dispatch) {

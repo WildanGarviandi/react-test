@@ -513,7 +513,7 @@ class GroupingPage extends Component {
     this.prepareBtn.focus();
   }
   componentWillReceiveProps(nextProps) {
-    if ((nextProps.isGrouping)) {
+    if (nextProps.isGrouping) {
       this.openModal();
     }
     this.setState({
