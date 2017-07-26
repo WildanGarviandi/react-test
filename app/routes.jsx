@@ -1,5 +1,6 @@
 import React from 'react';
 import { Router, Route, IndexRoute, browserHistory } from 'react-router';
+import { push } from 'react-router-redux';
 
 import checkAuth from './modules/auth/actions/checkAuth';
 import store from './store';
@@ -65,6 +66,14 @@ function requireHubAuth(nextState, replace, callback) {
   });
 }
 
+const requireGoogleHubAuth = (nextState, replace, callback) => {
+  const { hubs } = store.getState().app.userLogged;
+  if (hubs.length === 0) {
+    return store.dispatch(push('/orders/pickup'));
+  }
+  return callback();
+};
+
 export default (
   <Router history={browserHistory}>
     <Route path="/" component={App}>
@@ -99,7 +108,7 @@ export default (
       <Route path="/trips/:tripID/coverManifest" component={OutboundTripsCoverManifestPage} onEnter={requireAuth} />
       <Route path="/qrcode/:id" component={ContainerQRCodePage} />
       <Route path="/login" component={LoginPage} />
-      <Route path="/choose-hub" component={ChooseHubPage} />
+      <Route path="/choose-hub" component={ChooseHubPage} onEnter={requireGoogleHubAuth} />
       <Route path="/register" component={RegisterPage} />
       <Route path="/*" component={LoginPage} />
     </Route>

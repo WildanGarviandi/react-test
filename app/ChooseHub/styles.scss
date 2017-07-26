@@ -59,10 +59,14 @@
 }
 
 .dropdown-list {
-  height: 320px;
+  height: auto;
 }
 
 .dropdown-hub {
-  width: 480px;
+  width: 415px;
   padding: 15px 33px;
+}
+
+.dropdown-content {
+  width: 375px;
 }

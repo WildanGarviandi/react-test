@@ -54,7 +54,9 @@ export default (state = initialUserState, action) => {
       return Object.assign({}, state, {
         isValid: true,
         hubs: action.payload.hubs,
-        signIn: action.payload.signIn,
+        user: action.payload.user,
+        token: action.payload.token,
+        userID: action.payload.userID,
       });
     case actionTypes.LOGIN_GOOGLE_FAILED:
       localStorage.clear();

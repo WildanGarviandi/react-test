@@ -1,35 +1,45 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+import PropTypes from 'prop-types';
 
 import configValues from '../config/configValues.json';
 import styles from './styles.scss';
 import DropdownList from '../components/DropdownMenu';
+import getCurrentState from './Selector';
+import { ChooseHubAction } from '../modules/';
+
+const mapStateToProps = (state) => {
+  const stateToProps = getCurrentState(state);
+  return stateToProps;
+};
+
+const mapDispatchToProps = (dispatch) => {
+  const dispatchData = bindActionCreators({
+    chooseHub: ChooseHubAction.chooseHub,
+  }, dispatch);
+
+  return dispatchData;
+};
 
 class ChooseHub extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      data: [{
-        id: 1,
-        name: 'Central Hub Jakarta Barat',
-      }, {
-        id: 2,
-        name: 'Local Hub Jakarta Selatan',
-      }, {
-        id: 3,
-        name: 'Local Hub Jakarta Timur',
-      }, {
-        id: 4,
-        name: 'Local Hub Jakarta Pusat',
-      }, {
-        id: 5,
-        name: 'Local Hub Jakarta Utara',
-      }],
+      data: this.props.hubs.map((hub) => {
+        const data = {
+          id: hub.Hub.HubID,
+          name: hub.Hub.Name,
+        };
+        return data;
+      }),
     };
     this.handleSelect = this.handleSelect.bind(this);
   }
 
   handleSelect(selectedData) {
-    console.log(selectedData);
+    this.props.chooseHub(selectedData.id);
   }
 
   render() {
@@ -58,6 +68,7 @@ class ChooseHub extends PureComponent {
             iconStyles={styles['etobee-logo']}
             dropdownStyles={styles['dropdown-list']}
             dropdownItemStyles={styles['dropdown-hub']}
+            contentStyles={styles['dropdown-content']}
           />
         </div>
       </div>
@@ -65,4 +76,11 @@ class ChooseHub extends PureComponent {
   }
 }
 
-export default ChooseHub;
+/* eslint-disable */
+ChooseHub.propTypes = {
+  hubs: PropTypes.array.isRequired,
+  chooseHub: PropTypes.func.isRequired,
+};
+/* eslint-enable */
+
+export default connect(mapStateToProps, mapDispatchToProps)(ChooseHub);

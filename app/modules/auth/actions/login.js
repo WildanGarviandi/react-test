@@ -38,9 +38,12 @@ const loginGoogle = (token) => {
             type: actionTypes.LOGIN_GOOGLE_SUCCESS,
             payload: {
               hubs: responseJson.data.Hubs,
-              signIn: responseJson.data.SignIn,
+              user: responseJson.data.SignIn.User,
+              token: responseJson.data.SignIn.LoginSessionKey,
+              userID: responseJson.data.SignIn.UserID,
             },
           });
+          dispatch(push('/choose-hub'));
         });
       } else {
         dispatch({ type: actionTypes.LOGIN_GOOGLE_FAILED, error: 'Bad login information' });

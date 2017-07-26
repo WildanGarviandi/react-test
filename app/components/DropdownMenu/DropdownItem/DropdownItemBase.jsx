@@ -31,6 +31,8 @@ class DropdownItemBase extends PureComponent {
 
     const dropdownItemStyles = classNames(styles.dropdownitem,
       this.props.dropdownItemStyles);
+    const contentStyles = classNames(styles.dropdownitem__content,
+      this.props.contentStyles);
 
     return (
       <div
@@ -42,7 +44,7 @@ class DropdownItemBase extends PureComponent {
       >
         <div className={styles.dropdownitem__icon}>
           <div className={iconStyles} />
-          <div className={styles.dropdownitem__content}>
+          <div className={contentStyles}>
             <div className={styles['dropdownitem__content-hub']}>
               {data.name}
             </div>
@@ -59,6 +61,7 @@ DropdownItemBase.propTypes = {
   handleSelect: PropTypes.func.isRequired,
   iconStyles: PropTypes.any,
   dropdownItemStyles: PropTypes.any,
+  contentStyles: PropTypes.any,
 };
 /* eslint-enable */
 
@@ -66,6 +69,7 @@ DropdownItemBase.defaultProps = {
   data: {},
   iconStyles: {},
   dropdownItemStyles: {},
+  contentStyles: {},
 };
 
 export default DropdownItemBase;
