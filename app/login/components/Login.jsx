@@ -66,7 +66,7 @@ export default class Login extends React.Component {
   }
 
   handleFailureResponse(response) {
-    console.error(response, 'failed');
+    this.props.loginError(response.error);
   }
 
   render() {
@@ -79,7 +79,7 @@ export default class Login extends React.Component {
       <div className={styles.page}>
         <div className={styles.logo} />
         <div className={styles.panel}>
-          <form className={styles.form}>
+          <form className={styles.form} onSubmit={this.props.handleSubmit}>
             {
               configValues.IS_ACTIVATE_GOOGLE_AUTH ?
                 (
@@ -121,6 +121,7 @@ Login.propTypes = {
   handleSubmit: PropTypes.any,
   loginState: PropTypes.any,
   handleGoogleAuth: PropTypes.func,
+  loginError: PropTypes.func,
 };
 /* eslint-enable */
 
@@ -130,4 +131,5 @@ Login.defaultProps = {
   handleSubmit: null,
   loginState: null,
   handleGoogleAuth: () => { },
+  loginError: () => {},
 };

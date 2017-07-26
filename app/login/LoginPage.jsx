@@ -19,6 +19,7 @@ const mapDispatchToProps = (dispatch) => {
   const dispatchData = bindActionCreators({
     login: LoginAction.login,
     loginGoogle: LoginAction.loginGoogle,
+    loginError: LoginAction.loginError,
   }, dispatch);
 
   return dispatchData;
@@ -69,6 +70,7 @@ class LoginPage extends React.Component {
         handleInputChange={this.handleInputChange}
         handleGoogleAuth={this.handleGoogleAuth}
         handleSubmit={this.handleSubmit}
+        loginError={this.props.loginError}
         loginState={loginState}
       />
     );
@@ -82,6 +84,7 @@ LoginPage.propTypes = {
   login: PropTypes.func,
   loginGoogle: PropTypes.func,
   loginState: PropTypes.any,
+  loginError: PropTypes.func,
 };
 /* eslint-enable */
 
@@ -90,6 +93,7 @@ LoginPage.defaultProps = {
   hubID: null,
   login: () => {},
   loginGoogle: () => {},
+  loginError: () => {},
   loginState: null,
 };
 

@@ -53,4 +53,13 @@ const loginGoogle = (token) => {
   return dispatchFunc;
 };
 
-export { login, loginGoogle };
+const loginError = ({ message }) => {
+  const dispatchData = {
+    type: actionTypes.LOGIN_GOOGLE_FAILED,
+    error: message,
+  };
+
+  return dispatchData;
+};
+
+export { login, loginGoogle, loginError };
