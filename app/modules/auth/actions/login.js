@@ -30,17 +30,17 @@ const loginGoogle = (token) => {
   const dispatchFunc = (dispatch) => {
     const body = { token };
 
-    dispatch({ type: actionTypes.LOGIN_START });
+    dispatch({ type: actionTypes.LOGIN_GOOGLE_START });
     fetchPost(endpoints.LOGIN_GOOGLE, '', body).then((response) => {
       if (response.ok) {
-        response.json().then((responseJson) => {
-          dispatch({ type: actionTypes.LOGIN_SUCCESS, user: responseJson.data.SignIn });
+        response.json().then(() => {
+          dispatch({ type: actionTypes.LOGIN_GOOGLE_SUCCESS });
         });
       } else {
-        dispatch({ type: actionTypes.LOGIN_FAILED, message: 'Bad login information' });
+        dispatch({ type: actionTypes.LOGIN_GOOGLE_FAILED, message: 'Bad login information' });
       }
     }).catch(() => {
-      dispatch({ type: actionTypes.LOGIN_FAILED, message: 'Cannot connect to server' });
+      dispatch({ type: actionTypes.LOGIN_GOOGLE_FAILED, message: 'Cannot connect to server' });
     });
   };
 

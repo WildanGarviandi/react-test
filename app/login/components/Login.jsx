@@ -82,10 +82,18 @@ export default class Login extends React.Component {
           <form className={styles.form}>
             {
               configValues.IS_ACTIVATE_GOOGLE_AUTH ?
-                (<GoogleAuth
-                  handleSuccessResponse={this.handleSuccessResponse}
-                  handleFailureResponse={this.handleFailureResponse}
-                />) :
+                (
+                  <div>
+                    {this.props.loginState.isError &&
+                      <span className={styles.errorMsg}>
+                        {this.props.loginState.message}
+                      </span>}
+                    <GoogleAuth
+                      handleSuccessResponse={this.handleSuccessResponse}
+                      handleFailureResponse={this.handleFailureResponse}
+                    />
+                  </div>
+                ) :
                 (
                   <div>
                     <h4 className={styles.header}>LOGIN</h4>
@@ -121,5 +129,5 @@ Login.defaultProps = {
   handleInputChange: null,
   handleSubmit: null,
   loginState: null,
-  handleGoogleAuth: () => {},
+  handleGoogleAuth: () => { },
 };

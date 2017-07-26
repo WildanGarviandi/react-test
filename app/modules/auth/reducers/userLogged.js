@@ -14,6 +14,7 @@ const initialUserState = {
   editVolume: false,
   editWeight: false,
   roleName: null,
+  message: null,
 };
 
 export default (state = initialUserState, action) => {
@@ -38,6 +39,22 @@ export default (state = initialUserState, action) => {
       localStorage.clear();
       return Object.assign({}, state, {
         isFetching: false,
+        isValid: false,
+        message: action.message,
+      });
+    case actionTypes.LOGIN_GOOGLE_START:
+      localStorage.clear();
+      return Object.assign({}, state, {
+        isValid: false,
+        message: null,
+      });
+    case actionTypes.LOGIN_GOOGLE_SUCCESS:
+      return Object.assign({}, state, {
+        isValid: true,
+      });
+    case actionTypes.LOGIN_GOOGLE_FAILED:
+      localStorage.clear();
+      return Object.assign({}, state, {
         isValid: false,
         message: action.message,
       });
