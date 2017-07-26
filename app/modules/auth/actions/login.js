@@ -33,7 +33,7 @@ const loginGoogle = (token) => {
     dispatch({ type: actionTypes.LOGIN_GOOGLE_START });
     fetchPost(endpoints.LOGIN_GOOGLE, '', body).then((response) => {
       if (response.ok) {
-        response.json().then(() => {
+        response.json().then((responseJson) => {
           dispatch({ type: actionTypes.LOGIN_GOOGLE_SUCCESS });
         });
       } else {
