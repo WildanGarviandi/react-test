@@ -160,7 +160,7 @@ export function FetchList() {
   };
 }
 
-export function RemoveOrder(index) {
+export const removeOrder = (index) => {
   const dispatchFunc = (dispatch) => {
     dispatch({
       type: Constants.GROUPING_ORDER_REMOVE,
@@ -169,7 +169,7 @@ export function RemoveOrder(index) {
   };
 
   return dispatchFunc;
-}
+};
 
 export function AddOrder(orderNumber, backElementFocusID) {
   return (dispatch, getState) => {
