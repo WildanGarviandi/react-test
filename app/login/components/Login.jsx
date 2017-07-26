@@ -10,6 +10,11 @@ import GoogleAuth from '../../components/GoogleAuth';
 import configValues from '../../config/configValues.json';
 
 export default class Login extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleSuccessResponse = this.handleSuccessResponse.bind(this);
+    this.handleFailureResponse = this.handleFailureResponse.bind(this);
+  }
 
   getEmailInputProps() {
     return {
@@ -57,11 +62,11 @@ export default class Login extends React.Component {
   }
 
   handleSuccessResponse(response) {
-    console.log(response, 'sucess');
+    this.props.handleGoogleAuth(response);
   }
 
   handleFailureResponse(response) {
-    console.log(response, 'failed');
+    this.props.loginError(response.error);
   }
 
   render() {
@@ -77,10 +82,18 @@ export default class Login extends React.Component {
           <form className={styles.form} onSubmit={this.props.handleSubmit}>
             {
               configValues.IS_ACTIVATE_GOOGLE_AUTH ?
-                (<GoogleAuth
-                  handleSuccessResponse={this.handleSuccessResponse}
-                  handleFailureResponse={this.handleFailureResponse}
-                />) :
+                (
+                  <div>
+                    {this.props.loginState.isError &&
+                      <span className={styles.errorMsg}>
+                        {this.props.loginState.message}
+                      </span>}
+                    <GoogleAuth
+                      handleSuccessResponse={this.handleSuccessResponse}
+                      handleFailureResponse={this.handleFailureResponse}
+                    />
+                  </div>
+                ) :
                 (
                   <div>
                     <h4 className={styles.header}>LOGIN</h4>
@@ -107,6 +120,8 @@ Login.propTypes = {
   handleInputChange: PropTypes.any,
   handleSubmit: PropTypes.any,
   loginState: PropTypes.any,
+  handleGoogleAuth: PropTypes.func,
+  loginError: PropTypes.func,
 };
 /* eslint-enable */
 
@@ -115,4 +130,6 @@ Login.defaultProps = {
   handleInputChange: null,
   handleSubmit: null,
   loginState: null,
+  handleGoogleAuth: () => { },
+  loginError: () => {},
 };
