@@ -446,6 +446,15 @@ export function reroute(scannedIDs) {
             rerouteFailed: data.failedOrder,
           },
         });
+
+        if (data.successOrder.length > 0) {
+          const reroutedIDs = _.map(data.successOrder, 'UserOrderNumber');
+          dispatch(
+            (reroutedIDs.length === 1) ?
+            this.markReceived(reroutedIDs[0]) :
+            this.BulkMarkReceived(reroutedIDs),
+          );
+        }
       }).catch((e) => {
         const message = (e && e.message) ? e.message : 'Failed to reroute order';
         dispatch({

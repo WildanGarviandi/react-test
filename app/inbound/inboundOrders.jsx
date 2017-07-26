@@ -310,6 +310,9 @@ class MisrouteModal extends Component {
   componentDidMount() {
     this.misrouteModal.focus();
   }
+  componentWillUnmount() {
+    this.closeModal();
+  }
   handleKeyDown(e) {
     if (e.keyCode === config.KEY_ACTION.ENTER) {
       this.reroute();
