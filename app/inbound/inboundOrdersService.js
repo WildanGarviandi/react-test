@@ -285,7 +285,7 @@ export function markReceived(id) {
             type: Constants.ORDERS_INBOUND_MARK_RECEIVED_SET,
           });
         } else if (data.notFound) {
-          dispatch(NotifActions.addNotification(`Order ${scannedID} is misroute`, 'error', null, null, 3, true));
+          dispatch(addNotification(`Order ${scannedID} is misroute`, 'error', null, null, 3, true));
 
           dispatch({
             type: Constants.ORDERS_INBOUND_MARK_RECEIVED_SET,
@@ -455,7 +455,7 @@ export function reroute(scannedIDs) {
           },
         });
 
-        dispatch(NotifActions.addNotification(message, 'error', null, null, 5, true));
+        dispatch(addNotification(message, 'error', null, null, 5, true));
       });
     });
 
