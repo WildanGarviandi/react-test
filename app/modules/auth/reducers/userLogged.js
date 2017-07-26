@@ -15,6 +15,8 @@ const initialUserState = {
   editWeight: false,
   roleName: null,
   message: null,
+  hubs: [],
+  signIn: {},
 };
 
 export default (state = initialUserState, action) => {
@@ -51,12 +53,14 @@ export default (state = initialUserState, action) => {
     case actionTypes.LOGIN_GOOGLE_SUCCESS:
       return Object.assign({}, state, {
         isValid: true,
+        hubs: action.payload.hubs,
+        signIn: action.payload.signIn,
       });
     case actionTypes.LOGIN_GOOGLE_FAILED:
       localStorage.clear();
       return Object.assign({}, state, {
         isValid: false,
-        message: action.message,
+        message: action.error,
       });
     case actionTypes.AUTH_VALID:
       localStorage.hubID = action.hub && action.hub.HubID;

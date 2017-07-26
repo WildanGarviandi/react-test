@@ -34,13 +34,19 @@ const loginGoogle = (token) => {
     fetchPost(endpoints.LOGIN_GOOGLE, '', body).then((response) => {
       if (response.ok) {
         response.json().then((responseJson) => {
-          dispatch({ type: actionTypes.LOGIN_GOOGLE_SUCCESS });
+          dispatch({
+            type: actionTypes.LOGIN_GOOGLE_SUCCESS,
+            payload: {
+              hubs: responseJson.data.Hubs,
+              signIn: responseJson.data.SignIn,
+            },
+          });
         });
       } else {
-        dispatch({ type: actionTypes.LOGIN_GOOGLE_FAILED, message: 'Bad login information' });
+        dispatch({ type: actionTypes.LOGIN_GOOGLE_FAILED, error: 'Bad login information' });
       }
     }).catch(() => {
-      dispatch({ type: actionTypes.LOGIN_GOOGLE_FAILED, message: 'Cannot connect to server' });
+      dispatch({ type: actionTypes.LOGIN_GOOGLE_FAILED, error: 'Cannot connect to server' });
     });
   };
 
