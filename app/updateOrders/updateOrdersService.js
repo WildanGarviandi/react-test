@@ -6,7 +6,7 @@ import FetchPost from '../modules/fetch/post';
 import ModalActions from '../modules/modals/actions';
 import { OrderParser } from '../modules/orders';
 import { modalAction } from '../modules/modals/constants';
-import NotifActions from '../modules/notification/actions';
+import { addNotification } from '../modules/notification';
 import * as DashboardService from '../dashboard/dashboardService';
 
 
@@ -188,7 +188,7 @@ const mapPricing = (pricing) => {
     let price;
 
     if (pricing.length > 0 && pricing[0]) {
-      if (pricing[0] && !pricing[0].MaxWeight) {
+      if (pricing[0].PickupType === 1 && !pricing[0].MaxWeight) {
         isPricingByWeight = false;
         mappedPricing = _.map(pricing, (priceData) => {
           const hasPackageDimensionData = (priceData.WebstoreUser) &&
@@ -314,7 +314,7 @@ export function StartEditOrder(orderID) {
           const timeout = 5;
           const withSound = true;
 
-          dispatch(NotifActions.addNotification(message, level,
+          dispatch(addNotification(message, level,
             position, style, timeout, withSound));
           dispatch({ type: modalAction.BACKDROP_HIDE });
           dispatch({ type: Constants.ORDERS_UPDATE_END_EDIT_ORDER });
@@ -357,7 +357,7 @@ export function UpdateOrder(id, order) {
         dispatch({ type: Constants.ORDERS_UPDATE_END_EDIT_ORDER });
         dispatch({ type: modalAction.BACKDROP_HIDE });
         dispatch(DashboardService.FetchCount());
-        dispatch(NotifActions.addNotification(
+        dispatch(addNotification(
           `Order ${data.result.UserOrderNumber} was successfully updated`,
           'success', null, 4));
       });

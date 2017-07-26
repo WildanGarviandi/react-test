@@ -11,7 +11,6 @@ import Page, { ButtonAtRightTop, PageTitle } from './page';
 import { Pagination } from './pagination';
 import { Rows, Tables } from './table';
 import Modal from './modal';
-import NotificationContainer from './notification';
 
 import baseStyle from './index.scss';
 
@@ -98,4 +97,4 @@ const EmptySpace = React.createClass({
 export { ButtonAtRightTop, ButtonBase, ButtonAction, ButtonWithLoading, ButtonStandard,
     CheckBox, Collection, Dropdown, DropdownTypeAhead, DropdownWithState, Infograph, Input,
     InputWithDefault, InputWithDefaultNumberFormatted, Modal, ModalMessage, Page, PageTitle,
-    Pagination, Rows, Tables, NotificationContainer, EmptySpace };
+    Pagination, Rows, Tables, EmptySpace };

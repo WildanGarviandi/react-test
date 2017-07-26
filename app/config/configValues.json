@@ -191,5 +191,11 @@
     "CHECK_AUTH_INTERVAL": 10000,
     "DATE_FORMAT": {
       "DATE_MONTH_YEAR": "DD-MM-YYYY"
+    },
+    "SOUND": {
+      "SYSTEM_FAULT": "/sound/system-fault.mp3",
+      "COINS": "/sound/coins.mp3",
+      "JOB_DONE": "/sound/job-done.mp3",
+      "MAY_I_HAVE_YOUR_ATTENTION": "/sound/may-i-have-your-attention.mp3"
     }
 }

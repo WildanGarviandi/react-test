@@ -1,31 +1,25 @@
 import lodash from 'lodash';
-import {push} from 'react-router-redux';
+
 import FetchGet from '../modules/fetch/get';
 import FetchPost from '../modules/fetch/post';
 import ModalActions from '../modules/modals/actions';
-import {OrderParser} from '../modules/orders';
-import OrderStatusSelector from '../modules/orderStatus/selector';
-import {modalAction} from '../modules/modals/constants';
-import NotifActions from '../modules/notification/actions';
+import { OrderParser } from '../modules/orders';
+import { modalAction } from '../modules/modals/constants';
 import * as DashboardService from '../dashboard/dashboardService';
 
 const Constants = {
-  GROUPING_CURRENT_PAGE_SET: "grouping/currentPage/set",
-  GROUPING_FETCH_END: "grouping/fetch/end",
-  GROUPING_FETCH_START: "grouping/fetch/start",
-  GROUPING_LIMIT_SET: "grouping/limit/set",
-  GROUPING_SET: "grouping/set",
-  GROUPING_CREATE_TRIP_START: "grouping/trip/create/start",
-  GROUPING_CREATE_TRIP_END: "grouping/trip/create/end",
-  GROUPING_TRIP_SET: "grouping/trip/set",
-  GROUPING_ORDER_ADD_START: "grouping/order/add/start",
-  GROUPING_ORDER_ADD_END: "grouping/order/add/end",
-  GROUPING_ORDER_REMOVE: "grouping/order/remove"
-}
-
-//
-// Reducers
-//
+  GROUPING_CURRENT_PAGE_SET: 'grouping/currentPage/set',
+  GROUPING_FETCH_END: 'grouping/fetch/end',
+  GROUPING_FETCH_START: 'grouping/fetch/start',
+  GROUPING_LIMIT_SET: 'grouping/limit/set',
+  GROUPING_SET: 'grouping/set',
+  GROUPING_CREATE_TRIP_START: 'grouping/trip/create/start',
+  GROUPING_CREATE_TRIP_END: 'grouping/trip/create/end',
+  GROUPING_TRIP_SET: 'grouping/trip/set',
+  GROUPING_ORDER_ADD_START: 'grouping/order/add/start',
+  GROUPING_ORDER_ADD_END: 'grouping/order/add/end',
+  GROUPING_ORDER_REMOVE: 'grouping/order/remove',
+};
 
 const initialState = {
   currentPage: 1,
@@ -43,21 +37,21 @@ const initialState = {
 }
 
 export function Reducer(state = initialState, action) {
-  switch(action.type) {
+  switch (action.type) {
     case Constants.GROUPING_CURRENT_PAGE_SET: {
-      return lodash.assign({}, state, {currentPage: action.currentPage});
+      return lodash.assign({}, state, { currentPage: action.currentPage });
     }
 
     case Constants.GROUPING_FETCH_END: {
-      return lodash.assign({}, state, {isFetching: false});
+      return lodash.assign({}, state, { isFetching: false });
     }
 
     case Constants.GROUPING_FETCH_START: {
-      return lodash.assign({}, state, {isFetching: true});
+      return lodash.assign({}, state, { isFetching: true });
     }
 
     case Constants.GROUPING_LIMIT_SET: {
-      return lodash.assign({}, state, {limit: action.limit});
+      return lodash.assign({}, state, { limit: action.limit });
     }
 
     case Constants.GROUPING_SET: {
@@ -68,7 +62,7 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.GROUPING_CREATE_TRIP_START: {
-      return lodash.assign({}, state, {isGrouping: true});
+      return lodash.assign({}, state, { isGrouping: true });
     }
 
     case Constants.GROUPING_CREATE_TRIP_END: {
@@ -81,7 +75,7 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.GROUPING_TRIP_SET: {
-      return lodash.assign({}, state, {trip: action.trip});
+      return lodash.assign({}, state, { trip: action.trip });
     }
 
     case Constants.GROUPING_ORDER_ADD_START: {
@@ -93,7 +87,7 @@ export function Reducer(state = initialState, action) {
 
     case Constants.GROUPING_ORDER_ADD_END: {
       if (!action.duplicate) {
-        return lodash.assign({}, state, {addedOrders: state.addedOrders.concat([action.order])});
+        return lodash.assign({}, state, { addedOrders: state.addedOrders.concat([action.order]) });
       } else {
         return lodash.assign({}, state, {
           duplicateOrders: action.order,
@@ -106,7 +100,7 @@ export function Reducer(state = initialState, action) {
     case Constants.GROUPING_ORDER_REMOVE: {
       var addedOrders = [].concat(state.addedOrders);
       addedOrders.splice(action.index, 1);
-      return lodash.assign({}, state, {addedOrders: addedOrders});
+      return lodash.assign({}, state, { addedOrders: addedOrders });
     }
 
     default: return state;
@@ -119,13 +113,13 @@ export function Reducer(state = initialState, action) {
 
 export function FetchList() {
   return (dispatch, getState) => {
-    const {grouping, userLogged} = getState().app;
-    const {token} = userLogged;
-    const {currentPage, filters, limit} = grouping;
+    const { grouping, userLogged } = getState().app;
+    const { token } = userLogged;
+    const { currentPage, filters, limit } = grouping;
 
     const query = lodash.assign({}, filters, {
       limit: limit,
-      offset: (currentPage-1)*limit,
+      offset: (currentPage - 1) * limit,
     });
 
     dispatch({
@@ -133,11 +127,11 @@ export function FetchList() {
     });
 
     FetchGet('/order/received', token, query).then((response) => {
-      if(!response.ok) {
+      if (!response.ok) {
         throw new Error();
       }
 
-      response.json().then(({data}) => {
+      response.json().then(({ data }) => {
         dispatch({
           type: Constants.GROUPING_SET,
           orders: lodash.map(data.rows, OrderParser),
@@ -153,16 +147,16 @@ export function FetchList() {
         type: Constants.GROUPING_FETCH_END,
       });
 
-      dispatch(ModalActions.addMessage("Failed to fetch grouping orders"));
+      dispatch(ModalActions.addMessage('Failed to fetch grouping orders'));
     });
   }
 }
 
-export function AddOrder (orderNumber, backElementFocusID) {
+export function AddOrder(orderNumber, backElementFocusID) {
   return (dispatch, getState) => {
-    const {userLogged, grouping} = getState().app;
-    const {token} = userLogged;
-    const {addedOrders} = grouping;
+    const { userLogged, grouping } = getState().app;
+    const { token } = userLogged;
+    const { addedOrders } = grouping;
 
     const query = {
       userOrderNumber: orderNumber,
@@ -177,7 +171,7 @@ export function AddOrder (orderNumber, backElementFocusID) {
     });
 
     FetchGet('/order/received', token, query).then((response) => {
-      if(!response.ok) {
+      if (!response.ok) {
         throw new Error();
       }
 
@@ -185,7 +179,7 @@ export function AddOrder (orderNumber, backElementFocusID) {
         type: modalAction.BACKDROP_HIDE,
       });
 
-      return response.json().then(({data}) => {
+      return response.json().then(({ data }) => {
         if (data.count < 1) {
           throw new Error(`${orderNumber} is not found`);
         } else if (data.count > 1) {
@@ -195,7 +189,7 @@ export function AddOrder (orderNumber, backElementFocusID) {
             order: data.rows
           });
         } else {
-          const index = lodash.findIndex(addedOrders, {'UserOrderNumber': data.rows[0].UserOrderNumber});
+          const index = lodash.findIndex(addedOrders, { 'UserOrderNumber': data.rows[0].UserOrderNumber });
           if (index > -1) {
             dispatch(ModalActions.addConfirmation({
               message: `Remove order ${data.rows[0].UserOrderNumber} ?`,
@@ -212,10 +206,10 @@ export function AddOrder (orderNumber, backElementFocusID) {
             });
           }
         }
-        
+
       });
     }).catch((e) => {
-      const message = e.message || "Failed to fetch order details";
+      const message = e.message || 'Failed to fetch order details';
 
       dispatch({
         type: modalAction.BACKDROP_HIDE,
@@ -226,7 +220,7 @@ export function AddOrder (orderNumber, backElementFocusID) {
   }
 }
 
-export function RemoveOrder (index) {
+export function RemoveOrder(index) {
   return (dispatch) => {
     dispatch({
       type: Constants.GROUPING_ORDER_REMOVE,
@@ -235,7 +229,7 @@ export function RemoveOrder (index) {
   }
 }
 
-export function SetCurrentPage (currentPage) {
+export function SetCurrentPage(currentPage) {
   return (dispatch) => {
     dispatch({
       type: Constants.GROUPING_CURRENT_PAGE_SET,
@@ -246,7 +240,7 @@ export function SetCurrentPage (currentPage) {
   }
 }
 
-export function SetLimit (limit) {
+export function SetLimit(limit) {
   return (dispatch) => {
     dispatch({
       type: Constants.GROUPING_LIMIT_SET,
@@ -257,7 +251,7 @@ export function SetLimit (limit) {
   }
 }
 
-export function DoneCreateTrip () {
+export function DoneCreateTrip() {
   return (dispatch) => {
     dispatch({
       type: Constants.GROUPING_CREATE_TRIP_END,
@@ -266,11 +260,11 @@ export function DoneCreateTrip () {
   }
 }
 
-export function CreateTrip () {
+export function CreateTrip() {
   return (dispatch, getState) => {
-    const {grouping, userLogged} = getState().app;
-    const {token} = userLogged;
-    const {addedOrders} = grouping;
+    const { grouping, userLogged } = getState().app;
+    const { token } = userLogged;
+    const { addedOrders } = grouping;
 
     const orderIDs = lodash.map(grouping.addedOrders, (order) => (order.UserOrderID));
 
@@ -283,16 +277,16 @@ export function CreateTrip () {
       .value();
 
     for (var p in checkedOrdersDestination) {
-        if (checkedOrdersDestination.hasOwnProperty(p)) {
-            arrayOfNextDestination.push({NextDestination: p, Count: checkedOrdersDestination[p]});
-        }
+      if (checkedOrdersDestination.hasOwnProperty(p)) {
+        arrayOfNextDestination.push({ NextDestination: p, Count: checkedOrdersDestination[p] });
+      }
     }
-    
+
     if (arrayOfNextDestination.length > 1) {
-      var isContinue = confirm("Bro, you’re about to group " + checkedOrdersIDs.length + " orders with different destinations. Sure you wanna do that?");
-      if (!isContinue){
+      var isContinue = confirm('Bro, you’re about to group ' + checkedOrdersIDs.length + ' orders with different destinations. Sure you wanna do that?');
+      if (!isContinue) {
         return;
-      } 
+      }
     }
 
     const body = {
@@ -304,8 +298,8 @@ export function CreateTrip () {
     });
 
     FetchPost('/trip/outbound', token, body).then((response) => {
-      if(response.ok) {
-        response.json().then(({data}) => {
+      if (response.ok) {
+        response.json().then(({ data }) => {
           dispatch({
             type: Constants.GROUPING_CREATE_TRIP_END,
             success: true,
@@ -314,13 +308,13 @@ export function CreateTrip () {
           dispatch(DashboardService.FetchCount());
         });
       } else {
-        response.json().then(({error}) => {
+        response.json().then(({ error }) => {
           dispatch({
             type: Constants.GROUPING_CREATE_TRIP_END,
             success: false
           });
 
-          dispatch(ModalActions.addMessage("Failed to grouping orders. " + error.message[0].reason));
+          dispatch(ModalActions.addMessage('Failed to grouping orders. ' + error.message[0].reason));
         });
       }
     });
