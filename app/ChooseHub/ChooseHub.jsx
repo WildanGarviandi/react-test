@@ -28,9 +28,11 @@ class ChooseHub extends PureComponent {
     super(props);
     this.state = {
       data: this.props.hubs.map((hub) => {
+        const prefix = hub.Hub.Type === configValues.HUB_TYPE.GENERAL ?
+            'Local ' : '';
         const data = {
           id: hub.Hub.HubID,
-          name: hub.Hub.Name,
+          name: `${prefix}${hub.Hub.Name}`,
         };
         return data;
       }),

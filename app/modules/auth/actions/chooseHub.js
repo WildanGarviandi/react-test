@@ -5,24 +5,33 @@ import fetchPost from '../../fetch/post';
 import endpoints from '../../../config/endpoints';
 import { modalAction } from '../../modals/constants';
 
-export default (hub) => {
+export default (hubID) => {
   const dispatchFunc = (dispatch, getState) => {
-    const { hubId } = hub;
-    const body = { hubId };
+    const body = { hubID };
     const { token, userID } = getState().app.userLogged;
 
     dispatch({ type: modalAction.BACKDROP_SHOW });
+    dispatch({ type: actionTypes.CHOOSE_HUB_START });
     fetchPost(endpoints.UPDATE_HUB, token, body).then((response) => {
       if (response.ok) {
-        return response.json().then((responseJson) => {
-          localStorage.token = token;
-          localStorage.userID = userID;
+        return response.json().then(() => {
+          dispatch({ type: modalAction.BACKDROP_HIDE });
+          dispatch({
+            type: actionTypes.CHOOSE_HUB_SUCCESS,
+            payload: {
+              token,
+              userID,
+            },
+          });
+          dispatch(push('/orders/pickup'));
         });
       }
 
-      return dispatch({ type: actionTypes.LOGIN_FAILED, message: 'Bad login information' });
+      dispatch({ type: modalAction.BACKDROP_HIDE });
+      return dispatch({ type: actionTypes.CHOOSE_HUB_FAILED, message: 'Failed to choose hub' });
     }).catch(() => {
-      dispatch({ type: actionTypes.LOGIN_FAILED, message: 'Cannot connect to server' });
+      dispatch({ type: modalAction.BACKDROP_HIDE });
+      dispatch({ type: actionTypes.CHOOSE_HUB_FAILED, message: 'Cannot connect to server' });
     });
   };
 

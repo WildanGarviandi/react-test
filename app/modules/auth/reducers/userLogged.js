@@ -64,6 +64,18 @@ export default (state = initialUserState, action) => {
         isValid: false,
         message: action.error,
       });
+    case actionTypes.CHOOSE_HUB_START:
+      return Object.assign({}, state);
+    case actionTypes.CHOOSE_HUB_SUCCESS:
+      localStorage.token = action.payload.token;
+      localStorage.userID = action.payload.userID;
+      return Object.assign({}, state, {
+        message: null,
+      });
+    case actionTypes.CHOOSE_HUB_FAILED:
+      return Object.assign({}, state, {
+        message: action.error,
+      });
     case actionTypes.AUTH_VALID:
       localStorage.hubID = action.hub && action.hub.HubID;
       localStorage.hubName = action.hub && action.hub.Name;
