@@ -217,7 +217,7 @@ export function AddOrder(orderNumber, backElementFocusID) {
             dispatch(ModalActions.addConfirmation({
               message: `Remove order ${data.rows[0].UserOrderNumber} ?`,
               action: () => {
-                dispatch(RemoveOrder(index));
+                dispatch(removeOrder(index));
               },
               backElementFocusID: 'addOrder',
               yesFocus: true,
@@ -346,49 +346,112 @@ export function setDefault(payload) {
   return dispatchFunc;
 }
 
+const handleErrorResponse = async (response) => {
+  const errorValue = response.json().then(({ error }) => {
+    throw error;
+  });
+  return errorValue;
+};
+
+const getReroutePromise = async (token, query) => {
+  const promise = FetchPost('/order/reroute', token, query, true);
+  return promise;
+};
+
+const getMarkReceivedPromise = async (token, query) => {
+  const promise = FetchPost('/order/mark-deliver', token, query);
+  return promise;
+};
+
+const getAddOrderPromise = async (token, query) => {
+  const promise = FetchGet('/order/received', token, query);
+  return promise;
+};
+
+const handleAddOrderData = () => {
+  const res = (dispatch, addOrderData) => {
+    if (addOrderData.count > 1) {
+      dispatch({
+        type: Constants.GROUPING_ORDER_ADD_END,
+        duplicate: true,
+        order: addOrderData.rows,
+      });
+    } else {
+      const index = lodash.findIndex(addOrderData, {
+        UserOrderNumber: addOrderData.rows[0].UserOrderNumber,
+      });
+      if (index > -1) {
+        dispatch(ModalActions.addConfirmation({
+          message: `Remove order ${addOrderData.rows[0].UserOrderNumber} ?`,
+          action: () => {
+            dispatch(removeOrder(index));
+          },
+          backElementFocusID: 'addOrder',
+          yesFocus: true,
+        }));
+      } else {
+        dispatch({
+          type: Constants.GROUPING_ORDER_ADD_END,
+          order: addOrderData.rows[0],
+        });
+      }
+    }
+  };
+  return res;
+};
+
 export function reroute(scannedID) {
-  const dispatchFunc = (dispatch, getState) => {
+  const dispatchFunc = async (dispatch, getState) => {
     const { userLogged } = getState().app;
     const { token } = userLogged;
 
-    const query = {
-      orderIDs: scannedID,
-    };
-
     dispatch({ type: modalAction.BACKDROP_SHOW });
 
-    FetchPost('/order/reroute', token, query, true).then((response) => {
-      if (!response.ok) {
-        return response.json().then(({ error }) => {
-          throw error;
-        });
-      }
-
-      return response.json().then(({ data }) => {
+    try {
+      let response = await getReroutePromise(token, { orderIDs: scannedID });
+      if (response.ok) {
+        let responseJson = await response.json();
+        const rerouteData = responseJson.data;
         dispatch({
           type: Constants.GROUPING_SET_DEFAULT,
           payload: {
-            rerouteSuccess: data.successOrder,
-            rerouteFailed: data.failedOrder,
+            rerouteSuccess: rerouteData.successOrder,
+            rerouteFailed: rerouteData.failedOrder,
           },
         });
-        if (data.successOrder.length > 0) {
-          dispatch(InboundService.markReceived(scannedID[0]));
+
+        if (rerouteData.successOrder.length > 0) {
+          const id = scannedID[0].toUpperCase();
+          if (response.ok) {
+            response = await getMarkReceivedPromise(token, { id });
+          }
+
+          if (response.ok) {
+            response = await getAddOrderPromise(token, { userOrderNumber: id });
+          }
+
+          if (response.ok) {
+            responseJson = await response.json();
+            const addOrderData = responseJson.data;
+            handleAddOrderData()(dispatch, addOrderData);
+          }
         }
-      }).catch((e) => {
-        const message = (e && e.message) ? e.message : 'Failed to reroute order';
-        dispatch({
-          type: Constants.GROUPING_SET_DEFAULT,
-          payload: {
-            misroute: null,
-          },
-        });
-
-        dispatch(addNotification(message, 'error', null, null, 5, true));
+      } else {
+        await handleErrorResponse(response);
+      }
+    } catch (e) {
+      const message = (e && e.message) ? e.message : 'Failed to reroute order';
+      dispatch({
+        type: Constants.GROUPING_SET_DEFAULT,
+        payload: {
+          misroute: null,
+        },
       });
-    });
 
-    dispatch({ type: modalAction.BACKDROP_HIDE });
+      dispatch(addNotification(message, 'error', null, null, 5, true));
+    } finally {
+      dispatch({ type: modalAction.BACKDROP_HIDE });
+    }
   };
 
   return dispatchFunc;
