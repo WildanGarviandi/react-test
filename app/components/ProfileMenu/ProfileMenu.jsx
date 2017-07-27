@@ -52,6 +52,7 @@ class ProfileMenu extends PureComponent {
       data,
     });
     this.toggleMenu();
+    this.props.chooseHub(selectedData.id, true);
   }
 
   renderChevron() {
@@ -108,6 +109,7 @@ ProfileMenu.propTypes = {
   hubs: PropTypes.array.isRequired,
   token: PropTypes.string.isRequired,
   hubID: PropTypes.number.isRequired,
+  chooseHub: PropTypes.func.isRequired,
 };
 /* eslint-enable */
 
