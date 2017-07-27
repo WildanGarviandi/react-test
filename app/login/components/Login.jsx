@@ -7,7 +7,6 @@ import LoginInput from './LoginInput';
 import LoginCheckBox from './LoginCheckBox';
 import { ButtonWithLoading } from '../../views/base';
 import GoogleAuth from '../../components/GoogleAuth';
-import configValues from '../../config/configValues.json';
 
 export default class Login extends React.Component {
   constructor(props) {
