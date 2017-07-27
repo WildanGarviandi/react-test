@@ -23,14 +23,16 @@ const mapDispatchToProps = (dispatch) => {
 
 class ProfileMenuContainer extends PureComponent {
   render() {
-    return (
+    const renderData = this.props.hubID ? (
       <ProfileMenu
         token={this.props.token}
         hubs={this.props.hubs}
         hubID={this.props.hubID}
         chooseHub={this.props.chooseHub}
       />
-    );
+    ) : (<span />);
+
+    return renderData;
   }
 }
 
@@ -38,9 +40,13 @@ class ProfileMenuContainer extends PureComponent {
 ProfileMenuContainer.propTypes = {
   token: PropTypes.string.isRequired,
   hubs: PropTypes.array.isRequired,
-  hubID: PropTypes.number.isRequired,
+  hubID: PropTypes.number,
   chooseHub: PropTypes.func.isRequired,
 };
 /* eslint-enable */
+
+ProfileMenuContainer.defaultProps = {
+  hubID: null,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProfileMenuContainer);
