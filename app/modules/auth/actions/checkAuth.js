@@ -18,7 +18,7 @@ export default (store) => {
                 user: responseJson.data.user,
                 order: featuresResponseJson.data.order,
               });
-              return { ok: true, data: response.data };
+              return { ok: true, data: responseJson.data };
             });
 
             return result;
