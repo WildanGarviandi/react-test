@@ -1,13 +1,17 @@
-import React from 'react';
+// Glyph.react.js
+import React, { PureComponent } from 'react';
 
 import PropTypes from 'prop-types';
 import classNaming from 'classnames';
 
 import styles from './glyph.scss';
 
-function Glyph({ className, name }) {
-  const stylename = classNaming(className, styles.glyphicon, styles[`glyphicon-${name}`]);
-  return <span className={stylename} />;
+class Glyph extends PureComponent {
+  render() {
+    const { className, name } = this.props;
+    const stylename = classNaming(className, styles.glyphicon, styles[`glyphicon-${name}`]);
+    return <span className={stylename} />;
+  }
 }
 
 /* eslint-disable */
