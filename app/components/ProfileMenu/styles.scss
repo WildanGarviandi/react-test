@@ -32,7 +32,9 @@
 
 .dropdown-profile {
   width: 240px;
-  height: 240px;
+  height: auto;
+  max-height: 240px;
+  overflow-y: scroll;
   right: 0;
   top: 50px;
   border-radius: 5px;

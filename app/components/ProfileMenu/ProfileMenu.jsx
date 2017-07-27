@@ -5,6 +5,7 @@ import onClickOutside from 'react-onclickoutside';
 import PropTypes from 'prop-types';
 
 import styles from './styles.scss';
+import configValues from '../../config/configValues.json';
 import DropdownList from '../DropdownMenu';
 
 class ProfileMenu extends PureComponent {
@@ -12,20 +13,16 @@ class ProfileMenu extends PureComponent {
     super(props);
     this.state = {
       isOpen: false,
-      data: [{
-        id: 1,
-        name: 'Hub Manggarai',
-        selected: true,
-      }, {
-        id: 2,
-        name: 'Hub Tebet',
-      }, {
-        id: 3,
-        name: 'Hub Cawang',
-      }, {
-        id: 4,
-        name: 'Hub Depok',
-      }],
+      data: this.props.hubs.map((hub) => {
+        const prefix = hub.Hub.Type === configValues.HUB_TYPE.GENERAL ?
+            'Local ' : '';
+        const data = {
+          id: hub.Hub.HubID,
+          name: `${prefix}${hub.Hub.Name}`,
+          selected: hub.Hub.HubID === this.props.hubID,
+        };
+        return data;
+      }),
     };
     this.toggleMenu = this.toggleMenu.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
@@ -108,12 +105,10 @@ class ProfileMenu extends PureComponent {
 
 /* eslint-disable */
 ProfileMenu.propTypes = {
-  userLogged: PropTypes.any,
+  hubs: PropTypes.array.isRequired,
+  token: PropTypes.string.isRequired,
+  hubID: PropTypes.number.isRequired,
 };
 /* eslint-enable */
-
-ProfileMenu.defaultProps = {
-  userLogged: {},
-};
 
 export default onClickOutside(ProfileMenu);

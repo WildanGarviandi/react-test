@@ -71,6 +71,7 @@ const requireGoogleHubAuth = (nextState, replace, callback) => {
   if (hubs.length === 0) {
     localStorage.token = token;
     localStorage.userID = userID;
+    localStorage.hubs = JSON.stringify([]);
     return store.dispatch(push('/orders/pickup'));
   }
   return callback();

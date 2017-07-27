@@ -4,20 +4,20 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import ProfileMenu from '../../components/ProfileMenu';
+import getCurrentState from './Selector';
 
 const mapStateToProps = (state) => {
-  const { userLogged } = state.app;
-  const data = {
-    userLogged,
-  };
-  return data;
+  const stateToProps = getCurrentState(state);
+  return stateToProps;
 };
 
 class ProfileMenuContainer extends PureComponent {
   render() {
     return (
       <ProfileMenu
-        userLogged={this.props.userLogged}
+        token={this.props.token}
+        hubs={this.props.hubs}
+        hubID={this.props.hubID}
       />
     );
   }
@@ -25,12 +25,10 @@ class ProfileMenuContainer extends PureComponent {
 
 /* eslint-disable */
 ProfileMenuContainer.propTypes = {
-  userLogged: PropTypes.any,
+  token: PropTypes.string.isRequired,
+  hubs: PropTypes.array.isRequired,
+  hubID: PropTypes.number.isRequired,
 };
 /* eslint-enable */
-
-ProfileMenuContainer.defaultProps = {
-  userLogged: {},
-};
 
 export default connect(mapStateToProps, null)(ProfileMenuContainer);
