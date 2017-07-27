@@ -46,7 +46,6 @@ DropdownList.propTypes = {
 DropdownList.defaultProps = {
   data: [],
   iconStyles: {},
-  dropdownItemStyles: {},
   contentStyles: {},
 };
 
