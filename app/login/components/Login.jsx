@@ -80,33 +80,21 @@ export default class Login extends React.Component {
         <div className={styles.logo} />
         <div className={styles.panel}>
           <form className={styles.form} onSubmit={this.props.handleSubmit}>
-            {
-              configValues.IS_ACTIVATE_GOOGLE_AUTH ?
-                (
-                  <div>
-                    {this.props.loginState.isError &&
-                      <span className={styles.errorMsg}>
-                        {this.props.loginState.message}
-                      </span>}
-                    <GoogleAuth
-                      handleSuccessResponse={this.handleSuccessResponse}
-                      handleFailureResponse={this.handleFailureResponse}
-                    />
-                  </div>
-                ) :
-                (
-                  <div>
-                    <h4 className={styles.header}>LOGIN</h4>
-                    {this.props.loginState.isError &&
-                      <span className={styles.errorMsg}>{this.props.loginState.message}</span>}
-                    <LoginInput {...emailInputProps} />
-                    <LoginInput {...passwordInputProps} />
-                    <LoginCheckBox {...checkboxInputProps} />
-                    <a href="" className={styles.forgot}>Forgot password?</a>
-                    <ButtonWithLoading {...submitBtnProps} />
-                  </div>
-                )
-            }
+            <div>
+              <h4 className={styles.header}>LOGIN</h4>
+              {this.props.loginState.isError &&
+                <span className={styles.errorMsg}>{this.props.loginState.message}</span>}
+              <LoginInput {...emailInputProps} />
+              <LoginInput {...passwordInputProps} />
+              <LoginCheckBox {...checkboxInputProps} />
+              <a href="" className={styles.forgot}>Forgot password?</a>
+              <ButtonWithLoading {...submitBtnProps} />
+              <br />
+              <GoogleAuth
+                handleSuccessResponse={this.handleSuccessResponse}
+                handleFailureResponse={this.handleFailureResponse}
+              />
+            </div>
           </form>
         </div>
       </div>
@@ -131,5 +119,5 @@ Login.defaultProps = {
   handleSubmit: null,
   loginState: null,
   handleGoogleAuth: () => { },
-  loginError: () => {},
+  loginError: () => { },
 };
