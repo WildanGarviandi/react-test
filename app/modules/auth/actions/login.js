@@ -33,14 +33,14 @@ const loginGoogle = (token) => {
     dispatch({ type: actionTypes.LOGIN_GOOGLE_START });
     fetchPost(endpoints.LOGIN_GOOGLE, '', body).then((response) => {
       if (response.ok) {
-        response.json().then((responseJson) => {
+        response.json().then(({ data }) => {
           dispatch({
             type: actionTypes.LOGIN_GOOGLE_SUCCESS,
             payload: {
-              hubs: responseJson.data.Hubs,
-              user: responseJson.data.SignIn.User,
-              token: responseJson.data.SignIn.LoginSessionKey,
-              userID: responseJson.data.SignIn.UserID,
+              hubs: data.Hubs,
+              user: data.SignIn.User,
+              token: data.SignIn.LoginSessionKey,
+              userID: data.SignIn.UserID,
             },
           });
           dispatch(push('/choose-hub'));
