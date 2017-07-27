@@ -80,7 +80,7 @@ const initialState = {
   },
   filtersStatus: 'SHOW ALL',
   isDetailFetching: false,
-  limit: 25,
+  limit: 10,
   total: 0,
   trips: [],
   nearbyFleets: {
@@ -163,7 +163,7 @@ export function Reducer(state = initialState, action) {
         },
         currentPage: 1,
         filterStatus: 'SHOW ALL',
-        limit: 25,
+        limit: 10,
       });
     }
 
@@ -346,7 +346,7 @@ export function Reducer(state = initialState, action) {
         },
         currentPage: 1,
         filterStatus: 'SHOW ALL',
-        limit: 25,
+        limit: 10,
       });
     }
 
@@ -390,7 +390,7 @@ export function FetchList() {
       limit: limit,
       nonDelivered: true,
       offset: (currentPage - 1) * limit,
-      suggestLastMileFleet: 1,
+      suggestLastMileFleet: 0,
     });
 
     dispatch({ type: modalAction.BACKDROP_SHOW });
