@@ -1,4 +1,5 @@
 import { login, loginGoogle, loginError } from './auth/actions/login';
+import chooseHub from './auth/actions/chooseHub';
 import logout from './auth/actions/logout';
 import containers, { statusList } from './containers/actions';
 import districts from './districts/actions';
@@ -9,6 +10,10 @@ export const LoginAction = {
   login,
   loginGoogle,
   loginError,
+};
+
+export const ChooseHubAction = {
+  chooseHub,
 };
 
 export const LogoutAction = {
