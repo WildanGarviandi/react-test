@@ -9,6 +9,7 @@ import { TripParser } from '../modules/trips';
 import OrderStatusSelector from '../modules/orderStatus/selector';
 import { modalAction } from '../modules/modals/constants';
 import * as DashboardService from '../dashboard/dashboardService';
+import configValues from '../config/configValues.json';
 
 const Constants = {
   TRIPS_OUTBOUND_CURRENTPAGE_SET: 'outbound/currentPage/set',
@@ -80,7 +81,7 @@ const initialState = {
   },
   filtersStatus: 'SHOW ALL',
   isDetailFetching: false,
-  limit: 10,
+  limit: configValues.TOTAL_PER_PAGE.TEN,
   total: 0,
   trips: [],
   nearbyFleets: {
@@ -97,7 +98,7 @@ const initialState = {
   },
   filtersDrivers: {},
   currentPageDrivers: 1,
-  limitDrivers: 10,
+  limitDrivers: configValues.TOTAL_PER_PAGE.TEN,
   totalDrivers: 0,
   driver: null,
   isSetDriver: false,
@@ -163,7 +164,7 @@ export function Reducer(state = initialState, action) {
         },
         currentPage: 1,
         filterStatus: 'SHOW ALL',
-        limit: 10,
+        limit: configValues.TOTAL_PER_PAGE.TEN,
       });
     }
 
@@ -293,7 +294,7 @@ export function Reducer(state = initialState, action) {
         filtersDrivers: {},
         totalDrivers: 0,
         currentPageDrivers: 1,
-        limitDrivers: 10,
+        limitDrivers: configValues.TOTAL_PER_PAGE.TEN,
         error: false,
       });
     }
@@ -346,7 +347,7 @@ export function Reducer(state = initialState, action) {
         },
         currentPage: 1,
         filterStatus: 'SHOW ALL',
-        limit: 10,
+        limit: configValues.TOTAL_PER_PAGE.TEN,
       });
     }
 

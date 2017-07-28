@@ -194,5 +194,9 @@
       "COINS": "/sound/coins.mp3",
       "JOB_DONE": "/sound/job-done.mp3",
       "MAY_I_HAVE_YOUR_ATTENTION": "/sound/may-i-have-your-attention.mp3"
+    },
+    "TOTAL_PER_PAGE": {
+      "DEFAULT": 25,
+      "TEN": 10
     }
 }
