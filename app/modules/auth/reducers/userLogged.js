@@ -14,6 +14,9 @@ const initialUserState = {
   editVolume: false,
   editWeight: false,
   roleName: null,
+  message: null,
+  hubs: [],
+  signIn: {},
 };
 
 export default (state = initialUserState, action) => {
@@ -40,6 +43,38 @@ export default (state = initialUserState, action) => {
         isFetching: false,
         isValid: false,
         message: action.message,
+      });
+    case actionTypes.LOGIN_GOOGLE_START:
+      localStorage.clear();
+      return Object.assign({}, state, {
+        isValid: false,
+        message: null,
+      });
+    case actionTypes.LOGIN_GOOGLE_SUCCESS:
+      return Object.assign({}, state, {
+        isValid: true,
+        hubs: action.payload.hubs,
+        user: action.payload.user,
+        token: action.payload.token,
+        userID: action.payload.userID,
+      });
+    case actionTypes.LOGIN_GOOGLE_FAILED:
+      localStorage.clear();
+      return Object.assign({}, state, {
+        isValid: false,
+        message: action.error,
+      });
+    case actionTypes.CHOOSE_HUB_START:
+      return Object.assign({}, state);
+    case actionTypes.CHOOSE_HUB_SUCCESS:
+      localStorage.token = action.payload.token;
+      localStorage.userID = action.payload.userID;
+      return Object.assign({}, state, {
+        message: null,
+      });
+    case actionTypes.CHOOSE_HUB_FAILED:
+      return Object.assign({}, state, {
+        message: action.error,
       });
     case actionTypes.AUTH_VALID:
       localStorage.hubID = action.hub && action.hub.HubID;
