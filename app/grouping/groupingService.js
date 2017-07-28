@@ -368,36 +368,33 @@ const getAddOrderPromise = async (token, query) => {
   return promise;
 };
 
-const handleAddOrderData = () => {
-  const res = (dispatch, addOrderData) => {
-    if (addOrderData.count > 1) {
+const handleAddOrderData = (dispatch, addOrderData) => {
+  if (addOrderData.count > 1) {
+    dispatch({
+      type: Constants.GROUPING_ORDER_ADD_END,
+      duplicate: true,
+      order: addOrderData.rows,
+    });
+  } else {
+    const index = lodash.findIndex(addOrderData, {
+      UserOrderNumber: addOrderData.rows[0].UserOrderNumber,
+    });
+    if (index > -1) {
+      dispatch(ModalActions.addConfirmation({
+        message: `Remove order ${addOrderData.rows[0].UserOrderNumber} ?`,
+        action: () => {
+          dispatch(removeOrder(index));
+        },
+        backElementFocusID: 'addOrder',
+        yesFocus: true,
+      }));
+    } else {
       dispatch({
         type: Constants.GROUPING_ORDER_ADD_END,
-        duplicate: true,
-        order: addOrderData.rows,
+        order: addOrderData.rows[0],
       });
-    } else {
-      const index = lodash.findIndex(addOrderData, {
-        UserOrderNumber: addOrderData.rows[0].UserOrderNumber,
-      });
-      if (index > -1) {
-        dispatch(ModalActions.addConfirmation({
-          message: `Remove order ${addOrderData.rows[0].UserOrderNumber} ?`,
-          action: () => {
-            dispatch(removeOrder(index));
-          },
-          backElementFocusID: 'addOrder',
-          yesFocus: true,
-        }));
-      } else {
-        dispatch({
-          type: Constants.GROUPING_ORDER_ADD_END,
-          order: addOrderData.rows[0],
-        });
-      }
     }
-  };
-  return res;
+  }
 };
 
 export function reroute(scannedID) {
@@ -433,7 +430,7 @@ export function reroute(scannedID) {
           if (response.ok) {
             responseJson = await response.json();
             const addOrderData = responseJson.data;
-            handleAddOrderData()(dispatch, addOrderData);
+            handleAddOrderData(dispatch, addOrderData);
           }
         }
       } else {
