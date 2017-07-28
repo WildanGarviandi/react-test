@@ -4,6 +4,7 @@ import { browserHistory } from 'react-router';
 import Glyph from '../../components/Glyph';
 import { ButtonWithLoading } from './';
 import styles from './page.scss';
+import configValues from '../../config/configValues.json';
 import ProfileMenuContainer from '../../containers/ProfileMenuContainer';
 
 const PageTitle = ({ additional, title, backButton, count }) => {
@@ -58,7 +59,7 @@ const ClassifyChildren = (children) => {
   });
 
   return { body, buttons: MoveButtonToTopRight(buttons), backLink };
-}
+};
 
 export default React.createClass({
   render() {
@@ -70,7 +71,7 @@ export default React.createClass({
         {backLink}
         {buttons}
         <PageTitle title={title} additional={additional} backButton={backButton} count={count} />
-        <ProfileMenuContainer />
+        {configValues.IS_ACTIVATE_GOOGLE_AUTH && <ProfileMenuContainer />}
         {body}
       </div>
     );
