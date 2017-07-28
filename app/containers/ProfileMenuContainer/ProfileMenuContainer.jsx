@@ -23,7 +23,7 @@ const mapDispatchToProps = (dispatch) => {
 
 class ProfileMenuContainer extends PureComponent {
   render() {
-    const renderData = this.props.hubID ? (
+    const renderData = this.props.hubID && this.props.hubs.length > 0 ? (
       <ProfileMenu
         token={this.props.token}
         hubs={this.props.hubs}
