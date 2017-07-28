@@ -1,36 +1,52 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import PropTypes from 'prop-types';
 
 import ProfileMenu from '../../components/ProfileMenu';
+import getCurrentState from './Selector';
+import { ChooseHubAction } from '../../modules';
 
 const mapStateToProps = (state) => {
-  const { userLogged } = state.app;
-  const data = {
-    userLogged,
-  };
-  return data;
+  const stateToProps = getCurrentState(state);
+  return stateToProps;
+};
+
+const mapDispatchToProps = (dispatch) => {
+  const dispatchData = bindActionCreators({
+    chooseHub: ChooseHubAction.chooseHub,
+  }, dispatch);
+
+  return dispatchData;
 };
 
 class ProfileMenuContainer extends PureComponent {
   render() {
-    return (
+    const renderData = this.props.hubID ? (
       <ProfileMenu
-        userLogged={this.props.userLogged}
+        token={this.props.token}
+        hubs={this.props.hubs}
+        hubID={this.props.hubID}
+        chooseHub={this.props.chooseHub}
       />
-    );
+    ) : (<span />);
+
+    return renderData;
   }
 }
 
 /* eslint-disable */
 ProfileMenuContainer.propTypes = {
-  userLogged: PropTypes.any,
+  token: PropTypes.string.isRequired,
+  hubs: PropTypes.array.isRequired,
+  hubID: PropTypes.number,
+  chooseHub: PropTypes.func.isRequired,
 };
 /* eslint-enable */
 
 ProfileMenuContainer.defaultProps = {
-  userLogged: {},
+  hubID: null,
 };
 
-export default connect(mapStateToProps, null)(ProfileMenuContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileMenuContainer);

@@ -4,6 +4,7 @@ import { browserHistory } from 'react-router';
 import Glyph from '../../components/Glyph';
 import { ButtonWithLoading } from './';
 import styles from './page.scss';
+import ProfileMenuContainer from '../../containers/ProfileMenuContainer';
 
 const PageTitle = ({ additional, title, backButton, count }) => {
   return (
@@ -69,6 +70,7 @@ export default React.createClass({
         {backLink}
         {buttons}
         <PageTitle title={title} additional={additional} backButton={backButton} count={count} />
+        <ProfileMenuContainer />
         {body}
       </div>
     );
