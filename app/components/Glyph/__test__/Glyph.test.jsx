@@ -1,11 +1,12 @@
 // Glyph.react-test.js
 import React from 'react';
+import renderer from 'react-test-renderer';
 import { shallow } from 'enzyme';
 
 import Glyph from '../Glyph';
 
 jest.mock('classnames', () => {
-  const data = () => {};
+  const data = () => { };
   return data;
 });
 
@@ -16,9 +17,15 @@ jest.mock('./glyph.scss', () => {
   return data;
 });
 
-test('Glyph Component', () => {
-  const component = shallow(<Glyph className={''} name={''} />);
-  // const result = component.toJSON();
-  // expect(result).toMatchSnapshot();
-  expect(true).toBe(true);
+describe('Glph Component', () => {
+  test('should have matched snapshot', () => {
+    const component = renderer.create(<Glyph className={''} name={''} />);
+    const result = component.toJSON();
+    expect(result).toMatchSnapshot();
+  });
+
+  test('should have undefined classNames props', () => {
+    const glyph = shallow(<Glyph className={''} name={''} />);
+    expect(glyph.props().className).toBeUndefined();
+  });
 });

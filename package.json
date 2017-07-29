@@ -6,7 +6,7 @@
     "dev": "node server-dev.js",
     "build": "NODE_ENV=production webpack --config ./webpack.production.config.js --progress",
     "server": "NODE_ENV=production node server.js",
-    "test": "jest"
+    "test": "jest --coverage --watch"
   },
   "author": "Etobee",
   "license": "ISC",
@@ -94,5 +94,11 @@
     "sass-loader": "^6.0.5",
     "stylelint-config-standard": "^16.0.0",
     "webpack-combine-loaders": "^2.0.3"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+      "\\.(css|scss)$": "identity-obj-proxy"
+    }
   }
 }
