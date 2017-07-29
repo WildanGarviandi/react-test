@@ -1,7 +1,3 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Glph Component should have matched snapshot 1`] = `
-<span
-  className={undefined}
-/>
-`;
+exports[`Glph Component should have matched snapshot 1`] = `<span />`;

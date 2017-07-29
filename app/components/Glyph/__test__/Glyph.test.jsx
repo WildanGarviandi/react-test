@@ -1,9 +1,11 @@
 // Glyph.react-test.js
 import React from 'react';
-import renderer from 'react-test-renderer';
 import { shallow } from 'enzyme';
+import enzymeSerializer from 'enzyme-to-json/serializer';
 
 import Glyph from '../Glyph';
+
+expect.addSnapshotSerializer(enzymeSerializer);
 
 jest.mock('classnames', () => {
   const data = () => { };
@@ -19,8 +21,7 @@ jest.mock('./glyph.scss', () => {
 
 describe('Glph Component', () => {
   test('should have matched snapshot', () => {
-    const component = renderer.create(<Glyph className={''} name={''} />);
-    const result = component.toJSON();
+    const result = shallow(<Glyph className={''} name={''} />);
     expect(result).toMatchSnapshot();
   });
 
