@@ -211,7 +211,7 @@ const Table = React.createClass({
           case 'actions': {
             const btnPrint = (
               <div className={styles.btnPrintOnTable}>
-                <a href={`/trips/'${item.actions}/manifest#`} className="btn btn-sm btn-default" target="_blank" rel="noopener noreferrer">
+                <a href={`/trips/${item.actions}/manifest#`} className="btn btn-sm btn-default" target="_blank" rel="noopener noreferrer">
                   <Glyph name={'print'} />
                 </a>
               </div>
