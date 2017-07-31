@@ -6,7 +6,7 @@
     "dev": "node server-dev.js",
     "build": "NODE_ENV=production webpack --config ./webpack.production.config.js --progress",
     "server": "NODE_ENV=production node server.js",
-    "test": "jest --coverage --watchAll"
+    "test": "jest --coverage"
   },
   "author": "Etobee",
   "license": "ISC",
