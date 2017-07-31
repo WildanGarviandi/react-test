@@ -90,7 +90,8 @@
       "ENTER": 13,
       "SEMI_COLON": 186,
       "A": 65,
-      "Z": 90
+      "Z": 90,
+      "ESCAPE": 27
     },
     "role": {
       "DEFAULT": "DEFAULT",
@@ -154,7 +155,9 @@
       "ON_GOING_TRIPS": "/img/image-on-going-trips.png",
       "ICON_ORDERS": "/img/icon-orders.png",
       "ICON_MY_TRIPS": "/img/icon-my-trips.png",
-      "ICON_ONGOING_TRIPS": "/img/icon-ongoing-trips.png"
+      "ICON_ONGOING_TRIPS": "/img/icon-ongoing-trips.png",
+      "ICON_NOT_READY": "/img/icon-not-ready.png",
+      "ICON_READY": "/img/icon-ready.png"
     },
     "assignCentralHub": true,
     "HTTP_STATUS": {
