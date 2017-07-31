@@ -254,7 +254,6 @@ export function markReceived(id) {
     dispatch({
       type: Constants.ORDERS_INBOUND_MARK_RECEIVED_START,
     });
-
     FetchPost('/order/mark-deliver', token, query).then((response) => {
       if (!response.ok) {
         return response.json().then(({ error }) => {

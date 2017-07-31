@@ -1,15 +1,11 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import {conf, groupingColumns} from './groupingColumns';
-import {Headers} from '../views/base/table';
-import HeadersRow from '../views/base/headers';
-import {CheckBox} from '../views/base/input';
-import {CheckboxHeader} from '../views/base/tableCell';
-import * as Grouping from './grouping';
+
+import { conf, groupingColumns } from './groupingColumns';
+import { Headers } from '../views/base/table';
 
 function HeaderComponent(type, item) {
-  switch(type) {
-    case "Checkbox": {
+  switch (type) {
+    case 'Checkbox': {
       return <GroupingCheckBox />;
     }
 
@@ -24,7 +20,7 @@ function GroupingHeaders() {
   return (
     <thead>
       <tr>
-        <th>AWB<br/>(Web Order ID)</th>
+        <th>AWB<br />(Web Order ID)</th>
         <th>Merchant</th>
         <th>Weight</th>
         <th>Drop Off Address</th>
