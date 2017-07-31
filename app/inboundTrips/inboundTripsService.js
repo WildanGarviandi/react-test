@@ -48,7 +48,7 @@ const initialState = {
   },
   filtersStatus: 'SHOW ALL',
   isFetching: false,
-  limit: 25,
+  limit: configValues.TOTAL_PER_PAGE.TEN,
   total: 0,
   trips: [],
   showDetails: false,

@@ -1,7 +1,8 @@
-import * as _ from 'lodash';
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
+
+import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 
 import InboundOrdersTable from './inboundOrdersTable';
@@ -10,28 +11,27 @@ import { Input, Page } from '../views/base';
 import Glyph from '../components/Glyph';
 import * as InboundOrders from './inboundOrdersService';
 import { ButtonBase } from '../components/Button';
+import config from '../config/configValues.json';
 
-const DuplicateModal = React.createClass({
+class DuplicateModal extends Component {
   componentWillUnmount() {
-    if (document.getElementById('markReceivedInput')) {
-      document.getElementById('markReceivedInput').focus();
-    }
-  },
+    this.markReceivedInput.focus();
+  }
   closeModal() {
     this.props.closeModal();
-  },
+  }
   pickOrder(id) {
     this.props.pickOrder(id);
     this.closeModal();
-  },
+  }
   render() {
-    const thisComponent = this;
-    const ordersContent = this.props.orders.map((order, index) => {
+    const ordersContent = this.props.orders.map((order) => {
       const data = (
         <div
+          role="none"
           className={styles.orderContent}
-          key={index}
-          onClick={thisComponent.pickOrder.bind(null, order.UserOrderNumber)}
+          key={order.UserOrderNumber}
+          onClick={() => this.pickOrder(order.UserOrderNumber)}
         >
           <div className={styles.orderContentLeft}>
             <div className={styles.smallText}>To</div>
@@ -58,7 +58,7 @@ const DuplicateModal = React.createClass({
     return (
       <ModalDialog>
         <button className={styles.closeModalButton} onClick={this.closeModal}>
-          <img src="/img/icon-close.png" className={styles.closeButtonImage} />
+          <img alt="close" src="/img/icon-close.png" className={styles.closeButtonImage} />
         </button>
         <div className={styles.modal}>
           <div className={styles.modalHeader}>
@@ -74,103 +74,155 @@ const DuplicateModal = React.createClass({
         </div>
       </ModalDialog>
     );
-  },
-});
+  }
+}
 
-const PanelSuggestion = React.createClass({
-  render() {
-    const { nextDestination, lastDestination, successScanned, scannedOrder,
-      closeModalMessage, bulkScan, errorIDs, countSuccess, countError,
-      isTripID, isInterHub, totalOrderByTrip } = this.props;
-    const hideDestination = isTripID && isInterHub;
-    return (
-      <div className={styles.panelSuggestion}>
-        {!bulkScan &&
-          <div>
-            <div className={styles.scanMessage}>
-              <div
-                role="button"
-                onClick={closeModalMessage}
-                className={styles.modalClose}
-              >
-                X
-              </div>
-              {
-                !hideDestination && (
-                  <div className={styles.successScanned}>
-                    Success: {successScanned}
-                  </div>
-                )
-              }
-            </div>
-            <div className={styles.scannedOrder}>
-              {scannedOrder}
+/* eslint-disable */
+DuplicateModal.propTypes = {
+  closeModal: PropTypes.func,
+  pickOrder: PropTypes.func,
+  orders: PropTypes.array,
+};
+/* eslint-enable */
+
+DuplicateModal.defaultProps = {
+  closeModal: () => {},
+  pickOrder: () => {},
+  orders: [],
+};
+
+function PanelSuggestion({
+  nextDestination,
+  lastDestination,
+  successScanned,
+  scannedOrder,
+  closeModalMessage,
+  bulkScan,
+  errorIDs,
+  countSuccess,
+  countError,
+  isTripID,
+  isInterHub,
+  totalOrderByTrip,
+}) {
+  const hideDestination = isTripID && isInterHub;
+  return (
+    <div className={styles.panelSuggestion}>
+      {!bulkScan &&
+        <div>
+          <div className={styles.scanMessage}>
+            <div
+              role="none"
+              onClick={closeModalMessage}
+              className={styles.modalClose}
+            >
+              &times;
             </div>
             {
               !hideDestination && (
-                <div>
-                  <div>
-                    {lastDestination.City}
-                  </div>
-                  <div className={styles.scannedOrder}>
-                    {nextDestination.Hub ? `via Hub ${nextDestination.Hub.Name}` : (nextDestination && 'Dropoff')}
-                  </div>
-                  <div className={styles.scannedOrder}>
-                    {lastDestination.District && `Kec. ${lastDestination.District}`}
-                  </div>
-                  <div className={styles.scannedOrder}>
-                    {lastDestination.ZipCode}
-                  </div>
-                </div>
-              )
-            }
-            {
-              hideDestination && (
-                <div>
-                  <div className={styles['total-order']}>
-                    Trip berhasil diterima: {totalOrderByTrip} order
-                  </div>
+                <div className={styles.successScanned}>
+                  Success: {successScanned}
                 </div>
               )
             }
           </div>
-        }
-        {bulkScan &&
-          <div>
-            <div className={styles.scanMessage}>
-              <div
-                role="button"
-                onClick={closeModalMessage}
-                className={styles.modalClose}
-              >
-                X
-              </div>
-            </div>
-            <div className={styles.bulkScanInformation}>
-              Success: {countSuccess}, Error: {countError}
-            </div>
-            {errorIDs.length > 0 &&
-              <div className={styles.bulkScanFailed}>
-                Error Order: {errorIDs.join(', ')}
-              </div>
-            }
+          <div className={styles.scannedOrder}>
+            {scannedOrder}
           </div>
-        }
-      </div>
-    );
-  },
-});
+          {
+            !hideDestination && (
+              <div>
+                <div>
+                  {lastDestination.City}
+                </div>
+                <div className={styles.scannedOrder}>
+                  {nextDestination.Hub ? `via Hub ${nextDestination.Hub.Name}` : (nextDestination && 'Dropoff')}
+                </div>
+                <div className={styles.scannedOrder}>
+                  {lastDestination.District && `Kec. ${lastDestination.District}`}
+                </div>
+                <div className={styles.scannedOrder}>
+                  {lastDestination.ZipCode}
+                </div>
+              </div>
+            )
+          }
+          {
+            hideDestination && (
+              <div>
+                <div className={styles['total-order']}>
+                  Trip berhasil diterima: {totalOrderByTrip} order
+                </div>
+              </div>
+            )
+          }
+        </div>
+      }
+      {bulkScan &&
+        <div>
+          <div className={styles.scanMessage}>
+            <div
+              role="none"
+              onClick={closeModalMessage}
+              className={styles.modalClose}
+            >
+              &times;
+            </div>
+          </div>
+          <div className={styles.bulkScanInformation}>
+            Success: {countSuccess}, Error: {countError}
+          </div>
+          {errorIDs.length > 0 &&
+            <div className={styles.bulkScanFailed}>
+              Error Order: {errorIDs.join(', ')}
+            </div>
+          }
+        </div>
+      }
+    </div>
+  );
+}
 
-class VerifyButton extends React.Component {
-  constructor() {
-    super();
+/* eslint-disable */
+PanelSuggestion.propTypes = {
+  nextDestination: PropTypes.any,
+  lastDestination: PropTypes.any,
+  successScanned: PropTypes.any,
+  scannedOrder: PropTypes.any,
+  closeModalMessage: PropTypes.func,
+  bulkScan: PropTypes.bool,
+  errorIDs: PropTypes.array,
+  countSuccess: PropTypes.number,
+  countError: PropTypes.number,
+  isTripID: PropTypes.bool,
+  isInterHub: PropTypes.bool,
+  totalOrderByTrip: PropTypes.number,
+};
+/* eslint-enable */
+
+PanelSuggestion.defaultProps = {
+  nextDestination: {},
+  lastDestination: {},
+  successScanned: {},
+  scannedOrder: {},
+  closeModalMessage: () => {},
+  bulkScan: false,
+  errorIDs: [],
+  countSuccess: 0,
+  countError: 0,
+  isTripID: false,
+  isInterHub: false,
+  totalOrderByTrip: 0,
+};
+
+class VerifyButton extends Component {
+  constructor(props) {
+    super(props);
     this.onClick = this.onClick.bind(this);
   }
-
   onClick() {
     this.props.onClick(this.props.orderMarked);
   }
-
   render() {
     return (
       <button
@@ -196,7 +248,7 @@ function mapStateToProps(state) {
   const userLogged = state.app.userLogged;
   const { duplicateOrders, isDuplicate, total, suggestion, lastDestination, successScanned,
     scannedOrder, bulkScan, errorIDs, countSuccess, countError, isTripID, isInterHub,
-    totalOrderByTrip } = inboundOrders;
+    totalOrderByTrip, misroute, rerouteSuccess, rerouteFailed } = inboundOrders;
 
   return {
     userLogged,
@@ -214,11 +266,14 @@ function mapStateToProps(state) {
     isTripID,
     isInterHub,
     totalOrderByTrip,
+    misroute,
+    rerouteSuccess,
+    rerouteFailed,
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return {
+  const dispatchFunc = {
     markReceived: (scannedID) => {
       dispatch(InboundOrders.resetSuggestion());
       dispatch(InboundOrders.markReceived(scannedID));
@@ -229,12 +284,150 @@ function mapDispatchToProps(dispatch) {
     resetSuggestion: () => {
       dispatch(InboundOrders.resetSuggestion());
     },
+    closeMisrouteModal: () => {
+      dispatch(InboundOrders.setDefault({
+        misroute: null,
+        lastDestination: {},
+        rerouteSuccess: [],
+        rerouteFailed: [],
+      }));
+    },
+    reroute: (scannedIDs) => {
+      dispatch(InboundOrders.reroute(scannedIDs));
+    },
   };
+
+  return dispatchFunc;
 }
 
-const InboundOrdersPage = React.createClass({
-  getInitialState() {
-    return {
+class MisrouteModal extends Component {
+  constructor(props) {
+    super(props);
+
+    this.closeModal = this.closeModal.bind(this);
+    this.reroute = this.reroute.bind(this);
+  }
+  componentDidMount() {
+    this.misrouteModal.focus();
+  }
+  componentWillUnmount() {
+    this.closeModal();
+  }
+  handleKeyDown(e) {
+    if (e.keyCode === config.KEY_ACTION.ENTER) {
+      this.reroute();
+      return;
+    }
+    if (e.keyCode === config.KEY_ACTION.ESCAPE) {
+      this.closeModal();
+    }
+  }
+  closeModal() {
+    this.props.closeModal();
+  }
+  reroute() {
+    const id = this.props.orderID;
+    this.props.reroute(Array.isArray(id) ? id : [id]);
+  }
+  handleViewOrder() {
+    if (Array.isArray(this.props.orderID)) {
+      return this.props.orderID.join(', ');
+    }
+    return this.props.orderID;
+  }
+  isEmptyRerouteResult() {
+    return this.props.rerouteSuccess.length === 0 && this.props.rerouteFailed.length === 0;
+  }
+  render() {
+    const { rerouteSuccess, rerouteFailed, orderID } = this.props;
+    return (
+      <ModalContainer>
+        <ModalDialog>
+          {this.isEmptyRerouteResult() &&
+            <div
+              role="button"
+              ref={(div) => { this.misrouteModal = div; }}
+              tabIndex="0"
+              className={styles.modal}
+              onKeyDown={e => this.handleKeyDown(e)}
+            >
+              <div className={styles.modalHeader}>
+                <div className={`${styles.successContent} ${styles.ordersContentEmpty}`}>
+                  <img className={styles.successIcon} src={config.IMAGES.ICON_NOT_READY} alt="not ready" />
+                  <div className={styles.mediumText}>
+                    Order {this.handleViewOrder()} is misroute.
+                    Would you like to reroute the order
+                    {(Array.isArray(orderID) && orderID.length > 1) ? 's' : ''}?
+                  </div>
+                </div>
+              </div>
+              <div className={styles['modal-footer']}>
+                <button className={styles['modal__button--no']} onClick={this.closeModal}>
+                  No
+                </button>
+                <button className={styles['modal__button--yes']} onClick={this.reroute}>
+                  Yes
+                </button>
+              </div>
+            </div>
+          }
+          {!this.isEmptyRerouteResult() &&
+            <div className={styles.modal}>
+              <div className={styles.modalHeader}>
+                <div
+                  role="none"
+                  onClick={this.closeModal}
+                  className={styles.modalClose}
+                >
+                  &times;
+                </div>
+                <div className={`${styles.successContent} ${styles.ordersContentEmpty}`}>
+                  <Glyph name="info-sign" className={styles['glyph-info']} />
+                  {rerouteSuccess.map(order => (
+                    <div key={order.UserOrderNumber} className={styles.mediumText}>
+                      Order {order.UserOrderNumber} successfully moved to {order.DestinationHub.Name}.
+                    </div>
+                  ))}
+                  <br />
+                  {rerouteFailed.map(order => (
+                    <div key={order.UserOrderNumber} className={styles.mediumText}>
+                      Failed to reroute {order.UserOrderNumber}. {order.error}.
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          }
+        </ModalDialog>
+      </ModalContainer>
+    );
+  }
+}
+
+/* eslint-disable */
+MisrouteModal.propTypes = {
+  closeModal: PropTypes.func,
+  orderID: PropTypes.any,
+  newDestination: PropTypes.any,
+  reroute: PropTypes.func,
+  rerouteSuccess: PropTypes.array,
+  rerouteFailed: PropTypes.array,
+};
+/* eslint-enable */
+
+MisrouteModal.defaultProps = {
+  closeModal: () => {},
+  orderID: '',
+  newDestination: '',
+  reroute: () => {},
+  rerouteSuccess: [],
+  rerouteFailed: [],
+};
+
+class InboundOrdersPage extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
       orderMarked: '',
       isDuplicate: false,
       opened: true,
@@ -243,43 +436,54 @@ const InboundOrdersPage = React.createClass({
       idsStart: '',
       showModalMessage: false,
     };
-  },
+
+    this.markReceived = this.markReceived.bind(this);
+    this.changeMark = this.changeMark.bind(this);
+    this.closeModal = this.closeModal.bind(this);
+    this.closeModalMessage = this.closeModalMessage.bind(this);
+    this.toggleOpen = this.toggleOpen.bind(this);
+    this.textChange = this.textChange.bind(this);
+    this.clearText = this.clearText.bind(this);
+    this.cancelChange = this.cancelChange.bind(this);
+    this.processText = this.processText.bind(this);
+  }
   componentDidMount() {
-    document.getElementById('markReceivedInput').focus();
+    this.markReceivedInput.focus();
     this.props.resetSuggestion();
-  },
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.isDuplicate) {
       this.setState({ isDuplicate: true });
     }
-  },
+  }
   changeMark(val) {
     this.setState({
       orderMarked: val,
     });
-  },
+  }
   markReceived(val) {
     if (val === '') {
       return;
     }
+    this.markReceivedInput.blur();
     this.props.markReceived(val);
     this.setState({
       orderMarked: '',
       showModalMessage: true,
     });
-  },
+  }
   closeModal() {
     this.setState({ isDuplicate: false });
-  },
+  }
   toggleOpen() {
     this.setState({ opened: !this.state.opened, idsStart: this.state.idsRaw });
-  },
+  }
   cancelChange() {
     this.setState({ opened: true, idsRaw: this.state.idsStart });
-  },
+  }
   textChange(e) {
     this.setState({ idsRaw: e.target.value });
-  },
+  }
   processText() {
     const IDs = _.chain(this.state.idsRaw.match(/\S+/g)).uniq().value();
     if (IDs.length === 0) {
@@ -288,13 +492,13 @@ const InboundOrdersPage = React.createClass({
     }
     this.setState({ ids: IDs, showModalMessage: true });
     this.props.bulkMarkReceived(IDs);
-  },
+  }
   clearText() {
     this.setState({ ids: [], idsRaw: '' });
-  },
+  }
   closeModalMessage() {
     this.setState({ showModalMessage: false });
-  },
+  }
   render() {
     const inputVerifyStyles = {
       container: styles.verifyInputContainer,
@@ -317,9 +521,8 @@ const InboundOrdersPage = React.createClass({
             styles={inputVerifyStyles}
             onChange={this.changeMark}
             onEnterKeyPressed={this.markReceived}
-            ref={(c) => { this.markReceivedInput = c; }}
             base={{ value: this.state.orderMarked, placeholder: 'Scan EDS, WebOrderID, or TripID...' }}
-            id="markReceivedInput"
+            inputRef={(input) => { this.markReceivedInput = input; }}
           />
           <VerifyButton
             orderMarked={this.state.orderMarked}
@@ -330,7 +533,7 @@ const InboundOrdersPage = React.createClass({
         <div style={{ marginBottom: 15 }}>
           {this.state.opened ?
             <div
-              role="button"
+              role="none"
               className={styles.top2}
               onClick={this.toggleOpen}
             >
@@ -342,7 +545,7 @@ const InboundOrdersPage = React.createClass({
             </div> :
             <div className={styles.panel}>
               <div
-                role="button"
+                role="none"
                 className={styles.top2}
                 onClick={this.toggleOpen}
               >
@@ -383,7 +586,7 @@ const InboundOrdersPage = React.createClass({
         <InboundOrdersTable />
         {
           (!_.isEmpty(this.props.lastDestination) || this.props.bulkScan) &&
-          this.state.showModalMessage &&
+          this.state.showModalMessage && !this.props.misroute &&
           <PanelSuggestion
             closeModalMessage={this.closeModalMessage}
             nextDestination={this.props.suggestion}
@@ -397,11 +600,73 @@ const InboundOrdersPage = React.createClass({
             isTripID={this.props.isTripID}
             isInterHub={this.props.isInterHub}
             totalOrderByTrip={this.props.totalOrderByTrip}
+            misroute={this.props.misroute}
+          />
+        }
+        {this.props.misroute &&
+          <MisrouteModal
+            closeModal={this.props.closeMisrouteModal}
+            orderID={this.props.misroute}
+            reroute={this.props.reroute}
+            rerouteSuccess={this.props.rerouteSuccess}
+            rerouteFailed={this.props.rerouteFailed}
           />
         }
       </Page>
     );
-  },
-});
+  }
+}
+
+/* eslint-disable */
+InboundOrdersPage.propTypes = {
+  resetSuggestion: PropTypes.func,
+  isDuplicate: PropTypes.bool,
+  markReceived: PropTypes.func,
+  bulkMarkReceived: PropTypes.func,
+  duplicateOrders: PropTypes.array,
+  lastDestination: PropTypes.any,
+  suggestion: PropTypes.any,
+  successScanned: PropTypes.number,
+  scannedOrder: PropTypes.any,
+  bulkScan: PropTypes.bool,
+  errorIDs: PropTypes.array,
+  countSuccess: PropTypes.number,
+  countError: PropTypes.number,
+  isTripID: PropTypes.bool,
+  isInterHub: PropTypes.bool,
+  totalOrderByTrip: PropTypes.number,
+  misroute: PropTypes.any,
+  closeMisrouteModal: PropTypes.func,
+  total: PropTypes.number,
+  reroute: PropTypes.func,
+  rerouteSuccess: PropTypes.array,
+  rerouteFailed: PropTypes.array,
+};
+/* eslint-enable */
+
+InboundOrdersPage.defaultProps = {
+  resetSuggestion: () => {},
+  isDuplicate: false,
+  markReceived: () => {},
+  bulkMarkReceived: () => {},
+  duplicateOrders: [],
+  lastDestination: {},
+  suggestion: {},
+  successScanned: 0,
+  scannedOrder: '',
+  bulkScan: false,
+  errorIDs: [],
+  countSuccess: 0,
+  countError: 0,
+  isTripID: false,
+  isInterHub: false,
+  totalOrderByTrip: 0,
+  misroute: null,
+  closeMisrouteModal: () => {},
+  total: 0,
+  reroute: () => {},
+  rerouteSuccess: [],
+  rerouteFailed: [],
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(InboundOrdersPage);

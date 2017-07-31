@@ -19,6 +19,7 @@ const Constants = {
   ORDERS_INBOUND_MARK_RECEIVED_END_ERROR: 'inbound/mark/endError',
   ORDERS_INBOUND_MARK_RECEIVED_SET: 'inbound/mark/set',
   ORDERS_INBOUND_RESET_SUGGESTION: 'inbound/resetSuggestion',
+  ORDERS_INBOUND_SET_DEFAULT: 'inbound/set/default',
 };
 
 const initialState = {
@@ -41,6 +42,9 @@ const initialState = {
   countError: 0,
   bulkScan: false,
   totalOrderByTrip: 0,
+  misroute: null,
+  rerouteSuccess: [],
+  rerouteFailed: [],
 };
 
 export function Reducer(state = initialState, action) {
@@ -77,19 +81,35 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.ORDERS_INBOUND_MARK_RECEIVED_END: {
+      const {
+        suggestion,
+        lastDestination,
+        successScanned,
+        scannedOrder,
+        errorIDs,
+        countSuccess,
+        countError,
+        bulkScan,
+        isTripID,
+        isInterHub,
+        totalOrderByTrip,
+        misroute,
+      } = action.payload;
+
       return Object.assign({}, state, {
         isMarking: false,
-        suggestion: action.payload.nextDestination,
-        lastDestination: action.payload.lastDestination,
-        successScanned: action.payload.successScanned,
-        scannedOrder: action.payload.scannedOrder,
-        errorIDs: action.payload.errorIDs,
-        countSuccess: action.payload.countSuccess,
-        countError: action.payload.countError,
-        bulkScan: action.payload.bulkScan,
-        isTripID: action.payload.isTripID,
-        isInterHub: action.payload.isInterHub,
-        totalOrderByTrip: action.payload.totalOrderByTrip,
+        suggestion,
+        lastDestination,
+        successScanned,
+        scannedOrder,
+        errorIDs,
+        countSuccess,
+        countError,
+        bulkScan,
+        isTripID,
+        isInterHub,
+        totalOrderByTrip,
+        misroute,
       });
     }
 
@@ -127,6 +147,10 @@ export function Reducer(state = initialState, action) {
         isInterHub: false,
         totalOrderByTrip: 0,
       });
+    }
+
+    case Constants.ORDERS_INBOUND_SET_DEFAULT: {
+      return Object.assign({}, state, action.payload);
     }
 
     default: return state;
@@ -259,6 +283,12 @@ export function markReceived(id) {
           dispatch({
             type: Constants.ORDERS_INBOUND_MARK_RECEIVED_SET,
           });
+        } else if (data.notFound) {
+          dispatch(addNotification(`Order ${scannedID} is misroute`, 'error', null, null, 3, true));
+
+          dispatch({
+            type: Constants.ORDERS_INBOUND_MARK_RECEIVED_SET,
+          });
         } else {
           dispatch(addNotification(`Order ${scannedID} was received`, 'success', null, null, 3, true));
 
@@ -271,7 +301,7 @@ export function markReceived(id) {
         dispatch({
           type: Constants.ORDERS_INBOUND_MARK_RECEIVED_END,
           payload: {
-            nextDestination: data.nextDestination,
+            suggestion: data.nextDestination,
             lastDestination: data.lastDestination,
             successScanned: (data.hasScanned || data.duplicate) ? successScanned :
               (successScanned + 1),
@@ -279,6 +309,7 @@ export function markReceived(id) {
             isTripID,
             isInterHub,
             totalOrderByTrip: data.Trip ? data.Trip.UserOrderRoutes.length : 0,
+            misroute: data.notFound && scannedID,
           },
         });
         dispatch(reFetchList());
@@ -324,9 +355,13 @@ export function BulkMarkReceived(scannedIDs) {
 
       return response.json().then(({ data }) => {
         const failedIds = [];
+        const misroute = [];
         if (data.failedIds.length > 0) {
           data.failedIds.forEach((failed) => {
             failedIds.push(failed.id);
+            if (failed.notFound) {
+              misroute.push(failed.id);
+            }
           });
         }
 
@@ -344,6 +379,7 @@ export function BulkMarkReceived(scannedIDs) {
             isTripID: false,
             isInterHub: false,
             totalOrderByTrip: 0,
+            misroute: misroute.length > 0 ? misroute : null,
           },
         });
 
@@ -371,5 +407,66 @@ export function BulkMarkReceived(scannedIDs) {
 export function resetSuggestion() {
   return (dispatch) => {
     dispatch({ type: Constants.ORDERS_INBOUND_RESET_SUGGESTION });
+  };
+}
+
+export function setDefault(payload) {
+  return (dispatch) => {
+    dispatch({
+      type: Constants.ORDERS_INBOUND_SET_DEFAULT,
+      payload,
+    });
+  };
+}
+
+export function reroute(scannedIDs) {
+  return (dispatch, getState) => {
+    const { userLogged } = getState().app;
+    const { token } = userLogged;
+
+    const query = {
+      orderIDs: scannedIDs,
+    };
+
+    dispatch({ type: modalAction.BACKDROP_SHOW });
+
+    FetchPost('/order/reroute', token, query, true).then((response) => {
+      if (!response.ok) {
+        return response.json().then(({ error }) => {
+          throw error;
+        });
+      }
+
+      return response.json().then(({ data }) => {
+        dispatch({
+          type: Constants.ORDERS_INBOUND_SET_DEFAULT,
+          payload: {
+            rerouteSuccess: data.successOrder,
+            rerouteFailed: data.failedOrder,
+          },
+        });
+
+        if (data.successOrder.length > 0) {
+          const reroutedIDs = _.map(data.successOrder, 'UserOrderNumber');
+          dispatch(
+            (reroutedIDs.length === 1) ?
+            this.markReceived(reroutedIDs[0]) :
+            this.BulkMarkReceived(reroutedIDs),
+          );
+        }
+      }).catch((e) => {
+        const message = (e && e.message) ? e.message : 'Failed to reroute order';
+        dispatch({
+          type: Constants.ORDERS_INBOUND_SET_DEFAULT,
+          payload: {
+            misroute: null,
+          },
+        });
+
+        dispatch(addNotification(message, 'error', null, null, 5, true));
+      });
+    });
+
+    dispatch({ type: modalAction.BACKDROP_HIDE });
   };
 }

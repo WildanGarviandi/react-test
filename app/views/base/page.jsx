@@ -72,7 +72,7 @@ export default React.createClass({
         {body}
       </div>
     );
-  }
+  },
 });
 
 export { PageTitle, ButtonAtRightTop };
