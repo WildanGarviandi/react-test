@@ -46,7 +46,10 @@ const loginGoogle = (token) => {
           dispatch(push('/choose-hub'));
         });
       } else {
-        dispatch({ type: actionTypes.LOGIN_GOOGLE_FAILED, error: 'Bad login information' });
+        response.json().then(({ error }) => {
+          const { message } = error;
+          dispatch({ type: actionTypes.LOGIN_GOOGLE_FAILED, error: message });
+        });
       }
     }).catch(() => {
       dispatch({ type: actionTypes.LOGIN_GOOGLE_FAILED, error: 'Cannot connect to server' });

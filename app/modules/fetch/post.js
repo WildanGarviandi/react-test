@@ -1,12 +1,14 @@
 import fetch from 'isomorphic-fetch';
+
 import config from './config';
+import endpoints from '../../config/endpoints';
 
 const PostParams = (token, body, multipart) => {
-  let request = {};
+  const request = {};
   request.method = 'post';
   request.headers = {
-    'Accept': 'application/json',
-    'LoginSessionKey': token
+    Accept: 'application/json',
+    LoginSessionKey: token,
   };
   if (!multipart) {
     request.headers['Content-Type'] = 'application/json';
@@ -14,14 +16,14 @@ const PostParams = (token, body, multipart) => {
   request.body = (multipart) ? body : JSON.stringify(body);
 
   return request;
-}
+};
 
 export default (url, token, body = {}, isHubAPI = false, multipart) => {
-  let baseUrl = isHubAPI ? config.baseUrlHub : config.baseUrl;
-  return fetch(baseUrl + url, PostParams(token, body, multipart)).then(function(response) {
-    if (response.status === 403) {
+  const baseUrl = isHubAPI ? config.baseUrlHub : config.baseUrl;
+  return fetch(baseUrl + url, PostParams(token, body, multipart)).then((response) => {
+    if (response.status === 403 && url !== endpoints.LOGIN_GOOGLE) {
       window.location.href = '/login';
     }
     return response;
   });
-}
+};
