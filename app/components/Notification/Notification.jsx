@@ -39,7 +39,7 @@ class Notification extends PureComponent {
   componentWillReceiveProps(newProps) {
     const { message, level, position, timeout, style } = newProps.notification;
     if (style) {
-      const notifItem = this.state.NotificationItem;
+      const notifItem = this.state.style.NotificationItem;
       notifItem.DefaultStyle = Object.assign(notifItem.DefaultStyle, style);
 
       this.setState({
