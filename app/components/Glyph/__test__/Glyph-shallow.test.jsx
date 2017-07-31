@@ -19,9 +19,9 @@ jest.mock('./glyph.scss', () => {
   return data;
 });
 
-describe('Glph Component', () => {
-  test('should have undefined classNames props', () => {
-    const glyph = shallow(<Glyph className={''} name={''} />);
-    expect(glyph.props().className).toBeUndefined();
+describe('Glph Shallow Component', () => {
+  test('should have matched snapshot', () => {
+    const result = shallow(<Glyph className={''} name={''} />);
+    expect(result).toMatchSnapshot();
   });
 });
