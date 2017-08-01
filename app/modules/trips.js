@@ -173,13 +173,15 @@ export function TripParser(trip, hubID) {
     return OrderParser(route.UserOrder);
   });
 
-  const WebstoreNames = GetWebstoreNameByCount(orders);
+  const uniqueOrders = _.uniqBy(orders, 'UserOrderNumber');
+
+  const WebstoreNames = GetWebstoreNameByCount(uniqueOrders);
   const WebstoreUser = GetWebstoreUserByCount(orders);
   const Weight = GetWeightTrip(orders);
   const ScannedOrders = GetScannedRoutes(routes);
   const ListWebstore = GetWebstoreNameWithoutCount(orders);
   const ListWebstoreMores = GetWebstoreNameWithMores(orders);
-  const PickupType = getPickupTypeWithCount(orders);
+  const PickupType = getPickupTypeWithCount(uniqueOrders);
 
   return Object.assign({}, trip, {
     WebstoreNames,
@@ -189,5 +191,6 @@ export function TripParser(trip, hubID) {
     ListWebstore,
     ListWebstoreMores,
     PickupType,
+    orders: uniqueOrders,
   });
 }
