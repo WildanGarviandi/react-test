@@ -9,7 +9,7 @@ export default function reducer(state = {}, action = {}) {
   }
 }
 
-const sendErrorReport = (url, method, body) => {
+const sendErrorReport = (url = '', method = '', body = {}) => {
   const dispatchData = (dispatch, getState) => {
     const userID = getState().app.userLogged.user.userID || null;
     dispatch({
