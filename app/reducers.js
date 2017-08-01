@@ -35,6 +35,7 @@ import dashboard from './dashboard/dashboardService';
 import { Reducer as performance } from './performance/performanceService';
 import orderMonitoring from './orderMonitoring/orderMonitoringService';
 import tripProblems from './tripProblems/tripProblemsService';
+import errors from './modules/errors';
 
 export default combineReducers({
   userLogged: authReducers,
@@ -76,4 +77,5 @@ export default combineReducers({
   performance,
   orderMonitoring,
   tripProblems,
+  errors,
 });

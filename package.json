@@ -84,6 +84,7 @@
     "react-tooltip": "^3.2.2",
     "redux": "^3.3.1",
     "redux-devtools-extension": "^2.13.2",
+    "redux-raven-middleware": "^1.2.0",
     "redux-thunk": "^2.0.1",
     "reselect": "^3.0.1",
     "sass-loader": "^6.0.5",
