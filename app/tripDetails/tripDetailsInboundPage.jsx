@@ -472,17 +472,16 @@ const mapStateToProps = (state, ownProps) => {
   if (!trip) {
     return { notFound: true };
   }
-
   const emptying = false;
   const reusable = false;
   const fillAble = trip.OrderStatus && (trip.OrderStatus.OrderStatusID === 1 || trip.OrderStatus.OrderStatusID === 9);
-
+  const uniqueOrders = _.uniqBy(rawOrders, 'UserOrderNumber');
   const containerOrders = _.map(trip.UserOrderRoutes, (route) => {
     return route;
   });
 
   var TotalWeight = 0;
-  const orders = _.map(rawOrders, (order) => {
+  const orders = _.map(uniqueOrders, (order) => {
     const Recipient = order.RecipientName + '\n' + (order.DropoffAddress ? order.DropoffAddress.City + ' ' + order.DropoffAddress.ZipCode : '');
     TotalWeight += order.PackageWeight;
 

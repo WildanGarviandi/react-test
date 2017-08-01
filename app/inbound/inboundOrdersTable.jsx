@@ -75,6 +75,7 @@ const Table = React.createClass({
                 <div className={styles.emptyTableContainer}>
                   <span>
                     <img
+                      alt="trip done"
                       src={config.IMAGES.INBOUND_TRIP_DONE}
                       className={styles.emptyTableImage}
                     />

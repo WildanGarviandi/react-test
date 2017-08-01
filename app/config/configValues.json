@@ -90,7 +90,8 @@
       "ENTER": 13,
       "SEMI_COLON": 186,
       "A": 65,
-      "Z": 90
+      "Z": 90,
+      "ESCAPE": 27
     },
     "role": {
       "DEFAULT": "DEFAULT",
@@ -147,13 +148,16 @@
       "LOCATION": "/img/icon-location.png",
       "DEFAULT_LOGO": "/img/default-logo.png",
       "ETOBEE_LOGO": "/img/etobee-logo.png",
+      "LOGO": "/img/logo.png",
       "ICON_MENU": "/img/icon-menu.png",
       "ICON_SUCCESS": "/img/icon-success.png",
       "ORDERS_DONE": "/img/icon-orders-done.png",
       "ON_GOING_TRIPS": "/img/image-on-going-trips.png",
       "ICON_ORDERS": "/img/icon-orders.png",
       "ICON_MY_TRIPS": "/img/icon-my-trips.png",
-      "ICON_ONGOING_TRIPS": "/img/icon-ongoing-trips.png"
+      "ICON_ONGOING_TRIPS": "/img/icon-ongoing-trips.png",
+      "ICON_NOT_READY": "/img/icon-not-ready.png",
+      "ICON_READY": "/img/icon-ready.png"
     },
     "assignCentralHub": true,
     "HTTP_STATUS": {
@@ -194,5 +198,15 @@
       "COINS": "/sound/coins.mp3",
       "JOB_DONE": "/sound/job-done.mp3",
       "MAY_I_HAVE_YOUR_ATTENTION": "/sound/may-i-have-your-attention.mp3"
+    },
+    "TOTAL_PER_PAGE": {
+      "DEFAULT": 25,
+      "TEN": 10
+    },
+    "GOOGLE_CLIENT_ID": "196844091368-1nd35vc6r4i3df7u9scdpitaee37a66r.apps.googleusercontent.com",
+    "IS_ACTIVATE_GOOGLE_AUTH": true,
+    "HUB_TYPE": {
+      "GENERAL": "GENERAL",
+      "CENTRAL": "CENTRAL"
     }
 }

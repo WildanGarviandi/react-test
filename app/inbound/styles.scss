@@ -3,6 +3,7 @@
   margin-left: -20px;
   margin-right: -20px;
   width: 550px;
+  outline: none;
 }
 
 .modalHeader {
@@ -64,15 +65,12 @@
   padding: 20px 20px 10px;
 }
 
-.ordersContent {
-}
-
 .orderContent {
   background-color: white;
   display: table;
   width: 100%;
   margin-bottom: 10px;
-  cursor: pointer
+  cursor: pointer;
 }
 
 .orderContent:hover {
@@ -134,23 +132,19 @@
 }
 
 .verifyInput::-webkit-input-placeholder {
-   color: #BFBFBF;
+  color: #bfbfbf;
 }
 
-.verifyInput:-moz-placeholder { /* Firefox 18- */
-   color: #BFBFBF;  
+.verifyInput:-moz-placeholder {
+  color: #bfbfbf;
 }
 
-.verifyInput::-moz-placeholder {  /* Firefox 19+ */
-   color: #BFBFBF;  
-}
-
-.verifyInput:-ms-input-placeholder {  
-   color: #BFBFBF;  
+.verifyInput:-ms-input-placeholder {
+  color: #bfbfbf;
 }
 
 .verifyButton {
-  background-color: #2196F3;
+  background-color: #2196f3;
   color: white;
   width: 100px;
   height: 42px;
@@ -174,7 +168,6 @@
   cursor: default;
 }
 
-
 /* TABLE CSS */
 
 .table {
@@ -186,15 +179,12 @@
   border-width: 1px;
   border-style: solid;
   border-color: rgb(221, 221, 221);
-
   width: 100%;
   max-width: 100%;
   margin-bottom: 20px;
-
   background-color: transparent;
   border-collapse: collapse;
-  border-spacing: 0px;
-
+  border-spacing: 0;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
@@ -225,7 +215,7 @@
 
 .emptyTableSmallText {
   font-size: 15px;
-  color: #9C9C9C;
+  color: #9c9c9c;
   margin-top: 12px;
 }
 
@@ -254,13 +244,12 @@
   border: 1px solid #e8e8e8;
   border-radius: 5px;
   text-indent: 10px;
-  border-radius: 5px;
   cursor: pointer;
   padding: 8px;
 }
 
 .top2 h4 {
-  margin: 0px;
+  margin: 0;
 }
 
 .glyphFilter {
@@ -272,7 +261,8 @@
   float: left;
 }
 
-.modalBtn, .modalLink {
+.modalBtn,
+.modalLink {
   padding: 8px;
   display: inline-block;
   margin-left: 4px;
@@ -304,7 +294,7 @@
   border: 0;
   border-radius: 5px;
   background-color: rgba(255, 90, 96, 0.5);
-  color: #ffffff;
+  color: #fff;
   cursor: pointer;
   min-width: 120px;
   min-height: 30px;
@@ -347,7 +337,7 @@
   font-size: 30px;
 }
 
-.successScanned {  
+.successScanned {
   text-align: center;
   height: 50px;
   width: 100%;
@@ -374,4 +364,42 @@
   cursor: pointer;
   opacity: 0.5;
   z-index: 999;
+}
+
+.modal__button {
+  &--yes,
+  &--no {
+    font-size: 20px;
+    font-weight: 700;
+    box-shadow: none;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    width: 49%;
+    margin-right: 1%;
+    height: 50px;
+    cursor: pointer;
+  }
+}
+
+.modal__button{
+  &--yes {
+    background-color: #38b393;
+  }
+
+  &--no {
+    background-color: #b33838;
+  }
+}
+
+.modal-footer {
+  background-color: white;
+  text-align: center;
+  padding: 20px 20px 0;
+}
+
+.glyph-info {
+  font-size: 50px;
+  color: #2196f3;
+  margin-bottom: 15px;
 }

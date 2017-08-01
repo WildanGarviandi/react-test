@@ -4,8 +4,10 @@ import FetchGet from '../modules/fetch/get';
 import FetchPost from '../modules/fetch/post';
 import ModalActions from '../modules/modals/actions';
 import { OrderParser } from '../modules/orders';
+import { addNotification } from '../modules/notification';
 import { modalAction } from '../modules/modals/constants';
 import * as DashboardService from '../dashboard/dashboardService';
+import * as InboundService from '../inbound/inboundOrdersService';
 
 const Constants = {
   GROUPING_CURRENT_PAGE_SET: 'grouping/currentPage/set',
@@ -19,6 +21,7 @@ const Constants = {
   GROUPING_ORDER_ADD_START: 'grouping/order/add/start',
   GROUPING_ORDER_ADD_END: 'grouping/order/add/end',
   GROUPING_ORDER_REMOVE: 'grouping/order/remove',
+  GROUPING_SET_DEFAULT: 'grouping/set/default',
 };
 
 const initialState = {
@@ -33,8 +36,11 @@ const initialState = {
   isSuccessCreating: false,
   createdTrip: {},
   duplicateOrders: [],
-  isDuplicate: false
-}
+  isDuplicate: false,
+  misroute: null,
+  rerouteSuccess: [],
+  rerouteFailed: [],
+};
 
 export function Reducer(state = initialState, action) {
   switch (action.type) {
@@ -70,7 +76,7 @@ export function Reducer(state = initialState, action) {
         isGrouping: false,
         addedOrders: [],
         isSuccessCreating: action.success,
-        createdTrip: action.createdTrip || {}
+        createdTrip: action.createdTrip || {},
       });
     }
 
@@ -81,26 +87,28 @@ export function Reducer(state = initialState, action) {
     case Constants.GROUPING_ORDER_ADD_START: {
       return lodash.assign({}, state, {
         isDuplicate: false,
-        duplicateOrders: []
-      })
+        duplicateOrders: [],
+      });
     }
 
     case Constants.GROUPING_ORDER_ADD_END: {
       if (!action.duplicate) {
         return lodash.assign({}, state, { addedOrders: state.addedOrders.concat([action.order]) });
-      } else {
-        return lodash.assign({}, state, {
-          duplicateOrders: action.order,
-          isDuplicate: true
-        });
       }
-
+      return lodash.assign({}, state, {
+        duplicateOrders: action.order,
+        isDuplicate: true,
+      });
     }
 
     case Constants.GROUPING_ORDER_REMOVE: {
-      var addedOrders = [].concat(state.addedOrders);
+      const addedOrders = [].concat(state.addedOrders);
       addedOrders.splice(action.index, 1);
-      return lodash.assign({}, state, { addedOrders: addedOrders });
+      return lodash.assign({}, state, { addedOrders });
+    }
+
+    case Constants.GROUPING_SET_DEFAULT: {
+      return lodash.assign({}, state, action.payload);
     }
 
     default: return state;
@@ -118,7 +126,7 @@ export function FetchList() {
     const { currentPage, filters, limit } = grouping;
 
     const query = lodash.assign({}, filters, {
-      limit: limit,
+      limit,
       offset: (currentPage - 1) * limit,
     });
 
@@ -149,8 +157,19 @@ export function FetchList() {
 
       dispatch(ModalActions.addMessage('Failed to fetch grouping orders'));
     });
-  }
+  };
 }
+
+export const removeOrder = (index) => {
+  const dispatchFunc = (dispatch) => {
+    dispatch({
+      type: Constants.GROUPING_ORDER_REMOVE,
+      index,
+    });
+  };
+
+  return dispatchFunc;
+};
 
 export function AddOrder(orderNumber, backElementFocusID) {
   return (dispatch, getState) => {
@@ -181,32 +200,35 @@ export function AddOrder(orderNumber, backElementFocusID) {
 
       return response.json().then(({ data }) => {
         if (data.count < 1) {
-          throw new Error(`${orderNumber} is not found`);
+          dispatch(this.setDefault({
+            misroute: orderNumber,
+          }));
         } else if (data.count > 1) {
           dispatch({
             type: Constants.GROUPING_ORDER_ADD_END,
             duplicate: true,
-            order: data.rows
+            order: data.rows,
           });
         } else {
-          const index = lodash.findIndex(addedOrders, { 'UserOrderNumber': data.rows[0].UserOrderNumber });
+          const index = lodash.findIndex(addedOrders, {
+            UserOrderNumber: data.rows[0].UserOrderNumber,
+          });
           if (index > -1) {
             dispatch(ModalActions.addConfirmation({
               message: `Remove order ${data.rows[0].UserOrderNumber} ?`,
-              action: function () {
-                dispatch(RemoveOrder(index));
+              action: () => {
+                dispatch(removeOrder(index));
               },
               backElementFocusID: 'addOrder',
-              yesFocus: true
+              yesFocus: true,
             }));
           } else {
             dispatch({
               type: Constants.GROUPING_ORDER_ADD_END,
-              order: data.rows[0]
+              order: data.rows[0],
             });
           }
         }
-
       });
     }).catch((e) => {
       const message = e.message || 'Failed to fetch order details';
@@ -217,47 +239,38 @@ export function AddOrder(orderNumber, backElementFocusID) {
 
       dispatch(ModalActions.addMessage(message, backElementFocusID));
     });
-  }
-}
-
-export function RemoveOrder(index) {
-  return (dispatch) => {
-    dispatch({
-      type: Constants.GROUPING_ORDER_REMOVE,
-      index: index
-    });
-  }
+  };
 }
 
 export function SetCurrentPage(currentPage) {
   return (dispatch) => {
     dispatch({
       type: Constants.GROUPING_CURRENT_PAGE_SET,
-      currentPage: currentPage,
+      currentPage,
     });
 
     dispatch(FetchList());
-  }
+  };
 }
 
 export function SetLimit(limit) {
   return (dispatch) => {
     dispatch({
       type: Constants.GROUPING_LIMIT_SET,
-      limit: limit,
+      limit,
     });
 
     dispatch(SetCurrentPage(1));
-  }
+  };
 }
 
 export function DoneCreateTrip() {
   return (dispatch) => {
     dispatch({
       type: Constants.GROUPING_CREATE_TRIP_END,
-      success: false
+      success: false,
     });
-  }
+  };
 }
 
 export function CreateTrip() {
@@ -266,24 +279,25 @@ export function CreateTrip() {
     const { token } = userLogged;
     const { addedOrders } = grouping;
 
-    const orderIDs = lodash.map(grouping.addedOrders, (order) => (order.UserOrderID));
+    const orderIDs = lodash.map(grouping.addedOrders, order => (order.UserOrderID));
 
-    let arrayOfNextDestination = [];
+    const arrayOfNextDestination = [];
     const checkedOrdersDestination = lodash.chain(addedOrders)
       .filter((order) => {
-        return order.IsChecked;
+        const { IsChecked } = order;
+        return IsChecked;
       })
       .countBy('NextDestination')
       .value();
 
-    for (var p in checkedOrdersDestination) {
+    for (const p in checkedOrdersDestination) {
       if (checkedOrdersDestination.hasOwnProperty(p)) {
         arrayOfNextDestination.push({ NextDestination: p, Count: checkedOrdersDestination[p] });
       }
     }
 
     if (arrayOfNextDestination.length > 1) {
-      var isContinue = confirm('Bro, you’re about to group ' + checkedOrdersIDs.length + ' orders with different destinations. Sure you wanna do that?');
+      const isContinue = confirm(`Bro, you’re about to group ${checkedOrdersIDs.length} orders with different destinations. Sure you wanna do that?`);
       if (!isContinue) {
         return;
       }
@@ -291,7 +305,7 @@ export function CreateTrip() {
 
     const body = {
       OrderIDs: orderIDs,
-    }
+    };
 
     dispatch({
       type: Constants.GROUPING_CREATE_TRIP_START,
@@ -303,7 +317,7 @@ export function CreateTrip() {
           dispatch({
             type: Constants.GROUPING_CREATE_TRIP_END,
             success: true,
-            createdTrip: data.trip
+            createdTrip: data.trip,
           });
           dispatch(DashboardService.FetchCount());
         });
@@ -311,12 +325,131 @@ export function CreateTrip() {
         response.json().then(({ error }) => {
           dispatch({
             type: Constants.GROUPING_CREATE_TRIP_END,
-            success: false
+            success: false,
           });
 
-          dispatch(ModalActions.addMessage('Failed to grouping orders. ' + error.message[0].reason));
+          dispatch(ModalActions.addMessage(`Failed to grouping orders. ${error.message[0].reason}`));
         });
       }
     });
+  };
+}
+
+export function setDefault(payload) {
+  const dispatchFunc = (dispatch) => {
+    dispatch({
+      type: Constants.GROUPING_SET_DEFAULT,
+      payload,
+    });
+  };
+
+  return dispatchFunc;
+}
+
+const handleErrorResponse = async (response) => {
+  const errorValue = response.json().then(({ error }) => {
+    throw error;
+  });
+  return errorValue;
+};
+
+const getReroutePromise = async (token, query) => {
+  const promise = FetchPost('/order/reroute', token, query, true);
+  return promise;
+};
+
+const getMarkReceivedPromise = async (token, query) => {
+  const promise = FetchPost('/order/mark-deliver', token, query);
+  return promise;
+};
+
+const getAddOrderPromise = async (token, query) => {
+  const promise = FetchGet('/order/received', token, query);
+  return promise;
+};
+
+const handleAddOrderData = (dispatch, addOrderData) => {
+  if (addOrderData.count > 1) {
+    dispatch({
+      type: Constants.GROUPING_ORDER_ADD_END,
+      duplicate: true,
+      order: addOrderData.rows,
+    });
+  } else {
+    const index = lodash.findIndex(addOrderData, {
+      UserOrderNumber: addOrderData.rows[0].UserOrderNumber,
+    });
+    if (index > -1) {
+      dispatch(ModalActions.addConfirmation({
+        message: `Remove order ${addOrderData.rows[0].UserOrderNumber} ?`,
+        action: () => {
+          dispatch(removeOrder(index));
+        },
+        backElementFocusID: 'addOrder',
+        yesFocus: true,
+      }));
+    } else {
+      dispatch({
+        type: Constants.GROUPING_ORDER_ADD_END,
+        order: addOrderData.rows[0],
+      });
+    }
   }
+};
+
+export function reroute(scannedID) {
+  const dispatchFunc = async (dispatch, getState) => {
+    const { userLogged } = getState().app;
+    const { token } = userLogged;
+
+    dispatch({ type: modalAction.BACKDROP_SHOW });
+
+    try {
+      let response = await getReroutePromise(token, { orderIDs: scannedID });
+      if (response.ok) {
+        let responseJson = await response.json();
+        const rerouteData = responseJson.data;
+        dispatch({
+          type: Constants.GROUPING_SET_DEFAULT,
+          payload: {
+            rerouteSuccess: rerouteData.successOrder,
+            rerouteFailed: rerouteData.failedOrder,
+          },
+        });
+
+        if (rerouteData.successOrder.length > 0) {
+          const id = scannedID[0].toUpperCase();
+          if (response.ok) {
+            response = await getMarkReceivedPromise(token, { id });
+          }
+
+          if (response.ok) {
+            response = await getAddOrderPromise(token, { userOrderNumber: id });
+          }
+
+          if (response.ok) {
+            responseJson = await response.json();
+            const addOrderData = responseJson.data;
+            handleAddOrderData(dispatch, addOrderData);
+          }
+        }
+      } else {
+        await handleErrorResponse(response);
+      }
+    } catch (e) {
+      const message = (e && e.message) ? e.message : 'Failed to reroute order';
+      dispatch({
+        type: Constants.GROUPING_SET_DEFAULT,
+        payload: {
+          misroute: null,
+        },
+      });
+
+      dispatch(addNotification(message, 'error', null, null, 5, true));
+    } finally {
+      dispatch({ type: modalAction.BACKDROP_HIDE });
+    }
+  };
+
+  return dispatchFunc;
 }

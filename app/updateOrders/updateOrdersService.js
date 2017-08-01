@@ -359,7 +359,7 @@ export function UpdateOrder(id, order) {
         dispatch(DashboardService.FetchCount());
         dispatch(addNotification(
           `Order ${data.result.UserOrderNumber} was successfully updated`,
-          'success', null, 4));
+          'success'));
       });
     }).catch((e) => {
       const message = e.message || 'Failed to update order';
