@@ -209,7 +209,7 @@
       "GENERAL": "GENERAL",
       "CENTRAL": "CENTRAL"
     },
-    "SENTRY_DSN": "https://2f6e89565a094c47809787abfc248a5a@sentry.io/198066",
+    "SENTRY_DSN": "https://5f9748a2e40547f38d8b1954cf2b0674@sentry.io/198638",
     "HTTP_METHOD": {
       "POST": "POST",
       "GET": "GET"
