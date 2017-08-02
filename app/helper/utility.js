@@ -1,7 +1,12 @@
-function camelize(str) {
-  return str.replace(/\w\S*/g, (txt) => {
-    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+import * as _ from 'lodash';
+
+const camelize = (str) => {
+  const replaceResult = str.replace(/\w\S*/g, (txt) => {
+    const result = txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    return result;
   });
+
+  return replaceResult;
 };
 
 export function UserFullName(user) {
@@ -10,11 +15,11 @@ export function UserFullName(user) {
   }
 
   return '';
-};
+}
 
 export function FleetName(fleet) {
   return fleet && fleet.CompanyDetail ? fleet.CompanyDetail.CompanyName : '';
-};
+}
 
 export function FleetNameWithCapacity(fleet) {
   return (fleet && fleet.CompanyDetail) ?
@@ -31,4 +36,8 @@ export function capitalize(str) {
     const result = txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     return result;
   });
+}
+
+export function formatRef(...args) {
+  return _.toArray(args).join('/');
 }
