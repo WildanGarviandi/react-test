@@ -11,14 +11,17 @@ export default function reducer(state = {}, action = {}) {
 
 const sendErrorReport = (url = '', method = '', body = {}) => {
   const dispatchData = (dispatch, getState) => {
-    const userID = getState().app.userLogged.user.userID || null;
+    const { user } = getState().app.userLogged;
+    const userGuID = user.UserGuID || null;
+    const userEmail = user.Email || null;
     dispatch({
       type: API_ERROR,
       error: true,
       payload: {
         url,
         method,
-        userID,
+        userGuID,
+        userEmail,
         body,
       },
     });
