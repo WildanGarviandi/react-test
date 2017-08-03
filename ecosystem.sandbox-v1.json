@@ -17,7 +17,7 @@
       "ref"  : "origin/master",
       "repo" : "git@gitlab.com:etobee-techgroup/etobee-hub.git",
       "path" : "/home/ubuntu/hub-sandbox-v1",
-      "post-deploy" : "yarn; npm run build; pm2 startOrRestart ecosystem.sandbox-v1.json --env production"
+      "post-deploy" : "yarn; npm run test; npm run build; pm2 startOrRestart ecosystem.sandbox-v1.json --env production"
     }
   }
 }
