@@ -93,7 +93,7 @@ export function Reducer(state = initialState, action) {
 
     case Constants.GROUPING_ORDER_ADD_END: {
       if (!action.duplicate) {
-        return lodash.assign({}, state, { addedOrders: state.addedOrders.concat([action.order]) });
+        return lodash.assign({}, state, { addedOrders: [action.order, ...state.addedOrders] });
       }
       return lodash.assign({}, state, {
         duplicateOrders: action.order,
