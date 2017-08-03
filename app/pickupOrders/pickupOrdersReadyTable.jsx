@@ -562,7 +562,7 @@ function ProcessTrip(trip) {
       pickupCity: trip.PickupAddress && trip.PickupAddress.City,
       pickupZip: trip.PickupAddress && trip.PickupAddress.ZipCode,
       webstoreNames: parsedTrip.WebstoreNames,
-      quantity: trip.UserOrderRoutes.length,
+      quantity: parsedTrip.orders.length,
       tripID: `${trip.TripID}`,
       weight: parseFloat(parsedTrip.Weight).toFixed(2),
       isTrip: true,
@@ -589,19 +589,19 @@ function ProcessTrip(trip) {
   };
 }
 
-function OrderList({ routes }) {
-  const orderComponents = routes.map((route, idx) => {
+function OrderList({ orders }) {
+  const orderComponents = orders.map((order) => {
     const elem = (
-      <div key={idx} className={styles.modalOrderMain}>
+      <div key={order.UserOrderNumber} className={styles.modalOrderMain}>
         <table>
           <tr>
             <td className={styles.modalOrderID}>
-              {route.UserOrder.UserOrderNumber}
+              {order.UserOrderNumber}
             </td>
           </tr>
           <tr>
             <td className={styles.modalOrderWeight}>
-              Weight: {route.UserOrder.PackageWeight} kg
+              Weight: {order.PackageWeight} kg
             </td>
           </tr>
         </table>
@@ -615,7 +615,7 @@ function OrderList({ routes }) {
 
 /* eslint-disable */
 OrderList.propTypes = {
-  routes: PropTypes.any.isRequired,
+  orders: PropTypes.any.isRequired,
 };
 /* eslint-enable */
 
@@ -674,7 +674,7 @@ const TableStateful = React.createClass({
                       From {this.props.trip.ListWebstoreMores}
                     </p>
                     <p className={styles.secondLabelDetails}>
-                      {this.props.trip.UserOrderRoutes.length} items
+                      {this.props.trip.orders.length} items
                     </p>
                   </div>
                   <div className={styles.modalDesc2Details}>
@@ -689,7 +689,7 @@ const TableStateful = React.createClass({
                   <div style={{ clear: 'both' }} />
                 </div>
                 <div className={styles.orderList}>
-                  <OrderList routes={this.props.trip.UserOrderRoutes} />
+                  <OrderList orders={this.props.trip.orders} />
                 </div>
               </div>
             </ModalDialog>
