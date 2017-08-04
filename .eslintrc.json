@@ -1,18 +1,15 @@
 {
   "extends": [
     "airbnb",
-    "plugin:flowtype/recommended"
+    "plugin:flowtype/recommended",
+    "prettier",
+    "prettier/react"
   ],
   "env": {
     "jest": true
   },
   "parser": "babel-eslint",
-  "plugins": [
-    "react",
-    "jsx-a11y",
-    "import",
-    "flowtype"
-  ],
+  "plugins": ["react", "jsx-a11y", "import", "flowtype"],
   "globals": {
     "document": true,
     "window": true,
