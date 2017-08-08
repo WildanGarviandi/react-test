@@ -3,6 +3,8 @@ import { push } from 'react-router-redux';
 import * as actionTypes from '../constants';
 import fetchPost from '../../fetch/post';
 import endpoints from '../../../config/endpoints';
+import configValues from '../../../config/configValues.json';
+import { sendErrorReport } from '../../errors';
 
 const login = (username, password) => {
   const dispatchFunc = (dispatch) => {
@@ -20,6 +22,7 @@ const login = (username, password) => {
       }
     }).catch(() => {
       dispatch({ type: actionTypes.LOGIN_FAILED, message: 'Cannot connect to server' });
+      dispatch(sendErrorReport(endpoints.LOGIN, configValues.HTTP_METHOD.POST, body));
     });
   };
 
@@ -50,6 +53,7 @@ const loginGoogle = (token) => {
       }
     }).catch(() => {
       dispatch({ type: actionTypes.LOGIN_GOOGLE_FAILED, error: 'Cannot connect to server' });
+      dispatch(sendErrorReport(endpoints.LOGIN_GOOGLE, configValues.HTTP_METHOD.POST, body));
     });
   };
 

@@ -17,7 +17,7 @@
       "ref"  : "origin/staging",
       "repo" : "git@gitlab.com:etobee-techgroup/etobee-hub.git",
       "path" : "/home/ubuntu/staging2.hub.etobee.com",
-      "post-deploy" : "yarn; npm run build; pm2 startOrRestart ecosystem.staging2.json --env production"
+      "post-deploy" : "yarn; npm run test; npm run build; pm2 startOrRestart ecosystem.staging2.json --env production"
     }
   }
 }

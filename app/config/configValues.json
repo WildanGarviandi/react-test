@@ -208,5 +208,10 @@
     "HUB_TYPE": {
       "GENERAL": "GENERAL",
       "CENTRAL": "CENTRAL"
+    },
+    "SENTRY_DSN": "https://5f9748a2e40547f38d8b1954cf2b0674@sentry.io/198638",
+    "HTTP_METHOD": {
+      "POST": "POST",
+      "GET": "GET"
     }
 }

@@ -79,5 +79,9 @@ module.exports = {
     alias: {
       soundmanager2: 'soundmanager2/script/soundmanager2-nodebug-jsmin.js'
     }
+  },
+
+  resolveLoader: {
+    modules: ['node_modules', 'shared']
   }
 }

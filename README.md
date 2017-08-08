@@ -15,6 +15,9 @@ Etobee web application for managing inbound, processing, and outbound orders
 - React Router 2.8.1
 - Reselect 3.0.1 (Redux Selector)
 - SASS (CSS Preprocessor)
+- Jest 20.0.4 (Unit Testing Library)
+- Enzyme 2.9.1 (Unit Testing Utility)
+- Redux Raven Middleware 1.2.0 (Error Report Middleware)
 
 ## Configuration
 
@@ -59,14 +62,47 @@ npm run build
 npm run server
 ```
 
+## [Project Structure](https://medium.com/@alexmngn/how-to-better-organize-your-react-applications-2fd3ea1920f1)
+
+Our goals will look like this:
+```
+/app
+  /config
+    /configValues.js
+  /components
+    /Accordion
+      /index.jsx
+    /Button
+      /index.jsx
+  /services
+    /auth
+      index.js
+  /scenes
+    /ChooseHub
+    /InboundTrips
+      /components
+        /Table
+          /index.jsx
+        /Modal
+          /index.jsx
+      /index.jsx
+```
+Where:
+- `app/config` contains all config
+- `app/components` contains reusable components
+- `app/scenes/PageComponent/components` contains component that will be used by `PageComponent`
+- `app/scenes` contains page components (`PageComponent`)
+- `app/services` contains services
+- `app/services/auth/index.js` contains actions, reducers, and action creators
+
+
+
 ## Style Guide
 
 ```
 WARNING: This guide is subject to be changed.
 Guide Example: Login and DragDropImageUploader Component
 ```
-
-- [Project Structure](https://medium.com/@alexmngn/how-to-better-organize-your-react-applications-2fd3ea1920f1)
 
 - React
 Use [AirBnB React Style Guide](https://github.com/airbnb/javascript/tree/master/react#alignment)
@@ -83,18 +119,27 @@ MAY export its action types as UPPER_SNAKE_CASE, if an external reducer needs to
 - Redux Selector
 Use [Selector](https://github.com/reactjs/reselect) for Redux performance
 
+- Error Report Middleware Use [Redux Raven Middleware](https://github.com/captbaritone/raven-for-redux)
+
+```
+DON'T FORGET TO DISPATCH ERROR IN CATCH STATEMENT IF API REQUEST IS FAILED
+```
+
 - Action Format
 Use [Flux Standard Action](https://github.com/acdlite/flux-standard-action)
+
 ```
 MUST
 be a plain JavaScript object.
 have a type property.
-
+```
+```
 MAY
 have an error property.
 have a payload property.
 have a meta property.
-
+```
+```
 MUST NOT
 include properties other than type, payload, error, and meta
 ```
