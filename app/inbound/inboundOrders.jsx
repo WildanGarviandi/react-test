@@ -25,7 +25,7 @@ class DuplicateModal extends Component {
     this.closeModal();
   }
   render() {
-    const ordersContent = this.props.orders.map((order) => {
+    const ordersContent = this.props.orders.map(order => {
       const data = (
         <div
           role="none"
@@ -38,16 +38,22 @@ class DuplicateModal extends Component {
             {order.DropoffAddress &&
               <div>
                 <div className={styles.bigText}>
-                  {`${order.DropoffAddress.FirstName} ${order.DropoffAddress.LastName}`}
+                  {`${order.DropoffAddress.FirstName} ${order.DropoffAddress
+                    .LastName}`}
                 </div>
-                <div className={styles.mediumText}>{order.DropoffAddress.City}</div>
-              </div>
-            }
+                <div className={styles.mediumText}>
+                  {order.DropoffAddress.City}
+                </div>
+              </div>}
           </div>
           <div className={styles.orderContentRight}>
             <div className={styles.textCenter}>
-              <div className={styles.smallTextBold}>{order.UserOrderNumber}</div>
-              <div className={styles.smallText}>({order.WebOrderID})</div>
+              <div className={styles.smallTextBold}>
+                {order.UserOrderNumber}
+              </div>
+              <div className={styles.smallText}>
+                ({order.WebOrderID})
+              </div>
             </div>
           </div>
         </div>
@@ -58,7 +64,11 @@ class DuplicateModal extends Component {
     return (
       <ModalDialog>
         <button className={styles.closeModalButton} onClick={this.closeModal}>
-          <img alt="close" src="/img/icon-close.png" className={styles.closeButtonImage} />
+          <img
+            alt="close"
+            src="/img/icon-close.png"
+            className={styles.closeButtonImage}
+          />
         </button>
         <div className={styles.modal}>
           <div className={styles.modalHeader}>
@@ -118,46 +128,38 @@ function PanelSuggestion({
             >
               &times;
             </div>
-            {
-              !hideDestination && (
-                <div className={styles.successScanned}>
-                  Success: {successScanned}
-                </div>
-              )
-            }
+            {!hideDestination &&
+              <div className={styles.successScanned}>
+                Success: {successScanned}
+              </div>}
           </div>
           <div className={styles.scannedOrder}>
             {scannedOrder}
           </div>
-          {
-            !hideDestination && (
+          {!hideDestination &&
+            <div>
               <div>
-                <div>
-                  {lastDestination.City}
-                </div>
-                <div className={styles.scannedOrder}>
-                  {nextDestination.Hub ? `via Hub ${nextDestination.Hub.Name}` : (nextDestination && 'Dropoff')}
-                </div>
-                <div className={styles.scannedOrder}>
-                  {lastDestination.District && `Kec. ${lastDestination.District}`}
-                </div>
-                <div className={styles.scannedOrder}>
-                  {lastDestination.ZipCode}
-                </div>
+                {lastDestination.City}
               </div>
-            )
-          }
-          {
-            hideDestination && (
-              <div>
-                <div className={styles['total-order']}>
-                  Trip berhasil diterima: {totalOrderByTrip} order
-                </div>
+              <div className={styles.scannedOrder}>
+                {nextDestination.Hub
+                  ? `via Hub ${nextDestination.Hub.Name}`
+                  : nextDestination && 'Dropoff'}
               </div>
-            )
-          }
-        </div>
-      }
+              <div className={styles.scannedOrder}>
+                {lastDestination.District && `Kec. ${lastDestination.District}`}
+              </div>
+              <div className={styles.scannedOrder}>
+                {lastDestination.ZipCode}
+              </div>
+            </div>}
+          {hideDestination &&
+            <div>
+              <div className={styles['total-order']}>
+                Trip berhasil diterima: {totalOrderByTrip} order
+              </div>
+            </div>}
+        </div>}
       {bulkScan &&
         <div>
           <div className={styles.scanMessage}>
@@ -175,10 +177,8 @@ function PanelSuggestion({
           {errorIDs.length > 0 &&
             <div className={styles.bulkScanFailed}>
               Error Order: {errorIDs.join(', ')}
-            </div>
-          }
-        </div>
-      }
+            </div>}
+        </div>}
     </div>
   );
 }
@@ -246,9 +246,25 @@ VerifyButton.propTypes = {
 function mapStateToProps(state) {
   const { inboundOrders } = state.app;
   const userLogged = state.app.userLogged;
-  const { duplicateOrders, isDuplicate, total, suggestion, lastDestination, successScanned,
-    scannedOrder, bulkScan, errorIDs, countSuccess, countError, isTripID, isInterHub,
-    totalOrderByTrip, misroute, rerouteSuccess, rerouteFailed } = inboundOrders;
+  const {
+    duplicateOrders,
+    isDuplicate,
+    total,
+    suggestion,
+    lastDestination,
+    successScanned,
+    scannedOrder,
+    bulkScan,
+    errorIDs,
+    countSuccess,
+    countError,
+    isTripID,
+    isInterHub,
+    totalOrderByTrip,
+    misroute,
+    rerouteSuccess,
+    rerouteFailed,
+  } = inboundOrders;
 
   return {
     userLogged,
@@ -274,25 +290,27 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   const dispatchFunc = {
-    markReceived: (scannedID) => {
+    markReceived: scannedID => {
       dispatch(InboundOrders.resetSuggestion());
       dispatch(InboundOrders.markReceived(scannedID));
     },
-    bulkMarkReceived: (scannedIDs) => {
+    bulkMarkReceived: scannedIDs => {
       dispatch(InboundOrders.BulkMarkReceived(scannedIDs));
     },
     resetSuggestion: () => {
       dispatch(InboundOrders.resetSuggestion());
     },
     closeMisrouteModal: () => {
-      dispatch(InboundOrders.setDefault({
-        misroute: null,
-        lastDestination: {},
-        rerouteSuccess: [],
-        rerouteFailed: [],
-      }));
+      dispatch(
+        InboundOrders.setDefault({
+          misroute: null,
+          lastDestination: {},
+          rerouteSuccess: [],
+          rerouteFailed: [],
+        })
+      );
     },
-    reroute: (scannedIDs) => {
+    reroute: scannedIDs => {
       dispatch(InboundOrders.reroute(scannedIDs));
     },
   };
@@ -336,7 +354,10 @@ class MisrouteModal extends Component {
     return this.props.orderID;
   }
   isEmptyRerouteResult() {
-    return this.props.rerouteSuccess.length === 0 && this.props.rerouteFailed.length === 0;
+    return (
+      this.props.rerouteSuccess.length === 0 &&
+      this.props.rerouteFailed.length === 0
+    );
   }
   render() {
     const { rerouteSuccess, rerouteFailed, orderID } = this.props;
@@ -346,31 +367,44 @@ class MisrouteModal extends Component {
           {this.isEmptyRerouteResult() &&
             <div
               role="button"
-              ref={(div) => { this.misrouteModal = div; }}
+              ref={div => {
+                this.misrouteModal = div;
+              }}
               tabIndex="0"
               className={styles.modal}
               onKeyDown={e => this.handleKeyDown(e)}
             >
               <div className={styles.modalHeader}>
-                <div className={`${styles.successContent} ${styles.ordersContentEmpty}`}>
-                  <img className={styles.successIcon} src={config.IMAGES.ICON_NOT_READY} alt="not ready" />
+                <div
+                  className={`${styles.successContent} ${styles.ordersContentEmpty}`}
+                >
+                  <img
+                    className={styles.successIcon}
+                    src={config.IMAGES.ICON_NOT_READY}
+                    alt="not ready"
+                  />
                   <div className={styles.mediumText}>
-                    Order {this.handleViewOrder()} is misroute.
-                    Would you like to reroute the order
-                    {(Array.isArray(orderID) && orderID.length > 1) ? 's' : ''}?
+                    Order {this.handleViewOrder()} is misroute. Would you like
+                    to reroute the order
+                    {Array.isArray(orderID) && orderID.length > 1 ? 's' : ''}?
                   </div>
                 </div>
               </div>
               <div className={styles['modal-footer']}>
-                <button className={styles['modal__button--no']} onClick={this.closeModal}>
+                <button
+                  className={styles['modal__button--no']}
+                  onClick={this.closeModal}
+                >
                   No
                 </button>
-                <button className={styles['modal__button--yes']} onClick={this.reroute}>
+                <button
+                  className={styles['modal__button--yes']}
+                  onClick={this.reroute}
+                >
                   Yes
                 </button>
               </div>
-            </div>
-          }
+            </div>}
           {!this.isEmptyRerouteResult() &&
             <div className={styles.modal}>
               <div className={styles.modalHeader}>
@@ -381,23 +415,31 @@ class MisrouteModal extends Component {
                 >
                   &times;
                 </div>
-                <div className={`${styles.successContent} ${styles.ordersContentEmpty}`}>
+                <div
+                  className={`${styles.successContent} ${styles.ordersContentEmpty}`}
+                >
                   <Glyph name="info-sign" className={styles['glyph-info']} />
-                  {rerouteSuccess.map(order => (
-                    <div key={order.UserOrderNumber} className={styles.mediumText}>
-                      Order {order.UserOrderNumber} successfully moved to {order.DestinationHub.Name}.
+                  {rerouteSuccess.map(order =>
+                    <div
+                      key={order.UserOrderNumber}
+                      className={styles.mediumText}
+                    >
+                      Order {order.UserOrderNumber} successfully moved to{' '}
+                      {order.DestinationHub.Name}.
                     </div>
-                  ))}
+                  )}
                   <br />
-                  {rerouteFailed.map(order => (
-                    <div key={order.UserOrderNumber} className={styles.mediumText}>
+                  {rerouteFailed.map(order =>
+                    <div
+                      key={order.UserOrderNumber}
+                      className={styles.mediumText}
+                    >
                       Failed to reroute {order.UserOrderNumber}. {order.error}.
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
-            </div>
-          }
+            </div>}
         </ModalDialog>
       </ModalContainer>
     );
@@ -465,7 +507,6 @@ class InboundOrdersPage extends Component {
     if (val === '') {
       return;
     }
-    this.markReceivedInput.blur();
     this.props.markReceived(val);
     this.setState({
       orderMarked: '',
@@ -505,24 +546,30 @@ class InboundOrdersPage extends Component {
       input: styles.verifyInput,
     };
     return (
-      <Page title="Inbound Orders" count={{ itemName: 'Items', done: 'All Done', value: this.props.total }}>
-        {
-          this.state.isDuplicate &&
+      <Page
+        title="Inbound Orders"
+        count={{ itemName: 'Items', done: 'All Done', value: this.props.total }}
+      >
+        {this.state.isDuplicate &&
           <ModalContainer onClose={this.closeModal}>
             <DuplicateModal
               orders={this.props.duplicateOrders}
               closeModal={this.closeModal}
               pickOrder={this.test}
             />
-          </ModalContainer>
-        }
+          </ModalContainer>}
         <div className={styles.actionContainer}>
           <Input
             styles={inputVerifyStyles}
             onChange={this.changeMark}
             onEnterKeyPressed={this.markReceived}
-            base={{ value: this.state.orderMarked, placeholder: 'Scan EDS, WebOrderID, or TripID...' }}
-            inputRef={(input) => { this.markReceivedInput = input; }}
+            base={{
+              value: this.state.orderMarked,
+              placeholder: 'Scan EDS, WebOrderID, or TripID...',
+            }}
+            inputRef={input => {
+              this.markReceivedInput = input;
+            }}
           />
           <VerifyButton
             orderMarked={this.state.orderMarked}
@@ -531,62 +578,64 @@ class InboundOrdersPage extends Component {
         </div>
         <div style={{ clear: 'both' }} />
         <div style={{ marginBottom: 15 }}>
-          {this.state.opened ?
-            <div
-              role="none"
-              className={styles.top2}
-              onClick={this.toggleOpen}
-            >
-              <h4 className={styles.title}>
-                <Glyph name="chevron-down" className={styles.glyphFilter} />
-                {(this.state.ids.length ? `Scan multiple orders (${this.state.ids.length} keywords)` :
-                  'Scan multiple orders')}
-              </h4>
-            </div> :
-            <div className={styles.panel}>
-              <div
+          {this.state.opened
+            ? <div
                 role="none"
                 className={styles.top2}
                 onClick={this.toggleOpen}
               >
                 <h4 className={styles.title}>
-                  <Glyph name="chevron-up" className={styles.glyphFilter} />
-                  {'Scan multiple orders:'}
+                  <Glyph name="chevron-down" className={styles.glyphFilter} />
+                  {this.state.ids.length
+                    ? `Scan multiple orders (${this.state.ids.length} keywords)`
+                    : 'Scan multiple orders'}
                 </h4>
               </div>
-              <div className={styles.bottom}>
-                <textarea
-                  className={styles.textArea}
-                  value={this.state.idsRaw}
-                  onChange={this.textChange}
-                  placeholder={'Write/Paste EDS Number or Order ID here, separated with newline'}
-                />
-                <ButtonBase
-                  styles={styles.greenButton}
-                  onClick={this.processText}
+            : <div className={styles.panel}>
+                <div
+                  role="none"
+                  className={styles.top2}
+                  onClick={this.toggleOpen}
                 >
-                  Scan
-                </ButtonBase>
-                <ButtonBase
-                  styles={styles.redButton}
-                  onClick={this.cancelChange}
-                >
-                  Cancel
-                </ButtonBase>
-                <ButtonBase
-                  styles={styles.redButton}
-                  onClick={this.clearText}
-                >
-                  Clear
-                </ButtonBase>
-              </div>
-            </div>
-          }
+                  <h4 className={styles.title}>
+                    <Glyph name="chevron-up" className={styles.glyphFilter} />
+                    {'Scan multiple orders:'}
+                  </h4>
+                </div>
+                <div className={styles.bottom}>
+                  <textarea
+                    className={styles.textArea}
+                    value={this.state.idsRaw}
+                    onChange={this.textChange}
+                    placeholder={
+                      'Write/Paste EDS Number or Order ID here, separated with newline'
+                    }
+                  />
+                  <ButtonBase
+                    styles={styles.greenButton}
+                    onClick={this.processText}
+                  >
+                    Scan
+                  </ButtonBase>
+                  <ButtonBase
+                    styles={styles.redButton}
+                    onClick={this.cancelChange}
+                  >
+                    Cancel
+                  </ButtonBase>
+                  <ButtonBase
+                    styles={styles.redButton}
+                    onClick={this.clearText}
+                  >
+                    Clear
+                  </ButtonBase>
+                </div>
+              </div>}
         </div>
         <InboundOrdersTable />
-        {
-          (!_.isEmpty(this.props.lastDestination) || this.props.bulkScan) &&
-          this.state.showModalMessage && !this.props.misroute &&
+        {(!_.isEmpty(this.props.lastDestination) || this.props.bulkScan) &&
+          this.state.showModalMessage &&
+          !this.props.misroute &&
           <PanelSuggestion
             closeModalMessage={this.closeModalMessage}
             nextDestination={this.props.suggestion}
@@ -601,8 +650,7 @@ class InboundOrdersPage extends Component {
             isInterHub={this.props.isInterHub}
             totalOrderByTrip={this.props.totalOrderByTrip}
             misroute={this.props.misroute}
-          />
-        }
+          />}
         {this.props.misroute &&
           <MisrouteModal
             closeModal={this.props.closeMisrouteModal}
@@ -610,8 +658,7 @@ class InboundOrdersPage extends Component {
             reroute={this.props.reroute}
             rerouteSuccess={this.props.rerouteSuccess}
             rerouteFailed={this.props.rerouteFailed}
-          />
-        }
+          />}
       </Page>
     );
   }
