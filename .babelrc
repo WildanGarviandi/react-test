@@ -12,6 +12,9 @@
             "locals": ["module"]
           }]
      }]]
+    },
+    "production": {
+      "presets": ["react-optimize"]
     }
   }
 }
