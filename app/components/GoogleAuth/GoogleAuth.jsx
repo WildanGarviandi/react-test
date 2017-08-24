@@ -28,18 +28,23 @@ export default class GoogleAuth extends PureComponent {
   render() {
     return (
       <div>
-        <FontAwesome
-          className={styles['google-plus']}
-          size="lg"
-          name="google-plus"
-        />
         <GoogleLogin
           className={styles['submit-btn']}
           clientId={this.state.clientId}
-          buttonText="LOGIN"
           onSuccess={this.handleSuccessResponse}
           onFailure={this.handleFailureResponse}
-        />
+        >
+          <div className={styles['google-container']}>
+            <FontAwesome
+              className={styles['google-container__plus']}
+              size="lg"
+              name="google-plus"
+            />
+          </div>
+          <div className={styles['text-container']}>
+            Sign In with Google
+          </div>
+        </GoogleLogin>
       </div>
     );
   }
