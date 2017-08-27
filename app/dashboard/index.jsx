@@ -279,7 +279,7 @@ const DashboardContainer = React.createClass({
     const { hubID, hubName, fleetName, isCentralHub } = userLogged;
     const activeMenuIdx = GetActiveMenuIdx(routes[routes.length - 1].path);
     const panelClass = classnaming('panel', { compact: this.state.isCompact });
-    const loggedName = hubID ? `${fleetName} \n ${hubName}` : `${fleetName}`;
+    const loggedName = hubID ? `${fleetName || ''} \n ${hubName}` : `${fleetName}`;
     document.title = `TMS ${util.capitalize(this.props.additionalTitle)}`;
 
     return (

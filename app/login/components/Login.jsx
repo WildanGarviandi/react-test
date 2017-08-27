@@ -6,6 +6,7 @@ import styles from '../styles.scss';
 import LoginInput from './LoginInput';
 import LoginCheckBox from './LoginCheckBox';
 import { ButtonWithLoading } from '../../views/base';
+import GoogleAuth from '../../components/GoogleAuth';
 
 export default class Login extends React.Component {
   constructor(props) {
@@ -88,6 +89,10 @@ export default class Login extends React.Component {
               <a href="" className={styles.forgot}>Forgot password?</a>
               <ButtonWithLoading {...submitBtnProps} />
               <br />
+              <GoogleAuth
+                handleSuccessResponse={this.handleSuccessResponse}
+                handleFailureResponse={this.handleFailureResponse}
+              />
             </div>
           </form>
         </div>

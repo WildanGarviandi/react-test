@@ -5,10 +5,10 @@ import fetchPost from '../../fetch/post';
 import endpoints from '../../../config/endpoints';
 import { modalAction } from '../../modals/constants';
 
-export default (hubID) => {
+export default (hubID, isReload) => {
   const dispatchFunc = (dispatch, getState) => {
     const body = { hubID };
-    const { token, userID } = getState().app.userLogged;
+    const { token, userID, hubs } = getState().app.userLogged;
 
     dispatch({ type: modalAction.BACKDROP_SHOW });
     dispatch({ type: actionTypes.CHOOSE_HUB_START });
@@ -21,9 +21,13 @@ export default (hubID) => {
             payload: {
               token,
               userID,
+              hubs,
             },
           });
-          dispatch(push('/orders/pickup'));
+          if (isReload) {
+            return window.location.reload();
+          }
+          return dispatch(push('/orders/pickup'));
         });
       }
 
