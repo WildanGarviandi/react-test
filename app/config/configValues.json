@@ -1,217 +1,249 @@
 {
-    "vehicle": [{
-        "key": 1, "value": "Motorcycle"
-    }, {
-        "key": 2, "value": "Van"
-    }],
-    "vehicleType": {
-        "Motorcycle": 1,
-        "Van": 2
+  "vehicle": [
+    {
+      "key": 1,
+      "value": "Motorcycle"
     },
-    "motorcycleMaxWeight": 25,
-    "vanMaxWeight": 250,
-    "autoGroupInterval": 60000,
-    "driverLimit": 10000,
-    "deadline": {
-        "day": 86400000,
-        "3hours":  10800000
-    },
-    "inboundDeadlineFromCutOffTime": 6,
-    "defaultCODValues": [{
-        "label": "COD",
-        "value": true
-    }, {
-        "label": "Non COD",
-        "value": false
-    }],
-    "volumetricFactor": 6000,
-    "outboundDeadlineFromCreated": 3,
-    "defaultMainPage": "/orders/pickup",
-    "defaultMainPageTMS": "/ordermonitoring",
-    "performanceInterval": 180000,
-    "defaultStatuses": {
-      "total": "[2, 3, 4, 5, 8, 12, 13, 15, 16, 17, 18, 19, 20, 21]",
-      "succeed": "[5]",
-      "pending": "[2, 3, 4]",
-      "failed": "[8, 12, 13, 15, 16, 17, 18, 19, 20, 21]"
-    },
-    "sortOptions": [{
-      "key": 0, "value": "A-Z (Driver's Name)"
-    }, {
-      "key": 1, "value": "Z-A (Driver's Name)"
-    }, {
-      "key": 2, "value": "A-Z (Fleet's Area)"
-    },{
-      "key": 3, "value": "Z-A (Fleet's Area)"
-    }],
-    "orderTypeOptions": [{
-      "key": "All", "value": "All"
-    }, {
-      "key": 0, "value": "Company Orders"
-    }, {
-      "key": 1, "value": "Etobee"
-    }],
-    "statusOptions": {
-      "succeed": [
-        { "key": 5, "value": "DELIVERED" }
-      ],
-      "pending": [
-        { "key": -1, "value": "SHOW ALL" },
-        { "key": 2, "value": "ACCEPTED" },
-        { "key": 3, "value": "PICKUP" },
-        { "key": 4, "value": "IN-TRANSIT" }
-      ],
-      "failed": [
-        { "key": -1, "value": "SHOW ALL" },
-        { "key": 8, "value": "REJECT" },
-        { "key": 12, "value": "EXPIRED" },
-        { "key": 13, "value": "CANCELLED" },
-        { "key": 15, "value": "RETURNED_WAREHOUSE" },
-        { "key": 16, "value": "RETURNED_SENDER" },
-        { "key": 17, "value": "MISSING" },
-        { "key": 18, "value": "CLAIMED_VENDOR" },
-        { "key": 19, "value": "CLAIMED_MERCHANT" },
-        { "key": 20, "value": "CLAIMED_ALL" },
-        { "key": 21, "value": "PICKUP_CANCELLED"}
-      ]
-    },
-    "codOptions": [{
-      "key": "", "value": "All"
-    }, {
-      "key": "true", "value": "COD"
-    }, {
-      "key": "false", "value": "Non-COD"
-    }],
-    "deliverableOrderStatus": [2, 3, 4],
-    "updatableCOD": [4, 5],
-    "KEY_ACTION": {
-      "UP_ARROW": 38,
-      "DOWN_ARROW": 40,
-      "ENTER": 13,
-      "SEMI_COLON": 186,
-      "A": 65,
-      "Z": 90,
-      "ESCAPE": 27
-    },
-    "role": {
-      "DEFAULT": "DEFAULT",
-      "SUPERHUB": "SUPERHUB"
-    },
-    "branchType": {
-      "LOCAL": "Local",
-      "CENTRAL": "Central"
-    },
-    "time": {
-      "MINUTES": "minutes"
-    },
-    "rolePermission": {
-      "SUPERHUB": {
-        "GROUP_ORDERS": false,
-        "MARK_AS_READY": false,
-        "ADD_ORDER": false,
-        "REMOVE_ORDER": false,
-        "COMPLETE_TRIP": false,
-        "COMPLETE_ORDERS": false,
-        "ASSIGN_TO_VENDOR": false
-      },
-      "DEFAULT": {
-        "GROUP_ORDERS": true,
-        "MARK_AS_READY": true,
-        "ADD_ORDER": true,
-        "REMOVE_ORDER": true,
-        "COMPLETE_TRIP": true,
-        "COMPLETE_ORDERS": true,
-        "ASSIGN_TO_VENDOR": true
-      }
-    },
-    "problemIcon": {
-      "NOT_CONFIRMED": {
-        "URL": "/img/icon-not-confirmed.png",
-        "TOOLTIP": "Not Confirmed"
-      },
-      "NOT_ARRIVED": {
-        "URL": "/img/icon-not-arrived.png",
-        "TOOLTIP": "Not Arrived"
-      },
-      "NOT_FINISHED": {
-        "URL": "/img/icon-not-finished.png",
-        "TOOLTIP": "Not Finished"
-      }
-    },
-    "IMAGES": {
-      "RADIO_ON": "/img/icon-radio-on.png",
-      "RADIO_OFF": "/img/icon-radio-off.png",
-      "MOTORCYCLE": "/img/icon-vehicle-motorcycle.png",
-      "VAN": "/img/icon-vehicle-van.png",
-      "INBOUND_TRIP_DONE": "/img/image-inbound-trip-done.png",
-      "DRAG_DROP": "/img/icon-add-image-drag-drop.png",
-      "LOCATION": "/img/icon-location.png",
-      "DEFAULT_LOGO": "/img/default-logo.png",
-      "ETOBEE_LOGO": "/img/etobee-logo.png",
-      "LOGO": "/img/logo.png",
-      "ICON_MENU": "/img/icon-menu.png",
-      "ICON_SUCCESS": "/img/icon-success.png",
-      "ORDERS_DONE": "/img/icon-orders-done.png",
-      "ON_GOING_TRIPS": "/img/image-on-going-trips.png",
-      "ICON_ORDERS": "/img/icon-orders.png",
-      "ICON_MY_TRIPS": "/img/icon-my-trips.png",
-      "ICON_ONGOING_TRIPS": "/img/icon-ongoing-trips.png",
-      "ICON_NOT_READY": "/img/icon-not-ready.png",
-      "ICON_READY": "/img/icon-ready.png"
-    },
-    "assignCentralHub": true,
-    "HTTP_STATUS": {
-      "OK": 200
-    },
-    "IMAGE_TYPE": {
-      "JPEG": "image/jpeg",
-      "PNG": "image/png"
-    },
-    "PICKUP_TYPE": [
-      {"key": "1", "value": "SDS", "label": "Same Day Service"},
-      {"key": "2", "value": "NDS", "label": "Next Day Service"},
-      {"key": "3", "value": "ODS", "label": "On Demand Service"},
-      {"key": "4", "value": "REG", "label": "Regular Service"}
-    ],
-    "OPTION": {
-      "YES": "Yes",
-      "NO": "No"
-    },
-    "FILE_TYPE": {
-      "EXCEL": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    },
-    "RESPONSE_TYPE": {
-      "ARRAY_BUFFER": "arraybuffer"
-    },
-    "SORT": {
-      "DIRECTION": {
-        "ASC": "ASC",
-        "DESC": "DESC"
-      }
-    },
-    "CHECK_AUTH_INTERVAL": 10000,
-    "DATE_FORMAT": {
-      "DATE_MONTH_YEAR": "DD-MM-YYYY"
-    },
-    "SOUND": {
-      "SYSTEM_FAULT": "/sound/system-fault.mp3",
-      "COINS": "/sound/coins.mp3",
-      "JOB_DONE": "/sound/job-done.mp3",
-      "MAY_I_HAVE_YOUR_ATTENTION": "/sound/may-i-have-your-attention.mp3"
-    },
-    "TOTAL_PER_PAGE": {
-      "DEFAULT": 25,
-      "TEN": 10
-    },
-    "GOOGLE_CLIENT_ID": "196844091368-1nd35vc6r4i3df7u9scdpitaee37a66r.apps.googleusercontent.com",
-    "IS_ACTIVATE_GOOGLE_AUTH": true,
-    "HUB_TYPE": {
-      "GENERAL": "GENERAL",
-      "CENTRAL": "CENTRAL"
-    },
-    "SENTRY_DSN": "https://5f9748a2e40547f38d8b1954cf2b0674@sentry.io/198638",
-    "HTTP_METHOD": {
-      "POST": "POST",
-      "GET": "GET"
+    {
+      "key": 2,
+      "value": "Van"
     }
+  ],
+  "vehicleType": {
+    "Motorcycle": 1,
+    "Van": 2
+  },
+  "motorcycleMaxWeight": 25,
+  "vanMaxWeight": 250,
+  "autoGroupInterval": 60000,
+  "driverLimit": 10000,
+  "deadline": {
+    "day": 86400000,
+    "3hours": 10800000
+  },
+  "inboundDeadlineFromCutOffTime": 6,
+  "defaultCODValues": [
+    {
+      "label": "COD",
+      "value": true
+    },
+    {
+      "label": "Non COD",
+      "value": false
+    }
+  ],
+  "volumetricFactor": 6000,
+  "outboundDeadlineFromCreated": 3,
+  "defaultMainPage": "/orders/pickup",
+  "defaultMainPageTMS": "/ordermonitoring",
+  "performanceInterval": 180000,
+  "defaultStatuses": {
+    "total": "[2, 3, 4, 5, 8, 12, 13, 15, 16, 17, 18, 19, 20, 21]",
+    "succeed": "[5]",
+    "pending": "[2, 3, 4]",
+    "failed": "[8, 12, 13, 15, 16, 17, 18, 19, 20, 21]"
+  },
+  "sortOptions": [
+    {
+      "key": 0,
+      "value": "A-Z (Driver's Name)"
+    },
+    {
+      "key": 1,
+      "value": "Z-A (Driver's Name)"
+    },
+    {
+      "key": 2,
+      "value": "A-Z (Fleet's Area)"
+    },
+    {
+      "key": 3,
+      "value": "Z-A (Fleet's Area)"
+    }
+  ],
+  "orderTypeOptions": [
+    {
+      "key": "All",
+      "value": "All"
+    },
+    {
+      "key": 0,
+      "value": "Company Orders"
+    },
+    {
+      "key": 1,
+      "value": "Etobee"
+    }
+  ],
+  "statusOptions": {
+    "succeed": [{ "key": 5, "value": "DELIVERED" }],
+    "pending": [
+      { "key": -1, "value": "SHOW ALL" },
+      { "key": 2, "value": "ACCEPTED" },
+      { "key": 3, "value": "PICKUP" },
+      { "key": 4, "value": "IN-TRANSIT" }
+    ],
+    "failed": [
+      { "key": -1, "value": "SHOW ALL" },
+      { "key": 8, "value": "REJECT" },
+      { "key": 12, "value": "EXPIRED" },
+      { "key": 13, "value": "CANCELLED" },
+      { "key": 15, "value": "RETURNED_WAREHOUSE" },
+      { "key": 16, "value": "RETURNED_SENDER" },
+      { "key": 17, "value": "MISSING" },
+      { "key": 18, "value": "CLAIMED_VENDOR" },
+      { "key": 19, "value": "CLAIMED_MERCHANT" },
+      { "key": 20, "value": "CLAIMED_ALL" },
+      { "key": 21, "value": "PICKUP_CANCELLED" }
+    ]
+  },
+  "codOptions": [
+    {
+      "key": "",
+      "value": "All"
+    },
+    {
+      "key": "true",
+      "value": "COD"
+    },
+    {
+      "key": "false",
+      "value": "Non-COD"
+    }
+  ],
+  "deliverableOrderStatus": [2, 3, 4],
+  "updatableCOD": [4, 5],
+  "KEY_ACTION": {
+    "UP_ARROW": 38,
+    "DOWN_ARROW": 40,
+    "ENTER": 13,
+    "SEMI_COLON": 186,
+    "A": 65,
+    "Z": 90,
+    "ESCAPE": 27
+  },
+  "role": {
+    "DEFAULT": "DEFAULT",
+    "SUPERHUB": "SUPERHUB"
+  },
+  "branchType": {
+    "LOCAL": "Local",
+    "CENTRAL": "Central"
+  },
+  "time": {
+    "MINUTES": "minutes"
+  },
+  "rolePermission": {
+    "SUPERHUB": {
+      "GROUP_ORDERS": false,
+      "MARK_AS_READY": false,
+      "ADD_ORDER": false,
+      "REMOVE_ORDER": false,
+      "COMPLETE_TRIP": false,
+      "COMPLETE_ORDERS": false,
+      "ASSIGN_TO_VENDOR": false
+    },
+    "DEFAULT": {
+      "GROUP_ORDERS": true,
+      "MARK_AS_READY": true,
+      "ADD_ORDER": true,
+      "REMOVE_ORDER": true,
+      "COMPLETE_TRIP": true,
+      "COMPLETE_ORDERS": true,
+      "ASSIGN_TO_VENDOR": true
+    }
+  },
+  "problemIcon": {
+    "NOT_CONFIRMED": {
+      "URL": "/img/icon-not-confirmed.png",
+      "TOOLTIP": "Not Confirmed"
+    },
+    "NOT_ARRIVED": {
+      "URL": "/img/icon-not-arrived.png",
+      "TOOLTIP": "Not Arrived"
+    },
+    "NOT_FINISHED": {
+      "URL": "/img/icon-not-finished.png",
+      "TOOLTIP": "Not Finished"
+    }
+  },
+  "IMAGES": {
+    "RADIO_ON": "/img/icon-radio-on.png",
+    "RADIO_OFF": "/img/icon-radio-off.png",
+    "MOTORCYCLE": "/img/icon-vehicle-motorcycle.png",
+    "VAN": "/img/icon-vehicle-van.png",
+    "INBOUND_TRIP_DONE": "/img/image-inbound-trip-done.png",
+    "DRAG_DROP": "/img/icon-add-image-drag-drop.png",
+    "LOCATION": "/img/icon-location.png",
+    "DEFAULT_LOGO": "/img/default-logo.png",
+    "ETOBEE_LOGO": "/img/etobee-logo.png",
+    "LOGO": "/img/logo.png",
+    "ICON_MENU": "/img/icon-menu.png",
+    "ICON_SUCCESS": "/img/icon-success.png",
+    "ORDERS_DONE": "/img/icon-orders-done.png",
+    "ON_GOING_TRIPS": "/img/image-on-going-trips.png",
+    "ICON_ORDERS": "/img/icon-orders.png",
+    "ICON_MY_TRIPS": "/img/icon-my-trips.png",
+    "ICON_ONGOING_TRIPS": "/img/icon-ongoing-trips.png",
+    "ICON_NOT_READY": "/img/icon-not-ready.png",
+    "ICON_READY": "/img/icon-ready.png"
+  },
+  "assignCentralHub": true,
+  "HTTP_STATUS": {
+    "OK": 200
+  },
+  "IMAGE_TYPE": {
+    "JPEG": "image/jpeg",
+    "PNG": "image/png"
+  },
+  "PICKUP_TYPE": [
+    { "key": "1", "value": "SDS", "label": "Same Day Service" },
+    { "key": "2", "value": "NDS", "label": "Next Day Service" },
+    { "key": "3", "value": "ODS", "label": "On Demand Service" },
+    { "key": "4", "value": "REG", "label": "Regular Service" }
+  ],
+  "OPTION": {
+    "YES": "Yes",
+    "NO": "No"
+  },
+  "FILE_TYPE": {
+    "EXCEL": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  },
+  "RESPONSE_TYPE": {
+    "ARRAY_BUFFER": "arraybuffer"
+  },
+  "SORT": {
+    "DIRECTION": {
+      "ASC": "ASC",
+      "DESC": "DESC"
+    }
+  },
+  "CHECK_AUTH_INTERVAL": 10000,
+  "DATE_FORMAT": {
+    "DATE_MONTH_YEAR": "DD-MM-YYYY"
+  },
+  "SOUND": {
+    "SYSTEM_FAULT": "/sound/system-fault.mp3",
+    "COINS": "/sound/coins.mp3",
+    "JOB_DONE": "/sound/job-done.mp3",
+    "MAY_I_HAVE_YOUR_ATTENTION": "/sound/may-i-have-your-attention.mp3"
+  },
+  "TOTAL_PER_PAGE": {
+    "DEFAULT": 25,
+    "TEN": 10
+  },
+  "GOOGLE_CLIENT_ID": "196844091368-1nd35vc6r4i3df7u9scdpitaee37a66r.apps.googleusercontent.com",
+  "IS_ACTIVATE_GOOGLE_AUTH": true,
+  "HUB_TYPE": {
+    "GENERAL": "GENERAL",
+    "CENTRAL": "CENTRAL"
+  },
+  "SENTRY_DSN": "https://5f9748a2e40547f38d8b1954cf2b0674@sentry.io/198638",
+  "HTTP_METHOD": {
+    "POST": "POST",
+    "GET": "GET"
+  },
+  "TEXT": {
+    "UNKNOWN": "Unknown"
+  }
 }
