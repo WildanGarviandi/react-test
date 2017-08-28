@@ -13,7 +13,7 @@ import { Pagination2 } from '../components/pagination2';
 import { ButtonWithLoading } from '../components/Button';
 import Table, { Filter, Deadline } from './tripTable';
 import * as TripService from './tripService';
-import driversFetch from '../modules/drivers/actions/driversFetch';
+import { TMSFetchDrivers } from '../modules/drivers/actions/driversFetch';
 import styles from './styles.scss';
 import stylesButton from '../components/Button/styles.scss';
 import * as UtilHelper from '../helper/utility';
@@ -22,7 +22,9 @@ import config from '../config/configValues.json';
 function TripOrders({ orders }) {
   const orderComponents = orders.map((order, idx) => {
     const deadline = moment(order.UserOrder.DueTime).format('DD-MM-YYYY');
-    const duration = moment.duration(moment(order.UserOrder.DueTime).diff(moment(new Date())));
+    const duration = moment.duration(
+      moment(order.UserOrder.DueTime).diff(moment(new Date()))
+    );
     return (
       <div className={styles.mainOrder} key={order.UserOrderRouteID}>
         <div className={styles.orderName}>
@@ -32,45 +34,52 @@ function TripOrders({ orders }) {
           <div className={styles.orderEDS}>
             {order.UserOrder.UserOrderNumber}
           </div>
-          {
-            order.UserOrder.IsCOD &&
-            <div className={styles.orderCOD}>
-              COD
-            </div>
-          }
+          {order.UserOrder.IsCOD && <div className={styles.orderCOD}>COD</div>}
         </div>
         <div style={{ clear: 'both' }} />
         <div>
-          <div className={styles.tripDetailsLabel}>
-            From
-          </div>
+          <div className={styles.tripDetailsLabel}>From</div>
           <div className={styles.tripDetailsValue}>
-            {order.UserOrder.PickupAddress && `${order.UserOrder.PickupAddress.FirstName} ${order.UserOrder.PickupAddress.LastName}`}
+            {order.UserOrder.PickupAddress &&
+              `${order.UserOrder.PickupAddress.FirstName} ${order.UserOrder
+                .PickupAddress.LastName}`}
           </div>
           <div>
-            {order.UserOrder.PickupAddress && order.UserOrder.PickupAddress.Address1}
+            {order.UserOrder.PickupAddress &&
+              order.UserOrder.PickupAddress.Address1}
           </div>
-          <div className={styles.tripDetailsLabel}>
-            To
-          </div>
+          <div className={styles.tripDetailsLabel}>To</div>
           <div className={styles.tripDetailsValue}>
-            {order.UserOrder.DropoffAddress && `${order.UserOrder.DropoffAddress.FirstName} ${order.UserOrder.DropoffAddress.LastName}`}
+            {order.UserOrder.DropoffAddress &&
+              `${order.UserOrder.DropoffAddress.FirstName} ${order.UserOrder
+                .DropoffAddress.LastName}`}
           </div>
           <div>
-            {order.UserOrder.DropoffAddress && order.UserOrder.DropoffAddress.Address1}
+            {order.UserOrder.DropoffAddress &&
+              order.UserOrder.DropoffAddress.Address1}
           </div>
           <div className={styles.deadlineValue}>
             Deadline: <Deadline deadline={order.UserOrder.DueTime} />
-            <span className={duration._milliseconds < 0 ? styles['text-red'] : styles['text-black']}>
+            <span
+              className={
+                duration._milliseconds < 0
+                  ? styles['text-red']
+                  : styles['text-black']
+              }
+            >
               {duration._milliseconds < 0 && <br />}
               ({deadline})
-              </span>
+            </span>
           </div>
         </div>
       </div>
     );
   });
-  return <div>{orderComponents}</div>;
+  return (
+    <div>
+      {orderComponents}
+    </div>
+  );
 }
 
 /* eslint-disable */
@@ -83,12 +92,22 @@ TripOrders.defaultProps = {
   orders: [],
 };
 
-function PanelDetails({ expandedTrip, shrinkTrip, isExpandDriver, expandDriver }) {
-  const tripStatusStyles = styles[`tripStatus${expandedTrip.OrderStatus.OrderStatusID}`];
+function PanelDetails({
+  expandedTrip,
+  shrinkTrip,
+  isExpandDriver,
+  expandDriver,
+}) {
+  const tripStatusStyles =
+    styles[`tripStatus${expandedTrip.OrderStatus.OrderStatusID}`];
   return (
     <div>
       {expandedTrip &&
-        <div className={isExpandDriver ? styles.panelDetails2 : styles.panelDetails}>
+        <div
+          className={
+            isExpandDriver ? styles.panelDetails2 : styles.panelDetails
+          }
+        >
           <div role="none" onClick={shrinkTrip} className={styles.closeButton}>
             &times;
           </div>
@@ -101,87 +120,96 @@ function PanelDetails({ expandedTrip, shrinkTrip, isExpandDriver, expandDriver }
                 <img
                   alt="vehicle"
                   className={styles.driverLoadImage}
-                  src={expandedTrip.Driver && expandedTrip.Driver.Vehicle &&
-                    expandedTrip.Driver.Vehicle.Name === config
-                      .vehicle[config.vehicleType.Motorcycle - 1].value ?
-                    config.IMAGES.MOTORCYCLE : config.IMAGES.VAN}
+                  src={
+                    expandedTrip.Driver &&
+                    expandedTrip.Driver.Vehicle &&
+                    expandedTrip.Driver.Vehicle.Name ===
+                      config.vehicle[config.vehicleType.Motorcycle - 1].value
+                      ? config.IMAGES.MOTORCYCLE
+                      : config.IMAGES.VAN
+                  }
                 />
               </div>
               <div className={styles.driverDetails}>
                 <span className={styles.driverName}>
-                  {UtilHelper.trimString(expandedTrip.Driver && `${expandedTrip.Driver.FirstName} ${expandedTrip.Driver.LastName}`, 20)}
+                  {UtilHelper.trimString(
+                    expandedTrip.Driver &&
+                      `${expandedTrip.Driver.FirstName} ${expandedTrip.Driver
+                        .LastName}`,
+                    20
+                  )}
                 </span>
               </div>
               <div className={styles.driverDetails}>
                 <span className={styles.vendorLoad}>
                   Available Weight
-                   {expandedTrip.Driver && expandedTrip.Driver.TotalWeight} /
-                    {expandedTrip.Driver && expandedTrip.Driver.AvailableWeight}
+                  {expandedTrip.Driver && expandedTrip.Driver.TotalWeight} /
+                  {expandedTrip.Driver && expandedTrip.Driver.AvailableWeight}
                 </span>
               </div>
-            </div>
-          }
+            </div>}
           <div className={styles.tripDetails}>
             <div className={styles.reassignButton}>
-              <button className={stylesButton.greenButton2} onClick={expandDriver}>Assign</button>
+              <button
+                className={stylesButton.greenButton2}
+                onClick={expandDriver}
+              >
+                Assign
+              </button>
             </div>
-            <div className={styles.tripDetailsLabel}>
-              TripID
-            </div>
+            <div className={styles.tripDetailsLabel}>TripID</div>
             <div className={styles.tripDetailsValue}>
               TRIP-{expandedTrip.TripID}
             </div>
-            <div className={styles.tripDetailsLabel}>
-              From
-            </div>
+            <div className={styles.tripDetailsLabel}>From</div>
             <div className={styles.tripDetailsValue}>
-              {expandedTrip.TripMerchantsAll || 'Unknown'}
+              {expandedTrip.TripMerchantsAll || config.TEXT.UNKNOWN}
             </div>
-            <div className={styles.tripDetailsLabel}>
-              Destination
-            </div>
+            <div className={styles.tripDetailsLabel}>Destination</div>
             <div className={styles.tripDetailsValue}>
-              {expandedTrip.TripDropoffAll || 'Unknown'}
+              {expandedTrip.TripDropoffAll || config.TEXT.UNKNOWN}
             </div>
             <div>
               <div className={styles.tripAdditionalInfo}>
-                <div className={styles.tripDetailsLabel}>
-                  Weight
-                </div>
+                <div className={styles.tripDetailsLabel}>Weight</div>
                 <div className={styles.tripDetailsValue}>
                   {expandedTrip.Weight} kg
                 </div>
               </div>
               <div className={styles.tripAdditionalInfo}>
-                <div className={styles.tripDetailsLabel}>
-                  COD Order
-                </div>
+                <div className={styles.tripDetailsLabel}>COD Order</div>
                 <div className={styles.tripDetailsValue}>
                   {expandedTrip.CODOrders} items
                 </div>
               </div>
               <div className={styles.tripAdditionalInfo}>
-                <div className={styles.tripDetailsLabel}>
-                  COD Value
-                </div>
+                <div className={styles.tripDetailsLabel}>COD Value</div>
                 <div className={styles.tripDetailsValue}>
-                  <NumberFormat displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp '} value={expandedTrip.CODTotalValue} />
+                  <NumberFormat
+                    displayType={'text'}
+                    thousandSeparator={'.'}
+                    decimalSeparator={','}
+                    prefix={'Rp '}
+                    value={expandedTrip.CODTotalValue}
+                  />
                 </div>
               </div>
             </div>
           </div>
           <div className={styles.tripValue}>
-            <div className={styles.tripValueLabel}>
-              Total Value
-            </div>
+            <div className={styles.tripValueLabel}>Total Value</div>
             <div className={styles.tripTotalValue}>
-              <NumberFormat displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} prefix={'Rp '} value={expandedTrip.TotalValue} />
+              <NumberFormat
+                displayType={'text'}
+                thousandSeparator={'.'}
+                decimalSeparator={','}
+                prefix={'Rp '}
+                value={expandedTrip.TotalValue}
+              />
             </div>
           </div>
           <div className={styles.tripNumOrders}>
-            <div className={styles.numOrderLeft}>
-              Number of orders:
-            </div>
+            <div className={styles.numOrderLeft}>Number of orders:</div>
             <div className={styles.numOrderRight}>
               {expandedTrip.UserOrderRoutes.length}
             </div>
@@ -189,8 +217,7 @@ function PanelDetails({ expandedTrip, shrinkTrip, isExpandDriver, expandDriver }
           <div className={styles.tripDetailsOrder}>
             <TripOrders orders={expandedTrip.UserOrderRoutes} />
           </div>
-        </div>
-      }
+        </div>}
     </div>
   );
 }
@@ -205,20 +232,20 @@ PanelDetails.propTypes = {
 /* eslint-enable */
 
 PanelDetails.defaultProps = {
-  shrinkTrip: () => { },
+  shrinkTrip: () => {},
   isExpandDriver: false,
-  expandDriver: () => { },
+  expandDriver: () => {},
 };
 
 class Drivers extends Component {
   handleDriversView() {
-    const driverComponents = this.props.drivers.map((driver) => {
+    const driverComponents = this.props.drivers.map(driver => {
       const isSelected = this.props.selectedDriver === driver.UserID;
       let selectedWeight = this.props.selectedTrip.Weight;
       if (this.props.selectedTrips.length > 0) {
         selectedWeight = 0;
-        this.props.selectedTrips.forEach((trip) => {
-          const orders = _.map(trip.UserOrderRoutes, (route) => {
+        this.props.selectedTrips.forEach(trip => {
+          const orders = _.map(trip.UserOrderRoutes, route => {
             const userOrder = route.UserOrder;
             return userOrder;
           });
@@ -226,10 +253,15 @@ class Drivers extends Component {
           selectedWeight += weight;
         });
       }
-      const totalWeight = parseFloat(driver.TotalCurrentWeight) + parseFloat(selectedWeight);
-      const driverWeight = isSelected ? totalWeight : parseFloat(driver.TotalCurrentWeight);
-      let tripDriverStyle = isSelected ? styles.tripDriverSelected : styles.tripDriver;
-      if (isSelected && (totalWeight > driver.AvailableWeight)) {
+      const totalWeight =
+        parseFloat(driver.TotalCurrentWeight) + parseFloat(selectedWeight);
+      const driverWeight = isSelected
+        ? totalWeight
+        : parseFloat(driver.TotalCurrentWeight);
+      let tripDriverStyle = isSelected
+        ? styles.tripDriverSelected
+        : styles.tripDriver;
+      if (isSelected && totalWeight > driver.AvailableWeight) {
         tripDriverStyle = styles.tripDriverSelectedExceed;
       }
       return (
@@ -237,31 +269,43 @@ class Drivers extends Component {
           <div
             role="none"
             className={tripDriverStyle}
-            onClick={() => { this.props.setDriver(driver.UserID); }}
+            onClick={() => {
+              this.props.setDriver(driver.UserID);
+            }}
           >
             <div className={styles.driverInput}>
               <img
                 alt="vehicle"
-                src={this.props.selectedDriver === driver.UserID ?
-                  config.IMAGES.RADIO_ON : config.IMAGES.RADIO_OFF}
+                src={
+                  this.props.selectedDriver === driver.UserID
+                    ? config.IMAGES.RADIO_ON
+                    : config.IMAGES.RADIO_OFF
+                }
               />
             </div>
             <div className={styles.vehicleIcon}>
               <img
                 alt="vehicle"
                 className={styles.driverLoadImage}
-                src={driver.Vehicle && driver.Vehicle.VehicleID === 1 ?
-                  config.IMAGES.MOTORCYCLE : config.IMAGES.VAN}
+                src={
+                  driver.Vehicle && driver.Vehicle.VehicleID === 1
+                    ? config.IMAGES.MOTORCYCLE
+                    : config.IMAGES.VAN
+                }
               />
             </div>
             <div className={styles.driverDetails}>
               <span className={styles.driverName}>
-                {UtilHelper.trimString(`${driver.FirstName} ${driver.LastName}`, 20)}
+                {UtilHelper.trimString(
+                  `${driver.FirstName} ${driver.LastName}`,
+                  20
+                )}
               </span>
             </div>
             <div className={styles.driverDetails}>
               <span className={styles.vendorLoad}>
-                Available Weight {parseFloat(driverWeight).toFixed(2)} / {driver.AvailableWeight}
+                Available Weight {parseFloat(driverWeight).toFixed(2)} /{' '}
+                {driver.AvailableWeight}
               </span>
             </div>
           </div>
@@ -271,7 +315,11 @@ class Drivers extends Component {
     return driverComponents;
   }
   render() {
-    return <div>{this.handleDriversView()}</div>;
+    return (
+      <div>
+        {this.handleDriversView()}
+      </div>
+    );
   }
 }
 
@@ -290,7 +338,7 @@ Drivers.defaultProps = {
   selectedTrips: [],
   selectedDriver: {},
   selectedTrip: {},
-  setDriver: () => { },
+  setDriver: () => {},
 };
 
 class PanelDrivers extends Component {
@@ -300,10 +348,12 @@ class PanelDrivers extends Component {
       driverList: this.props.drivers,
       searchValue: '',
     };
+
+    this.searchDriver = this.searchDriver.bind(this);
   }
   searchDriver(e) {
     this.setState({ searchValue: e.target.value });
-    const driverList = _.filter(this.props.drivers, (driver) => {
+    const driverList = _.filter(this.props.drivers, driver => {
       const driverName = `${driver.FirstName} ${driver.LastName}`;
       const searchValue = e.target.value;
       return driverName.toLowerCase().includes(searchValue);
@@ -313,9 +363,17 @@ class PanelDrivers extends Component {
   render() {
     const setDriverButton = {
       textBase: 'Assign Driver',
-      onClick: this.props.isExpandDriverBulk ?
-        this.props.bulkAssignTrip.bind(null, this.props.selectedTrips, this.props.selectedDriver) :
-        this.props.assignTrip.bind(null, this.props.expandedTrip.TripID, this.props.selectedDriver),
+      onClick: this.props.isExpandDriverBulk
+        ? this.props.bulkAssignTrip.bind(
+            null,
+            this.props.selectedTrips,
+            this.props.selectedDriver
+          )
+        : this.props.assignTrip.bind(
+            null,
+            this.props.expandedTrip.TripID,
+            this.props.selectedDriver
+          ),
       styles: {
         base: stylesButton.greenButton4,
       },
@@ -323,22 +381,27 @@ class PanelDrivers extends Component {
     return (
       <div className={styles.mainDriverPanel}>
         {this.props.isExpandDriverBulk &&
-          <div role="none" onClick={this.props.shrinkTrip} className={styles.closeButton}>
+          <div
+            role="none"
+            onClick={this.props.shrinkTrip}
+            className={styles.closeButton}
+          >
             &times;
-          </div>
-        }
+          </div>}
         {this.props.isExpandDriverBulk &&
           <div className={styles.panelDriverChoose}>
             Choose a driver for {this.props.selectedTrips.length} trip:
-          </div>
-        }
+          </div>}
         {!this.props.isExpandDriverBulk &&
           <div className={styles.panelDriverChoose}>
             Choose a driver for this trip
-          </div>
-        }
+          </div>}
         <div className={styles.panelDriverSearch}>
-          <input className={styles.inputDriverSearch} onChange={this.searchDriver} placeholder={'Search Driver...'} />
+          <input
+            className={styles.inputDriverSearch}
+            onChange={this.searchDriver}
+            placeholder={'Search Driver...'}
+          />
         </div>
         <div className={styles.panelDriverList}>
           <Drivers
@@ -375,29 +438,29 @@ PanelDrivers.defaultProps = {
   selectedDriver: {},
   selectedTrips: {},
   expandedTrip: {},
-  setDriver: () => { },
-  bulkAssignTrip: () => { },
-  assignTrip: () => { },
+  setDriver: () => {},
+  bulkAssignTrip: () => {},
+  assignTrip: () => {},
   isExpandDriverBulk: false,
-  shrinkTrip: () => { },
+  shrinkTrip: () => {},
   drivers: {},
 };
 
 function ErrorAssign({ errorIDs }) {
   return (
     <div>
-      {errorIDs.map((error, idx) => (
-        <div key={idx}>
+      {errorIDs.map(error =>
+        <div key={error.TripID}>
           {error.TripID} : {error.error}
         </div>
-      ))}
+      )}
     </div>
   );
 }
 
 /* eslint-disable */
 ErrorAssign.propTypes = {
-  errorIDs: PropTypes.array
+  errorIDs: PropTypes.array,
 };
 /* eslint-enable */
 
@@ -411,9 +474,7 @@ function TripNotFound() {
       <div style={{ clear: 'both' }} />
       <div className={styles.noTripDesc}>
         <img alt="on going trips" src={config.IMAGES.ON_GOING_TRIPS} />
-        <div style={{ fontSize: 20 }}>
-          Trips not found
-        </div>
+        <div style={{ fontSize: 20 }}>Trips not found</div>
         <div style={{ fontSize: 12, marginTop: 20 }}>
           Please choose another filter to get the orders.
         </div>
@@ -441,7 +502,12 @@ function NoOngoingTrips() {
 
 const TripPage = React.createClass({
   getInitialState() {
-    return ({ driverID: null, trips: [], selectedTrips: [], isSuccessAssign: false });
+    return {
+      driverID: null,
+      trips: [],
+      selectedTrips: [],
+      isSuccessAssign: false,
+    };
   },
   componentWillMount() {
     this.props.ShrinkTrip();
@@ -493,47 +559,42 @@ const TripPage = React.createClass({
       SetDriver,
     } = this.props;
     return (
-      <Page title="My Ongoing Trips" count={{ itemName: 'Items', done: 'All Done', value: total }}>
+      <Page
+        title="My Ongoing Trips"
+        count={{ itemName: 'Items', done: 'All Done', value: total }}
+      >
         <Pagination2 {...paginationState} {...PaginationAction} />
         <div className={styles.filterOption}>
           <Filter expandDriver={this.expandBulkAssign} />
         </div>
-        {
-          (this.props.isFetching || this.props.isLoadingDriver) &&
+        {(this.props.isFetching || this.props.isLoadingDriver) &&
           <div>
             <div style={{ clear: 'both' }} />
             <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: 20 }}>
-                Fetching data....
-              </div>
+              <div style={{ fontSize: 20 }}>Fetching data....</div>
             </div>
-          </div>
-        }
-        {
-          !this.props.isFetching && this.props.trips.length === 0 &&
+          </div>}
+        {!this.props.isFetching &&
+          this.props.trips.length === 0 &&
           !_.isEmpty(this.props.filters) &&
-          <TripNotFound />
-        }
-        {
-          !this.props.isFetching &&
-          this.props.trips.length === 0 && _.isEmpty(this.props.filters) &&
-          <NoOngoingTrips />
-        }
-        {
-          !this.props.isFetching && !this.props.isLoadingDriver && this.props.trips.length > 0 &&
+          <TripNotFound />}
+        {!this.props.isFetching &&
+          this.props.trips.length === 0 &&
+          _.isEmpty(this.props.filters) &&
+          <NoOngoingTrips />}
+        {!this.props.isFetching &&
+          !this.props.isLoadingDriver &&
+          this.props.trips.length > 0 &&
           <div>
             <Table trips={trips} />
-            {
-              isExpandTrip &&
+            {isExpandTrip &&
               <PanelDetails
                 isExpandDriver={isExpandDriver}
                 expandedTrip={expandedTrip}
                 shrinkTrip={ShrinkTrip}
                 expandDriver={ExpandDriver}
-              />
-            }
-            {
-              isExpandDriver &&
+              />}
+            {isExpandDriver &&
               <PanelDrivers
                 bulkAssignTrip={BulkAssignTrip}
                 selectedTrips={this.state.selectedTrips}
@@ -544,20 +605,19 @@ const TripPage = React.createClass({
                 selectedDriver={selectedDriver}
                 setDriver={SetDriver}
                 drivers={drivers}
-              />
-            }
-          </div>
-        }
+              />}
+          </div>}
 
         {this.state.isSuccessAssign &&
           <ModalContainer>
             <ModalDialog>
-              {
-                errorIDs.length > 0 &&
+              {errorIDs.length > 0 &&
                 <div className={styles.modal}>
                   <div className={styles.modalHeader}>
                     <h2 className={styles.modalTitle}>Assign Report</h2>
-                    <div className={`${styles.successContent} ${styles.ordersContentEmpty}`}>
+                    <div
+                      className={`${styles.successContent} ${styles.ordersContentEmpty}`}
+                    >
                       <div>
                         Success: {successAssign}
                       </div>
@@ -568,18 +628,26 @@ const TripPage = React.createClass({
                     </div>
                   </div>
                   <div className={styles.modalFooter}>
-                    <button className={styles.endButton} onClick={this.props.CloseSuccessAssign}>
+                    <button
+                      className={styles.endButton}
+                      onClick={this.props.CloseSuccessAssign}
+                    >
                       <span className={styles.mediumText}>Got It</span>
                     </button>
                   </div>
-                </div>
-              }
+                </div>}
               {errorIDs.length === 0 &&
                 <div className={styles.modal}>
                   <div className={styles.modalHeader}>
                     <h2 className={styles.modalTitle}>Success</h2>
-                    <div className={`${styles.successContent} ${styles.ordersContentEmpty}`}>
-                      <img alt="success" className={styles.successIcon} src={config.IMAGES.ICON_SUCCESS} />
+                    <div
+                      className={`${styles.successContent} ${styles.ordersContentEmpty}`}
+                    >
+                      <img
+                        alt="success"
+                        className={styles.successIcon}
+                        src={config.IMAGES.ICON_SUCCESS}
+                      />
                       <div className={styles.mediumText}>
                         You have successfully assigned this trip
                       </div>
@@ -587,26 +655,39 @@ const TripPage = React.createClass({
                     </div>
                   </div>
                   <div className={styles.modalFooter}>
-                    <button className={styles.endButton} onClick={this.props.CloseSuccessAssign}>
+                    <button
+                      className={styles.endButton}
+                      onClick={this.props.CloseSuccessAssign}
+                    >
                       <span className={styles.mediumText}>Got It</span>
                     </button>
                   </div>
-                </div>
-              }
+                </div>}
             </ModalDialog>
-          </ModalContainer>
-        }
+          </ModalContainer>}
       </Page>
     );
   },
 });
 
 function StoreToTripsPage(store) {
-  const { currentPage, limit, total, isFetching,
-    filters, trips, errorIDs, successAssign, errorAssign,
-    expandedTrip, isExpandTrip, isExpandDriver,
-    isExpandDriverBulk, selectedDriver,
-    isSuccessAssign } = store.app.myOngoingTrips;
+  const {
+    currentPage,
+    limit,
+    total,
+    isFetching,
+    filters,
+    trips,
+    errorIDs,
+    successAssign,
+    errorAssign,
+    expandedTrip,
+    isExpandTrip,
+    isExpandDriver,
+    isExpandDriverBulk,
+    selectedDriver,
+    isSuccessAssign,
+  } = store.app.myOngoingTrips;
   const userLogged = store.app.userLogged;
   const driversStore = store.app.driversStore;
   const driverList = driversStore.driverList;
@@ -618,7 +699,9 @@ function StoreToTripsPage(store) {
     drivers,
     userLogged,
     paginationState: {
-      currentPage, limit, total,
+      currentPage,
+      limit,
+      total,
     },
     expandedTrip,
     isFetching,
@@ -641,8 +724,8 @@ function DispatchToTripsPage(dispatch) {
     FetchList: () => {
       dispatch(TripService.FetchList());
     },
-    FetchDrivers: (fleetID) => {
-      dispatch(driversFetch(fleetID, true));
+    FetchDrivers: fleetID => {
+      dispatch(TMSFetchDrivers(fleetID, true));
     },
     AssignTrip: (trips, driverID) => {
       dispatch(TripService.ReassignDriver(trips, driverID));
@@ -666,14 +749,14 @@ function DispatchToTripsPage(dispatch) {
     CloseSuccessAssign: () => {
       dispatch(TripService.CloseSuccessAssign());
     },
-    SetDriver: (driverID) => {
+    SetDriver: driverID => {
       dispatch(TripService.SetDriver(driverID));
     },
     PaginationAction: {
-      setCurrentPage: (currentPage) => {
+      setCurrentPage: currentPage => {
         dispatch(TripService.SetCurrentPage(currentPage));
       },
-      setLimit: (limit) => {
+      setLimit: limit => {
         dispatch(TripService.SetLimit(limit));
       },
     },
