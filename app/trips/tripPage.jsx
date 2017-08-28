@@ -16,6 +16,7 @@ import styles from './styles.scss';
 import stylesButton from '../components/Button/styles.scss';
 import * as UtilHelper from '../helper/utility';
 import tripAnalytics from './tripAnalytics.json';
+import config from '../config/configValues.json';
 
 const TripOrders = React.createClass({
   render: function() {
@@ -106,11 +107,11 @@ const PanelDetails = React.createClass({
               </div>
               <div className={styles.tripDetailsLabel}>From</div>
               <div className={styles.tripDetailsValue}>
-                {expandedTrip.TripMerchantsAll || 'Unknown'}
+                {expandedTrip.TripMerchantsAll || config.TEXT.UNKNOWN}
               </div>
               <div className={styles.tripDetailsLabel}>Destination</div>
               <div className={styles.tripDetailsValue}>
-                {expandedTrip.TripDropoffAll || 'Unknown'}
+                {expandedTrip.TripDropoffAll || config.TEXT.UNKNOWN}
               </div>
               <div>
                 <div className={styles.tripAdditionalInfo}>
@@ -207,8 +208,8 @@ const Drivers = React.createClass({
                   alt="radio"
                   src={
                     this.props.selectedDriver === driver.UserID
-                      ? '/img/icon-radio-on.png'
-                      : '/img/icon-radio-off.png'
+                      ? config.IMAGES.RADIO_ON
+                      : config.IMAGES.RADIO_OFF
                   }
                 />
               </div>
@@ -218,8 +219,8 @@ const Drivers = React.createClass({
                   className={styles.driverLoadImage}
                   src={
                     driver.Vehicle && driver.Vehicle.VehicleID === 1
-                      ? '/img/icon-vehicle-motor.png'
-                      : '/img/icon-vehicle-van.png'
+                      ? config.IMAGES.MOTORCYCLE
+                      : config.IMAGES.VAN
                   }
                 />
               </div>
@@ -431,7 +432,7 @@ const TripPage = React.createClass({
           <div>
             <div style={{ clear: 'both' }} />
             <div className={styles.noTripDesc}>
-              <img alt="trip done" src="/img/image-inbound-trip-done.png" />
+              <img alt="trip done" src={config.IMAGES.INBOUND_TRIP_DONE} />
               <div style={{ fontSize: 20 }}>Trips not found</div>
               <div style={{ fontSize: 12, marginTop: 20 }}>
                 Please choose another filter to get the orders.
@@ -444,7 +445,7 @@ const TripPage = React.createClass({
           <div>
             <div style={{ clear: 'both' }} />
             <div className={styles.noTripDesc}>
-              <img alt="trip done" src="/img/image-inbound-trip-done.png" />
+              <img alt="trip done" src={config.IMAGES.INBOUND_TRIP_DONE} />
               <div style={{ fontSize: 20 }}>Awesome work guys!</div>
               <div style={{ fontSize: 12, marginTop: 20 }}>
                 You have assign all trips, please always check if there’s
@@ -521,7 +522,7 @@ const TripPage = React.createClass({
                       <img
                         alt="success"
                         className={styles.successIcon}
-                        src={'/img/icon-success.png'}
+                        src={config.IMAGES.ICON_SUCCESS}
                       />
                       <div className={styles.mediumText}>
                         You have successfully assigned this trip

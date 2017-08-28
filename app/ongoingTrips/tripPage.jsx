@@ -163,11 +163,11 @@ function PanelDetails({
             </div>
             <div className={styles.tripDetailsLabel}>From</div>
             <div className={styles.tripDetailsValue}>
-              {expandedTrip.TripMerchantsAll || 'Unknown'}
+              {expandedTrip.TripMerchantsAll || config.TEXT.UNKNOWN}
             </div>
             <div className={styles.tripDetailsLabel}>Destination</div>
             <div className={styles.tripDetailsValue}>
-              {expandedTrip.TripDropoffAll || 'Unknown'}
+              {expandedTrip.TripDropoffAll || config.TEXT.UNKNOWN}
             </div>
             <div>
               <div className={styles.tripAdditionalInfo}>

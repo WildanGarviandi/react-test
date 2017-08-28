@@ -23,7 +23,7 @@ function FetchDrivers(fleetID, isWeighting) {
     fetchGet(`/fleet/${fleetID}/drivers`, token, params)
       .then(response => {
         if (response.ok) {
-          response.json().then(resp => {
+          return response.json().then(resp => {
             const { rows } = resp.data;
             dispatch({
               fleetID,
@@ -31,13 +31,12 @@ function FetchDrivers(fleetID, isWeighting) {
               list: rows,
             });
           });
-        } else {
-          response.json().then(res => {
-            const error = res && res.error && res.error.message;
-            dispatch({ type: actionTypes.DRIVERS_FETCH_FAILED, fleetID });
-            dispatch(ModalActions.addError(error));
-          });
         }
+        return response.json().then(res => {
+          const error = res && res.error && res.error.message;
+          dispatch({ type: actionTypes.DRIVERS_FETCH_FAILED, fleetID });
+          dispatch(ModalActions.addError(error));
+        });
       })
       .catch(() => {
         dispatch({ type: actionTypes.DRIVERS_FETCH_FAILED, fleetID });
@@ -58,23 +57,22 @@ function TMSFetchDrivers() {
     };
 
     dispatch({ type: actionTypes.DRIVERS_FETCH_START });
-    fetchGet(`/driver`, token, params)
+    fetchGet('/driver', token, params)
       .then(response => {
         if (response.ok) {
-          response.json().then(resp => {
+          return response.json().then(resp => {
             const { rows } = resp.data;
             dispatch({
               type: actionTypes.DRIVERS_FETCH_RECEIVED,
               list: rows,
             });
           });
-        } else {
-          response.json().then(res => {
-            const error = res && res.error && res.error.message;
-            dispatch({ type: actionTypes.DRIVERS_FETCH_FAILED });
-            dispatch(ModalActions.addError(error));
-          });
         }
+        return response.json().then(res => {
+          const error = res && res.error && res.error.message;
+          dispatch({ type: actionTypes.DRIVERS_FETCH_FAILED });
+          dispatch(ModalActions.addError(error));
+        });
       })
       .catch(() => {
         dispatch({ type: actionTypes.DRIVERS_FETCH_FAILED });
