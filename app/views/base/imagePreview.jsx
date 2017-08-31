@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from 'react-modal';
 
-import { Glyph } from '../../components/Glyph';
+import Glyph from '../../components/Glyph';
 import styles from './imageUploader.scss';
 
 const customStyles = {
