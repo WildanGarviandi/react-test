@@ -15,14 +15,28 @@ import tableStyles from '../views/base/table.scss';
 import { formatDate } from '../helper/time';
 import ModalActions from '../modules/modals/actions';
 import styles from './styles.scss';
-import { CanMarkContainer, TripParser, CanMarkTripDelivered } from '../modules/trips';
+import {
+  CanMarkContainer,
+  TripParser,
+  CanMarkTripDelivered,
+} from '../modules/trips';
 import { OrderParser } from '../modules/orders';
 import { FilterTopMultiple } from '../components/form';
 import * as config from '../config/configValues.json';
 import * as InboundTrips from './inboundTripsService';
 import { checkPermission } from '../helper/permission';
 
-const ColumnsOrder = ['tripID', 'driver', 'origin', 'childMerchant', 'pickup', 'pickupCity', 'zip', 'weight', 'status', 'verifiedOrders'];
+const ColumnsOrder = [
+  'tripID',
+  'driver',
+  'origin',
+  'pickup',
+  'pickupCity',
+  'zip',
+  'weight',
+  'status',
+  'verifiedOrders',
+];
 
 const ColumnsTitle = {
   containerNumber: 'Container',
@@ -61,27 +75,33 @@ const Table = React.createClass({
     return (
       <span>
         <ReactTooltip />
-        <img
-          data-tip={icon.TOOLTIP}
-          src={icon.URL}
-        />
+        <img data-tip={icon.TOOLTIP} src={icon.URL} />
       </span>
     );
   },
 
   render() {
-    const Headers = _.map(ColumnsOrder, (columnKey) => {
-      return <th key={columnKey}>{ColumnsTitle[columnKey]}</th>;
+    const Headers = _.map(ColumnsOrder, columnKey => {
+      return (
+        <th key={columnKey}>
+          {ColumnsTitle[columnKey]}
+        </th>
+      );
     });
 
-    const Body = _.map(this.props.items, (item) => {
-      const cells = _.map(ColumnsOrder, (columnKey) => {
+    const Body = _.map(this.props.items, item => {
+      const cells = _.map(ColumnsOrder, columnKey => {
         if (columnKey === 'tripID') {
           return (
-            <td className={`${tableStyles.td} ${styles.tripIDColumn}`} key={columnKey}>
+            <td
+              className={`${tableStyles.td} ${styles.tripIDColumn}`}
+              key={columnKey}
+            >
               {item.isNew && <img src={'/img/label-new.png'} />}
               {this.getProblemIcon(item.tripProblemMaster)}
-              <Link to={`/trips/${item.key}`} className={styles.link}>{item[columnKey]}</Link>
+              <Link to={`/trips/${item.key}`} className={styles.link}>
+                {item[columnKey]}
+              </Link>
             </td>
           );
         }
@@ -90,7 +110,7 @@ const Table = React.createClass({
             <td
               className={`${tableStyles.td} ${styles.verifiedColumn}`}
               key={columnKey}
-              onClick={() => this.props.showModals(item['key'])}
+              onClick={() => this.props.showModals(item.key)}
             >
               <span>
                 {item[columnKey]}
@@ -101,22 +121,32 @@ const Table = React.createClass({
         }
         if (columnKey === 'driver') {
           return (
-            <td className={`${tableStyles.td} ${styles.driverColumn}`} key={columnKey}>
+            <td
+              className={`${tableStyles.td} ${styles.driverColumn}`}
+              key={columnKey}
+            >
               <span className={styles.inlineVehicle}>
                 {item.driverVehicleID &&
-                  (item.driverVehicleID === 1 ?
-                    <img className={styles.imageVehicle} src="/img/icon-vehicle-motorcycle.png" /> :
-                    <img className={styles.imageVehicle} src="/img/icon-vehicle-van.png" />
-                  )
-                }
+                  (item.driverVehicleID === 1
+                    ? <img
+                        className={styles.imageVehicle}
+                        src="/img/icon-vehicle-motorcycle.png"
+                      />
+                    : <img
+                        className={styles.imageVehicle}
+                        src="/img/icon-vehicle-van.png"
+                      />)}
               </span>
-              {item.assignedTo ?
-                <span className={styles.driverDetail}>
-                  <span className={styles.valueDriver}>{item.assignedTo}</span>
-                  <span className={styles.valuePhone}>{item.driverPhone}</span>
-                </span> :
-                <span className={styles.driverDetail}>-</span>
-              }
+              {item.assignedTo
+                ? <span className={styles.driverDetail}>
+                    <span className={styles.valueDriver}>
+                      {item.assignedTo}
+                    </span>
+                    <span className={styles.valuePhone}>
+                      {item.driverPhone}
+                    </span>
+                  </span>
+                : <span className={styles.driverDetail}>-</span>}
             </td>
           );
         }
@@ -130,31 +160,33 @@ const Table = React.createClass({
         );
       });
 
-      return <tr className={`${tableStyles.tr} ${styles.rowInbound}`} key={item.key}>{cells}</tr>;
+      return (
+        <tr className={`${tableStyles.tr} ${styles.rowInbound}`} key={item.key}>
+          {cells}
+        </tr>
+      );
     });
 
     if (this.props.isFetching) {
-      return (
-        <div className={styles.loadingContainer}>
-          Fetching data....
-        </div>
-      );
+      return <div className={styles.loadingContainer}>Fetching data....</div>;
     } else {
       if (this.props.items.length === 0) {
         return (
           <table className={tableStyles.table}>
-            <thead><tr>{Headers}</tr></thead>
+            <thead>
+              <tr>
+                {Headers}
+              </tr>
+            </thead>
             <tbody className={styles.noInbound}>
               <tr>
                 <td colSpan={ColumnsOrder.length}>
                   <div className={styles.noInboundDesc}>
                     <img src="/img/image-inbound-trip-done.png" />
-                    <div style={{ fontSize: 20 }}>
-                      Awesome work guys!
-                    </div>
+                    <div style={{ fontSize: 20 }}>Awesome work guys!</div>
                     <div style={{ fontSize: 12, marginTop: 20 }}>
-                      All trip orders are verified,
-                       you have scanned and verified all of the inbound orders.
+                      All trip orders are verified, you have scanned and
+                      verified all of the inbound orders.
                     </div>
                   </div>
                 </td>
@@ -165,8 +197,14 @@ const Table = React.createClass({
       } else {
         return (
           <table className={tableStyles.table}>
-            <thead><tr>{Headers}</tr></thead>
-            <tbody>{Body}</tbody>
+            <thead>
+              <tr>
+                {Headers}
+              </tr>
+            </thead>
+            <tbody>
+              {Body}
+            </tbody>
           </table>
         );
       }
@@ -175,7 +213,6 @@ const Table = React.createClass({
 });
 
 class RightTable extends Component {
-
   showModals(item) {
     this.props.setCurrentTrip(item);
     this.props.fetchDrivers();
@@ -188,9 +225,13 @@ class RightTable extends Component {
 
     return (
       <table className={tableStyles.table}>
-        <thead><tr><th>Action</th></tr></thead>
+        <thead>
+          <tr>
+            <th>Action</th>
+          </tr>
+        </thead>
         <tbody>
-          {_.map(parsedItems, (item, key) => (
+          {_.map(parsedItems, (item, key) =>
             <tr key={key}>
               <td className={tableStyles.td}>
                 <button
@@ -203,31 +244,32 @@ class RightTable extends Component {
               <td className={`${tableStyles.td} ${styles.driverColumn}`}>
                 <span className={styles.inlineVehicle}>
                   {item.driverVehicleID &&
-                    (item.driverVehicleID === 1 ?
-                      <img
-                        className={styles.imageVehicle}
-                        src="/img/icon-vehicle-motorcycle.png"
-                      /> :
-                      <img
-                        className={styles.imageVehicle}
-                        src="/img/icon-vehicle-van.png"
-                      />
-                    )
-                  }
+                    (item.driverVehicleID === 1
+                      ? <img
+                          className={styles.imageVehicle}
+                          src="/img/icon-vehicle-motorcycle.png"
+                        />
+                      : <img
+                          className={styles.imageVehicle}
+                          src="/img/icon-vehicle-van.png"
+                        />)}
                 </span>
-                {item.assignedTo ?
-                  <span className={styles.driverDetail}>
-                    <span className={styles.valueDriver}>{item.assignedTo}</span>
-                    <span className={styles.valuePhone}>{item.driverPhone}</span>
-                  </span> :
-                  <span className={styles.driverDetail}>-</span>
-                }
+                {item.assignedTo
+                  ? <span className={styles.driverDetail}>
+                      <span className={styles.valueDriver}>
+                        {item.assignedTo}
+                      </span>
+                      <span className={styles.valuePhone}>
+                        {item.driverPhone}
+                      </span>
+                    </span>
+                  : <span className={styles.driverDetail}>-</span>}
               </td>
               <td className={`${tableStyles.td} ${styles.pickup}`}>
                 {item.pickup}
               </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     );
@@ -235,28 +277,32 @@ class RightTable extends Component {
 }
 
 function FullAddress(address) {
-  const Addr = address.Address1 &&
+  const Addr =
+    address.Address1 &&
     address.Address2 &&
-    (address.Address1.length < address.Address2.length) ?
-    address.Address2 :
-    address.Address1;
+    address.Address1.length < address.Address2.length
+      ? address.Address2
+      : address.Address1;
 
   return _.chain([Addr, address.City, address.State, address.ZipCode])
-    .filter((str) => (str && str.length > 0))
+    .filter(str => str && str.length > 0)
     .value()
     .join(', ');
 }
 
 function TripDropOff(trip) {
-  const destinationHub = trip.DestinationHub && (`Hub ${trip.DestinationHub.Name} -- ${FullAddress(trip.DestinationHub)}`);
-  const dropoffAddress = trip.DropoffAddress && FullAddress(trip.DropoffAddress);
+  const destinationHub =
+    trip.DestinationHub &&
+    `Hub ${trip.DestinationHub.Name} -- ${FullAddress(trip.DestinationHub)}`;
+  const dropoffAddress =
+    trip.DropoffAddress && FullAddress(trip.DropoffAddress);
 
   return destinationHub || dropoffAddress || '';
 }
 
 function isNew(trip) {
   const diff = moment().diff(moment(trip.AssignedTime), config.time.MINUTES);
-  return (diff >= 0 && diff < 4);
+  return diff >= 0 && diff < 4;
 }
 
 export function GetTripType(trip) {
@@ -273,21 +319,37 @@ export function GetTripType(trip) {
   return '';
 }
 
+function getWebstore(merchants) {
+  const webstores = [];
+  _.mapKeys(merchants, (order, merchant) => {
+    webstores.push(`${merchant} (${order} order${order > 1 ? 's' : ''})`);
+  });
+
+  return webstores.join(', ');
+}
 
 function ProcessTrip(trip) {
-  const parsedTrip = TripParser(trip);
   const fleet = trip.FleetManager;
-  const fleetName = fleet && fleet.CompanyDetail && fleet.CompanyDetail.CompanyName;
-  const driverName = trip.Driver && `${trip.Driver.FirstName} ${trip.Driver.LastName}`;
-  const transportation = trip.ExternalTrip ? `${trip.ExternalTrip.Transportation} (${trip.ExternalTrip.AwbNumber})` : fleetName;
-  const assignedTo = transportation ? (driverName ? `${transportation} - ${driverName}` : `${transportation}`) : null;
+  const fleetName =
+    fleet && fleet.CompanyDetail && fleet.CompanyDetail.CompanyName;
+  const driverName =
+    trip.Driver && `${trip.Driver.FirstName} ${trip.Driver.LastName}`;
+  const transportation = trip.ExternalTrip
+    ? `${trip.ExternalTrip.Transportation} (${trip.ExternalTrip.AwbNumber})`
+    : fleetName;
+  const assignedTo = transportation
+    ? driverName ? `${transportation} - ${driverName}` : `${transportation}`
+    : null;
 
   return {
     containerNumber: trip.ContainerNumber,
     district: trip.District && trip.District.Name,
     driver: trip.Driver && `${trip.Driver.FirstName} ${trip.Driver.LastName}`,
-    driverVehicleID: trip.Driver && trip.Driver.Vehicle && trip.Driver.Vehicle.VehicleID,
-    driverPhone: trip.Driver && `${trip.Driver.CountryCode}${trip.Driver.PhoneNumber}` || '-',
+    driverVehicleID:
+      trip.Driver && trip.Driver.Vehicle && trip.Driver.Vehicle.VehicleID,
+    driverPhone:
+      (trip.Driver && `${trip.Driver.CountryCode}${trip.Driver.PhoneNumber}`) ||
+      '-',
     dropoff: TripDropOff(trip),
     dropoffTime: formatDate(trip.DropoffTime),
     key: trip.TripID,
@@ -297,20 +359,20 @@ function ProcessTrip(trip) {
     pickupState: (trip.PickupAddress && trip.PickupAddress.State) || '-',
     pickupTime: formatDate(trip.PickupTime),
     status: trip.OrderStatus && trip.OrderStatus.OrderStatus,
-    webstoreNames: parsedTrip.WebstoreNames,
     fleetName: fleetName || '',
-    numberPackages: trip.UserOrderRoutes.length,
+    numberPackages: trip.TotalOrders,
     remarks: trip.Notes,
     tripID: `Trip-${trip.TripID}`,
-    weight: `${parseFloat(trip.Weight).toFixed(2)} kg`,
+    weight: `${parseFloat(trip.TotalWeight).toFixed(2)} kg`,
     scannedOrders: trip.ScannedOrders,
-    verifiedOrders: `${trip.ScannedOrders}/${trip.UserOrderRoutes.length} order(s) are verified`,
+    verifiedOrders: `${trip.ScannedOrders}/${trip.TotalOrders} order(s) are verified`,
     assignedTo,
     tripType: GetTripType(trip),
-    origin: trip.OriginHub ? `Hub ${trip.OriginHub.Name}` : parsedTrip.WebstoreNames,
+    origin: trip.OriginHub
+      ? `Hub ${trip.OriginHub.Name}`
+      : getWebstore(trip.Merchants),
     isNew: isNew(trip),
     zip: (trip.PickupAddress && trip.PickupAddress.ZipCode) || '-',
-    childMerchant: parsedTrip.WebstoreUser,
     tripProblemMaster: trip.TripProblemMaster,
   };
 }
@@ -318,11 +380,14 @@ function ProcessTrip(trip) {
 function VerifiedOrder({ routes }) {
   return (
     <div>
-      {routes.map((route, idx) => (
+      {routes.map((route, idx) =>
         <div
           key={idx}
-          className={route.OrderStatus && route.OrderStatus.OrderStatus === 'DELIVERED' ?
-            styles.modalOrderMain : styles.modalOrderMainNotVerified}
+          className={
+            route.OrderStatus && route.OrderStatus.OrderStatus === 'DELIVERED'
+              ? styles.modalOrderMain
+              : styles.modalOrderMainNotVerified
+          }
         >
           <table>
             <tbody>
@@ -332,16 +397,28 @@ function VerifiedOrder({ routes }) {
                 </td>
                 <td rowSpan={2}>
                   <div
-                    className={route.OrderStatus && route.OrderStatus.OrderStatus === 'DELIVERED' ?
-                      styles.modalOrderVerified : styles.modalOrderNotVerified}
+                    className={
+                      route.OrderStatus &&
+                      route.OrderStatus.OrderStatus === 'DELIVERED'
+                        ? styles.modalOrderVerified
+                        : styles.modalOrderNotVerified
+                    }
                   >
                     <span className={styles.verifiedStatus}>
-                      {route.OrderStatus && route.OrderStatus.OrderStatus === 'DELIVERED' ?
-                        <img className={styles.iconVerified} src="/img/icon-ready.png" /> :
-                        <span className={styles.iconNotVerified}>&times;</span>
-                      }
+                      {route.OrderStatus &&
+                      route.OrderStatus.OrderStatus === 'DELIVERED'
+                        ? <img
+                            className={styles.iconVerified}
+                            src="/img/icon-ready.png"
+                          />
+                        : <span className={styles.iconNotVerified}>
+                            &times;
+                          </span>}
                       <span className={styles.verifiedValue}>
-                        {route.OrderStatus && route.OrderStatus.OrderStatus === 'DELIVERED' ? 'VERIFIED' : 'NOT VERIFIED'}
+                        {route.OrderStatus &&
+                        route.OrderStatus.OrderStatus === 'DELIVERED'
+                          ? 'VERIFIED'
+                          : 'NOT VERIFIED'}
                       </span>
                     </span>
                   </div>
@@ -355,7 +432,7 @@ function VerifiedOrder({ routes }) {
             </tbody>
           </table>
         </div>
-      ))}
+      )}
     </div>
   );
 }
@@ -376,7 +453,7 @@ function InputFilter({ value, onChange, onKeyDown, placeholder }) {
 }
 
 function inputStateToProps(keyword) {
-  return (store) => {
+  return store => {
     const value = store.app.inboundTrips.filters[keyword];
     const options = config[keyword];
 
@@ -385,7 +462,7 @@ function inputStateToProps(keyword) {
 }
 
 function inputDispatchToProps(keyword, placeholder) {
-  return (dispatch) => {
+  return dispatch => {
     function OnChange(e) {
       const value = e.target.value;
 
@@ -394,9 +471,12 @@ function inputDispatchToProps(keyword, placeholder) {
 
     function OnKeyDown(e) {
       if (e.keyCode !== config.KEY_ACTION.ENTER) {
-        if (keyword === 'pickupZipCode' &&
-          ((e.keyCode >= config.KEY_ACTION.A && e.keyCode <= config.KEY_ACTION.Z)
-            || e.keyCode >= config.KEY_ACTION.SEMI_COLON)) {
+        if (
+          keyword === 'pickupZipCode' &&
+          ((e.keyCode >= config.KEY_ACTION.A &&
+            e.keyCode <= config.KEY_ACTION.Z) ||
+            e.keyCode >= config.KEY_ACTION.SEMI_COLON)
+        ) {
           e.preventDefault();
         }
         return;
@@ -415,12 +495,12 @@ function inputDispatchToProps(keyword, placeholder) {
 
 const TripIDSearch = connect(
   inputStateToProps('tripID'),
-  inputDispatchToProps('tripID', 'Search "Trip ID" here....'),
+  inputDispatchToProps('tripID', 'Search "Trip ID" here....')
 )(InputFilter);
 
 const OriginSearch = connect(
   inputStateToProps('origin'),
-  inputDispatchToProps('origin', 'Search "Origin" here....'),
+  inputDispatchToProps('origin', 'Search "Origin" here....')
 )(InputFilter);
 
 function FilterTop({ title, options, value, handleSelect }) {
@@ -454,39 +534,51 @@ FilterTop.defaultProps = {
 };
 
 function dropdownStateToProps(keyword, title) {
-  return (store) => {
+  return store => {
     const { inboundTrips, hubs } = store.app;
-    const value = inboundTrips[keyword].value ? inboundTrips[keyword].value : 'All';
+    const value = inboundTrips[keyword].value
+      ? inboundTrips[keyword].value
+      : 'All';
     let options = [];
 
     if (keyword === 'pickupCity') {
       const optionsTemplate = store.app.cityList.cities;
-      options = [{
-        key: 0, value: 'All',
-      }].concat(optionsTemplate
-        .map(option => ({
+      options = [
+        {
+          key: 0,
+          value: 'All',
+        },
+      ].concat(
+        optionsTemplate.map(option => ({
           key: option.CityID,
           value: option.Name,
-        })));
+        }))
+      );
     }
 
     if (keyword === 'tripProblem') {
       const optionsTemplate = store.app.tripProblems.problems;
-      options = [{
-        key: 0, value: 'All',
-      }].concat(optionsTemplate
-        .map(option => ({
+      options = [
+        {
+          key: 0,
+          value: 'All',
+        },
+      ].concat(
+        optionsTemplate.map(option => ({
           key: option.TripProblemMasterID,
           value: option.Problem,
-        })));
+        }))
+      );
     }
 
     if (keyword === 'hubs') {
-      options = [{
-        key: 0,
-        value: 'All',
-        checked: false,
-      }];
+      options = [
+        {
+          key: 0,
+          value: 'All',
+          checked: false,
+        },
+      ];
       const hubList = _.chain(hubs.list)
         .map(hub => ({
           key: hub.HubID,
@@ -497,10 +589,13 @@ function dropdownStateToProps(keyword, title) {
         .value();
       options = [...options, ...hubList];
 
-      if (inboundTrips && inboundTrips.hubIDs &&
-        inboundTrips.hubIDs.length > 0) {
+      if (
+        inboundTrips &&
+        inboundTrips.hubIDs &&
+        inboundTrips.hubIDs.length > 0
+      ) {
         const ids = inboundTrips.hubIDs;
-        options = options.map((hub) => {
+        options = options.map(hub => {
           const data = Object.assign({}, hub, {
             checked: _.some(ids, id => id === hub.key),
           });
@@ -514,9 +609,9 @@ function dropdownStateToProps(keyword, title) {
 }
 
 function dropdownDispatchToProps(keyword) {
-  return (dispatch) => {
+  return dispatch => {
     const action = {
-      handleSelect: (option) => {
+      handleSelect: option => {
         dispatch(InboundTrips.setDropdownFilter(keyword, option));
         dispatch(InboundTrips.FetchList());
       },
@@ -526,16 +621,19 @@ function dropdownDispatchToProps(keyword) {
 }
 
 function multiDropdownDispatchToProps() {
-  return (dispatch) => {
+  return dispatch => {
     const action = {
-      handleSelect: (selectedOption) => {
+      handleSelect: selectedOption => {
         if (selectedOption) {
-          dispatch(selectedOption.checked ? InboundTrips.addHubFilter(selectedOption) :
-            InboundTrips.deleteHubFilter(selectedOption));
+          dispatch(
+            selectedOption.checked
+              ? InboundTrips.addHubFilter(selectedOption)
+              : InboundTrips.deleteHubFilter(selectedOption)
+          );
         }
         dispatch(InboundTrips.FetchList());
       },
-      handleSelectAll: (options) => {
+      handleSelectAll: options => {
         dispatch(InboundTrips.setAllHubFilter(options));
         dispatch(InboundTrips.FetchList());
       },
@@ -546,32 +644,32 @@ function multiDropdownDispatchToProps() {
 
 const ZipCodeSearch = connect(
   inputStateToProps('pickupZipCode'),
-  inputDispatchToProps('pickupZipCode', 'Search "Zip Code" here....'),
+  inputDispatchToProps('pickupZipCode', 'Search "Zip Code" here....')
 )(InputFilter);
 
 const TripProblemDropdown = connect(
   dropdownStateToProps('tripProblem', 'Filter by Trip Problem'),
-  dropdownDispatchToProps('tripProblem'),
+  dropdownDispatchToProps('tripProblem')
 )(FilterTop);
 
 const CityDropdown = connect(
   dropdownStateToProps('pickupCity', 'Filter by City'),
-  dropdownDispatchToProps('pickupCity'),
+  dropdownDispatchToProps('pickupCity')
 )(FilterTop);
 
 const ChildMerchantSearch = connect(
   inputStateToProps('webstoreUserName'),
-  inputDispatchToProps('webstoreUserName', 'Search "Child Merchant Name"....'),
+  inputDispatchToProps('webstoreUserName', 'Search "Child Merchant Name"....')
 )(InputFilter);
 
 const DriverSearch = connect(
   inputStateToProps('driverName'),
-  inputDispatchToProps('driverName', 'Search "Driver name"....'),
+  inputDispatchToProps('driverName', 'Search "Driver name"....')
 )(InputFilter);
 
 const HubDropdown = connect(
   dropdownStateToProps('hubs', 'Filter by Hubs (can be multiple)'),
-  multiDropdownDispatchToProps('hubIDs'),
+  multiDropdownDispatchToProps('hubIDs')
 )(FilterTopMultiple);
 
 export class Filter extends Component {
@@ -590,11 +688,9 @@ export class Filter extends Component {
         <div className={styles['filter-box']}>
           <TripProblemDropdown />
           <CityDropdown />
-          {this.props.userLogged.roleName === config.role.SUPERHUB && <HubDropdown />}
-          <button
-            className={styles['export-trip']}
-            onClick={this.onClick}
-          >
+          {this.props.userLogged.roleName === config.role.SUPERHUB &&
+            <HubDropdown />}
+          <button className={styles['export-trip']} onClick={this.onClick}>
             Export Not Picked Up Order
           </button>
         </div>
@@ -637,7 +733,8 @@ class TableStateful extends Component {
   completeTrip(tripID) {
     if (this.props.canMarkTripDelivered) {
       if (this.props.trip.ScannedOrders < _.size(this.props.orders)) {
-        let mark = confirm(`You have scanned only ${this.props.trip.ScannedOrders} from ${_.size(this.props.orders)} orders. 
+        let mark = confirm(`You have scanned only ${this.props.trip
+          .ScannedOrders} from ${_.size(this.props.orders)} orders. 
         Continue to mark this trip as delivered?`);
         if (mark) {
           this.props.deliverTrip(this.props.trip.TripID);
@@ -691,7 +788,8 @@ class TableStateful extends Component {
     const tableProps = {
       items: trips,
       toDetails: tripDetails,
-      filteringAction, statusProps,
+      filteringAction,
+      statusProps,
       filters: this.state,
       isFetching: tripsIsFetching,
       showModals: this.props.showModals,
@@ -714,15 +812,14 @@ class TableStateful extends Component {
           <div className={styles.tableLeft}>
             <Table {...tableProps} />
           </div>
-          {!tableProps.isFetching && tableProps.items.length !== 0 &&
+          {!tableProps.isFetching &&
+            tableProps.items.length !== 0 &&
             <div className={styles.tableRight}>
               <RightTable {...rightTableProps} />
-            </div>
-          }
+            </div>}
           <Pagination {...paginationProps} />
         </div>
-        {
-          this.props.showDetails &&
+        {this.props.showDetails &&
           <ModalContainer>
             <ModalDialog>
               <div>
@@ -746,9 +843,7 @@ class TableStateful extends Component {
                     </p>
                   </div>
                   <div className={styles.modalDesc2}>
-                    <p className={styles.secondLabel}>
-                      Total Weight
-                    </p>
+                    <p className={styles.secondLabel}>Total Weight</p>
                     <p className={styles.weightLabel}>
                       {this.state.trip.Weight}
                       <span className={styles.unitWeightLabel}> kg</span>
@@ -759,25 +854,28 @@ class TableStateful extends Component {
                 <div className={styles.orderList}>
                   <VerifiedOrder routes={this.state.trip.UserOrderRoutes} />
                 </div>
-                {hasPermission && this.state.trip.UserOrderRoutes.length - this.state.trip.ScannedOrders !== 0 &&
+                {hasPermission &&
+                  this.state.trip.UserOrderRoutes.length -
+                    this.state.trip.ScannedOrders !==
+                    0 &&
                   <div className={styles.bottomNotes}>
                     <span className={styles.completeNotes}>
-                      {`${this.state.trip.UserOrderRoutes.length - this.state.trip.ScannedOrders} `}
-                      orders are still not verified yet!
-                       Click “Complete Orders” button if you wish complete this trip.
+                      {`${this.state.trip.UserOrderRoutes.length -
+                        this.state.trip.ScannedOrders} `}
+                      orders are still not verified yet! Click “Complete Orders”
+                      button if you wish complete this trip.
                     </span>
                     <button
                       className={styles.completeButton}
-                      onClick={() => this.completeTrip(null, this.state.trip.TripID)}
+                      onClick={() =>
+                        this.completeTrip(null, this.state.trip.TripID)}
                     >
                       Complete Orders
                     </button>
-                  </div>
-                }
+                  </div>}
               </div>
             </ModalDialog>
-          </ModalContainer>
-        }
+          </ModalContainer>}
       </div>
     );
   }
@@ -807,10 +905,9 @@ function StateToProps(state) {
 
   const statusList = state.app.containers.statusList;
   const trip = TripParser(tripActive);
-  const rawOrders = _.map(trip.UserOrderRoutes, (route) => {
+  const rawOrders = _.map(trip.UserOrderRoutes, route => {
     return OrderParser(route.UserOrder);
   });
-
 
   return {
     paginationState,
@@ -818,13 +915,17 @@ function StateToProps(state) {
     tripsIsFetching: isFetching,
     statusList: _.chain(statusList)
       .map((key, val) => [val, key])
-      .sortBy(arr => (arr[1]))
-      .map(arr => (arr[0]))
+      .sortBy(arr => arr[1])
+      .map(arr => arr[0])
       .value(),
-    nameToID: _.reduce(statusList, (memo, key, val) => {
-      memo[val] = key;
-      return memo;
-    }, {}),
+    nameToID: _.reduce(
+      statusList,
+      (memo, key, val) => {
+        memo[val] = key;
+        return memo;
+      },
+      {}
+    ),
     filters,
     showDetails,
     trip,
@@ -840,7 +941,7 @@ function DispatchToProps(dispatch) {
     initialLoad() {
       dispatch(InboundTrips.FetchList());
     },
-    changeFilter: (filters) => {
+    changeFilter: filters => {
       dispatch(InboundTrips.AddFilters(filters));
     },
     paginationAction: {
@@ -854,7 +955,7 @@ function DispatchToProps(dispatch) {
     tripDetails(id) {
       dispatch(push(`/trips/${id}/`));
     },
-    showModals: (tripID) => {
+    showModals: tripID => {
       dispatch(InboundTrips.ShowDetails(tripID));
     },
     closeModal: () => {
