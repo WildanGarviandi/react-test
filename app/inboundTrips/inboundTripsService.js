@@ -476,9 +476,8 @@ export function TripDeliver(tripID, reuse) {
         dispatch(ModalActions.addMessage('Trip marked as delivered'));
         dispatch(HideDetails());
         dispatch(FetchList());
-        dispatch(DashboardService.FetchCount());
 
-        return undefined;
+        return dispatch(DashboardService.FetchCount());
       })
       .catch(e => {
         const message =

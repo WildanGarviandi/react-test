@@ -130,11 +130,13 @@ const Table = React.createClass({
                   (item.driverVehicleID === 1
                     ? <img
                         className={styles.imageVehicle}
-                        src="/img/icon-vehicle-motorcycle.png"
+                        src={config.IMAGES.MOTORCYCLE}
+                        alt="motorcycle"
                       />
                     : <img
                         className={styles.imageVehicle}
-                        src="/img/icon-vehicle-van.png"
+                        src={config.IMAGES.VAN}
+                        alt="van"
                       />)}
               </span>
               {item.assignedTo
@@ -182,7 +184,7 @@ const Table = React.createClass({
               <tr>
                 <td colSpan={ColumnsOrder.length}>
                   <div className={styles.noInboundDesc}>
-                    <img src="/img/image-inbound-trip-done.png" />
+                    <img src={config.IMAGES.INBOUND_TRIP_DONE} alt="done" />
                     <div style={{ fontSize: 20 }}>Awesome work guys!</div>
                     <div style={{ fontSize: 12, marginTop: 20 }}>
                       All trip orders are verified, you have scanned and
@@ -247,11 +249,13 @@ class RightTable extends Component {
                     (item.driverVehicleID === 1
                       ? <img
                           className={styles.imageVehicle}
-                          src="/img/icon-vehicle-motorcycle.png"
+                          src={config.IMAGES.MOTORCYCLE}
+                          alt="motorcycle"
                         />
                       : <img
                           className={styles.imageVehicle}
-                          src="/img/icon-vehicle-van.png"
+                          src={config.IMAGES.VAN}
+                          alt="van"
                         />)}
                 </span>
                 {item.assignedTo
@@ -409,7 +413,8 @@ function VerifiedOrder({ routes }) {
                       route.OrderStatus.OrderStatus === 'DELIVERED'
                         ? <img
                             className={styles.iconVerified}
-                            src="/img/icon-ready.png"
+                            src={config.IMAGES.ICON_READY}
+                            alt="ready"
                           />
                         : <span className={styles.iconNotVerified}>
                             &times;
