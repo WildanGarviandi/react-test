@@ -564,7 +564,7 @@ class PanelDetails extends Component {
                 Order Id
               </div>
               <div className={styles.orderDetailsValue}>
-                {expandedOrder.UserOrderID}
+                {expandedOrder.WebOrderID}
               </div>
               <div className={styles.orderDetailsLabel}>
                 Origin
