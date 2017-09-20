@@ -131,7 +131,7 @@ function Fleet({ selectedFleetProps, chooseFleet }) {
         <div className={styles.maskLoad}>
           <img
             className={styles.vendorLoadImage}
-            src="/img/icon-grouping.png"
+            src={config.IMAGES.ICON_GROUPING}
           />
           <span className={vendorLoad}>
             {availableLoad} / {capacity}
@@ -431,92 +431,93 @@ AssignHub.defaultProps = {
 
 const Driver = React.createClass({
   render: function() {
-    const driverComponents = driverList.map(
-      function(driver, idx) {
-        let rowStyle = styles.vendorInformation;
-        let driverWeightStyle = styles.driverWeight;
-        let availableWeight = driver.CurrentWeight;
-        let capacity =
-          driver.Vehicle &&
-          driver.Vehicle.VehicleID === config.vehicleType.Motorcycle
-            ? config.motorcycleMaxWeight
-            : config.vanMaxWeight;
-        if (driver.UserID === this.props.selectedDriver) {
-          rowStyle = styles.vendorInformationSelected;
-          driverWeightStyle = styles.driverWeightSelected;
-          availableWeight =
-            parseFloat(availableWeight) + parseFloat(this.props.weight);
-          selectedDriverName = `${driver.FirstName} ${driver.LastName}`;
-          if (availableWeight > capacity) {
-            driverWeightStyle = styles.driverWeightSelectedExceed;
-            rowStyle = styles.vendorInformationSelectedExceed;
-            isDriverExceed = true;
-          } else {
-            isDriverExceed = false;
-          }
+    const driverComponents = driverList.map(driver => {
+      let rowStyle = styles.vendorInformation;
+      let driverWeightStyle = styles.driverWeight;
+      let availableWeight = driver.CurrentWeight;
+      const capacity =
+        driver.Vehicle &&
+        driver.Vehicle.VehicleID === config.vehicleType.Motorcycle
+          ? config.motorcycleMaxWeight
+          : config.vanMaxWeight;
+      if (driver.UserID === this.props.selectedDriver) {
+        rowStyle = styles.vendorInformationSelected;
+        driverWeightStyle = styles.driverWeightSelected;
+        availableWeight =
+          parseFloat(availableWeight) + parseFloat(this.props.weight);
+        selectedDriverName = `${driver.FirstName} ${driver.LastName}`;
+        if (availableWeight > capacity) {
+          driverWeightStyle = styles.driverWeightSelectedExceed;
+          rowStyle = styles.vendorInformationSelectedExceed;
+          isDriverExceed = true;
+        } else {
+          isDriverExceed = false;
         }
-        return (
-          <div
-            role="button"
-            key={driver.UserID}
-            onClick={this.props.chooseDriver.bind(null, driver.UserID)}
-            className={rowStyle}
-          >
-            <div className={styles.driverInput}>
-              <img
-                src={
-                  driver.UserID === this.props.selectedDriver
-                    ? config.IMAGES.RADIO_ON
-                    : config.IMAGES.RADIO_OFF
-                }
-              />
-            </div>
-            <div className={styles.driverPicture}>
-              <img
-                src={
-                  driver.Vehicle &&
-                  driver.Vehicle.VehicleID === config.vehicleType.Motorcycle
-                    ? config.IMAGES.MOTORCYCLE
-                    : config.IMAGES.VAN
-                }
-              />
-            </div>
-            <table className={styles.driverMaskName}>
-              <tbody>
-                <tr>
-                  <td>
-                    <span className={styles.driverName}>
-                      {UtilHelper.trimString(
-                        `${driver.FirstName} ${driver.LastName}`,
-                        25
-                      )}
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <table className={styles.driverLocation}>
-              <tbody>
-                <tr>
-                  <td>From Pickup Location</td>
-                </tr>
-                <tr className={styles.driverMaskLoad}>
-                  <td>
-                    <img
-                      className={styles.vendorLoadImage}
-                      src={config.IMAGES.LOCATION}
-                    />
-                    <span className={styles.vendorLoad}>
-                      {driver.DistanceToNearestPickup || 'N/A'} km
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+      }
+      return (
+        <div
+          role="none"
+          key={driver.UserID}
+          onClick={this.props.chooseDriver.bind(null, driver.UserID)}
+          className={rowStyle}
+        >
+          <div className={styles.driverInput}>
+            <img
+              alt="radio"
+              src={
+                driver.UserID === this.props.selectedDriver
+                  ? config.IMAGES.RADIO_ON
+                  : config.IMAGES.RADIO_OFF
+              }
+            />
           </div>
-        );
-      }.bind(this)
-    );
+          <div className={styles.driverPicture}>
+            <img
+              alt="vehicle"
+              src={
+                driver.Vehicle &&
+                driver.Vehicle.VehicleID === config.vehicleType.Motorcycle
+                  ? config.IMAGES.MOTORCYCLE
+                  : config.IMAGES.VAN
+              }
+            />
+          </div>
+          <table className={styles.driverMaskName}>
+            <tbody>
+              <tr>
+                <td>
+                  <span className={styles.driverName}>
+                    {UtilHelper.trimString(
+                      `${driver.FirstName} ${driver.LastName}`,
+                      25
+                    )}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table className={styles.driverLocation}>
+            <tbody>
+              <tr>
+                <td>From Pickup Location</td>
+              </tr>
+              <tr className={styles.driverMaskLoad}>
+                <td>
+                  <img
+                    alt="location"
+                    className={styles.vendorLoadImage}
+                    src={config.IMAGES.LOCATION}
+                  />
+                  <span className={styles.vendorLoad}>
+                    {driver.DistanceToNearestPickup || 'N/A'} km
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      );
+    });
     return (
       <div>
         {driverComponents}
