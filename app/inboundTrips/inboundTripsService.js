@@ -13,6 +13,8 @@ import OrderStatusSelector from '../modules/orderStatus/selector';
 import { modalAction } from '../modules/modals/constants';
 import * as DashboardService from '../dashboard/dashboardService';
 import configValues from '../config/configValues.json';
+import endpoints from '../config/endpoints';
+import { formatRef } from '../helper/utility';
 
 const Constants = {
   TRIPS_INBOUND_CURRENTPAGE_SET: 'inbound/currentPage/set',
@@ -103,7 +105,10 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.TRIPS_INBOUND_SHOW_DETAILS: {
-      return _.assign({}, state, { showDetails: true, tripActive: action.trip });
+      return _.assign({}, state, {
+        showDetails: true,
+        tripActive: action.trip,
+      });
     }
 
     case Constants.TRIPS_INBOUND_HIDE_DETAILS: {
@@ -161,8 +166,10 @@ export function Reducer(state = initialState, action) {
     }
 
     case Constants.TRIPS_INBOUND_DELETE_HUB: {
-      const hubIDs = _.filter(state.hubIDs, hubID =>
-        hubID !== action.payload.hub.key);
+      const hubIDs = _.filter(
+        state.hubIDs,
+        hubID => hubID !== action.payload.hub.key
+      );
       return Object.assign({}, state, {
         hubIDs,
       });
@@ -186,7 +193,8 @@ export function Reducer(state = initialState, action) {
       });
     }
 
-    default: return state;
+    default:
+      return state;
   }
 }
 
@@ -210,51 +218,62 @@ export function FetchList() {
   return (dispatch, getState) => {
     const { inboundTrips, userLogged } = getState().app;
     const { token } = userLogged;
-    const { currentPage, filters, limit, tripProblem, hubIDs, pickupCity } = inboundTrips;
+    const {
+      currentPage,
+      filters,
+      limit,
+      tripProblem,
+      hubIDs,
+      pickupCity,
+    } = inboundTrips;
 
     const query = _.assign({}, filters, {
       limit,
       nonDelivered: true,
       offset: (currentPage - 1) * limit,
-      tripProblemMasterID: (tripProblem.key || '') &&
-      (tripProblem.key === 0 ? '' : tripProblem.key),
+      tripProblemMasterID:
+        (tripProblem.key || '') &&
+        (tripProblem.key === 0 ? '' : tripProblem.key),
       hubIDs: _.filter(hubIDs, hubID => hubID > 0).join(),
-      pickupCity: (pickupCity.value || '') &&
-      (pickupCity.value === 'All' ? '' : pickupCity.value),
+      pickupCity:
+        (pickupCity.value || '') &&
+        (pickupCity.value === 'All' ? '' : pickupCity.value),
     });
 
     dispatch({
       type: Constants.TRIPS_INBOUND_FETCH_START,
     });
 
-    FetchGet('/trip/inbound', token, query).then((response) => {
-      if (!response.ok) {
-        throw new Error();
-      }
+    FetchGet('/trip/inbound', token, query)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error();
+        }
 
-      response.json().then(({ data }) => {
-        dispatch({
-          type: Constants.TRIPS_INBOUND_SET,
-          trips: _.map(data.rows, TripParser),
-          total: data.count,
+        response.json().then(({ data }) => {
+          dispatch({
+            type: Constants.TRIPS_INBOUND_SET,
+            trips: _.map(data.rows, TripParser),
+            total: data.count,
+          });
+
+          dispatch({
+            type: Constants.TRIPS_INBOUND_FETCH_END,
+          });
         });
-
+      })
+      .catch(() => {
         dispatch({
           type: Constants.TRIPS_INBOUND_FETCH_END,
         });
-      });
-    }).catch(() => {
-      dispatch({
-        type: Constants.TRIPS_INBOUND_FETCH_END,
-      });
 
-      dispatch(ModalActions.addMessage('Failed to fetch inbound trips'));
-    });
+        dispatch(ModalActions.addMessage('Failed to fetch inbound trips'));
+      });
   };
 }
 
 export function SetCurrentPage(currentPage) {
-  return (dispatch) => {
+  return dispatch => {
     dispatch({
       type: Constants.TRIPS_INBOUND_CURRENTPAGE_SET,
       currentPage,
@@ -267,18 +286,24 @@ export function SetCurrentPage(currentPage) {
 export function SetFiltersStatus(keyword) {
   return (dispatch, getState) => {
     const options = OrderStatusSelector.GetList(getState());
-    const orderStatus = _.reduce(options, (results, status) => {
-      const data = _.cloneDeep(results);
-      data[status.value] = status.key;
-      return data;
-    }, {});
+    const orderStatus = _.reduce(
+      options,
+      (results, status) => {
+        const data = _.cloneDeep(results);
+        data[status.value] = status.key;
+        return data;
+      },
+      {}
+    );
 
     const { inboundTrips } = getState().app;
     const { filters } = inboundTrips;
 
-    const newFilters = !orderStatus[keyword] ? { statusIDs: [] } : {
-      statusIDs: JSON.stringify([orderStatus[keyword]]),
-    };
+    const newFilters = !orderStatus[keyword]
+      ? { statusIDs: [] }
+      : {
+          statusIDs: JSON.stringify([orderStatus[keyword]]),
+        };
 
     dispatch({
       type: Constants.TRIPS_INBOUND_FILTERS_STATUS_SET,
@@ -295,7 +320,7 @@ export function SetFiltersStatus(keyword) {
 }
 
 export function SetLimit(limit) {
-  return (dispatch) => {
+  return dispatch => {
     dispatch({
       type: Constants.TRIPS_INBOUND_LIMIT_SET,
       limit,
@@ -315,29 +340,32 @@ export function GoToContainer(containerNumber) {
     };
 
     dispatch({ type: modalAction.BACKDROP_SHOW });
-    FetchGet('/trip/inbound', token, query).then((response) => {
-      if (!response.ok) {
-        throw new Error('Container not found');
-      }
-
-      return response.json().then(({ data }) => {
-        if (data.count < 1) {
+    FetchGet('/trip/inbound', token, query)
+      .then(response => {
+        if (!response.ok) {
           throw new Error('Container not found');
         }
 
+        return response.json().then(({ data }) => {
+          if (data.count < 1) {
+            throw new Error('Container not found');
+          }
+
+          dispatch({ type: modalAction.BACKDROP_HIDE });
+          dispatch(push(`/trips/${data.rows[0].TripID}`));
+        });
+      })
+      .catch(e => {
+        const message =
+          e && e.message ? e.message : 'Failed to get container details';
         dispatch({ type: modalAction.BACKDROP_HIDE });
-        dispatch(push(`/trips/${data.rows[0].TripID}`));
+        dispatch(ModalActions.addMessage(message));
       });
-    }).catch((e) => {
-      const message = (e && e.message) ? e.message : 'Failed to get container details';
-      dispatch({ type: modalAction.BACKDROP_HIDE });
-      dispatch(ModalActions.addMessage(message));
-    });
   };
 }
 
 export function ResetState() {
-  return (dispatch) => {
+  return dispatch => {
     dispatch({ type: Constants.TRIPS_INBOUND_RESET_STATE });
   };
 }
@@ -357,47 +385,64 @@ export function GoToTrip(tripID) {
     }
 
     dispatch({ type: modalAction.BACKDROP_SHOW });
-    FetchGet('/trip/inbound', token, query).then((response) => {
-      if (!response.ok) {
-        throw new Error('Trip not found');
-      }
-
-      return response.json().then(({ data }) => {
-        if (data.count < 1) {
+    FetchGet('/trip/inbound', token, query)
+      .then(response => {
+        if (!response.ok) {
           throw new Error('Trip not found');
         }
 
+        return response.json().then(({ data }) => {
+          if (data.count < 1) {
+            throw new Error('Trip not found');
+          }
+
+          dispatch({ type: modalAction.BACKDROP_HIDE });
+          dispatch(push(`/trips/${data.rows[0].TripID}`));
+        });
+      })
+      .catch(e => {
+        const message =
+          e && e.message ? e.message : 'Failed to get trip details';
         dispatch({ type: modalAction.BACKDROP_HIDE });
-        dispatch(push(`/trips/${data.rows[0].TripID}`));
+        dispatch(ModalActions.addMessage(message));
       });
-    }).catch((e) => {
-      const message = (e && e.message) ? e.message : 'Failed to get trip details';
-      dispatch({ type: modalAction.BACKDROP_HIDE });
-      dispatch(ModalActions.addMessage(message));
-    });
   };
 }
 
 export function ShowDetails(tripID) {
   return (dispatch, getState) => {
-    const { inboundTrips } = getState().app;
-    const { trips } = inboundTrips;
+    const { userLogged } = getState().app;
+    const { token } = userLogged;
+    const url = formatRef(endpoints.TRIP, tripID);
 
-    dispatch({
-      type: Constants.TRIPS_INBOUND_SHOW_DETAILS,
-      trip: _.find(trips, { TripID: tripID }),
-    });
+    dispatch({ type: modalAction.BACKDROP_SHOW });
+    FetchGet(`/${url}`, token)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Trip not found');
+        }
+        return response.json().then(({ data }) => {
+          dispatch({ type: Constants.TRIPS_INBOUND_SHOW_DETAILS, trip: data });
+          dispatch({ type: modalAction.BACKDROP_HIDE });
+        });
+      })
+      .catch(e => {
+        const message =
+          e && e.message ? e.message : 'Failed to get trip details';
+        dispatch({ type: modalAction.BACKDROP_HIDE });
+        dispatch(ModalActions.addMessage(message));
+      });
   };
 }
 
 export function HideDetails() {
-  return (dispatch) => {
+  return dispatch => {
     dispatch({ type: Constants.TRIPS_INBOUND_HIDE_DETAILS });
   };
 }
 
 export function setDropdownFilter(keyword, option) {
-  return (dispatch) => {
+  return dispatch => {
     dispatch({
       type: Constants.TRIPS_INBOUND_SET_DROPDOWN_FILTER,
       payload: {
@@ -419,25 +464,27 @@ export function TripDeliver(tripID, reuse) {
       reusePackage: reuse,
     };
 
-    FetchPost(`/trip/${tripID}/markdeliver`, token, query).then((response) => {
-      if (!response.ok) {
-        return response.json().then(({ error }) => {
-          throw error;
-        });
-      }
+    FetchPost(`/trip/${tripID}/markdeliver`, token, query)
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(({ error }) => {
+            throw error;
+          });
+        }
 
-      dispatch({ type: modalAction.BACKDROP_HIDE });
-      dispatch(ModalActions.addMessage('Trip marked as delivered'));
-      dispatch(HideDetails());
-      dispatch(FetchList());
-      dispatch(DashboardService.FetchCount());
+        dispatch({ type: modalAction.BACKDROP_HIDE });
+        dispatch(ModalActions.addMessage('Trip marked as delivered'));
+        dispatch(HideDetails());
+        dispatch(FetchList());
 
-      return undefined;
-    }).catch((e) => {
-      const message = (e && e.message) ? e.message : 'Failed to mark trip as delivered';
-      dispatch({ type: modalAction.BACKDROP_HIDE });
-      dispatch(ModalActions.addMessage(message));
-    });
+        return dispatch(DashboardService.FetchCount());
+      })
+      .catch(e => {
+        const message =
+          e && e.message ? e.message : 'Failed to mark trip as delivered';
+        dispatch({ type: modalAction.BACKDROP_HIDE });
+        dispatch(ModalActions.addMessage(message));
+      });
   };
 }
 
@@ -452,30 +499,32 @@ export function FetchDrivers() {
       offset: (currentPageDrivers - 1) * limitDrivers,
     });
 
-    FetchGet('/driver', token, query).then((response) => {
-      if (!response.ok) {
-        return response.json().then(({ error }) => {
-          throw error;
-        });
-      }
+    FetchGet('/driver', token, query)
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(({ error }) => {
+            throw error;
+          });
+        }
 
-      return response.json().then(({ data }) => {
-        dispatch({
-          type: Constants.TRIPS_INBOUND_SET_DRIVERS,
-          payload: {
-            drivers: data.rows,
-            totalDrivers: data.count,
-          },
+        return response.json().then(({ data }) => {
+          dispatch({
+            type: Constants.TRIPS_INBOUND_SET_DRIVERS,
+            payload: {
+              drivers: data.rows,
+              totalDrivers: data.count,
+            },
+          });
         });
+      })
+      .catch(e => {
+        dispatch(ModalActions.addMessage(e.message));
       });
-    }).catch((e) => {
-      dispatch(ModalActions.addMessage(e.message));
-    });
   };
 }
 
 export function SetCurrentTrip(trip) {
-  return (dispatch) => {
+  return dispatch => {
     dispatch({
       type: Constants.TRIPS_INBOUND_SET_CURRENT_TRIP,
       payload: {
@@ -486,19 +535,19 @@ export function SetCurrentTrip(trip) {
 }
 
 export function ShowReAssignModal() {
-  return (dispatch) => {
+  return dispatch => {
     dispatch({ type: Constants.TRIPS_INBOUND_SHOW_RE_ASSIGN_MODAL });
   };
 }
 
 export function HideReAssignModal() {
-  return (dispatch) => {
+  return dispatch => {
     dispatch({ type: Constants.TRIPS_INBOUND_HIDE_RE_ASSIGN_MODAL });
   };
 }
 
 export function SetFilterHub(payload) {
-  return (dispatch) => {
+  return dispatch => {
     dispatch({ type: Constants.TRIPS_INBOUND_SET_FILTER_HUB, payload });
   };
 }
@@ -509,51 +558,58 @@ export function FetchHubs() {
     const { filterHubs } = inboundTrips;
     const { token } = userLogged;
 
-    FetchGet('/local', token, {}, true).then((response) => {
-      if (!response.ok) {
-        return response.json().then(({ error }) => {
-          throw error;
-        });
-      }
-
-      return response.json().then(({ data }) => {
-        let res = {};
-        if (filterHubs.name) {
-          const filtered = [];
-          _.filter(data.rows, (hub) => {
-            if (_.includes(hub.Name.toLowerCase(), filterHubs.name.toLowerCase())) {
-              filtered.push(hub);
-            }
+    FetchGet('/local', token, {}, true)
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(({ error }) => {
+            throw error;
           });
-          res = {
-            count: filtered.length,
-            rows: filtered,
-          };
-        } else {
-          res = data;
         }
 
-        dispatch({
-          type: Constants.TRIPS_INBOUND_SET_HUBS,
-          payload: {
-            totalHubs: res.count,
-            hubs: res.rows,
-          },
+        return response.json().then(({ data }) => {
+          let res = {};
+          if (filterHubs.name) {
+            const filtered = [];
+            _.filter(data.rows, hub => {
+              if (
+                _.includes(
+                  hub.Name.toLowerCase(),
+                  filterHubs.name.toLowerCase()
+                )
+              ) {
+                filtered.push(hub);
+              }
+            });
+            res = {
+              count: filtered.length,
+              rows: filtered,
+            };
+          } else {
+            res = data;
+          }
+
+          dispatch({
+            type: Constants.TRIPS_INBOUND_SET_HUBS,
+            payload: {
+              totalHubs: res.count,
+              hubs: res.rows,
+            },
+          });
         });
+      })
+      .catch(e => {
+        dispatch(ModalActions.addMessage(e.message));
       });
-    }).catch((e) => {
-      dispatch(ModalActions.addMessage(e.message));
-    });
   };
 }
 
 export function SetFilterDriver(payload) {
-  return (dispatch) => {
+  return dispatch => {
     dispatch({ type: Constants.TRIPS_INBOUND_SET_FILTER_DRIVER, payload });
   };
 }
 
-const handleErrorResponse = async (response) => {
+const handleErrorResponse = async response => {
   const errorValue = response.json().then(({ error }) => {
     throw error;
   });
@@ -566,13 +622,12 @@ const getCancelDriverPromise = async (tripID, token) => {
 };
 
 const getCancelHubPromise = async (tripID, token) => {
-  const promise = fetchDelete(`/trip/${tripID}/fleetmanager`,
-    token, {}, true);
+  const promise = fetchDelete(`/trip/${tripID}/fleetmanager`, token, {}, true);
   return promise;
 };
 
 const getMockPromise = async () => {
-  const promise = new Promise((resolve) => {
+  const promise = new Promise(resolve => {
     const resolvedData = resolve({
       skip: true,
     });
@@ -582,7 +637,7 @@ const getMockPromise = async () => {
   return promise;
 };
 
-const handleErrMsgArr = (arr) => {
+const handleErrMsgArr = arr => {
   let message = '';
   arr.forEach((data, index) => {
     message += `${index + 1}. ${data.order} - ${data.reason}
@@ -604,17 +659,17 @@ export function assignDriver(tripID, driverID) {
     dispatch({ type: modalAction.BACKDROP_SHOW });
 
     try {
-      let response = currentTrip.Driver ?
-        await getCancelDriverPromise(tripID, token) :
-        await getMockPromise();
+      let response = currentTrip.Driver
+        ? await getCancelDriverPromise(tripID, token)
+        : await getMockPromise();
 
       if (!(response.ok || response.skip)) {
         await handleErrorResponse(response);
       }
 
-      response = currentTrip.FleetManager ?
-        await getCancelHubPromise(tripID, token) :
-        await getMockPromise();
+      response = currentTrip.FleetManager
+        ? await getCancelHubPromise(tripID, token)
+        : await getMockPromise();
 
       if (!(response.ok || response.skip)) {
         await handleErrorResponse(response);
@@ -630,7 +685,7 @@ export function assignDriver(tripID, driverID) {
 
       dispatch(ModalActions.addMessage('Assign driver success'));
     } catch (e) {
-      let message = (e && e.message) ? e.message : 'Failed to set driver';
+      let message = e && e.message ? e.message : 'Failed to set driver';
       message = Array.isArray(message) ? handleErrMsgArr(message) : message;
       dispatch({ type: modalAction.BACKDROP_HIDE });
       dispatch(ModalActions.addMessage(message));
@@ -655,17 +710,17 @@ export function assignHub(tripID, hubID) {
     dispatch({ type: modalAction.BACKDROP_SHOW });
 
     try {
-      let response = currentTrip.Driver ?
-        await getCancelDriverPromise(tripID, token) :
-        await getMockPromise();
+      let response = currentTrip.Driver
+        ? await getCancelDriverPromise(tripID, token)
+        : await getMockPromise();
 
       if (!(response.ok || response.skip)) {
         await handleErrorResponse(response);
       }
 
-      response = currentTrip.FleetManager ?
-        await getCancelHubPromise(tripID, token) :
-        await getMockPromise();
+      response = currentTrip.FleetManager
+        ? await getCancelHubPromise(tripID, token)
+        : await getMockPromise();
 
       if (!(response.ok || response.skip)) {
         await handleErrorResponse(response);
@@ -681,7 +736,7 @@ export function assignHub(tripID, hubID) {
 
       dispatch(ModalActions.addMessage('Assign hub success'));
     } catch (e) {
-      let message = (e && e.message) ? e.message : 'Failed to assign hub';
+      let message = e && e.message ? e.message : 'Failed to assign hub';
       message = Array.isArray(message) ? handleErrMsgArr(message) : message;
       dispatch({ type: modalAction.BACKDROP_HIDE });
       dispatch(ModalActions.addMessage(message));
@@ -694,7 +749,7 @@ export function assignHub(tripID, hubID) {
 }
 
 export function SetCurrentPageDrivers(currentPageDrivers) {
-  return (dispatch) => {
+  return dispatch => {
     dispatch({
       type: Constants.TRIPS_INBOUND_SET_CURRENT_PAGE_DRIVER,
       payload: { currentPageDrivers },
@@ -704,7 +759,7 @@ export function SetCurrentPageDrivers(currentPageDrivers) {
 }
 
 export function setLimitDrivers(limitDrivers) {
-  return (dispatch) => {
+  return dispatch => {
     dispatch({
       type: Constants.TRIPS_INBOUND_SET_LIMIT_DRIVERS,
       payload: { limitDrivers },
@@ -714,7 +769,7 @@ export function setLimitDrivers(limitDrivers) {
 }
 
 export function eraseFilter() {
-  return (dispatch) => {
+  return dispatch => {
     dispatch({ type: Constants.TRIPS_INBOUND_ERASE_FILTER });
   };
 }
@@ -762,11 +817,18 @@ export function exportOrders() {
 
     const popout = window.open();
     popout.document.write(output);
-    const xhr = fetchXhr('/order/unscanned-inbound/export', {}, token,
-      acceptHeader, responseType);
+    const xhr = fetchXhr(
+      '/order/unscanned-inbound/export',
+      {},
+      token,
+      acceptHeader,
+      responseType
+    );
     xhr.onload = () => {
       const blob = new Blob([xhr.response], { type: acceptHeader });
-      const fileName = `not_picked_up_order_${moment(new Date()).format('YYYY-MM-DD HH:mm:ss')}.xlsx`;
+      const fileName = `not_picked_up_order_${moment(new Date()).format(
+        'YYYY-MM-DD HH:mm:ss'
+      )}.xlsx`;
       if (typeof window.navigator.msSaveBlob !== 'undefined') {
         window.navigator.msSaveBlob(blob, fileName);
       } else {
