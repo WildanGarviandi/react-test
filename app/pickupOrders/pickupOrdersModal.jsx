@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import * as _ from 'lodash';
 import { connect } from 'react-redux';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
+
 import PropTypes from 'prop-types';
 
 import { TripParser } from '../modules/trips';
@@ -31,7 +31,8 @@ function ProcessTrip(trip) {
   if (trip.TripID) {
     const parsedTrip = TripParser(trip);
     const fleet = trip.FleetManager && fleetList[trip.FleetManager.UserID];
-    const fleetName = fleet && fleet.CompanyDetail && fleet.CompanyDetail.CompanyName;
+    const fleetName =
+      fleet && fleet.CompanyDetail && fleet.CompanyDetail.CompanyName;
 
     return {
       key: trip.TripID,
@@ -44,8 +45,8 @@ function ProcessTrip(trip) {
       weight: parsedTrip.Weight,
       isTrip: true,
       deadline: trip.Deadline,
-      IsChecked: trip.IsChecked
-    }
+      IsChecked: trip.IsChecked,
+    };
   } else {
     return {
       key: trip.UserOrderID,
@@ -53,14 +54,15 @@ function ProcessTrip(trip) {
       pickupCity: trip.PickupAddress && trip.PickupAddress.City,
       pickupZip: trip.PickupAddress && trip.PickupAddress.ZipCode,
       quantity: 1,
-      webstoreNames: trip.User && `${trip.User.FirstName} ${trip.User.LastName}`,
+      webstoreNames:
+        trip.User && `${trip.User.FirstName} ${trip.User.LastName}`,
       tripID: `${trip.UserOrderID}`,
       weight: trip.PackageWeight,
       isTrip: false,
       deadline: trip.Deadline,
       IsChecked: trip.IsChecked,
-      orderID: `${trip.UserOrderNumber} (${trip.WebOrderID})`
-    }
+      orderID: `${trip.UserOrderNumber} (${trip.WebOrderID})`,
+    };
   }
 
   return {
@@ -84,12 +86,17 @@ function Fleet({ selectedFleetProps, chooseFleet }) {
     let vendorLoad = styles.vendorLoad;
     let availableLoad = fleet.CurrentLoad;
     let rowStyle = styles.vendorInformation;
-    const capacity = fleet.FleetManager && fleet.FleetManager.CompanyDetail.OrderVolumeLimit;
+    const capacity =
+      fleet.FleetManager && fleet.FleetManager.CompanyDetail.OrderVolumeLimit;
     if (fleet.FleetManagerID === selectedFleetProps) {
       vendorLoad = styles.vendorLoadSelected;
-      availableLoad = parseInt(availableLoad, 10) + parseInt(this.props.sumOrders, 10);
+      availableLoad =
+        parseInt(availableLoad, 10) + parseInt(this.props.sumOrders, 10);
       rowStyle = styles.vendorInformationSelected;
-      selectedFleetName = fleet.FleetManager && fleet.FleetManager.CompanyDetail && fleet.FleetManager.CompanyDetail.CompanyName;
+      selectedFleetName =
+        fleet.FleetManager &&
+        fleet.FleetManager.CompanyDetail &&
+        fleet.FleetManager.CompanyDetail.CompanyName;
       if (availableLoad > capacity) {
         vendorLoad = styles.vendorLoadSelectedExceed;
         rowStyle = styles.vendorInformationSelectedExceed;
@@ -107,8 +114,11 @@ function Fleet({ selectedFleetProps, chooseFleet }) {
       >
         <div className={styles.maskInput}>
           <img
-            src={fleet.FleetManagerID === selectedFleetProps ?
-            config.IMAGES.RADIO_ON : config.IMAGES.RADIO_OFF}
+            src={
+              fleet.FleetManagerID === selectedFleetProps
+                ? config.IMAGES.RADIO_ON
+                : config.IMAGES.RADIO_OFF
+            }
           />
         </div>
         <div className={styles.maskName}>
@@ -119,7 +129,10 @@ function Fleet({ selectedFleetProps, chooseFleet }) {
           </span>
         </div>
         <div className={styles.maskLoad}>
-          <img className={styles.vendorLoadImage} src="/img/icon-grouping.png" />
+          <img
+            className={styles.vendorLoadImage}
+            src={config.IMAGES.ICON_GROUPING}
+          />
           <span className={vendorLoad}>
             {availableLoad} / {capacity}
           </span>
@@ -128,7 +141,11 @@ function Fleet({ selectedFleetProps, chooseFleet }) {
     );
   });
 
-  return <div>{fleetComponents}</div>;
+  return (
+    <div>
+      {fleetComponents}
+    </div>
+  );
 }
 
 /* eslint-disable */
@@ -144,9 +161,9 @@ Fleet.defaultProps = {
 
 export const AssignVendor = React.createClass({
   getInitialState() {
-    return ({
+    return {
       selectedFleet,
-    });
+    };
   },
   chooseFleet(id) {
     selectedFleet = id;
@@ -163,25 +180,23 @@ export const AssignVendor = React.createClass({
                 {this.props.trip.ListWebstoreMores}
               </div>
               <div className={styles.secondLabel}>
-                {this.props.trip.PickupAddress && this.props.trip.PickupAddress.City}
+                {this.props.trip.PickupAddress &&
+                  this.props.trip.PickupAddress.City}
               </div>
             </div>
             <div className={styles.borderDesc} />
             <div className={styles.modalDesc2}>
-              <div className={styles.secondLabel}>
-                Total Weight
-              </div>
+              <div className={styles.secondLabel}>Total Weight</div>
               <div className={styles.mainLabel}>
                 {this.props.trip.Weight} kg
               </div>
             </div>
             <div className={styles.borderDesc} />
             <div className={styles.modalDesc3}>
-              <div className={styles.secondLabel}>
-                Quantity
-              </div>
+              <div className={styles.secondLabel}>Quantity</div>
               <div className={styles.mainLabel}>
-                {this.props.trip.UserOrderRoutes && this.props.trip.UserOrderRoutes.length}
+                {this.props.trip.UserOrderRoutes &&
+                  this.props.trip.UserOrderRoutes.length}
               </div>
             </div>
             <div className={styles.borderDesc} />
@@ -194,34 +209,39 @@ export const AssignVendor = React.createClass({
           <div className={styles['clear-both']} />
         </div>
         <div className={styles.vendorList}>
-          { fleetList.length > 0 && !this.state.selectedFleet &&
+          {fleetList.length > 0 &&
+            !this.state.selectedFleet &&
             <div>
               <Fleet
                 chooseFleet={this.chooseFleet}
                 selectedFleet={this.state.selectedFleet}
                 sumOrders={this.props.trip.UserOrderRoutes.length}
               />
-            </div>
-          }
+            </div>}
           {fleetList.length === 0 &&
             <div className={styles.noTransportation}>
               No vendor found for this trip
-            </div>
-          }
+            </div>}
         </div>
         <div>
           {!this.state.selectedFleet &&
             <div className={styles.notesBelow}>
-              Please select a vendor for this trip and click on button to continue.
-            </div>
-          }
+              Please select a vendor for this trip and click on button to
+              continue.
+            </div>}
           {this.state.selectedFleet &&
             <div className={styles.notesBelow}>
-              You have selected a vendor for this trip! Please click on this button to continue.
-            </div>
-          }
+              You have selected a vendor for this trip! Please click on this
+              button to continue.
+            </div>}
           <div>
-            <button disabled={!this.state.selectedFleet} className={styles.buttonAssign} onClick={this.props.assignFleet}>Assign to Vendor</button>
+            <button
+              disabled={!this.state.selectedFleet}
+              className={styles.buttonAssign}
+              onClick={this.props.assignFleet}
+            >
+              Assign to Vendor
+            </button>
           </div>
         </div>
       </div>
@@ -245,7 +265,11 @@ function Hub({ selectedHubID, chooseHub }) {
       >
         <div className={styles.maskInput}>
           <img
-            src={hub.HubID === selectedHubID ? config.IMAGES.RADIO_ON : config.IMAGES.RADIO_OFF}
+            src={
+              hub.HubID === selectedHubID
+                ? config.IMAGES.RADIO_ON
+                : config.IMAGES.RADIO_OFF
+            }
           />
         </div>
         <div className={styles.maskName}>
@@ -256,7 +280,11 @@ function Hub({ selectedHubID, chooseHub }) {
       </div>
     );
   });
-  return <div>{hubComponents}</div>;
+  return (
+    <div>
+      {hubComponents}
+    </div>
+  );
 }
 
 /* eslint-disable */
@@ -312,25 +340,23 @@ class AssignHub extends Component {
                 {this.props.trip.ListWebstoreMores}
               </div>
               <div className={styles.secondLabel}>
-                {this.props.trip.PickupAddress && this.props.trip.PickupAddress.City}
+                {this.props.trip.PickupAddress &&
+                  this.props.trip.PickupAddress.City}
               </div>
             </div>
             <div className={styles.borderDesc} />
             <div className={styles.modalDesc2}>
-              <div className={styles.secondLabel}>
-                Total Weight
-              </div>
+              <div className={styles.secondLabel}>Total Weight</div>
               <div className={styles.mainLabel}>
                 {this.props.trip.Weight} kg
               </div>
             </div>
             <div className={styles.borderDesc} />
             <div className={styles.modalDesc3}>
-              <div className={styles.secondLabel}>
-                Quantity
-              </div>
+              <div className={styles.secondLabel}>Quantity</div>
               <div className={styles.mainLabel}>
-                {this.props.trip.UserOrderRoutes && this.props.trip.UserOrderRoutes.length}
+                {this.props.trip.UserOrderRoutes &&
+                  this.props.trip.UserOrderRoutes.length}
               </div>
             </div>
             <div className={styles.borderDesc} />
@@ -359,25 +385,22 @@ class AssignHub extends Component {
                 hubs={this.props.hubs}
                 hubList={this.hubList}
               />
-            </div>
-          }
+            </div>}
           {hubList.length === 0 &&
             <div className={styles.noTransportation}>
               No hub found for this trip
-            </div>
-          }
+            </div>}
         </div>
         <div>
           {!this.state.selectedFleet &&
             <div className={styles.notesBelow}>
               Please select a hub for this trip and click on button to continue.
-            </div>
-          }
+            </div>}
           {this.state.selectedFleet &&
             <div className={styles.notesBelow}>
-              You have selected a hub for this trip! Please click on this button to continue.
-            </div>
-          }
+              You have selected a hub for this trip! Please click on this button
+              to continue.
+            </div>}
           <div>
             <button
               disabled={!this.state.selectedHub}
@@ -408,16 +431,20 @@ AssignHub.defaultProps = {
 
 const Driver = React.createClass({
   render: function() {
-    const driverComponents = driverList.map(function(driver, idx) {
+    const driverComponents = driverList.map(driver => {
       let rowStyle = styles.vendorInformation;
       let driverWeightStyle = styles.driverWeight;
       let availableWeight = driver.CurrentWeight;
-      let capacity = driver.Vehicle && driver.Vehicle.VehicleID === config.vehicleType.Motorcycle
-        ? config.motorcycleMaxWeight : config.vanMaxWeight;
+      const capacity =
+        driver.Vehicle &&
+        driver.Vehicle.VehicleID === config.vehicleType.Motorcycle
+          ? config.motorcycleMaxWeight
+          : config.vanMaxWeight;
       if (driver.UserID === this.props.selectedDriver) {
         rowStyle = styles.vendorInformationSelected;
         driverWeightStyle = styles.driverWeightSelected;
-        availableWeight = parseFloat(availableWeight) + parseFloat(this.props.weight);
+        availableWeight =
+          parseFloat(availableWeight) + parseFloat(this.props.weight);
         selectedDriverName = `${driver.FirstName} ${driver.LastName}`;
         if (availableWeight > capacity) {
           driverWeightStyle = styles.driverWeightSelectedExceed;
@@ -429,28 +456,42 @@ const Driver = React.createClass({
       }
       return (
         <div
-          role="button"
+          role="none"
           key={driver.UserID}
           onClick={this.props.chooseDriver.bind(null, driver.UserID)}
           className={rowStyle}
         >
           <div className={styles.driverInput}>
             <img
-              src={driver.UserID === this.props.selectedDriver ?
-                config.IMAGES.RADIO_ON : config.IMAGES.RADIO_OFF}
+              alt="radio"
+              src={
+                driver.UserID === this.props.selectedDriver
+                  ? config.IMAGES.RADIO_ON
+                  : config.IMAGES.RADIO_OFF
+              }
             />
           </div>
           <div className={styles.driverPicture}>
             <img
-              src={driver.Vehicle && driver.Vehicle.VehicleID === config.vehicleType.Motorcycle ?
-              config.IMAGES.MOTORCYCLE : config.IMAGES.VAN}
+              alt="vehicle"
+              src={
+                driver.Vehicle &&
+                driver.Vehicle.VehicleID === config.vehicleType.Motorcycle
+                  ? config.IMAGES.MOTORCYCLE
+                  : config.IMAGES.VAN
+              }
             />
           </div>
           <table className={styles.driverMaskName}>
             <tbody>
               <tr>
                 <td>
-                  <span className={styles.driverName}>{UtilHelper.trimString(`${driver.FirstName} ${driver.LastName}`, 25)}</span>
+                  <span className={styles.driverName}>
+                    {UtilHelper.trimString(
+                      `${driver.FirstName} ${driver.LastName}`,
+                      25
+                    )}
+                  </span>
                 </td>
               </tr>
             </tbody>
@@ -462,26 +503,36 @@ const Driver = React.createClass({
               </tr>
               <tr className={styles.driverMaskLoad}>
                 <td>
-                  <img className={styles.vendorLoadImage} src={config.IMAGES.LOCATION} />
-                  <span className={styles.vendorLoad}>{driver.DistanceToNearestPickup || 'N/A'} km</span>
+                  <img
+                    alt="location"
+                    className={styles.vendorLoadImage}
+                    src={config.IMAGES.LOCATION}
+                  />
+                  <span className={styles.vendorLoad}>
+                    {driver.DistanceToNearestPickup || 'N/A'} km
+                  </span>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
       );
-    }.bind(this));
-    return <div>{driverComponents}</div>;
+    });
+    return (
+      <div>
+        {driverComponents}
+      </div>
+    );
   },
 });
 
 export const AssignDriver = React.createClass({
   getInitialState() {
-    return ({
+    return {
       selectedVehicle: 'Motorcycle',
       allowNoSeparate: false,
       selectedDriver,
-    });
+    };
   },
   chooseVehicle(vehicle) {
     this.setState({ selectedVehicle: vehicle.value });
@@ -517,32 +568,27 @@ export const AssignDriver = React.createClass({
                 {this.props.trip.ListWebstoreMores}
               </div>
               <div className={styles.secondLabel}>
-                {this.props.trip.PickupAddress && this.props.trip.PickupAddress.City}
+                {this.props.trip.PickupAddress &&
+                  this.props.trip.PickupAddress.City}
               </div>
             </div>
             <div className={styles.borderDesc} />
             <div className={styles.modalDesc2}>
-              <div className={styles.secondLabel}>
-                Total Weight
-              </div>
+              <div className={styles.secondLabel}>Total Weight</div>
               <div className={styles.mainLabel}>
                 {this.props.trip.Weight} kg
               </div>
             </div>
             <div className={styles.borderDesc} />
             <div className={styles.modalDesc3}>
-              <div className={styles.secondLabel}>
-                Quantity
-              </div>
+              <div className={styles.secondLabel}>Quantity</div>
               <div className={styles.mainLabel}>
                 {this.props.trip.UserOrderRoutes.length}
               </div>
             </div>
             <div className={styles.borderDesc} />
             <div className={styles.modalDesc4}>
-              <div className={styles.secondLabel}>
-                Vehicle
-              </div>
+              <div className={styles.secondLabel}>Vehicle</div>
               <div className={styles.secondLabelVehicle}>
                 <DropdownTypeAhead
                   options={vehicleList}
@@ -553,77 +599,98 @@ export const AssignDriver = React.createClass({
             </div>
           </div>
           <div className={styles['clear-both']} />
-          { this.props.trip.Weight > config.motorcycleMaxWeight && this.state.selectedVehicle === 'Motorcycle'
-            && !this.state.allowNoSeparate &&
-              <div className={styles.modalDescBottom}>
-                This trip is too big. Take {config.motorcycleMaxWeight}
-                 kg only and separate the rest?
-                <div className={styles['clear-both']} />
-                <button className={styles.buttonSplitNo} onClick={this.noSeparate}>No</button>
-                <button
-                  className={styles.buttonSplitYes}
-                  onClick={this.props.splitTrip}
-                >
-                  Yes
-                </button>
-              </div>
-          }
-          { this.props.trip.Weight > config.vanMaxWeight && this.state.selectedVehicle === 'Van'
-            && !this.state.allowNoSeparate &&
+          {this.props.trip.Weight > config.motorcycleMaxWeight &&
+            this.state.selectedVehicle === 'Motorcycle' &&
+            !this.state.allowNoSeparate &&
             <div className={styles.modalDescBottom}>
-              This trip is too big. Take {config.vanMaxWeight} kg only and separate the rest?
-                <div className={styles['clear-both']} />
-              <button className={styles.buttonSplitNo} onClick={this.noSeparate}>
+              This trip is too big. Take {config.motorcycleMaxWeight}
+              kg only and separate the rest?
+              <div className={styles['clear-both']} />
+              <button
+                className={styles.buttonSplitNo}
+                onClick={this.noSeparate}
+              >
                 No
-                </button>
-              <button className={styles.buttonSplitYes} onClick={this.props.splitTrip}>
+              </button>
+              <button
+                className={styles.buttonSplitYes}
+                onClick={this.props.splitTrip}
+              >
                 Yes
-                </button>
-            </div>
-          }
+              </button>
+            </div>}
+          {this.props.trip.Weight > config.vanMaxWeight &&
+            this.state.selectedVehicle === 'Van' &&
+            !this.state.allowNoSeparate &&
+            <div className={styles.modalDescBottom}>
+              This trip is too big. Take {config.vanMaxWeight} kg only and
+              separate the rest?
+              <div className={styles['clear-both']} />
+              <button
+                className={styles.buttonSplitNo}
+                onClick={this.noSeparate}
+              >
+                No
+              </button>
+              <button
+                className={styles.buttonSplitYes}
+                onClick={this.props.splitTrip}
+              >
+                Yes
+              </button>
+            </div>}
           <div className={styles['clear-both']} />
         </div>
         <div className={styles.panelDriverSearch}>
-          <input className={styles.inputDriverSearch} onChange={this.enterDriverSearch} onKeyPress={this.searchDriver} placeholder={'Search Driver...'} />
+          <input
+            className={styles.inputDriverSearch}
+            onChange={this.enterDriverSearch}
+            onKeyPress={this.searchDriver}
+            placeholder={'Search Driver...'}
+          />
         </div>
         <div className={styles.driverList}>
           {this.props.isFetchingDriver &&
             <div className={styles.searchingDriver}>
-              <img className={styles.searchingIcon} src="/img/icon-search-color.png" />
+              <img
+                className={styles.searchingIcon}
+                src="/img/icon-search-color.png"
+              />
               <br />
-              <span className={styles.searchingSpan}>
-                Searching....
-              </span>
+              <span className={styles.searchingSpan}>Searching....</span>
               <br />
               <div className={styles.searchingNotes}>
-                We will search for the best driver suitable for
-                 the job, based on their location to the pickup location
+                We will search for the best driver suitable for the job, based
+                on their location to the pickup location
               </div>
-            </div>
-          }
-          {!this.props.isFetchingDriver && driverList.length > 0 &&
+            </div>}
+          {!this.props.isFetchingDriver &&
+            driverList.length > 0 &&
             <Driver
               selectedVehicle={this.state.selectedVehicle}
               noSplit={this.state.allowNoSeparate}
               chooseDriver={this.chooseDriver}
               selectedDriver={this.state.selectedDriver}
               weight={this.props.trip.Weight}
-            />
-          }
-          {!this.props.isFetchingDriver && driverList.length === 0 &&
+            />}
+          {!this.props.isFetchingDriver &&
+            driverList.length === 0 &&
             <div className={styles.noTransportation}>
               No driver found for this trip
-            </div>
-          }
+            </div>}
         </div>
-        <Pagination3 {...this.props.paginationState} {...this.props.PaginationAction} />
+        <Pagination3
+          {...this.props.paginationState}
+          {...this.props.PaginationAction}
+        />
         <div>
-          {this.props.trip.Weight > config.motorcycleMaxWeight && this.state.selectedVehicle === 'Motorcycle'
-            && !this.state.allowNoSeparate &&
+          {this.props.trip.Weight > config.motorcycleMaxWeight &&
+            this.state.selectedVehicle === 'Motorcycle' &&
+            !this.state.allowNoSeparate &&
             <div className={styles.notesBelow}>
-              Please choose if you want to divide this trip or not before you can continue
-            </div>
-          }
+              Please choose if you want to divide this trip or not before you
+              can continue
+            </div>}
           <div>
             <button
               disabled={!this.state.selectedDriver}
@@ -641,53 +708,68 @@ export const AssignDriver = React.createClass({
 
 const DriverVendor = React.createClass({
   render: function() {
-    const driverComponents = driverVendorList.map(function(driver, idx) {
-      let rowStyle = styles.vendorInformation;
-      let driverWeightStyle = styles.driverWeight;
-      if (driver.UserID === this.props.selectedDriver) {
-        rowStyle = styles.vendorInformationSelected;
-        driverWeightStyle = styles.driverWeightSelected;
-      }
-      return (
-        <div
-          role="button"
-          key={driver.UserID}
-          onClick={this.props.chooseDriver.bind(null, driver.UserID)}
-          className={rowStyle}
-        >
-          <div className={styles.driverInput}>
-            <img
-              src={driver.UserID === this.props.selectedDriver ?
-              config.IMAGES.RADIO_ON : config.IMAGES.RADIO_OFF}
-            />
+    const driverComponents = driverVendorList.map(
+      function(driver, idx) {
+        let rowStyle = styles.vendorInformation;
+        let driverWeightStyle = styles.driverWeight;
+        if (driver.UserID === this.props.selectedDriver) {
+          rowStyle = styles.vendorInformationSelected;
+          driverWeightStyle = styles.driverWeightSelected;
+        }
+        return (
+          <div
+            role="button"
+            key={driver.UserID}
+            onClick={this.props.chooseDriver.bind(null, driver.UserID)}
+            className={rowStyle}
+          >
+            <div className={styles.driverInput}>
+              <img
+                src={
+                  driver.UserID === this.props.selectedDriver
+                    ? config.IMAGES.RADIO_ON
+                    : config.IMAGES.RADIO_OFF
+                }
+              />
+            </div>
+            <div className={styles.driverPicture}>
+              <img
+                src={
+                  driver.Vehicle &&
+                  driver.Vehicle.VehicleID === config.vehicleType.Motorcycle
+                    ? config.IMAGES.MOTORCYCLE
+                    : config.IMAGES.VAN
+                }
+              />
+            </div>
+            <table className={styles.driverMaskName}>
+              <tbody>
+                <tr>
+                  <td>
+                    <span className={styles.driverName}>
+                      {driver.FirstName} {driver.LastName}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <div className={styles.driverPicture}>
-            <img
-              src={driver.Vehicle && driver.Vehicle.VehicleID === config.vehicleType.Motorcycle ?
-                config.IMAGES.MOTORCYCLE : config.IMAGES.VAN}
-            />
-          </div>
-          <table className={styles.driverMaskName}>
-            <tbody>
-              <tr>
-                <td>
-                  <span className={styles.driverName}>{driver.FirstName} {driver.LastName}</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      );
-    }.bind(this));
-    return <div>{driverComponents}</div>;
+        );
+      }.bind(this)
+    );
+    return (
+      <div>
+        {driverComponents}
+      </div>
+    );
   },
 });
 
 export const AssignDriverVendor = React.createClass({
   getInitialState() {
-    return ({
+    return {
       selectedDriverVendor,
-    });
+    };
   },
   chooseDriver(id) {
     selectedDriverVendor = id;
@@ -704,25 +786,23 @@ export const AssignDriverVendor = React.createClass({
                 {this.props.trip.ListWebstoreMores}
               </div>
               <div className={styles.secondLabel}>
-                {this.props.trip.PickupAddress && this.props.trip.PickupAddress.City}
+                {this.props.trip.PickupAddress &&
+                  this.props.trip.PickupAddress.City}
               </div>
             </div>
             <div className={styles.borderDesc} />
             <div className={styles.modalDesc2}>
-              <div className={styles.secondLabel}>
-                Total Weight
-              </div>
+              <div className={styles.secondLabel}>Total Weight</div>
               <div className={styles.mainLabel}>
                 {this.props.trip.Weight} kg
               </div>
             </div>
             <div className={styles.borderDesc} />
             <div className={styles.modalDesc3}>
-              <div className={styles.secondLabel}>
-                Quantity
-              </div>
+              <div className={styles.secondLabel}>Quantity</div>
               <div className={styles.mainLabel}>
-                {this.props.trip.UserOrderRoutes && this.props.trip.UserOrderRoutes.length}
+                {this.props.trip.UserOrderRoutes &&
+                  this.props.trip.UserOrderRoutes.length}
               </div>
             </div>
             <div className={styles.borderDesc} />
@@ -763,14 +843,39 @@ export const AssignDriverVendor = React.createClass({
   },
 });
 
-const PickupOrdersModal = React.createClass({
-  getInitialState() {
-    return ({
+class PickupOrdersModal extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
       showDriver: true,
       showVendor: false,
       showHub: false,
-    });
-  },
+    };
+
+    this.activateDriver = this.activateDriver.bind(this);
+    this.activateHub = this.activateHub.bind(this);
+    this.activateVendor = this.activateVendor.bind(this);
+    this.assignDriver = this.assignDriver.bind(this);
+    this.assignFleet = this.assignFleet.bind(this);
+    this.assignHub = this.assignHub.bind(this);
+    this.assignDriverVendor = this.assignDriverVendor.bind(this);
+    this.closeModal = this.closeModal.bind(this);
+    this.splitTrip = this.splitTrip.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.showModal !== nextProps.showModal && nextProps.showModal) {
+      selectedDriver = null;
+      selectedDriverVendor = null;
+      this.setState({
+        showVendor: false,
+        showDriver: true,
+        showHub: false,
+      });
+    }
+  }
+
   activateVendor() {
     this.setState({
       showVendor: true,
@@ -780,7 +885,10 @@ const PickupOrdersModal = React.createClass({
     selectedFleet = null;
     selectedDriver = null;
     selectedHub = null;
-  },
+    driverVendorList = [];
+    selectedDriverVendor = null;
+  }
+
   activateDriver() {
     this.setState({
       showVendor: false,
@@ -790,7 +898,8 @@ const PickupOrdersModal = React.createClass({
     selectedFleet = null;
     selectedDriver = null;
     selectedHub = null;
-  },
+  }
+
   activateHub() {
     this.setState({
       showVendor: false,
@@ -800,42 +909,67 @@ const PickupOrdersModal = React.createClass({
     selectedFleet = null;
     selectedDriver = null;
     selectedHub = null;
-  },
+  }
+
   closeModal() {
     this.props.CloseModal();
     this.activateDriver();
     this.props.SetFilterHub({});
     selectedDriverVendor = null;
-  },
+  }
+
   assignDriver() {
     if (!selectedDriver) {
       alert('Please select driver first');
       return;
     }
     if (isDriverExceed) {
-      if (confirm('Are you sure you want to assign ' + this.props.trip.Weight + ' kg to ' + selectedDriverName + '?')) {
+      if (
+        confirm(
+          'Are you sure you want to assign ' +
+            this.props.trip.Weight +
+            ' kg to ' +
+            selectedDriverName +
+            '?'
+        )
+      ) {
         this.props.DriverSet(this.props.trip.TripID, selectedDriver);
       }
     } else {
       this.props.DriverSet(this.props.trip.TripID, selectedDriver);
     }
-  },
+  }
+
   assignFleet() {
     if (!selectedFleet) {
       alert('Please select fleet first');
       return;
     }
     if (isFleetExceed) {
-      if (confirm('Are you sure you want to assign ' + this.props.trip.Weight + ' kg to ' + selectedFleetName + '?')) {
+      if (
+        confirm(
+          'Are you sure you want to assign ' +
+            this.props.trip.Weight +
+            ' kg to ' +
+            selectedFleetName +
+            '?'
+        )
+      ) {
         this.props.fleetSet(this.props.trip.TripID, selectedFleet);
       }
     } else {
       this.props.fleetSet(this.props.trip.TripID, selectedFleet);
     }
-  },
+  }
+
   assignDriverVendor() {
-    this.props.setDriverVendor(this.props.trip.TripID, selectedFleet, selectedDriverVendor);
-  },
+    this.props.setDriverVendor(
+      this.props.trip.TripID,
+      selectedFleet,
+      selectedDriverVendor
+    );
+  }
+
   assignHub() {
     if (!selectedHub) {
       alert('Please select hub first');
@@ -846,33 +980,37 @@ const PickupOrdersModal = React.createClass({
     } else {
       this.props.assignHub(this.props.trip.TripID, selectedHub);
     }
-  },
+  }
+
   splitTrip() {
     this.props.SplitTrip(this.props.trip.TripID, selectedVehicleID);
-  },
-  render() {
-    const trips = _.map(this.props.trips, ProcessTrip);
+  }
 
+  render() {
     return (
       <div>
-        {
-          this.props.showModal &&
+        {this.props.showModal &&
           <ModalContainer>
             <ModalDialog>
               <div>
                 <div>
-                  <div className={styles.modalTitle}>
-                    Assign Trip
-                  </div>
-                  <div role="button" onClick={this.closeModal} className={styles.modalClose}>
+                  <div className={styles.modalTitle}>Assign Trip</div>
+                  <div
+                    role="button"
+                    onClick={this.closeModal}
+                    className={styles.modalClose}
+                  >
                     &times;
                   </div>
                   <div className={styles.toggleAssignMain}>
                     <div
                       role="button"
                       onClick={this.activateDriver}
-                      className={this.state.showDriver ?
-                        styles.toggleAssignActive : styles.toggleAssign}
+                      className={
+                        this.state.showDriver
+                          ? styles.toggleAssignActive
+                          : styles.toggleAssign
+                      }
                     >
                       Assign to Driver
                     </div>
@@ -880,8 +1018,11 @@ const PickupOrdersModal = React.createClass({
                     <div
                       role="button"
                       onClick={this.activateVendor}
-                      className={this.state.showVendor ?
-                        styles.toggleAssignActive : styles.toggleAssign}
+                      className={
+                        this.state.showVendor
+                          ? styles.toggleAssignActive
+                          : styles.toggleAssign
+                      }
                     >
                       Assign to Vendor
                     </div>
@@ -889,8 +1030,11 @@ const PickupOrdersModal = React.createClass({
                     <div
                       role="button"
                       onClick={this.activateHub}
-                      className={this.state.showHub
-                        ? styles.toggleAssignActive : styles.toggleAssign}
+                      className={
+                        this.state.showHub
+                          ? styles.toggleAssignActive
+                          : styles.toggleAssign
+                      }
                     >
                       Assign to Hub
                     </div>
@@ -899,48 +1043,85 @@ const PickupOrdersModal = React.createClass({
                     <AssignDriver
                       paginationState={this.props.paginationStateDrivers}
                       PaginationAction={this.props.PaginationActionDrivers}
-                      trip={this.props.trip} assignDriver={this.assignDriver}
+                      trip={this.props.trip}
+                      assignDriver={this.assignDriver}
                       splitTrip={this.splitTrip}
                       isFetchingDriver={this.props.isFetchingDriver}
                       updateAndFetchDrivers={this.props.UpdateAndFetchDrivers}
                       updateFiltersDrivers={this.props.UpdateFiltersDrivers}
                       fetchDrivers={this.props.FetchDrivers}
-                    />
-                  }
-                  {
-                    this.state.showVendor && driverVendorList.length === 0 &&
+                    />}
+                  {this.state.showVendor &&
+                    driverVendorList.length === 0 &&
                     <AssignVendor
                       trip={this.props.trip}
                       fetchDriverVendorList={this.props.fetchDriverVendorList}
-                    />
-                  }
-                  {
-                    this.state.showVendor && driverVendorList.length > 0 &&
+                    />}
+                  {this.state.showVendor &&
+                    driverVendorList.length > 0 &&
                     <AssignDriverVendor
                       trip={this.props.trip}
                       assignDriver={this.assignDriverVendor}
                       assignFleet={this.assignFleet}
-                    />
-                  }
-                  {
-                    this.state.showHub &&
+                    />}
+                  {this.state.showHub &&
                     <AssignHub
                       trip={this.props.trip}
                       assignHub={this.assignHub}
                       hubs={hubList}
                       setFilterHub={this.props.SetFilterHub}
                       fetchHubs={this.props.fetchHubs}
-                    />
-                  }
+                    />}
                 </div>
               </div>
             </ModalDialog>
-          </ModalContainer>
-        }
+          </ModalContainer>}
       </div>
     );
-  },
-});
+  }
+}
+
+/* eslint-disable */
+PickupOrdersModal.propTypes = {
+  showModal: PropTypes.bool,
+  trip: PropTypes.any,
+  SplitTrip: PropTypes.func,
+  SetFilterHub: PropTypes.func,
+  fetchHubs: PropTypes.func,
+  fetchDriverVendorList: PropTypes.func,
+  isFetchingDriver: PropTypes.bool,
+  paginationStateDrivers: PropTypes.any,
+  PaginationActionDrivers: PropTypes.any,
+  UpdateAndFetchDrivers: PropTypes.func,
+  UpdateFiltersDrivers: PropTypes.func,
+  FetchDrivers: PropTypes.func,
+  CloseModal: PropTypes.func,
+  DriverSet: PropTypes.func,
+  fleetSet: PropTypes.func,
+  setDriverVendor: PropTypes.func,
+  assignHub: PropTypes.func,
+};
+/* eslint-enable */
+
+PickupOrdersModal.defaultProps = {
+  showModal: () => {},
+  trip: {},
+  SplitTrip: () => {},
+  SetFilterHub: () => {},
+  fetchHubs: () => {},
+  fetchDriverVendorList: () => {},
+  isFetchingDriver: {},
+  paginationStateDrivers: {},
+  PaginationActionDrivers: {},
+  UpdateAndFetchDrivers: () => {},
+  UpdateFiltersDrivers: () => {},
+  FetchDrivers: () => {},
+  CloseModal: () => {},
+  DriverSet: () => {},
+  fleetSet: () => {},
+  setDriverVendor: () => {},
+  assignHub: () => {},
+};
 
 function StateToProps(state) {
   const { pickupOrdersReady, driversStore } = state.app;
@@ -998,10 +1179,10 @@ function DispatchToProps(dispatch, ownProps) {
       dispatch(NearbyFleets.FetchDriverFleet(fleetID));
     },
     PaginationActionDrivers: {
-      setCurrentPage: (currentPage) => {
+      setCurrentPage: currentPage => {
         dispatch(PickupOrdersReady.SetCurrentPageDrivers(currentPage));
       },
-      setLimit: (limit) => {
+      setLimit: limit => {
         dispatch(PickupOrdersReady.SetLimitDrivers(limit));
       },
     },

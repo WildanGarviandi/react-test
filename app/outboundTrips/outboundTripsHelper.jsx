@@ -1,120 +1,155 @@
-import lodash from 'lodash'
-import classNaming from 'classnames'
-import moment from 'moment'
-import React from 'react'
-import { connect } from 'react-redux'
+import React from 'react';
+import { connect } from 'react-redux';
 
-import { TripParser } from '../modules/trips'
-import styles from './styles.scss'
+import * as _ from 'lodash';
+import classNaming from 'classnames';
+import moment from 'moment';
+
+import { TripParser } from '../modules/trips';
+import styles from './styles.scss';
 import * as Hubs from '../modules/hubs';
-import * as OutboundTrips from './outboundTripsService'
-import { ButtonWithLoading } from '../views/base'
-import { DropdownWithState } from '../views/base/dropdown'
-import config from '../config/configValues.json'
+import * as OutboundTrips from './outboundTripsService';
+import { ButtonWithLoading } from '../views/base';
+import { DropdownWithState } from '../views/base/dropdown';
+import config from '../config/configValues.json';
 
-let vehicles = {}
-lodash.each(config.vehicle, (vehicle) => {
+const vehicles = {};
+_.each(config.vehicle, vehicle => {
   vehicles[vehicle.value.toUpperCase()] = vehicle.key;
-})
+});
 
 export function FullAddress(address) {
-  const Addr = address.Address1 && address.Address2 && (address.Address1.length < address.Address2.length) ? address.Address2 : address.Address1
-  return lodash.chain([Addr])
-    .filter((str) => (str && str.length > 0))
+  const Addr =
+    address.Address1 &&
+    address.Address2 &&
+    address.Address1.length < address.Address2.length
+      ? address.Address2
+      : address.Address1;
+  return _.chain([Addr])
+    .filter(str => str && str.length > 0)
     .value()
-    .join(', ')
+    .join(', ');
 }
 
 export function TripDropOff(trip) {
-  const destinationHub = trip.DestinationHub && (FullAddress(trip.DestinationHub))
-  const destinationDistrict = trip.District && ('District ' + trip.District.Name + ' - ' + trip.District.City + ' - ' + trip.District.Province)
-  const dropoffAddress = trip.DropoffAddress && FullAddress(trip.DropoffAddress)
+  const destinationHub =
+    trip.DestinationHub && FullAddress(trip.DestinationHub);
+  const dropoffAddress =
+    trip.DropoffAddress && FullAddress(trip.DropoffAddress);
 
   return {
     address: destinationHub || dropoffAddress || '',
-    city: (trip.DropoffAddress && trip.DropoffAddress.City) || (trip.District && trip.District.City) || '',
-    state: (trip.DropoffAddress && trip.DropoffAddress.State) || (trip.District && trip.District.Province) || ''
-  }
+    city:
+      (trip.DropoffAddress && trip.DropoffAddress.City) ||
+      (trip.District && trip.District.City) ||
+      '',
+    state:
+      (trip.DropoffAddress && trip.DropoffAddress.State) ||
+      (trip.District && trip.District.Province) ||
+      '',
+  };
 }
 
 export function AssignedTo(trip) {
-  var className = (trip.Driver && trip.Driver.Vehicle && trip.Driver.Vehicle.VehicleID === vehicles.MOTORCYCLE) ? styles.iconVehicleMotor : styles.iconVehicleMiniVan
-  var isActionDisabled = ((trip.FleetManager && trip.FleetManager.CompanyDetail) || (trip.Driver) || (trip.ExternalTrip))
+  const className =
+    trip.Driver &&
+    trip.Driver.Vehicle &&
+    trip.Driver.Vehicle.VehicleID === vehicles.MOTORCYCLE
+      ? styles.iconVehicleMotor
+      : styles.iconVehicleMiniVan;
+  const isActionDisabled =
+    (trip.FleetManager && trip.FleetManager.CompanyDetail) ||
+    trip.Driver ||
+    trip.ExternalTrip;
 
   return {
-    className: (trip.Driver && trip.Driver.Vehicle) ? className : '',
-    companyName: (trip.FleetManager && trip.FleetManager.CompanyDetail) ? trip.FleetManager.CompanyDetail.CompanyName : '',
-    driverDetail: (trip.Driver) ? trip.Driver.FirstName + ' ' + trip.Driver.LastName + ' / ' + trip.Driver.CountryCode + ' ' + trip.Driver.PhoneNumber : '',
-    thirdPartyLogistic: (trip.ExternalTrip) ? trip.ExternalTrip.Transportation : '',
-    awbNumber: (trip.ExternalTrip && trip.ExternalTrip.AwbNumber) ? ' ( ' + trip.ExternalTrip.AwbNumber + ' )' : '',
-    isActionDisabled: isActionDisabled
-  }
+    className: trip.Driver && trip.Driver.Vehicle ? className : '',
+    companyName:
+      trip.FleetManager && trip.FleetManager.CompanyDetail
+        ? trip.FleetManager.CompanyDetail.CompanyName
+        : '',
+    driverDetail: trip.Driver
+      ? `${trip.Driver.FirstName} ${trip.Driver.LastName} / ${trip.Driver
+          .CountryCode} ${trip.Driver.PhoneNumber}`
+      : '',
+    thirdPartyLogistic: trip.ExternalTrip
+      ? trip.ExternalTrip.Transportation
+      : '',
+    awbNumber:
+      trip.ExternalTrip && trip.ExternalTrip.AwbNumber
+        ? ` ( ${trip.ExternalTrip.AwbNumber} )`
+        : '',
+    isActionDisabled,
+  };
 }
 
 export function Remarks(trip) {
-  var notes = ''
+  let notes = '';
 
   if (trip.Notes) {
-    notes = trip.Notes
+    notes = trip.Notes;
     if (notes.length > 50) {
-      notes = notes.substring(0, 50) + ' ...'
+      notes = `${notes.substring(0, 50)} ...`;
     }
   }
 
-  return notes
+  return notes;
 }
 
 export function Weight(trip) {
-  var result = 0
+  let result = 0;
 
   if (trip.UserOrderRoutes) {
-    trip.UserOrderRoutes.forEach(function (val, key) {
-      result += val.UserOrder.PackageWeight
-    })
+    trip.UserOrderRoutes.forEach(val => {
+      result += val.UserOrder.PackageWeight;
+    });
   }
 
-  return result
+  return result;
 }
 
 export function DstHub(trip) {
   if (trip && trip.DestinationHub) {
-    var text = 'Hub -- ' + trip.DestinationHub.Name
-
-    return text
+    return `Hub -- ${trip.DestinationHub.Name}`;
   }
-
-  return
 }
 
 export function DstDistrict(trip) {
   if (trip && trip.District) {
-    var text = 'District -- ' + trip.District.Name
-    return text
+    return `District -- ${trip.District.Name}`;
   }
-
-  return
 }
 
 export function NextSuggestion(trip) {
   if (trip) {
-    var nextSuggestion = [];
-    for (var p in trip.NextDestinationSuggestion) {
-      if (trip.NextDestinationSuggestion.hasOwnProperty(p) && p !== 'NO_SUGGESTION') {
-        nextSuggestion.push(p + ' (' + trip.NextDestinationSuggestion[p] +
-          (trip.NextDestinationSuggestion[p] > 1 ? ' orders' : ' order') + ')');
+    const nextSuggestion = [];
+    // trip.NextDestinationSuggestion.forEach(p => {
+    for (const p in trip.NextDestinationSuggestion) {
+      if (
+        Object.prototype.hasOwnProperty.call(
+          trip.NextDestinationSuggestion,
+          p
+        ) &&
+        p !== 'NO_SUGGESTION'
+      ) {
+        nextSuggestion.push(
+          `${p} (${trip.NextDestinationSuggestion[p]}${trip
+            .NextDestinationSuggestion[p] > 1
+            ? ' orders'
+            : ' order'})`
+        );
       }
     }
 
     return nextSuggestion;
   }
-
-  return
 }
 
 export function ProcessTrip(trip) {
-  const parsedTrip = TripParser(trip)
-  const dropoff = TripDropOff(trip)
-  let tripType, nextDestination;
+  const parsedTrip = TripParser(trip);
+  const dropoff = TripDropOff(trip);
+  let tripType;
+  let nextDestination;
   let isAssigned = false;
 
   if (trip.DestinationHub) {
@@ -129,7 +164,8 @@ export function ProcessTrip(trip) {
     isAssigned = true;
     if (trip.DestinationHub) {
       tripType = 'Hub';
-      nextDestination = trip.DestinationHub && `Hub ${trip.DestinationHub.Name}`;
+      nextDestination =
+        trip.DestinationHub && `Hub ${trip.DestinationHub.Name}`;
     }
   } else {
     tripType = 'No Destination Yet';
@@ -139,30 +175,38 @@ export function ProcessTrip(trip) {
   return {
     containerNumber: trip.ContainerNumber,
     district: trip.District && trip.District.Name,
-    tripID: 'TRIP-' + trip.TripID,
+    tripID: `TRIP-${trip.TripID}`,
     fleet: AssignedTo(trip),
     driver: trip.Driver && `${trip.Driver.FirstName} ${trip.Driver.LastName}`,
-    nextDestination: nextDestination,
+    nextDestination,
     dropoffCity: dropoff.city,
     dropoffState: dropoff.state,
-    dropoffTime: moment(new Date(trip.DropoffTime)).format('DD MMM YYYY HH:mm:ss'),
+    dropoffTime: moment(new Date(trip.DropoffTime)).format(
+      'DD MMM YYYY HH:mm:ss'
+    ),
     key: trip.TripID,
     pickup: trip.PickupAddress && trip.PickupAddress.Address1,
-    pickupTime: moment(new Date(trip.PickupTime)).format('DD MMM YYYY HH:mm:ss'),
+    pickupTime: moment(new Date(trip.PickupTime)).format(
+      'DD MMM YYYY HH:mm:ss'
+    ),
     status: trip.OrderStatus && trip.OrderStatus.OrderStatus,
     tripNumber: trip.TripNumber,
-    tripType: tripType,
+    tripType,
     webstoreNames: parsedTrip.WebstoreNames,
-    numberPackages: trip.UserOrderRoutes.length,
+    numberPackages: trip.TotalOrders,
     nextSuggestion: NextSuggestion(trip),
-    weight: Weight(trip),
+    weight: trip.TotalWeight,
     remarks: Remarks(trip),
-    deadline: moment(new Date(trip.CreatedDate)).add(config.outboundDeadlineFromCreated, 'hours'),
+    deadline: moment(new Date(trip.CreatedDate)).add(
+      config.outboundDeadlineFromCreated,
+      'hours'
+    ),
     actions: trip.TripID,
     isActionDisabled: AssignedTo(trip).isActionDisabled,
-    vehicleID: trip.Driver && trip.Driver.Vehicle && trip.Driver.Vehicle.VehicleID,
-    isAssigned: isAssigned
-  }
+    vehicleID:
+      trip.Driver && trip.Driver.Vehicle && trip.Driver.Vehicle.VehicleID,
+    isAssigned,
+  };
 }
 
 const HubSetterClass = React.createClass({
@@ -187,12 +231,8 @@ const HubSetterClass = React.createClass({
     return (
       <div className={styles.hubSetter}>
         <span>Destination Hub : </span>
-        {
-          isFetching &&
-          <span>Fetching Hub List...</span>
-        }
-        {
-          !isFetching &&
+        {isFetching && <span>Fetching Hub List...</span>}
+        {!isFetching &&
           <span>
             <span className={classNaming(styles.districtsWrapper)}>
               <DropdownWithState
@@ -211,8 +251,7 @@ const HubSetterClass = React.createClass({
                 styles={{ base: styles.normalBtn }}
               />
             </div>
-          </span>
-        }
+          </span>}
       </div>
     );
   },
@@ -230,7 +269,7 @@ function mapState(state, ownParams) {
   return {
     isFetching,
     isUpdating: isHubUpdating,
-    hubs: lodash.map(list, (hub) => {
+    hubs: _.map(list, hub => {
       const data = { key: hub.HubID, value: hub.Name };
       return data;
     }),
@@ -244,7 +283,7 @@ function mapDispatch(dispatch, ownParams) {
     FetchList: () => {
       dispatch(Hubs.fetchNextDestinationList());
     },
-    SetHub: (hubID) => {
+    SetHub: hubID => {
       dispatch(OutboundTrips.setHub(ownParams.trip.TripID, hubID));
     },
   };
