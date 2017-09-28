@@ -8,25 +8,24 @@ import DropdownItemBase from './DropdownItem';
 
 class DropdownList extends PureComponent {
   render() {
-    const dropdownListStyles = classNames(styles['dropdown-list'],
-      this.props.dropdownStyles);
+    const dropdownListStyles = classNames(
+      styles['dropdown-list'],
+      this.props.dropdownStyles
+    );
     return (
       <div className={dropdownListStyles}>
-        {
-          this.props.data.map((data) => {
-            const renderData = (
-              <DropdownItemBase
-                key={data.id}
-                data={data}
-                iconStyles={this.props.iconStyles}
-                dropdownItemStyles={this.props.dropdownItemStyles}
-                contentStyles={this.props.contentStyles}
-                handleSelect={this.props.handleSelect}
-              />
-            );
-            return renderData;
-          })
-        }
+        {this.props.data.map(data => {
+          const renderData = (
+            <DropdownItemBase
+              key={data.id}
+              data={data}
+              dropdownItemStyles={this.props.dropdownItemStyles}
+              contentStyles={this.props.contentStyles}
+              handleSelect={this.props.handleSelect}
+            />
+          );
+          return renderData;
+        })}
       </div>
     );
   }
@@ -38,15 +37,13 @@ DropdownList.propTypes = {
   handleSelect: PropTypes.func.isRequired,
   dropdownStyles: PropTypes.any.isRequired,
   dropdownItemStyles: PropTypes.any.isRequired,
-  iconStyles: PropTypes.any,
-  contentStyles: PropTypes.any,
+  contentStyles: PropTypes.any
 };
 /* eslint-enable */
 
 DropdownList.defaultProps = {
   data: [],
-  iconStyles: {},
-  contentStyles: {},
+  contentStyles: {}
 };
 
 export default DropdownList;
