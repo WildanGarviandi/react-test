@@ -187,7 +187,9 @@
     "ICON_ONGOING_TRIPS": "/img/icon-ongoing-trips.png",
     "ICON_NOT_READY": "/img/icon-not-ready.png",
     "ICON_READY": "/img/icon-ready.png",
-    "ICON_GROUPING": "/img/icon-grouping.png"
+    "ICON_GROUPING": "/img/icon-grouping.png",
+    "ICON_EDIT": "/img/icon-edit.png",
+    "ICON_DELETE": "/img/icon-delete.png"
   },
   "assignCentralHub": true,
   "HTTP_STATUS": {

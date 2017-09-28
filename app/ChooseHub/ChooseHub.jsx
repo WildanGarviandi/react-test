@@ -10,15 +10,18 @@ import DropdownList from '../components/DropdownMenu';
 import getCurrentState from './Selector';
 import { ChooseHubAction } from '../modules/';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   const stateToProps = getCurrentState(state);
   return stateToProps;
 };
 
-const mapDispatchToProps = (dispatch) => {
-  const dispatchData = bindActionCreators({
-    chooseHub: ChooseHubAction.chooseHub,
-  }, dispatch);
+const mapDispatchToProps = dispatch => {
+  const dispatchData = bindActionCreators(
+    {
+      chooseHub: ChooseHubAction.chooseHub
+    },
+    dispatch
+  );
 
   return dispatchData;
 };
@@ -27,15 +30,16 @@ class ChooseHub extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      data: this.props.hubs.map((hub) => {
-        const prefix = hub.Hub.Type === configValues.HUB_TYPE.GENERAL ?
-            'Local ' : '';
+      data: this.props.hubs.map(hub => {
+        const prefix =
+          hub.Hub.Type === configValues.HUB_TYPE.GENERAL ? 'Local ' : '';
         const data = {
           id: hub.Hub.HubID,
           name: `${prefix}${hub.Hub.Name}`,
+          iconStyles: styles['etobee-logo']
         };
         return data;
-      }),
+      })
     };
     this.handleSelect = this.handleSelect.bind(this);
   }
@@ -51,10 +55,7 @@ class ChooseHub extends PureComponent {
           <div className={styles.choose__header}>
             <div className={styles['header-top']}>
               <div className={styles['header-top__img']}>
-                <img
-                  src={configValues.IMAGES.LOGO}
-                  alt="etobee logo"
-                />
+                <img src={configValues.IMAGES.LOGO} alt="etobee logo" />
               </div>
               <div className={styles['header-top__title']}>
                 <span>etobee</span>
@@ -67,7 +68,6 @@ class ChooseHub extends PureComponent {
           <DropdownList
             data={this.state.data}
             handleSelect={this.handleSelect}
-            iconStyles={styles['etobee-logo']}
             dropdownStyles={styles['dropdown-list']}
             dropdownItemStyles={styles['dropdown-hub']}
             contentStyles={styles['dropdown-content']}
@@ -81,7 +81,7 @@ class ChooseHub extends PureComponent {
 /* eslint-disable */
 ChooseHub.propTypes = {
   hubs: PropTypes.array.isRequired,
-  chooseHub: PropTypes.func.isRequired,
+  chooseHub: PropTypes.func.isRequired
 };
 /* eslint-enable */
 
