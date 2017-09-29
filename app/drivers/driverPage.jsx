@@ -28,7 +28,7 @@ function StoreBuilder(keyword) {
     const { filters } = store.app.myDrivers;
 
     return {
-      value: filters[keyword]
+      value: filters[keyword],
     };
   };
 }
@@ -52,7 +52,7 @@ function DispatchBuilder(keyword, placeholder) {
     return {
       onChange: OnChange,
       onKeyDown: OnKeyDown,
-      placeholder
+      placeholder,
     };
   };
 }
@@ -128,25 +128,25 @@ const Drivers = React.createClass({
         {driverComponents}
       </div>
     );
-  }
+  },
 });
 
 const PanelDrivers = React.createClass({
   getInitialState() {
     return {
       showAddModals: false,
-      ProfilePicture: DEFAULT_IMAGE
+      ProfilePicture: DEFAULT_IMAGE,
     };
   },
   addDriverModal() {
     this.setState({
-      showAddModals: true
+      showAddModals: true,
     });
   },
   closeModal() {
     this.setState({
       showAddModals: false,
-      ProfilePicture: DEFAULT_IMAGE
+      ProfilePicture: DEFAULT_IMAGE,
     });
   },
   stateChange(key) {
@@ -159,7 +159,7 @@ const PanelDrivers = React.createClass({
   },
   setPicture(url) {
     this.setState({
-      ProfilePicture: url
+      ProfilePicture: url,
     });
   },
   addDriver() {
@@ -172,7 +172,7 @@ const PanelDrivers = React.createClass({
       'StateID',
       'ZipCode',
       'PackageSizeID',
-      'Password'
+      'Password',
     ];
     const filledFields = Object.keys(this.state);
     const unfilledFields = lodash.difference(mandatoryFields, filledFields);
@@ -189,15 +189,15 @@ const PanelDrivers = React.createClass({
       textBase: '+ Add',
       onClick: this.addDriverModal,
       styles: {
-        base: stylesButton.whiteButton
-      }
+        base: stylesButton.whiteButton,
+      },
     };
     const submitButton = {
       textBase: 'Add New Driver',
       onClick: this.addDriver,
       styles: {
-        base: stylesButton.blueButton
-      }
+        base: stylesButton.blueButton,
+      },
     };
     const vehicleOptions = config.vehicle;
     const stateOptions = lodash
@@ -332,7 +332,7 @@ const PanelDrivers = React.createClass({
           </ModalContainer>}
       </div>
     );
-  }
+  },
 });
 
 const RowDetails = React.createClass({
@@ -360,7 +360,7 @@ const RowDetails = React.createClass({
         </div>
       </div>
     );
-  }
+  },
 });
 
 const RowDetailsDropdown = React.createClass({
@@ -387,13 +387,13 @@ const RowDetailsDropdown = React.createClass({
         </div>
       </div>
     );
-  }
+  },
 });
 
 const PanelDriversDetails = React.createClass({
   getInitialState() {
     return {
-      isEditing: false
+      isEditing: false,
     };
   },
   stateChange(key) {
@@ -407,12 +407,12 @@ const PanelDriversDetails = React.createClass({
   componentWillReceiveProps(nextProps) {
     this.setState({ isEditing: false });
     this.setState({
-      ProfilePicture: nextProps.driver.ProfilePicture || DEFAULT_IMAGE
+      ProfilePicture: nextProps.driver.ProfilePicture || DEFAULT_IMAGE,
     });
   },
   toggleEditDriver() {
     this.setState({
-      isEditing: !this.state.isEditing
+      isEditing: !this.state.isEditing,
     });
   },
   updateDriver() {
@@ -422,14 +422,17 @@ const PanelDriversDetails = React.createClass({
   },
   setPicture(url) {
     this.setState({
-      ProfilePicture: url
+      ProfilePicture: url,
     });
   },
   handleSelect(menu) {
     if (menu.id === 'EDIT') {
       this.setState({
-        isEditing: !this.state.isEditing
+        isEditing: !this.state.isEditing,
       });
+    }
+    if (menu.id === 'DELETE') {
+      this.props.deleteDriver(this.props.driver.UserID);
     }
   },
   render() {
@@ -438,12 +441,12 @@ const PanelDriversDetails = React.createClass({
       textBase: 'Update Profile',
       onClick: this.updateDriver,
       styles: {
-        base: stylesButton.greenButton3
-      }
+        base: stylesButton.greenButton3,
+      },
     };
     const vehicleOptions = config.vehicle;
     const vehicleValue = lodash.find(vehicleOptions, {
-      key: driver.PackageSizeMaster && driver.PackageSizeMaster.PackageSizeID
+      key: driver.PackageSizeMaster && driver.PackageSizeMaster.PackageSizeID,
     });
     const stateOptions = lodash
       .chain(stateList)
@@ -551,7 +554,7 @@ const PanelDriversDetails = React.createClass({
           </div>}
       </div>
     );
-  }
+  },
 });
 
 const Deadline = React.createClass({
@@ -559,7 +562,7 @@ const Deadline = React.createClass({
     let format = {
       hour: 'hh',
       minute: 'mm',
-      second: 'ss'
+      second: 'ss',
     };
     let Duration = moment.duration(
       moment(this.props.deadline).diff(moment(new Date()))
@@ -591,7 +594,7 @@ const Deadline = React.createClass({
         </span>
       );
     }
-  }
+  },
 });
 
 const DriverOrders = React.createClass({
@@ -643,7 +646,7 @@ const DriverOrders = React.createClass({
         {orderComponents}
       </div>
     );
-  }
+  },
 });
 
 const PanelDriversOrders = React.createClass({
@@ -732,7 +735,7 @@ const PanelDriversOrders = React.createClass({
           </div>}
       </div>
     );
-  }
+  },
 });
 
 const DriverPage = React.createClass({
@@ -753,7 +756,8 @@ const DriverPage = React.createClass({
       driver,
       orders,
       SelectDriver,
-      isFetchingOrders
+      isFetchingOrders,
+      deleteDriver,
     } = this.props;
     return (
       <Page title="My Driver">
@@ -776,6 +780,7 @@ const DriverPage = React.createClass({
               driver={driver}
               stateList={stateList}
               editDriver={EditDriver}
+              deleteDriver={deleteDriver}
             />}
           {!lodash.isEmpty(driver) &&
             <PanelDriversOrders
@@ -788,7 +793,7 @@ const DriverPage = React.createClass({
         </div>
       </Page>
     );
-  }
+  },
 });
 
 function StoreToDriversPage(store) {
@@ -802,7 +807,7 @@ function StoreToDriversPage(store) {
     drivers,
     driver,
     orders,
-    isFetchingOrders
+    isFetchingOrders,
   } = store.app.myDrivers;
   const { states } = store.app.stateList;
   let stateList = {};
@@ -814,17 +819,17 @@ function StoreToDriversPage(store) {
     paginationState: {
       currentPage,
       limit,
-      total
+      total,
     },
     paginationStateOrders: {
       currentPage: currentPageOrders,
       limit: limitOrders,
-      total: totalOrders
+      total: totalOrders,
     },
     driver: driver,
     orders: orders,
     stateList: stateList,
-    isFetchingOrders: isFetchingOrders
+    isFetchingOrders: isFetchingOrders,
   };
 }
 
@@ -839,7 +844,7 @@ function DispatchToDriversPage(dispatch) {
       },
       setLimit: limit => {
         dispatch(DriverService.SetLimit(limit));
-      }
+      },
     },
     PaginationActionOrders: {
       setCurrentPage: currentPage => {
@@ -847,7 +852,7 @@ function DispatchToDriversPage(dispatch) {
       },
       setLimit: limit => {
         dispatch(DriverService.SetLimitOrders(limit));
-      }
+      },
     },
     SelectDriver: id => {
       dispatch(DriverService.FetchDetails(id));
@@ -861,7 +866,10 @@ function DispatchToDriversPage(dispatch) {
     },
     ResetDriver: () => {
       dispatch(DriverService.ResetDriver());
-    }
+    },
+    deleteDriver: driverId => {
+      dispatch(DriverService.deleteDriver(driverId));
+    },
   };
 }
 
