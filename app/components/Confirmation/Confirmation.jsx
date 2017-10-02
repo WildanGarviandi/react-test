@@ -29,7 +29,7 @@ class Confirmation extends PureComponent {
       <ModalContainer onClose={closeModal}>
         <ModalDialog onClose={closeModal} className={modalStyles}>
           <div className={newHeaderStyles}>
-            <img src={icon} alt="img" />
+            <img src={icon} alt="" />
             <div className={newTitleStyles}>
               {title}
             </div>

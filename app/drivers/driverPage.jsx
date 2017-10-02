@@ -20,6 +20,7 @@ import ImagePreview from '../views/base/imagePreview';
 import ImageUploader from '../views/base/imageUploader';
 import * as UtilHelper from '../helper/utility';
 import EllipsisMenu from './components/EllipsisMenu';
+import Confirmation from '../components/Confirmation';
 
 const DEFAULT_IMAGE = '/img/photo-default.png';
 
@@ -394,6 +395,7 @@ const PanelDriversDetails = React.createClass({
   getInitialState() {
     return {
       isEditing: false,
+      deleteConfirmation: false,
     };
   },
   stateChange(key) {
@@ -432,8 +434,60 @@ const PanelDriversDetails = React.createClass({
       });
     }
     if (menu.id === 'DELETE') {
-      this.props.deleteDriver(this.props.driver.UserID);
+      const { PictureUrl } = this.props.driver;
+      this.setState({
+        deleteConfirmation: true,
+      });
     }
+  },
+  hideDeleteConf() {
+    this.setState({ deleteConfirmation: false });
+  },
+  deleteDriver() {
+    this.props.deleteDriver(this.props.driver.UserID);
+    this.hideDeleteConf();
+  },
+  getDeleteConfirmationProps() {
+    const { PictureUrl, FirstName, LastName } = this.props.driver;
+    const props = {
+      closeModal: this.hideDeleteConf,
+      modalStyles: styles['delete-conf__modal-style'],
+      title: (
+        <div>
+          <p className={styles['delete-conf__title']}>
+            Delete Driver Confirmation
+          </p>
+          <img
+            src={PictureUrl}
+            alt=""
+            className={styles['delete-conf__picture']}
+          />
+          <p
+            className={styles['delete-conf__driver-name']}
+          >{`${FirstName} ${LastName}`}</p>
+        </div>
+      ),
+      descStyles: styles['delete-conf__desc-style'],
+      desc: 'Are you really sure want to delete this driver?',
+      children: (
+        <div>
+          <button
+            className={styles['delete-conf__no-btn']}
+            onClick={this.hideDeleteConf}
+          >
+            No
+          </button>
+          <button
+            className={styles['delete-conf__yes-btn']}
+            onClick={this.deleteDriver}
+          >
+            Yes
+          </button>
+        </div>
+      ),
+    };
+
+    return props;
   },
   render() {
     const { driver, stateList } = this.props;
@@ -453,8 +507,11 @@ const PanelDriversDetails = React.createClass({
       .map((key, val) => ({ key, value: val.toUpperCase() }))
       .sortBy(arr => arr.key)
       .value();
+
     return (
       <div className={styles.mainDriverDetailsPanel}>
+        {this.state.deleteConfirmation &&
+          <Confirmation {...this.getDeleteConfirmationProps()} />}
         <div className={styles.driverTitle}>Driver Details</div>
         <div
           role="none"
