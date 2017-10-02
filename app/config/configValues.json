@@ -189,7 +189,10 @@
     "ICON_READY": "/img/icon-ready.png",
     "ICON_GROUPING": "/img/icon-grouping.png",
     "ICON_EDIT": "/img/icon-edit.png",
-    "ICON_DELETE": "/img/icon-delete.png"
+    "ICON_DELETE": "/img/icon-delete.png",
+    "ICON_MAP": "/img/icon-map.png",
+    "PIN_DRIVER_RED": "/img/pin-driver-red.png",
+    "PIN_DRIVER_GREEN": "/img/pin-driver-green.png"
   },
   "assignCentralHub": true,
   "HTTP_STATUS": {
