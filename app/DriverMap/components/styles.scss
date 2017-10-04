@@ -3,7 +3,7 @@
 }
 
 .maps-container {
-  height: calc(98vh - 40px);
+  height: calc(98vh - 70px);
 }
 
 .overlay {
@@ -71,8 +71,9 @@
 
     &--name,
     &--order,
-    &--availability {
-      margin: 5px 0;
+    &--available,
+    &--not-available {
+      margin: 5px 0 0;
     }
   }
 }
