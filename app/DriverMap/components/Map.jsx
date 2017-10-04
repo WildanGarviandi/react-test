@@ -25,13 +25,23 @@ const GoogleMaps = withGoogleMap(props =>
             role="none"
             onClick={() => props.openDetails(driver.DriverCurrentLocationID)}
             alt="driver"
-            src={config.IMAGES.PIN_DRIVER_GREEN}
+            src={
+              driver.isAvailable
+                ? config.IMAGES.PIN_DRIVER_GREEN
+                : config.IMAGES.PIN_DRIVER_RED
+            }
             className={styles['overlay__pin-driver']}
           />
+          <h1>
+            {driver.isAvailable}
+          </h1>
           {props.selectedDriver === driver.DriverCurrentLocationID &&
             <Details
+              orders={driver.NumberOfOrders}
               driver={driver.Driver}
+              isAvailable={driver.isAvailable}
               setCurrentDriver={props.openDetails}
+              numberOfOrders={driver.NumberOfOrders}
             />}
         </div>
       </OverlayView>

@@ -22,11 +22,18 @@
     padding: 5px;
     min-width: 250px;
     border-radius: 5px;
-    border: 2px solid #38b393;
     background: #fff;
     position: absolute;
     top: -75px;
     left: -120px;
+
+    &--available {
+      border: 2px solid #38b393;
+    }
+
+    &--not-available {
+      border: 2px solid #ff5b60;
+    }
   }
 
   &__picture {
@@ -49,9 +56,17 @@
       color: #ccc;
     }
 
-    &--availability {
+    &--available,
+    &--not-available {
       font-size: 10px;
+    }
+
+    &--available {
       color: #38b393;
+    }
+
+    &--not-available {
+      color: #ff5b60;
     }
 
     &--name,
