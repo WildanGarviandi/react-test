@@ -36,6 +36,7 @@ import { Reducer as performance } from './performance/performanceService';
 import orderMonitoring from './orderMonitoring/orderMonitoringService';
 import tripProblems from './tripProblems/tripProblemsService';
 import errors from './modules/errors';
+import { reducer as driverWorkingTime } from './modules/driverWorkingTime';
 
 export default combineReducers({
   userLogged: authReducers,
@@ -78,4 +79,5 @@ export default combineReducers({
   orderMonitoring,
   tripProblems,
   errors,
+  driverWorkingTime
 });

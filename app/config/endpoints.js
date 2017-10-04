@@ -4,6 +4,8 @@ const endpoints = {
   UPDATE_HUB: '/update-hub',
 
   TRIP: 'trip',
+  DRIVER: 'driver',
+  WORKING_HOUR: 'working-hour'
 };
 
 export default endpoints;
