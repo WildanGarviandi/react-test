@@ -4,9 +4,8 @@ import { connect } from 'react-redux';
 import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 
-import HourDropdown from './HourDropdown';
+import HourContent from './HourContent';
 import styles from './styles.scss';
-import { ButtonStandard } from '../../../components/Button';
 import getWorkingHourList from '../../helper';
 import { getTimeFormat } from '../../../helper/utility';
 
@@ -32,44 +31,68 @@ class TimeContent extends PureComponent {
         FRIDAY: [],
         SATURDAY: [],
         SUNDAY: []
+      },
+      action: {
+        ADD: {
+          icon: 'plus',
+          class: styles.action__plus
+        },
+        DELETE: {
+          icon: 'trash',
+          class: styles.action__trash
+        }
       }
     };
-    this.handleToggleFrom = this.handleToggleFrom.bind(this);
-    this.handleToggleTo = this.handleToggleTo.bind(this);
-    this.closeAllHourDropdown = this.closeAllHourDropdown.bind(this);
-    this.handleSelectFrom = this.handleSelectFrom.bind(this);
-    this.handleSelectTo = this.handleSelectTo.bind(this);
+    this.handleSelect = this.handleSelect.bind(this);
+    this.handleToggle = this.handleToggle.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
     const selectedDay = nextProps.selectedDay.value;
-    const newWorkingTimes = _.cloneDeep(this.state.workingTimes);
-    const newWorkingHour = _.find(nextProps.workingTime, time => {
-      const isValid = time.DayOfWeek === selectedDay;
-      return isValid;
-    }).WorkingHour;
 
-    newWorkingHour.forEach((workingHour, index) => {
-      newWorkingTimes[selectedDay.toUpperCase()][index] = {
-        key: index,
-        from: getWorkingHourList(workingHour.EndTime),
-        selectedFrom: getTimeFormat(
-          workingHour.StartTime.hour,
-          workingHour.StartTime.to
-        ),
-        to: getWorkingHourList(workingHour.EndTime),
-        selectedTo: getTimeFormat(
-          workingHour.EndTime.hour,
-          workingHour.EndTime.to
-        ),
-        isChangeFromHour: false,
-        isChangeToHour: false
-      };
-    });
+    if (selectedDay) {
+      const newWorkingTimes = _.cloneDeep(this.state.workingTimes);
+      const newWorkingHour = _.find(nextProps.workingTime, time => {
+        const isValid = time.DayOfWeek === selectedDay;
+        return isValid;
+      }).WorkingHour;
 
-    this.setState({
-      workingTimes: newWorkingTimes
-    });
+      newWorkingTimes[selectedDay.toUpperCase()] = [];
+
+      newWorkingHour.forEach((workingHour, index) => {
+        newWorkingTimes[selectedDay.toUpperCase()].push({
+          key: _.uniqueId(),
+          from: getWorkingHourList(
+            index === 0
+              ? {
+                  hour: 0
+                }
+              : workingHour.EndTime
+          ),
+          selectedFrom: getTimeFormat(
+            workingHour.StartTime.hour,
+            workingHour.StartTime.to
+          ),
+          to: getWorkingHourList(
+            index === 0
+              ? {
+                  hour: 0
+                }
+              : workingHour.EndTime
+          ),
+          selectedTo: getTimeFormat(
+            workingHour.EndTime.hour,
+            workingHour.EndTime.to
+          ),
+          isChangeFromHour: false,
+          isChangeToHour: false
+        });
+      });
+
+      this.setState({
+        workingTimes: newWorkingTimes
+      });
+    }
   }
 
   handleSelect(date, key, attr) {
@@ -78,21 +101,24 @@ class TimeContent extends PureComponent {
 
     const workingTimes = _.cloneDeep(this.state.workingTimes);
 
-    workingTimes[selectedAttr][key][attr] = date.name;
-    workingTimes[selectedAttr][key].isChangeFromHour = false;
-    workingTimes[selectedAttr][key].isChangeToHour = false;
+    workingTimes[selectedAttr] = _.map(
+      workingTimes[selectedAttr],
+      workingTime => {
+        if (workingTime.key === key) {
+          const newWorkingTime = _.cloneDeep(workingTime);
+          newWorkingTime[attr] = date.name;
+          newWorkingTime.isChangeFromHour = false;
+          newWorkingTime.isChangeToHour = false;
+          return newWorkingTime;
+        }
+
+        return workingTime;
+      }
+    );
 
     this.setState({
       workingTimes
     });
-  }
-
-  handleSelectFrom(date, key) {
-    this.handleSelect(date, key, 'selectedFrom');
-  }
-
-  handleSelectTo(date, key) {
-    this.handleSelect(date, key, 'selectedTo');
   }
 
   handleToggle(selectedWorkingHour, attr) {
@@ -124,18 +150,6 @@ class TimeContent extends PureComponent {
     });
   }
 
-  handleToggleFrom(selectedWorkingHour) {
-    this.handleToggle(selectedWorkingHour, 'isChangeFromHour');
-  }
-
-  handleToggleTo(selectedWorkingHour) {
-    this.handleToggle(selectedWorkingHour, 'isChangeToHour');
-  }
-
-  closeAllHourDropdown() {
-    this.handleToggle();
-  }
-
   render() {
     const { selectedDay } = this.props;
 
@@ -154,48 +168,20 @@ class TimeContent extends PureComponent {
           {selectedDay.value}
         </p>
         {workingTimes.length > 0 &&
-          workingTimes.map(workingTime => {
+          workingTimes.map((workingTime, index) => {
             const tmpl = (
-              <div key={workingTime.key} className={styles.workingTime}>
-                {!workingTime.isChangeFromHour &&
-                  <div
-                    className={styles.textHour}
-                    role="none"
-                    onClick={() => this.handleToggleFrom(workingTime)}
-                  >
-                    <p className={styles.textHour__title}>From</p>
-                    <p>
-                      {workingTime.selectedFrom}
-                    </p>
-                  </div>}
-                {workingTime.isChangeFromHour &&
-                  <HourDropdown
-                    workingTime={workingTime}
-                    attr={'from'}
-                    handleSelect={this.handleSelectFrom}
-                    handleClickOutside={this.closeAllHourDropdown}
-                  />}
-                {!workingTime.isChangeToHour &&
-                  <div
-                    className={styles.textHour}
-                    role="none"
-                    onClick={() => this.handleToggleTo(workingTime)}
-                  >
-                    <p className={styles.textHour__title}>To</p>
-                    <p>
-                      {workingTime.selectedTo}
-                    </p>
-                  </div>}
-                {workingTime.isChangeToHour &&
-                  <HourDropdown
-                    workingTime={workingTime}
-                    attr={'to'}
-                    handleSelect={this.handleSelectTo}
-                    handleClickOutside={this.closeAllHourDropdown}
-                  />}
-              </div>
+              <HourContent
+                key={workingTime.key}
+                workingTime={workingTime}
+                handleToggle={this.handleToggle}
+                handleSelect={this.handleSelect}
+                action={
+                  index === workingTimes.length - 1
+                    ? this.state.action.ADD
+                    : this.state.action.DELETE
+                }
+              />
             );
-
             return tmpl;
           })}
       </div>

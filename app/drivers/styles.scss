@@ -472,3 +472,21 @@
     }
   }
 }
+
+.checkAvailable {
+  width: 120px;
+  height: 30px;
+  border-radius: 3px;
+  background-color: #fff;
+  border: solid 1px #e8e8e8;
+  color: #ffa500;
+  font-weight: bold;
+  position: absolute;
+  margin-left: 152px;
+  margin-top: -22px;
+
+  &:hover {
+    background-color: #d2eafc;
+    cursor: pointer;
+  }
+}

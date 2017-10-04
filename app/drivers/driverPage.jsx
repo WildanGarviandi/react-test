@@ -9,7 +9,7 @@ import moment from 'moment';
 
 import { Page } from '../components/page';
 import { Pagination3 } from '../components/pagination3';
-import { ButtonWithLoading } from '../components/Button';
+import { ButtonWithLoading, ButtonStandard } from '../components/Button';
 import * as DriverService from './driverService';
 import styles from './styles.scss';
 import stylesButton from '../components/Button/styles.scss';
@@ -394,7 +394,15 @@ const RowDetailsDropdown = React.createClass({
 const PanelDriversDetails = React.createClass({
   getInitialState() {
     return {
-      isEditing: false
+      isEditing: false,
+      isSetWorkingHour: false,
+      buttonAction: {
+        textBase: 'Check Availability',
+        onClick: this.toggleShowSetWorkingHour,
+        styles: {
+          base: styles.checkAvailable
+        }
+      }
     };
   },
   stateChange(key) {
@@ -414,6 +422,11 @@ const PanelDriversDetails = React.createClass({
   toggleEditDriver() {
     this.setState({
       isEditing: !this.state.isEditing
+    });
+  },
+  toggleShowSetWorkingHour() {
+    this.setState({
+      isSetWorkingHour: !this.state.isSetWorkingHour
     });
   },
   updateDriver() {
@@ -462,11 +475,16 @@ const PanelDriversDetails = React.createClass({
         >
           <span className={styles.ellipsisMenu} />
         </div>
+        <ButtonStandard {...this.state.buttonAction} />
         <EllipsisMenu
           handleSelect={this.handleSelect}
           isEditing={this.state.isEditing}
-        />
-        <DriverWorkHourModal profilePicture={ProfilePicture} driver={driver} />
+        /> 
+        {this.state.isSetWorkingHour &&
+          <DriverWorkHourModal
+            profilePicture={ProfilePicture}
+            driver={driver}
+          />}
         <div className={styles.driverDetailsMain}>
           <div className={styles.driverDetailsPicture}>
             {this.state.isEditing &&

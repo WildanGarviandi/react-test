@@ -58,6 +58,31 @@ export function reducer(state = initialState, action) {
   switch (action.type) {
     case RESET_WORKING_TIME:
       return Object.assign({}, initialState);
+    case FETCH_WORKING_TIME: {
+      const newWorkingTime = _.cloneDeep(state.workingTime);
+      action.payload.data.forEach((data, index) => {
+        newWorkingTime[
+          index
+        ].WorkingHour = _.map(data.WorkingHour, workingHour => {
+          const momentDateStart = new Date(workingHour.StartTime);
+          const momentDateEnd = new Date(workingHour.EndTime);
+          return {
+            StartTime: {
+              hour: parseInt(momentDateStart.getUTCHours(), 10),
+              minute: parseInt(momentDateStart.getUTCMinutes(), 10)
+            },
+            EndTime: {
+              hour: parseInt(momentDateEnd.getUTCHours(), 10),
+              minute: parseInt(momentDateEnd.getUTCMinutes(), 10)
+            }
+          };
+        });
+      });
+      
+      return Object.assign({}, state, {
+        workingTime: newWorkingTime
+      });
+    }
     case SELECT_WORKING_DAY: {
       const { selectedDay } = action.payload;
       let newWorkingTime = _.cloneDeep(state.workingTime);
@@ -111,7 +136,7 @@ export function selectWorkingDay(selectedDay) {
   };
 }
 
-const handleErrorResponse = async (response) => {
+const handleErrorResponse = async response => {
   const errorValue = response.json().then(({ error }) => {
     throw error;
   });
@@ -134,7 +159,13 @@ export function fetchWorkingTime() {
       );
       if (response.ok) {
         const responseJson = await response.json();
-        console.log(responseJson);
+        const { data } = responseJson;
+        dispatch({
+          type: FETCH_WORKING_TIME,
+          payload: {
+            data
+          }
+        });
       } else {
         await handleErrorResponse(response);
       }

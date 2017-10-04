@@ -9,7 +9,6 @@ import ImagePreview from '../../../views/base/imagePreview';
 import configValues from '../../../config/configValues.json';
 import { ButtonStandard } from '../../../components/Button';
 import {
-  resetWorkingTime,
   selectWorkingDay
 } from '../../../modules/driverWorkingTime';
 
@@ -25,7 +24,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   const dispatchData = bindActionCreators(
     {
-      resetWorkingTime,
       selectWorkingDay
     },
     dispatch
@@ -38,7 +36,6 @@ class DayContent extends PureComponent {
   constructor(props) {
     super(props);
     this.handleSelectDay = this.handleSelectDay.bind(this);
-    this.props.resetWorkingTime();
   }
 
   handleSelectDay(day) {
@@ -80,7 +77,6 @@ DayContent.propTypes = {
   profilePicture: PropTypes.string,
   driver: PropTypes.object,
   DayOfWeek: PropTypes.array,
-  resetWorkingTime: PropTypes.func.isRequired,
   selectWorkingDay: PropTypes.func.isRequired
 };
 /* eslint-enable */

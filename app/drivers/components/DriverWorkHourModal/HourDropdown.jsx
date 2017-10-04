@@ -21,13 +21,13 @@ class HourDropdown extends Component {
   }
 
   render() {
-    const { workingTime, attr } = this.props;
+    const { workingTime, attr, dropdownStyles } = this.props;
 
     return (
       <DropdownList
         data={workingTime[attr]}
         handleSelect={this.handleSelect}
-        dropdownStyles={styles.dropdownMenu}
+        dropdownStyles={dropdownStyles}
         dropdownItemStyles={styles.dropdownMenu__item}
         contentStyles={styles.dropdownMenu__content}
       />
@@ -40,8 +40,13 @@ HourDropdown.propTypes = {
   handleClickOutside: PropTypes.func.isRequired,
   handleSelect: PropTypes.func.isRequired,
   workingTime: PropTypes.object.isRequired,
-  attr: PropTypes.string.isRequired
+  attr: PropTypes.string.isRequired,
+  dropdownStyles: PropTypes.object
 };
 /* eslint-enable */
+
+HourDropdown.defaultProps = {
+  dropdownItemStyles: {}
+};
 
 export default onClickOutside(HourDropdown);

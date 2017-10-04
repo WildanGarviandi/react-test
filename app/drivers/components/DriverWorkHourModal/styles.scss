@@ -108,7 +108,6 @@
   border: solid 1px #e8e8e8;
   border-radius: 4px;
   background-color: white;
-  margin: 0 25px 8px;
   padding: 5px 10px;
   cursor: pointer;
 
@@ -121,6 +120,18 @@
   p {
     margin: 0;
   }
+
+  &__left {
+    @extend .textHour;
+
+    margin: 0 25px 8px 16px;
+  }
+
+  &__right {
+    @extend .textHour;
+
+    margin: 0 16px 8px 25px;
+  }
 }
 
 .dropdownMenu {
@@ -129,7 +140,6 @@
   border: solid 1px #e8e8e8;
   border-radius: 4px;
   background-color: white;
-  margin: 0 25px 8px;
 
   &__item {
     width: 100%;
@@ -143,7 +153,52 @@
     }
   }
 
+  &--left {
+    @extend .dropdownMenu;
+
+    margin: 0 25px 8px 16px;
+  }
+
+  &--right {
+    @extend .dropdownMenu;
+
+    margin: 0 16px 8px 25px;
+  }
+
   &__content {
     margin-left: 25px;
+  }
+}
+
+.action {
+  width: 56px;
+  height: 45px;
+  border-radius: 4px;
+  margin-right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &__plus {
+    @extend .action;
+
+    color: white;
+    background-color: #2196f3;
+  }
+
+  &__plus:hover {
+    background-color: #d2eafc;
+  }
+
+  &__trash {
+    @extend .action;
+
+    color: red;
+    background-color: white;
+  }
+
+  &__trash:hover {
+    color: #2196f3;
   }
 }
