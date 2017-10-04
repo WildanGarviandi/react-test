@@ -1,6 +1,7 @@
 import lodash from 'lodash';
 import FetchGet from '../modules/fetch/get';
 import FetchPost from '../modules/fetch/post';
+import FetchDelete from '../modules/fetch/delete';
 import ModalActions from '../modules/modals/actions';
 import { modalAction } from '../modules/modals/constants';
 import { formatRef } from '../helper/utility';
@@ -467,16 +468,16 @@ export function ResetDriver() {
 export function deleteDriver(driverId) {
   const dispatchFunc = (dispatch, getState) => {
     const { token } = getState().app.userLogged;
-    const url = `/${formatRef(endpoints.DRIVER, driverId, endpoints.DELETE)}`;
+    const url = `/${formatRef(endpoints.DRIVER, driverId)}`;
 
-    FetchPost(url, token)
+    FetchDelete(url, token)
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to delete driver');
         }
 
-        response.json().then(resJson => {
-          console.log(resJson);
+        response.json().then(({ data }) => {
+          dispatch(ModalActions.addMessage(data.message));
         });
       })
       .catch(e => {
