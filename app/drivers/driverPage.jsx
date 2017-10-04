@@ -99,6 +99,7 @@ const Drivers = React.createClass({
             <div className={driverStyle}>
               <div className={styles.vehicleIcon}>
                 <img
+                  alt="driver"
                   className={styles.driverLoadImage}
                   src={driver.ProfilePicture || DEFAULT_IMAGE}
                   onError={e => {
@@ -109,7 +110,7 @@ const Drivers = React.createClass({
               <div className={styles.driverDetails}>
                 <span className={styles.driverName}>
                   {UtilHelper.trimString(
-                    driver.FirstName + ' ' + driver.LastName,
+                    `${driver.FirstName} ${driver.LastName}`,
                     20
                   )}
                 </span>
@@ -118,6 +119,27 @@ const Drivers = React.createClass({
                 <span className={styles.vendorLoad}>
                   Number of orders : {driver.TotalOrders}
                 </span>
+                <div className={styles['availability-container']}>
+                  <img
+                    alt="available"
+                    src={
+                      driver.isAvailable
+                        ? config.IMAGES.ICON_AVAILABLE
+                        : config.IMAGES.ICON_NOT_AVAILABLE
+                    }
+                  />
+                  <span
+                    className={
+                      driver.isAvailable
+                        ? styles.available
+                        : styles['not-available']
+                    }
+                  >
+                    {driver.isAvailable
+                      ? 'Available fro delivery'
+                      : 'Currently not available'}
+                  </span>
+                </div>
               </div>
             </div>
           </div>

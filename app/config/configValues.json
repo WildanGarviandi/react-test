@@ -189,7 +189,9 @@
     "ICON_READY": "/img/icon-ready.png",
     "ICON_GROUPING": "/img/icon-grouping.png",
     "ICON_EDIT": "/img/icon-edit.png",
-    "ICON_DELETE": "/img/icon-delete.png"
+    "ICON_DELETE": "/img/icon-delete.png",
+    "ICON_AVAILABLE": "/img/icon-available.png",
+    "ICON_NOT_AVAILABLE": "/img/icon-not-available.png"
   },
   "assignCentralHub": true,
   "HTTP_STATUS": {
