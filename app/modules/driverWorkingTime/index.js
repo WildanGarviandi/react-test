@@ -3,13 +3,15 @@ import * as _ from 'lodash';
 import configValues from '../../config/configValues.json';
 import { modalAction } from '../modals/constants';
 import FetchGet from '../fetch/get';
-import { formatRef } from '../../helper/utility';
+import FetchPost from '../fetch/post';
+import { formatRef, getTimeFormat } from '../../helper/utility';
 import endpoints from '../../config/endpoints';
 import { addNotification } from '../notification';
 
 const RESET_WORKING_TIME = 'driverWorkingTime/reset';
 const SELECT_WORKING_DAY = 'driverWorkingTime/select';
 const FETCH_WORKING_TIME = 'driverWorkingTime/fetch';
+const SAVE_WORKING_TIME = 'driverWorkingTime/save';
 const ADD_WORKING_HOUR = 'driverWorkingTime/hour/add';
 const SET_WORKING_HOUR = 'driverWorkingTime/hour/set';
 const DELETE_WORKING_HOUR = 'driverWorkingTime/hour/delete';
@@ -54,18 +56,45 @@ const initialState = {
       WorkingHour: []
     }
   ],
+  checkWorkingTime: [
+    {
+      DayOfWeek: configValues.DAY_OF_WEEK.MONDAY.value,
+      WorkingHour: []
+    },
+    {
+      DayOfWeek: configValues.DAY_OF_WEEK.TUESDAY.value,
+      WorkingHour: []
+    },
+    {
+      DayOfWeek: configValues.DAY_OF_WEEK.WEDNESDAY.value,
+      WorkingHour: []
+    },
+    {
+      DayOfWeek: configValues.DAY_OF_WEEK.THURSDAY.value,
+      WorkingHour: []
+    },
+    {
+      DayOfWeek: configValues.DAY_OF_WEEK.FRIDAY.value,
+      WorkingHour: []
+    },
+    {
+      DayOfWeek: configValues.DAY_OF_WEEK.SATURDAY.value,
+      WorkingHour: []
+    },
+    {
+      DayOfWeek: configValues.DAY_OF_WEEK.SUNDAY.value,
+      WorkingHour: []
+    }
+  ],
   selectedDay: {},
   isError: false
 };
 
-const isValidInterval = (newTime) => {
-  const sortedWorkingHours = _.sortBy(
-    newTime.WorkingHour,
-    workingHour => {
-      const sortCriteria = workingHour.StartTime.hour;
-      return sortCriteria;
-    }
-  );
+const isValidInterval = newTime => {
+  const sortedWorkingHours = _.sortBy(newTime.WorkingHour, workingHour => {
+    const sortCriteria = workingHour.StartTime.hour;
+    return sortCriteria;
+  });
 
   let isValid = true;
 
@@ -87,7 +116,7 @@ const isValidInterval = (newTime) => {
   }
 
   return isValid;
-}
+};
 
 export function reducer(state = initialState, action) {
   switch (action.type) {
@@ -95,29 +124,29 @@ export function reducer(state = initialState, action) {
       return Object.assign({}, initialState);
     case FETCH_WORKING_TIME: {
       const newWorkingTime = _.cloneDeep(state.workingTime);
-      action.payload.data.forEach((data, index) => {
-        newWorkingTime[index].WorkingHour = _.map(
-          data.WorkingHour,
-          workingHour => {
-            const momentDateStart = new Date(workingHour.StartTime);
-            const momentDateEnd = new Date(workingHour.EndTime);
-            return {
-              key: _.uniqueId(),
-              StartTime: {
-                hour: parseInt(momentDateStart.getUTCHours(), 10),
-                minute: parseInt(momentDateStart.getUTCMinutes(), 10)
-              },
-              EndTime: {
-                hour: parseInt(momentDateEnd.getUTCHours(), 10),
-                minute: parseInt(momentDateEnd.getUTCMinutes(), 10)
-              }
-            };
-          }
-        );
+      action.payload.data.forEach(data => {
+        newWorkingTime[
+          parseInt(data.DayOfWeek, 10) - 1
+        ].WorkingHour = _.map(data.WorkingHour, workingHour => {
+          const momentDateStart = new Date(workingHour.StartTime);
+          const momentDateEnd = new Date(workingHour.EndTime);
+          return {
+            key: _.uniqueId(),
+            StartTime: {
+              hour: parseInt(momentDateStart.getUTCHours(), 10),
+              minute: parseInt(momentDateStart.getUTCMinutes(), 10)
+            },
+            EndTime: {
+              hour: parseInt(momentDateEnd.getUTCHours(), 10),
+              minute: parseInt(momentDateEnd.getUTCMinutes(), 10)
+            }
+          };
+        });
       });
 
       return Object.assign({}, state, {
-        workingTime: newWorkingTime
+        workingTime: newWorkingTime,
+        checkWorkingTime: newWorkingTime
       });
     }
     case SELECT_WORKING_DAY: {
@@ -300,4 +329,66 @@ export function deleteWorkingHour(key) {
       key
     }
   };
+}
+
+export function saveWorkingTime() {
+  const dispatchFunc = async (dispatch, getState) => {
+    const { driverWorkingTime, userLogged, myDrivers } = getState().app;
+    const { token } = userLogged;
+    const { UserID } = myDrivers.driver;
+    const { workingTime, checkWorkingTime } = driverWorkingTime;
+
+    const data = [];
+
+    workingTime.forEach((time, index) => {
+      if (!_.isEqual(time.WorkingHour, checkWorkingTime[index].WorkingHour)) {
+        const newTime = _.cloneDeep(time);
+        newTime.DayOfWeek =
+          configValues.DAY_OF_WEEK[newTime.DayOfWeek.toUpperCase()].key;
+        newTime.WorkingHour = _.map(newTime.WorkingHour, workingHour => {
+          const formattedData = {
+            StartTime: `1970-01-01T${getTimeFormat(
+              workingHour.StartTime.hour,
+              workingHour.StartTime.minute
+            )}:00.000Z`,
+            EndTime: `1970-01-01T${getTimeFormat(
+              workingHour.EndTime.hour,
+              workingHour.EndTime.minute
+            )}:00.000Z`
+          };
+
+          return formattedData;
+        });
+
+        data.push(newTime);
+      }
+    });
+
+    dispatch({ type: modalAction.BACKDROP_SHOW });
+
+    try {
+      const response = await FetchPost(
+        `/${formatRef(endpoints.DRIVER, UserID, endpoints.WORKING_HOUR)}`,
+        token,
+        {
+          WorkingHours: data
+        }
+      );
+      if (response.ok) {
+        const responseJson = await response.json();
+        console.log(responseJson);
+      } else {
+        await handleErrorResponse(response);
+      }
+    } catch (e) {
+      const message =
+        e && e.message ? e.message : 'Failed to submit driver working hours';
+
+      dispatch(addNotification(message, 'error', null, null, 5, true));
+    } finally {
+      dispatch({ type: modalAction.BACKDROP_HIDE });
+    }
+  };
+
+  return dispatchFunc;
 }

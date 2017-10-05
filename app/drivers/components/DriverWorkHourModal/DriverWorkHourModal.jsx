@@ -11,7 +11,8 @@ import TimeContent from './TimeContent';
 import configValues from '../../../config/configValues.json';
 import {
   fetchWorkingTime,
-  resetWorkingTime
+  resetWorkingTime,
+  saveWorkingTime
 } from '../../../modules/driverWorkingTime';
 
 const mapStateToProps = state => {
@@ -28,7 +29,8 @@ const mapDispatchToProps = dispatch => {
   const dispatchData = bindActionCreators(
     {
       fetchWorkingTime,
-      resetWorkingTime
+      resetWorkingTime,
+      saveWorkingTime
     },
     dispatch
   );
@@ -42,10 +44,15 @@ class DriverWorkHourModal extends PureComponent {
     this.props.resetWorkingTime();
     this.props.fetchWorkingTime();
     this.closeModal = this.closeModal.bind(this);
+    this.saveWorkingTime = this.saveWorkingTime.bind(this);
   }
 
   closeModal() {
     this.props.closeModal();
+  }
+
+  saveWorkingTime() {
+    this.props.saveWorkingTime();
   }
 
   render() {
@@ -73,7 +80,11 @@ class DriverWorkHourModal extends PureComponent {
             >
               Cancel
             </button>
-            <button className={styles.modalFooter__save} disabled={isError}>
+            <button
+              className={styles.modalFooter__save}
+              disabled={isError}
+              onClick={this.saveWorkingTime}
+            >
               Save
             </button>
           </div>
@@ -91,7 +102,8 @@ DriverWorkHourModal.propTypes = {
   resetWorkingTime: PropTypes.func.isRequired,
   closeModal: PropTypes.func.isRequired,
   isError: PropTypes.bool,
-  selectedDay: PropTypes.object
+  selectedDay: PropTypes.object,
+  saveWorkingTime: PropTypes.func.isRequired
 };
 /* eslint-enable */
 
