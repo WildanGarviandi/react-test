@@ -8,16 +8,15 @@ import styles from './styles.scss';
 import ImagePreview from '../../../views/base/imagePreview';
 import configValues from '../../../config/configValues.json';
 import { ButtonStandard } from '../../../components/Button';
-import {
-  selectWorkingDay
-} from '../../../modules/driverWorkingTime';
+import { selectWorkingDay } from '../../../modules/driverWorkingTime';
 
 const mapStateToProps = state => {
   const { driverWorkingTime } = state.app;
-  const { DayOfWeek } = driverWorkingTime;
+  const { DayOfWeek, isError } = driverWorkingTime;
 
   return {
-    DayOfWeek
+    DayOfWeek,
+    isError
   };
 };
 
@@ -43,7 +42,7 @@ class DayContent extends PureComponent {
   }
 
   render() {
-    const { driver, DayOfWeek } = this.props;
+    const { driver, DayOfWeek, isError } = this.props;
 
     return (
       <div className={styles.dayContent}>
@@ -54,7 +53,7 @@ class DayContent extends PureComponent {
           </span>
         </div>
         <div className={styles.dayContent__week}>
-          {DayOfWeek.map(day => {
+          {DayOfWeek.map((day, index) => {
             const buttonAction = {
               textBase: day.value,
               onClick: () => {
@@ -64,7 +63,13 @@ class DayContent extends PureComponent {
                 base: styles.dayContent__button
               }
             };
-            return <ButtonStandard {...buttonAction} key={day.key} />;
+            return (
+              <ButtonStandard
+                {...buttonAction}
+                key={day.key}
+                isLoading={index > 0 && isError}
+              />
+            );
           })}
         </div>
       </div>
@@ -77,14 +82,16 @@ DayContent.propTypes = {
   profilePicture: PropTypes.string,
   driver: PropTypes.object,
   DayOfWeek: PropTypes.array,
-  selectWorkingDay: PropTypes.func.isRequired
+  selectWorkingDay: PropTypes.func.isRequired,
+  isError: PropTypes.bool
 };
 /* eslint-enable */
 
 DayContent.defaultProps = {
   profilePicture: configValues.IMAGES.DEFAULT_PROFILE,
   driver: {},
-  DayOfWeek: []
+  DayOfWeek: [],
+  isError: false
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DayContent);

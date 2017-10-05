@@ -41,12 +41,12 @@ HourDropdown.propTypes = {
   handleSelect: PropTypes.func.isRequired,
   workingTime: PropTypes.object.isRequired,
   attr: PropTypes.string.isRequired,
-  dropdownStyles: PropTypes.object
+  dropdownStyles: PropTypes.string
 };
 /* eslint-enable */
 
 HourDropdown.defaultProps = {
-  dropdownItemStyles: {}
+  dropdownStyles: ''
 };
 
 export default onClickOutside(HourDropdown);

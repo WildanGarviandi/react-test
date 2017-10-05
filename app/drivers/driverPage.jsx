@@ -446,6 +446,11 @@ const PanelDriversDetails = React.createClass({
       });
     }
   },
+  closeModal() {
+    this.setState({
+      isSetWorkingHour: false
+    });
+  },
   render() {
     const { driver, stateList } = this.props;
     const { ProfilePicture } = this.state;
@@ -484,6 +489,7 @@ const PanelDriversDetails = React.createClass({
           <DriverWorkHourModal
             profilePicture={ProfilePicture}
             driver={driver}
+            closeModal={this.closeModal}
           />}
         <div className={styles.driverDetailsMain}>
           <div className={styles.driverDetailsPicture}>

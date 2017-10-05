@@ -1,13 +1,20 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
+import FontAwesome from 'react-fontawesome';
 
 import * as _ from 'lodash';
 import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
 
 import HourContent from './HourContent';
 import styles from './styles.scss';
 import getWorkingHourList from '../../helper';
 import { getTimeFormat } from '../../../helper/utility';
+import {
+  addWorkingHour,
+  setWorkingHour,
+  deleteWorkingHour
+} from '../../../modules/driverWorkingTime';
 
 const mapStateToProps = state => {
   const { driverWorkingTime } = state.app;
@@ -19,9 +26,27 @@ const mapStateToProps = state => {
   };
 };
 
+const mapDispatchToProps = dispatch => {
+  const dispatchData = bindActionCreators(
+    {
+      addWorkingHour,
+      setWorkingHour,
+      deleteWorkingHour
+    },
+    dispatch
+  );
+
+  return dispatchData;
+};
+
 class TimeContent extends PureComponent {
   constructor(props) {
     super(props);
+    this.handleSelect = this.handleSelect.bind(this);
+    this.handleToggle = this.handleToggle.bind(this);
+    this.addWorkingTime = this.addWorkingTime.bind(this);
+    this.deleteWorkingTime = this.deleteWorkingTime.bind(this);
+
     this.state = {
       workingTimes: {
         MONDAY: [],
@@ -32,19 +57,8 @@ class TimeContent extends PureComponent {
         SATURDAY: [],
         SUNDAY: []
       },
-      action: {
-        ADD: {
-          icon: 'plus',
-          class: styles.action__plus
-        },
-        DELETE: {
-          icon: 'trash',
-          class: styles.action__trash
-        }
-      }
+      workingHourList: getWorkingHourList()
     };
-    this.handleSelect = this.handleSelect.bind(this);
-    this.handleToggle = this.handleToggle.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -57,37 +71,28 @@ class TimeContent extends PureComponent {
         return isValid;
       }).WorkingHour;
 
-      newWorkingTimes[selectedDay.toUpperCase()] = [];
+      newWorkingTimes[selectedDay.toUpperCase()] = _.map(
+        newWorkingHour,
+        workingHour => {
+          const data = {
+            key: workingHour.key,
+            from: this.state.workingHourList,
+            selectedFrom: getTimeFormat(
+              workingHour.StartTime.hour,
+              workingHour.StartTime.minute
+            ),
+            to: this.state.workingHourList,
+            selectedTo: getTimeFormat(
+              workingHour.EndTime.hour,
+              workingHour.EndTime.minute
+            ),
+            isChangeFromHour: false,
+            isChangeToHour: false
+          };
 
-      newWorkingHour.forEach((workingHour, index) => {
-        newWorkingTimes[selectedDay.toUpperCase()].push({
-          key: _.uniqueId(),
-          from: getWorkingHourList(
-            index === 0
-              ? {
-                  hour: 0
-                }
-              : workingHour.EndTime
-          ),
-          selectedFrom: getTimeFormat(
-            workingHour.StartTime.hour,
-            workingHour.StartTime.to
-          ),
-          to: getWorkingHourList(
-            index === 0
-              ? {
-                  hour: 0
-                }
-              : workingHour.EndTime
-          ),
-          selectedTo: getTimeFormat(
-            workingHour.EndTime.hour,
-            workingHour.EndTime.to
-          ),
-          isChangeFromHour: false,
-          isChangeToHour: false
-        });
-      });
+          return data;
+        }
+      );
 
       this.setState({
         workingTimes: newWorkingTimes
@@ -95,30 +100,8 @@ class TimeContent extends PureComponent {
     }
   }
 
-  handleSelect(date, key, attr) {
-    const { selectedDay } = this.props;
-    const selectedAttr = selectedDay.value.toUpperCase();
-
-    const workingTimes = _.cloneDeep(this.state.workingTimes);
-
-    workingTimes[selectedAttr] = _.map(
-      workingTimes[selectedAttr],
-      workingTime => {
-        if (workingTime.key === key) {
-          const newWorkingTime = _.cloneDeep(workingTime);
-          newWorkingTime[attr] = date.name;
-          newWorkingTime.isChangeFromHour = false;
-          newWorkingTime.isChangeToHour = false;
-          return newWorkingTime;
-        }
-
-        return workingTime;
-      }
-    );
-
-    this.setState({
-      workingTimes
-    });
+  handleSelect(dateFrom, dateTo, key) {
+    this.props.setWorkingHour(dateFrom, dateTo, key);
   }
 
   handleToggle(selectedWorkingHour, attr) {
@@ -150,6 +133,14 @@ class TimeContent extends PureComponent {
     });
   }
 
+  addWorkingTime() {
+    this.props.addWorkingHour();
+  }
+
+  deleteWorkingTime(workingTime) {
+    this.props.deleteWorkingHour(workingTime.key);
+  }
+
   render() {
     const { selectedDay } = this.props;
 
@@ -161,25 +152,30 @@ class TimeContent extends PureComponent {
 
     return (
       <div className={styles.timeContent}>
-        <p className={styles.timeContent__title}>
-          {selectedDay.value && "Please set this driver's availability on"}
-        </p>
-        <p className={styles.timeContent__day}>
-          {selectedDay.value}
-        </p>
+        {selectedDay.value && (
+          <div className={styles.timeContentHeader}>
+            <p className={styles.timeContentHeader__title}>
+              Please set this driver&apos;s availability
+            </p>
+            <div
+              role="none"
+              className={styles.action__plus}
+              onClick={this.addWorkingTime}
+            >
+              <FontAwesome size="lg" name={'plus'} />
+            </div>
+          </div>
+        )}
+        <p className={styles.timeContentHeader__day}>{selectedDay.value}</p>
         {workingTimes.length > 0 &&
-          workingTimes.map((workingTime, index) => {
+          workingTimes.map(workingTime => {
             const tmpl = (
               <HourContent
                 key={workingTime.key}
                 workingTime={workingTime}
                 handleToggle={this.handleToggle}
                 handleSelect={this.handleSelect}
-                action={
-                  index === workingTimes.length - 1
-                    ? this.state.action.ADD
-                    : this.state.action.DELETE
-                }
+                deleteWorkingTime={this.deleteWorkingTime}
               />
             );
             return tmpl;
@@ -192,12 +188,15 @@ class TimeContent extends PureComponent {
 /* eslint-disable */
 TimeContent.propTypes = {
   selectedDay: PropTypes.object,
-  workingTime: PropTypes.array.isRequired
+  workingTime: PropTypes.array,
+  addWorkingHour: PropTypes.func.isRequired,
+  setWorkingHour: PropTypes.func.isRequired
 };
 /* eslint-enable */
 
 TimeContent.defaultProps = {
-  selectedDay: {}
+  selectedDay: {},
+  workingTime: []
 };
 
-export default connect(mapStateToProps, null)(TimeContent);
+export default connect(mapStateToProps, mapDispatchToProps)(TimeContent);
