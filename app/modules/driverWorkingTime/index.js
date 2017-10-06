@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 
 import configValues from '../../config/configValues.json';
 import { modalAction } from '../modals/constants';
+import ModalService from '../modals/actions';
 import FetchGet from '../fetch/get';
 import FetchPost from '../fetch/post';
 import { formatRef, getTimeFormat } from '../../helper/utility';
@@ -237,6 +238,8 @@ export function reducer(state = initialState, action) {
         workingTime: newWorkingTime
       });
     }
+    case SAVE_WORKING_TIME:
+      return Object.assign({}, state);
     default:
       return state;
   }
@@ -273,6 +276,8 @@ export function fetchWorkingTime() {
     dispatch({ type: modalAction.BACKDROP_SHOW });
 
     try {
+      dispatch({ type: modalAction.BACKDROP_SHOW });
+      
       const response = await FetchGet(
         `/${formatRef(endpoints.DRIVER, UserID, endpoints.WORKING_HOUR)}`,
         token,
@@ -338,7 +343,7 @@ export function saveWorkingTime() {
     const { UserID } = myDrivers.driver;
     const { workingTime, checkWorkingTime } = driverWorkingTime;
 
-    const data = [];
+    const query = [];
 
     workingTime.forEach((time, index) => {
       if (!_.isEqual(time.WorkingHour, checkWorkingTime[index].WorkingHour)) {
@@ -360,7 +365,7 @@ export function saveWorkingTime() {
           return formattedData;
         });
 
-        data.push(newTime);
+        query.push(newTime);
       }
     });
 
@@ -371,12 +376,17 @@ export function saveWorkingTime() {
         `/${formatRef(endpoints.DRIVER, UserID, endpoints.WORKING_HOUR)}`,
         token,
         {
-          WorkingHours: data
+          WorkingHours: query
         }
       );
       if (response.ok) {
         const responseJson = await response.json();
-        console.log(responseJson);
+        const { data } = responseJson;
+        let messageShow = '';
+        data.forEach(messageData => {
+          messageShow += `${messageData.result}\n`;
+        });
+        dispatch(ModalService.addMessage(messageShow));
       } else {
         await handleErrorResponse(response);
       }

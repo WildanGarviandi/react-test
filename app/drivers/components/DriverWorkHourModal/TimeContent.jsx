@@ -190,7 +190,8 @@ TimeContent.propTypes = {
   selectedDay: PropTypes.object,
   workingTime: PropTypes.array,
   addWorkingHour: PropTypes.func.isRequired,
-  setWorkingHour: PropTypes.func.isRequired
+  setWorkingHour: PropTypes.func.isRequired,
+  deleteWorkingHour: PropTypes.func.isRequired
 };
 /* eslint-enable */
 
