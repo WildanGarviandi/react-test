@@ -189,7 +189,8 @@
     "ICON_READY": "/img/icon-ready.png",
     "ICON_GROUPING": "/img/icon-grouping.png",
     "ICON_EDIT": "/img/icon-edit.png",
-    "ICON_DELETE": "/img/icon-delete.png"
+    "ICON_DELETE": "/img/icon-delete.png",
+    "DEFAULT_PROFILE": "/img/photo-default.png"
   },
   "assignCentralHub": true,
   "HTTP_STATUS": {
@@ -248,5 +249,35 @@
   },
   "TEXT": {
     "UNKNOWN": "Unknown"
+  },
+  "DAY_OF_WEEK": {
+    "MONDAY": {
+      "key": 1,
+      "value": "Monday"
+    },
+    "TUESDAY": {
+      "key": 2,
+      "value": "Tuesday"
+    },
+    "WEDNESDAY": {
+      "key": 3,
+      "value": "Wednesday"
+    },
+    "THURSDAY": {
+      "key": 4,
+      "value": "Thursday"
+    },
+    "FRIDAY": {
+      "key": 5,
+      "value": "Friday"
+    },
+    "SATURDAY": {
+      "key": 6,
+      "value": "Saturday"
+    },
+    "SUNDAY": {
+      "key": 7,
+      "value": "Sunday"
+    }
   }
 }
