@@ -220,12 +220,13 @@ export function reducer(state = initialState, action) {
     case DELETE_WORKING_HOUR: {
       const { key } = action.payload;
 
+      let newTime = {};
       let newWorkingTime = _.cloneDeep(state.workingTime);
       newWorkingTime = _.map(newWorkingTime, time => {
         const isEqual = _.isEqual(time.DayOfWeek, state.selectedDay.value);
 
         if (isEqual) {
-          const newTime = _.cloneDeep(time);
+          newTime = _.cloneDeep(time);
           const index = _.findIndex(newTime.WorkingHour, ['key', key]);
           newTime.WorkingHour.splice(index, 1);
           return newTime;
@@ -235,7 +236,8 @@ export function reducer(state = initialState, action) {
       });
 
       return Object.assign({}, state, {
-        workingTime: newWorkingTime
+        workingTime: newWorkingTime,
+        isError: !isValidInterval(newTime)
       });
     }
     case SAVE_WORKING_TIME:
