@@ -5,7 +5,8 @@ const endpoints = {
 
   TRIP: 'trip',
   DRIVER: 'driver',
-  WORKING_HOUR: 'working-hour'
+  WORKING_HOUR: 'working-hour',
+  DELETE: 'delete',
 };
 
 export default endpoints;
