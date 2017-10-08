@@ -44,7 +44,7 @@ export default class ButtonStandard extends PureComponent {
 ButtonStandard.propTypes = {
   textBase: PropTypes.any,
   textLoading: PropTypes.any,
-  isLoading: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool,
   onClick: PropTypes.func,
   styles: PropTypes.object,
   base: PropTypes.any,

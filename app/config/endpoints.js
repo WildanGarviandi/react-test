@@ -6,6 +6,8 @@ const endpoints = {
   TRIP: 'trip',
   DRIVER: 'driver',
   BULK_CURRENT_LOCATION: 'bulk-current-location',
+  WORKING_HOUR: 'working-hour',
+  DELETE: 'delete',
 };
 
 export default endpoints;
