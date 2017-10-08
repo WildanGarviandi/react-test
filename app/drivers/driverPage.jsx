@@ -21,6 +21,7 @@ import ImagePreview from '../views/base/imagePreview';
 import ImageUploader from '../views/base/imageUploader';
 import * as UtilHelper from '../helper/utility';
 import EllipsisMenu from './components/EllipsisMenu';
+import Confirmation from '../components/Confirmation';
 
 const DEFAULT_IMAGE = '/img/photo-default.png';
 
@@ -29,7 +30,7 @@ function StoreBuilder(keyword) {
     const { filters } = store.app.myDrivers;
 
     return {
-      value: filters[keyword]
+      value: filters[keyword],
     };
   };
 }
@@ -53,7 +54,7 @@ function DispatchBuilder(keyword, placeholder) {
     return {
       onChange: OnChange,
       onKeyDown: OnKeyDown,
-      placeholder
+      placeholder,
     };
   };
 }
@@ -129,25 +130,25 @@ const Drivers = React.createClass({
         {driverComponents}
       </div>
     );
-  }
+  },
 });
 
 const PanelDrivers = React.createClass({
   getInitialState() {
     return {
       showAddModals: false,
-      ProfilePicture: DEFAULT_IMAGE
+      ProfilePicture: DEFAULT_IMAGE,
     };
   },
   addDriverModal() {
     this.setState({
-      showAddModals: true
+      showAddModals: true,
     });
   },
   closeModal() {
     this.setState({
       showAddModals: false,
-      ProfilePicture: DEFAULT_IMAGE
+      ProfilePicture: DEFAULT_IMAGE,
     });
   },
   stateChange(key) {
@@ -160,7 +161,7 @@ const PanelDrivers = React.createClass({
   },
   setPicture(url) {
     this.setState({
-      ProfilePicture: url
+      ProfilePicture: url,
     });
   },
   addDriver() {
@@ -173,7 +174,7 @@ const PanelDrivers = React.createClass({
       'StateID',
       'ZipCode',
       'PackageSizeID',
-      'Password'
+      'Password',
     ];
     const filledFields = Object.keys(this.state);
     const unfilledFields = lodash.difference(mandatoryFields, filledFields);
@@ -190,15 +191,15 @@ const PanelDrivers = React.createClass({
       textBase: '+ Add',
       onClick: this.addDriverModal,
       styles: {
-        base: stylesButton.whiteButton
-      }
+        base: stylesButton.whiteButton,
+      },
     };
     const submitButton = {
       textBase: 'Add New Driver',
       onClick: this.addDriver,
       styles: {
-        base: stylesButton.blueButton
-      }
+        base: stylesButton.blueButton,
+      },
     };
     const vehicleOptions = config.vehicle;
     const stateOptions = lodash
@@ -337,7 +338,7 @@ const PanelDrivers = React.createClass({
           </ModalContainer>}
       </div>
     );
-  }
+  },
 });
 
 const RowDetails = React.createClass({
@@ -365,7 +366,7 @@ const RowDetails = React.createClass({
         </div>
       </div>
     );
-  }
+  },
 });
 
 const RowDetailsDropdown = React.createClass({
@@ -392,13 +393,14 @@ const RowDetailsDropdown = React.createClass({
         </div>
       </div>
     );
-  }
+  },
 });
 
 const PanelDriversDetails = React.createClass({
   getInitialState() {
     return {
-      isEditing: false
+      isEditing: false,
+      deleteConfirmation: false,
     };
   },
   stateChange(key) {
@@ -412,12 +414,12 @@ const PanelDriversDetails = React.createClass({
   componentWillReceiveProps(nextProps) {
     this.setState({ isEditing: false });
     this.setState({
-      ProfilePicture: nextProps.driver.ProfilePicture || DEFAULT_IMAGE
+      ProfilePicture: nextProps.driver.ProfilePicture || DEFAULT_IMAGE,
     });
   },
   toggleEditDriver() {
     this.setState({
-      isEditing: !this.state.isEditing
+      isEditing: !this.state.isEditing,
     });
   },
   updateDriver() {
@@ -427,15 +429,70 @@ const PanelDriversDetails = React.createClass({
   },
   setPicture(url) {
     this.setState({
-      ProfilePicture: url
+      ProfilePicture: url,
     });
   },
   handleSelect(menu) {
     if (menu.id === 'EDIT') {
       this.setState({
-        isEditing: !this.state.isEditing
+        isEditing: !this.state.isEditing,
       });
     }
+    if (menu.id === 'DELETE') {
+      const { PictureUrl } = this.props.driver;
+      this.setState({
+        deleteConfirmation: true,
+      });
+    }
+  },
+  hideDeleteConf() {
+    this.setState({ deleteConfirmation: false });
+  },
+  deleteDriver() {
+    this.props.deleteDriver(this.props.driver.UserID);
+    this.hideDeleteConf();
+  },
+  getDeleteConfirmationProps() {
+    const { PictureUrl, FirstName, LastName } = this.props.driver;
+    const props = {
+      closeModal: this.hideDeleteConf,
+      modalStyles: styles['delete-conf__modal-style'],
+      title: (
+        <div>
+          <p className={styles['delete-conf__title']}>
+            Delete Driver Confirmation
+          </p>
+          <img
+            src={PictureUrl}
+            alt=""
+            className={styles['delete-conf__picture']}
+          />
+          <p
+            className={styles['delete-conf__driver-name']}
+          >{`${FirstName} ${LastName}`}</p>
+        </div>
+      ),
+      descStyles: styles['delete-conf__desc-style'],
+      desc: 'Are you really sure want to delete this driver?',
+      children: (
+        <div>
+          <button
+            className={styles['delete-conf__no-btn']}
+            onClick={this.hideDeleteConf}
+          >
+            No
+          </button>
+          <button
+            className={styles['delete-conf__yes-btn']}
+            onClick={this.deleteDriver}
+          >
+            Yes
+          </button>
+        </div>
+      ),
+    };
+
+    return props;
   },
   render() {
     const { driver, stateList } = this.props;
@@ -443,20 +500,23 @@ const PanelDriversDetails = React.createClass({
       textBase: 'Update Profile',
       onClick: this.updateDriver,
       styles: {
-        base: stylesButton.greenButton3
-      }
+        base: stylesButton.greenButton3,
+      },
     };
     const vehicleOptions = config.vehicle;
     const vehicleValue = lodash.find(vehicleOptions, {
-      key: driver.PackageSizeMaster && driver.PackageSizeMaster.PackageSizeID
+      key: driver.PackageSizeMaster && driver.PackageSizeMaster.PackageSizeID,
     });
     const stateOptions = lodash
       .chain(stateList)
       .map((key, val) => ({ key, value: val.toUpperCase() }))
       .sortBy(arr => arr.key)
       .value();
+
     return (
       <div className={styles.mainDriverDetailsPanel}>
+        {this.state.deleteConfirmation &&
+          <Confirmation {...this.getDeleteConfirmationProps()} />}
         <div className={styles.driverTitle}>Driver Details</div>
         <div
           role="none"
@@ -556,7 +616,7 @@ const PanelDriversDetails = React.createClass({
           </div>}
       </div>
     );
-  }
+  },
 });
 
 const Deadline = React.createClass({
@@ -564,7 +624,7 @@ const Deadline = React.createClass({
     let format = {
       hour: 'hh',
       minute: 'mm',
-      second: 'ss'
+      second: 'ss',
     };
     let Duration = moment.duration(
       moment(this.props.deadline).diff(moment(new Date()))
@@ -596,7 +656,7 @@ const Deadline = React.createClass({
         </span>
       );
     }
-  }
+  },
 });
 
 const DriverOrders = React.createClass({
@@ -648,7 +708,7 @@ const DriverOrders = React.createClass({
         {orderComponents}
       </div>
     );
-  }
+  },
 });
 
 const PanelDriversOrders = React.createClass({
@@ -737,7 +797,7 @@ const PanelDriversOrders = React.createClass({
           </div>}
       </div>
     );
-  }
+  },
 });
 
 const DriverPage = React.createClass({
@@ -758,7 +818,8 @@ const DriverPage = React.createClass({
       driver,
       orders,
       SelectDriver,
-      isFetchingOrders
+      isFetchingOrders,
+      deleteDriver,
     } = this.props;
     return (
       <Page title="My Driver">
@@ -781,6 +842,7 @@ const DriverPage = React.createClass({
               driver={driver}
               stateList={stateList}
               editDriver={EditDriver}
+              deleteDriver={deleteDriver}
             />}
           {!lodash.isEmpty(driver) &&
             <PanelDriversOrders
@@ -793,7 +855,7 @@ const DriverPage = React.createClass({
         </div>
       </Page>
     );
-  }
+  },
 });
 
 function StoreToDriversPage(store) {
@@ -807,7 +869,7 @@ function StoreToDriversPage(store) {
     drivers,
     driver,
     orders,
-    isFetchingOrders
+    isFetchingOrders,
   } = store.app.myDrivers;
   const { states } = store.app.stateList;
   let stateList = {};
@@ -819,17 +881,17 @@ function StoreToDriversPage(store) {
     paginationState: {
       currentPage,
       limit,
-      total
+      total,
     },
     paginationStateOrders: {
       currentPage: currentPageOrders,
       limit: limitOrders,
-      total: totalOrders
+      total: totalOrders,
     },
     driver: driver,
     orders: orders,
     stateList: stateList,
-    isFetchingOrders: isFetchingOrders
+    isFetchingOrders: isFetchingOrders,
   };
 }
 
@@ -844,7 +906,7 @@ function DispatchToDriversPage(dispatch) {
       },
       setLimit: limit => {
         dispatch(DriverService.SetLimit(limit));
-      }
+      },
     },
     PaginationActionOrders: {
       setCurrentPage: currentPage => {
@@ -852,7 +914,7 @@ function DispatchToDriversPage(dispatch) {
       },
       setLimit: limit => {
         dispatch(DriverService.SetLimitOrders(limit));
-      }
+      },
     },
     SelectDriver: id => {
       dispatch(DriverService.FetchDetails(id));
@@ -866,7 +928,10 @@ function DispatchToDriversPage(dispatch) {
     },
     ResetDriver: () => {
       dispatch(DriverService.ResetDriver());
-    }
+    },
+    deleteDriver: driverId => {
+      dispatch(DriverService.deleteDriver(driverId));
+    },
   };
 }
 
