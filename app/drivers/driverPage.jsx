@@ -9,7 +9,7 @@ import moment from 'moment';
 
 import { Page } from '../components/page';
 import { Pagination3 } from '../components/pagination3';
-import { ButtonWithLoading } from '../components/Button';
+import { ButtonWithLoading, ButtonStandard } from '../components/Button';
 import * as DriverService from './driverService';
 import styles from './styles.scss';
 import stylesButton from '../components/Button/styles.scss';
@@ -20,6 +20,7 @@ import ImagePreview from '../views/base/imagePreview';
 import ImageUploader from '../views/base/imageUploader';
 import * as UtilHelper from '../helper/utility';
 import EllipsisMenu from './components/EllipsisMenu';
+import DriverWorkHourModal from './components/DriverWorkHourModal';
 import Confirmation from '../components/Confirmation';
 
 const DEFAULT_IMAGE = '/img/photo-default.png';
@@ -417,6 +418,14 @@ const PanelDriversDetails = React.createClass({
   getInitialState() {
     return {
       isEditing: false,
+      isSetWorkingHour: false,
+      buttonAction: {
+        textBase: 'Check Availability',
+        onClick: this.toggleShowSetWorkingHour,
+        styles: {
+          base: styles.checkAvailable
+        }
+      },
       deleteConfirmation: false,
     };
   },
@@ -436,7 +445,12 @@ const PanelDriversDetails = React.createClass({
   },
   toggleEditDriver() {
     this.setState({
-      isEditing: !this.state.isEditing,
+      isEditing: !this.state.isEditing
+    });
+  },
+  toggleShowSetWorkingHour() {
+    this.setState({
+      isSetWorkingHour: !this.state.isSetWorkingHour
     });
   },
   updateDriver() {
@@ -447,6 +461,11 @@ const PanelDriversDetails = React.createClass({
   setPicture(url) {
     this.setState({
       ProfilePicture: url,
+    });
+  },
+  closeModal() {
+    this.setState({
+      isSetWorkingHour: false
     });
   },
   handleSelect(menu) {
@@ -513,6 +532,7 @@ const PanelDriversDetails = React.createClass({
   },
   render() {
     const { driver, stateList } = this.props;
+    const { ProfilePicture } = this.state;
     const updateButton = {
       textBase: 'Update Profile',
       onClick: this.updateDriver,
@@ -542,20 +562,27 @@ const PanelDriversDetails = React.createClass({
         >
           <span className={styles.ellipsisMenu} />
         </div>
+        <ButtonStandard {...this.state.buttonAction} />
         <EllipsisMenu
           handleSelect={this.handleSelect}
           isEditing={this.state.isEditing}
-        />
+        /> 
+        {this.state.isSetWorkingHour &&
+          <DriverWorkHourModal
+            profilePicture={ProfilePicture}
+            driver={driver}
+            closeModal={this.closeModal}
+          />}
         <div className={styles.driverDetailsMain}>
           <div className={styles.driverDetailsPicture}>
             {this.state.isEditing &&
               <ImageUploader
                 withImagePreview={true}
-                currentImageUrl={this.state.ProfilePicture}
+                currentImageUrl={ProfilePicture}
                 updateImageUrl={data => this.setPicture(data)}
               />}
             {!this.state.isEditing &&
-              <ImagePreview imageUrl={this.state.ProfilePicture} />}
+              <ImagePreview imageUrl={ProfilePicture} />}
           </div>
           <div className={styles.driverDetailsName}>
             <RowDetails
@@ -923,7 +950,7 @@ function DispatchToDriversPage(dispatch) {
       },
       setLimit: limit => {
         dispatch(DriverService.SetLimit(limit));
-      },
+      }
     },
     PaginationActionOrders: {
       setCurrentPage: currentPage => {
@@ -931,7 +958,7 @@ function DispatchToDriversPage(dispatch) {
       },
       setLimit: limit => {
         dispatch(DriverService.SetLimitOrders(limit));
-      },
+      }
     },
     SelectDriver: id => {
       dispatch(DriverService.FetchDetails(id));
