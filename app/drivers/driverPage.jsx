@@ -136,7 +136,7 @@ const Drivers = React.createClass({
                     }
                   >
                     {driver.isAvailable
-                      ? 'Available fro delivery'
+                      ? 'Available for delivery'
                       : 'Currently not available'}
                   </span>
                 </div>
