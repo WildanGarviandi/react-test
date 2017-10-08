@@ -1,5 +1,5 @@
-export const DRIVERS_FETCH_START = 'DRIVERS_FETCH_START';
-export const DRIVERS_FETCH_RECEIVED = 'DRIVERS_FETCH_RECEIVED';
+export const DRIVERS_FETCH_START = 'drivers/fetch/start';
+export const DRIVERS_FETCH_RECEIVED = 'drivers/fetch/received';
 export const DRIVERS_FETCH_FAILED = 'DRIVERS_FETCH_FAILED';
 
 export const DRIVER_DEASSIGN_START = 'DRIVER_DEASSIGN_START';
@@ -10,3 +10,5 @@ export const FLEET_SET = 'FLEETS_SET';
 export const FLEETS_FETCH_START = 'FLEETS_FETCH_START';
 export const FLEETS_FETCH_RECEIVED = 'FLEETS_FETCH_RECEIVED';
 export const FLEETS_FETCH_FAILED = 'FLEETS_FETCH_FAILED';
+
+export const DRIVERS_LOCATION_SET = 'drivers/location/set';

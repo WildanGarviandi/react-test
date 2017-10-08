@@ -4,6 +4,8 @@ const endpoints = {
   UPDATE_HUB: '/update-hub',
 
   TRIP: 'trip',
+  DRIVER: 'driver',
+  BULK_CURRENT_LOCATION: 'bulk-current-location',
 };
 
 export default endpoints;

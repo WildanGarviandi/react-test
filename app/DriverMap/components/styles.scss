@@ -26,6 +26,7 @@
     position: absolute;
     top: -75px;
     left: -120px;
+    z-index: 1;
 
     &--available {
       border: 2px solid #38b393;
@@ -46,12 +47,12 @@
   &__info {
     display: inline-block;
 
-    &--name {
+    &-name {
       font-weight: bold;
       font-size: 13px;
     }
 
-    &--order {
+    &-order {
       font-size: 10px;
       color: #ccc;
     }
@@ -69,8 +70,8 @@
       color: #ff5b60;
     }
 
-    &--name,
-    &--order,
+    &-name,
+    &-order,
     &--available,
     &--not-available {
       margin: 5px 0 0;

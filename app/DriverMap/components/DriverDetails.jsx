@@ -26,9 +26,9 @@ class Details extends Component {
         />
         <div className={styles.details__info}>
           <p
-            className={styles['details__info--name']}
+            className={styles['details__info-name']}
           >{`${FirstName} ${LastName}`}</p>
-          <p className={styles['details__info--order']}>
+          <p className={styles['details__info-order']}>
             Number of orders: {numberOfOrders}
           </p>
           <p
