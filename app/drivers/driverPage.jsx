@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import Countdown from 'react-cntdwn';
 import NumberFormat from 'react-number-format';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
+import { Link } from 'react-router';
 
 import lodash from 'lodash';
 import moment from 'moment';
@@ -226,7 +227,7 @@ const PanelDrivers = React.createClass({
     const vehicleOptions = config.vehicle;
     const stateOptions = lodash
       .chain(this.props.stateList)
-      .map((key, val) => ({ key: key, value: val.toUpperCase() }))
+      .map((key, val) => ({ key, value: val.toUpperCase() }))
       .sortBy(arr => arr.key)
       .value();
     return (
@@ -234,6 +235,10 @@ const PanelDrivers = React.createClass({
         <div className={styles.driverTitle}>
           Driver List
           <ButtonWithLoading {...addButton} />
+          <Link to="/driverMap" className={styles['map-button']}>
+            <img src={config.IMAGES.ICON_MAP} alt="map" />
+            <span>Map</span>
+          </Link>
         </div>
         <div className={styles.panelDriverSearch}>
           <NameFilter />

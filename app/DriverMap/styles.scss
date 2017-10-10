@@ -1,0 +1,12 @@
+.driver-map {
+  &__title {
+    font-weight: bold;
+  }
+
+  &__close-btn {
+    color: #ccc;
+    font-size: 27px;
+    margin-right: 15px;
+    cursor: pointer;
+  }
+}

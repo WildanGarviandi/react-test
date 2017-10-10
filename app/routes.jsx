@@ -35,10 +35,11 @@ import { modalAction } from './modules/modals/constants';
 import MyOngoingTripsPage from './ongoingTrips/tripPage';
 import PerformancePage from './performance/performancePage';
 import ChooseHubPage from './ChooseHub';
+import DriverMapPage from './DriverMap';
 
 function requireAuth(nextState, replace, callback) {
   store.dispatch({ type: modalAction.BACKDROP_SHOW });
-  checkAuth(store).then((result) => {
+  checkAuth(store).then(result => {
     if (!result.ok) {
       replace({
         pathname: '/login',
@@ -53,7 +54,7 @@ function requireAuth(nextState, replace, callback) {
 
 function requireHubAuth(nextState, replace, callback) {
   store.dispatch({ type: modalAction.BACKDROP_SHOW });
-  checkAuth(store).then((result) => {
+  checkAuth(store).then(result => {
     if (!result.ok || !result.data.hub) {
       replace({
         pathname: '/login',
@@ -83,35 +84,144 @@ export default (
       <IndexRoute component={LoginPage} />
       <Route path="/home" component={DashboardPage}>
         <IndexRoute component={PickupOrdersPage} onEnter={requireAuth} />
-        <Route path="/performance" component={PerformancePage} onEnter={requireHubAuth} />
-        <Route path="/orders/pickup" component={PickupOrdersPage} onEnter={requireAuth} />
-        <Route path="/orders/received" component={ReceivedOrdersPage} onEnter={requireHubAuth} />
-        <Route path="/grouping" component={GroupingPage} onEnter={requireHubAuth} />
-        <Route path="/inbound" component={InboundOrdersPage} onEnter={requireHubAuth} />
-        <Route path="/orders/update" component={updateOrdersPage} onEnter={requireHubAuth} />
-        <Route path="/orders/:id" component={OrderDetailsPage} onEnter={requireHubAuth} />
-        <Route path="/trips/inbound" component={InboundTripsPage} onEnter={requireHubAuth} />
-        <Route path="/trips/outbound" component={MyOutboundTripsPage} onEnter={requireHubAuth} />
-        <Route path="/trips/:id" component={TripDetailsPage} onEnter={requireHubAuth} />
-        <Route path="/trips/:tripID/fillReceived" component={ReceivedFillPage} onEnter={requireHubAuth} />
-        <Route path="/trips/:tripID/fillPickup" component={PickupFillPage} onEnter={requireHubAuth} />
-        <Route path="/ordermonitoring" component={OrderMonitoringPage} onEnter={requireAuth} />
-        <Route path="/mytrips" component={MyAssignedTripsPage} onEnter={requireAuth} />
-        <Route path="/myongoingtrips" component={MyOngoingTripsPage} onEnter={requireAuth} />
-        <Route path="/myorders" component={() => (<MyOrdersPage />)} onEnter={requireAuth} />
-        <Route path="/myorders/add" component={MyOrdersManagePage} onEnter={requireAuth} />
-        <Route path="/history" component={TripHistoryList} onEnter={requireAuth} />
-        <Route path="/history/:id" component={TripHistoryDetails} onEnter={requireAuth} />
-        <Route path="/mycontacts" component={MyContactPage} onEnter={requireAuth} />
-        <Route path="/mycontacts/add" component={ManageContactsPage} onEnter={requireAuth} />
-        <Route path="/mycontacts/edit/:id" component={ManageContactsPage} onEnter={requireAuth} />
-        <Route path="/mydrivers" component={MyDriverPage} onEnter={requireAuth} />
+        <Route
+          path="/performance"
+          component={PerformancePage}
+          onEnter={requireHubAuth}
+        />
+        <Route
+          path="/orders/pickup"
+          component={PickupOrdersPage}
+          onEnter={requireAuth}
+        />
+        <Route
+          path="/orders/received"
+          component={ReceivedOrdersPage}
+          onEnter={requireHubAuth}
+        />
+        <Route
+          path="/grouping"
+          component={GroupingPage}
+          onEnter={requireHubAuth}
+        />
+        <Route
+          path="/inbound"
+          component={InboundOrdersPage}
+          onEnter={requireHubAuth}
+        />
+        <Route
+          path="/orders/update"
+          component={updateOrdersPage}
+          onEnter={requireHubAuth}
+        />
+        <Route
+          path="/orders/:id"
+          component={OrderDetailsPage}
+          onEnter={requireHubAuth}
+        />
+        <Route
+          path="/trips/inbound"
+          component={InboundTripsPage}
+          onEnter={requireHubAuth}
+        />
+        <Route
+          path="/trips/outbound"
+          component={MyOutboundTripsPage}
+          onEnter={requireHubAuth}
+        />
+        <Route
+          path="/trips/:id"
+          component={TripDetailsPage}
+          onEnter={requireHubAuth}
+        />
+        <Route
+          path="/trips/:tripID/fillReceived"
+          component={ReceivedFillPage}
+          onEnter={requireHubAuth}
+        />
+        <Route
+          path="/trips/:tripID/fillPickup"
+          component={PickupFillPage}
+          onEnter={requireHubAuth}
+        />
+        <Route
+          path="/ordermonitoring"
+          component={OrderMonitoringPage}
+          onEnter={requireAuth}
+        />
+        <Route
+          path="/mytrips"
+          component={MyAssignedTripsPage}
+          onEnter={requireAuth}
+        />
+        <Route
+          path="/myongoingtrips"
+          component={MyOngoingTripsPage}
+          onEnter={requireAuth}
+        />
+        <Route
+          path="/myorders"
+          component={() => <MyOrdersPage />}
+          onEnter={requireAuth}
+        />
+        <Route
+          path="/myorders/add"
+          component={MyOrdersManagePage}
+          onEnter={requireAuth}
+        />
+        <Route
+          path="/history"
+          component={TripHistoryList}
+          onEnter={requireAuth}
+        />
+        <Route
+          path="/history/:id"
+          component={TripHistoryDetails}
+          onEnter={requireAuth}
+        />
+        <Route
+          path="/mycontacts"
+          component={MyContactPage}
+          onEnter={requireAuth}
+        />
+        <Route
+          path="/mycontacts/add"
+          component={ManageContactsPage}
+          onEnter={requireAuth}
+        />
+        <Route
+          path="/mycontacts/edit/:id"
+          component={ManageContactsPage}
+          onEnter={requireAuth}
+        />
+        <Route
+          path="/mydrivers"
+          component={MyDriverPage}
+          onEnter={requireAuth}
+        />
+        <Route
+          path="/driverMap"
+          component={DriverMapPage}
+          onEnter={requireAuth}
+        />
       </Route>
-      <Route path="/trips/:tripID/manifest" component={OutboundTripsManifestPage} onEnter={requireAuth} />
-      <Route path="/trips/:tripID/coverManifest" component={OutboundTripsCoverManifestPage} onEnter={requireAuth} />
+      <Route
+        path="/trips/:tripID/manifest"
+        component={OutboundTripsManifestPage}
+        onEnter={requireAuth}
+      />
+      <Route
+        path="/trips/:tripID/coverManifest"
+        component={OutboundTripsCoverManifestPage}
+        onEnter={requireAuth}
+      />
       <Route path="/qrcode/:id" component={ContainerQRCodePage} />
       <Route path="/login" component={LoginPage} />
-      <Route path="/choose-hub" component={ChooseHubPage} onEnter={requireGoogleHubAuth} />
+      <Route
+        path="/choose-hub"
+        component={ChooseHubPage}
+        onEnter={requireGoogleHubAuth}
+      />
       <Route path="/register" component={RegisterPage} />
       <Route path="/*" component={LoginPage} />
     </Route>

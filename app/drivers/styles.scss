@@ -540,6 +540,25 @@
   }
 }
 
+.map-button {
+  font-size: 11px;
+  background-color: #fff;
+  border: solid 1px #d8d8d8;
+  float: right;
+  border-radius: 5px;
+  color: #38b393;
+  cursor: pointer;
+  padding: 4px 20px;
+  font-weight: bold;
+  margin-right: 10px;
+  margin-bottom: 10px;
+
+  img {
+    width: 11px;
+    margin-right: 5px;
+  }
+}
+
 .checkAvailable {
   width: 120px;
   height: 30px;

@@ -1,47 +1,61 @@
-import lodash from 'lodash';
-import {combineReducers} from 'redux';
+import * as _ from 'lodash';
+import { combineReducers } from 'redux';
+
 import * as CollHelper from '../../../helper/collection';
 import * as actionTypes from '../constants';
 
-const FleetListReducer = CollHelper.CollReducer({
-  START: actionTypes.FLEETS_FETCH_START,
-  FAILED: actionTypes.FLEETS_FETCH_FAILED,
-  RECEIVED: actionTypes.FLEETS_FETCH_RECEIVED,
-}, (fleet) => (fleet.UserID));
+const FleetListReducer = CollHelper.CollReducer(
+  {
+    START: actionTypes.FLEETS_FETCH_START,
+    FAILED: actionTypes.FLEETS_FETCH_FAILED,
+    RECEIVED: actionTypes.FLEETS_FETCH_RECEIVED,
+  },
+  fleet => fleet.UserID
+);
 
-const DriverListReducer = CollHelper.CollReducer({
-  START: actionTypes.DRIVERS_FETCH_START,
-  FAILED: actionTypes.DRIVERS_FETCH_FAILED,
-  RECEIVED: actionTypes.DRIVERS_FETCH_RECEIVED,
-}, (driver) => (driver.UserID));
+const DriverListReducer = CollHelper.CollReducer(
+  {
+    START: actionTypes.DRIVERS_FETCH_START,
+    FAILED: actionTypes.DRIVERS_FETCH_FAILED,
+    RECEIVED: actionTypes.DRIVERS_FETCH_RECEIVED,
+  },
+  driver => driver.UserID
+);
 
 const inititalFleetDriversState = {
   dict: {},
   active: 0,
-  driverList: []
-}
+  driverList: [],
+  driversLocation: [],
+};
 
 function FleetDriversReducer(state = inititalFleetDriversState, action) {
-  switch(action.type) {
+  switch (action.type) {
     case actionTypes.FLEET_SET: {
-      return lodash.assign({}, state, {active: action.fleetID});
+      return Object.assign({}, state, { active: action.fleetID });
     }
 
     case actionTypes.DRIVERS_FETCH_RECEIVED: {
-      return lodash.assign({}, state, {
-        dict: lodash.assign({}, state.dict, {
-          [action.fleetID]: lodash.map(action.list, (driver) => (driver.UserID)),
+      return Object.assign({}, state, {
+        dict: Object.assign({}, state.dict, {
+          [action.fleetID]: _.map(action.list, driver => driver.UserID),
         }),
-        driverList: action.list
+        driverList: action.list,
       });
     }
 
-    default: return state;
+    case actionTypes.DRIVERS_LOCATION_SET: {
+      const { driversLocation } = action.payload;
+      return Object.assign({}, state, { driversLocation });
+    }
+
+    default:
+      return state;
   }
 }
 
 function DriverDeassignmentReducer(state = false, action) {
-  switch(action.type) {
+  switch (action.type) {
     case actionTypes.DRIVER_DEASSIGN_START:
       return true;
 
@@ -49,7 +63,8 @@ function DriverDeassignmentReducer(state = false, action) {
     case actionTypes.DRIVER_DEASSIGN_FAILED:
       return false;
 
-    default: return state;
+    default:
+      return state;
   }
 }
 
