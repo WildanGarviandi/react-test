@@ -193,6 +193,8 @@
     "ICON_MAP": "/img/icon-map.png",
     "PIN_DRIVER_RED": "/img/pin-driver-red.png",
     "PIN_DRIVER_GREEN": "/img/pin-driver-green.png",
+    "ICON_AVAILABLE": "/img/icon-available.png",
+    "ICON_NOT_AVAILABLE": "/img/icon-not-available.png",
     "DEFAULT_PROFILE": "/img/photo-default.png"
   },
   "assignCentralHub": true,

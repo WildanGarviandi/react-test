@@ -86,7 +86,7 @@
 }
 
 .tripDriver {
-  height: 60px;
+  overflow: auto;
   border-radius: 4px;
   border: solid 1px #e8e8e8;
   background-color: #fff;
@@ -99,7 +99,6 @@
 }
 
 .tripDriver:hover {
-  height: 60px;
   border-radius: 4px;
   border: solid 1px #e8e8e8;
   background-color: #fff;
@@ -114,7 +113,7 @@
 }
 
 .tripDriverSelected {
-  height: 60px;
+  overflow: auto;
   border-radius: 4px;
   background-color: #fff;
   margin: 15px 20px;
@@ -150,6 +149,8 @@
 
 .driverLoadImage {
   height: 40px;
+  width: 40px;
+  border-radius: 20px;
   margin-top: 10px;
 }
 
@@ -179,9 +180,32 @@
 
 .vendorLoad {
   font-family: Helvetica;
-  font-size: 14px;
+  font-size: 12px;
+  opacity: 0.5;
   font-style: normal;
   font-stretch: normal;
+  display: block;
+}
+
+.availability-container {
+  span,
+  img {
+    float: left;
+    margin: 5px 5px 5px 0;
+  }
+}
+
+.available,
+.not-available {
+  font-size: 12px;
+}
+
+.available {
+  color: #38b393;
+}
+
+.not-available {
+  color: #ff5a60;
 }
 
 .vehicleIcon {
