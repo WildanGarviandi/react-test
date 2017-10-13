@@ -25,70 +25,70 @@ const initialState = {
     configValues.DAY_OF_WEEK.THURSDAY,
     configValues.DAY_OF_WEEK.FRIDAY,
     configValues.DAY_OF_WEEK.SATURDAY,
-    configValues.DAY_OF_WEEK.SUNDAY
+    configValues.DAY_OF_WEEK.SUNDAY,
   ],
   workingTime: [
     {
       DayOfWeek: configValues.DAY_OF_WEEK.MONDAY.value,
-      WorkingHour: []
+      WorkingHour: [],
     },
     {
       DayOfWeek: configValues.DAY_OF_WEEK.TUESDAY.value,
-      WorkingHour: []
+      WorkingHour: [],
     },
     {
       DayOfWeek: configValues.DAY_OF_WEEK.WEDNESDAY.value,
-      WorkingHour: []
+      WorkingHour: [],
     },
     {
       DayOfWeek: configValues.DAY_OF_WEEK.THURSDAY.value,
-      WorkingHour: []
+      WorkingHour: [],
     },
     {
       DayOfWeek: configValues.DAY_OF_WEEK.FRIDAY.value,
-      WorkingHour: []
+      WorkingHour: [],
     },
     {
       DayOfWeek: configValues.DAY_OF_WEEK.SATURDAY.value,
-      WorkingHour: []
+      WorkingHour: [],
     },
     {
       DayOfWeek: configValues.DAY_OF_WEEK.SUNDAY.value,
-      WorkingHour: []
-    }
+      WorkingHour: [],
+    },
   ],
   checkWorkingTime: [
     {
       DayOfWeek: configValues.DAY_OF_WEEK.MONDAY.value,
-      WorkingHour: []
+      WorkingHour: [],
     },
     {
       DayOfWeek: configValues.DAY_OF_WEEK.TUESDAY.value,
-      WorkingHour: []
+      WorkingHour: [],
     },
     {
       DayOfWeek: configValues.DAY_OF_WEEK.WEDNESDAY.value,
-      WorkingHour: []
+      WorkingHour: [],
     },
     {
       DayOfWeek: configValues.DAY_OF_WEEK.THURSDAY.value,
-      WorkingHour: []
+      WorkingHour: [],
     },
     {
       DayOfWeek: configValues.DAY_OF_WEEK.FRIDAY.value,
-      WorkingHour: []
+      WorkingHour: [],
     },
     {
       DayOfWeek: configValues.DAY_OF_WEEK.SATURDAY.value,
-      WorkingHour: []
+      WorkingHour: [],
     },
     {
       DayOfWeek: configValues.DAY_OF_WEEK.SUNDAY.value,
-      WorkingHour: []
-    }
+      WorkingHour: [],
+    },
   ],
   selectedDay: {},
-  isError: false
+  isError: false,
 };
 
 const isValidInterval = newTime => {
@@ -135,26 +135,26 @@ export function reducer(state = initialState, action) {
             key: _.uniqueId(),
             StartTime: {
               hour: parseInt(momentDateStart.getUTCHours(), 10),
-              minute: parseInt(momentDateStart.getUTCMinutes(), 10)
+              minute: parseInt(momentDateStart.getUTCMinutes(), 10),
             },
             EndTime: {
               hour: parseInt(momentDateEnd.getUTCHours(), 10),
-              minute: parseInt(momentDateEnd.getUTCMinutes(), 10)
-            }
+              minute: parseInt(momentDateEnd.getUTCMinutes(), 10),
+            },
           };
         });
       });
 
       return Object.assign({}, state, {
         workingTime: newWorkingTime,
-        checkWorkingTime: newWorkingTime
+        checkWorkingTime: newWorkingTime,
       });
     }
     case SELECT_WORKING_DAY: {
       const { selectedDay } = action.payload;
 
       return Object.assign({}, state, {
-        selectedDay
+        selectedDay,
       });
     }
     case ADD_WORKING_HOUR: {
@@ -163,12 +163,19 @@ export function reducer(state = initialState, action) {
         const isEqual = _.isEqual(time.DayOfWeek, state.selectedDay.value);
 
         if (isEqual) {
+          console.log(time, ' this is time');
           const newTime = _.cloneDeep(time);
           const lastWorkingHour = _.last(newTime.WorkingHour);
           newTime.WorkingHour.push({
             key: _.uniqueId(),
-            StartTime: lastWorkingHour.EndTime,
-            EndTime: lastWorkingHour.EndTime
+            StartTime: (lastWorkingHour && lastWorkingHour.EndTime) || {
+              hour: 0,
+              minute: 0,
+            },
+            EndTime: (lastWorkingHour && lastWorkingHour.EndTime) || {
+              hour: 0,
+              minute: 0,
+            },
           });
 
           return newTime;
@@ -178,7 +185,7 @@ export function reducer(state = initialState, action) {
       });
 
       return Object.assign({}, state, {
-        workingTime: newWorkingTime
+        workingTime: newWorkingTime,
       });
     }
     case SET_WORKING_HOUR: {
@@ -198,12 +205,12 @@ export function reducer(state = initialState, action) {
             key: newTime.WorkingHour[index].key,
             StartTime: {
               hour: parseInt(dateFromArr[0], 10),
-              minute: parseInt(dateFromArr[1], 10)
+              minute: parseInt(dateFromArr[1], 10),
             },
             EndTime: {
               hour: parseInt(dateToArr[0], 10),
-              minute: parseInt(dateToArr[1], 10)
-            }
+              minute: parseInt(dateToArr[1], 10),
+            },
           };
 
           return newTime;
@@ -214,7 +221,7 @@ export function reducer(state = initialState, action) {
 
       return Object.assign({}, state, {
         workingTime: newWorkingTime,
-        isError: !isValidInterval(newTime)
+        isError: !isValidInterval(newTime),
       });
     }
     case DELETE_WORKING_HOUR: {
@@ -237,7 +244,7 @@ export function reducer(state = initialState, action) {
 
       return Object.assign({}, state, {
         workingTime: newWorkingTime,
-        isError: !isValidInterval(newTime)
+        isError: !isValidInterval(newTime),
       });
     }
     case SAVE_WORKING_TIME:
@@ -249,7 +256,7 @@ export function reducer(state = initialState, action) {
 
 export function resetWorkingTime() {
   return {
-    type: RESET_WORKING_TIME
+    type: RESET_WORKING_TIME,
   };
 }
 
@@ -257,8 +264,8 @@ export function selectWorkingDay(selectedDay) {
   return {
     type: SELECT_WORKING_DAY,
     payload: {
-      selectedDay
-    }
+      selectedDay,
+    },
   };
 }
 
@@ -279,7 +286,7 @@ export function fetchWorkingTime() {
 
     try {
       dispatch({ type: modalAction.BACKDROP_SHOW });
-      
+
       const response = await FetchGet(
         `/${formatRef(endpoints.DRIVER, UserID, endpoints.WORKING_HOUR)}`,
         token,
@@ -291,8 +298,8 @@ export function fetchWorkingTime() {
         dispatch({
           type: FETCH_WORKING_TIME,
           payload: {
-            data
-          }
+            data,
+          },
         });
       } else {
         await handleErrorResponse(response);
@@ -300,7 +307,7 @@ export function fetchWorkingTime() {
     } catch (e) {
       const message = e && e.message ? e.message : 'Failed to fetch data';
       dispatch({
-        type: RESET_WORKING_TIME
+        type: RESET_WORKING_TIME,
       });
 
       dispatch(addNotification(message, 'error', null, null, 5, true));
@@ -314,7 +321,7 @@ export function fetchWorkingTime() {
 
 export function addWorkingHour() {
   return {
-    type: ADD_WORKING_HOUR
+    type: ADD_WORKING_HOUR,
   };
 }
 
@@ -324,8 +331,8 @@ export function setWorkingHour(dateFrom, dateTo, key) {
     payload: {
       dateFrom,
       dateTo,
-      key
-    }
+      key,
+    },
   };
 }
 
@@ -333,8 +340,8 @@ export function deleteWorkingHour(key) {
   return {
     type: DELETE_WORKING_HOUR,
     payload: {
-      key
-    }
+      key,
+    },
   };
 }
 
@@ -361,7 +368,7 @@ export function saveWorkingTime() {
             EndTime: `1970-01-01T${getTimeFormat(
               workingHour.EndTime.hour,
               workingHour.EndTime.minute
-            )}:00.000Z`
+            )}:00.000Z`,
           };
 
           return formattedData;
@@ -378,7 +385,7 @@ export function saveWorkingTime() {
         `/${formatRef(endpoints.DRIVER, UserID, endpoints.WORKING_HOUR)}`,
         token,
         {
-          WorkingHours: query
+          WorkingHours: query,
         }
       );
       if (response.ok) {
