@@ -478,6 +478,7 @@ export function deleteDriver(driverId) {
 
         response.json().then(({ data }) => {
           dispatch(ModalActions.addMessage(data.message));
+          dispatch(FetchList());
         });
       })
       .catch(e => {
