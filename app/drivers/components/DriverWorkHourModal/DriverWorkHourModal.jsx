@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
 import { connect } from 'react-redux';
 
+import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 
@@ -9,6 +10,7 @@ import styles from './styles.scss';
 import DayContent from './DayContent';
 import TimeContent from './TimeContent';
 import configValues from '../../../config/configValues.json';
+import { getTimeFormat } from '../../../helper/utility';
 import {
   fetchWorkingTime,
   resetWorkingTime,
@@ -17,11 +19,43 @@ import {
 
 const mapStateToProps = state => {
   const { driverWorkingTime } = state.app;
-  const { selectedDay, isError } = driverWorkingTime;
+  const {
+    selectedDay,
+    isError,
+    workingTime,
+    checkWorkingTime,
+  } = driverWorkingTime;
+
+  const updatedTime = [];
+
+  workingTime.forEach((time, index) => {
+    if (!_.isEqual(time.WorkingHour, checkWorkingTime[index].WorkingHour)) {
+      const newTime = _.cloneDeep(time);
+      newTime.DayOfWeek =
+        configValues.DAY_OF_WEEK[newTime.DayOfWeek.toUpperCase()].key;
+      newTime.WorkingHour = _.map(newTime.WorkingHour, workingHour => {
+        const formattedData = {
+          StartTime: `1970-01-01T${getTimeFormat(
+            workingHour.StartTime.hour,
+            workingHour.StartTime.minute
+          )}:00.000Z`,
+          EndTime: `1970-01-01T${getTimeFormat(
+            workingHour.EndTime.hour,
+            workingHour.EndTime.minute
+          )}:00.000Z`,
+        };
+
+        return formattedData;
+      });
+
+      updatedTime.push(newTime);
+    }
+  });
 
   return {
     selectedDay,
     isError,
+    updatedTime,
   };
 };
 
@@ -52,12 +86,19 @@ class DriverWorkHourModal extends PureComponent {
   }
 
   saveWorkingTime() {
-    this.props.saveWorkingTime();
+    const { updatedTime } = this.props;
+    this.props.saveWorkingTime(updatedTime);
     this.closeModal();
   }
 
   render() {
-    const { profilePicture, driver, isError, selectedDay } = this.props;
+    const {
+      profilePicture,
+      driver,
+      isError,
+      selectedDay,
+      updatedTime,
+    } = this.props;
 
     return (
       <ModalContainer>
@@ -89,7 +130,7 @@ class DriverWorkHourModal extends PureComponent {
             </button>
             <button
               className={styles.modalFooter__save}
-              disabled={isError}
+              disabled={isError || updatedTime.length === 0}
               onClick={this.saveWorkingTime}
             >
               Save
@@ -111,6 +152,7 @@ DriverWorkHourModal.propTypes = {
   isError: PropTypes.bool,
   selectedDay: PropTypes.object,
   saveWorkingTime: PropTypes.func.isRequired,
+  updatedTime: PropTypes.array.isRequired,
 };
 /* eslint-enable */
 

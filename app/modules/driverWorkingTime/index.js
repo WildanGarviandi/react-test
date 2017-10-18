@@ -159,11 +159,12 @@ export function reducer(state = initialState, action) {
     }
     case ADD_WORKING_HOUR: {
       let newWorkingTime = _.cloneDeep(state.workingTime);
+      let newTime = {};
       newWorkingTime = _.map(newWorkingTime, time => {
         const isEqual = _.isEqual(time.DayOfWeek, state.selectedDay.value);
 
         if (isEqual) {
-          const newTime = _.cloneDeep(time);
+          newTime = _.cloneDeep(time);
           const lastWorkingHour = _.last(newTime.WorkingHour);
           newTime.WorkingHour.push({
             key: _.uniqueId(),
@@ -185,6 +186,7 @@ export function reducer(state = initialState, action) {
 
       return Object.assign({}, state, {
         workingTime: newWorkingTime,
+        isError: !isValidInterval(newTime),
       });
     }
     case SET_WORKING_HOUR: {
@@ -344,38 +346,11 @@ export function deleteWorkingHour(key) {
   };
 }
 
-export function saveWorkingTime() {
+export function saveWorkingTime(updatedTime) {
   const dispatchFunc = async (dispatch, getState) => {
-    const { driverWorkingTime, userLogged, myDrivers } = getState().app;
+    const { userLogged, myDrivers } = getState().app;
     const { token } = userLogged;
     const { UserID } = myDrivers.driver;
-    const { workingTime, checkWorkingTime } = driverWorkingTime;
-
-    const query = [];
-
-    workingTime.forEach((time, index) => {
-      if (!_.isEqual(time.WorkingHour, checkWorkingTime[index].WorkingHour)) {
-        const newTime = _.cloneDeep(time);
-        newTime.DayOfWeek =
-          configValues.DAY_OF_WEEK[newTime.DayOfWeek.toUpperCase()].key;
-        newTime.WorkingHour = _.map(newTime.WorkingHour, workingHour => {
-          const formattedData = {
-            StartTime: `1970-01-01T${getTimeFormat(
-              workingHour.StartTime.hour,
-              workingHour.StartTime.minute
-            )}:00.000Z`,
-            EndTime: `1970-01-01T${getTimeFormat(
-              workingHour.EndTime.hour,
-              workingHour.EndTime.minute
-            )}:00.000Z`,
-          };
-
-          return formattedData;
-        });
-
-        query.push(newTime);
-      }
-    });
 
     dispatch({ type: modalAction.BACKDROP_SHOW });
 
@@ -384,7 +359,7 @@ export function saveWorkingTime() {
         `/${formatRef(endpoints.DRIVER, UserID, endpoints.WORKING_HOUR)}`,
         token,
         {
-          WorkingHours: query,
+          WorkingHours: updatedTime,
         }
       );
       if (response.ok) {
