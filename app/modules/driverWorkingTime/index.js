@@ -5,7 +5,7 @@ import { modalAction } from '../modals/constants';
 import ModalService from '../modals/actions';
 import FetchGet from '../fetch/get';
 import FetchPost from '../fetch/post';
-import { formatRef, getTimeFormat } from '../../helper/utility';
+import { formatRef } from '../../helper/utility';
 import endpoints from '../../config/endpoints';
 import { addNotification } from '../notification';
 
