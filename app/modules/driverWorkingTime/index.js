@@ -29,6 +29,10 @@ const initialState = {
   ],
   workingTime: [
     {
+      DayOfWeek: configValues.DAY_OF_WEEK.SUNDAY.value,
+      WorkingHour: [],
+    },
+    {
       DayOfWeek: configValues.DAY_OF_WEEK.MONDAY.value,
       WorkingHour: [],
     },
@@ -50,15 +54,15 @@ const initialState = {
     },
     {
       DayOfWeek: configValues.DAY_OF_WEEK.SATURDAY.value,
-      WorkingHour: [],
-    },
-    {
-      DayOfWeek: configValues.DAY_OF_WEEK.SUNDAY.value,
       WorkingHour: [],
     },
   ],
   checkWorkingTime: [
     {
+      DayOfWeek: configValues.DAY_OF_WEEK.SUNDAY.value,
+      WorkingHour: [],
+    },
+    {
       DayOfWeek: configValues.DAY_OF_WEEK.MONDAY.value,
       WorkingHour: [],
     },
@@ -80,10 +84,6 @@ const initialState = {
     },
     {
       DayOfWeek: configValues.DAY_OF_WEEK.SATURDAY.value,
-      WorkingHour: [],
-    },
-    {
-      DayOfWeek: configValues.DAY_OF_WEEK.SUNDAY.value,
       WorkingHour: [],
     },
   ],
@@ -163,7 +163,6 @@ export function reducer(state = initialState, action) {
         const isEqual = _.isEqual(time.DayOfWeek, state.selectedDay.value);
 
         if (isEqual) {
-          console.log(time, ' this is time');
           const newTime = _.cloneDeep(time);
           const lastWorkingHour = _.last(newTime.WorkingHour);
           newTime.WorkingHour.push({
