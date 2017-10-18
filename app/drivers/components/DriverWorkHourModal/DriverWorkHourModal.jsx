@@ -12,7 +12,7 @@ import configValues from '../../../config/configValues.json';
 import {
   fetchWorkingTime,
   resetWorkingTime,
-  saveWorkingTime
+  saveWorkingTime,
 } from '../../../modules/driverWorkingTime';
 
 const mapStateToProps = state => {
@@ -21,7 +21,7 @@ const mapStateToProps = state => {
 
   return {
     selectedDay,
-    isError
+    isError,
   };
 };
 
@@ -30,7 +30,7 @@ const mapDispatchToProps = dispatch => {
     {
       fetchWorkingTime,
       resetWorkingTime,
-      saveWorkingTime
+      saveWorkingTime,
     },
     dispatch
   );
@@ -53,6 +53,7 @@ class DriverWorkHourModal extends PureComponent {
 
   saveWorkingTime() {
     this.props.saveWorkingTime();
+    this.closeModal();
   }
 
   render() {
@@ -63,12 +64,18 @@ class DriverWorkHourModal extends PureComponent {
         <ModalDialog>
           <div className={styles.modalTitle}>
             Set Driver&apos;s Availability
+            <div
+              className={styles.closeModal}
+              role="none"
+              onClick={this.closeModal}
+            >
+              &times;
+            </div>
           </div>
-          {isError && (
+          {isError &&
             <div className={styles.modalError}>
               Invalid working hour for {selectedDay.value}
-            </div>
-          )}
+            </div>}
           <div className={styles.modalBody}>
             <DayContent profilePicture={profilePicture} driver={driver} />
             <TimeContent />
@@ -103,7 +110,7 @@ DriverWorkHourModal.propTypes = {
   closeModal: PropTypes.func.isRequired,
   isError: PropTypes.bool,
   selectedDay: PropTypes.object,
-  saveWorkingTime: PropTypes.func.isRequired
+  saveWorkingTime: PropTypes.func.isRequired,
 };
 /* eslint-enable */
 
@@ -111,7 +118,7 @@ DriverWorkHourModal.defaultProps = {
   profilePicture: configValues.IMAGES.DEFAULT_PROFILE,
   driver: {},
   isError: false,
-  selectedDay: {}
+  selectedDay: {},
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(

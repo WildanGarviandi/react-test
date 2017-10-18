@@ -16,14 +16,14 @@ class EllipsisMenu extends PureComponent {
         {
           id: 'EDIT',
           name: 'Edit',
-          iconStyles: styles['dropdownMenu__icon--edit']
+          iconStyles: styles['dropdownMenu__icon--edit'],
         },
         {
           id: 'DELETE',
           name: 'Delete',
-          iconStyles: styles['dropdownMenu__icon--delete']
-        }
-      ]
+          iconStyles: styles['dropdownMenu__icon--delete'],
+        },
+      ],
     };
 
     this.showMenu = this.showMenu.bind(this);
@@ -38,33 +38,33 @@ class EllipsisMenu extends PureComponent {
         ? styles['dropdownMenu__icon--close']
         : styles['dropdownMenu__icon--edit'];
       this.setState({
-        menus
+        menus,
       });
     }
   }
 
   showMenu() {
     this.setState({
-      isOpen: true
+      isOpen: true,
     });
   }
 
   handleClickOutside() {
     this.setState({
-      isOpen: false
+      isOpen: false,
     });
   }
 
   handleSelect(menu) {
     this.setState({
-      isOpen: false
+      isOpen: false,
     });
     this.props.handleSelect(menu);
   }
 
   render() {
     return (
-      <span>
+      <span className={styles.dirverEditOuterContainer}>
         <div
           role="none"
           className={styles.driverEditButton}
@@ -86,11 +86,11 @@ class EllipsisMenu extends PureComponent {
 
 EllipsisMenu.propTypes = {
   handleSelect: PropTypes.func.isRequired,
-  isEditing: PropTypes.bool
+  isEditing: PropTypes.bool,
 };
 
 EllipsisMenu.defaultProps = {
-  isEditing: false
+  isEditing: false,
 };
 
 export default onClickOutside(EllipsisMenu);
