@@ -494,8 +494,8 @@
   border: solid 1px #e8e8e8;
   border-radius: 4px;
   position: absolute;
-  margin-left: 180px;
-  margin-top: -20px;
+  top: 0;
+  right: 10px;
   z-index: 2;
   background-color: white;
 
@@ -575,4 +575,9 @@
     background-color: #d2eafc;
     cursor: pointer;
   }
+}
+
+.dirverEditOuterContainer {
+  position: relative;
+  display: block;
 }

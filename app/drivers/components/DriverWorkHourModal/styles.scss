@@ -10,6 +10,14 @@
   height: 36px;
 }
 
+.closeModal {
+  position: absolute;
+  right: 23px;
+  top: 15px;
+  font-size: 25px;
+  cursor: pointer;
+}
+
 .modalError {
   @extend .modalTitle;
 
