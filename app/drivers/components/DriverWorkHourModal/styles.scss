@@ -1,0 +1,258 @@
+.modalTitle {
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  border-bottom: 1px solid #e8e8e8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 688px;
+  height: 36px;
+}
+
+.closeModal {
+  position: absolute;
+  right: 23px;
+  top: 15px;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.modalError {
+  @extend .modalTitle;
+
+  color: white;
+  background-color: red;
+}
+
+.modalBody {
+  display: flex;
+  justify-content: space-between;
+  background-color: #f1f1f1;
+  width: 688px;
+  height: 456px;
+}
+
+.dayContent {
+  width: 50%;
+  height: 100%;
+  border-bottom: 1px solid #e8e8e8;
+  border-left: 1px solid #e8e8e8;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+
+  &__image {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  &__image-text {
+    font-size: 20px;
+    font-weight: bold;
+    padding: 0 10px;
+  }
+
+  &__week {
+    margin: 0 20px 20px;
+  }
+
+  &__button {
+    width: 140px;
+    height: 38px;
+    border-radius: 4px;
+    background-color: #fff;
+    border: solid 1px #e8e8e8;
+    font-size: 14px;
+    font-weight: bold;
+    color: black;
+    margin: 5px;
+  }
+
+  &__button:hover {
+    background-color: rgba(33, 150, 243, 0.15);
+    outline: none;
+  }
+
+  &__button:focus {
+    background-color: rgba(33, 150, 243, 0.15);
+    outline: none;
+  }
+}
+
+.timeContent {
+  width: 50%;
+  height: 100%;
+  background-color: #fff;
+  border-bottom: 1px solid #e8e8e8;
+  border-right: 1px solid #e8e8e8;
+}
+
+.timeContentHeader {
+  display: flex;
+  justify-content: space-between;
+
+  &__title {
+    font-size: 14px;
+    opacity: 0.5;
+    height: 20px;
+    text-align: center;
+    margin-top: 16px;
+    margin-left: 16px;
+    margin-bottom: 0;
+  }
+
+  &__day {
+    font-size: 14px;
+    width: 100%;
+    margin: 16px 0 0 16px;
+  }
+}
+
+.workingTime {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 10px;
+  height: 55px;
+}
+
+.textHour {
+  width: 68px;
+  height: 35px;
+  border: solid 1px #e8e8e8;
+  border-radius: 4px;
+  background-color: white;
+  padding: 5px 10px;
+  cursor: pointer;
+
+  &__title {
+    color: #999;
+    font-weight: bold;
+    font-size: 10px;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  &__left {
+    @extend .textHour;
+
+    margin: 0 25px 8px 16px;
+  }
+
+  &__right {
+    @extend .textHour;
+
+    margin: 0 16px 8px 25px;
+  }
+}
+
+.dropdownMenu {
+  width: 88px;
+  max-height: 135px;
+  border: solid 1px #e8e8e8;
+  border-radius: 4px;
+  background-color: white;
+
+  &__item {
+    width: 100%;
+    height: 45px;
+    border-bottom: solid 1px #e8e8e8;
+    text-align: center;
+
+    &:hover {
+      background-color: #d2eafc;
+      cursor: pointer;
+    }
+  }
+
+  &--left {
+    @extend .dropdownMenu;
+
+    margin: 0 25px 8px 16px;
+  }
+
+  &--right {
+    @extend .dropdownMenu;
+
+    margin: 0 16px 8px 25px;
+  }
+
+  &__content {
+    margin-left: 25px;
+  }
+}
+
+.action {
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &__plus {
+    @extend .action;
+
+    width: 35px;
+    height: 35px;
+    color: white;
+    background-color: #2196f3;
+    margin-top: 8px;
+    margin-right: 28px;
+  }
+
+  &__plus:hover {
+    background-color: #d2eafc;
+  }
+
+  &__trash {
+    @extend .action;
+
+    width: 56px;
+    height: 45px;
+    color: red;
+    background-color: white;
+    margin-right: 16px;
+  }
+
+  &__trash:hover {
+    color: #2196f3;
+  }
+}
+
+.modalFooter {
+  display: flex;
+  align-items: center;
+
+  button {
+    width: 50%;
+    height: 44px;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  &__cancel {
+    background-color: #ff5a60;
+    margin: 16px 8px 0 0;
+  }
+
+  &__save {
+    background-color: #38b393;
+    margin: 16px 0 0 8px;
+  }
+
+  &__save:disabled {
+    cursor: default;
+    background-color: #aaa;
+  }
+}
