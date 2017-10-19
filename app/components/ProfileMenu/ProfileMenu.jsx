@@ -13,16 +13,17 @@ class ProfileMenu extends PureComponent {
     super(props);
     this.state = {
       isOpen: false,
-      data: this.props.hubs.map((hub) => {
-        const prefix = hub.Hub.Type === configValues.HUB_TYPE.GENERAL ?
-            'Local ' : '';
+      data: this.props.hubs.map(hub => {
+        const prefix =
+          hub.Hub.Type === configValues.HUB_TYPE.GENERAL ? 'Local ' : '';
         const data = {
           id: hub.Hub.HubID,
           name: `${prefix}${hub.Hub.Name}`,
           selected: hub.Hub.HubID === this.props.hubID,
+          iconStyles: styles['etobee-logo']
         };
         return data;
-      }),
+      })
     };
     this.toggleMenu = this.toggleMenu.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
@@ -30,26 +31,26 @@ class ProfileMenu extends PureComponent {
 
   toggleMenu() {
     this.setState({
-      isOpen: !this.state.isOpen,
+      isOpen: !this.state.isOpen
     });
   }
 
   handleClickOutside() {
     this.setState({
-      isOpen: false,
+      isOpen: false
     });
   }
 
   handleSelect(selectedData) {
-    const data = this.state.data.map((partData) => {
+    const data = this.state.data.map(partData => {
       const newData = Object.assign({}, partData, {
-        selected: partData.id === selectedData.id,
+        selected: partData.id === selectedData.id
       });
       return newData;
     });
 
     this.setState({
-      data,
+      data
     });
     this.toggleMenu();
     this.props.chooseHub(selectedData.id, true);
@@ -68,7 +69,7 @@ class ProfileMenu extends PureComponent {
   }
 
   render() {
-    const selectedData = this.state.data.find((data) => {
+    const selectedData = this.state.data.find(data => {
       const selected = data.selected;
       return selected;
     });
@@ -78,27 +79,27 @@ class ProfileMenu extends PureComponent {
         <div
           role="none"
           className={styles.profile}
-          onClick={(e) => {
+          onClick={e => {
             e.stopPropagation();
             this.toggleMenu();
           }}
         >
           <div className={styles.switch}>
-            <span className={styles.switch__label}>{selectedData.name}</span>
+            <span className={styles.switch__label}>
+              {selectedData.name}
+            </span>
           </div>
           {this.renderChevron()}
         </div>
-        {this.state.isOpen && (
+        {this.state.isOpen &&
           <DropdownList
             toggleMenu={this.toggleMenu}
             data={this.state.data}
             handleSelect={this.handleSelect}
             dropdownStyles={styles['dropdown-profile']}
-            iconStyles={styles['etobee-logo']}
             contentStyles={styles['dropdown-content']}
             dropdownItemStyles={styles['dropdown-hub']}
-          />
-        )}
+          />}
       </span>
     );
   }
@@ -109,7 +110,7 @@ ProfileMenu.propTypes = {
   hubs: PropTypes.array.isRequired,
   token: PropTypes.string.isRequired,
   hubID: PropTypes.number.isRequired,
-  chooseHub: PropTypes.func.isRequired,
+  chooseHub: PropTypes.func.isRequired
 };
 /* eslint-enable */
 

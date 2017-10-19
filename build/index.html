@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Etobee TMS</title>
@@ -7,25 +8,28 @@
   <link rel="icon" href="/img/favicon.png" type="image/icon" />
   <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
   <link rel="stylesheet" type="text/css" href="/css/daterangepicker.css" />
-  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="/css/font-awesome/css/font-awesome.min.css" />
   <link rel="stylesheet" type="text/css" href="/css/react-datetime.css" />
   <script type="text/javascript">
-    (function(p,u,s,h){
-        var userId = '9f5b84f989f9d6dec78cdd7ca8b95251';
-        p._pcq=p._pcq||[];
-        p._pcq.push(['_currentTime',Date.now()]);
-        s=u.createElement('script');
-        s.type='text/javascript';
-        s.async=true;
-        s.src='https://cdn.pushcrew.com/js/' + userId + '.js';
-        h=u.getElementsByTagName('script')[0];
-        h.parentNode.insertBefore(s,h);
-    })(window,document);
+    (function (p, u, s, h) {
+      var userId = '9f5b84f989f9d6dec78cdd7ca8b95251';
+      p._pcq = p._pcq || [];
+      p._pcq.push(['_currentTime', Date.now()]);
+      s = u.createElement('script');
+      s.type = 'text/javascript';
+      s.async = true;
+      s.src = 'https://cdn.pushcrew.com/js/' + userId + '.js';
+      h = u.getElementsByTagName('script')[0];
+      h.parentNode.insertBefore(s, h);
+    })(window, document);
   </script>
-<body>
-  <div id="bootstrapPlaceholder" class="nb"></div>
-  <div id="root" style="height:100%;"></div>
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-  <script src="/assets/bundle.js"></script>
-</body>
+
+  <body>
+    <div id="bootstrapPlaceholder" class="nb"></div>
+    <div id="root" style="height:100%;"></div>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6xhfrg9usJx1Q9PWVPHoNEMRc0MdoIT4"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="/assets/bundle.js"></script>
+  </body>
+
 </html>

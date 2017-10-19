@@ -9,7 +9,7 @@ class DropdownItemBase extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      isHovered: false,
+      isHovered: false
     };
 
     this.toggleHover = this.toggleHover.bind(this);
@@ -22,17 +22,21 @@ class DropdownItemBase extends PureComponent {
 
   toggleHover() {
     this.setState({
-      isHovered: !this.state.isHovered,
+      isHovered: !this.state.isHovered
     });
   }
 
   render() {
-    const { data, iconStyles } = this.props;
+    const { data } = this.props;
 
-    const dropdownItemStyles = classNames(styles.dropdownitem,
-      this.props.dropdownItemStyles);
-    const contentStyles = classNames(styles.dropdownitem__content,
-      this.props.contentStyles);
+    const dropdownItemStyles = classNames(
+      styles.dropdownitem,
+      this.props.dropdownItemStyles
+    );
+    const contentStyles = classNames(
+      styles.dropdownitem__content,
+      this.props.contentStyles
+    );
 
     return (
       <div
@@ -43,7 +47,7 @@ class DropdownItemBase extends PureComponent {
         onClick={this.handleSelect}
       >
         <div className={styles.dropdownitem__icon}>
-          <div className={iconStyles} />
+          <div className={data.iconStyles} />
           <div className={contentStyles}>
             <div className={styles['dropdownitem__content-hub']}>
               {data.name}
@@ -59,9 +63,8 @@ class DropdownItemBase extends PureComponent {
 DropdownItemBase.propTypes = {
   data: PropTypes.any,
   handleSelect: PropTypes.func.isRequired,
-  iconStyles: PropTypes.any,
   dropdownItemStyles: PropTypes.any,
-  contentStyles: PropTypes.any,
+  contentStyles: PropTypes.any
 };
 /* eslint-enable */
 
@@ -69,7 +72,7 @@ DropdownItemBase.defaultProps = {
   data: {},
   iconStyles: {},
   dropdownItemStyles: {},
-  contentStyles: {},
+  contentStyles: {}
 };
 
 export default DropdownItemBase;

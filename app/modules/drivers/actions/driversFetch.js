@@ -1,6 +1,8 @@
 import * as actionTypes from '../constants';
 import fetchGet from '../../fetch/get';
 import ModalActions from '../../modals/actions';
+import { formatRef } from '../../../helper/utility';
+import endpoints from '../../../config/endpoints';
 
 function FetchDrivers(fleetID, isWeighting) {
   return (dispatch, getState) => {
@@ -83,4 +85,35 @@ function TMSFetchDrivers() {
   };
 }
 
-export { FetchDrivers, TMSFetchDrivers };
+const fetchDriversLocation = () => {
+  const dispatchFunc = async (dispatch, getState) => {
+    const { token } = getState().app.userLogged;
+    const url = `/${formatRef(
+      endpoints.DRIVER,
+      endpoints.BULK_CURRENT_LOCATION
+    )}`;
+
+    try {
+      let response = await fetchGet(url, token);
+
+      if (!response.ok) {
+        throw new Error('Failed to get drivers location.');
+      }
+
+      response = await response.json();
+
+      dispatch({
+        type: actionTypes.DRIVERS_LOCATION_SET,
+        payload: { driversLocation: response.data },
+      });
+    } catch (e) {
+      dispatch(
+        ModalActions.addError((e && e.message) || 'Something went wrong')
+      );
+    }
+  };
+
+  return dispatchFunc;
+};
+
+export { FetchDrivers, TMSFetchDrivers, fetchDriversLocation };
