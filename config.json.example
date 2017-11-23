@@ -13,5 +13,6 @@
     "updateCODVendor": true
   },
   "googleSiteKey": "",
-  "googleAnalyticsKey": ""
+  "googleAnalyticsKey": "",
+  "googleMapApiKey": ""
 }
