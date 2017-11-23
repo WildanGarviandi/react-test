@@ -1,10 +1,16 @@
 import React from 'react';
-import { withGoogleMap, GoogleMap, OverlayView } from 'react-google-maps';
+import {
+  withScriptjs,
+  withGoogleMap,
+  GoogleMap,
+  OverlayView,
+} from 'react-google-maps';
 
 import PropTypes from 'prop-types';
 
 import Details from './DriverDetails';
-import config from '../../config/configValues.json';
+import configValues from '../../config/configValues.json';
+import config from '../../../config.json';
 import styles from './styles.scss';
 
 const DriverPin = ({ driver, openDetails, selectedDriver }) =>
@@ -19,8 +25,8 @@ const DriverPin = ({ driver, openDetails, selectedDriver }) =>
         alt="driver"
         src={
           driver.isAvailable
-            ? config.IMAGES.PIN_DRIVER_GREEN
-            : config.IMAGES.PIN_DRIVER_RED
+            ? configValues.IMAGES.PIN_DRIVER_GREEN
+            : configValues.IMAGES.PIN_DRIVER_RED
         }
         className={styles['overlay__pin-driver']}
       />
@@ -50,26 +56,30 @@ DriverPin.defaultProps = {
   selectedDriver: null,
 };
 
-const GoogleMaps = withGoogleMap(props =>
-  <GoogleMap
-    ref={props.onMapLoad}
-    defaultZoom={11}
-    defaultCenter={{ lat: -6.21462, lng: 106.84513 }}
-    onClick={props.onMapClick}
-  >
-    {props.drivers.map(driver =>
-      <DriverPin
-        key={driver.DriverCurrentLocationID}
-        driver={driver}
-        selectedDriver={props.selectedDriver}
-        openDetails={props.openDetails}
-      />
-    )}
-  </GoogleMap>
+const GoogleMaps = withScriptjs(
+  withGoogleMap(props =>
+    <GoogleMap
+      ref={props.onMapLoad}
+      defaultZoom={11}
+      defaultCenter={{ lat: -6.21462, lng: 106.84513 }}
+      onClick={props.onMapClick}
+    >
+      {props.drivers.map(driver =>
+        <DriverPin
+          key={driver.DriverCurrentLocationID}
+          driver={driver}
+          selectedDriver={props.selectedDriver}
+          openDetails={props.openDetails}
+        />
+      )}
+    </GoogleMap>
+  )
 );
 
 const MapView = ({ onMapLoad, drivers, selectedDriver, openDetails }) =>
   <GoogleMaps
+    googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${config.googleMapApiKey}`}
+    loadingElement={<div style={{ height: `100%` }} />}
     onMapLoad={onMapLoad}
     drivers={drivers}
     openDetails={openDetails}
