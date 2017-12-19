@@ -419,7 +419,7 @@ const AssignTripModalClass = React.createClass({
     this.props.fetchFleetDriver(this.state.fleet.FleetManagerID);
   },
   fleetDriverInModalSelected(key) {
-    this.state.fleetDriver = this.props.nearbyFleets.drivers[key];
+    this.state.fleetDriver = this.state.driverFleetList[key];
     this.setState({
       selectedFleetDriver: key,
       isFleetDriverSet: true,
